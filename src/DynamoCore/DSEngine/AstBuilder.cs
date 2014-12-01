@@ -232,7 +232,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="def"></param>
         /// <param name="funcBody"></param>
-        /// <param name="outputs"></param>
+        /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
         public void CompileCustomNodeDefinition(
             CustomNodeDefinition def,
@@ -360,6 +360,7 @@ namespace Dynamo.DSEngine
             public const string VarPrefix = @"var_";
             public const string ShortVarPrefix = @"t_";
             public const string CustomNodeReturnVariable = @"%arr";
+            public const string AstBuildBrokenMessage = "Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}";
         }
     }
 }

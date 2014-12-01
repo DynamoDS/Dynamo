@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -181,8 +182,12 @@ namespace Dynamo.ViewModels
         /// <param name="packageDownloadHandle"></param>
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
+            
+
             var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
             this.Downloads.Add(packageDownloadHandle);
+
+            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
 
             Task.Factory.StartNew(() =>
             {
@@ -217,7 +222,11 @@ namespace Dynamo.ViewModels
                             if (packageDownloadHandle.Extract(out dynPkg))
                             {
                                 var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, this.dynamoViewModel.Model.Logger);
-                                downloadPkg.LoadIntoDynamo(this.dynamoViewModel.Model.Loader, this.dynamoViewModel.Model.Logger);
+
+                                var loader = dynamoViewModel.Model.Loader;
+                                var logger = dynamoViewModel.Model.Logger;
+                                var libraryServices = dynamoViewModel.Model.EngineController.LibraryServices;
+                                downloadPkg.LoadIntoDynamo(loader, logger, libraryServices);
 
                                 dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;

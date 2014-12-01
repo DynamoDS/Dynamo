@@ -15,14 +15,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid>
-
-        <Grid.Background>
-            <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                <GradientStop Color="#444" Offset="0.0" />
-                <GradientStop Color="#222" Offset="1.0" />
-            </LinearGradientBrush>
-        </Grid.Background>
+    <Grid Background="#333">
 
         <StackPanel Margin="15">
 
@@ -40,7 +33,8 @@
                     <TextBlock>A description that helps people understand what the node might be used for.</TextBlock>
                 </Label.ToolTip>
             </Label>
-            <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Tag="Description of Custom Node"/>
+            <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" 
+                     Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Tag="Description of Custom Node"/>
 
             <Label Content="Category" Foreground="DarkGray" Height="28" HorizontalAlignment="Stretch" Name="label2"  />
             <ComboBox FontSize="14" Style="{DynamicResource ResourceKey=SComboBox}" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="categoryBox" Margin="0" IsEditable="True" TabIndex="1" />

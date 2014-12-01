@@ -11,7 +11,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 
 using System.Windows;
-
+using GraphLayout;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -25,7 +25,13 @@ namespace Dynamo.ViewModels
         #region delegates
         public delegate void SetToolTipDelegate(string message);
         public delegate void NodeDialogEventHandler(object sender, NodeDialogEventArgs e);
+        public delegate void SnapInputEventHandler(PortViewModel portViewModel);
         #endregion
+
+        #region events
+        public event SnapInputEventHandler SnapInputEvent;        
+        #endregion
+
 
         #region private members
 
@@ -106,33 +112,6 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.NickName; }
             set { nodeLogic.NickName = value; }
-        }
-
-        public string OldValue
-        {
-            get
-            {
-                if (nodeLogic.Workspace is CustomNodeWorkspaceModel)
-                    return "Not available in custom nodes";
-
-                var variableName = nodeLogic.AstIdentifierBase;
-
-                string previewValue = "<null>";
-                if (!string.IsNullOrEmpty(variableName))
-                {
-                    try
-                    {
-                        var engine = DynamoViewModel.Model.EngineController;
-                        previewValue = engine.GetStringValue(variableName);
-                    }
-                    catch (Exception ex)
-                    {
-                        DynamoViewModel.Model.Logger.Log(ex.Message);
-                    }
-                }
-
-                return previewValue;
-            }
         }
 
         public ElementState State
@@ -219,14 +198,7 @@ namespace Dynamo.ViewModels
 
         public bool ShowsVisibilityToggles
         {
-            get
-            {
-                //if the node is a Function, show the visibility toggles
-                //if any of it's internal nodes is drawable.
-
-                //return nodeLogic.OldValue!=null;
-                return true;
-            }
+            get { return true; }
         }
 
         public bool IsPreviewInsetVisible
@@ -282,6 +254,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool WillForceReExecuteOfNode
+        {
+            get { return NodeModel.ForceReExecuteOfNode; }
+        }
+
         #endregion
 
         #region events
@@ -322,7 +299,7 @@ namespace Dynamo.ViewModels
             this.DynamoViewModel = workspaceViewModel.DynamoViewModel;
 
             nodeLogic = logic;
-
+            
             //respond to collection changed events to sadd
             //and remove port model views
             logic.InPorts.CollectionChanged += inports_collectionChanged;
@@ -334,6 +311,7 @@ namespace Dynamo.ViewModels
             this.DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
             ErrorBubble = new InfoBubbleViewModel(this.DynamoViewModel);
+            UpdateBubbleContent();
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -400,15 +378,18 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in nodeLogic.InPorts)
             {
-                InPorts.Add(new PortViewModel(this, item));
+                PortViewModel inportViewModel = SubscribePortEvents(item);               
+                InPorts.Add(inportViewModel);
             }
 
             foreach (var item in nodeLogic.OutPorts)
             {
-                OutPorts.Add(new PortViewModel(this, item));
+                PortViewModel outportViewModel = SubscribePortEvents(item);              
+                OutPorts.Add(outportViewModel);
             }
         }
 
+        
         /// <summary>
         /// Respond to property changes on the model
         /// </summary>
@@ -436,10 +417,6 @@ namespace Dynamo.ViewModels
             {
                 case "NickName":
                     RaisePropertyChanged("NickName");
-                    break;
-                case "OldValue":
-                    RaisePropertyChanged("OldValue");
-                    RaisePropertyChanged("CanDisplayLabels");
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
@@ -485,10 +462,13 @@ namespace Dynamo.ViewModels
                 case "Position":
                     UpdateErrorBubblePosition();
                     break;
+                case "ForceReExecuteOfNode":
+                    RaisePropertyChanged("WillForceReExecuteOfNode");
+                    break;
             }
         }
 
-        private void UpdateBubbleContent()
+        public void UpdateBubbleContent()
         {
             if (ErrorBubble == null || DynamoViewModel == null)
                 return;
@@ -566,18 +546,11 @@ namespace Dynamo.ViewModels
         }
 
         private void SetLacingType(object param)
-        {
-            // Record the state of this node before changes.
-            DynamoModel dynamo = DynamoViewModel.Model;
-            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
-
-            LacingStrategy strategy = LacingStrategy.Disabled;
-            if (!Enum.TryParse(param.ToString(), out strategy))
-                strategy = LacingStrategy.Disabled;
-
-            NodeLogic.ArgumentLacing = strategy;
-
-            RaisePropertyChanged("ArgumentLacing");
+        {           
+            this.DynamoViewModel.ExecuteCommand(
+              new DynamoModel.UpdateModelValueCommand(
+                    this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
+          
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
@@ -629,7 +602,8 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new PortViewModel(this, item as PortModel));
+                    PortViewModel inportViewModel = SubscribePortEvents(item as PortModel);                   
+                    InPorts.Add(inportViewModel);                    
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -638,7 +612,8 @@ namespace Dynamo.ViewModels
                 //is the one passed in
                 foreach (var item in e.OldItems)
                 {
-                    InPorts.Remove(InPorts.ToList().First(x => x.PortModel == item));
+                    PortViewModel portToRemove = UnSubscribePortEvents(InPorts.ToList().First(x => x.PortModel == item)); ;                   
+                    InPorts.Remove(portToRemove);
                 }
             }
         }
@@ -653,7 +628,8 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    OutPorts.Add(new PortViewModel(this, item as PortModel));
+                    PortViewModel outportViewModel = SubscribePortEvents(item as PortModel);                    
+                    OutPorts.Add(outportViewModel);
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -662,10 +638,81 @@ namespace Dynamo.ViewModels
                 //one passed in
                 foreach (var item in e.OldItems)
                 {
-                    OutPorts.Remove(OutPorts.ToList().First(x => x.PortModel == item));
+                    PortViewModel portToRemove = UnSubscribePortEvents(OutPorts.ToList().First(x => x.PortModel == item));
+                    OutPorts.Remove(portToRemove);
                 }
             }
         }
+
+
+        /// <summary>
+        /// Registers the port events.
+        /// </summary>
+        /// <param name="item">PortModel.</param>
+        /// <returns></returns>
+        private PortViewModel SubscribePortEvents(PortModel item)
+        {
+            PortViewModel portViewModel = new PortViewModel(this, item);            
+            portViewModel.MouseEnter += OnRectangleMouseEnter;
+            portViewModel.MouseLeave += OnRectangleMouseLeave;
+            portViewModel.MouseLeftButtonDown += OnMouseLeftButtonDown;
+            return portViewModel;
+        }
+
+
+        /// <summary>
+        /// Unsubscribe port events.
+        /// </summary>
+        /// <param name="item">The PortViewModel.</param>
+        /// <returns></returns>
+        private PortViewModel UnSubscribePortEvents(PortViewModel item)
+        {
+            item.MouseEnter -= OnRectangleMouseEnter;
+            item.MouseLeave -= OnRectangleMouseLeave;
+            item.MouseLeftButtonDown -= OnMouseLeftButtonDown;
+            return item;
+        }
+
+
+        /// <summary>
+        /// Handles the MouseLeftButtonDown event of the port control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void OnMouseLeftButtonDown(object sender, EventArgs e)
+        {
+            PortViewModel portViewModel = sender as PortViewModel;
+            portViewModel.EventType = PortEventType.MouseLeftButtonDown;
+            if (SnapInputEvent != null)
+                SnapInputEvent(portViewModel);
+        }
+
+        /// <summary>
+        /// Handles the MouseLeave event of the port control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void OnRectangleMouseLeave(object sender, EventArgs e)
+        {
+            PortViewModel portViewModel = sender as PortViewModel;
+            portViewModel.EventType = PortEventType.MouseLeave;
+            if (SnapInputEvent != null)
+                SnapInputEvent(portViewModel);
+        }
+
+        /// <summary>
+        /// Handles the MouseEnter event of the port control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void OnRectangleMouseEnter(object sender, EventArgs e)
+        {
+            PortViewModel portViewModel = sender as PortViewModel;
+            portViewModel.EventType = PortEventType.MouseEnter;
+            if (SnapInputEvent != null)
+                SnapInputEvent(portViewModel);
+        }
+
 
         private void ToggleIsVisible(object parameter)
         {

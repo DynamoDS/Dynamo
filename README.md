@@ -1,5 +1,5 @@
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
-Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
+Dynamo is a visual programming tool that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
 
 ## Get Dynamo ##
@@ -19,7 +19,51 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+###0.7.4 ###
+
+#### New features
+- Automatic update of Dynamo from changes to files on disk.  Use File.FromPath nodes to drive changes from external files like Excel, images, and text files.  Files being read from disk are not locked, so you can edit them on the fly.
+- Added hooks to allow for Dynamo for Structural Analysis (additional Package) workflows with Autodesk Robot.
+- LoopWhile node for iterative workflows
+- Package Manager sync and display improvements 
+- Easier to use Structural Framing nodes
+- List.UniqueItems now works on Revit elements, strings, numbers, and geometry and also handles null values.
+- Migration tools for 3rd party Library loading 
+- View selection via a dropdown
+
+#### Bug fixes
+- Improvements to Autocomplete (Autocomplete is off for comment areas, better handling of conflicts with 3rd party library class names, commit for autocomplete only with tab, enter, dot and single left clicking)
+- Crash fixes for Package Manager
+- Libraries loaded from disk or packages now only exposed needed nodes
+- Changing Lacing triggers re-execcution of the graph
+- Consistent notation for booleans (true/false)
+- Import instance does not create multiple instances when regenerated 
+- Code Block Node output port positioning improvements
+- GroupByKeys, List.Map, List.Scan fixes
+- Surface.byLoft and Solid.byLoft fixes
+- Error message improvements
+- Changing location in revit is not picked up as a document change in Dynamo
+- Custom node creation fixes (crash and bad input ports on creation)
+- Curve extraction from surfaces now works on all surfaces
+- Revit element creation and modification improvements, particularly around Views and Levels
+
+###0.7.3 ###
+
+#### New features
+- Autocomplete in Code Block Nodes
+- Share user-created binaries (.dll files) through the Package Manager 
+- Share sample content (.rvt, .rfa, .dyn files and more) through the Package Manager 
+
+#### Bug fixes
+- Improvements to the core threading model (Scheduler)
+- Reduced incidence of unresponsive graph
+- Better error messages 
+- clearing and updating error messages
+- Many small geometry improvements/fixes
+
+
 ###0.7.2 ###
+
 ####Incremental Release with:####
 - Significant Stability Improvements
 - More robust interaction with Revit elements
@@ -69,20 +113,6 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 - MVVM refactoring: Standard Code separation and formatting for greater legibility and code reusability  
 - Separation from Revit dependencies for easier porting of Dynamo to new applications
 - Recursion:  ScopeIf node for use in recursive custom node workflows (experimental)
-
-
-###0.7.1 ###
-- Package Manager is back
-- [0.6.3 files will be upgraded to 0.7 format] (https://github.com/DynamoDS/Dynamo/wiki/0.6.3-Upgrade-to-0.7-version) 
-- Library Loading (Experimental)
-- Stability Improvments
-- Revit Elements created and Selected during a session will be rememebered in later sessions.
-- Visualization Performance improvments
-- 3d/Graph Navigation Improvements
-- Automated graph organization
-- Node UI Enhancements
-- Preview Bubble overhaul
-- New Sample content and better first experience- 
 
 
 ###Older Releases###

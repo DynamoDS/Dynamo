@@ -66,10 +66,9 @@ namespace DynamoUtilities
         /// <summary>
         /// Libraries to be preloaded by library services.
         /// </summary>
-        public List<string> PreloadLibraries
+        public IEnumerable<string> PreloadLibraries
         {
             get { return preloadLibaries; }
-            set { preloadLibaries = value; }
         }
 
         /// <summary>
@@ -202,6 +201,12 @@ namespace DynamoUtilities
         private static string GetDynamoAppDataFolder(string basePath)
         {
             var dynCore = Path.Combine(basePath, "DynamoCore.dll");
+
+            if (!File.Exists(dynCore))
+            {
+                throw new Exception("Dynamo's core path could not be found. If you are running Dynamo from a test, try specifying the Dynamo core location in the DynamoBasePath variable in TestServices.dll.config.");
+            }
+
             var fvi = FileVersionInfo.GetVersionInfo(dynCore);
             var dynVersion = String.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
             var appData = Path.Combine(
@@ -406,9 +411,9 @@ namespace DynamoUtilities
         /// </summary>
         public static bool PreloadAsmLibraries(DynamoPathManager pathManager)
         {
-            if (PreloadAsmVersion("220", pathManager)) return true;
             if (PreloadAsmVersion("219", pathManager)) return true;
-
+            if (PreloadAsmVersion("220", pathManager)) return true;
+            
             return false;
         }
     }

@@ -16,6 +16,24 @@ namespace Dynamo.Tests
 {
     public class DSEvaluationViewModelUnitTest : DynamoViewModelUnitTest
     {
+        protected LibraryServices libraryServices = null;
+        protected ProtoCore.Core libraryServicesCore = null;
+
+        public override void Init()
+        {
+            base.Init();
+
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            libraryServicesCore = new ProtoCore.Core(options);
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
+                new ProtoAssociative.Executive(libraryServicesCore));
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
+                new ProtoImperative.Executive(libraryServicesCore));
+
+            libraryServices = new LibraryServices(libraryServicesCore);
+        }
+
         public void OpenModel(string relativeFilePath)
         {
             string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
@@ -126,7 +144,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(mirror);
 
             var data = mirror.GetData();
-            Assert.IsTrue(data.IsCollection);
+            Assert.IsTrue(data.IsCollection, "preview data is not a list");
             Assert.AreEqual(count, data.GetElements().Count);
         }
 
@@ -209,11 +227,15 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
+            if (libraryServicesCore != null)
+            {
+                libraryServicesCore.Cleanup();
+                libraryServicesCore = null;
+            }
+            libraryServices = null;
+
             base.Cleanup();
-            
-            Dynamo.DSEngine.LibraryServices.DestroyInstance();
             DynamoUtilities.DynamoPathManager.DestroyInstance();
-            GraphToDSCompiler.GraphUtilities.Reset();
         }
     }
 
@@ -1017,8 +1039,64 @@ namespace Dynamo.Tests
             AssertPreviewValue("e6a9eec4-a18d-437d-8779-adfd6141bf19", 9);
 
         }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void CBN_warning_5236()
+        {
+            // Functions does not work in the code block node but works if expanded as a graph
+            // This test regression - issue is described in detail in the bug
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5236
+
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\createCube_codeBlockNode.dyn");
+            AssertPreviewValue("3669d05c-c741-44f9-87ab-8961e7f5f112", 150);
+            var guid = System.Guid.Parse("3669d05c-c741-44f9-87ab-8961e7f5f112");
+            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
+
+
+        }
+        [Test]
+        [Category("RegressionTests")]
+        public void DoubleToInt_NoWarning_5109()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5109
+            //verify  Warning converting double to int is removed
+            RunModel(@"core\dsevaluation\DoubleToInt_5109.dyn");
+            var guid = System.Guid.Parse("d66d3d3e-e13b-460e-a8a7-056c434ee620");
+            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
+        }
        
-        
+
+     
+        [Test]
+        [Category("RegressionTests")]
+        public void CBN_Variable_Type_5480()
+        {
+            // MAGN-5480 - Defect in parsing typed identifiers in CBN
+
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\CBN_Variable_Type_5480.dyn");
+            AssertPreviewValue("fabaccff-5b8a-4505-b752-7939cba90dc4", 1);
+        }
+
+        [Test]
+        public void TestDefaultValueInFunctionObject()
+        {
+            // Regression test case for
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueInFunctionObject.dyn");
+
+            RunModel(dynFilePath);
+
+            AssertPreviewValue("4218d135-a2c4-4dee-8415-8f0bf1de671c", new[] { 1, 1 });
+
+
+        }
     }
 
     [Category("DSCustomNode")]
@@ -1135,6 +1213,25 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "foobar.dyn");
 
             Assert.DoesNotThrow(() => RunModel(openPath));
+        }
+
+        [Test]
+        public void Regress_Magn_4837()
+        {
+            // Test nested custom node: run and reset engine and re-run.
+            // Original defect: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4837
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\Regress_Magn_4837.dyn");
+
+            RunModel(dynFilePath);
+ 
+            AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
+
+            // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
+            ViewModel.Model.ResetEngine(true);
+            ViewModel.Model.RunExpression();
+
+            AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
     }
 }

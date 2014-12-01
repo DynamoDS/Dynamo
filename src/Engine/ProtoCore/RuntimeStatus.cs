@@ -61,6 +61,7 @@ namespace ProtoCore
             public const string kInvalidArguments = "Argument is invalid.";
             public const string kInvalidArgumentsInRangeExpression = "The value that used in range expression should be either integer or double.";
             public const string kInvalidAmountInRangeExpression = "The amount in range expression should be an positive integer.";
+            public const string kRangeExpressionWithStepSizeZero = ProtoCore.BuildData.WarningMessage.kRangeExpressionWithStepSizeZero;
             public const string kNoStepSizeInAmountRangeExpression = "No step size is specified in amount range expression.";
             public const string kFileNotFound = "'{0}' doesn't exist.";
             public const string kPropertyNotFound = "Object does not have a property '{0}'.";

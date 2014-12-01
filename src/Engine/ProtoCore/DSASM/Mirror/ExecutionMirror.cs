@@ -162,7 +162,19 @@ namespace ProtoCore.DSASM.Mirror
                     else
                         return "{ " + arrTrace + " }";
                 case AddressType.FunctionPointer:
-                    return "fptr: " + val.opdata.ToString();
+                    ProcedureNode procNode;
+                    if (core.FunctionPointerTable.TryGetFunction(val, core, out procNode))
+                    {
+                        string className = String.Empty;
+                        if (procNode.classScope != Constants.kGlobalScope)
+                        {
+                            className = core.ClassTable.GetTypeName(procNode.classScope).Split('.').Last() + ".";
+                        }
+
+                        return "function: " + className + procNode.name; 
+                    }
+                    return "function: " + val.opdata.ToString();
+
                 case AddressType.Boolean:
                     return (val.opdata == 0) ? "false" : "true";
                 case AddressType.String:
@@ -872,7 +884,7 @@ namespace ProtoCore.DSASM.Mirror
             const int outerBlock = 0;
             ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
             List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                graphNode, MirrorTarget, graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, core.Options.ExecuteSSA, outerBlock);
+                graphNode, MirrorTarget, graphNode.exprUID, ProtoCore.DSASM.Constants.kInvalidIndex, false, core.Options.ExecuteSSA, outerBlock, false);
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);

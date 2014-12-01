@@ -1,4 +1,5 @@
-﻿using ProtoCore.DSASM;
+﻿
+using ProtoCore.DSASM;
 using System.Collections.Generic;
 using ProtoCore.AST.AssociativeAST;
 
@@ -773,6 +774,12 @@ namespace ProtoCore.Utils
                     identList = leftNode as IdentifierListNode;
                     classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
                 }
+                if (leftNode is IdentifierNode)
+                {
+                    IdentifierNode identNode = leftNode as IdentifierNode;
+                    classNames = classTable.GetAllMatchingClasses(identNode.Name);
+                    break;
+                }
                 else
                 {
                     break;
@@ -791,7 +798,7 @@ namespace ProtoCore.Utils
         {
             Validity.Assert(null != core);
             List<AssociativeNode> astList = new List<AssociativeNode>();
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(core, code) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             astList.AddRange(cbn.Body);
             return astList;
         }

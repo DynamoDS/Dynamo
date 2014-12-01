@@ -10,9 +10,9 @@ namespace DSCore
     /// Utility methods for sorting by keys. These should be suppressed from becoming nodes, instead
     /// they will be wrapped by DS implementations that accept a key mapping function.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public static class Sorting
     {
-        [IsVisibleInDynamoLibrary(false)]
         public static object minByKey(
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList keys)
@@ -32,7 +32,6 @@ namespace DSCore
             return min;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public static object maxByKey(
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList keys)
@@ -52,7 +51,6 @@ namespace DSCore
             return max;
         }
 
-        [IsVisibleInDynamoLibrary(false)] 
         public static IList sortByKey(
             [ArbitraryDimensionArrayImport] IList list,
             [ArbitraryDimensionArrayImport] IList keys)
@@ -65,7 +63,6 @@ namespace DSCore
                     .ToList();
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public static IList groupByKey(IList list, IList keys)
         {
             return

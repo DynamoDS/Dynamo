@@ -15,9 +15,23 @@ namespace Dynamo.Core.Threading
 {
     class UpdateGraphAsyncTask : AsyncTask
     {
+        #region Class Data Members and Properties
+
         private GraphSyncData graphSyncData;
         private EngineController engineController;
         private IEnumerable<NodeModel> modifiedNodes;
+
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.AboveNormal; }
+        }
+
+        internal IEnumerable<NodeModel> ModifiedNodes
+        {
+            get { return modifiedNodes; }
+        }
+
+        #endregion
 
         #region Public Class Operational Methods
 
@@ -62,7 +76,7 @@ namespace Dynamo.Core.Threading
 
         #region Protected Overridable Methods
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             // Updating graph in the context of ISchedulerThread.
             engineController.UpdateGraphImmediate(graphSyncData);

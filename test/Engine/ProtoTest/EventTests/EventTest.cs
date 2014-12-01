@@ -16,17 +16,17 @@ namespace ProtoTest.EventTests
     {
         public static Foo GetInstance()
         {
-            return theInstance_;
+            return theInstance;
         }
         public int ID
         {
             get
             {
-                return this.id_;
+                return this.id;
             }
             set
             {
-                this.id_ = value;
+                this.id = value;
                 NotifyPropertyChanged("ID");
             }
 
@@ -38,7 +38,7 @@ namespace ProtoTest.EventTests
         public event PropertyChangedEventHandler PropertyChanged;
         private Foo(int id = 0)
         {
-            id_ = id;
+            id = id;
         }
         private void NotifyPropertyChanged(string propertyName = "")
         {
@@ -47,26 +47,20 @@ namespace ProtoTest.EventTests
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-        private static Foo theInstance_ = new Foo(100);
-        private int id_;
+        private static Foo theInstance = new Foo(100);
+        private int id;
     }
-    class PropertyChangedNotifyTest
+    class PropertyChangedNotifyTest : ProtoTestBase
     {
-        private ProtoCore.Core core_;
-        private DebugRunner runner_;
-        private ProtoScript.Config.RunConfiguration runconfig_;
-        [SetUp]
-        public void Setup()
+        private DebugRunner runner;
+        private ProtoScript.Config.RunConfiguration runconfig;
+
+        public override void Setup()
         {
-            var options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core_ = new ProtoCore.Core(options);
-            core_.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core_));
-            core_.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core_));
-            runconfig_ = new ProtoScript.Config.RunConfiguration();
-            runconfig_.IsParrallel = false;
-            runner_ = new DebugRunner(core_);
+            base.Setup();
+            runconfig = new ProtoScript.Config.RunConfiguration();
+            runconfig.IsParrallel = false;
+            runner = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
@@ -82,13 +76,13 @@ namespace ProtoTest.EventTests
         {
             string code =
 @"import (Foo from ""ProtoTest.dll"");foo = Foo.GetInstance();              id = foo.ID;                           t = 1;                                ";
-            runner_.PreStart(code, runconfig_);
+            runner.PreStart(code, runconfig);
             Foo fooSingleton = Foo.GetInstance();
             fooSingleton.ID = 101;
-            DebugRunner.VMState vms = runner_.StepOver();
-            vms = runner_.StepOver();
-            vms = runner_.StepOver();
-            Obj val = GetWatchValue(core_, @"id");
+            DebugRunner.VMState vms = runner.StepOver();
+            vms = runner.StepOver();
+            vms = runner.StepOver();
+            Obj val = GetWatchValue(core, @"id");
             Assert.IsTrue((Int64)val.Payload == 101);
             // As Foo implements INotifyPropertyChanged interface, the property
             // change notification should be propagated back to DS virtual
@@ -96,11 +90,11 @@ namespace ProtoTest.EventTests
             // should be updated. 
             fooSingleton.ID = 202;
             // So it is expected to reexecute "id = foo.ID", that is line 3. 
-            vms = runner_.StepOver();
+            vms = runner.StepOver();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             // Expect 'id' has been updated to 202
-            vms = runner_.StepOver();
-            val = GetWatchValue(core_, @"id");
+            vms = runner.StepOver();
+            val = GetWatchValue(core, @"id");
             Assert.IsTrue((Int64)val.Payload == 202);
         }
 
@@ -109,25 +103,25 @@ namespace ProtoTest.EventTests
         {
             string code =
 @"import (Foo from ""ProtoTest.dll"");def ding(){    return = null;}foo = Foo.GetInstance();              id = foo.ID;                           r = ding();t = 1;                                ";
-            runner_.PreStart(code, runconfig_);
+            runner.PreStart(code, runconfig);
             Foo fooSingleton = Foo.GetInstance();
             fooSingleton.ID = 101;
             DebugRunner.VMState vms;
-            vms = runner_.StepOver();
-            vms = runner_.StepOver(); // foo = Foo.GetInstance();
-            vms = runner_.StepOver(); // id = foo.ID;
-            Obj val = GetWatchValue(core_, @"id");
+            vms = runner.StepOver();
+            vms = runner.StepOver(); // foo = Foo.GetInstance();
+            vms = runner.StepOver(); // id = foo.ID;
+            Obj val = GetWatchValue(core, @"id");
             Assert.IsTrue((Int64)val.Payload == 101);
-            vms = runner_.Step();     // return = null;
+            vms = runner.Step();     // return = null;
             fooSingleton.ID = 202;
-            vms = runner_.Step();     // }
-            vms = runner_.Step();
+            vms = runner.Step();     // }
+            vms = runner.Step();
             // expect to re-execute id = foo.ID
-            vms = runner_.StepOver();
+            vms = runner.StepOver();
             Assert.AreEqual(7, vms.ExecutionCursor.StartInclusive.LineNo);
             // Expect 'id' has been updated to 202
-            vms = runner_.StepOver();
-            val = GetWatchValue(core_, @"id");
+            vms = runner.StepOver();
+            val = GetWatchValue(core, @"id");
             Assert.IsTrue((Int64)val.Payload == 202);
         }
 
@@ -136,32 +130,32 @@ namespace ProtoTest.EventTests
         {
             string code =
 @"import (Foo from ""ProtoTest.dll"");foo = Foo.GetInstance();              bar = foo;id1 = foo.ID;                           id2 = bar.ID;t = 1;                         ";
-            runner_.PreStart(code, runconfig_);
+            runner.PreStart(code, runconfig);
             Foo fooSingleton = Foo.GetInstance();
             fooSingleton.ID = 101;
             DebugRunner.VMState vms;
-            vms = runner_.StepOver(); // import ...
-            vms = runner_.StepOver(); // foo = Foo.GetInstance();
-            vms = runner_.StepOver(); // bar = foo;
-            vms = runner_.StepOver(); // id1 = foo.ID;
-            vms = runner_.StepOver(); // id2 = bar.ID;
+            vms = runner.StepOver(); // import ...
+            vms = runner.StepOver(); // foo = Foo.GetInstance();
+            vms = runner.StepOver(); // bar = foo;
+            vms = runner.StepOver(); // id1 = foo.ID;
+            vms = runner.StepOver(); // id2 = bar.ID;
             Obj val;
-            val = GetWatchValue(core_, @"id1");
+            val = GetWatchValue(core, @"id1");
             Assert.IsTrue((Int64)val.Payload == 101);
-            val = GetWatchValue(core_, @"id2");
+            val = GetWatchValue(core, @"id2");
             Assert.IsTrue((Int64)val.Payload == 101);
             fooSingleton.ID = 202;
             // expect to re-execute id1 = foo.ID
-            vms = runner_.StepOver();
+            vms = runner.StepOver();
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
-            vms = runner_.StepOver();
-            vms = runner_.StepOver();
-            val = GetWatchValue(core_, @"id1");
+            vms = runner.StepOver();
+            vms = runner.StepOver();
+            val = GetWatchValue(core, @"id1");
             Assert.IsTrue((Int64)val.Payload == 202);
             // expect to re-execute id2 = bar.ID
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.LineNo);
-            vms = runner_.StepOver();
-            val = GetWatchValue(core_, @"id2");
+            vms = runner.StepOver();
+            val = GetWatchValue(core, @"id2");
             Assert.IsTrue((Int64)val.Payload == 202);
         }
 
@@ -208,13 +202,13 @@ namespace ProtoTest.EventTests
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4391
             string code =
 @"class Foo{    x;}f = Foo();f.x = 41;";
-            runner_.PreStart(code, runconfig_);
+            runner.PreStart(code, runconfig);
             PropertyChangedVerifier v = new PropertyChangedVerifier();
 
             DebugRunner.VMState vms;
-            vms = runner_.StepOver();
-            vms = runner_.StepOver();
-            vms = runner_.StepOver();
+            vms = runner.StepOver();
+            vms = runner.StepOver();
+            vms = runner.StepOver();
             string err = "MAGN-4391: Failed to track property change";
             Assert.True(v.IsNotified, err);
         }

@@ -8,14 +8,9 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class MicroFeatureTests
+    class MicroFeatureTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
         readonly string testCasePath = Path.GetFullPath(@"..\..\..\Scripts\Associative\MicroFeatureTests\");
-        [SetUp]
-        public void Setup()
-        {
-        }
 
         [Test]
         public void TestAssignment01()
@@ -80,6 +75,23 @@ namespace ProtoTest.Associative
 @"        temp;[Associative]{     def test2 : int(b : int)    {        return = b;    }                    def test : int(a : int)    {        return = a + test2(5);    }                   temp = test(2);}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("temp").Payload == 7);
+        }
+
+        [Test]
+        [Category("Failure")]
+        public void TestDuplicateFunctionParams()
+        {
+            const string code = @"
+def test : int(a : int, a : int)
+{
+    return = a + a;
+}
+
+temp = test(1, 2);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(1);
+            thisTest.Verify("temp", null);
         }
 
         [Test]
@@ -2605,16 +2617,14 @@ r = foo(3);";
             thisTest.Verify("r", new Object[] { 5.0, 6.0, 7.0 });
         }
 
-
         [Test]
         public void Test_Compare_Node_01()
         {
             string s1 = "a = 1;";
             string s2 = "a=(1);";
 
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            ProtoCore.AST.Node s1Root = GraphToDSCompiler.GraphUtilities.Parse(s1, out commentNode);
-            ProtoCore.AST.Node s2Root = GraphToDSCompiler.GraphUtilities.Parse(s2, out commentNode);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2624,9 +2634,8 @@ r = foo(3);";
         {
             string s1 = "a = 1; b=2;";
             string s2 = "a=(1) ; b = (2);";
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            ProtoCore.AST.Node s1Root = GraphToDSCompiler.GraphUtilities.Parse(s1, out commentNode);
-            ProtoCore.AST.Node s2Root = GraphToDSCompiler.GraphUtilities.Parse(s2, out commentNode);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }
@@ -2636,9 +2645,8 @@ r = foo(3);";
         {
             string s1 = "a     =   1;  c = a+1;";
             string s2 = "a = 1; c=a +    1;";
-            ProtoCore.AST.AssociativeAST.CodeBlockNode commentNode = null;
-            ProtoCore.AST.Node s1Root = GraphToDSCompiler.GraphUtilities.Parse(s1, out commentNode);
-            ProtoCore.AST.Node s2Root = GraphToDSCompiler.GraphUtilities.Parse(s2, out commentNode);
+            ProtoCore.AST.Node s1Root = ProtoCore.Utils.ParserUtils.Parse(s1);
+            ProtoCore.AST.Node s2Root = ProtoCore.Utils.ParserUtils.Parse(s2);
             bool areEqual = s1Root.Equals(s2Root);
             Assert.AreEqual(areEqual, true);
         }

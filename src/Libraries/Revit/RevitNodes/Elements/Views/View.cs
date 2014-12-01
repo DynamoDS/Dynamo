@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
 using Autodesk.Revit.DB;
-using Revit.Elements;
 
 namespace Revit.Elements.Views
 {
@@ -32,18 +27,21 @@ namespace Revit.Elements.Views
         /// Export the view as an image to the given path - defaults to png, but you can override 
         /// the file type but supplying a path with the appropriate extension
         /// </summary>
-        /// <param name="fullPath">A valid path for the image</param>
+        /// <param name="path">A valid path for the image</param>
         /// <returns>The image</returns>
-        public System.Drawing.Image ExportAsImage(string fullPath)
+        public Bitmap ExportAsImage(string path)
         {
-            string pathName = fullPath;
-            string extension = null;
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException(Resource1.View_ExportAsImage_Path_Invalid, "path");
+            }
 
             var fileType = ImageFileType.PNG;
-            if (Path.HasExtension(fullPath))
+            string extension = ".png";
+            if (Path.HasExtension(path))
             {
-                extension = Path.GetExtension(fullPath).ToLower();
-                switch (extension)
+                extension = Path.GetExtension(path);
+                switch (extension.ToLower())
                 {
                     case ".jpg":
                         fileType = ImageFileType.JPEGLossless;
@@ -61,26 +59,29 @@ namespace Revit.Elements.Views
                         fileType = ImageFileType.TIFF;
                         break;
                 }
-                pathName = Path.Combine(
-                    Path.GetDirectoryName(fullPath),
-                    Path.GetFileNameWithoutExtension(fullPath));
             }
-
-            extension = (extension ?? ".png");
-
+            
             var options = new ImageExportOptions
             {
                 ExportRange = ExportRange.SetOfViews,
-                FilePath = pathName,
+                FilePath = path,
+                FitDirection = FitDirectionType.Horizontal,
                 HLRandWFViewsFileType = fileType,
-                ImageResolution = ImageResolution.DPI_72,
-                ZoomType = ZoomFitType.Zoom,
-                ShadowViewsFileType = fileType
+                ImageResolution = ImageResolution.DPI_150,
+                ShadowViewsFileType = fileType,
+                ShouldCreateWebSite = false,
+                ViewName = Guid.NewGuid().ToString(),
+                Zoom = 100,
+                ZoomType = ZoomFitType.Zoom
             };
 
-            options.SetViewsAndSheets(new List<ElementId> { InternalView.Id });
+            options.SetViewsAndSheets(new List<ElementId>{InternalView.Id});
 
             Document.ExportImage(options);
+
+            var pathName = Path.Combine(
+                            Path.GetDirectoryName(path),
+                            Path.GetFileNameWithoutExtension(path));
 
             // Revit outputs file with a bunch of crap in the file name, let's construct that
             var actualFn = string.Format("{0} - {1} - {2}{3}", pathName, ViewTypeString(InternalView.ViewType),
@@ -92,11 +93,24 @@ namespace Revit.Elements.Views
             // rename the file
             if (File.Exists(destFn)) File.Delete(destFn);
             File.Move(actualFn, destFn);
+            
+            Bitmap bmp;
+            try
+            {
+                using (var fs = new FileStream(destFn, FileMode.Open))
+                {
+                    bmp = new Bitmap(Image.FromStream(fs));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("There was an error exporting the image.", ex);
+            }
 
-            return Image.FromFile(destFn);
+            return bmp;
         }
 
-        private string ViewTypeString(ViewType vt)
+        private static string ViewTypeString(ViewType vt)
         {
             switch (vt)
             {
@@ -119,7 +133,7 @@ namespace Revit.Elements.Views
 
         public override string ToString()
         {
-            return this.GetType().Name + "(Name = " + this.InternalView.ViewName + " )";
+            return GetType().Name + "(Name = " + InternalView.ViewName + " )";
         }
     }
 }

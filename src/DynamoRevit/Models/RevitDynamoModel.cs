@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,8 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
+
+using Dynamo.Core.Threading;
 
 using ProtoCore;
 using DSIronPython;
@@ -44,6 +47,15 @@ namespace Dynamo.Applications.Models
 
         #region Properties/Fields
         public RevitServicesUpdater RevitServicesUpdater { get; private set; }
+
+        internal override string AppVersion
+        {
+            get
+            {
+                return base.AppVersion + 
+                    "-R" + DocumentManager.Instance.CurrentUIApplication.Application.VersionBuild;
+            }
+        }
      
         #endregion
 
@@ -152,16 +164,14 @@ namespace Dynamo.Applications.Models
 
         private void SubscribeRevitServicesUpdaterEvents()
         {
-            RevitServicesUpdater.ElementAddedForID += ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            RevitServicesUpdater.ElementsDeleted += ElementMappingCache.GetInstance().WatcherMethodForDelete;
             RevitServicesUpdater.ElementsDeleted += RevitServicesUpdater_ElementsDeleted;
+            RevitServicesUpdater.ElementsModified += RevitServicesUpdater_ElementsModified;
         }
 
         private void UnsubscribeRevitServicesUpdaterEvents()
         {
-            RevitServicesUpdater.ElementAddedForID -= ElementMappingCache.GetInstance().WatcherMethodForAdd;
-            RevitServicesUpdater.ElementsDeleted -= ElementMappingCache.GetInstance().WatcherMethodForDelete;
             RevitServicesUpdater.ElementsDeleted -= RevitServicesUpdater_ElementsDeleted;
+            RevitServicesUpdater.ElementsModified -= RevitServicesUpdater_ElementsModified;
         }
 
         private void SubscribeTransactionManagerEvents()
@@ -176,23 +186,11 @@ namespace Dynamo.Applications.Models
 
         private void SubscribeDocumentManagerEvents()
         {
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed +=
-                Application_DocumentClosed;
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened +=
-                Application_DocumentOpened;
-            DocumentManager.Instance.CurrentUIApplication.ViewActivated += Revit_ViewActivated;
-
             DocumentManager.OnLogError += this.Logger.Log;
         }
 
         private void UnsubscribeDocumentManagerEvents()
         {
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentClosed -=
-                Application_DocumentClosed;
-            DocumentManager.Instance.CurrentUIApplication.Application.DocumentOpened -=
-                Application_DocumentOpened;
-            DocumentManager.Instance.CurrentUIApplication.ViewActivated -= Revit_ViewActivated;
-
             DocumentManager.OnLogError -= this.Logger.Log;
         }
 
@@ -200,7 +198,7 @@ namespace Dynamo.Applications.Models
 
         #region Public methods
 
-        public override void OnEvaluationCompleted(object sender, EventArgs e)
+        public override void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
             // finally close the transaction!
             TransactionManager.Instance.ForceCloseTransaction();
@@ -254,20 +252,60 @@ namespace Dynamo.Applications.Models
             UnsubscribeTransactionManagerEvents();
         }
 
+#if !ENABLE_DYNAMO_SCHEDULER
+
         protected override void PostShutdownCore(bool shutdownHost)
         {
-#if !ENABLE_DYNAMO_SCHEDULER
             IdlePromise.ClearPromises();
             IdlePromise.Shutdown();
-#endif
             base.PostShutdownCore(shutdownHost);
         }
 
+#endif
+
+        /// <summary>
+        /// This method is typically called when a new workspace is opened or
+        /// when user forcefully resets the engine in the event of an error.
+        /// </summary>
+        /// <param name="markNodesAsDirty">RequiresRecalc property of all nodes
+        /// in the home workspace will be set to 'true' if this parameter is 
+        /// true.</param>
+        /// 
         public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
-            if (markNodesAsDirty)
-                Nodes.ForEach(n => n.RequiresRecalc = true);
+            AsyncTaskCompletedHandler handler = HandleResetEngineCompletion;
+            if (markNodesAsDirty || DynamicRunEnabled)
+                handler = OnResetMarkNodesAsDirty;
+
+            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal, handler);
+        }
+
+        /// <summary>
+        /// This event handler is called if 'markNodesAsDirty' in a 
+        /// prior call to RevitDynamoModel.ResetEngine was set to 'true'.
+        /// </summary>
+        /// <param name="asyncTask">The DelegateBasedAsyncTask that was scheduled
+        /// for execution in RevitDynamoModel.ResetEngine method.</param>
+        /// 
+        private void OnResetMarkNodesAsDirty(AsyncTask asyncTask)
+        {
+            Nodes.ForEach(n => n.RequiresRecalc = true);
+            HandleResetEngineCompletion(asyncTask);
+        }
+
+        /// <summary>
+        /// This event handler is called when DelegateBasedAsyncTask scheduled 
+        /// in RevitDynamoModel.ResetEngine is completed. If dynamic run is 
+        /// enabled, this method kicks start another round of evaluation based 
+        /// on the newly created engine.
+        /// </summary>
+        /// <param name="asyncTask">The DelegateBasedAsyncTask that was scheduled
+        /// for execution in RevitDynamoModel.ResetEngine method.</param>
+        /// 
+        private void HandleResetEngineCompletion(AsyncTask asyncTask)
+        {
+            if (DynamicRunEnabled)
+                RunExpression();
         }
 
         public void SetRunEnabledBasedOnContext(Autodesk.Revit.DB.View newView)
@@ -310,13 +348,11 @@ namespace Dynamo.Applications.Models
         #region Event handlers 
 
         /// <summary>
-        /// Handler for Revit's DocumentOpened event.
-        /// This handler is called when a document is opened, but NOT when
-        /// a document is created from a template.
+        /// Handler Revit's DocumentOpened event.
+        /// It is called when a document is opened, but NOT when a document is 
+        /// created from a template.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Application_DocumentOpened(object sender, DocumentOpenedEventArgs e)
+        public void HandleApplicationDocumentOpened()
         {
             // If the current document is null, for instance if there are
             // no documents open, then set the current document, and 
@@ -331,12 +367,19 @@ namespace Dynamo.Applications.Models
         }
 
         /// <summary>
-        /// Handler for Revit's DocumentClosed event.
-        /// This handler is called when a document is closed.
+        /// Handler Revit's DocumentClosing event.
+        /// It is called when a document is closing.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Application_DocumentClosed(object sender, DocumentClosedEventArgs e)
+        public void HandleApplicationDocumentClosing(Document doc)
+        {
+            // no-op on revit2014
+        }
+
+        /// <summary>
+        /// Handle Revit's DocumentClosed event.
+        /// It is called when a document is closed.
+        /// </summary>
+        public void HandleApplicationDocumentClosed()
         {
             // If the active UI document is null, it means that all views have been 
             // closed from all document. Clear our reference, present a warning,
@@ -368,13 +411,11 @@ namespace Dynamo.Applications.Models
         }
 
         /// <summary>
-        /// Handler for Revit's ViewActivated event.
-        /// This handler is called when a view is activated. It is called
-        /// after the ViewActivating event.
+        /// Handler Revit's ViewActivated event.
+        /// It is called when a view is activated. It is called after the 
+        /// ViewActivating event.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Revit_ViewActivated(object sender, ViewActivatedEventArgs e)
+        public void HandleRevitViewActivated()
         {
             // If there is no active document, then set it to whatever
             // document has just been activated
@@ -403,7 +444,7 @@ namespace Dynamo.Applications.Models
         private void ResetForNewDocument()
         {
             foreach (var node in this.Nodes)
-                node.ResetOldValue();
+                node.RequiresRecalc = true;
 
             foreach (var node in this.Nodes)
             {
@@ -435,7 +476,7 @@ namespace Dynamo.Applications.Models
         private void TransactionManager_FailuresRaised(FailuresAccessor failuresAccessor)
         {
             IList<FailureMessageAccessor> failList = failuresAccessor.GetFailureMessages();
-
+            
             IEnumerable<FailureMessageAccessor> query =
                 from fail in failList
                 where fail.GetSeverity() == FailureSeverity.Warning
@@ -453,65 +494,34 @@ namespace Dynamo.Applications.Models
             if (!deleted.Any())
                 return;
 
-            var workspace = this.CurrentWorkspace;
+            var nodes = ElementBinder.GetNodesFromElementIds(deleted, CurrentWorkspace, EngineController);
+            foreach (var node in nodes)
+            {
+                node.RequiresRecalc = true;
+                node.ForceReExecuteOfNode = true;
+            }
+        }
 
-            ProtoCore.Core core = null;
-            var engine = this.EngineController;
-            if (engine != null && (engine.LiveRunnerCore != null))
-                core = engine.LiveRunnerCore;
-
-            if (core == null) // No execution yet as of this point.
+        private void RevitServicesUpdater_ElementsModified(IEnumerable<string> updated)
+        {
+            var updatedIds = updated.Select(x =>
+            {
+                Element ret;
+                ElementUtils.TryGetElement(DocumentManager.Instance.CurrentDBDocument, x, out ret);
+                return ret;
+            }).Select(x => x.Id);
+            
+            if (!updatedIds.Any())
                 return;
 
-            // Selecting all nodes that are either a DSFunction,
-            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-            var nodeGuids = workspace.Nodes.Where((n) =>
+            var nodes = ElementBinder.GetNodesFromElementIds(updatedIds, CurrentWorkspace, EngineController);
+            foreach (var node in nodes)
             {
-                return (n is DSFunction
-                    || (n is DSVarArgFunction)
-                    || (n is CodeBlockNodeModel));
-            }).Select((n) => n.GUID);
-
-            var nodeTraceDataList = core.GetCallsitesForNodes(nodeGuids);// core.GetTraceDataForNodes(nodeGuids);
-
-            foreach (Guid guid in nodeTraceDataList.Keys)
-            {
-                foreach (CallSite cs in nodeTraceDataList[guid])
-                {
-                    foreach (CallSite.SingleRunTraceData srtd in cs.TraceData)
-                    {
-                        List<ISerializable> traceData = srtd.RecursiveGetNestedData();
-
-                        foreach (ISerializable thingy in traceData)
-                        {
-                            SerializableId sid = thingy as SerializableId;
-
-                            foreach (ElementId eid in deleted)
-                            {
-
-                                if (sid != null)
-                                {
-                                    if (sid.IntID == eid.IntegerValue)
-                                    {
-                                        NodeModel inm =
-                                            workspace.Nodes.Where((n) => n.GUID == guid).FirstOrDefault();
-
-                                        Validity.Assert(inm != null, "The bound node has disappeared");
-
-                                        inm.RequiresRecalc = true;
-                                        inm.ForceReExecuteOfNode = true;
-
-                                        //FOUND IT!
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                node.RequiresRecalc = true;
+                node.ForceReExecuteOfNode = true;
             }
         }
 
         #endregion
-
     }
 }

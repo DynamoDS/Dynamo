@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
 {
@@ -21,7 +22,7 @@ namespace Dynamo.UI.Controls
     /// See "Action" enumeration below for more details of each item sub-type.
     /// </summary>
     /// 
-    public class StartPageListItem
+    public class StartPageListItem : NotificationObject
     {
         private ImageSource icon = null;
 
@@ -468,8 +469,14 @@ namespace Dynamo.UI.Controls
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Note that you can have more than one file.
-                var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+                var homespace = dynamoViewModel.Model.HomeSpace;
+                if (homespace.HasUnsavedChanges && 
+                    !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(homespace))
+                {
+                    return;
+                }
 
+                var files = e.Data.GetData(DataFormats.FileDrop) as string[];
                 if (files != null && (files.Length > 0))
                 {
                     if (dynamoViewModel.OpenCommand.CanExecute(files[0]))

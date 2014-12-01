@@ -1887,7 +1887,9 @@ namespace Dynamo.Tests
             path.Value = fullPath;
 
             RunCurrentModel();
-            AssertPreviewValue("a169a84b-2624-422c-9a48-1afe2691f11f", true);
+
+            Assert.IsTrue(File.Exists(fullPath));
+            Assert.AreEqual("test", File.ReadAllText(fullPath));
         }
 
         #endregion

@@ -1,5 +1,5 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
+﻿using System.Diagnostics;
+#if ENABLE_DYNAMO_SCHEDULER
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.DSEngine;
@@ -25,9 +25,12 @@ namespace Dynamo.Core.Threading
     {
         #region Class Data Members and Properties
 
+        protected Guid targetedNodeId = Guid.Empty;
         private readonly List<IRenderPackage> normalRenderPackages;
         private readonly List<IRenderPackage> selectedRenderPackages;
         private IEnumerable<NodeModel> duplicatedNodeReferences;
+
+        internal Guid NodeId { get { return targetedNodeId; } }
 
         internal IEnumerable<IRenderPackage> NormalRenderPackages
         {
@@ -37,6 +40,11 @@ namespace Dynamo.Core.Threading
         internal IEnumerable<IRenderPackage> SelectedRenderPackages
         {
             get { return selectedRenderPackages; }
+        }
+
+        internal override TaskPriority Priority
+        {
+            get { return TaskPriority.Normal; }
         }
 
         #endregion
@@ -71,17 +79,22 @@ namespace Dynamo.Core.Threading
 
             if (nodeModel == null) // No node is specified, gather all nodes.
             {
+                targetedNodeId = Guid.Empty;
+
                 // Duplicate a list of all nodes for consumption later.
                 duplicatedNodeReferences = workspaceModel.Nodes.ToList();
             }
             else
             {
+                targetedNodeId = nodeModel.GUID;
+
                 // Recursively gather all upstream nodes.
                 var gathered = new List<NodeModel>();
                 GatherAllUpstreamNodes(nodeModel, gathered);
                 duplicatedNodeReferences = gathered;
             }
 
+            Debug.WriteLine(string.Format("Aggregation task initialized for {0}", nodeModel == null?"null":nodeModel.GUID.ToString()));
             return duplicatedNodeReferences.Any();
         }
 
@@ -89,7 +102,7 @@ namespace Dynamo.Core.Threading
 
         #region Protected Overridable Methods
 
-        protected override void ExecuteCore()
+        protected override void HandleTaskExecutionCore()
         {
             if (duplicatedNodeReferences == null)
             {
@@ -117,6 +130,25 @@ namespace Dynamo.Core.Threading
         {
         }
 
+        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var theOtherTask = otherTask as AggregateRenderPackageAsyncTask;
+            if (theOtherTask == null)
+                return base.CanMergeWithCore(otherTask);
+
+            if (NodeId != theOtherTask.NodeId)
+                return TaskMergeInstruction.KeepBoth;
+
+            //// Comparing to another AggregateRenderPackageAsyncTask, the one 
+            //// that gets scheduled more recently stay, while the earlier one 
+            //// gets dropped. If this task has a higher tick count, keep this.
+            //// 
+            if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
+                return TaskMergeInstruction.KeepThis;
+
+            return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
+        }
+
         #endregion
 
         #region Private Class Helper Methods
@@ -128,8 +160,15 @@ namespace Dynamo.Core.Threading
 
             gathered.Add(nodeModel); // Add to list first, avoiding re-entrant.
 
+            // Stop gathering if this node does not display
+            // upstream.
+            if (!nodeModel.IsUpstreamVisible)
+                return;
+
             foreach (var upstreamNode in nodeModel.Inputs)
             {
+                if (upstreamNode.Value == null)
+                    continue;
                 // Add all the upstream nodes found into the list.
                 GatherAllUpstreamNodes(upstreamNode.Value.Item2, gathered);
             }

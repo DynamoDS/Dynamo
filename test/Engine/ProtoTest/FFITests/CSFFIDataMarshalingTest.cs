@@ -7,7 +7,6 @@ namespace ProtoFFITests
 {
     public class CSFFIDataMarshalingTest : FFITestSetup
     {
-
         [Test]
         public void TestDoubles()
         {
@@ -502,6 +501,17 @@ d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});
 
             Type dummy = typeof(FFITarget.TestData);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_MarshlingFunctionPointer()
+        {
+            String code =
+            @"               def foo() { return = 42;}               fptr = foo;               sameFptr = TestData.ReturnObject(fptr);               value = sameFptr();            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = 42, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
     }

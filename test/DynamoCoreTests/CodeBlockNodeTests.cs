@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using NUnit.Framework;
-using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.DSEngine;
-using ProtoCore.Mirror;
 using ProtoCore.DSASM;
 using Dynamo.Models;
 using DynCmd = Dynamo.Models.DynamoModel;
+using ProtoCore.Mirror;
+using Dynamo.DSEngine;
+using ProtoCore.Utils;
+using Dynamo.DSEngine.CodeCompletion;
+using Dynamo.UI;
 
 namespace Dynamo.Tests
 {
@@ -195,6 +195,7 @@ b = c[w][x][y][z];";
             Assert.AreEqual(true, refVarNames.Contains("z"));
         }
 #endif
+        protected double tolerance = 1e-4;
 
         [Test]
         [Category("RegressionTests")]
@@ -214,7 +215,6 @@ b = c[w][x][y][z];";
         }
 
         [Test]
-        [Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_4024()
         {
@@ -245,6 +245,54 @@ b = c[w][x][y][z];";
             var guid = codeBlockNodeTwo.GUID.ToString();
             var expectedIdentifier = "arr_" + guid.Replace("-", string.Empty);
             Assert.AreEqual(expectedIdentifier, codeBlockNodeTwo.AstIdentifierBase);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_4946()
+        {
+            var model = ViewModel.Model;
+            int value = 10;
+            string codeInCBN = "a = " + value.ToString();
+
+            // Create the initial code block node.
+            var codeBlockNodeOne = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, codeInCBN);
+
+            // We should have one code block node by now.
+            Assert.AreEqual(1, model.Nodes.Count());
+
+
+            // Run 
+            ViewModel.Model.RunExpression();
+
+            // Get preview data given AstIdentifierBase
+            var core = ViewModel.Model.EngineController.LiveRunnerCore;
+            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
+            MirrorData mirrorData = runtimeMirror.GetData();
+            Assert.AreEqual(mirrorData.Data, value);
+
+            // Copy and paste the code block node.
+            model.AddToSelection(codeBlockNodeOne);
+            model.Copy(null); // Copy the selected node.
+            model.Paste(null); // Paste the copied node.
+
+            // After pasting, we should have two nodes.
+            Assert.AreEqual(2, model.Nodes.Count());
+
+            // Make sure we are able to get the second code block node.
+            var codeBlockNodeTwo = model.Nodes[1] as CodeBlockNodeModel;
+            Assert.IsNotNull(codeBlockNodeTwo);
+
+
+            // Run 
+            ViewModel.Model.RunExpression();
+
+            // Get preview data given AstIdentifierBase
+            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core);
+            mirrorData = runtimeMirror.GetData();
+            Assert.AreEqual(mirrorData.Data, value);
+
         }
 
         [Test]
@@ -399,6 +447,109 @@ b = c[w][x][y][z];";
             UpdateCodeBlockNodeContent(codeBlockNode, "pt = Point.ByCoordinates(0,0,0);\nCircle.ByCenterPointRadius(pt,5)");
 
             Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void OutPort_WithCommentNonAssignment_Alignment()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = "// comment \n // comment \n a+b;";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(2, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+
+            Assert.AreEqual(2 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
+            
+            code = "c+ \n d; \n /* comment \n */ \n a+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(4, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+
+            // The first output port should be at the first line
+            Assert.AreEqual(0 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
+
+            // The second output port should be at the 4th line, which is also 3 lines below the first
+            Assert.AreEqual(3 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[1].VerticalMargin, tolerance);
+            
+            code = "/*comment \n */ \n a[0]+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(2, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+
+            Assert.AreEqual(2 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
+
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void InPort_WithInlineConditionNonAssignment_Creation()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = "c + d; \n z = 2;";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(2, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+
+            code = "x%2 == 0 ? x : -x; \n y = a+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(3, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+
+            code = "f(x); \n y = a+b;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(3, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void Parse_NonAssignmentFollowedByAssignment()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = "List.IsEmpty(result)?result:List.FirstItem(result);";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+
+            code = "x%2 == 0 ? x : -x;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void Parse_TypedVariableDeclaration()
+        {
+            // Create the initial code block node.
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = "a : int;";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+
+            code = "a : int  = 2;";
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(0, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
         }
 
         #region CodeBlockUtils Specific Tests
@@ -727,34 +878,48 @@ b = c[w][x][y][z];";
         }
     }
 
-    class CodeBlockCompletionTests : DSEvaluationViewModelUnitTest
+    public class CodeBlockCompletionTests 
     {
+        private ProtoCore.Core libraryServicesCore = null;
+
+        [SetUp]
+        public void Init()
+        {
+            string libraryPath = "FFITarget.dll";
+
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+
+            libraryServicesCore = new ProtoCore.Core(options);
+
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
+                new ProtoAssociative.Executive(libraryServicesCore));
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
+                new ProtoImperative.Executive(libraryServicesCore));
+
+            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
+        }
+
+        [TearDown]
+        public void Cleanup()
+        {
+            if (libraryServicesCore != null)
+            {
+                libraryServicesCore.Cleanup();
+                libraryServicesCore = null;
+            }
+        }
+
         [Test]
         [Category("UnitTests")]
         public void TestClassMemberCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
-            bool libraryLoaded = false;
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-
-            string libraryPath = "FFITarget.dll";
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-                Assert.IsTrue(libraryLoaded);
-            }
-
             string ffiTargetClass = "CodeCompletionClass";
 
-            var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
-            var type = engineController.GetClassType(ffiTargetClass);
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             var members = type.GetMembers();
 
             var expected = new string[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
@@ -765,28 +930,12 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestInstanceMemberCompletion()
         {
-            LibraryServices libraryServices = LibraryServices.GetInstance();
-
-            bool libraryLoaded = false;
-            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-
-            string libraryPath = "FFITarget.dll";
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
-                Assert.IsTrue(libraryLoaded);
-            }
-
             string ffiTargetClass = "CodeCompletionClass";
 
-            var engineController = ViewModel.Model.EngineController;
             // Assert that the class name is indeed a class
-            var type = engineController.GetClassType(ffiTargetClass);
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, libraryServicesCore));
 
-            Assert.IsTrue(type != null);
             var members = type.GetInstanceMembers();
 
             var expected = new string[] { "AddWithValueContainer", "ClassProperty", 
@@ -803,7 +952,7 @@ b = c[w][x][y][z];";
             string expected = "x[y[z.foo()].goo()].bar";
             Assert.AreEqual(expected, actual);
 
-            
+
             code = @"abc.X[xyz.foo().Y";
             actual = CodeCompletionParser.GetStringToComplete(code);
             expected = "xyz.foo().Y";
@@ -866,10 +1015,436 @@ b = c[w][x][y][z];";
             Assert.AreEqual("Point", CodeCompletionParser.GetVariableType(code, variableName));
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionForFullyQualifiedVariableType()
+        {
+            string code = "a : FFITarget.FirstNamespace.ClassWithNameConflict;";
+            string variableName = "a";
+
+            string type1 = CodeCompletionParser.GetVariableType(code, variableName);
+            Assert.AreEqual("FFITarget.FirstNamespace.ClassWithNameConflict", type1);
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(type1, libraryServicesCore));
+
+            var members = type.GetInstanceMembers();
+
+            var expected = new string[] { "PropertyA", "PropertyB", "PropertyC" };
+            AssertCompletions(members, expected);
+
+            code = @"b : FFITarget.SecondNamespace.ClassWithNameConflict;";
+            variableName = "b";
+            string type2 = CodeCompletionParser.GetVariableType(code, variableName);
+            Assert.AreEqual("FFITarget.SecondNamespace.ClassWithNameConflict", type2);
+
+            // Assert that the class name is indeed a class
+            Assert.DoesNotThrow(() => type = new ClassMirror(type2, libraryServicesCore));
+
+            members = type.GetInstanceMembers();
+
+            expected = new string[] { "PropertyD", "PropertyE", "PropertyF" };
+            AssertCompletions(members, expected);
+        }
+
+
         private void AssertCompletions(IEnumerable<StaticMirror> members, string[] expected)
         {
             var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();
             Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCtorSignatureCompletion()
+        {
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "CodeCompletionClass";
+
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string code = "";
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, ffiTargetClass);
+
+            // Expected 3 "CodeCompletionClass" ctor overloads
+            Assert.AreEqual(3, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("CodeCompletionClass (i1 : int, i2 : int, i3 : int)", overloads.ElementAt(2).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodSignatureCompletion()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string functionPrefix = "a";
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "OverloadedAdd";
+
+            string code = string.Format("{0} : {1};", functionPrefix, ffiTargetClass);
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 2 "OverloadedAdd" method overloads
+            Assert.AreEqual(2, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("OverloadedAdd : int (cf : ClassFunctionality)", overloads.ElementAt(0).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodSignatureReturnTypeCompletion()
+        {
+
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string functionPrefix = "a";
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "AddWithValueContainer";
+
+            string code = string.Format("{0} : {1};", functionPrefix, ffiTargetClass);
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 1 "AddWithValueContainer" method overloads
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            var expected = "AddWithValueContainer : ValueContainer[] (valueContainer : ValueContainer)";
+            Assert.AreEqual(expected, overloads.ElementAt(0).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestBuiltInMethodSignatureCompletion()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string functionPrefix = "";
+            string functionName = "Count";
+
+            string code = "";
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix);
+
+            // Expected 1 "AddWithValueContainer" method overloads
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("Count : int (array : [])", overloads.ElementAt(0).Stub);
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestStaticMethodSignatureCompletion()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string ffiTargetClass = "CodeCompletionClass";
+            string functionName = "StaticFunction";
+
+            string code = "";
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, ffiTargetClass);
+
+            // Expected 1 "StaticFunction" method overload
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("StaticFunction : int ()", overloads.ElementAt(0).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            string code = "Poi";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 4 completion items
+            Assert.AreEqual(4, completions.Count());
+
+            string[] expected = {"DummyPoint", "FFITarget.DesignScript.Point",
+                                    "FFITarget.Dynamo.Point", "UnknownPoint"};
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMethodKeywordCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            string code = "im";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 5 completion items
+            Assert.AreEqual(5, completions.Count());
+
+            string[] expected = { "Decimal", "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestHiddenClassCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            // "SampleClassB" defined in FFITarget library with "IsVisibleInDynamoLibrary" attribute
+            // is set to false. We verify that this class does not appear in code completion results
+            string code = "sam";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 2 completion items
+            Assert.AreEqual(2, completions.Count());
+
+            string[] expected = { "SampleClassA", "SampleClassC" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestHiddenConflictingClassCompletionWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            // "SecondNamespace.AnotherClassWithNameConflict" is defined in FFITarget library with "IsVisibleInDynamoLibrary" 
+            // attribute set to false. We verify that this class does not appear in code completion results
+            // and that only "FirstNamespace.AnotherClassWithNameConflict" appears in code completion results with
+            // fully qualified name so that it can be resolved against "SecondNamespace.AnotherClassWithNameConflict" 
+            string code = "ano";
+            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+
+            // Expected 1 completion items
+            Assert.AreEqual(1, completions.Count());
+
+            string[] expected = { "FFITarget.FirstNamespace.AnotherClassWithNameConflict" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror("FirstNamespace.AnotherClassWithNameConflict", libraryServicesCore));
+
+            var members = type.GetMembers();
+
+            expected = new string[] { "AnotherClassWithNameConflict", "PropertyA", "PropertyB", "PropertyC" };
+            AssertCompletions(members, expected);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForMultiLineCommentContext()
+        {
+            string code = "abc = { /* first entry */ 1, 2, /* last entry */ 3 };";
+
+            // find the context at the caret position inside the second multiline-comments
+            int caretPos = 45;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            caretPos = 28;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForSingleLineCommentContext()
+        {
+            string code = "abc = { // first entry " + "\n" + " 1, 2, 3 };";
+
+            int caretPos = 15;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            caretPos = 30;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForStringContext()
+        {
+            string code = @"abc = { ""first entry"", 1, 2, 3 };";
+
+            int caretPos = 15;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            caretPos = 30;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForCharContext()
+        {
+            string code = @"abc = { 'c', 1, 2, 3 };";
+
+            int caretPos = 9;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            caretPos = 15;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForMultiLineStringContext()
+        {
+            string code = @"class test
+{
+    x=1;
+}
+a;b;c;d;e1;f;g;
+[Imperative]
+{
+    a:double[][]= {1}; 
+
+    b:int[][] =  {1.1}; 
+    c:string[][]={""aparajit""}; 
+    d:char [][]= {'c'};
+    x1= test.test();
+    e:test [][]= {x1};
+    e1=e.x;
+    f:bool [][]= {true};
+    g [][]={null};
+}";
+            // Find the caret position inside the string in the above text block
+            int caretPos = code.IndexOf('"');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves outside the string
+            caretPos += 6;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForMultiLineCodeCommentContext()
+        {
+            string code = @"class test
+{
+    x=1;
+}
+a;b;c;d;e1;f;g;
+[Imperative]
+{
+    a:double[][]= {1}; 
+
+    b:int[][] =  {1.1}; 
+    c:string[][]={/*aparajit*/}; 
+    d:char [][]= {'c'};
+    x1= test.test();
+    e:test [][]= {x1};
+    e1=e.x;
+    f:bool [][]= {true};
+    g [][]={null};
+}";
+            // Find the caret position inside the comment in the above text block
+            int caretPos = code.IndexOf('*');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves outside the comment
+            caretPos += 6;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForMultiLineSingleCommentContext()
+        {
+            string code = @"class test
+{
+    x=1;
+}
+a;b;c;d;e1;f;g;
+[Imperative]
+{
+    a:double[][]= {1}; 
+
+    b:int[][] =  {1.1}; 
+    c:string[][]={1, 2, 3}; 
+    d:char [][]= {'c'};
+    x1= test.test();
+    e:test [][]= {x1}; // comments 
+    e1=e.x;
+    f:bool [][]= {true};
+    g [][]={null};
+}";
+            // Find the caret position inside the comment in the above text block
+            int caretPos = code.IndexOf('/');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves to the next line and outside the comment
+            caretPos += 15;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCodeCompletionParserForAllMultiLineContexts()
+        {
+            string code = @"class test
+{
+    x=1;
+}
+a;b;c;d;e1;f;g;
+[Imperative]
+{
+    a:double[][]= {1}; // comments 
+
+    b:int[][] =  {1.1}; 
+    c:string[][]={""Aparajit""}; 
+    /*d:char [][]= {'c'};
+    x1= test.test();*/
+    e:test [][]= {x1}; 
+    e1=e.x;
+    f:bool [][]= {true};
+    g [][]={null};
+}";
+            // Find the caret position within the first single line comment in the above text block
+            int caretPos = code.IndexOf('/');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Find the caret position inside the string 
+            caretPos = code.IndexOf('"');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves inside the multi-line comment
+            caretPos = code.IndexOf('*');
+            caretPos += 4;
+            Assert.IsTrue(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
+
+            // Advance the caret so that it moves to the next line and outside the multi-line comment
+            caretPos += 40;
+            Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
         }
     }
 

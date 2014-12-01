@@ -87,6 +87,7 @@
     <Compile Include="Elements\CurveByPoints.cs" />
     <Compile Include="Elements\CurveElement.cs" />
     <Compile Include="Elements\InternalUtilities\ElementQueries.cs" />
+    <Compile Include="Elements\InternalUtilities\ElementUtils.cs" />
     <Compile Include="Elements\Mullion.cs" />
     <Compile Include="Elements\SunSettings.cs" />
     <Compile Include="Elements\UnknownElement.cs" />
@@ -187,6 +188,7 @@
     <ProjectReference Include="..\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
       <Name>RevitServices</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

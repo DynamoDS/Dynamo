@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-using GraphToDSCompiler;
 using ProtoCore.DSASM.Mirror;
 using System.Diagnostics;
 using ProtoCore.Utils;
@@ -143,7 +142,13 @@ namespace ProtoScript.Runners
         {
             ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
+            
+            // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
+
+            // Mark all graphnodes dependent on the removed function as dirty
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.RemovedFunctionDefNodesFromModification);
+
             // Mark all graphnodes dependent on the modified functions as dirty
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.ModifiedFunctions);
         }
@@ -242,7 +247,6 @@ namespace ProtoScript.Runners
     {
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
         private ProtoCore.Core core = null;
-        private Dictionary<Guid, List<ProtoCore.AST.Node>> astCache = null;
 
         public ChangeSetData csData { get; private set; }
 
@@ -250,7 +254,57 @@ namespace ProtoScript.Runners
         {
             this.core = core;
             currentSubTreeList = new Dictionary<Guid, Subtree>();
-            astCache = new Dictionary<Guid, List<ProtoCore.AST.Node>>();
+        }
+
+        /// <summary>
+        /// Given deltaGraphNodes, estimate the reachable graphnodes from the live core
+        /// </summary>
+        /// <param name="liveCore"></param>
+        /// <param name="deltaGraphNodes"></param>
+        /// <returns></returns>
+        private List<GraphNode> EstimateReachableGraphNodes(Core liveCore, List<GraphNode> deltaGraphNodes)
+        {
+            List<GraphNode> reachableNodes = new List<GraphNode>();
+            foreach (GraphNode executingNode in deltaGraphNodes)
+            {
+                reachableNodes.AddRange(ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
+                    executingNode,
+                    liveCore.CurrentExecutive.CurrentDSASMExec,
+                    executingNode.exprUID,
+                    executingNode.modBlkUID,
+                    executingNode.IsSSANode(),
+                    true,
+                    0,
+                    true));
+            }
+            return reachableNodes;
+        }
+
+        /// <summary>
+        /// Estimate the nodes that are affected by the changes in astList
+        /// Returns a list of guids that map to the affected nodes
+        /// </summary>
+        /// <param name="astList"></param>
+        /// <returns></returns>
+        public List<Guid> EstimateNodesAffectedByASTList(List<AssociativeNode> astList)
+        {
+            List<Guid> cbnGuidList = new List<Guid>();
+
+            // Get the VM graphnodes associated with the astList
+            List<GraphNode> deltaGraphNodeList = ProtoCore.AssociativeEngine.Utils.GetGraphNodesFromAST(core.DSExecutable, astList);
+
+            // Get the reachable VM graphnodes  given the modified graphnode list
+            List<GraphNode> reachableNodes = EstimateReachableGraphNodes(core, deltaGraphNodeList);
+
+            // Get the list of guid's of the ASTs
+            foreach (GraphNode graphnode in reachableNodes)
+            {
+                if (!cbnGuidList.Contains(graphnode.guid))
+                {
+                    cbnGuidList.Add(graphnode.guid);
+                }
+            }
+            return cbnGuidList;
         }
 
         private IEnumerable<AssociativeNode> GetDeltaAstListDeleted(IEnumerable<Subtree> deletedSubTrees)
@@ -482,14 +536,21 @@ namespace ProtoScript.Runners
                         {
                             // Only update the cached ASTs if it is not ForceExecution
 
-                            // Cache the functions that were re-defined
-                            // The changeSetApplier will remove the previous definition of these functions given the function signature
-                            csData.RemovedFunctionDefNodesFromModification.AddRange(modifiedFunctions.Where(n => n is FunctionDefinitionNode));
-
-                            // Update the current subtree list
                             List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
+
+                            // Get all the unomodified ASTs and append them to the cached ast list 
                             newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+
+                            // Append all the modified ASTs to the cached ast list 
                             newCachedASTList.AddRange(modifiedASTList);
+
+                            // ================================================================================
+                            // Get a list of functions that were removed
+                            // This is the list of functions that exist in oldSubTree.AstNodes and no longer exist in st.AstNodes
+                            // This will passed to the changeset applier to handle removed functions in the VM
+                            // ================================================================================
+                            IEnumerable<AssociativeNode> removedFunctions = oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode && !st.AstNodes.Contains(f));
+                            csData.RemovedFunctionDefNodesFromModification.AddRange(removedFunctions);
 
                             st.AstNodes.Clear();
                             st.AstNodes.AddRange(newCachedASTList);
@@ -515,7 +576,6 @@ namespace ProtoScript.Runners
 
         public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
         {
-            UpdateAstCache(syncData);
             csData = new ChangeSetData();
             List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
             finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
@@ -780,47 +840,6 @@ namespace ProtoScript.Runners
             }
         }
 
-        /// <summary>
-        /// Update the map from graph UI node to a list of ast nodes. Each
-        /// ast node is in SSA form. 
-        /// </summary>
-        /// <param name="syncData"></param>
-        private void UpdateAstCache(GraphSyncData syncData)
-        {
-            if (syncData.ModifiedSubtrees != null && astCache.Count > 0)
-            {
-                foreach (var t in syncData.ModifiedSubtrees)
-                {
-                    if (astCache.ContainsKey(t.GUID))
-                    {
-                        astCache[t.GUID].Clear();
-                        if (t.AstNodes != null)
-                        {
-                            astCache[t.GUID].AddRange(t.AstNodes);
-                        }
-                    }
-                }
-            }
-
-            if (syncData.DeletedSubtrees != null)
-            {
-                syncData.DeletedSubtrees.ForEach(t => astCache.Remove(t.GUID));
-            }
-
-            if (syncData.AddedSubtrees != null)
-            {
-                foreach (var t in syncData.AddedSubtrees)
-                {
-                    var astNodes = new List<ProtoCore.AST.Node>();
-                    if (t.AstNodes != null)
-                    {
-                        astNodes.AddRange(t.AstNodes);
-                    }
-                    astCache[t.GUID] = astNodes;
-                }
-            }
-        }
-
         private bool CompileToSSA(Guid guid, List<AssociativeNode> astList, out List<AssociativeNode> ssaAstList)
         {
             core.Options.GenerateSSA = true;
@@ -881,20 +900,6 @@ namespace ProtoScript.Runners
 
 
         /// <summary>
-        /// Get ast nodes for graph UI node. The returned ast nodes are in 
-        /// SSA form.
-        /// </summary>
-        /// <param name="nodeGuid"></param>
-        /// <returns></returns>
-        public IEnumerable<ProtoCore.AST.Node> GetSSANodes(Guid nodeGuid)
-        {
-            List<ProtoCore.AST.Node> nodes = null;
-            astCache.TryGetValue(nodeGuid, out nodes);
-            return nodes;
-        }
-
-
-        /// <summary>
         /// Creates a list of null assignment statements where the lhs is retrieved from an ast list
         /// </summary>
         /// <param name="astList"></param>
@@ -924,6 +929,7 @@ namespace ProtoScript.Runners
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
+        void PreviewGraph(GraphSyncData syncData);
         void UpdateCmdLineInterpreter(string code);
         ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeId);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
@@ -939,12 +945,11 @@ namespace ProtoScript.Runners
         #endregion
 
         string GetCoreDump();
-        void ResetVMAndResyncGraph(List<string> libraries);
+        void ResetVMAndResyncGraph(IEnumerable<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
-        ClassMirror GetClassType(string className);
         
         // Event handlers for the notification from asynchronous call
         event NodeValueReadyEventHandler NodeValueReady;
@@ -1015,7 +1020,6 @@ namespace ProtoScript.Runners
 
         private ProtoScriptTestRunner runner;
         private ProtoRunner.ProtoVMState vmState;
-        private GraphToDSCompiler.GraphCompiler graphCompiler;
         private ProtoCore.Core runnerCore = null;
         public ProtoCore.Core Core
         {
@@ -1053,9 +1057,6 @@ namespace ProtoScript.Runners
         public LiveRunner(Configuration configuration)
         {
             this.configuration = configuration;
-
-            graphCompiler = GraphCompiler.CreateInstance();
-            graphCompiler.SetCore(GraphUtilities.GetCore());
 
             runner = new ProtoScriptTestRunner();
 
@@ -1300,6 +1301,26 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// This API needs to be called for every delta AST preview
+        /// </summary>
+        /// <param name="syncData"></param>
+        public void PreviewGraph(GraphSyncData syncData)
+        {
+            while (true)
+            {
+                lock (taskQueue)
+                {
+                    if (taskQueue.Count == 0)
+                    {
+                        PreviewInternal(syncData);
+                        return;
+                    }
+                }
+                Thread.Sleep(1);
+            }
+        }
+
+        /// <summary>
         /// This API needs to be called for every delta AST execution
         /// </summary>
         /// <param name="syncData"></param>
@@ -1405,18 +1426,6 @@ namespace ProtoScript.Runners
 
         #region Internal Implementation
 
-        private ProtoCore.Mirror.RuntimeMirror GetWatchValue(string varname)
-        {
-            runnerCore.Options.IsDeltaCompile = true;
-            CompileAndExecuteForDeltaExecution(GraphUtilities.GetWatchExpression(varname));
-
-            const int blockID = 0;
-            ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(ProtoCore.DSASM.Constants.kWatchResultVar, blockID, runnerCore);
-            return runtimeMirror;
-
-        }
-
-
         /// <summary>
         /// This is being called currently as it uses the Expression interpreter which does not
         /// work well with delta execution. Instead we are currently inspecting into the VM using Mirrors
@@ -1442,8 +1451,6 @@ namespace ProtoScript.Runners
         private bool Compile(string code, out int blockId)
         {
             Dictionary<string, bool> execFlagList = null;
-            if (graphCompiler != null)
-                execFlagList = graphCompiler.ExecutionFlagList;
 
             staticContext.SetData(code, new Dictionary<string, object>(), execFlagList);
 
@@ -1460,20 +1467,20 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private bool Compile(List<AssociativeNode> astList, out int blockId)
+        private bool Compile(List<AssociativeNode> astList, Core targetCore, out int blockId)
         {
             // The ASTs have already been transformed to SSA
             //runnerCore.Options.GenerateSSA = false;
 
-            bool succeeded = runner.Compile(astList, runnerCore, out blockId);
+            bool succeeded = runner.Compile(astList, targetCore, out blockId);
             if (succeeded)
             {
                 // Regenerate the DS executable
-                runnerCore.GenerateExecutable();
+                targetCore.GenerateExecutable();
 
                 // Update the symbol tables
                 // TODO Jun: Expand to accomoadate the list of symbols
-                staticContext.symbolTable = runnerCore.DSExecutable.runtimeSymbols[0];
+                staticContext.symbolTable = targetCore.DSExecutable.runtimeSymbols[0];
             }
             return succeeded;
         }
@@ -1497,9 +1504,6 @@ namespace ProtoScript.Runners
 
             // Initialize the runtime context and pass it the execution delta list from the graph compiler
             ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
-
-            if (graphCompiler != null)
-                runtimeContext.execFlagList = graphCompiler.ExecutionFlagList;
 
             try
             {
@@ -1533,13 +1537,39 @@ namespace ProtoScript.Runners
         {
             // TODO Jun: Revisit all the Compile functions and remove the blockId out argument
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(astList, out blockId);
+            bool succeeded = Compile(astList, runnerCore, out blockId);
             if (succeeded)
             {
                 runnerCore.RunningBlock = blockId;
                 vmState = Execute();
             }
             return succeeded;
+        }
+
+        /// <summary>
+        /// Functionalities applied to the VM after an execution cycle
+        /// </summary>
+        private void PostExecution()
+        {
+            ApplyUpdate();
+            HandleWarnings();
+        }
+
+        /// <summary>
+        /// Handle warnings that will be reported to the frontend
+        /// </summary>
+        private void HandleWarnings()
+        {
+            SuppressResovledUnboundVariableWarnings();
+        }
+
+        /// <summary>
+        /// Removes all warnings that were initially unbound variables but were resolved at runtime
+        /// </summary>
+        private void SuppressResovledUnboundVariableWarnings()
+        {
+            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.UpdatedSymbols);
+            runnerCore.UpdatedSymbols.Clear();
         }
 
         private void ApplyUpdate()
@@ -1574,7 +1604,7 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(code);
-            ApplyUpdate();
+            PostExecution();
         }
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
@@ -1596,9 +1626,17 @@ namespace ProtoScript.Runners
 
             ResetForDeltaExecution();
             CompileAndExecute(dispatchASTList);
-            ApplyUpdate();
+            PostExecution();
         }
 
+        private void PreviewInternal(GraphSyncData syncData)
+        {
+            // Get the list of ASTs that will be affected by syncData
+            var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
+
+            // Get the list of guid's affected by the astlist
+            List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
+        }
 
         private void SynchronizeInternal(GraphSyncData syncData)
         {
@@ -1672,10 +1710,15 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="libraries"></param>
         /// <param name="syncData"></param>
-        public void ResetVMAndResyncGraph(List<string> libraries)
+        public void ResetVMAndResyncGraph(IEnumerable<string> libraries)
         {
             // Reset VM
             ReInitializeLiveRunner();
+
+            if (!libraries.Any())
+            {
+                return;
+            }
 
             // generate import node for each library in input list
             List<AssociativeNode> importNodes = new List<AssociativeNode>();
@@ -1785,18 +1828,6 @@ namespace ProtoScript.Runners
             }
 
             return ret;
-        }
-
-        public ClassMirror GetClassType(string className)
-        {
-            try
-            {
-                return new ClassMirror(className, this.Core);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
 
         #endregion

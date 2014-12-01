@@ -7,10 +7,9 @@ using System.Linq;
 using System.Windows;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
-
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Dynamo.Controls;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -24,6 +23,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Models
 {
@@ -43,11 +43,16 @@ namespace Dynamo.Models
         private bool saveResult;
         private string description;
         private const string FailureString = "Node evaluation failed";
-        protected IdentifierNode identifier;
 
-        // Data caching related class members.
+        // Data caching related class members. There are multiple parties at
+        // play when it comes to caching MirrorData for a NodeModel, this value
+        // is accessed from UI thread for display (e.g. preview bubble) and it's
+        // updated by QueryMirrorDataAsyncTask on ISchedulerThread's context. 
+        // Access to the cached data is guarded by cachedMirrorDataMutex object.
+        // 
         private bool isUpdated = false;
         private MirrorData cachedMirrorData = null;
+        private readonly object cachedMirrorDataMutex = new object();
 
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
@@ -163,7 +168,7 @@ namespace Dynamo.Models
             get { return state; }
             set
             {
-                if (value != ElementState.Error)
+                if (value != ElementState.Error && value != ElementState.AstBuildBroken)
                     ClearTooltipText();
 
                 state = value;
@@ -173,6 +178,17 @@ namespace Dynamo.Models
                 // as connectors are deleted.
                 if (IsReportingModifications)
                     RaisePropertyChanged("State");
+            }
+        }
+
+        /// <summary>
+        ///   If the state of node is Error or AstBuildBroken
+        /// </summary>
+        public bool IsInErrorState
+        {
+            get
+            {
+                return state == ElementState.AstBuildBroken || state == ElementState.Error;
             }
         }
 
@@ -306,23 +322,10 @@ namespace Dynamo.Models
         {
             get
             {
-                if (cachedMirrorData != null)
+                lock (cachedMirrorDataMutex)
+                {
                     return cachedMirrorData;
-
-                // Do not have an identifier for preview right now. For an example,
-                // this can be happening at the beginning of a code block node creation.
-                if (AstIdentifierForPreview.Value == null)
-                    return null;
-
-                cachedMirrorData = null;
-
-                var engine = Workspace.DynamoModel.EngineController;
-                var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
-
-                if (runtimeMirror != null)
-                    cachedMirrorData = runtimeMirror.GetData();
-
-                return cachedMirrorData;
+                }
             }
         }
 
@@ -335,10 +338,15 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
-                if (isUpdated != false)      // When a NodeModel is updated, its 
-                    cachedMirrorData = null; // cached data should be invalidated.
-
-                RaisePropertyChanged("IsUpdated");
+                if (isUpdated)
+                {
+                    // When a NodeModel is updated, its
+                    // cached data should be invalidated.
+                    lock (cachedMirrorDataMutex)
+                    {
+                        cachedMirrorData = null;
+                    }
+                }
             }
         }
 
@@ -410,9 +418,9 @@ namespace Dynamo.Models
         ///     ProtoAST Identifier for result of the node before any output unpacking has taken place.
         ///     If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
         /// </summary>
-        internal IdentifierNode AstIdentifierForPreview
+        public IdentifierNode AstIdentifierForPreview
         {
-            get { return identifier ?? (identifier = AstFactory.BuildIdentifier(AstIdentifierBase)); }
+            get { return AstFactory.BuildIdentifier(AstIdentifierBase); }
         }
 
         /// <summary>
@@ -459,27 +467,6 @@ namespace Dynamo.Models
         public bool IsPartiallyApplied
         {
             get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
-        }
-
-
-
-        /// <summary>
-        ///     Return if all input ports of the node have connections.
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Use IsPartiallyApplied property")]
-        public bool HasUnconnectedInput()
-        {
-            return IsPartiallyApplied;
-        }
-
-        /// <summary>
-        ///     Flags this node as dirty.
-        /// </summary>
-        [Obsolete("Use RequiresRecalc = true")]
-        public void ResetOldValue()
-        {
-            RequiresRecalc = true;
         }
 
         /// <summary>
@@ -713,7 +700,35 @@ namespace Dynamo.Models
         {
             OnBuilt();
 
-            var result = BuildOutputAst(inputAstNodes);
+            IEnumerable<AssociativeNode> result = null;
+
+            try
+            {
+                result = BuildOutputAst(inputAstNodes);
+            }
+            catch (Exception e)
+            {
+                // If any exception from BuildOutputAst(), we emit
+                // a function call "var_guid = %nodeAstFailed(full.node.name)"
+                // for this node, set the state of node to AstBuildBroken and
+                // disply the corresponding error message. 
+                // 
+                // The return value of function %nodeAstFailed() is always 
+                // null.
+                var errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
+                var fullMsg = String.Format(errorMsg, e.Message);
+                this.NotifyAstBuildBroken(fullMsg);
+
+                var fullName = this.GetType().ToString();
+                var astNodeFullName = AstFactory.BuildStringNode(fullName);
+                var arguments = new List<AssociativeNode> { astNodeFullName };
+                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
+
+                return new []
+                {
+                    AstFactory.BuildAssignment(AstIdentifierForPreview, func)
+                };
+            }
 
             if (OutPortData.Count == 1)
             {
@@ -797,11 +812,6 @@ namespace Dynamo.Models
         #endregion
 
         #region Input and Output Connections
-
-        public IEnumerable<int> GetConnectedInputs()
-        {
-            return Enumerable.Range(0, InPortData.Count).Where(HasConnectedInput);
-        }
 
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
@@ -1025,18 +1035,18 @@ namespace Dynamo.Models
                 });
 
             // This is put in place to solve the crashing issue outlined in 
-            //    // the following defect. ValidateConnections can be called from 
-            //    // a background evaluation thread at any point in time, we do 
-            //    // not want such calls to update UI in anyway while we're here 
-            //    // (the UI update is caused by setting State property which leads
-            //    // to tool-tip update that triggers InfoBubble to update its UI,
-            //    // a problem that is currently being resolved and tested on a 
-            //    // separate branch). When the InfoBubble restructuring gets over,
-            //    // please ensure the following scenario is tested and continue to 
-            //    // work:
-            //    // 
-            //    //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
-            //    // 
+            // the following defect. ValidateConnections can be called from 
+            // a background evaluation thread at any point in time, we do 
+            // not want such calls to update UI in anyway while we're here 
+            // (the UI update is caused by setting State property which leads
+            // to tool-tip update that triggers InfoBubble to update its UI,
+            // a problem that is currently being resolved and tested on a 
+            // separate branch). When the InfoBubble restructuring gets over,
+            // please ensure the following scenario is tested and continue to 
+            // work:
+            // 
+            //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
+            // 
 
             if (this.Workspace.DynamoModel != null) this.Workspace.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
         }
@@ -1050,6 +1060,17 @@ namespace Dynamo.Models
         public void Warning(string p)
         {
             State = ElementState.Warning;
+            ToolTipText = p;
+        }
+
+        /// <summary>
+        /// Change the state of node to ElementState.AstBuildBroken and display
+        /// "p" in tooltip window. 
+        /// </summary>
+        /// <param name="p"></param>
+        public void NotifyAstBuildBroken(string p)
+        {
+            State = ElementState.AstBuildBroken;
             ToolTipText = p;
         }
 
@@ -1126,12 +1147,12 @@ namespace Dynamo.Models
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.INPUT, pd, count);
-
+                
                 //MVVM: AddPort now returns a port model. You can't set the data context here.
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
+                count++;            
             }
 
             if (inPorts.Count > count)
@@ -1145,6 +1166,9 @@ namespace Dynamo.Models
                 for (int i = inPorts.Count - 1; i >= count; i--)
                     inPorts.RemoveAt(i);
             }
+
+            //Configure Snap Edges
+            ConfigureSnapEdges(inPorts);
         }
 
         /// <summary>
@@ -1166,7 +1190,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
+                count++;              
             }
 
             if (outPorts.Count > count)
@@ -1179,6 +1203,34 @@ namespace Dynamo.Models
 
                 //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
+
+            //configure snap edges
+            ConfigureSnapEdges(outPorts);
+        }
+
+        /// <summary>
+        /// Configures the snap edges.
+        /// </summary>
+        /// <param name="ports">The ports.</param>
+        private void ConfigureSnapEdges(ObservableCollection<PortModel> ports)
+        {
+            if (ports.Count == 1) //only one port
+                ports[0].extensionEdges = SnapExtensionEdges.Top | SnapExtensionEdges.Bottom;
+            else if (ports.Count == 2) //has two ports
+            {
+                ports[0].extensionEdges = SnapExtensionEdges.Top;
+                ports[1].extensionEdges = SnapExtensionEdges.Bottom;
+            }
+            else if (ports.Count > 1)
+            {
+                ports[0].extensionEdges = SnapExtensionEdges.Top;
+                ports[ports.Count - 1].extensionEdges = SnapExtensionEdges.Bottom;
+                foreach (PortModel port in ports)
+                {
+                    if (!port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
+                        port.extensionEdges = SnapExtensionEdges.None;
+                }
+            } 
         }
 
         /// <summary>
@@ -1238,7 +1290,8 @@ namespace Dynamo.Models
                     //register listeners on the port
                     p.PortConnected += p_PortConnected;
                     p.PortDisconnected += p_PortDisconnected;
-
+                    
+                   
                     return p;
 
                 case PortType.OUTPUT:
@@ -1268,6 +1321,7 @@ namespace Dynamo.Models
             return null;
         }
 
+      
         private void p_PortConnected(object sender, EventArgs e)
         {
             ValidateConnections();
@@ -1367,6 +1421,15 @@ namespace Dynamo.Models
             if (name == "NickName")
             {
                 NickName = value;
+                return true;
+            }
+
+            if (name == "ArgumentLacing")
+            {
+                LacingStrategy strategy = LacingStrategy.Disabled;
+                if (!Enum.TryParse(value, out strategy))
+                    strategy = LacingStrategy.Disabled;
+                this.ArgumentLacing = strategy;
                 return true;
             }
 
@@ -1486,6 +1549,7 @@ namespace Dynamo.Models
             set
             {
                 forceReExec = value;
+                RaisePropertyChanged("ForceReExecuteOfNode");
             }
         }
         #endregion
@@ -1495,6 +1559,53 @@ namespace Dynamo.Models
 #if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
+        /// Call this method to asynchronously update the cached MirrorData for 
+        /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
+        /// being accessed within this method, therefore the method is typically
+        /// called from the main/UI thread.
+        /// </summary>
+        /// 
+        public void RequestValueUpdateAsync()
+        {
+            // A NodeModel should have its cachedMirrorData reset when it is 
+            // requested to update its value. When the QueryMirrorDataAsyncTask 
+            // returns, it will update cachedMirrorData with the latest value.
+            // 
+            lock (cachedMirrorDataMutex)
+            {
+                cachedMirrorData = null;
+            }
+
+            // Do not have an identifier for preview right now. For an example,
+            // this can be happening at the beginning of a code block node creation.
+            var variableName = AstIdentifierForPreview.Value;
+            if (string.IsNullOrEmpty(variableName))
+                return;
+
+            var scheduler = Workspace.DynamoModel.Scheduler;
+            var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams()
+            {
+                DynamoScheduler = scheduler,
+                EngineController = Workspace.DynamoModel.EngineController,
+                VariableName = variableName
+            });
+
+            task.Completed += OnNodeValueQueried;
+            scheduler.ScheduleForExecution(task);
+        }
+
+        private void OnNodeValueQueried(AsyncTask asyncTask)
+        {
+            lock (cachedMirrorDataMutex)
+            {
+                var task = asyncTask as QueryMirrorDataAsyncTask;
+                cachedMirrorData = task.MirrorData;
+            }
+
+            RaisePropertyChanged("IsUpdated");
+        }
+
+        /// <summary>
         /// Call this method to asynchronously regenerate render package for 
         /// this node. This method accesses core properties of a NodeModel and 
         /// therefore is typically called on the main/UI thread.
@@ -1502,12 +1613,12 @@ namespace Dynamo.Models
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
         /// 
-        public void RequestVisualUpdate(int maxTesselationDivisions)
+        public void RequestVisualUpdateAsync(int maxTesselationDivisions)
         {
             if (Workspace.DynamoModel == null)
                 return;
 
-            // Imagine a scenario where "NodeModel.RequestVisualUpdate" is being 
+            // Imagine a scenario where "NodeModel.RequestVisualUpdateAsync" is being 
             // called in quick succession from the UI thread -- the first task may 
             // be updating '_renderPackages' when the second call gets here. In 
             // this case '_renderPackages' should be protected against concurrent 
@@ -1519,12 +1630,7 @@ namespace Dynamo.Models
                 HasRenderPackages = false;
             }
 
-            // If a node is in either of the following states, then it will not 
-            // produce any geometric output. Bail after clearing the render packages.
-            if ((State == ElementState.Error) || !IsVisible || (CachedValue == null))
-                return;
-
-            RequestVisualUpdateCore(maxTesselationDivisions);
+            RequestVisualUpdateAsyncCore(maxTesselationDivisions);
         }
 
         /// <summary>
@@ -1537,7 +1643,7 @@ namespace Dynamo.Models
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
         /// 
-        protected virtual void RequestVisualUpdateCore(int maxTesselationDivisions)
+        protected virtual void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
             var initParams = new UpdateRenderPackageParams()
             {
@@ -1888,6 +1994,7 @@ namespace Dynamo.Models
         {
             return true; // Default implementation: always show preview.
         }
+      
     }
 
     public enum ElementState
@@ -1895,7 +2002,8 @@ namespace Dynamo.Models
         Dead,
         Active,
         Warning,
-        Error
+        Error,
+        AstBuildBroken
     };
 
 
@@ -1907,6 +2015,28 @@ namespace Dynamo.Models
         Longest,
         CrossProduct
     };
+
+    public enum PortEventType
+    {
+        MouseEnter,
+        MouseLeave,
+        MouseLeftButtonDown
+    };
+
+    public enum PortPosition
+    {
+        First,
+        Top,
+        Middle,
+        Last
+    }
+    [Flags]
+    public enum SnapExtensionEdges
+    {
+        None,
+        Top = 0x1,
+        Bottom = 0x2
+    }
 
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);

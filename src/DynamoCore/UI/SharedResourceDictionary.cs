@@ -68,7 +68,7 @@ namespace Dynamo.UI
         {
             get
             {
-                return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                return Path.Combine( Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                     @"UI\Themes\Modern\");
             }
         }

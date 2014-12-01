@@ -4,10 +4,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
-
 using DynamoUtilities;
 
 namespace Dynamo.PackageManager
@@ -42,7 +41,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackagesIntoDynamo( IPreferences preferences )
+        public void LoadPackagesIntoDynamo( IPreferences preferences, LibraryServices libraryServices )
         {
             this.ScanAllPackageDirectories( preferences );
 
@@ -53,7 +52,7 @@ namespace Dynamo.PackageManager
 
             foreach (var pkg in LocalPackages)
             {
-                pkg.LoadIntoDynamo(loader, logger);
+                pkg.LoadIntoDynamo(loader, logger, libraryServices);
             }
         }
 
@@ -166,7 +165,7 @@ namespace Dynamo.PackageManager
 
         public bool IsUnderPackageControl(Assembly t)
         {
-            return LocalPackages.Any(package => package.LoadedAssemblies.Contains(t));
+            return LocalPackages.Any(package => package.LoadedAssemblies.Any(x => x.Assembly == t ));
         }
 
         public Package GetPackageFromRoot(string path)

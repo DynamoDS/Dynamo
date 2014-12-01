@@ -57,10 +57,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -85,6 +81,9 @@
     <Compile Include="Nodes\FormulaTests.cs" />
     <Compile Include="Nodes\HigherOrder.cs" />
     <Compile Include="Nodes\IfTest.cs" />
+    <Compile Include="AstBuildFailTest.cs" />
+    <Compile Include="PackageManager\PackageLoaderTests.cs" />
+    <Compile Include="PackageManager\PackageManagerClientTests.cs" />
     <Compile Include="ScopedNodeTest.cs" />
     <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
     <Compile Include="SchedulerTests.cs" />
@@ -106,11 +105,10 @@
     <Compile Include="Nodes\LogicTests.cs" />
     <Compile Include="Nodes\StringTests.cs" />
     <Compile Include="PackageManager\PackageDependencyTests.cs" />
-    <Compile Include="PackageManager\PackageManagerTests.cs" />
+    <Compile Include="PackageManager\PackageUploadBuilderTests.cs" />
     <Compile Include="SearchModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="TestExtensions.cs" />
     <Compile Include="UndoRedoRecorderTests.cs" />
     <Compile Include="UnitsOfMeasureTests.cs" />
     <Compile Include="UtilityTests.cs" />
@@ -122,13 +120,17 @@
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
-      <Project>{593be9fc-7482-4cd6-9f87-77e7ac5cdff2}</Project>
-      <Name>GraphToDSCompiler</Name>
+    <ProjectReference Include="..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
+      <Project>{7318d5e5-9d15-4abe-8a51-92f58d4f0b85}</Project>
+      <Name>ProtoAssociative</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\ProtoImperative\ProtoImperative.csproj">
+      <Project>{0d3d43dc-bd7e-46f0-93f7-1c6a6cc79948}</Project>
+      <Name>ProtoImperative</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
@@ -148,9 +150,9 @@
       <Name>IronPythonUI</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Engine\FFITarget\FFITarget.csproj">
-      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
-      <Name>FFITarget</Name>
+    <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
+      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
+      <Name>SystemTestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

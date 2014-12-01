@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+
+using Dynamo.Services;
 
 namespace Dynamo.Core.Threading
 {
@@ -23,6 +27,17 @@ namespace Dynamo.Core.Threading
     internal abstract class AsyncTask
     {
         #region Private Class Data Members
+
+        internal enum TaskPriority
+        {
+            Critical,
+            Highest,
+            AboveNormal,
+            Normal,
+            BelowNormal,
+            Lowest,
+            Idle
+        }
 
         /// <summary>
         /// Merge instruction obtained from a call to AsyncTask.CanMergeWith.
@@ -60,10 +75,23 @@ namespace Dynamo.Core.Threading
         internal Exception Exception { get; private set; }
 
         /// <summary>
+        /// DynamoScheduler sorts tasks base on two key factors: the priority of
+        /// a task, and the relative importance between two tasks that has the 
+        /// same priority. During task reprioritization process, DynamoScheduler 
+        /// first sorts the tasks in accordance to their AsyncTask.Priority
+        /// property. The resulting ordered list is then sorted again by calling
+        /// AsyncTask.Compare method to determine the relative importance among
+        /// tasks having the same priority.
+        /// </summary>
+        /// 
+        internal abstract TaskPriority Priority { get; }
+
+        /// <summary>
         /// This event is raised when the AsyncTask is completed. The event is 
         /// being raised in the context of ISchedulerThread, any UI element 
         /// access that is needed should be dispatched onto the UI dispatcher.
         /// </summary>
+        /// 
         internal event AsyncTaskCompletedHandler Completed;
 
         #endregion
@@ -140,24 +168,37 @@ namespace Dynamo.Core.Threading
         /// ExecuteCore method to perform relevant operations. This method is 
         /// invoked in the context of the SchedulerThread and not the main thread.
         /// </summary>
+        /// <returns>Returns true if execution was successful, or false if an 
+        /// exception was thrown.</returns>
         /// 
-        internal void Execute()
+        internal bool Execute()
         {
             ExecutionStartTime = scheduler.NextTimeStamp;
-            ExecuteCore();
+
+            try
+            {
+                HandleTaskExecutionCore();
+            }
+            catch (Exception exception)
+            {
+                Exception = exception;
+            }
+            finally
+            {
+                ExecutionEndTime = scheduler.NextTimeStamp;
+            }
+
+            return Exception == null; // Exception thrown == execution failed.
         }
 
         /// <summary>
-        /// 
+        /// This method is called by DynamoScheduler after AsyncTask.Execute 
+        /// method returns. It is guaranteed to be called even when exception 
+        /// is thrown from within AsyncTask.Execute.
         /// </summary>
-        /// <param name="exception">The exception that is thrown from a prior 
-        /// call to Execute method will be caught and passed through this 
-        /// parameter. This value may be null if no exception was thrown.</param>
         /// 
-        internal void HandleTaskCompletion(Exception exception)
+        internal void HandleTaskCompletion()
         {
-            ExecutionEndTime = scheduler.NextTimeStamp;
-            Exception = exception;
             HandleTaskCompletionCore();
 
             // Notify registered event handlers of task completion.
@@ -169,7 +210,7 @@ namespace Dynamo.Core.Threading
 
         #region Protected/Private Class Helper Methods
 
-        protected abstract void ExecuteCore();
+        protected abstract void HandleTaskExecutionCore();
         protected abstract void HandleTaskCompletionCore();
 
         protected virtual TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)

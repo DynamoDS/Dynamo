@@ -87,12 +87,13 @@ namespace ProtoTestFx.TD
         /// </summary>
         /// <returns></returns>
         
-        public ProtoCore.Core SetupEmptyTestCore()
+        public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
+            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
             core.IsParsingPreloadedAssembly = false;
             return core;
@@ -147,7 +148,7 @@ namespace ProtoTestFx.TD
 
         public ExecutionMirror RunScript(string pathname, string errorstring = "", string includePath = "")
         {
-            var testCore = SetupTestCore();
+            SetupTestCore();
             Console.WriteLine( errorstring);
             if (!String.IsNullOrEmpty(includePath))
             {
@@ -238,7 +239,7 @@ namespace ProtoTestFx.TD
             }
             else
             {
-                var testCore = SetupTestCore();
+                SetupTestCore();
                 if (!String.IsNullOrEmpty(includePath))
                 {
                     if (System.IO.Directory.Exists(includePath))
@@ -279,7 +280,7 @@ namespace ProtoTestFx.TD
         /// <returns></returns>
         public ExecutionMirror RunASTSource(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, string errorstring = "", string includePath = "")
         {
-            var testCore = SetupTestCore();
+            SetupTestCore();
             if (!String.IsNullOrEmpty(includePath))
             {
                 if (System.IO.Directory.Exists(includePath))
@@ -596,9 +597,24 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(testCore.BuildStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
+        /// <summary>
+        /// Verify the total warning count
+        /// </summary>
+        /// <param name="count"></param>
         public void VerifyBuildWarningCount(int count)
         {
             Assert.IsTrue(testCore.BuildStatus.WarningCount == count, mErrorMessage);
+        }
+
+        /// <summary>
+        /// Verify the number of times that the warning 'id' has occured
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="count"></param>
+        public void VerifyBuildWarningCount(ProtoCore.BuildData.WarningID id, int count)
+        {
+            int warningCount = testCore.BuildStatus.Warnings.Count(w => w.ID == id);
+            Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
         public static void VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID id)
@@ -696,7 +712,7 @@ namespace ProtoTestFx.TD
         {
             if (value == null)
             {
-                Assert.IsTrue(data.IsNull);
+                Assert.IsTrue(data.IsNull, "data is null");
             }
             else if (value is int)
             {
@@ -756,7 +772,11 @@ namespace ProtoTestFx.TD
 
         public void CleanUp()
         {
-            testCore.Cleanup();
+            if (testCore != null)
+            {
+                testCore.Cleanup();
+                testCore = null;
+            }
         }
     }
 }

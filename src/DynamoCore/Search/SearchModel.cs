@@ -9,10 +9,11 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.DSEngine;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Search
 {
-    public class SearchModel
+    public class SearchModel : NotificationObject
     {
         #region Events 
 
@@ -123,18 +124,6 @@ namespace Dynamo.Search
             this.AddRootCategory("Units");
             this.AddRootCategory("Office");
             this.AddRootCategory("Migration");
-        }
-
-        #endregion
-
-        #region Destructor
-
-        ~SearchModel()
-        {
-            if (DynamoModel != null)
-            {
-                DynamoModel.CurrentWorkspaceChanged -= RevealWorkspaceSpecificNodes;
-            }
         }
 
         #endregion
@@ -665,12 +654,14 @@ namespace Dynamo.Search
         public bool Add(CustomNodeInfo nodeInfo)
         {
             var nodeEle = new CustomNodeSearchElement(nodeInfo);
-            nodeEle.Executed += this.OnExecuted;
-
             if (SearchDictionary.Contains(nodeEle))
             {
+                // Second node with the same GUID should rewrite the original node. 
+                // Original node is removed from tree.
                 return this.Refactor(nodeInfo);
             }
+
+            nodeEle.Executed += this.OnExecuted;
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, nodeInfo.Category + "." + nodeEle.Name);

@@ -5,22 +5,14 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using ProtoCore.DSDefinitions;
-using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Xml;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -75,129 +67,28 @@ namespace Dynamo.UI.Controls
             InitializeSyntaxHighlighter();
         }
 
-        // TODO: Only those DS keywords are exposed currently that are supported in CBN's
-        public static string[] KeywordList = {Keyword.Def, 
-                                        Keyword.If, Keyword.Elseif, Keyword.Else, 
-                                        Keyword.While, Keyword.For, Keyword.In, Keyword.Continue,  
-                                        Keyword.Int, Keyword.Double, Keyword.String, Keyword.Bool, Keyword.Char, 
-                                        Keyword.Void, Keyword.Null, Keyword.Var, 
-                                        Keyword.True, Keyword.False, 
-                                        Keyword.Return, Keyword.Static,
-                                        Keyword.Associative, Keyword.Imperative};
-
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
-            IEnumerable<CodeBlockCompletionData> completions = null;
             var engineController = this.dynamoViewModel.Model.EngineController;
 
-            // Determine if the string to be completed is a class
-            var type = engineController.GetClassType(stringToComplete);
-            if (type != null)
-            {
-                var members = type.GetMembers();
-                completions = members.Select<StaticMirror, CodeBlockCompletionData>(
-                    x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
-            }
-            // If not of class type
-            else
-            {
-                // Check if the string to be completed is a declared variable
-                string typeName = CodeCompletionParser.GetVariableType(code, stringToComplete);
-                if (typeName != null)
-                    type = engineController.GetClassType(typeName);
-
-                if (type != null)
-                {
-                    var members = type.GetInstanceMembers();
-                    completions = members.Select<StaticMirror, CodeBlockCompletionData>(
-                        x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this));
-                }
-            }
-
-            return completions;
+            return engineController.CodeCompletionServices.GetCompletionsOnType(code, stringToComplete).
+                Select(x => new CodeBlockCompletionData(x));
         }
-
 
         internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
         {
-            List<CodeBlockCompletionData> completions = new List<CodeBlockCompletionData>();
             var engineController = this.dynamoViewModel.Model.EngineController;
 
-            // Add matching DS keywords
-            completions.AddRange(KeywordList.Where(x => x.ToLower().Contains(stringToComplete.ToLower())).
-                Select(x => new CodeBlockCompletionData(x, "", CodeBlockCompletionData.CompletionType.Keyword, this)));
-
-            // Add matching Classes
-
-            // TODO: Make this independent of Core and query properties of LibraryServices instead
-            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
-            var groups = StaticMirror.GetClasses(engineController.LiveRunnerCore).
-                Where(x => x.Alias.ToLower().Contains(stringToComplete.ToLower())).
-                    GroupBy(x => x.Alias);
-
-            // For those class names that have collisions, list their fully qualified names in completion window
-            foreach (var group in groups)
-            {
-                if (group.Count() > 1)
-                {
-                    completions.AddRange(group.Select(x =>
-                        {
-                            return CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this, useFullyQualifiedName : true);
-                        }));
-                }
-                else
-                    completions.AddRange(group.Select(x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this)));
-            }
-
-            // Add matching builtin methods
-
-            // TODO: Make this independent of Core and query properties of LibraryServices instead
-            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
-            completions.AddRange(StaticMirror.GetBuiltInMethods(engineController.LiveRunnerCore).
-                GroupBy(x => x.Name).Select(y => y.First()).
-                Where(x => x.MethodName.ToLower().Contains(stringToComplete.ToLower())).
-                Select(x => CodeBlockCompletionData.ConvertMirrorToCompletionData(x, this)));
-
-            return completions;
+            return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid).
+                Select(x => new CodeBlockCompletionData(x));
         }
 
         internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
-            IEnumerable<MethodMirror> candidates = null;
             var engineController = this.dynamoViewModel.Model.EngineController;
 
-            // if function is global, search for function in Built-ins
-            if (string.IsNullOrEmpty(functionPrefix))
-            {
-                // TODO: Make this independent of Core and query properties of LibraryServices instead
-                // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
-                candidates = StaticMirror.GetOverloadsOnBuiltIns(engineController.LiveRunnerCore, functionName);
-                return candidates.Select(x => new CodeBlockInsightItem(x));
-            }
-
-            // Determine if the function prefix is a class name
-            var type = engineController.GetClassType(functionPrefix);
-            if (type != null)
-            {
-                candidates = type.GetOverloadsOnType(functionName);
-            }
-            // If not of class type
-            else
-            {
-                // Check if the function prefix is a declared identifier
-                string typeName = CodeCompletionParser.GetVariableType(code, functionPrefix);
-                if (typeName != null)
-                    type = engineController.GetClassType(typeName);
-
-                if (type != null)
-                {
-                    candidates = type.GetOverloadsOnInstance(functionName);
-                }
-            }
-            if (candidates != null)
-                return candidates.Select(x => new CodeBlockInsightItem(x));
-            else
-                return null;
+            return engineController.CodeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix).
+                Select(x => new CodeBlockInsightItem(x));
         }
 
         internal string GetDescription()
@@ -271,9 +162,7 @@ namespace Dynamo.UI.Controls
 
             var engineController = this.dynamoViewModel.Model.EngineController;
 
-            // TODO: Make this independent of Core and query properties of LibraryServices instead
-            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
-            var wordList = StaticMirror.GetClasses(engineController.LiveRunnerCore).Select(x => x.Alias);
+            var wordList = engineController.CodeCompletionServices.GetClasses();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);
 
@@ -291,9 +180,7 @@ namespace Dynamo.UI.Controls
 
             var engineController = this.dynamoViewModel.Model.EngineController;
 
-            // TODO: Make this independent of Core and query properties of LibraryServices instead
-            // Refer to Youtrack task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4890
-            var wordList = StaticMirror.GetAllMembers(engineController.LiveRunnerCore).Select(x => x.Name);
+            var wordList = engineController.CodeCompletionServices.GetGlobals();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             methodHighlightRule.Regex = new Regex(regex);
 
@@ -310,10 +197,20 @@ namespace Dynamo.UI.Controls
             {
                 if (e.Text.Length > 0 && completionWindow != null)
                 {
+                    char currentChar = e.Text[0];
                     // If a completion item is highlighted and the user types
-                    // a special character or function key, select the item and insert it
-                    if (!char.IsLetterOrDigit(e.Text[0]) && !char.Equals(e.Text[0], '_'))
+                    // any of the following characters, only then is it selected and inserted
+                    // and the code completion window closed
+                    if (currentChar == '\t' || currentChar == '.' || currentChar == '\n' || currentChar == '\r')
+                    {
                         completionWindow.CompletionList.RequestInsertion(e);
+                    }
+                    else if (!char.IsLetterOrDigit(currentChar) && currentChar != '_')
+                    {
+                        // In all other cases where what is being typed is not alpha-numeric 
+                        // we want to get rid of the completion window 
+                        completionWindow.Close();
+                    }
                 }
             }
             catch (System.Exception ex)
@@ -328,10 +225,14 @@ namespace Dynamo.UI.Controls
         {
             try
             {
-                
-                var code = this.InnerTextEditor.Text.Substring(0, this.InnerTextEditor.CaretOffset);
+                int startPos = this.InnerTextEditor.CaretOffset;
+                var code = this.InnerTextEditor.Text.Substring(0, startPos);
+
                 if (e.Text == ".")
                 {
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
+                        return;
+
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
 
                     var completions = this.GetCompletionData(code, stringToComplete);
@@ -344,6 +245,9 @@ namespace Dynamo.UI.Controls
                 // Complete function signatures
                 else if (e.Text == "(")
                 {
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
+                        return;
+
                     string functionName;
                     string functionPrefix;
                     CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
@@ -357,8 +261,16 @@ namespace Dynamo.UI.Controls
                     if (insightWindow != null)
                         insightWindow.Close();
                 }
-                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || char.Equals(e.Text[0], '_')))
+                else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || e.Text[0] == '_'))
                 {
+                    // Begin completion while typing only if the previous character already typed in
+                    // is a white space or non-alphanumeric character
+                    if (startPos > 1 && char.IsLetterOrDigit(InternalEditor.Document.GetCharAt(startPos - 2)))
+                        return;
+
+                    if (CodeCompletionParser.IsInsideCommentOrString(code, startPos))
+                        return;
+
                     // Autocomplete as you type
                     // complete global methods (builtins), all classes, symbols local to codeblock node
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code);
@@ -368,7 +280,7 @@ namespace Dynamo.UI.Controls
                     if (!completions.Any())
                         return;
 
-                    ShowCompletionWindow(completions, completeWhenTyping : true);
+                    ShowCompletionWindow(completions, completeWhenTyping: true);
                 }
             }
             catch (System.Exception ex)
@@ -387,10 +299,14 @@ namespace Dynamo.UI.Controls
 
             // This implementation has been referenced from
             // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
+            if (completionWindow != null)
+            {
+                completionWindow.Close();
+            }
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
             completionWindow.AllowsTransparency = true;
             completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
-            
+
             if (completeWhenTyping)
             {
                 // As opposed to complete on '.', in complete while typing mode 
@@ -409,11 +325,12 @@ namespace Dynamo.UI.Controls
             foreach (var completion in completions)
                 data.Add(completion);
 
-            completionWindow.Show();
             completionWindow.Closed += delegate
             {
                 completionWindow = null;
             };
+
+            completionWindow.Show();
         }
 
         private void ShowInsightWindow(IEnumerable<CodeBlockInsightItem> items)

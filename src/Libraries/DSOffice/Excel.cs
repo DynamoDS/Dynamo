@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -19,7 +20,7 @@ namespace DSOffice
         public bool SaveWorkbooks { get; private set; }
     }
 
-    internal class ExcelInterop
+    internal static class ExcelInterop
     {
         private static Microsoft.Office.Interop.Excel.Application _app;
         public static Microsoft.Office.Interop.Excel.Application App
@@ -35,7 +36,7 @@ namespace DSOffice
             }
         }
 
-        private static bool _showOnStartup = false;
+        private static bool _showOnStartup = true;
         public static bool ShowOnStartup
         {
             get { return _showOnStartup; }
@@ -65,12 +66,26 @@ namespace DSOffice
                     throw new Exception("Error setting up communication with Excel.  Try closing any open Excel instances.");
                 }
             }
+            catch (Exception)
+            {
+                // An exception "The URI prefix is not recognized" will be
+                // thrown out for the first run, no idea why that happen, so
+                // just swallow this exception and try to create an new excel
+                // instance.
 
-            if (excel == null) excel = new Microsoft.Office.Interop.Excel.Application();
+                // Sometimes a FileNotFoundException occurs with DynamoCore.XmlSerializers
+                // which is not clear why. This exception also makes Excel tests very flaky
+                // It is found that just swallowing these exceptions and creating a new excel instance 
+                // below causes the test to continue and successfuly pass
+            }
 
             if (excel == null)
             {
-                throw new Exception("Excel could not be opened.");
+                excel = new Microsoft.Office.Interop.Excel.Application();
+                if (excel == null)
+                {
+                    throw new Exception("Excel could not be opened.");
+                }
             }
 
             // KILLDYNSETTINGS - is this safe
@@ -141,23 +156,23 @@ namespace DSOffice
         }
     }
 
-    public class Excel
+    public static class Excel
     {
-
-        private Excel()
-        {
-
-        }
-
         /// <summary>
         /// Reads the given Excel file and returns a workbook
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="file"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static WorkBook ReadExcelFile(string path)
+        public static WorkBook ReadExcelFile(FileInfo file)
         {
-            return WorkBook.ReadExcelFile(path);
+            return WorkBook.ReadExcelFile(file.FullName);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static WorkBook ReadExcelFile(string file)
+        {
+            return WorkBook.ReadExcelFile(file);
         }
 
         /// <summary>
@@ -253,15 +268,21 @@ namespace DSOffice
         ///     for example, the value in cell A1 will appear in the data list at [0,0].
         ///     This node requires Microsoft Excel to be installed.
         /// </summary>
-        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
+        /// <param name="file">File representing the Microsoft Excel spreadsheet.</param>
         /// <param name="sheetName">Name of the worksheet containing the data.</param>
         /// <returns name="data">Rows of data from the Excel worksheet.</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] Read(string filePath, string sheetName)
+        public static object[][] ReadFromFile(FileInfo file, string sheetName)
         {
-            WorkBook wb = WorkBook.ReadExcelFile(filePath);
+            WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
             return ws.Data;
+        }
+
+        [Obsolete("Use Excel.ReadFromFile node instead.")]
+        public static object[][] Read(string filePath, string sheetName)
+        {
+            return ReadFromFile(new FileInfo(filePath), sheetName);
         }
 
         /// <summary>
@@ -280,7 +301,7 @@ namespace DSOffice
         /// <param name="data">Data to write to the spreadsheet.</param>
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] Write(string filePath, string sheetName, int startRow, int startCol, object[][] data)
+        public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data)
         {
             WorkBook wb = new WorkBook(filePath);
             WorkSheet ws = new WorkSheet (wb, sheetName);
@@ -289,6 +310,7 @@ namespace DSOffice
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class WorkSheet
     {
         #region Helper methods
@@ -326,10 +348,30 @@ namespace DSOffice
             {
                 for (int j = 0; j < cols; j++)
                 {
+                    var item = input[i][j];
+
                     if (j > input[i].GetUpperBound(0))
                         output[i, j] = "";
                     else
-                        output[i, j] = input[i][j].ToString();
+                    {
+                        if (item is double)
+                        {
+                            output[i, j] = ((double)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else if (item is float)
+                        {
+                            output[i, j] = ((float)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else if (item is DateTime)
+                        {
+                            output[i, j] = ((DateTime)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            output[i, j] = item.ToString();
+                        }
+                    }
+                        
                 }
             }
 
@@ -419,6 +461,7 @@ namespace DSOffice
 
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class WorkBook
     {
         /// <summary>
@@ -532,7 +575,7 @@ namespace DSOffice
         internal static WorkBook ReadExcelFile(string path)
         {
             var workbookOpen = ExcelInterop.App.Workbooks.Cast<Workbook>()
-                .FirstOrDefault(e => e.FullName == path);
+                    .FirstOrDefault(e => e.FullName == path);
 
             if (workbookOpen != null)
                 return new WorkBook(workbookOpen, path);

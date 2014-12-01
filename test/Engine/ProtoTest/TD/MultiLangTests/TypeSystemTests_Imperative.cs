@@ -4,14 +4,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
     [TestFixture]
-    class TypeSystemTestsImperative
+    class TypeSystemTestsImperative : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void SetUp()
-        {
-        }
-
         [Test]
         [Category("Type System")]
         public void TS001_IntToDoubleTypeConversion_Imperative()
@@ -2508,7 +2502,7 @@ myRangeExpressionResult ;
 }";
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
-            thisTest.VerifyRuntimeWarningCount(2);
+            thisTest.VerifyRuntimeWarningCount(0);
             thisTest.Verify("myRangeExpressionResult", new object[] { 0, 1, 2 });
         }
 

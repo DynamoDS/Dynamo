@@ -403,7 +403,17 @@ namespace Dynamo.Tests
             Assert.Inconclusive();
         }
 
+        [Test]
+        public void CanEvaluateCustomNodeWithDuplicateInputs()
+        {
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\duplicate-input.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.Model.RunExpression();
 
+            var addNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            AssertPreviewValue(addNode.GUID.ToString(), 3);
+        }
+        
         [Test]
         public void CanCreateAndPlaceNewCustomNode()
         {
@@ -644,6 +654,52 @@ namespace Dynamo.Tests
             Assert.IsFalse(
                 ((restWatch.CachedValue as ICollection).Cast<object>().First() as ICollection)
                     .Cast<object>().Any());
+        }
+
+        [Test]
+        public void CollapsedNodeShouldHaveNewIdentfifer()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "collapse-newname.dyn"));
+
+            // Convert a DSFunction node Point.ByCoordinates to custom node.
+            var workspace = model.CurrentWorkspace;
+            var node = workspace.Nodes.OfType<DSFunction>().First();
+
+            var originalGuid = node.GUID;
+            var originalIdentifierName = node.AstIdentifierBase;
+            var originalIdentifier = node.AstIdentifierForPreview;
+
+            List<NodeModel> selectionSet = new List<NodeModel>() { node };
+            NodeCollapser.Collapse(ViewModel.Model,
+                selectionSet.AsEnumerable(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            // Making sure we have a Function node after the conversion.
+            Assert.IsNotNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+
+            var customWorkspace = model.Workspaces.Where(w => w is CustomNodeWorkspaceModel).First() 
+                                    as CustomNodeWorkspaceModel;
+            // As there is only one node is converted to custom node, get
+            // the first one
+            var collapsedNode = customWorkspace.Nodes.OfType<DSFunction>().First();
+            
+            // Node -> custom node just copy node from home workspace to 
+            // custom workspace, so they are the same node
+            Assert.IsTrue(object.ReferenceEquals(node, collapsedNode));
+
+            // But they should have different guid and different identifier name
+            Assert.AreNotEqual(originalGuid, collapsedNode.GUID);
+            Assert.AreNotEqual(originalIdentifierName, collapsedNode.AstIdentifierBase);
+            Assert.AreNotEqual(originalIdentifier, collapsedNode.AstIdentifierForPreview);
         }
 
         //[Test]

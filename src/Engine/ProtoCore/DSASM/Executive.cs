@@ -319,10 +319,21 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage)
             {
+                int ci = Constants.kInvalidIndex;
+                int fi = Constants.kInvalidIndex;
+
+                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
+                bool isGlobalScope = rmem.CurrentStackFrame == null || 
+                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
+                if (!isGlobalScope)
+                {
+                    ci = rmem.CurrentStackFrame.ClassScope;
+                    fi = rmem.CurrentStackFrame.FunctionScope;
+                }
+
                 if (fepRun)
                 {
-                    int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                    int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                     UpdateMethodDependencyGraph(pc, fi, ci);
                 }
                 else
@@ -330,7 +341,7 @@ namespace ProtoCore.DSASM
                     if (!core.Options.IsDeltaExecution)
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
-                        SetupGraphEntryPoint(pc);
+                        SetupGraphEntryPoint(pc, isGlobalScope);
                     }
                     else
                     {
@@ -341,7 +352,7 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            SetupGraphEntryPoint(pc);
+                            SetupGraphEntryPoint(pc, isGlobalScope);
                         }
                     }
                 }
@@ -1419,16 +1430,16 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void SetupGraphEntryPoint(int entrypoint)
+        private void SetupGraphEntryPoint(int entrypoint, bool isGlobalScope)
         { 
             List<AssociativeGraph.GraphNode> graphNodeList = null;
-            if (core.Options.ApplyUpdate)
+            if (core.Options.ApplyUpdate && isGlobalScope)
             {
-                // Getting the entry point only graphnodes at the global scope
-                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
 
-                // Set the default entry point on ApplyUpdate  is the first graphNode
                 Validity.Assert(graphNodeList.Count > 0);
+
+                // The default entry point on ApplyUpdate is the first graphNode
                 entrypoint = graphNodeList[0].updateBlock.startpc;
             }
             else
@@ -1564,16 +1575,17 @@ namespace ProtoCore.DSASM
                     int exprUID = node.exprUID;
                     int modBlkId = node.modBlkUID;
                     bool isSSAAssign = node.IsSSANode();
-                    List<AssociativeGraph.GraphNode> reachableGraphNodes = null; 
+                    List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
+                    bool recursiveSearch = false;
                     if (core.Options.ExecuteSSA)
                     {
                         reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            node.lastGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
+                            node.lastGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, recursiveSearch, propertyChanged);
                     }
                     else
                     {
                         reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                            node, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, true);
+                            node, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, recursiveSearch, propertyChanged);
                     }
 
                     // Mark reachable nodes as dirty
@@ -1601,7 +1613,7 @@ namespace ProtoCore.DSASM
 
             // Find reachable graphnodes
             List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock);
+                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, core.Options.ExecuteSSA, executingBlock, false);
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
@@ -1609,7 +1621,6 @@ namespace ProtoCore.DSASM
             {
                 gnode.isDirty = true;
             }
-             
 
             // Get all redefined graphnodes
             int classScope = Constants.kInvalidIndex;
@@ -1620,6 +1631,30 @@ namespace ProtoCore.DSASM
             Validity.Assert(redefinedNodes != null);
             foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
             {
+                // GC all the temporaries associated with the redefined variable
+                // Given:
+                //      a = A.A()
+                //      a = 10
+                //
+                // Transforms to:
+                //        
+                //      t0 = A.A()
+                //      a = t0
+                //      a = 10      // Redefinition of 'a' will GC 't0'
+                //
+                // Another example 
+                // Given:
+                //      a = {A.A()}
+                //      a = 10
+                //
+                // Transforms to:
+                //        
+                //      t0 = A.A()
+                //      t1 = {t0}
+                //      a = t1
+                //      a = 10      // Redefinition of 'a' will GC t0 and t1
+                //
+
                 // Handle deactivated graphnodes
                 GCSymbols(gnode.symbolListWithinExpression);
 #if GC_MARK_AND_SWEEP
@@ -1628,7 +1663,6 @@ namespace ProtoCore.DSASM
                     rmem.SetSymbolValue(symbol, StackValue.Null);
                 }
 #endif
-                gnode.symbolListWithinExpression.Clear();
                 gnode.isActive = false;
             }
             return reachableGraphNodes.Count;
@@ -1857,7 +1891,7 @@ namespace ProtoCore.DSASM
             {
                 foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
-                    graphNode.isDirty = true;
+                    graphNode.isActive = graphNode.isDirty = true;
                     if (!isFirstGraphSet)
                     {
                         // Get the first graphnode of this function
@@ -2555,10 +2589,21 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage && !core.DebugProps.isResume)
             {
+                int ci = Constants.kInvalidIndex;
+                int fi = Constants.kInvalidIndex;
+
+                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
+                bool isGlobalScope = rmem.CurrentStackFrame == null ||
+                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
+                if (!isGlobalScope)
+                {
+                    ci = rmem.CurrentStackFrame.ClassScope;
+                    fi = rmem.CurrentStackFrame.FunctionScope;
+                }
+
                 if (fepRun)
                 {
-                    int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                    int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                     UpdateMethodDependencyGraph(pc, fi, ci);
                 }
                 else
@@ -2567,7 +2612,7 @@ namespace ProtoCore.DSASM
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
                     }
-                    SetupGraphEntryPoint(pc);
+                    SetupGraphEntryPoint(pc, isGlobalScope);
                 }
             }
 
@@ -2998,6 +3043,7 @@ namespace ProtoCore.DSASM
                     SymbolNode symbol = GetSymbolNode(blockId, (int)op2.opdata, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(symbol);
                     rmem.SetSymbolValue(symbol, opVal);
+                    core.UpdatedSymbols.Add(symbol);
 
                     if (IsDebugRun())
                     {
@@ -3015,6 +3061,7 @@ namespace ProtoCore.DSASM
                     var staticMember = GetSymbolNode( blockId, Constants.kGlobalScope, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(staticMember);
                     rmem.SetSymbolValue(staticMember, opVal);
+                    core.UpdatedSymbols.Add(staticMember);
 
                     if (IsDebugRun())
                     {

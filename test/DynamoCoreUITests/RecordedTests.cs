@@ -4,6 +4,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
+
+using SystemTestServices;
+
 using DSIronPythonNode;
 using Dynamo;
 using Dynamo.Controls;
@@ -396,10 +399,10 @@ namespace DynamoCoreUITests
             });
         }
         [Test]
-        public void Deffect_CN_1143()
+        public void Defect_MAGN_1143_CN()
         {
             // modify the name of the input node
-            RunCommandsFromFile("Deffect_CN_1143.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_1143_CN.xml", false, (commandTag) =>
             {
                 var workspaces = ViewModel.Model.Workspaces;
 
@@ -443,9 +446,9 @@ namespace DynamoCoreUITests
             });
         }
         [Test]
-        public void TestDeffect_CN_2144()
+        public void Defect_MAGN_2144_CN()
         {
-            RunCommandsFromFile("Deffect_CN_2144.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2144_CN.xml", false, (commandTag) =>
             {
                 var workspaces = ViewModel.Model.Workspaces;
 
@@ -648,7 +651,7 @@ namespace DynamoCoreUITests
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
@@ -1562,7 +1565,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("t_1", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 7 * codeBlockPortHeight) <= tolerance);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 3 * codeBlockPortHeight) <= tolerance);
 
         }
 
@@ -1883,45 +1886,45 @@ namespace DynamoCoreUITests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_1412CreateList()
+        public void Defect_MAGN_1412_CreateList()
         {
             // This is a UI test to test for interaction crashes the application
 
-            RunCommandsFromFile("Deffect_1412CreateList.xml");
+            RunCommandsFromFile("Defect_MAGN_1412_CreateList.xml");
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_1344PythonEditor()
+        public void Defect_MAGN_1344_PythonEditor()
         {
             // This is a UI test to test for interaction crashes the application
 
-            RunCommandsFromFile("Deffect_1344PythonEditor.xml");
+            RunCommandsFromFile("Defect_MAGN_1344_PythonEditor.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_2208Delete_CBN()
+        public void Defect_MAGN_2208_DeleteCBN()
         {
             // This is a UI test to test for interaction crashes the application
 
-            RunCommandsFromFile("Defect_MAGN_2208.xml");
+            RunCommandsFromFile("Defect_MAGN_2208_DeleteCBN.xml");
             Assert.AreEqual(0, workspace.Nodes.Count);
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_2201Watch_CBN()
+        public void Defect_MAGN_2201_WatchCBN()
         {
-            RunCommandsFromFile("Defect_MAGN_2201.xml");
+            RunCommandsFromFile("Defect_MAGN_2201_WatchCBN.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
-        public void Deffect_747MultiReference()
+        public void Defect_MAGN_747_MultiReference()
         {
-            RunCommandsFromFile("defect_MAGN_747.xml", true);
+            RunCommandsFromFile("Defect_MAGN_747_MultiReference.xml", true);
             Assert.AreEqual(1, workspace.Nodes.Count);
             AssertPreviewValue("a76409a1-1280-428c-9cf7-16580c48ff96", 1);
 
@@ -2993,7 +2996,45 @@ namespace DynamoCoreUITests
 
         }
 
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void RunAutomatically_On_5068()
+        {
+            // If Run Automatically On, third file onwards it executes to null
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5068
 
+            RunCommandsFromFile("RunAutomatically_5068.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                
+
+                if (commandTag == "File1")
+                {
+                    var pt = GetNode("3878d8ca-0f32-4971-a9a7-bfbe159fac41");
+                    Assert.IsNotNull(pt);    
+                    
+                }
+
+                else if (commandTag == "File2")
+                {
+
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    AssertPreviewValue("22318709-d001-45c0-afde-f9a7ff94ed39", 2);
+
+                }
+                else if (commandTag == "File3")
+                {
+
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    AssertPreviewValue("a383d8d7-328b-4515-9e8f-836a2b62341a", new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+
+                }
+                
+
+            });
+
+        }
         #endregion
 
         #region Tests moved from FScheme

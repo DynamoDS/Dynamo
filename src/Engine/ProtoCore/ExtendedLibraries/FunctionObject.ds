@@ -502,7 +502,7 @@ def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
 
         for (_index in 0..(_count - 1))
         {
-            _keys[_index] = Apply(keyProjector, list[_index]);
+            _keys[_index] = __Apply(keyProjector, list[_index]);
         }
         return = Sorting.groupByKey(list, _keys);
     };
@@ -593,4 +593,16 @@ def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
             __ApplyList(functionObject, _value);
         }
     };
+}
+
+def LoopWhile(init: var[]..[], continueWhile: _FunctionObject, loopBody: _FunctionObject)
+{
+	return = [Imperative]
+	{
+		while (__Apply(continueWhile, init))
+		{
+			init = __Apply(loopBody, init);
+		}
+		return = init;
+	};
 }
