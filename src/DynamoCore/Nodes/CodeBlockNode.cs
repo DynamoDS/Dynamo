@@ -268,6 +268,11 @@ namespace Dynamo.Nodes
                     Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
                     this.Workspace.Nodes.Remove(this);
                 }
+                else
+                {
+                    if (!value.Equals(this.Code))
+                        Code = value;     
+                }
                 return true;
             }
 
