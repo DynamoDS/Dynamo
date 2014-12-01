@@ -3039,7 +3039,7 @@ namespace ProtoCore.DSASM
                         System.Console.ReadLine();
                     }
 
-                    if (Constants.kGlobalScope == op2.opdata && IsGlobalScope())
+                    if (Constants.kGlobalScope == op2.opdata)
                     {
                         logWatchWindow(blockId, (int)op1.opdata);
                     }
