@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="SystemTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">

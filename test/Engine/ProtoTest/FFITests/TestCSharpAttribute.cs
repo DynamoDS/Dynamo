@@ -13,10 +13,8 @@ using ProtoFFI;
 namespace ProtoTest.FFITests
 {
     [TestFixture]
-    public class TestCSharpAttribute : FFITestSetup
+    class TestCSharpAttribute : ProtoTestBase 
     {
-        TestFrameWork thisTest = new TestFrameWork();
-
         [Test]
         public void BasicClassAttributeTest()
         {
