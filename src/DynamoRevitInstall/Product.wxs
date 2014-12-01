@@ -27,7 +27,7 @@
     </Property>
 
     <Condition Message="DynamoCore.msi version [ProductVersion] is not installed on this system.">
-      <![CDATA[InstallLocation OR DYNAMOLOCATION]]>
+      <![CDATA[DYNAMOLOCATION]]>
     </Condition>
     
 
