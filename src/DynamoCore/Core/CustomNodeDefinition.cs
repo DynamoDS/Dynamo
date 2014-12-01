@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Dynamo.DSEngine;
+using Dynamo.Library;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Search;
@@ -14,9 +15,111 @@ namespace Dynamo
 {
     public class CustomNodeDefinition : IFunctionDescriptor
     {
-        public CustomNodeDefinition(Guid functionId)
+        public CustomNodeDefinition(
+            Guid functionId,
+            string displayName,
+            IList<NodeModel> nodeModels)
         {
+            #region Find outputs
+
+            // Find output elements for the node
+
+            var outputs = nodeModels.OfType<Output>().ToList();
+
+            var topMost = new List<Tuple<int, NodeModel>>();
+
+            List<string> outNames;
+
+            // if we found output nodes, add select their inputs
+            // these will serve as the function output
+            if (outputs.Any())
+            {
+                topMost.AddRange(
+                    outputs.Where(x => x.HasInput(0)).Select(x => Tuple.Create(0, x as NodeModel)));
+                outNames = outputs.Select(x => x.Symbol).ToList();
+            }
+            else
+            {
+                outNames = new List<string>();
+
+                // if there are no explicitly defined output nodes
+                // get the top most nodes and set THEM as the output
+                IEnumerable<NodeModel> topMostNodes = nodeModels.Where(node => node.IsTopMostNode);
+
+                var rtnPorts =
+                    //Grab multiple returns from each node
+                    topMostNodes.SelectMany(
+                        topNode =>
+                            //If the node is a recursive instance...
+                            topNode is Function && (topNode as Function).Definition.FunctionId == functionId
+                                // infinity output
+                                ? new[] {new {portIndex = 0, node = topNode, name = "∞"}}
+                                // otherwise, grab all ports with connected outputs and package necessary info
+                                : topNode.OutPortData
+                                    .Select(
+                                        (port, i) =>
+                                            new {portIndex = i, node = topNode, name = port.NickName})
+                                    .Where(x => !topNode.HasOutput(x.portIndex)));
+
+                foreach (var rtnAndIndex in rtnPorts.Select((rtn, i) => new {rtn, idx = i}))
+                {
+                    topMost.Add(Tuple.Create(rtnAndIndex.rtn.portIndex, rtnAndIndex.rtn.node));
+                    outNames.Add(rtnAndIndex.rtn.name ?? rtnAndIndex.idx.ToString());
+                }
+            }
+
+            var nameDict = new Dictionary<string, int>();
+            foreach (var name in outNames)
+            {
+                if (nameDict.ContainsKey(name))
+                    nameDict[name]++;
+                else
+                    nameDict[name] = 0;
+            }
+
+            nameDict = nameDict.Where(x => x.Value != 0).ToDictionary(x => x.Key, x => x.Value);
+
+            outNames.Reverse();
+
+            var returnKeys = new List<string>();
+            foreach (var name in outNames)
+            {
+                int amt;
+                if (nameDict.TryGetValue(name, out amt))
+                {
+                    nameDict[name] = amt - 1;
+                    returnKeys.Add(name == "" ? amt + ">" : name + amt);
+                }
+                else
+                    returnKeys.Add(name);
+            }
+
+            returnKeys.Reverse();
+
+            #endregion
+
+            #region Find inputs
+
+            //Find function entry point, and then compile
+            var inputNodes = nodeModels.OfType<Symbol>().ToList();
+            var parameters =
+                inputNodes.Select(x => new TypedParameter(x.GetAstIdentifierForOutputIndex(0).Value, "var[]..[]"));
+            var displayParameters = inputNodes.Select(x => x.InputSymbol);
+
+            #endregion
+
+            FunctionBody = nodeModels.Where(node => !(node is Symbol));
+            DisplayName = displayName;
             FunctionId = functionId;
+            Parameters = parameters;
+            ReturnKeys = returnKeys;
+            DisplayParameters = displayParameters;
+            OutputNodes = topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1));
+            DirectDependencies = nodeModels
+                .OfType<Function>()
+                .Select(node => node.Definition)
+                .Where(def => def.FunctionId != functionId)
+                .Distinct();
         }
 
         /// <summary>
@@ -34,15 +137,30 @@ namespace Dynamo
         public Guid FunctionId { get; private set; }
 
         /// <summary>
-        ///     Function parameters
+        ///     User-friendly parameters
         /// </summary>
-        public IEnumerable<string> Parameters { get; private set; }
+        public IEnumerable<string> DisplayParameters { get; private set; }
 
         /// <summary>
-        ///     If the function returns a dictionary, it specifies all keys in
+        ///     Function parameters.
+        /// </summary>
+        public IEnumerable<TypedParameter> Parameters { get; private set; } 
+
+        /// <summary>
+        ///     If the function returns a dictionary, this specifies all keys in
         ///     that dictionary.
         /// </summary>
         public IEnumerable<string> ReturnKeys { get; private set; }
+
+        /// <summary>
+        ///     NodeModels making up the body of the custom node.
+        /// </summary>
+        public IEnumerable<NodeModel> FunctionBody { get; private set; }
+
+        /// <summary>
+        ///     Identifiers associated with the outputs of the custom node.
+        /// </summary>
+        public IEnumerable<AssociativeNode> OutputNodes { get; private set; }
 
         /// <summary>
         ///    A definition is a proxy definition if we are not able to load
@@ -56,7 +174,6 @@ namespace Dynamo
         /// <summary>
         ///     User friendly name on UI.
         /// </summary>
-        [Obsolete("Get from CustomNodeInfo", true)]
         public string DisplayName { get; private set; }
 
         /// <summary>
@@ -83,6 +200,7 @@ namespace Dynamo
             //}
         }
 
+        [Obsolete("No longer supported.", true)]
         public bool IsBeingLoaded { get; set; }
 
         private IEnumerable<CustomNodeDefinition> FindAllDependencies(HashSet<CustomNodeDefinition> dependencySet)
@@ -98,26 +216,9 @@ namespace Dynamo
             }
         }
 
-        //TODO(Steve): This should exist somewhere else and operate on WorkspaceModel
-        private IEnumerable<CustomNodeDefinition> FindDirectDependencies()
-        {
-            return Workspace.Nodes
-                .OfType<Function>()
-                .Select(node => node.Definition)
-                .Where(def => def != this)
-                .Distinct();
-        }
-
         #endregion
         
         #region DS Compilation
-
-        public event Action Updated;
-        protected virtual void OnUpdated()
-        {
-            var handler = Updated;
-            if (handler != null) handler();
-        }
 
         /// <summary>
         /// Compiles this custom node definition, updating all UI instances to match
@@ -215,7 +316,7 @@ namespace Dynamo
             //Find function entry point, and then compile
             var inputNodes = Workspace.Nodes.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => x.GetAstIdentifierForOutputIndex(0).Value);
-            Parameters = inputNodes.Select(x => x.InputSymbol);
+            DisplayParameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
             OnUpdated();
@@ -247,6 +348,7 @@ namespace Dynamo
 
         #region Custom Node Management
 
+        [Obsolete("No longer supported", true)]
         public bool AddToSearch(SearchModel search)
         {
             return
@@ -257,6 +359,7 @@ namespace Dynamo
                                                 Workspace.FileName ));
         }
 
+        [Obsolete("No longer supported", true)]
         public void UpdateCustomNodeManager(CustomNodeManager customNodeManager)
         {
             customNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
@@ -266,12 +369,9 @@ namespace Dynamo
                                                                 Workspace.FileName));
         }
 
+        [Obsolete("No longer supported", true)]
         public bool SyncWithWorkspace(DynamoModel dynamoModel, bool addToSearch, bool compileFunction)
         {
-
-            // Get the internal nodes for the function
-            var functionWorkspace = Workspace;
-
             try
             {
                 // Add function defininition
@@ -280,11 +380,11 @@ namespace Dynamo
                 // search
                 if (addToSearch)
                 {
-                    AddToSearch(dynamoModel.SearchModel);
+                    //AddToSearch(dynamoModel.SearchModel);
                 }
 
-                var info = new CustomNodeInfo(FunctionId, functionWorkspace.Name, functionWorkspace.Category,
-                                              functionWorkspace.Description, Workspace.FileName);
+                var info = new CustomNodeInfo(FunctionId, Workspace.Name, Workspace.Category,
+                                              Workspace.Description, Workspace.FileName);
 
                 dynamoModel.CustomNodeManager.SetNodeInfo(info);
                 Compile(dynamoModel.EngineController);

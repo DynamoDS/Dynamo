@@ -4,7 +4,10 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Dynamo.DSEngine;
+using Dynamo.Library;
 using Dynamo.Nodes;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
@@ -13,10 +16,12 @@ namespace Dynamo.Models
         [Obsolete("No longer supported.", true)]
         private DynamoModel dynamoModel;
 
+        public Guid CustomNodeId { get; private set; }
+
         #region Contructors
         
         public CustomNodeWorkspaceModel(
-            string name, string category, string description, double x, double y)
+            string name, string category, string description, double x, double y, Guid customNodeId)
             : this(
                 name,
                 category,
@@ -24,14 +29,15 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<ConnectorModel>(),
                 x,
-                y) { }
+                y, customNodeId) { }
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, IEnumerable<NodeModel> e,
-            IEnumerable<ConnectorModel> c, double x, double y) 
+            IEnumerable<ConnectorModel> c, double x, double y, Guid customNodeId) 
             : base(name, e, c, x, y)
         {
-            WatchChanges = true;
+            CustomNodeId = customNodeId;
+            //WatchChanges = true;
             HasUnsavedChanges = false;
             Category = category;
             Description = description;
@@ -44,30 +50,85 @@ namespace Dynamo.Models
             if (args.PropertyName == "Name" || args.PropertyName == "Category" || args.PropertyName == "Description")
             {
                 HasUnsavedChanges = true;
+                OnInfoChanged();
             }
         }
 
         #endregion
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public IEnumerable<CustomNodeDefinition> CustomNodeDependencies
+        {
+            get
+            {
+                return Nodes
+                    .OfType<Function>()
+                    .Select(node => node.Definition)
+                    .Where(def => def.FunctionId != CustomNodeId)
+                    .Distinct();
+            }
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
         public CustomNodeDefinition CustomNodeDefinition
         {
             get
             {
-                return new CustomNodeDefinition()
+                return new CustomNodeDefinition(CustomNodeId, Name, Nodes);
             }
         }
 
-        protected override void OnModified()
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public CustomNodeInfo CustomNodeInfo
         {
-            base.OnModified();
-
-            if (CustomNodeDefinition == null) 
-                return;
-
-            CustomNodeDefinition.RequiresRecalc = true;
-            CustomNodeDefinition.SyncWithWorkspace(dynamoModel, false, true);
+            get
+            {
+                return new CustomNodeInfo(CustomNodeId, Name, Category, Description, FileName);
+            }
         }
 
+        /// <summary>
+        ///     Search category for this workspace, if it is a Custom Node.
+        /// </summary>
+        public string Category
+        {
+            get { return category; }
+            set
+            {
+                category = value;
+                RaisePropertyChanged("Category");
+            }
+        }
+        private string category;
+
+        /// <summary>
+        ///     A description of the workspace
+        /// </summary>
+        public string Description
+        {
+            get { return description; }
+            set
+            {
+                description = value;
+                RaisePropertyChanged("Description");
+            }
+        }
+        private string description;
+
+        public event Action InfoChanged;
+        protected virtual void OnInfoChanged()
+        {
+            Action handler = InfoChanged;
+            if (handler != null) handler();
+        }
+
+        [Obsolete("No longer supported.", true)]
         public List<Function> GetExistingNodes()
         {
             return dynamoModel.AllNodes
@@ -76,7 +137,7 @@ namespace Dynamo.Models
                 .ToList();
         }
 
-        public override bool SaveAs(string newPath)
+        public override bool SaveAs(string newPath, ProtoCore.Core core)
         {
             var originalPath = FileName;
             var originalGuid = CustomNodeDefinition.FunctionId;
@@ -152,18 +213,19 @@ namespace Dynamo.Models
             if (!base.PopulateXmlDocument(document))
                 return false;
 
-            Guid guid = CustomNodeDefinition != null ? CustomNodeDefinition.FunctionId : Guid.NewGuid();
-
             var root = document.DocumentElement;
             if (root == null)
                 return false;
-                
+            
+            var guid = CustomNodeDefinition != null ? CustomNodeDefinition.FunctionId : Guid.NewGuid();
             root.SetAttribute("ID", guid.ToString());
-
+            root.SetAttribute("Description", Description);
+            root.SetAttribute("Category", Category);
+            
             return true;
         }
 
-        protected override void SerializeSessionData(XmlDocument document, object core)
+        protected override void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
         {
             // Since custom workspace does not have any runtime data to persist,
             // do not allow base class to serialize any session data.

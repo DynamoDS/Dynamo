@@ -159,20 +159,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Search category for this workspace, if it is a Custom Node.
-        /// </summary>
-        //TODO(Steve): Move to CustomNodeWorkspace, potentially in the Definition
-        public string Category
-        {
-            get { return category; }
-            set
-            {
-                category = value;
-                RaisePropertyChanged("Category");
-            }
-        }
-
-        /// <summary>
         ///     The date of the last save.
         /// </summary>
         public DateTime LastSaved
@@ -195,19 +181,6 @@ namespace Dynamo.Models
             {
                 author = value;
                 RaisePropertyChanged("Author");
-            }
-        }
-
-        /// <summary>
-        ///     A description of the workspace
-        /// </summary>
-        public string Description
-        {
-            get { return description; }
-            set
-            {
-                description = value;
-                RaisePropertyChanged("Description");
             }
         }
 
@@ -706,11 +679,6 @@ namespace Dynamo.Models
                         node.OutPortData.Any() && node.OutPorts.Any(port => !port.Connectors.Any()));
         }
 
-        public IEnumerable<NodeModel> GetTopMostNodes()
-        {
-            return Nodes.Where(IsTopMostNode);
-        }
-
         public void ReportPosition()
         {
             RaisePropertyChanged("Position");
@@ -719,20 +687,6 @@ namespace Dynamo.Models
         #endregion
 
         #region private/internal methods
-
-        //If node is connected to some other node(other than Output) then it is not a 'top' node
-        private static bool IsTopMostNode(NodeModel node)
-        {
-            if (node.OutPortData.Count < 1)
-                return false;
-
-            foreach (var port in node.OutPorts.Where(port => port.Connectors.Count != 0))
-            {
-                return port.Connectors.Any(connector => connector.End.Owner is Output);
-            }
-
-            return true;
-        }
 
         public event EventHandler Updated;
         public void OnUpdated(EventArgs e)
@@ -778,8 +732,6 @@ namespace Dynamo.Models
                 root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Description", Description);
-                root.SetAttribute("Category", Category);
                 root.SetAttribute("Name", Name);
 
                 var elementList = xmlDoc.CreateElement("Elements");

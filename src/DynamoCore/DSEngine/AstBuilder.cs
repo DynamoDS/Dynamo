@@ -196,21 +196,7 @@ namespace Dynamo.DSEngine
 
             if (isDeltaExecution)
             {
-                foreach (var node in sortedNodes)
-                {
-                    var scopedNode = node as ScopedNodeModel;
-                    if (scopedNode != null)
-                    {
-                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
-                        scopedNode.RequiresRecalc = dirtyInScopeNodes.Any();
-                        foreach (var dirtyNode in dirtyInScopeNodes)
-                        {
-                            dirtyNode.RequiresRecalc = false;
-                        }
-                    }
-                }
-
-                sortedNodes = sortedNodes.Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
+                sortedNodes = sortedNodes.Where(n => n.ForceReExecuteOfNode);
             }
 
             var result = new List<AssociativeNode>();
@@ -218,9 +204,6 @@ namespace Dynamo.DSEngine
             foreach (NodeModel node in sortedNodes)
             {
                 _CompileToAstNodes(node, result, isDeltaExecution);
-
-                if (isDeltaExecution)
-                    node.RequiresRecalc = false;
             }
 
             return result;
@@ -230,17 +213,21 @@ namespace Dynamo.DSEngine
         /// <summary>
         ///     Compiles a collection of Dynamo nodes into a function definition for a custom node.
         /// </summary>
-        /// <param name="def"></param>
+        /// <param name="functionName"></param>
         /// <param name="funcBody"></param>
         /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
+        /// <param name="functionId"></param>
+        /// <param name="returnKeys"></param>
         public void CompileCustomNodeDefinition(
-            CustomNodeDefinition def,
+            Guid functionId,
+            IEnumerable<string> returnKeys,
+            string functionName,
             IEnumerable<NodeModel> funcBody,
             IEnumerable<AssociativeNode> outputNodes,
             IEnumerable<string> parameters)
         {
-            OnAstNodeBuilding(def.FunctionId);
+            OnAstNodeBuilding(functionId);
 
             var functionBody = new CodeBlockNode();
             functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
@@ -256,15 +243,15 @@ namespace Dynamo.DSEngine
                  */
 
                 // return array, holds all outputs
-                string rtnName = "__temp_rtn_" + def.FunctionId.ToString().Replace("-", String.Empty); 
+                string rtnName = "__temp_rtn_" + functionId.ToString().Replace("-", String.Empty); 
                 functionBody.Body.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(rtnName),
                         AstFactory.BuildExprList(new List<string>())));
 
                 // indexers for each output
-                IEnumerable<AssociativeNode> indexers = def.ReturnKeys != null
-                    ? def.ReturnKeys.Select(AstFactory.BuildStringNode) as IEnumerable<AssociativeNode>
+                IEnumerable<AssociativeNode> indexers = returnKeys != null
+                    ? returnKeys.Select(AstFactory.BuildStringNode) as IEnumerable<AssociativeNode>
                     : Enumerable.Range(0, outputs.Count).Select(AstFactory.BuildIntNode);
 
                 functionBody.Body.AddRange(
@@ -289,7 +276,7 @@ namespace Dynamo.DSEngine
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode
             {
-                Name = def.FunctionName.Replace("-", string.Empty),
+                Name = functionName.Replace("-", string.Empty),
                 Signature =
                     new ArgumentSignatureNode
                     {
@@ -300,7 +287,7 @@ namespace Dynamo.DSEngine
                 ReturnType = allTypes
             };
 
-            OnAstNodeBuilt(def.FunctionId, new[] { functionDef });
+            OnAstNodeBuilt(functionId, new[] { functionDef });
         }
 
         /// <summary>

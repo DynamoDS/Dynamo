@@ -25,6 +25,16 @@ namespace Dynamo.DSEngine
         ///     Return keys for multi-output functions.
         /// </summary>
         IEnumerable<string> ReturnKeys { get; }
+
+        /// <summary>
+        ///     Function parameters
+        /// </summary>
+        IEnumerable<TypedParameter> Parameters { get; }
+
+        /// <summary>
+        ///     Function name.
+        /// </summary>
+        string FunctionName { get; }
     }
 
     /// <summary>
@@ -42,13 +52,13 @@ namespace Dynamo.DSEngine
         { }
 
         public FunctionDescriptor(
-            string assembly, string className, string name, IEnumerable<TypedParameter> parameters,
+            string assembly, string className, string functionName, IEnumerable<TypedParameter> parameters,
             string returnType, FunctionType type, bool isOverloaded, bool isVisibleInLibrary = true,
             IEnumerable<string> returnKeys = null, bool isVarArg = false)
             : this(
                 assembly,
                 className,
-                name,
+                functionName,
                 null,
                 parameters,
                 returnType,
@@ -59,7 +69,7 @@ namespace Dynamo.DSEngine
                 isVarArg) { }
 
         public FunctionDescriptor(
-            string assembly, string className, string name, string summary,
+            string assembly, string className, string functionName, string summary,
             IEnumerable<TypedParameter> parameters, string returnType, FunctionType type, bool isOverloaded,
             bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false)
         {
@@ -67,7 +77,7 @@ namespace Dynamo.DSEngine
             IsOverloaded = isOverloaded;
             Assembly = assembly;
             ClassName = className;
-            Name = name;
+            FunctionName = functionName;
 
             if (parameters == null)
                 Parameters = new List<TypedParameter>();
@@ -104,7 +114,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         ///     Function name.
         /// </summary>
-        public string Name { get; private set; }
+        public string FunctionName { get; private set; }
 
         /// <summary>
         ///     Function parameters.
@@ -239,9 +249,9 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                if (Name.StartsWith(Constants.kInternalNamePrefix))
+                if (FunctionName.StartsWith(Constants.kInternalNamePrefix))
                 {
-                    string name = Name.Substring(Constants.kInternalNamePrefix.Length);
+                    string name = FunctionName.Substring(Constants.kInternalNamePrefix.Length);
 
                     Operator op;
                     if (Enum.TryParse(name, out op))
@@ -249,7 +259,7 @@ namespace Dynamo.DSEngine
 
                     return name;
                 }
-                return Name;
+                return FunctionName;
             }
         }
 
@@ -316,7 +326,7 @@ namespace Dynamo.DSEngine
         {
             if (string.IsNullOrEmpty(Assembly))
             {
-                return CoreUtils.IsInternalMethod(Name)
+                return CoreUtils.IsInternalMethod(FunctionName)
                     ? LibraryServices.Categories.Operators
                     : LibraryServices.Categories.BuiltIns;
             }

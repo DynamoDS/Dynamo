@@ -571,7 +571,10 @@ namespace Dynamo.Models
 
         private void AddCustomNodeToSearch(CustomNodeInfo info)
         {
-            SearchModel.Add(new CustomNodeSearchElement(CustomNodeManager, info));
+            var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
+            SearchModel.Add(searchElement);
+
+            //TODO(Steve): Keep in sync with potential changes.
         }
 
         public void Dispose()
@@ -1141,7 +1144,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Add a workspace to the dynamo model.
         /// </summary>
-        [Obsolete("Use AddWorkspace(WorkspaceModel)", true)]
+        [Obsolete("Use AddHomeWorkspace(WorkspaceModel)", true)]
         private void AddHomeWorkspace()
         {
             var workspace = new HomeWorkspaceModel
@@ -1151,6 +1154,28 @@ namespace Dynamo.Models
 
             HomeSpace = workspace;
             Workspaces.Insert(0, workspace); // to front
+        }
+
+        public void AddHomeWorkspace(HomeWorkspaceModel workspace)
+        {
+            AddWorkspace(workspace);
+        }
+
+        public void AddCustomNodeWorkspace(CustomNodeWorkspaceModel workspace)
+        {
+            Action customNodeModified = () =>
+            {
+                var def = workspace.CustomNodeDefinition;
+                //TODO(Steve): update when engine controller is moved to homeworkspacemodel
+                EngineController.GenerateGraphSyncDataForCustomNode(def);
+            };
+            workspace.Modified += customNodeModified;
+
+            
+
+            workspace.Disposed += () => { workspace.Modified -= customNodeModified; };
+
+            AddWorkspace(workspace);
         }
 
         /// <summary>
@@ -1169,8 +1194,9 @@ namespace Dynamo.Models
         ///     Adds a workspace to the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
-        public void AddWorkspace(WorkspaceModel workspace)
+        private void AddWorkspace(WorkspaceModel workspace)
         {
+            //TODO(Steve): Is this really what happens currently?
             Action modifiedHandler = () => OnWorkspaceSaved(workspace);
             workspace.Modified += modifiedHandler;
             
@@ -1198,7 +1224,7 @@ namespace Dynamo.Models
             CurrentWorkspace.AddNode(node);
             OnNodeAdded(node);
             
-            //TODO(Steve): This should be moved to WorkspaceModel.AddNode, when all workspaces have their own selection.
+            //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection.
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(node);
         }

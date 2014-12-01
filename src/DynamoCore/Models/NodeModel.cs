@@ -334,14 +334,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Is this node an entry point to the program?
-        /// </summary>
-        public bool IsTopmost
-        {
-            get { return OutPorts == null || OutPorts.All(x => !x.Connectors.Any()); }
-        }
-
-        /// <summary>
         ///     Search tags for this Node.
         /// </summary>
         public List<string> Tags
@@ -861,6 +853,34 @@ namespace Dynamo.Models
         #endregion
 
         #region Input and Output Connections
+
+        /// <summary>
+        /// If node is connected to some other node(other than Output) then it is not a 'top' node
+        /// </summary>
+        public bool IsTopMostNode
+        {
+            get
+            {
+                if (OutPortData.Count < 1)
+                    return false;
+
+                foreach (var port in OutPorts.Where(port => port.Connectors.Count != 0))
+                {
+                    return port.Connectors.Any(connector => connector.End.Owner is Output);
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        ///     Is this node an entry point to the program?
+        /// </summary>
+        [Obsolete("Use IsTopMostNode instead.", true)]
+        public bool IsTopmost
+        {
+            get { return OutPorts == null || OutPorts.All(x => !x.Connectors.Any()); }
+        }
 
         public IEnumerable<int> GetConnectedInputs()
         {

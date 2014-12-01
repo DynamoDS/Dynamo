@@ -53,9 +53,9 @@ namespace Dynamo.Nodes
         {
             model.InPortData.Clear();
 
-            if (Definition.Parameters == null) return;
+            if (Definition.DisplayParameters == null) return;
 
-            foreach (string arg in Definition.Parameters)
+            foreach (string arg in Definition.DisplayParameters)
                 model.InPortData.Add(new PortData(arg, "parameter"));
         }
 
@@ -76,7 +76,7 @@ namespace Dynamo.Nodes
             if (!model.IsPartiallyApplied)
                 return AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
 
-            var count = Definition.Parameters.Count();
+            var count = Definition.DisplayParameters.Count();
             return AstFactory.BuildFunctionObject(
                 Definition.FunctionName,
                 count,
@@ -167,9 +167,9 @@ namespace Dynamo.Nodes
         public bool IsInSyncWithNode(NodeModel model)
         {
             return Definition != null
-                && ((Definition.Parameters == null
-                    || (Definition.Parameters.Count() == model.InPortData.Count()
-                        && Definition.Parameters.SequenceEqual(
+                && ((Definition.DisplayParameters == null
+                    || (Definition.DisplayParameters.Count() == model.InPortData.Count()
+                        && Definition.DisplayParameters.SequenceEqual(
                             model.InPortData.Select(p => p.NickName))))
                     && (Definition.ReturnKeys == null
                         || Definition.ReturnKeys.Count() == model.OutPortData.Count()

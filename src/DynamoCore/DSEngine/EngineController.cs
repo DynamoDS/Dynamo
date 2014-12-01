@@ -75,7 +75,6 @@ namespace Dynamo.DSEngine
             dynamoModel.NodeDeleted -= NodeDeleted;
             liveRunnerServices.Dispose();
 
-            LibraryServices.MessageLogged -= dynamoModel.Logger.Log;
             libraryServices.LibraryLoading -= this.LibraryLoading;
             libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
             libraryServices.LibraryLoaded -= this.LibraryLoaded;
@@ -102,13 +101,9 @@ namespace Dynamo.DSEngine
         /// </summary>
         public IEnumerable<FunctionGroup> GetFunctionGroups()
         {
-<<<<<<< HEAD
-            return LibraryServices.BuiltinFunctionGroups.Union(
-                       LibraryServices.Libraries.SelectMany(lib => LibraryServices.GetFunctionGroups(lib)));
-=======
+
             return libraryServices.BuiltinFunctionGroups.Union(
                        libraryServices.ImportedLibraries.SelectMany(lib => libraryServices.GetFunctionGroups(lib)));
->>>>>>> ef8662ece204235853008d76a1f42b43d6e270b6
         }
 
         /// <summary>
@@ -177,25 +172,7 @@ namespace Dynamo.DSEngine
                 return mirror;
             }
         }
-
-        /// <summary>
-<<<<<<< HEAD
-        /// Get string representation of the value of variable.
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
-        public string GetStringValue(string variableName)
-        {
-            lock (macroMutex)
-            {
-                RuntimeMirror mirror = GetMirror(variableName);
-                return null == mirror ? "null" : mirror.GetStringData();
-            }
-        }
-
-        /// <summary>
-=======
->>>>>>> ef8662ece204235853008d76a1f42b43d6e270b6
+        
         /// Get a list of IGraphicItem of variable if it is a geometry object;
         /// otherwise returns null.
         /// </summary>
@@ -219,7 +196,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
+        public bool GenerateGraphSyncData(HomeWorkspaceModel homeWorkspace, IEnumerable<NodeModel> nodes)
         {
             lock (macroMutex)
             {
@@ -228,7 +205,7 @@ namespace Dynamo.DSEngine
                 if (activeNodes.Any())
                     astBuilder.CompileToAstNodes(activeNodes, true);
 
-                return VerifyGraphSyncData();
+                return VerifyGraphSyncData(homeWorkspace);
             }
         }
 
@@ -244,7 +221,7 @@ namespace Dynamo.DSEngine
         /// the list of updated nodes. If updatedNodes is empty or does not 
         /// result in any GraphSyncData, then this method returns false.</returns>
         /// 
-        internal GraphSyncData ComputeSyncData(IEnumerable<NodeModel> updatedNodes)
+        internal GraphSyncData ComputeSyncData(HomeWorkspaceModel homeWorkspace, IEnumerable<NodeModel> updatedNodes)
         {
             if (updatedNodes == null)
                 return null;
@@ -255,7 +232,7 @@ namespace Dynamo.DSEngine
                 astBuilder.CompileToAstNodes(activeNodes, true);
             }
 
-            if (!VerifyGraphSyncData() || ((graphSyncDataQueue.Count <= 0)))
+            if (!VerifyGraphSyncData(homeWorkspace) || ((graphSyncDataQueue.Count <= 0)))
             {
                 return null;
             }
@@ -311,22 +288,14 @@ namespace Dynamo.DSEngine
 
 #else
 
-        private Queue<GraphSyncData> pendingCustomNodeSyncData = new Queue<GraphSyncData>();
+        private readonly Queue<GraphSyncData> pendingCustomNodeSyncData = new Queue<GraphSyncData>();
 
         /// <summary>
         /// Generate graph sync data based on the input Dynamo custom node information.
         /// Return false if all nodes are clean.
         /// </summary>
-        /// <param name="def"></param>
-        /// <param name="nodes"></param>
-        /// <param name="outputs"></param>
-        /// <param name="parameters"></param>
         /// <returns></returns>
-        public bool GenerateGraphSyncDataForCustomNode(
-            CustomNodeDefinition def,
-            IEnumerable<NodeModel> nodes,
-            IEnumerable<AssociativeNode> outputs,
-            IEnumerable<string> parameters)
+        public bool GenerateGraphSyncDataForCustomNode(HomeWorkspaceModel homeWorkspace, CustomNodeDefinition definition)
         {
             lock (macroMutex)
             {
@@ -341,8 +310,12 @@ namespace Dynamo.DSEngine
                         "'graphSyncDataQueue' is not empty");
                 }
 
-                astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
-                if (!VerifyGraphSyncData() || (graphSyncDataQueue.Count == 0))
+                astBuilder.CompileCustomNodeDefinition(
+                    definition.FunctionId, definition.ReturnKeys,
+                    definition.FunctionName, definition.FunctionBody, definition.OutputNodes,
+                    definition.DisplayParameters);
+
+                if (!VerifyGraphSyncData(homeWorkspace) || (graphSyncDataQueue.Count == 0))
                     return false;
 
                 // GraphSyncData objects accumulated through the compilation above
@@ -388,13 +361,13 @@ namespace Dynamo.DSEngine
 
 #endif
 
-        private bool VerifyGraphSyncData()
+        private bool VerifyGraphSyncData(HomeWorkspaceModel workspace)
         {
             GraphSyncData data = syncDataManager.GetSyncData();
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = new HashSet<Guid>(
-                dynamoModel.HomeSpace.Nodes
+                workspace.Nodes
                     .Where(n => n.ForceReExecuteOfNode)
                     .Select(n => n.GUID));
 
@@ -466,7 +439,7 @@ namespace Dynamo.DSEngine
         /// <returns>Returns true if any update has taken place, or false 
         /// otherwise.</returns>
         /// 
-        public bool UpdateGraph(out Exception fatalException)
+        public bool UpdateGraph(HomeWorkspaceModel workspace, out Exception fatalException)
         {
             lock (macroMutex)
             {
@@ -474,7 +447,7 @@ namespace Dynamo.DSEngine
                 bool updated = false;
                 fatalException = null;
 
-                ClearWarnings();
+                ClearWarnings(workspace);
 
                 lock (graphSyncDataQueue)
                 {
@@ -505,17 +478,18 @@ namespace Dynamo.DSEngine
 
                 if (updated)
                 {
-                    ShowBuildWarnings();
-                    ShowRuntimeWarnings();
+                    ShowBuildWarnings(workspace);
+                    ShowRuntimeWarnings(workspace);
                 }
 
                 return updated;
             }
         }
 
-        private void ClearWarnings()
+        //TODO(Steve): This definitely doesn't belong here...
+        private void ClearWarnings(HomeWorkspaceModel workspace)
         {
-            var warningNodes = dynamoModel.HomeSpace.Nodes.Where(n => n.State == ElementState.Warning);
+            var warningNodes = workspace.Nodes.Where(n => n.State == ElementState.Warning);
 
             foreach (var node in warningNodes)
             {
@@ -523,14 +497,15 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void ShowRuntimeWarnings()
+        //TODO(Steve): This definitely doesn't belong here...
+        private void ShowRuntimeWarnings(HomeWorkspaceModel workspace)
         {
             // Clear all previous warnings
             var warnings = liveRunnerServices.GetRuntimeWarnings();
             foreach (var item in warnings)
             {
                 Guid guid = item.Key;
-                var node = dynamoModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
                     string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
@@ -539,14 +514,14 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void ShowBuildWarnings()
+        private void ShowBuildWarnings(HomeWorkspaceModel workspace)
         {
             // Clear all previous warnings
             var warnings = liveRunnerServices.GetBuildWarnings();
             foreach (var item in warnings)
             {
                 Guid guid = item.Key;
-                var node = dynamoModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
                     string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
@@ -600,6 +575,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        //TODO(Steve): Does this belong here?
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
             string newLibrary = e.LibraryPath;
