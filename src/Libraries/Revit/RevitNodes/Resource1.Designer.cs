@@ -77,5 +77,14 @@ namespace Revit {
                 return ResourceManager.GetString("AnalysisResultsDefaultName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The supplied path is invalid..
+        /// </summary>
+        internal static string View_ExportAsImage_Path_Invalid {
+            get {
+                return ResourceManager.GetString("View_ExportAsImage_Path_Invalid", resourceCulture);
+            }
+        }
     }
 }

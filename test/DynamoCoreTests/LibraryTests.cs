@@ -6,13 +6,14 @@ using System.Reflection;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.DSEngine;
-using DynamoUtilities;
+using Dynamo.Nodes;
 using NUnit.Framework;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    public class LibraryTests : DSEvaluationViewModelUnitTest
+    class LibraryTests : DSEvaluationViewModelUnitTest
     {
         protected static bool LibraryLoaded { get; set; }
 
@@ -54,6 +55,26 @@ namespace Dynamo.Tests
                 Assert.Fail("Failed to load library: " + a.LibraryPath);
             else
                 Assert.Fail("Failed to load library");
+        }
+
+        private CodeBlockNodeModel CreateCodeBlockNode()
+        {
+            var nodeGuid = Guid.NewGuid();
+            var command = new DynCmd.CreateNodeCommand(
+                nodeGuid, "Code Block", 0, 0, true, false);
+
+            ViewModel.ExecuteCommand(command);
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var cbn = workspace.NodeFromWorkspace<CodeBlockNodeModel>(nodeGuid);
+
+            Assert.IsNotNull(cbn);
+            return cbn;
+        }
+
+        private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
+        {
+            var command = new DynCmd.UpdateModelValueCommand(cbn.GUID, "Code", value);
+            ViewModel.ExecuteCommand(command);
         }
 
         #region Test cases
@@ -207,6 +228,41 @@ namespace Dynamo.Tests
                 Assert.IsTrue(functionName != "MethodWithRefParameter" && functionName != "MethodWithOutParameter" && functionName != "MethodWithRefOutParameters");
             }
 
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void LibraryLoaded_PrecompileCBN_ShowConflictWarnings()
+        {
+
+            var model = ViewModel.Model;
+
+            // Create the initial code block node.
+            var codeBlockNodeOne = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "Point.ByCoordinates();");
+
+            // We should have one code block node by now.
+            Assert.AreEqual(1, model.Nodes.Count());
+
+            // Run 
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            string libraryPath = "FFITarget.dll";
+
+            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+            }
+
+
+            // Assert that once a library with classname conflicts is loaded the CBN
+            // displays the warning
+            Assert.IsTrue(codeBlockNodeOne.ToolTipText.Contains(string.Format(
+                ProtoCore.BuildData.WarningMessage.kMultipleSymbolFoundFromName, "Point", "")));
         }
 
         [Test]

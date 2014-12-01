@@ -5,15 +5,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class RangeExpressions
+    class RangeExpressions : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\RangeExpressions\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_SimpleRangeExpression()
@@ -1878,6 +1871,22 @@ d1;d2;d3;d4;d5;
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { null, null });
             thisTest.VerifyRuntimeWarningCount(2);
+        }
+
+
+        [Test]
+        [Category("SmokeTest")]
+        [Category("Failure")]
+        public void TestStepZero()
+        {
+            string src = @"
+a = 0;
+b = 0..10..a;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kInvalidArguments);
+            thisTest.VerifyRuntimeWarningCount(1);
+            thisTest.Verify("b", null);
         }
     }
 }

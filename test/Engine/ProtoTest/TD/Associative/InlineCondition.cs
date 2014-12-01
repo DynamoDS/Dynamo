@@ -5,16 +5,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    class InlineCondition
+    class InlineCondition : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\Associative\\InlineCondition\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
         [Category("SmokeTest")]
         public void T001_Inline_Using_Function_Call()
