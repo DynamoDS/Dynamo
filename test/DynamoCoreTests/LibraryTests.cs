@@ -322,36 +322,6 @@ namespace Dynamo.Tests
             }
         }
 
-        private List<MemberInfo> LoadMembersZeroTouchLibrary(string library)
-        {
-            Assert.IsTrue(File.Exists(library));
-
-            var resultList = new List<MemberInfo>();
-
-            var assembly = Assembly.LoadFrom(library);
-            var types = assembly.GetTypes().Where(t => t.IsPublic == true);
-            foreach (var t in types)
-            {
-                var members = t.GetMembers().Where(m => m.Name != "ToString" &&
-                                                        m.Name != "Equals" &&
-                                                        m.Name != "GetHashCode" &&
-                                                        m.Name != "GetType");
-                members = members.Where(m =>
-                {
-                    var isObsolete = m.GetCustomAttributes(typeof(ObsoleteAttribute), true).Any();
-                    if (isObsolete) return false;
-
-                    var attributes = m.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), false);
-                    return attributes.Length == 0 || (attributes[0] as IsVisibleInDynamoLibraryAttribute).Visible;
-                });
-
-                if (members.Any())
-                    resultList.AddRange(members);
-            }
-
-            return resultList;
-        }
-
         #endregion
     }
 }
