@@ -113,6 +113,26 @@ namespace ProtoCore.DSASM
             //debugFlags = (int)DebugFlags.ENABLE_LOG | (int)DebugFlags.SPAWN_DEBUGGER;
         }
 
+        /// <summary>
+        /// Determines if the runtime is not inside a function 
+        /// Will also return true if within a nested language block
+        /// </summary>
+        /// <returns></returns>
+        private bool IsGlobalScope()
+        {
+            return rmem.CurrentStackFrame == null || 
+                (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
+        }
+
+        /// <summary>
+        /// Determined in runtime is executing at the outer most language block
+        /// </summary>
+        /// <returns></returns>
+        private bool IsGlobalLanguageBlockScope()
+        {
+            Validity.Assert(core != null);
+            throw new NotImplementedException();
+        }
 
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame, List<Instruction> breakpoints)
         {
@@ -324,9 +344,10 @@ namespace ProtoCore.DSASM
 
                 // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
-                bool isGlobalScope = rmem.CurrentStackFrame == null || 
-                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
-                if (!isGlobalScope)
+                //bool isGlobalScope = rmem.CurrentStackFrame == null || 
+                //    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
+                bool isGlobalScope = IsGlobalScope();
+                if (!isGlobalScope) 
                 {
                     ci = rmem.CurrentStackFrame.ClassScope;
                     fi = rmem.CurrentStackFrame.FunctionScope;
@@ -2594,8 +2615,9 @@ namespace ProtoCore.DSASM
 
                 // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
-                bool isGlobalScope = rmem.CurrentStackFrame == null ||
-                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
+                //bool isGlobalScope = rmem.CurrentStackFrame == null ||
+                //    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
+                bool isGlobalScope = IsGlobalScope();
                 if (!isGlobalScope)
                 {
                     ci = rmem.CurrentStackFrame.ClassScope;
