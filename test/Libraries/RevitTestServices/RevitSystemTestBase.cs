@@ -77,6 +77,8 @@ namespace RevitTestServices
                         SchedulerThread = new TestSchedulerThread()
                     });
 
+                Model = DynamoRevit.RevitDynamoModel;
+
                 this.ViewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()
                     {
