@@ -260,38 +260,6 @@ namespace DSCore
                 item //Add item to the end of cloned list.
             };
         }
-        
-        /// <summary>
-        ///     Inserts an item into a list at a specified index.
-        /// </summary>
-        /// <param name="item">Item to be inserted.</param>
-        /// <param name="list">List to insert in to.</param>
-        /// <param name="index">Index to insert item at.</param>
-        /// <search>insert,add,item</search>
-        public static IList InsertItemAtIndex(object item, IList list, int index)
-        {
-            while (index < 0)
-                index += list.Count;
-            var result = new ArrayList(list);
-            result.Insert(index, item);
-            return result;
-        }
-        
-        /// <summary>
-        ///     Replaces an item into a list at a specified index.
-        /// </summary>
-        /// <param name="newItem">Item to be used as a replacement.</param>
-        /// <param name="list">A list.</param>
-        /// <param name="index">Index to replace item at.</param>
-        /// <search>replace,swap</search>
-        public static IList ReplaceItemAtIndex(object newItem, IList list, int index)
-        {
-            while (index < 0)
-                index += list.Count;
-            var result = new ArrayList(list);
-            result[index] = newItem;
-            return result;
-        }
 
         /// <summary>
         ///     Fetches an amount of items from the start of the list.
@@ -354,8 +322,6 @@ namespace DSCore
         /// <search>get,item,index,fetch</search>
         public static object GetItemAtIndex(IList list, int index)
         {
-            while (index < 0)
-                index += list.Count;
             return list[index];
         }
 
@@ -418,13 +384,7 @@ namespace DSCore
         /// <search>index,indices,cull</search>
         public static IList RemoveItemAtIndex(IList list, int[] indices)
         {
-            var indexSet = new HashSet<int>(indices.Select(index =>
-            {
-                while (index < 0)
-                    index += list.Count;
-                return index;
-            }));
-            return list.Cast<object>().Where((_, i) => !indexSet.Contains(i)).ToList();
+            return list.Cast<object>().Where((_, i) => !indices.Contains(i)).ToList();
         }
 
         /// <summary>
