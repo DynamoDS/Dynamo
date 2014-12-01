@@ -1508,9 +1508,12 @@ namespace ProtoCore.DSASM
             List<AssociativeGraph.GraphNode> nodeIterations = Properties.nodeIterations;
             var CycleStartNodeAndEndNode = FindCycleStartNodeAndEndNode(nodeIterations);
 
-            foreach (AssociativeGraph.GraphNode node in nodeIterations)
+            if (enableLogging)
             {
-                Console.WriteLine("nodes " + node.updateNodeRefList[0].nodeList[0].symbol.name);
+                foreach (AssociativeGraph.GraphNode node in nodeIterations)
+                {
+                    Console.WriteLine("nodes " + node.updateNodeRefList[0].nodeList[0].symbol.name);
+                }
             }
 
             string message = String.Format(WarningMessage.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
