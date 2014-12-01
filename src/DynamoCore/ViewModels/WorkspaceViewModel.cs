@@ -140,38 +140,10 @@ namespace Dynamo.ViewModels
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
         ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
 
-        public ObservableCollection<ConnectorViewModel> Connectors
-        {
-            get { return _connectors; }
-            set
-            {
-                _connectors = value;
-                RaisePropertyChanged("Connectors");
-            }
-        }
-        public ObservableCollection<NodeViewModel> Nodes
-        {
-            get { return _nodes; }
-            set
-            {
-                _nodes = value;
-                RaisePropertyChanged("Nodes");
-            }
-        }
-        public ObservableCollection<NoteViewModel> Notes
-        {
-            get { return _notes; }
-            set
-            {
-                _notes = value;
-                RaisePropertyChanged("Notes");
-            }
-        }
-        public ObservableCollection<InfoBubbleViewModel> Errors
-        {
-            get { return _errors; }
-            set { _errors = value; RaisePropertyChanged("Errors"); }
-        }
+        public ObservableCollection<ConnectorViewModel> Connectors { get { return _connectors; } }
+        public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
+        public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
+        public ObservableCollection<InfoBubbleViewModel> Errors { get { return _errors; } }
 
         public string Name
         {
