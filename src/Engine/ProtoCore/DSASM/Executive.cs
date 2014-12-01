@@ -21,8 +21,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private bool isGlobScope = true;
-
         public Executable exe { get; set; }
         private Language executingLanguage;
 
@@ -228,13 +226,11 @@ namespace ProtoCore.DSASM
             istream = exe.instrStreamList[executingBlock];
 
             fepRun = false;
-            isGlobScope = true;
 
             StackFrameType callerType = (StackFrameType)rmem.GetAtRelative(StackFrame.kFrameIndexCallerStackFrameType).opdata;
             if (callerType == StackFrameType.kTypeFunction)
             {
                 fepRun = true;
-                isGlobScope = false;
             }
         }
 
@@ -269,13 +265,10 @@ namespace ProtoCore.DSASM
             if (rmem.FramePointer >= StackFrame.kStackFrameSize)
             {
                 fepRun = false;
-                isGlobScope = true;
-
                 StackFrameType callerType = (StackFrameType)rmem.GetAtRelative(StackFrame.kFrameIndexCallerStackFrameType).opdata;
                 if (callerType == StackFrameType.kTypeFunction)
                 {
                     fepRun = true;
-                    isGlobScope = false;
                 }
             }
 
@@ -332,7 +325,6 @@ namespace ProtoCore.DSASM
             else
             {
                 pc = entry;
-                isGlobScope = false;
             }
 
             executingLanguage = exe.instrStreamList[exeblock].language;
@@ -406,8 +398,6 @@ namespace ProtoCore.DSASM
             }
 
             fepRun = true;
-            isGlobScope = false;
-
             executingBlock = exeblock;
 
 
@@ -573,7 +563,6 @@ namespace ProtoCore.DSASM
                 runtimeVerify(svType.IsStaticType);
             }
 
-            isGlobScope = false;
             ProcedureNode fNode = null;
 
             // Pop off number of dimensions indexed into this function call
@@ -595,7 +584,6 @@ namespace ProtoCore.DSASM
                 {
                     string message = String.Format(WarningMessage.KCallingConstructorOnInstance, fNode.name);
                     core.RuntimeStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message);
-                    isGlobScope = true;
                     return StackValue.Null;
                 }
             }
@@ -724,7 +712,6 @@ namespace ProtoCore.DSASM
                 {
                     string message = String.Format(WarningMessage.kInvokeMethodOnInvalidObject, fNode.name);
                     core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, message);
-                    isGlobScope = true;
                     return StackValue.Null;
                 }
             }
@@ -986,7 +973,6 @@ namespace ProtoCore.DSASM
                     // GCReleasePool.Add(sv);
                 }
 
-                isGlobScope = true;
                 if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_')
                 {
                     core.calledInFunction = false;
@@ -2228,9 +2214,7 @@ namespace ProtoCore.DSASM
                     GCDotMethods(procNode.name, ref sv, DotCallDimensions, Arguments);
                     RX = sv;
                     DecRefCounter(RX);
-                    isGlobScope = true;
                 }
-
             }
         }
 
@@ -2607,7 +2591,6 @@ namespace ProtoCore.DSASM
             else
             {
                 pc = entry;
-                isGlobScope = false;
             }
             executingLanguage = exe.instrStreamList[exeblock].language;
 
@@ -3076,7 +3059,7 @@ namespace ProtoCore.DSASM
                         System.Console.ReadLine();
                     }
 
-                    if (isGlobScope && Constants.kGlobalScope == op2.opdata)
+                    if (Constants.kGlobalScope == op2.opdata && IsGlobalScope())
                     {
                         logWatchWindow(blockId, (int)op1.opdata);
                     }
@@ -3226,7 +3209,7 @@ namespace ProtoCore.DSASM
                 System.Console.ReadLine();
             }
 
-            if (isGlobScope)
+            if (IsGlobalScope())
             {
                 logWatchWindow(blockId, symbolnode.symbolTableIndex);
             }
@@ -3255,7 +3238,7 @@ namespace ProtoCore.DSASM
                         System.Console.ReadLine();
                     }
 
-                    if (isGlobScope)
+                    if (IsGlobalScope())
                     {
                         logWatchWindow(Constants.kInvalidIndex, (int)opdest.opdata);
                     }
@@ -3270,7 +3253,7 @@ namespace ProtoCore.DSASM
                         System.Console.ReadLine();
                     }
 
-                    if (isGlobScope)
+                    if (IsGlobalScope())
                     {
                         logWatchWindow(0, (int)opdest.opdata);
                     }
@@ -5979,8 +5962,6 @@ namespace ProtoCore.DSASM
         {
             PushInterpreterProps(Properties);
 
-            isGlobScope = false;
-
             runtimeVerify(instruction.op1.IsFunctionIndex);
             int fi = (int)instruction.op1.opdata;
 
@@ -6517,8 +6498,6 @@ namespace ProtoCore.DSASM
 
         private void RETURN_Handler()
         {
-            isGlobScope = true;
-
             runtimeVerify(rmem.ValidateStackFrame());
 
             int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
