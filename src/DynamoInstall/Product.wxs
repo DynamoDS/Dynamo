@@ -129,7 +129,7 @@
 
     <!-- Install a shortcut in the Start menu -->
     <DirectoryRef Id="ApplicationProgramsFolder">
-      <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10">
+      <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10" Win64="yes">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="Dynamo 0.7"
                   Description="Dynamo Sandbox"
@@ -137,6 +137,14 @@
                   WorkingDirectory="DYNAMO_INSTALLDIR"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
         <RegistryValue Root="HKCU" Key="Software\Microsoft\Dynamo_07" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RegistryKey Root="HKLM"
+                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]"
+              Action="createAndRemoveOnUninstall">
+          <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
+          <RegistryValue Name="DisplayName" Value="[ProductName]" Type="string"/>
+          <RegistryValue Name="DisplayVersion" Value="[ProductVersion]" Type="string"/>
+        </RegistryKey>
+        
       </Component>
     </DirectoryRef>
     
