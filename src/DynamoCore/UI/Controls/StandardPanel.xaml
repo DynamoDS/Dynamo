@@ -15,7 +15,7 @@
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:DisplayModeToBackgroundConverter x:Key="DisplayModeToBackgroundConverter"
                                                    NormalColor="Transparent"
-                                                   ActiveColor="#222222" />
+                                                   ActiveColor="#393939" />
         <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
                                           TrueBrush="#333333"
                                           FalseBrush="#272727" />
@@ -126,7 +126,7 @@
             <Border x:Name="container"
                     Padding="8,3,8,3"
                     BorderThickness="1"
-                    BorderBrush="#494A4A"
+                    BorderBrush="#444444"
                     CornerRadius="2"
                     Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
                 <TextBlock x:Name="text"
@@ -148,10 +148,7 @@
                          Value="True">
                     <Setter TargetName="container"
                             Property="Background"
-                            Value="#393939" />
-                    <Setter TargetName="text"
-                            Property="Foreground"
-                            Value="#999999" />
+                            Value="#222222" />
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
