@@ -15,14 +15,14 @@
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>$(OutputPath)\</OutputPath>
+    <OutputPath>$(InstallOutputPath)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH)</DefineConstants>
+    <DefineConstants>Debug;base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);release=$(DYNAMO_RELEASE_PATH)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>$(OutputPath)\</OutputPath>
+    <OutputPath>$(InstallOutputPath)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH)</DefineConstants>
+    <DefineConstants>base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);release=$(DYNAMO_RELEASE_PATH)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
@@ -37,9 +37,9 @@
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
-    <PreBuildEvent>robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(ConfigurationName) $(DYNAMO_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e -XD int
+    <PreBuildEvent>robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(ConfigurationName)\$(REVIT_VERSION) $(DYNAMO_HARVEST_PATH) -XF %2aTests.dll %2a.pdb -e -XD int
 
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_RELEASE_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMOREVIT_INSTALLDIR -var var.release -out "$(ProjectDir)Release.wxs"
 "C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA_07 -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"</PreBuildEvent>
   </PropertyGroup>
   <!--
