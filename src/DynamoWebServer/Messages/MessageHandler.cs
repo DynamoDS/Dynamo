@@ -176,6 +176,16 @@ namespace DynamoWebServer.Messages
             return definition != null ? definition.WorkspaceModel : null;
         }
 
+        private string GetCurrentWorkspaceGuid()
+        {
+            var cnModel = dynamoModel.CurrentWorkspace as CustomNodeWorkspaceModel;
+
+            if (cnModel != null)
+                return cnModel.CustomNodeDefinition.FunctionId.ToString();
+            
+            return "";
+        }
+
         /// <summary>
         /// This method sends ComputationResponse on render complete
         /// </summary>
@@ -294,15 +304,29 @@ namespace DynamoWebServer.Messages
 
             foreach (var command in recordableCommandMsg.Commands)
             {
+                dynamo.ExecuteCommand(command);
                 if (command is DynamoModel.RunCancelCommand)
                 {
-                    dynamo.ExecuteCommand(command);
                     WaitForRunCompletion();
                     NodesDataModified(sessionId);
                 }
                 else
                 {
-                    dynamo.ExecuteCommand(command);
+                    var updateCommand = command as DynamoModel.UpdateModelValueCommand;
+                    // if a cbn is updated send back the data to redraw it in Flood
+                    if (updateCommand != null)
+                    {
+                        var cbn = dynamoModel.CurrentWorkspace.GetModelInternal(updateCommand.ModelGuid) as CodeBlockNodeModel;
+                        if (cbn != null)
+                        {
+                            var wsGuid = GetCurrentWorkspaceGuid();
+                            var nodeGuid = updateCommand.ModelGuidAsString;
+                            var data = GetInOutPortsData(cbn);
+                            
+                            var response = new CodeBlockDataResponse(wsGuid, nodeGuid, data);
+                            OnResultReady(this, new ResultReadyEventArgs(response, sessionId));
+                        }
+                    }
                 }
             }
         }
@@ -347,7 +371,7 @@ namespace DynamoWebServer.Messages
             {
                 string data;
                 ExecutedNode exnode = nodes.FirstOrDefault(n => n.NodeId == node.GUID.ToString());
-                if (node is Function)
+                if (node is Function || node is CodeBlockNodeModel)
                 {
                     // include data about number of inputs and outputs
                     data = GetInOutPortsData(node);
@@ -361,7 +385,7 @@ namespace DynamoWebServer.Messages
                 {
                     // all nodes in custom node workspace are always considered as not updated
                     // so node.IsUpdated=false and there are no executed nodes for them
-                    data = GetData(node);
+                    data = GetValue(node);
                 }
 
                 uploader.AddCreationData(node, data);
@@ -369,13 +393,12 @@ namespace DynamoWebServer.Messages
 
 
             var response = new NodeCreationDataResponse(currentWorkspace.Name,
-                uploader.NodesToCreate, uploader.ConnectorsToCreate, nodes);
+                GetCurrentWorkspaceGuid(), uploader.NodesToCreate, uploader.ConnectorsToCreate, nodes);
 
             var proxyNodesResponses = new List<UpdateProxyNodesResponse>();
             if (uploader.IsCustomNode)
             {
                 var model = currentWorkspace as CustomNodeWorkspaceModel;
-                response.WorkspaceId = model.CustomNodeDefinition.FunctionId.ToString();
 
                 // after uploading custom node definition there may be proxy nodes
                 // that were updated 
@@ -418,21 +441,6 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private string GetData(NodeModel node)
-        {
-            string data;
-            if (node is CodeBlockNodeModel)
-            {
-                data = GetInOutPortsData(node);
-            }
-            else
-            {
-                data = GetValue(node);
-            }
-
-            return data;
-        }
-
         private string GetValue(NodeModel node)
         {
             string data = "null";
@@ -465,7 +473,7 @@ namespace DynamoWebServer.Messages
                 // send only updated nodes back
                 if (node.IsUpdated)
                 {
-                    string data = GetData(node);
+                    string data = GetValue(node);
                     var execNode = new ExecutedNode(node, data);
                     result.Add(execNode);
                 }
@@ -497,7 +505,9 @@ namespace DynamoWebServer.Messages
                 }
 
                 stringBuilder.Append("\"Code\":\"");
-                stringBuilder.Append(codeBlock.Code.Replace("\n", "\\n"));
+                stringBuilder.Append(codeBlock.Code.
+                                     Replace("\n", "\\n").
+                                     Replace("\"", "\\\""));
                 stringBuilder.Append("\", ");
                 stringBuilder.Append("\"LineIndices\": [");
                 stringBuilder.Append(string.Join(", ", lineIndices.Select(x => x.ToString()).ToArray()));
