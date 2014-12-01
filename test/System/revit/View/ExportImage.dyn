@@ -1,0 +1,21 @@
+<Workspace Version="0.7.5.3261" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="58ca8331-2ab8-4db7-8075-db0224de6e67" nickname="View.ExportAsImage" x="522" y="118" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.Views.View.ExportAsImage@string" />
+    <DSRevitNodesUI.Views type="DSRevitNodesUI.Views" guid="c479bc95-04c9-49bb-b983-736579e3aa20" nickname="Views" x="190" y="88" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="0:Level 1" />
+    <DSRevitNodesUI.Views type="DSRevitNodesUI.Views" guid="ba243b87-618c-4e2e-bb76-28d07fb912f4" nickname="Views" x="208" y="417" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="23:{3D}" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6c129d24-d0c7-4d45-9dc6-39ad9cd97b67" nickname="View.ExportAsImage" x="448" y="372" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.Views.View.ExportAsImage@string" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="aca9e81b-5232-4171-ba26-9658822a21f7" nickname="String" x="230" y="152" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="c:\Users\Ian\Desktop\imageTest_1.png" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="6f32384d-7836-41d8-be5c-68039af52f51" nickname="String" x="264" y="308" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="c:\Users\Ian\Desktop\imageTest_2.png" />
+    </Dynamo.Nodes.StringInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c479bc95-04c9-49bb-b983-736579e3aa20" start_index="0" end="58ca8331-2ab8-4db7-8075-db0224de6e67" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ba243b87-618c-4e2e-bb76-28d07fb912f4" start_index="0" end="6c129d24-d0c7-4d45-9dc6-39ad9cd97b67" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aca9e81b-5232-4171-ba26-9658822a21f7" start_index="0" end="58ca8331-2ab8-4db7-8075-db0224de6e67" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6f32384d-7836-41d8-be5c-68039af52f51" start_index="0" end="6c129d24-d0c7-4d45-9dc6-39ad9cd97b67" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

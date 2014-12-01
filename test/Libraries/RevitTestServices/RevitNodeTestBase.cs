@@ -23,14 +23,15 @@ namespace RevitTestServices
         }
 
         [SetUp]
-        public virtual void SetupGeometry()
+        public override void Setup()
         {
-            Setup();
+            SetupTransactionManager();
+            DisableElementBinder();
+            base.Setup();
             SetUpHostUnits();
         }
 
-        [SetUp]
-        public virtual void SetupTransactionManager()
+        public void SetupTransactionManager()
         {
             // create the transaction manager object
             TransactionManager.SetupManager(new AutomaticTransactionStrategy());
@@ -39,8 +40,7 @@ namespace RevitTestServices
             TransactionManager.Instance.DoAssertInIdleThread = false;
         }
 
-        [SetUp]
-        public virtual void DisableElementBinder()
+        public void DisableElementBinder()
         {
             ElementBinder.IsEnabled = false;
         }

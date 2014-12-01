@@ -60,6 +60,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -104,6 +105,7 @@
     <Compile Include="Elements\Views\PerspectiveViewTests.cs" />
     <Compile Include="Elements\Views\SectionViewTests.cs" />
     <Compile Include="Elements\Views\SheetTests.cs" />
+    <Compile Include="Elements\Views\ViewTests.cs" />
     <Compile Include="Elements\WallTests.cs" />
     <Compile Include="Elements\WallTypeTests.cs" />
     <Compile Include="GeometryConversion\CurveUtilsTests.cs" />
@@ -145,7 +147,6 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
