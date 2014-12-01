@@ -90,6 +90,11 @@ namespace FFITarget
             return ret;
         }
 
+        public DummyVector Scale(double value)
+        {
+            return DummyVector.ByCoordinates(X * value, Y * value, Z * value);
+        }
+
         public double GetLengthSquare()
         {
             return X * X + Y * Y + Z * Z;
