@@ -1455,6 +1455,7 @@ namespace Dynamo.Models
         }
 
         private bool forceReExec = false;
+        private bool isNodeExecuted = false;
 
         /// <summary>
         ///     This property forces all AST nodes that generated from this node
@@ -1472,6 +1473,20 @@ namespace Dynamo.Models
                 RaisePropertyChanged("ForceReExecuteOfNode");
             }
         }
+
+        public virtual bool IsNodeExecuted
+        {
+            get
+            {
+                return isNodeExecuted;
+            }
+            set
+            {
+                isNodeExecuted = value;
+                RaisePropertyChanged("IsNodeExecuted");
+            }
+        }
+
         #endregion
 
         #region Visualization Related Methods

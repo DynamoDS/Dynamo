@@ -372,7 +372,7 @@
                    Canvas.ZIndex="20"
                    Margin="-10">
             <Rectangle.Visibility>
-                <Binding Path="WillForceReExecuteOfNode"
+                <Binding Path="IsNodeExecuted"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
                          Converter="{StaticResource BooleanToVisibilityConverter}">

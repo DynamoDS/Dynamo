@@ -40,6 +40,7 @@ namespace Dynamo.DSEngine
         private readonly DynamoModel dynamoModel;
         private readonly ProtoCore.Core libraryCore;
         private readonly Object macroMutex = new Object();
+        private GraphSyncData graphSyncdata;
 
         public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
@@ -209,12 +210,6 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private GraphSyncData OnGetGraphSyncData()
-        {
-            return this.syncDataManager.GetSyncData();
-        }
-
-
 #if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
@@ -256,14 +251,7 @@ namespace Dynamo.DSEngine
                 astBuilder.CompileToAstNodes(activeNodes, true);
             }
 
-            //if (previewGraphQueue.Count <= 0)
-            //{
-            //    return null;
-            //}
-        
-            GraphSyncData data = syncDataManager.GetSyncData();
-            syncDataManager.ResetStates();
-            List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(data);
+            List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata);
 
              lock (previewGraphQueue)
              {
@@ -400,33 +388,33 @@ namespace Dynamo.DSEngine
 
         private bool VerifyGraphSyncData()
         {
-            GraphSyncData data = syncDataManager.GetSyncData();
-            //syncDataManager.ResetStates();
+            graphSyncdata = syncDataManager.GetSyncData();
+            syncDataManager.ResetStates();
 
             var reExecuteNodesIds = dynamoModel.HomeSpace.Nodes
                 .Where(n => n.ForceReExecuteOfNode)
                 .Select(n => n.GUID);
-            if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
+            if (reExecuteNodesIds.Any() && graphSyncdata.ModifiedSubtrees != null)
             {
-                for (int i = 0; i < data.ModifiedSubtrees.Count; ++i)
+                for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; ++i)
                 {
-                    var st = data.ModifiedSubtrees[i];
+                    var st = graphSyncdata.ModifiedSubtrees[i];
                     if (reExecuteNodesIds.Contains(st.GUID))
                     {
                         Subtree newSt = new Subtree(st.AstNodes, st.GUID);
                         newSt.ForceExecution = true;
-                        data.ModifiedSubtrees[i] = newSt;
+                        graphSyncdata.ModifiedSubtrees[i] = newSt;
                     }
                 }
             }
 
-            if ((data.AddedSubtrees != null && data.AddedSubtrees.Count > 0) ||
-                (data.ModifiedSubtrees != null && data.ModifiedSubtrees.Count > 0) ||
-                (data.DeletedSubtrees != null && data.DeletedSubtrees.Count > 0))
+            if ((graphSyncdata.AddedSubtrees != null && graphSyncdata.AddedSubtrees.Count > 0) ||
+                (graphSyncdata.ModifiedSubtrees != null && graphSyncdata.ModifiedSubtrees.Count > 0) ||
+                (graphSyncdata.DeletedSubtrees != null && graphSyncdata.DeletedSubtrees.Count > 0))
             {
                 lock (graphSyncDataQueue)
                 {
-                    graphSyncDataQueue.Enqueue(data);
+                    graphSyncDataQueue.Enqueue(graphSyncdata);
                 }
                 return true;
             }

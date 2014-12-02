@@ -65,29 +65,6 @@ namespace Dynamo.Models
             }
         }
        
-        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
-        {
-            var updateTask = asyncTask as PreviewGraphAsyncTask;
-            if (updateTask != null)
-            {
-                var nodeGuids = updateTask.previewGraphData;
-                foreach (var id in nodeMap)
-                {
-                    var nodeModel = id.Value as NodeModel;
-                    nodeModel.ForceReExecuteOfNode = false;
-                    for (int i = 0; i < nodeGuids.Count; i++)
-                    {                       
-                        if (id.Key == nodeGuids[i])
-                        {                           
-                            nodeModel.ForceReExecuteOfNode = true;
-                        }
-                    }
-                   
-                }
-            }
-            OnEvaluationCompleted(this, EventArgs.Empty);
-        }
-
         /// <summary>
         /// This event is raised right before the shutdown of DynamoModel started.
         /// When this event is raised, the shutdown is guaranteed to take place
@@ -629,7 +606,29 @@ namespace Dynamo.Models
                 previewTask.Completed += OnPreviewGraphCompleted;
                 scheduler.ScheduleForExecution(previewTask);
             }
+        }
 
+        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
+        {
+            var updateTask = asyncTask as PreviewGraphAsyncTask;
+            if (updateTask != null)
+            {
+                var nodeGuids = updateTask.previewGraphData;
+                foreach (var id in nodeMap)
+                {
+                    var nodeModel = id.Value as NodeModel;
+                    nodeModel.IsNodeExecuted = false;
+                    for (int i = 0; i < nodeGuids.Count; i++)
+                    {
+                        if (id.Key == nodeGuids[i])
+                        {
+                            nodeModel.IsNodeExecuted = true;
+                        }
+                    }
+
+                }
+            }
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
         /// <summary>
