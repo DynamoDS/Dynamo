@@ -220,7 +220,7 @@ namespace Dynamo
             //Update existing function nodes which point to this function to match its changes
             var customNodeInstances = dynamoModel.AllNodes
                         .OfType<Function>()
-                        .Where(el => el.Definition != null && el.Definition == this);
+                        .Where(el => el.Definition != null && el.Definition.FunctionId == this.FunctionId);
             
             foreach (var node in customNodeInstances)
                 node.ResyncWithDefinition();
