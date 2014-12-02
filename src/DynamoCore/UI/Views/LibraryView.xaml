@@ -30,6 +30,7 @@
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
             <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+            <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
 
             <!--EndRegion-->
 
@@ -308,7 +309,8 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <Border Background="{TemplateBinding Background}"
+                                        <Border Margin="0"
+                                                Background="{TemplateBinding Background}"
                                                 BorderBrush="Transparent"
                                                 BorderThickness="0">
                                             <ContentPresenter />
@@ -555,8 +557,7 @@
                                         </Grid.RowDefinitions>
 
                                         <Border BorderBrush="#353535">
-                                            <Grid Background="Transparent"
-                                                  Grid.Row="0">
+                                            <Grid Background="Transparent">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
@@ -654,11 +655,13 @@
                                             </Border.Style>
                                         </Border>
 
-                                        <Border Grid.Column="0"
-                                                Grid.Row="1"
+                                        <Border Grid.Row="1"
                                                 Background="#2F2F2F">
-                                            <ItemsPresenter x:Name="ItemsHost"
-                                                            Margin="0,3,0,3" />
+                                            <ItemsPresenter x:Name="ItemsHost">
+                                                <ItemsPresenter.Visibility>
+                                                    <Binding Converter="{StaticResource LibraryTreeItemsHostVisibilityConverter}" />
+                                                </ItemsPresenter.Visibility>
+                                            </ItemsPresenter>
                                         </Border>
                                     </Grid>
                                     <Border.Style>

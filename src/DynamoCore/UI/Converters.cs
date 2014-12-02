@@ -1932,7 +1932,7 @@ namespace Dynamo.Controls
         }
     }
 
-    //Converter that will be used, if number of found classes equals 0. Then classes will be collapsed.
+    // Converter that will be used, if number of items equals 0. Then control should be collapsed.
     public class IntToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1941,6 +1941,25 @@ namespace Dynamo.Controls
                 return Visibility.Visible;
 
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Converter is used in LibraryView.xaml. Do not show LibraryTreeView TreviewItem ItemsHost
+    // for only one item, item should be of type BrowserInternalElementForClasses.
+    public class LibraryTreeItemsHostVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var elementClasses = value as BrowserInternalElementForClasses;
+            if (elementClasses != null && elementClasses.Parent.Items.Count <= 1)
+                return Visibility.Collapsed;
+            
+            return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
