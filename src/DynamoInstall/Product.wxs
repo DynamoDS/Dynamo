@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <Product Id="6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B"
-           Name="Dynamo 0.7.4"
+  <Product Id="F295EB3F-AAD2-4514-B466-6F0375AAEEE5"
+           Name="Dynamo 0.7.5"
            Language="1033"
-           Version="0.7.4"
+           Version="0.7.5"
            Manufacturer="Dynamo"
            UpgradeCode="733f1d21-d745-47aa-bbb5-4a39b5996e4e">
 
@@ -30,7 +30,7 @@
     </CustomAction>
 
     <InstallExecuteSequence>
-      <Custom Action="UninstallDynamo07" After="InstallInitialize">NOT Installed</Custom>
+      <Custom Action="UninstallDynamo07" Before="CostInitialize">NOT Installed</Custom>
     </InstallExecuteSequence>
 
     <Property Id='ARPNOMODIFY'>1</Property>
@@ -129,7 +129,7 @@
 
     <!-- Install a shortcut in the Start menu -->
     <DirectoryRef Id="ApplicationProgramsFolder">
-      <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10">
+      <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10" Win64="yes">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="Dynamo 0.7"
                   Description="Dynamo Sandbox"
@@ -137,6 +137,14 @@
                   WorkingDirectory="DYNAMO_INSTALLDIR"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
         <RegistryValue Root="HKCU" Key="Software\Microsoft\Dynamo_07" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RegistryKey Root="HKLM"
+                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]"
+              Action="createAndRemoveOnUninstall">
+          <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
+          <RegistryValue Name="DisplayName" Value="[ProductName]" Type="string"/>
+          <RegistryValue Name="DisplayVersion" Value="[ProductVersion]" Type="string"/>
+        </RegistryKey>
+        
       </Component>
     </DirectoryRef>
     

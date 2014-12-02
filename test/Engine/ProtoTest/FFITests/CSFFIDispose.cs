@@ -9,22 +9,26 @@ using ProtoCore.Mirror;
 using ProtoScript.Runners;
 using ProtoTest.TD;
 using ProtoTestFx.TD;
+using ProtoTest;
 namespace ProtoFFITests
 {
-    class CSFFIDispose : FFITestSetup
+    class CSFFIDispose : ProtoTestBase 
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        private ILiveRunner astLiveRunner = null;
+        private LiveRunner astLiveRunner = null;
 
-
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
+            base.Setup();
             DisposeTracer.DisposeCount = 0;
             AbstractDerivedDisposeTracer2.DisposeCount = 0;
             astLiveRunner = new LiveRunner();
         }
 
+        public override void TearDown()
+        {
+            base.TearDown();
+            astLiveRunner.Dispose();
+        }
 
         [Test]
         public void Dispose01_NoFunctionCall()
@@ -1353,9 +1357,9 @@ namespace ProtoFFITests
         {
             String code =
             @"        import (""FFITarget.dll"");class myPoint{    p :DummyPoint;	constructor create()    {        p =DummyPoint.ByCoordinates(0, 0, 0);    }}pt = myPoint.create();[Associative]{    a = pt.p;}c = pt.p;carr = {c.X,c.Y,c.Z};            ";
+            thisTest.RunScriptSource(code);
             object[] a = new object[] { 0.0, 0.0, 0.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "carr", ExpectedValue = a, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.Verify("carr", a);
         }
 
 

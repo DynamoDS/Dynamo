@@ -5,14 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows;
+using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoUtilities;
 using NUnit.Framework;
-using System.Windows;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -375,6 +377,37 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, homeNodes.Count);
             Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes[0]);
             Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes[1]);
+        }
+
+        [Test]
+        public void TestFileDirtyOnLacingChange()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\LacingTest.dyn");            
+            ViewModel.OpenCommand.Execute(openPath);
+
+            WorkspaceModel workspace = ViewModel.CurrentSpace;            
+            Assert.AreEqual(false, workspace.CanUndo);
+            Assert.AreEqual(false, workspace.CanRedo);
+
+            //Assert HasUnsavedChanges is false 
+            Assert.AreEqual(false, workspace.HasUnsavedChanges);
+
+            Assert.AreEqual(5, workspace.Nodes.Count);          
+            
+            //Get the first node and assert the lacing strategy
+            var node = ViewModel.Model.Nodes[0];
+            Assert.IsNotNull(node);
+            Assert.AreEqual(LacingStrategy.Shortest, node.ArgumentLacing);
+
+            var workSpaceViewModel = ViewModel.CurrentSpaceViewModel;
+            var nodes = workSpaceViewModel.Nodes;
+            var nodeViewModel = nodes.First(x => x.NodeLogic == node);
+            
+            //change the lacing strategy
+            nodeViewModel.SetLacingTypeCommand.Execute("Longest");
+            Assert.AreEqual(LacingStrategy.Longest, node.ArgumentLacing);
+          
+            Assert.AreEqual(true, workspace.HasUnsavedChanges);
         }
 
         // SaveImage

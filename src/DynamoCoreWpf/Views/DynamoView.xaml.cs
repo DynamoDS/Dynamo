@@ -504,8 +504,7 @@ namespace Dynamo.Controls
 
             if (result == MessageBoxResult.Yes)
             {
-                dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
-                e.Success = true;
+                e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
             else if (result == MessageBoxResult.Cancel)
             {
@@ -695,8 +694,14 @@ namespace Dynamo.Controls
 
             if (dynamoViewModel.PerformShutdownSequence(sp))
             {
+                //Shutdown wasn't cancelled
                 SizeChanged -= DynamoView_SizeChanged;
                 LocationChanged -= DynamoView_LocationChanged;
+            }
+            else
+            {
+                //Shutdown was cancelled
+                e.Cancel = true;
             }
         }
 

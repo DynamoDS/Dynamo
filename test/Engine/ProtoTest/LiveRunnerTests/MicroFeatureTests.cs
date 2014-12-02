@@ -16,25 +16,22 @@ using System.Collections;
 
 namespace ProtoTest.LiveRunner
 {
-    public class MicroFeatureTests
+    class MicroFeatureTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\GraphCompiler\\";
-        double tolerance = 0.000001;
-
-        private ILiveRunner astLiveRunner = null;
+        private ProtoScript.Runners.LiveRunner astLiveRunner = null;
         private Random randomGen = new Random();
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
+            base.Setup();
             astLiveRunner = new ProtoScript.Runners.LiveRunner();
-            astLiveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll" });
+            astLiveRunner.ResetVMAndResyncGraph(new List<string> { "FFITarget.dll" });
         }
 
-        [TearDown]
-        public void CleanUp()
+        public override void TearDown()
         {
+            base.TearDown();
+            astLiveRunner.Dispose();
         }
 
         [Test]
@@ -574,15 +571,13 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_01()
         {
             ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
 
-            liveRunner.UpdateCmdLineInterpreter(@"import (""ProtoGeometry.dll"");");
-            liveRunner.UpdateCmdLineInterpreter("p = Point.ByCoordinates(10,10,10);");
+            liveRunner.UpdateCmdLineInterpreter(@"import (""FFITarget.dll"");");
+            liveRunner.UpdateCmdLineInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("p");
 
@@ -614,8 +609,6 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_02()
         {
@@ -624,8 +617,8 @@ namespace ProtoTest.LiveRunner
             //string code = @"class Point{ X : double; constructor ByCoordinates(x : double, y : double, z : double){X = x;} def Translate(x : double, y : double, z : double){return = Point.ByCoordinates(11,12,13);} }";
 
             //liveRunner.UpdateCmdLineInterpreter(code);
-            liveRunner.UpdateCmdLineInterpreter(@"import (""ProtoGeometry.dll"");");
-            liveRunner.UpdateCmdLineInterpreter("p = Point.ByCoordinates(10,10,10);");
+            liveRunner.UpdateCmdLineInterpreter(@"import (""FFITarget.dll"");");
+            liveRunner.UpdateCmdLineInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("p");
 
@@ -808,13 +801,13 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestAdd01()
         {
             List<string> codes = new List<string>() 
             {
                 "a = 1;",
-                "x = a; y = a; z = a; p = Point.ByCoordinates(x, y, z); px = p.X;",
+                "x = a; y = a; z = a; p = DummyPoint.ByCoordinates(x, y, z); px = p.X;",
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
@@ -825,7 +818,7 @@ namespace ProtoTest.LiveRunner
             for (int i = 0; i < shuffleCount; ++i)
             {
                 ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-                liveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll" });
+                liveRunner.ResetVMAndResyncGraph(new List<string> { "FFITarget.dll" });
 
                 index = index.OrderBy(_ => randomGen.Next());
                 var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
@@ -841,15 +834,13 @@ namespace ProtoTest.LiveRunner
 
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
         public void TestModify01()
         {
             List<string> codes = new List<string>() 
             {
                 "a = 1;",
-                "x = a; y = a; z = a; p = Point.ByCoordinates(x, y, z); px = p.X;",
+                "x = a; y = a; z = a; p = DummyPoint.ByCoordinates(x, y, z); px = p.X;",
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
@@ -984,8 +975,6 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
         public void RegressMAGN753()
         {
@@ -993,7 +982,7 @@ namespace ProtoTest.LiveRunner
             {
                 "t = 1..2;",
                 "x = t; a = x;",
-                "z = a; pts = Point.ByCoordinates(z, 10, 2); ptsx = pts.X;"
+                "z = a; pts = DummyPoint.ByCoordinates(z, 10, 2); ptsx = pts.X;"
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
@@ -1029,8 +1018,8 @@ namespace ProtoTest.LiveRunner
             List<string> codes = new List<string>() 
             {
                 "a=10;b=20;c=30;",
-                "var1=Point.ByCoordinates(a,b,c);",
-                "var2=Point.ByCoordinates(a,a,c);"
+                "var1=DummyPoint.ByCoordinates(a,b,c);",
+                "var2=DummyPoint.ByCoordinates(a,a,c);"
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
@@ -1067,7 +1056,7 @@ namespace ProtoTest.LiveRunner
                 "h=1;",
                 "k=h;ll=k+2;",
                 "v=ll;hf=v+2;",
-                "a45=hf;vv=Point.ByCoordinates(a45, 3, 1);"
+                "a45=hf;vv=DummyPoint.ByCoordinates(a45, 3, 1);"
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
@@ -1285,7 +1274,6 @@ r = Equals(x, {41, 42});
 
 
         [Test]
-        [Category("Failure")]
         public void TestFunctionModification04()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4161
@@ -3046,7 +3034,7 @@ r = Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                "p = Point.ByCoordinates(0,0,0);"
+                "p = DummyPoint.ByCoordinates(0,0,0);"
             };
 
             List<Subtree> added = new List<Subtree>();
@@ -3693,6 +3681,143 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
         }
 
+        [Test]
+        public void TestReExecuteRecursiveFunction01()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+    a = 1;
+", 
+
+@"
+    def f(x)
+    {
+        i = [Imperative]
+        {
+            if(x == 1)
+            {
+                return = [Associative]
+                {
+                   return = 10;
+                }
+            }
+            else
+            {
+                return = [Associative]
+                {
+                    return = 20;
+                }
+            }
+        }
+        return = i;
+    }	
+    b = f(a);
+",
+
+@"
+    a = 2;
+"
+
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 10);
+
+            // Modify
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 20);
+        }
+
+        [Test]
+        public void TestReExecuteRecursiveFunction02()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+    a = 1;
+", 
+
+@"
+    def f(x)
+    {
+        i = [Imperative]
+        {
+            if(x == 1)
+            {
+                return = [Associative]
+                {
+                   return = 10;
+                }
+            }
+            else if (x == 2)
+            {
+                return = [Associative]
+                {
+                    return = 20;
+                }
+            }
+            else 
+            {
+                return = [Associative]
+                {
+                    return = 30;
+                }
+            }
+        }
+        return = i;
+    }	
+    b = f(a);
+",
+
+@"
+    a = 2;
+",
+
+@"
+    a = 3;
+"
+
+            };
+
+            List<Subtree> added = new List<Subtree>();
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 10);
+
+            // Modify
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 20);
+
+
+            // Modify
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid1, codes[3]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("b", 30);
+        }
 
         [Test]
         public void ReproMAGN3551()
@@ -4248,7 +4373,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             Random rand = new Random(876);
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 Console.WriteLine(i);
 
@@ -5265,6 +5390,88 @@ v = foo(t);
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("v", 120);
+        }
+
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution11()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+    a = [Imperative]
+    {
+        return = 10;
+    }
+
+    b = [Imperative]
+    {
+    
+        return = 20;
+    }
+
+    c = [Imperative]
+    {
+        d = 30;
+        if (d == 0)
+        {
+            e = 40;
+        }
+        return = 50;
+    }
+
+    f = 60;
+"
+,
+@"
+    a = [Imperative]
+    {
+        return = 10;
+    }
+
+    b = [Imperative]
+    {
+    
+        return = 20;
+    }
+
+
+    c = [Imperative]
+    {
+        d = 30;
+        if (d == 0)
+        {
+            e = 40;
+        }
+        return = 50;
+    }
+",
+
+@"
+    f = 60;
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("f", 60);
+
+            // Modify the CBN to remove the last line
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+
+            // Create a new CBN to add the removed line
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            syncData = new GraphSyncData(null, added, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("f", 60);
+
         }
 
         [Test]

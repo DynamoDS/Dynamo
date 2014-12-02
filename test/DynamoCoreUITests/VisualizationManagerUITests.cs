@@ -2,18 +2,23 @@
 using System.IO;
 using System.Linq;
 
+using SystemTestServices;
+
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
+
 using Dynamo.Utilities;
 using DynamoCoreUITests.Utility;
 using NUnit.Framework;
+using Dynamo.Utilities;
+using Dynamo.Selection;
 
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class VisualizationManagerUITests : DynamoTestUIBase
+    public class VisualizationManagerUITests : SystemTestBase
     {
         private Watch3DView BackgroundPreview
         {
@@ -133,7 +138,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;
@@ -156,6 +161,9 @@ namespace DynamoCoreUITests
             var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.IsUpstreamVisible = false;
 
+            Assert.NotNull(model);
+            Assert.NotNull(model.CurrentWorkspace);
+            
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
             //nodes, but watch 3D will not be showing them
@@ -441,6 +449,48 @@ namespace DynamoCoreUITests
             crvNode.DisplayLabels = true;
 
             Assert.AreEqual(6,BackgroundPreview.Text.Count());
+        }
+
+        [Test]
+        public void CustomNodeShouldNotHasGeometryPreview()
+        {
+            // Regression test for defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5165
+            // To verify when some geometry nodes are converted to custom node,
+            // their render packages shouldn't be carried over to custom work
+            // space.
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\");
+            ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "visualize_line_incustom.dyn"));
+            ViewModel.Model.RunExpression();
+            Assert.AreEqual(1, BackgroundPreview.Lines.Count / 2);
+
+            // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
+            var workspace = model.CurrentWorkspace;
+            var node = workspace.Nodes.OfType<DSFunction>().First();
+
+            List<NodeModel> selectionSet = new List<NodeModel>() { node };
+            NodeCollapser.Collapse(ViewModel.Model,
+                selectionSet.AsEnumerable(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__VisualizationTest__",
+                    Success = true
+                });
+            ViewModel.Model.RunExpression();
+
+            // Switch to custom workspace
+            var customWorkspace = model.Workspaces.Where(w => w is CustomNodeWorkspaceModel).First()
+                                    as CustomNodeWorkspaceModel;
+            model.CurrentWorkspace = customWorkspace;
+
+            // Select that node
+            DynamoSelection.Instance.Selection.Add(node);
+
+            // No preview in the background
+            Assert.AreEqual(0, BackgroundPreview.Lines.Count);
         }
 
         private int GetTotalDrawablesInModel()

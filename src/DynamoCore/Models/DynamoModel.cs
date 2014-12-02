@@ -136,6 +136,16 @@ namespace Dynamo.Models
         public bool ShutdownRequested { get; internal set; }
         public int MaxTesselationDivisions { get; set; }
 
+        /// <summary>
+        /// The application version string for analytics reporting APIs
+        /// </summary>
+        internal virtual String AppVersion { 
+            get {
+                return Process.GetCurrentProcess().ProcessName + "-"
+                    + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
+            }
+        }
+
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
 
@@ -599,6 +609,12 @@ namespace Dynamo.Models
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
             }
 
+            // Refresh values of nodes that took part in update.
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.RequestValueUpdateAsync();
+            }
+
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
             
@@ -859,7 +875,11 @@ namespace Dynamo.Models
             CurrentWorkspace.ClearUndoRecorder();
             currentWorkspace.ResetWorkspace();
 
-            this.ResetEngine();
+            // Don't bother resetting the engine during shutdown (especially 
+            // since ResetEngine destroys and recreates a new EngineController).
+            if (!ShutdownRequested)
+                this.ResetEngine();
+
             CurrentWorkspace.PreloadedTraceData = null;
         }
 
@@ -897,6 +917,22 @@ namespace Dynamo.Models
         internal bool CanGoHome(object parameter)
         {
             return CurrentWorkspace != HomeSpace;
+        }
+
+        internal void DumpLibraryToXml(object parameter)
+        {
+            string directory = DynamoPathManager.Instance.Logs;
+            string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string fullFileName = Path.Combine(directory, fileName);
+
+            this.SearchModel.DumpLibraryToXml(fullFileName);
+
+            Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
+        }
+
+        internal bool CanDumpLibraryToXml(object obj)
+        {
+            return true;
         }
 
         #endregion
@@ -1108,7 +1144,11 @@ namespace Dynamo.Models
                         typeName = Utils.PreprocessTypeName(typeName);
                         Type type = Utils.ResolveType(this, typeName);
                         if (type != null)
-                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
+                        {
+                            var tld = Utils.GetDataForType(this, type);
+                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(
+                                tld, nickname, signature, guid);
+                        }
 
                         if (el != null)
                         {
@@ -1143,8 +1183,9 @@ namespace Dynamo.Models
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
                         var type = Utils.ResolveType(this, typeName);
+                        var tld = Utils.GetDataForType(this, type);
 
-                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid);
+                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(tld, nickname, String.Empty, guid);
                         el.Load(dummyElement);
                     }
 

@@ -299,10 +299,11 @@ namespace Dynamo.Utilities
 
             // If after all the processing we do not end up with an empty code,
             // then we may need a semi-colon at the end. This is provided if the 
-            // code does not end with a closing curly bracket (in which case a 
+            // code does not end with a comment or string (in which case a 
             // trailing semi-colon is not required).
             // 
-            if (!string.IsNullOrEmpty(inputCode) && (!inputCode.EndsWith("}")))
+            if (!string.IsNullOrEmpty(inputCode) && 
+                !CodeCompletionParser.IsInsideCommentOrString(inputCode, inputCode.Length))
             {
                 if (inputCode.EndsWith(";") == false)
                     inputCode = inputCode + ";";
@@ -373,7 +374,7 @@ namespace Dynamo.Utilities
 
         #endregion
 
-        public CodeCompletionParser(string text)
+        private CodeCompletionParser(string text)
         {
             this.text = text;
         }

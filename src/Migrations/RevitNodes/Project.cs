@@ -92,12 +92,12 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
-            #region Create new DSFunction node - Geometry.GetClosestPoint@Geometry
+            #region Create new DSFunction node - Geometry.ClosestPointTo@Geometry
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Geometry.GetClosestPoint", "Geometry.GetClosestPoint@Geometry");
+                "Geometry.ClosestPointTo", "Geometry.ClosestPointTo@Geometry");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 

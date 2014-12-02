@@ -108,6 +108,7 @@
     <Compile Include="WatchImageCore.cs" />
     <Compile Include="UI\WatchImageNodeViewCustomization.cs" />
     <Compile Include="UI\WatchNodeViewCustomization.cs" />
+    <Compile Include="String.cs" />
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>

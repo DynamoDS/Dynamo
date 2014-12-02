@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+
 using Dynamo.Models;
 using Dynamo.Prompts;
 using Dynamo.Selection;
@@ -12,7 +13,6 @@ using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf;
 
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -23,8 +23,7 @@ namespace Dynamo.Controls
     public partial class NodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
-        public delegate void UpdateLayoutDelegate(FrameworkElement el);
-
+        public delegate void UpdateLayoutDelegate(FrameworkElement el);       
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
@@ -79,6 +78,7 @@ namespace Dynamo.Controls
             this.DataContextChanged += OnDataContextChanged;
 
             Canvas.SetZIndex(this, 1);
+
         }
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
@@ -148,8 +148,9 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
+           
         }
-
+      
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

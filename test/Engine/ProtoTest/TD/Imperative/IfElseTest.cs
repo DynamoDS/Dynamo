@@ -4,17 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
-    public class IfElseTest
+    class IfElseTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\Imperative\\IfStatement\\";
-
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
         [Category("SmokeTest")]
         public void T01_TestAllPassCondition()
