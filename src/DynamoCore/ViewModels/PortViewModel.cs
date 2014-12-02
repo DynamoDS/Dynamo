@@ -1,6 +1,9 @@
-﻿using System.Windows;
-
+﻿using System;
+using System.Data;
+using System.Windows;
+using System.Windows.Input;
 using Dynamo.Models;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.ViewModels
 {
@@ -84,17 +87,61 @@ namespace Dynamo.ViewModels
         public Thickness MarginThickness
         {
             get { return _port.MarginThickness; }
+            set { _port.MarginThickness = value; }
         }
 
+        public PortEventType EventType { get; set; }
+      
+        public PortPosition Position
+        {
+            get
+            {
+                if (PortType == PortType.INPUT)
+                {
+                    if (_node.InPorts.Count > 1)
+                    {
+                        int pos = _node.InPorts.IndexOf(this);
+                        if (pos == 0) //first port 
+                            return PortPosition.Top;
+                        if (pos == _node.InPorts.Count - 1)
+                            return PortPosition.Last;
+                        return PortPosition.Middle;
+                    }
+                }
+
+                if (PortType == PortType.OUTPUT)
+                {
+                    if (_node.OutPorts.Count > 1)
+                    {
+                        int pos = _node.OutPorts.IndexOf(this);                      
+                        if (pos == 0) //first port 
+                            return PortPosition.Top;
+                        if (pos == _node.OutPorts.Count - 1)
+                            return PortPosition.Last;
+                        return PortPosition.Middle;
+                    }
+                }
+
+                return PortPosition.First;
+            }
+        }
         #endregion
+
+        #region events
+        public event EventHandler MouseEnter;
+        public event EventHandler MouseLeave;
+        public event EventHandler MouseLeftButtonDown;       
+        #endregion
+
+
 
         public PortViewModel(NodeViewModel node, PortModel port)
         {
             _node = node;
             _port = port;
-
+           
             _port.PropertyChanged += _port_PropertyChanged;
-            _node.PropertyChanged += _node_PropertyChanged;
+            _node.PropertyChanged += _node_PropertyChanged;          
         }
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -155,6 +202,36 @@ namespace Dynamo.ViewModels
         private bool CanConnect(object parameter)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Handles the Mouse enter event on the port
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
+        private void OnRectangleMouseEnter(object parameter)
+        {
+            if (MouseEnter != null)
+                MouseEnter(parameter, null);
+        }
+
+        /// <summary>
+        /// Handles the Mouse leave on the port
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
+        private void OnRectangleMouseLeave(object parameter)
+        {
+            if (MouseLeave != null)
+                MouseLeave(parameter, null);
+        }
+
+        /// <summary>
+        /// Handles the Mouse left button down on the port
+        /// </summary>
+        /// <param name="parameter">The parameter.</param>
+        private void OnRectangleMouseLeftButtonDown(object parameter)
+        {
+            if (MouseLeftButtonDown != null)
+                MouseLeftButtonDown(parameter, null);
         }
     }
 }

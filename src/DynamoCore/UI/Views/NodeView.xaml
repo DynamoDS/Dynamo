@@ -206,8 +206,7 @@
             </TextBlock.Foreground>
         </TextBlock>
 
-        <!-- INPUT PORTS -->
-
+        <!-- INPUT PORTS -->        
         <DockPanel Name="inPortGrid"
                    Grid.Row="2"
                    Grid.Column="0"
