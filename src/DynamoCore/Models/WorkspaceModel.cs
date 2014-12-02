@@ -658,12 +658,7 @@ namespace Dynamo.Models
         {
             RaisePropertyChanged("Position");
         }
-
-        public void FindAndColorTheNodes()
-        {
-           GraphSyncData data =  DynamoModel.OnGetGraphSyncData();
-        }
-
+      
         #endregion
 
         #region private/internal methods

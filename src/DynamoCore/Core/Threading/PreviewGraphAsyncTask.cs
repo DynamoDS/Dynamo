@@ -20,7 +20,7 @@ namespace Dynamo.Core.Threading
         private GraphSyncData graphSyncData;
         private EngineController engineController;
         private IEnumerable<NodeModel> modifiedNodes;
-        private List<Guid> previewGraphData; 
+        public List<Guid> previewGraphData; 
 
         internal override TaskPriority Priority
         {
@@ -56,7 +56,7 @@ namespace Dynamo.Core.Threading
         /// (in which case there will be no need to schedule UpdateGraphAsyncTask 
         /// for execution).</returns>
         /// 
-        internal bool Initialize(EngineController controller, WorkspaceModel workspace)
+        internal List<Guid> Initialize(EngineController controller, WorkspaceModel workspace)
         {
             try
             {
@@ -65,11 +65,11 @@ namespace Dynamo.Core.Threading
 
                 modifiedNodes = ComputeModifiedNodes(workspace);
                 previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes);
-                return previewGraphData != null;
+                return previewGraphData;
             }
             catch (Exception)
             {
-                return false;
+                return null;
             }
         }
 

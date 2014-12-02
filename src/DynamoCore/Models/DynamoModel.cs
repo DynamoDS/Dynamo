@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Threading;
 using System.Xml;
 
@@ -28,7 +29,7 @@ using Dynamo.Selection;
 using DynamoUnits;
 
 using DynamoUtilities;
-
+using GraphLayout;
 using Microsoft.Practices.Prism;
 using ProtoScript.Runners;
 using Enum = System.Enum;
@@ -63,23 +64,28 @@ namespace Dynamo.Models
                 WorkspaceSaved(model);
             }
         }
-
-        public event NodesColorHandler GetGraphSyncData;
-        internal GraphSyncData OnGetGraphSyncData()
-        {
-            var task = new PreviewGraphAsyncTask(scheduler);
-            if (task.Initialize(EngineController, HomeSpace))
-            {
-                task.Completed += OnPreviewGraphCompleted;               
-                scheduler.ScheduleForExecution(task);
-            }
-
-            return null;
-        }
-
+       
         private void OnPreviewGraphCompleted(AsyncTask asyncTask)
         {
-            String message = "test";
+            var updateTask = asyncTask as PreviewGraphAsyncTask;
+            if (updateTask != null)
+            {
+                var nodeGuids = updateTask.previewGraphData;
+                foreach (var id in nodeMap)
+                {
+                    var nodeModel = id.Value as NodeModel;
+                    nodeModel.ForceReExecuteOfNode = false;
+                    for (int i = 0; i < nodeGuids.Count; i++)
+                    {                       
+                        if (id.Key == nodeGuids[i])
+                        {                           
+                            nodeModel.ForceReExecuteOfNode = true;
+                        }
+                    }
+                   
+                }
+            }
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -616,6 +622,14 @@ namespace Dynamo.Models
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
             OnEvaluationCompleted(this, EventArgs.Empty);
+
+            var previewTask = new PreviewGraphAsyncTask(scheduler);
+            if (previewTask.Initialize(EngineController, HomeSpace) != null)
+            {
+                previewTask.Completed += OnPreviewGraphCompleted;
+                scheduler.ScheduleForExecution(previewTask);
+            }
+
         }
 
         /// <summary>

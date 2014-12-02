@@ -590,8 +590,7 @@ namespace Dynamo.Models
         protected internal void ReportModification()
         {
             if (IsReportingModifications && Workspace != null)
-            {
-                Workspace.FindAndColorTheNodes();
+            {              
                 Workspace.Modified();
             }
         }

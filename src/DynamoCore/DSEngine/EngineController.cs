@@ -43,8 +43,7 @@ namespace Dynamo.DSEngine
 
         public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
-            this.dynamoModel = dynamoModel;
-            this.dynamoModel.GetGraphSyncData += OnGetGraphSyncData;
+            this.dynamoModel = dynamoModel;          
             // Create a core which is used for parsing code and loading libraries
             libraryCore = new ProtoCore.Core(new Options()
             {
@@ -402,7 +401,7 @@ namespace Dynamo.DSEngine
         private bool VerifyGraphSyncData()
         {
             GraphSyncData data = syncDataManager.GetSyncData();
-            syncDataManager.ResetStates();
+            //syncDataManager.ResetStates();
 
             var reExecuteNodesIds = dynamoModel.HomeSpace.Nodes
                 .Where(n => n.ForceReExecuteOfNode)
