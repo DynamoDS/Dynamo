@@ -279,6 +279,42 @@ namespace ProtoCore.DSASM
             return core.InterpreterProps.Pop();
         }
 
+        private void SetupEntryPoint()
+        {
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kInvalidIndex;
+            if (!IsGlobalScope())
+            {
+                ci = rmem.CurrentStackFrame.ClassScope;
+                fi = rmem.CurrentStackFrame.FunctionScope;
+            }
+
+            if (fepRun)
+            {
+                UpdateMethodDependencyGraph(pc, fi, ci);
+            }
+            else
+            {
+                if (!core.Options.IsDeltaExecution)
+                {
+                    pc = SetupGraphNodesForEntry(pc);
+                    SetupGraphEntryPoint(pc, IsGlobalScope());
+                }
+                else
+                {
+                    // See if we need to repond to property changed event.
+                    if (UpdatePropertyChangedGraphNode())
+                    {
+                        SetupNextExecutableGraph(-1, -1);
+                    }
+                    else
+                    {
+                        SetupGraphEntryPoint(pc, IsGlobalScope());
+                    }
+                }
+            }
+        }
+
         private void SetupExecutive(int exeblock, int entry)
         {
             PushInterpreterProps(Properties);
@@ -321,38 +357,7 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage)
             {
-                int ci = Constants.kInvalidIndex;
-                int fi = Constants.kInvalidIndex;
-                if (!IsGlobalScope()) 
-                {
-                    ci = rmem.CurrentStackFrame.ClassScope;
-                    fi = rmem.CurrentStackFrame.FunctionScope;
-                }
-
-                if (fepRun)
-                {
-                    UpdateMethodDependencyGraph(pc, fi, ci);
-                }
-                else
-                {
-                    if (!core.Options.IsDeltaExecution)
-                    {
-                        UpdateLanguageBlockDependencyGraph(pc);
-                        SetupGraphEntryPoint(pc, IsGlobalScope());
-                    }
-                    else
-                    {
-                        // See if we need to repond to property changed event.
-                        if (UpdatePropertyChangedGraphNode())
-                        {
-                            SetupNextExecutableGraph(-1, -1);
-                        }
-                        else
-                        {
-                            SetupGraphEntryPoint(pc, IsGlobalScope());
-                        }
-                    }
-                }
+                SetupEntryPoint();
             }
 
             if (core.ExecMode == InterpreterMode.kExpressionInterpreter)
@@ -1421,6 +1426,11 @@ namespace ProtoCore.DSASM
             }
         }
 
+        /// <summary>
+        /// Sets up the first graph to be executed
+        /// </summary>
+        /// <param name="entrypoint"></param>
+        /// <param name="isGlobalScope"></param>
         private void SetupGraphEntryPoint(int entrypoint, bool isGlobalScope)
         { 
             List<AssociativeGraph.GraphNode> graphNodeList = null;
@@ -1845,7 +1855,13 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void UpdateLanguageBlockDependencyGraph(int entry)
+        /// <summary>
+        /// Sets graphnodes dirty flag to true
+        /// Returns the entry point
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        private int SetupGraphNodesForEntry(int entry)
         {
             int setentry = entry;
             bool isFirstGraphSet = false;
@@ -1866,7 +1882,7 @@ namespace ProtoCore.DSASM
                     graphNode.isDirty = false;
                 }
             }
-            pc = setentry;
+            return setentry;
         }
 
         private void UpdateMethodDependencyGraph(int entry, int procIndex, int classIndex)
@@ -2580,26 +2596,7 @@ namespace ProtoCore.DSASM
 
             if (Language.kAssociative == executingLanguage && !core.DebugProps.isResume)
             {
-                int ci = Constants.kInvalidIndex;
-                int fi = Constants.kInvalidIndex;
-                if (!IsGlobalScope())
-                {
-                    ci = rmem.CurrentStackFrame.ClassScope;
-                    fi = rmem.CurrentStackFrame.FunctionScope;
-                }
-
-                if (fepRun)
-                {
-                    UpdateMethodDependencyGraph(pc, fi, ci);
-                }
-                else
-                {
-                    if (!core.Options.IsDeltaExecution)
-                    {
-                        UpdateLanguageBlockDependencyGraph(pc);
-                    }
-                    SetupGraphEntryPoint(pc, IsGlobalScope());
-                }
+                SetupEntryPoint();
             }
 
             Validity.Assert(null != rmem);
