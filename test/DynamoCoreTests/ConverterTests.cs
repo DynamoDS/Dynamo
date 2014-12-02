@@ -1,22 +1,22 @@
-﻿using Dynamo.Controls;
-using Dynamo.Nodes.Search;
-using Dynamo.Search.SearchElements;
-using Dynamo.Search;
-using Dynamo.ViewModels;
-using Dynamo.Utilities;
-using Dynamo.Models;
-using Dynamo.Interfaces;
-
-using NUnit.Framework;
-using System.Windows;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Windows.Media;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+
+using Dynamo.Controls;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Nodes.Search;
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using NUnit.Framework;
 
 namespace Dynamo
 {
-    class ConvertersTest
+    class ConverterTests
     {
         [Test]
         public void SearchResultsToVisibilityConverterTest()
