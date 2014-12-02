@@ -1856,6 +1856,20 @@ namespace Dynamo.Controls
         }
     }
 
+    public class BrowserInternalElementToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is BrowserInternalElement);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
     public class HasParentRootElement : IValueConverter
     {
