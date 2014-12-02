@@ -323,8 +323,7 @@ namespace ProtoCore.DSASM
             {
                 int ci = Constants.kInvalidIndex;
                 int fi = Constants.kInvalidIndex;
-                bool isGlobalScope = IsGlobalScope();
-                if (!isGlobalScope) 
+                if (!IsGlobalScope()) 
                 {
                     ci = rmem.CurrentStackFrame.ClassScope;
                     fi = rmem.CurrentStackFrame.FunctionScope;
@@ -339,7 +338,7 @@ namespace ProtoCore.DSASM
                     if (!core.Options.IsDeltaExecution)
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
-                        SetupGraphEntryPoint(pc, isGlobalScope);
+                        SetupGraphEntryPoint(pc, IsGlobalScope());
                     }
                     else
                     {
@@ -350,7 +349,7 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            SetupGraphEntryPoint(pc, isGlobalScope);
+                            SetupGraphEntryPoint(pc, IsGlobalScope());
                         }
                     }
                 }
@@ -2583,8 +2582,7 @@ namespace ProtoCore.DSASM
             {
                 int ci = Constants.kInvalidIndex;
                 int fi = Constants.kInvalidIndex;
-                bool isGlobalScope = IsGlobalScope();
-                if (!isGlobalScope)
+                if (!IsGlobalScope())
                 {
                     ci = rmem.CurrentStackFrame.ClassScope;
                     fi = rmem.CurrentStackFrame.FunctionScope;
@@ -2600,7 +2598,7 @@ namespace ProtoCore.DSASM
                     {
                         UpdateLanguageBlockDependencyGraph(pc);
                     }
-                    SetupGraphEntryPoint(pc, isGlobalScope);
+                    SetupGraphEntryPoint(pc, IsGlobalScope());
                 }
             }
 
