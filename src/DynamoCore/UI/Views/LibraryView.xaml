@@ -667,7 +667,8 @@
 
                                         <Border Grid.Row="1"
                                                 Background="#2F2F2F">
-                                            <ItemsPresenter x:Name="ItemsHost">
+                                            <ItemsPresenter x:Name="ItemsHost"
+                                                            Margin="0,3,0,3">
                                                 <ItemsPresenter.Visibility>
                                                     <Binding Converter="{StaticResource LibraryTreeItemsHostVisibilityConverter}" />
                                                 </ItemsPresenter.Visibility>
