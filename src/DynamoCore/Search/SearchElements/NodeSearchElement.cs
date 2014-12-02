@@ -13,7 +13,7 @@ namespace Dynamo.Search.SearchElements
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
-        internal readonly string FullName ;
+        internal readonly string FullName;
 
         #region Properties
 
@@ -88,7 +88,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "")
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "", string _assembly = "")
         {
             this.Node = null;
             this._name = name;
@@ -97,6 +97,7 @@ namespace Dynamo.Search.SearchElements
             this._type = "Node";
             this._description = description;
             this.FullName = fullName;
+            this.Assembly = _assembly;
         }
 
         public virtual NodeSearchElement Copy()
