@@ -14,7 +14,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
-namespace Dynamo
+namespace Dynamo.Tests
 {
     class ConverterTests
     {
@@ -410,6 +410,25 @@ namespace Dynamo
         }
 
         [Test]
+        public void BrowserInternalElementToBoolConverterTest()
+        {
+            var converter = new BrowserInternalElementToBoolConverter();
+            var element = new BrowserInternalElement();
+            object result;
+
+            //1. Element is null.            
+            //2. Element is BrowserInternalElement.
+
+            // 1 case
+            result = converter.Convert(null, null, null, null);
+            Assert.AreEqual(false, result);
+
+            // 2 case
+            result = converter.Convert(element, null, null, null);
+            Assert.AreEqual(true, result);
+        }
+
+        [Test]
         public void HasParentRootElementTest()
         {
             HasParentRootElement converter = new HasParentRootElement();
@@ -555,6 +574,29 @@ namespace Dynamo
 
             // 4 case
             result = converter.Convert(1, null, null, null);
+            Assert.AreEqual(Visibility.Visible, result);
+        }
+
+        [Test]
+        public void LibraryTreeItemsHostVisibilityConverterTest()
+        {
+            var converter = new LibraryTreeItemsHostVisibilityConverter();
+
+            var result = converter.Convert(null, null, null, null);
+            Assert.AreEqual(Visibility.Visible, result);
+
+            result = converter.Convert(new BrowserInternalElement(), null, null, null);
+            Assert.AreEqual(Visibility.Visible, result);
+
+            var rootElement = new BrowserRootElement("Top Category");
+            rootElement.Items.Add(new BrowserInternalElementForClasses("Classes", rootElement));
+
+            result = converter.Convert(rootElement.Items[0], null, null, null);
+            Assert.AreEqual(Visibility.Collapsed, result);
+
+            rootElement.Items.Add(new BrowserInternalElement());
+
+            result = converter.Convert(rootElement.Items[0], null, null, null);
             Assert.AreEqual(Visibility.Visible, result);
         }
 

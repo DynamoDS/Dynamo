@@ -1972,7 +1972,7 @@ namespace Dynamo.Controls
             var elementClasses = value as BrowserInternalElementForClasses;
             if (elementClasses != null && elementClasses.Parent.Items.Count <= 1)
                 return Visibility.Collapsed;
-            
+
             return Visibility.Visible;
         }
 
