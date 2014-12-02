@@ -213,7 +213,7 @@ namespace Dynamo.UI
 
         #region LibraryView
 
-        public const double MinWidthLibraryView = 308;
+        public const double MinWidthLibraryView = 204;
 
         public const string TopResult = "Top Result";
         public const string CategoryGroupCreate = "Create";
