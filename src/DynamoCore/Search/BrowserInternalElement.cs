@@ -119,8 +119,9 @@ namespace Dynamo.Nodes.Search
             this.OldParent = null;
         }
 
-
         public string FullCategoryName { get; set; }
+
+        public string FullName { get { return FullCategoryName + "." + Name; } }
     }
 }
 

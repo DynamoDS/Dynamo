@@ -603,7 +603,7 @@ namespace Dynamo.Search
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, t.FullName,
+            var searchEle = new NodeSearchElement(name, description, tags, 
                 t.Assembly.GetName().Name + ".dll");
             searchEle.Executed += this.OnExecuted;
 
@@ -779,16 +779,31 @@ namespace Dynamo.Search
 
         internal XmlDocument ComposeXmlForLibrary()
         {
-            var document = XmlHelper.CreateDocument("LibraryTree");
+            var document = XmlHelper.CreateDocument("Library");
+
+            // Building 'NodesList'
+            var parent = XmlHelper.AddNode(document.DocumentElement, "NodesList");            
+
+            XmlNode currNode;
+            foreach (var currElement in _searchElements.OrderBy(el => el.FullName))
+            {
+                currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
+
+                SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
+            }
+
+
+            // Building 'NodesTree'
+            parent = XmlHelper.AddNode(document.DocumentElement, "NodesTree");
 
             foreach (var category in BrowserRootCategories)
             {
-                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString());
-                XmlHelper.AddAttribute(element, "Name", category.Name);
+                currNode = XmlHelper.AddNode(parent, category.GetType().ToString());
+                XmlHelper.AddAttribute(currNode, "Name", category.Name);
 
-                AddChildrenToXml(element, category.Items);
+                AddChildrenToXml(currNode, category.Items);
 
-                document.DocumentElement.AppendChild(element);
+                parent.AppendChild(currNode);
             }
 
             return document;
@@ -802,11 +817,7 @@ namespace Dynamo.Search
 
                 if (child is NodeSearchElement)
                 {
-                    var castedChild = child as NodeSearchElement;
-                    XmlHelper.AddNode(element, "FullCategoryName", castedChild.FullCategoryName);
-                    XmlHelper.AddNode(element, "FullName", castedChild.FullName);
-                    XmlHelper.AddNode(element, "Name", castedChild.Name);
-                    XmlHelper.AddNode(element, "Description", castedChild.Description);
+                    SpecifyNodeInfo(element, child as NodeSearchElement);
                 }
                 else
                 {
@@ -816,6 +827,15 @@ namespace Dynamo.Search
 
                 parent.AppendChild(element);
             }
+        }
+
+        private void SpecifyNodeInfo(XmlNode node, NodeSearchElement element)
+        {
+            XmlHelper.AddNode(node, "FullName", element.FullName);
+            XmlHelper.AddNode(node, "FullCategoryName", element.FullCategoryName);
+            XmlHelper.AddNode(node, "Name", element.Name);
+            XmlHelper.AddNode(node, "Assembly", element.Assembly);
+            XmlHelper.AddNode(node, "Description", element.Description);
         }
     }
 }
