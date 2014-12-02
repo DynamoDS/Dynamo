@@ -140,6 +140,11 @@
     <Compile Include="Reflection\Mirror.cs" />
     <Compile Include="Reflection\MirrorData.cs" />
     <Compile Include="Reflection\Reflection.cs" />
+    <Compile Include="ResourceProtoCore.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResourceProtoCore.resx</DependentUpon>
+    </Compile>
     <Compile Include="RuntimeContext.cs" />
     <Compile Include="RuntimeMemory.cs" />
     <Compile Include="RuntimeStatus.cs" />
@@ -210,7 +215,12 @@
     <None Include="Parser\Parser.frame" />
     <None Include="Parser\Scanner.frame" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="ResourceProtoCore.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourceProtoCore.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(ProjectDir)ExtendedLibraries\*.ds" "$(OutputPath)"</PostBuildEvent>
   </PropertyGroup>

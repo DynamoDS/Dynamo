@@ -453,7 +453,7 @@ namespace ProtoCore.DSASM
             if (index >= hs.VisibleSize || index < 0)
             {
                 //throw new IndexOutOfRangeException();
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, RuntimeData.WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, ResourceProtoCore.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
