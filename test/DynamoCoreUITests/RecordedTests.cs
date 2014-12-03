@@ -1016,7 +1016,40 @@ namespace DynamoCoreUITests
                 }
             });
         }
+        
+        [Test, RequiresSTA]
+        public void ErrorInCBN_3872()
+        {
+            // add a new line of code in a CBN in warning stage and see if the warning persists
+            // http://adsk-oss.myjetbrains.com/youtrack/issues?q=3872
 
+
+            RunCommandsFromFile("Error_CBN_3872.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                NodeModel nodeModel = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
+                Assert.AreEqual(ElementState.Warning, nodeModel.State);
+                if (commandTag == "First")
+                {
+                    NodeModel nodeModel2 = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
+                    Assert.AreEqual(ElementState.Warning, nodeModel2.State);
+                }
+            });
+        }
+        [Test, RequiresSTA]
+        public void Array_CBN_3921()
+        {
+            // No error and no output port for the code written with curly braces in CBN
+            // Create a CBN with {1,2,3} adn it must execute correctly
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3921
+
+            RunCommandsFromFile("Array_CBN_3921.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                AssertPreviewValue("36d2aca5-034c-43c7-b43c-a9774d9432a2", new int [] { 1, 2, 3 });
+            });
+        }
+        
         #endregion
 
         #region Defect Verifications Test Cases

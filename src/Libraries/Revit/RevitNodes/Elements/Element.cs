@@ -401,6 +401,8 @@ namespace Revit.Elements
         /// <returns></returns>
         internal IEnumerable<Autodesk.Revit.DB.GeometryObject> InternalGeometry(bool useSymbolGeometry = false)
         {
+            DocumentManager.Regenerate();
+
             var thisElement = InternalElement;
 
             var goptions0 = new Options { ComputeReferences = true };
