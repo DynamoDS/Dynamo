@@ -26,20 +26,15 @@ namespace Revit.Elements
     //[SupressImportIntoVM]
     public abstract class Element : IDisposable, IGraphicItem, IFormattable
     {
-        public delegate void ConstructDelegate(Element e);
-
-#region internal constructors
-
         /// <summary>
-        /// The constructor which takes an function as input which is passed from
-        /// the derived constructors.
+        /// Handling exceptions when calling the initializing function
         /// </summary>
-        /// <param name="constructor"></param>
-        internal Element(ConstructDelegate constructor)
+        /// <param name="init"></param>
+        protected void SafeInit(Action init)
         {
             try
             {
-                constructor(this);
+                init();
             }
             catch (Exception e)
             {
@@ -48,8 +43,6 @@ namespace Revit.Elements
                 throw e;
             }
         }
-
-#endregion
 
         /// <summary>
         /// A reference to the current Document.

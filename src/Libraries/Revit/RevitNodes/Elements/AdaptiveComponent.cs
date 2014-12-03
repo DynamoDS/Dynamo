@@ -30,39 +30,47 @@ namespace Revit.Elements
         /// <param name="pts">Points to use as reference</param>
         /// <param name="fs">FamilySymbol to place</param>
         private AdaptiveComponent(Point[] pts, FamilySymbol fs)
-            : base((x) =>
-                {
+        {
+            SafeInit(()=>this.InitAdaptiveComponent(pts, fs));
+        }
 
-                    // if the family instance is present in trace...
-                    var oldFam =
-                        ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.FamilyInstance>(Document);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pts"></param>
+        /// <param name="fs"></param>
+        private void InitAdaptiveComponent(Point[] pts, FamilySymbol fs)
+        {
+            // if the family instance is present in trace...
+            var oldFam =
+                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.FamilyInstance>(Document);
 
-                    // just mutate it...
-                    if (oldFam != null)
-                    {
-                        InternalSetFamilyInstance(oldFam);
-                        if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
-                            InternalSetFamilySymbol(fs);
-                        InternalSetPositions(pts.ToXyzs());
-                        return;
-                    }
+            // just mutate it...
+            if (oldFam != null)
+            {
+                InternalSetFamilyInstance(oldFam);
+                if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
+                    InternalSetFamilySymbol(fs);
+                InternalSetPositions(pts.ToXyzs());
+                return;
+            }
 
-                    // otherwise create a new family instance...
-                    TransactionManager.Instance.EnsureInTransaction(Document);
+            // otherwise create a new family instance...
+            TransactionManager.Instance.EnsureInTransaction(Document);
 
-                    var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(Element.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(Element.Document, fs.InternalFamilySymbol);
 
-                    if (fam == null)
-                        throw new Exception("An adaptive component could not be found or created.");
+            if (fam == null)
+                throw new Exception("An adaptive component could not be found or created.");
 
-                    InternalSetFamilyInstance(fam);
-                    InternalSetPositions(pts.ToXyzs());
+            InternalSetFamilyInstance(fam);
+            InternalSetPositions(pts.ToXyzs());
 
-                    TransactionManager.Instance.TransactionTaskDone();
+            TransactionManager.Instance.TransactionTaskDone();
 
-                    // remember this value
-                    ElementBinder.SetElementForTrace(this.InternalElement);
-                }) { }
+            // remember this value
+            ElementBinder.SetElementForTrace(this.InternalElement);
+        }
 
         /// <summary>
         /// Internal constructor for the AdaptiveComponent wrapper
