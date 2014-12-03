@@ -68,12 +68,27 @@ namespace Dynamo.Wpf
         {
             if (!types.Any()) return null;
 
+            if (!types.Skip(1).Any()) return types.First();
+
             var counts = types.SelectMany(t => t.TypeHierarchy())
                               .GroupBy(t => t)
                               .ToDictionary(g => g.Key, g => g.Count());
 
-            var total = counts[typeof(object)]; // optimization instead of types.Count()
-            return types.First().TypeHierarchy().First(t => counts[t] == total);
+            Type type = counts.First().Key;
+            var min = counts.First().Value;
+            foreach (var ele in counts.Skip(1))
+            {
+                if (ele.Value < min)
+                {
+                    type = ele.Key;
+                    min = ele.Value;
+                }
+            }
+
+            return type;
+
+            //var total = counts[typeof(object)]; 
+            //return types.First().TypeHierarchy().First(t => counts[t] == total);
         }
 
         private static bool ImplementsGeneric(Type generic, Type toCheck)

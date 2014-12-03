@@ -196,8 +196,44 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, eles.First().Children().Count());
         }
 
-        // TODO(Peter) Watch tests
-        // TODO(Peter) CustomNode tests
-        // TODO(Peter) WatchImage tests
+        [Test]
+        public void WatchContainsExpectedUiElements()
+        {
+            Open(@"UI\WatchUI.dyn");
+
+            var nodeView = NodeViewOf<Dynamo.Nodes.Watch>();
+
+            Assert.Fail();
+        }
+
+        [Test]
+        public void WatchImageCoreContainsImage()
+        {
+            Open(@"UI\WatchUI.dyn");
+
+            var nodeView = NodeViewOf<Dynamo.Nodes.WatchImageCore>();
+
+            Assert.Fail();
+        }
+
+        [Test]
+        public void Watch3DContainsExpectedGeometry()
+        {
+            Open(@"UI\WatchUI.dyn");
+
+            var nodeView = NodeViewOf<Dynamo.Nodes.Watch3D>();
+
+            Assert.Fail();
+        }
+
+        [Test]
+        public void CustomNodeIsCustomized()
+        {
+            Open(@"UI\CustomNodeUI.dyn");
+
+            var nodeView = NodeViewOf<Dynamo.Nodes.Function>();
+
+            Assert.Fail();
+        }
     }
 }
