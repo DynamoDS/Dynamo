@@ -785,16 +785,33 @@ namespace Dynamo.Search
             var document = XmlHelper.CreateDocument("Library");
 
             // Building 'NodesList'
-            var parent = XmlHelper.AddNode(document.DocumentElement, "NodesList");            
+            var parent = XmlHelper.AddNode(document.DocumentElement, "NodesList");
+            var assembliesRoot = XmlHelper.AddNode(parent, "Assemblies");
 
             XmlNode currNode;
-            foreach (var currElement in _searchElements.OrderBy(el => el.FullName))
+
+            // Adding NodeModel and ZeroTouch assemblies. Packages assemblies will be added later
+
+            var nodeModelAssemblies = DynamoLoader.LoadedAssemblyNames;
+            // All ZeroTouch libraries are members of ImportedLibraries collection. But there
+            // we hame assemblies which are belong to packages. Those assemblies should be excluded.
+            var zeroTouchAssemblies = DynamoModel.EngineController.LibraryServices.ImportedLibraries.Except(
+                DynamoModel.Loader.PackageLoader.GetAllPackagesAssemblies());
+
+            var assemblyList = nodeModelAssemblies.Union(zeroTouchAssemblies).OrderBy(a => a);
+            foreach (var currAssembly in assemblyList)
             {
-                currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
+                parent = XmlHelper.AddNode(assembliesRoot, "Assembly");
+                XmlHelper.AddAttribute(parent, "Name", currAssembly);
 
-                SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
+                foreach (var currElement in _searchElements.Where(el => el.Assembly == currAssembly)
+                                                           .OrderBy(el => el.FullName))
+                {
+                    currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
+
+                    SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
+                }
             }
-
 
             // Building 'NodesTree'
             parent = XmlHelper.AddNode(document.DocumentElement, "NodesTree");
@@ -836,8 +853,7 @@ namespace Dynamo.Search
         {
             XmlHelper.AddNode(node, "FullName", element.FullName);
             XmlHelper.AddNode(node, "FullCategoryName", element.FullCategoryName);
-            XmlHelper.AddNode(node, "Name", element.Name);
-            XmlHelper.AddNode(node, "Assembly", element.Assembly);
+            XmlHelper.AddNode(node, "Name", element.Name);            
             XmlHelper.AddNode(node, "Description", element.Description);
         }
     }
