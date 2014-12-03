@@ -24,9 +24,12 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
+using ProtoCore;
 using Double = System.Double;
 using Enum = System.Enum;
+using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using String = System.String;
+using Type = System.Type;
 using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -108,7 +111,10 @@ namespace Dynamo.Models
 
         #region public properties
         //TODO(Steve): Attempt to make the majority of these readonly fields
-        
+
+
+        public readonly LibraryServices LibraryServices;
+
         /// <summary>
         /// TODO
         /// </summary>
@@ -152,12 +158,7 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         public DynamoLogger Logger { get; private set; }
-
-        /// <summary>
-        /// TODO
-        /// </summary>
-        public DynamoRunner Runner { get; protected set; }
-
+        
         private DynamoScheduler scheduler;
         public DynamoScheduler Scheduler { get { return scheduler; } }
         public int MaxTesselationDivisions { get; set; }
@@ -175,6 +176,7 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
+        [Obsolete("EngineController now kept on HomeWorkspace", true)]
         public EngineController EngineController { get; private set; }
 
         /// <summary>
@@ -252,6 +254,7 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
+        [Obsolete("Running now handled on HomeWorkspaceModel", true)]
         public bool DynamicRunEnabled { get; set; }
 
         /// <summary>
@@ -271,6 +274,7 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
+        [Obsolete("Running now handled on HomeWorkspaceModel", true)]
         public bool RunEnabled { get; set; }
         //{
         //    get { return runEnabled; }
@@ -364,14 +368,12 @@ namespace Dynamo.Models
 
             InstrumentationLogger.End();
 
-#if ENABLE_DYNAMO_SCHEDULER
             if (scheduler != null)
             {
                 scheduler.Shutdown();
                 scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
                 scheduler = null;
             }
-#endif
         }
 
         protected virtual void PostShutdownCore(bool shutdownHost)
@@ -388,7 +390,6 @@ namespace Dynamo.Models
             public IPreferences Preferences { get; set; }
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
-            public DynamoRunner Runner { get; set; }
         }
 
         /// <summary>
@@ -418,19 +419,16 @@ namespace Dynamo.Models
 
             if (configuration.Preferences == null)
                 configuration.Preferences = new PreferenceSettings();
-            if (configuration.Runner == null)
-                configuration.Runner = new DynamoRunner();
 
             return new DynamoModel(configuration);
         }
 
         protected DynamoModel(StartConfiguration configuration)
         {
-            this.MaxTesselationDivisions = 128;
+            MaxTesselationDivisions = 128;
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
-            DynamoRunner runner = configuration.Runner;
             bool isTestMode = configuration.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
@@ -442,19 +440,10 @@ namespace Dynamo.Models
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-#if ENABLE_DYNAMO_SCHEDULER
             var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
             scheduler = new DynamoScheduler(thread);
             scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
-#endif
-
-            Runner = runner;
-            Runner.RunStarted += Runner_RunStarted;
-            Runner.RunCompleted += Runner_RunCompeleted;
-            Runner.EvaluationCompleted += Runner_EvaluationCompleted;
-            Runner.ExceptionOccurred += Runner_ExceptionOccurred;
-            Runner.MessageLogged += LogMessage;
-
+            
             //TODO(Steve): This is ugly
             if (preferences is PreferenceSettings)
             {
@@ -481,15 +470,23 @@ namespace Dynamo.Models
             PackageLoader.MessageLogged += LogMessage;
 
             DisposeLogic.IsShuttingDown = false;
+            
+            // Create a core which is used for parsing code and loading libraries
+            var libraryCore = new ProtoCore.Core(new Options()
+            {
+                RootCustomPropertyFilterPathName = string.Empty
+            });
+            libraryCore.Executives.Add(Language.kAssociative, new ProtoAssociative.Executive(libraryCore));
+            libraryCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(libraryCore));
+            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
-            EngineController = new EngineController(this, DynamoPathManager.Instance.GeometryFactory);
-
-            EngineController.LibraryServices.MessageLogged += LogMessage;
-
+            LibraryServices = new LibraryServices(libraryCore);
+            LibraryServices.MessageLogged += LogMessage;
+            
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
             //TODO(Steve): Ensure this is safe when EngineController is re-created
-            NodeFactory.AddLoader(new ZeroTouchNodeLoader(EngineController.LibraryServices));
+            NodeFactory.AddLoader(new ZeroTouchNodeLoader(LibraryServices));
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
 
             UpdateManager.UpdateManager.CheckForProductUpdate();
@@ -516,6 +513,43 @@ namespace Dynamo.Models
             InitializeNodeLibrary(preferences);
         }
 
+        /// <summary>
+        /// This event handler is invoked when DynamoScheduler changes the state 
+        /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more 
+        /// details of these state changes.
+        /// </summary>
+        /// <param name="sender">The scheduler which raised the event.</param>
+        /// <param name="e">Task state changed event argument.</param>
+        /// 
+        private void OnAsyncTaskStateChanged(
+            DynamoScheduler sender,
+            TaskStateChangedEventArgs e)
+        {
+            switch (e.CurrentState)
+            {
+                case TaskStateChangedEventArgs.State.ExecutionStarting:
+                    if (e.Task is UpdateGraphAsyncTask)
+                        ExecutionEvents.OnGraphPreExecution();
+                    break;
+
+                case TaskStateChangedEventArgs.State.ExecutionCompleted:
+                    if (e.Task is UpdateGraphAsyncTask)
+                    {
+                        // Record execution time for update graph task.
+                        long start = e.Task.ExecutionStartTime.TickCount;
+                        long end = e.Task.ExecutionEndTime.TickCount;
+                        var executionTimeSpan = new TimeSpan(end - start);
+
+                        InstrumentationLogger.LogAnonymousTimedEvent("Perf",
+                            e.Task.GetType().Name, executionTimeSpan);
+
+                        Logger.Log("Evaluation completed in " + executionTimeSpan);
+                        ExecutionEvents.OnGraphPostExecution();
+                    }
+                    break;
+            }
+        }
+
         private void InitializeNodeLibrary(IPreferences preferences)
         {
             //CustomNodeManager.RecompileAllNodes(EngineController);
@@ -529,7 +563,7 @@ namespace Dynamo.Models
             }
 
             // Import Zero Touch libs
-            foreach (var funcGroup in EngineController.GetFunctionGroups())
+            foreach (var funcGroup in LibraryServices.GetAllFunctionGroups())
                 AddZeroTouchNodeToSearch(funcGroup);
 
             // Load Packages
@@ -580,15 +614,10 @@ namespace Dynamo.Models
         public void Dispose()
         {
             NodeFactory.MessageLogged -= LogMessage;
-            Runner.RunStarted -= Runner_RunStarted;
-            Runner.RunCompleted -= Runner_RunCompeleted;
-            Runner.EvaluationCompleted -= Runner_EvaluationCompleted;
-            Runner.ExceptionOccurred -= Runner_ExceptionOccurred;
-            Runner.MessageLogged -= LogMessage;
             CustomNodeManager.MessageLogged -= LogMessage;
             Loader.MessageLogged -= LogMessage;
             PackageLoader.MessageLogged -= LogMessage;
-            EngineController.LibraryServices.MessageLogged -= LogMessage;
+            LibraryServices.MessageLogged -= LogMessage;
 
             SearchModel.ItemProduced -= AddNodeToCurrentWorkspace;
 
@@ -647,262 +676,6 @@ namespace Dynamo.Models
                 case "NumberFormat":
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
-            }
-        }
-
-        #endregion
-
-        #region evaluation
-
-        /// <summary>
-        /// Force reset of the execution substrait. Executing this will have a negative performance impact
-        /// </summary>
-        public void Reset()
-        {
-            //This is necessary to avoid a race condition by causing a thread join
-            //inside the vm exec
-            //TODO(Luke): Push this into a resync call with the engine controller
-            ResetEngine();
-
-            foreach (var node in CurrentWorkspace.Nodes)
-            {
-                //TODO(Steve): Update place where we're tracking modifications, no need to call each individual node.
-                node.RequiresRecalc = true; 
-            }
-        }
-
-        /// <summary>
-        /// Call this method to reset the virtual machine, avoiding a race 
-        /// condition by using a thread join inside the vm executive.
-        /// TODO(Luke): Push this into a resync call with the engine controller
-        /// </summary>
-        /// <param name="markNodesAsDirty">Set this parameter to true to force 
-        /// reset of the execution substrait. Note that setting this parameter 
-        /// to true will have a negative performance impact.</param>
-        /// 
-        public virtual void ResetEngine(bool markNodesAsDirty = false)
-        {
-            ResetEngineInternal();
-            if (markNodesAsDirty)
-                Nodes.ForEach(n => n.RequiresRecalc = true);
-        }
-
-        protected void ResetEngineInternal()
-        {
-            if (EngineController != null)
-            {
-                EngineController.Dispose();
-                EngineController = null;
-            }
-
-            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
-            EngineController = new EngineController(this, geomFactory);
-            CustomNodeManager.RecompileAllNodes(EngineController);
-        }
-
-        /// <summary>
-        /// This method is typically called from the main application thread (as 
-        /// a result of user actions such as button click or node UI changes) to
-        /// schedule an update of the graph. This call may or may not represent 
-        /// an actual update. In the event that the user action does not result 
-        /// in actual graph update (e.g. moving of node on UI), the update task 
-        /// will not be scheduled for execution.
-        /// </summary>
-        [Obsolete("Running is now handled on HomeWorkspaceModel", true)]
-        public void RunExpression()
-        {
-            var traceData = HomeSpace.PreloadedTraceData;
-            if ((traceData != null) && traceData.Any())
-            {
-                // If we do have preloaded trace data, set it here first.
-                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
-                if (setTraceDataTask.Initialize(EngineController, HomeSpace))
-                    scheduler.ScheduleForExecution(setTraceDataTask);
-            }
-
-            // If one or more custom node have been updated, make sure they
-            // are compiled first before the home workspace gets evaluated.
-            // 
-            EngineController.ProcessPendingCustomNodeSyncData(scheduler);
-
-            var task = new UpdateGraphAsyncTask(scheduler);
-            if (task.Initialize(EngineController, HomeSpace))
-            {
-                task.Completed += OnUpdateGraphCompleted;
-                RunEnabled = false; // Disable 'Run' button.
-                scheduler.ScheduleForExecution(task);
-            }
-            else
-            {
-                // Notify handlers that evaluation did not take place.
-                var e = new EvaluationCompletedEventArgs(false);
-                OnEvaluationCompleted(this, e);
-            }
-        }
-
-        /// <summary>
-        /// This callback method is invoked in the context of ISchedulerThread 
-        /// when UpdateGraphAsyncTask is completed.
-        /// </summary>
-        /// <param name="task">The original UpdateGraphAsyncTask instance.</param>
-        private void OnUpdateGraphCompleted(AsyncTask task)
-        {
-            var updateTask = task as UpdateGraphAsyncTask;
-            var messages = new Dictionary<Guid, string>();
-
-            // Runtime warnings take precedence over build warnings.
-            foreach (var warning in updateTask.RuntimeWarnings)
-            {
-                var message = string.Join("\n", warning.Value.Select(w => w.Message));
-                messages.Add(warning.Key, message);
-            }
-
-            foreach (var warning in updateTask.BuildWarnings)
-            {
-                // If there is already runtime warnings for 
-                // this node, then ignore the build warnings.
-                if (messages.ContainsKey(warning.Key))
-                    continue;
-
-                var message = string.Join("\n", warning.Value.Select(w => w.Message));
-                messages.Add(warning.Key, message);
-            }
-
-            var workspace = updateTask.TargetedWorkspace;
-            foreach (var message in messages)
-            {
-                var guid = message.Key;
-                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
-                if (node == null)
-                    continue;
-
-                node.Warning(message.Value); // Update node warning message.
-            }
-
-            // This method is guaranteed to be called in the context of 
-            // ISchedulerThread (for Revit's case, it is the idle thread).
-            // Dispatch the failure message display for execution on UI thread.
-            // 
-            if (task.Exception != null && (DynamoModel.IsTestMode == false))
-            {
-                Action showFailureMessage = () =>
-                    Utils.DisplayEngineFailureMessage(this, task.Exception);
-
-                OnRequestDispatcherBeginInvoke(showFailureMessage);
-            }
-
-            // Refresh values of nodes that took part in update.
-            foreach (var modifiedNode in updateTask.ModifiedNodes)
-            {
-                modifiedNode.RequestValueUpdateAsync();
-            }
-
-            // Notify listeners (optional) of completion.
-            RunEnabled = true; // Re-enable 'Run' button.
-
-            // Notify handlers that evaluation took place.
-            var e = new EvaluationCompletedEventArgs(true);
-            OnEvaluationCompleted(this, e);
-        }
-
-        /// <summary>
-        /// This event handler is invoked when DynamoScheduler changes the state 
-        /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more 
-        /// details of these state changes.
-        /// </summary>
-        /// <param name="sender">The scheduler which raised the event.</param>
-        /// <param name="e">Task state changed event argument.</param>
-        /// 
-        private void OnAsyncTaskStateChanged(
-            DynamoScheduler sender,
-            TaskStateChangedEventArgs e)
-        {
-            switch (e.CurrentState)
-            {
-                case TaskStateChangedEventArgs.State.ExecutionStarting:
-                    if (e.Task is UpdateGraphAsyncTask)
-                        ExecutionEvents.OnGraphPreExecution();
-                    break;
-
-                case TaskStateChangedEventArgs.State.ExecutionCompleted:
-                    if (e.Task is UpdateGraphAsyncTask)
-                    {
-                        // Record execution time for update graph task.
-                        long start = e.Task.ExecutionStartTime.TickCount;
-                        long end = e.Task.ExecutionEndTime.TickCount;
-                        var executionTimeSpan = new TimeSpan(end - start);
-
-                        InstrumentationLogger.LogAnonymousTimedEvent("Perf",
-                            e.Task.GetType().Name, executionTimeSpan);
-
-                        Logger.Log("Evaluation completed in " + executionTimeSpan);
-                        ExecutionEvents.OnGraphPostExecution();
-                    }
-                    break;
-            }
-        }
-
-        [Obsolete("Running is now handled on HomeWorksapceModel", true)]
-        internal void RunCancelInternal(bool displayErrors, bool cancelRun)
-        {
-            if (cancelRun)
-                Runner.CancelAsync(EngineController);
-            else
-                RunExpression();
-        }
-
-        [Obsolete("Running is now handled on HomeWorksapceModel", true)]
-        internal void ForceRunCancelInternal(bool displayErrors, bool cancelRun)
-        {
-            if (cancelRun)
-                Runner.CancelAsync(EngineController);
-            else
-            {
-                Logger.Log("Beginning engine reset");
-                Reset();
-                Logger.Log("Reset complete");
-
-                RunExpression();
-            }
-        }
-
-        private void Runner_RunStarted()
-        {
-            RunEnabled = false;
-        }
-
-        private void Runner_RunCompeleted(bool success, bool cancelled)
-        {
-            RunEnabled = true;
-            if (cancelled)
-                Reset();
-            OnRunCompleted(this, success);
-        }
-
-        private void Runner_EvaluationCompleted()
-        {
-            OnEvaluationCompleted(this, EventArgs.Empty);
-        }
-
-        private void Runner_ExceptionOccurred(Exception exception, bool fatal)
-        {
-            // If there's a fatal exception, show it to the user, unless of course 
-            // if we're running in a unit-test, in which case there's no user. I'd 
-            // like not to display the dialog and hold up the continuous integration.
-            if (!IsTestMode)
-            {
-                if (fatal)
-                {
-                    OnRequestDispatcherBeginInvoke(
-                        () => Utils.DisplayEngineFailureMessage(this, exception));
-                }
-            }
-            else
-            {
-                //If we are testing, we need to throw an exception here
-                //which will, in turn, throw an Assert.Fail in the 
-                //Evaluation thread.
-                throw new Exception(exception.Message);
             }
         }
 
@@ -1085,6 +858,7 @@ namespace Dynamo.Models
             CurrentWorkspace = HomeSpace;
         }
 
+        //TODO(Steve): Move to WorkspaceModel
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
         {
             if (null == CurrentWorkspace)
@@ -1614,15 +1388,20 @@ namespace Dynamo.Models
             Guid id, string name, string category, string description, bool makeCurrentWorkspace,
             double workspaceOffsetX = 0, double workspaceOffsetY = 0)
         {
-            var workSpace = new CustomNodeWorkspaceModel(name,
+            var workSpace = new CustomNodeWorkspaceModel(
+                name,
                 category,
                 description,
                 workspaceOffsetX,
-                workspaceOffsetY) { WatchChanges = true };
+                workspaceOffsetY,
+                id)
+            {
+                WatchChanges = true
+            };
 
             Workspaces.Add(workSpace);
 
-            var functionDefinition = new CustomNodeDefinition(id) { Workspace = workSpace };
+            var functionDefinition = new CustomNodeDefinition(id, name) { Workspace = workSpace };
 
             functionDefinition.SyncWithWorkspace(this, true, true);
 

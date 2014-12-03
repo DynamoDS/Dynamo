@@ -124,26 +124,12 @@ namespace RevitServices.Persistence
         {
             if (TransactionManager.Instance.DoAssertInIdleThread)
             {
-#if ENABLE_DYNAMO_SCHEDULER
                 TransactionManager.Instance.EnsureInTransaction(
                     DocumentManager.Instance.CurrentDBDocument);
                 Instance.CurrentDBDocument.Regenerate();
                 // To ensure the transaction is closed in the idle process
                 // so that the element is updated after this.
                 TransactionManager.Instance.ForceCloseTransaction();
-
-#else
-                IdlePromise.ExecuteOnIdleSync(() =>
-                 {
-                     TransactionManager.Instance.EnsureInTransaction(
-                                  DocumentManager.Instance.CurrentDBDocument);
-                     Instance.CurrentDBDocument.Regenerate();
-                     //To ensure the transaction is closed in the idle process
-                     //so that the element is updated after this.
-                     TransactionManager.Instance.ForceCloseTransaction();
-                 }
-                 );
-#endif
             }
             else
             {

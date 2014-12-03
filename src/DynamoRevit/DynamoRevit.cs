@@ -36,8 +36,6 @@ using Autodesk.Revit.DB.Events;
 
 #endregion
 
-#if ENABLE_DYNAMO_SCHEDULER
-
 namespace RevitServices.Threading
 {
     // SCHEDULER: This class will be removed once DynamoScheduler work is 
@@ -64,8 +62,6 @@ namespace RevitServices.Threading
     }
 }
 
-#endif
-
 namespace Dynamo.Applications
 {
     [Transaction(TransactionMode.Manual),
@@ -85,25 +81,9 @@ namespace Dynamo.Applications
 
             try
             {
-#if ENABLE_DYNAMO_SCHEDULER
                 extCommandData = commandData;
                 commandData.Application.Idling += OnRevitIdleOnce;
-#else
 
-                IdlePromise.ExecuteOnIdleAsync(
-                    delegate
-                    {
-                        // create core data models
-                        revitDynamoModel = InitializeCoreModel(commandData);
-                        dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
-
-                        // show the window
-                        InitializeCoreView().Show();
-
-                        TryOpenWorkspaceInCommandData(commandData);
-                        SubscribeViewActivating(commandData);
-                    });
-#endif
                 // Disable the Dynamo button to prevent a re-run
                 DynamoRevitApp.DynamoButton.Enabled = false;
             }
@@ -135,8 +115,6 @@ namespace Dynamo.Applications
             }
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
         /// <summary>
         /// This method (Application.Idling event handler) is called exactly once
         /// during the creation of Dynamo Revit plug-in. It is in this call both 
@@ -163,8 +141,6 @@ namespace Dynamo.Applications
             SubscribeApplicationEvents(extCommandData);
         }
 
-#endif
-
         #region Initialization
 
         private static RevitDynamoModel InitializeCoreModel(ExternalCommandData commandData)
@@ -174,18 +150,6 @@ namespace Dynamo.Applications
                 Path.GetFullPath(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\..\");
 
-#if !ENABLE_DYNAMO_SCHEDULER
-
-            return RevitDynamoModel.Start(
-                new RevitDynamoModel.StartConfiguration()
-                {
-                    Preferences = prefs,
-                    DynamoCorePath = corePath,
-                    Context = GetRevitContext(commandData)
-                });
-
-#else
-
             return RevitDynamoModel.Start(
                 new RevitDynamoModel.StartConfiguration()
                 {
@@ -194,8 +158,6 @@ namespace Dynamo.Applications
                     Context = GetRevitContext(commandData),
                     SchedulerThread = new RevitSchedulerThread(commandData.Application)
                 });
-
-#endif
         }
 
         private static DynamoViewModel InitializeCoreViewModel(RevitDynamoModel revitDynamoModel)
@@ -214,20 +176,12 @@ namespace Dynamo.Applications
             revitDynamoModel.PackageManagerClient.RequestAuthentication +=
                  SingleSignOnManager.RegisterSingleSignOn;
 
-#if ENABLE_DYNAMO_SCHEDULER
-
             revitDynamoModel.ShutdownStarted += (drm) =>
             {
                 var uiApplication = DocumentManager.Instance.CurrentUIApplication;
                 uiApplication.Idling += DeleteKeeperElementOnce;
             };
 
-#else
-
-            revitDynamoModel.ShutdownStarted += (drm) =>
-                IdlePromise.ExecuteOnShutdown(DeleteKeeperElement);
-
-#endif
             return viewModel;
         }
 
@@ -251,11 +205,7 @@ namespace Dynamo.Applications
         private static void InitializeCore(ExternalCommandData commandData)
         {
             if (initializedCore) return;
-
-#if !ENABLE_DYNAMO_SCHEDULER
-            IdlePromise.RegisterIdle(commandData.Application);
-#endif
-
+            
             InitializeAssemblies();
             InitializeUnits();
             InitializeDocumentManager(commandData);
@@ -505,33 +455,19 @@ namespace Dynamo.Applications
         }
         #endregion
 
-#if ENABLE_DYNAMO_SCHEDULER
-
         private static void DeleteKeeperElementOnce(object sender, IdlingEventArgs idlingEventArgs)
         {
             var uiApplication = DocumentManager.Instance.CurrentUIApplication;
             uiApplication.Idling -= DeleteKeeperElementOnce;
             DynamoRevit.DeleteKeeperElement();
         }
-
-#endif
-
+        
         /// <summary>
         /// This method access Revit API, therefore it needs to be called only 
         /// by idle thread (i.e. in an 'UIApplication.Idling' event handler).
         /// </summary>
         private static void DeleteKeeperElement()
         {
-#if !ENABLE_DYNAMO_SCHEDULER
-
-            if (!IdlePromise.InIdleThread)
-            {
-                throw new AccessViolationException(
-                    "'DeleteKeeperElement' must be called in idle thread");
-            }
-
-#endif
-
             var dbDoc = DocumentManager.Instance.CurrentDBDocument;
             if (null == dbDoc || (dynamoViewModel == null))
                 return;

@@ -222,22 +222,12 @@ namespace Dynamo.Nodes
             else
                 return dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
         }
-
-#if ENABLE_DYNAMO_SCHEDULER
-
+        
         protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
             return; // No visualization update is required for this node type.
         }
-
-#else
-        public override void UpdateRenderPackage(int maxTessDivs)
-        {
-            //do nothing
-            //a watch should not draw its outputs
-        }
-#endif
-
+        
         #endregion
     }
 }

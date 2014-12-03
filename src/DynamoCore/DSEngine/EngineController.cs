@@ -1,14 +1,13 @@
 ﻿using Autodesk.DesignScript.Interfaces;
 using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using DynamoUtilities;
-using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
-using ProtoCore.Utils;
 using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
@@ -26,7 +25,7 @@ namespace Dynamo.DSEngine
     /// A controller to coordinate the interactions between some DesignScript
     /// sub components like library managment, live runner and so on.
     /// </summary>
-    public class EngineController : IAstNodeContainer, IDisposable
+    public class EngineController : LogSourceBase, IAstNodeContainer, IDisposable
     {
         public event AstBuiltEventHandler AstBuilt;
 
@@ -37,47 +36,39 @@ namespace Dynamo.DSEngine
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
-        private readonly DynamoModel dynamoModel;
-        private readonly ProtoCore.Core libraryCore;
+
+        [Obsolete("No longer supported.", true)]
+        private readonly DynamoModel dynamoModel = null;
+
         private readonly Object macroMutex = new Object();
 
-        public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
+        public EngineController(LibraryServices libraryServices, string geometryFactoryFileName)
         {
-            this.dynamoModel = dynamoModel;
+            this.libraryServices = libraryServices;
+            libraryServices.LibraryLoading += LibraryLoading;
+            libraryServices.LibraryLoadFailed += LibraryLoadFailed;
+            libraryServices.LibraryLoaded += LibraryLoaded;
 
-            // Create a core which is used for parsing code and loading libraries
-            libraryCore = new ProtoCore.Core(new Options()
-            {
-                RootCustomPropertyFilterPathName = string.Empty
-            });
-            libraryCore.Executives.Add(Language.kAssociative,new ProtoAssociative.Executive(libraryCore));
-            libraryCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(libraryCore));
-            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
-
-            libraryServices = new LibraryServices(libraryCore);
-            libraryServices.LibraryLoading += this.LibraryLoading;
-            libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
-            libraryServices.LibraryLoaded += this.LibraryLoaded;
-
-            liveRunnerServices = new LiveRunnerServices(dynamoModel, this, geometryFactoryFileName);
+            liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
 
-            astBuilder = new AstBuilder(dynamoModel, this);
+            astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
 
-            dynamoModel.NodeDeleted += NodeDeleted;
+            dynamoModel.NodeDeleted += NodeDeleted; //TODO(Steve): Call from DynamoModel
         }
 
         public void Dispose()
         {
             dynamoModel.NodeDeleted -= NodeDeleted;
+
             liveRunnerServices.Dispose();
 
-            libraryServices.LibraryLoading -= this.LibraryLoading;
-            libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
-            libraryServices.LibraryLoaded -= this.LibraryLoaded;
+            libraryServices.LibraryLoading -= LibraryLoading;
+            libraryServices.LibraryLoadFailed -= LibraryLoadFailed;
+            libraryServices.LibraryLoaded -= LibraryLoaded;
 
             // TODO: Find a better way to save loaded libraries. 
             if (!dynamoModel.IsTestMode)
@@ -91,7 +82,7 @@ namespace Dynamo.DSEngine
             libraryServices.Dispose();
             codeCompletionServices = null;
 
-            libraryCore.Cleanup();
+            libraryServices.LibraryManagementCore.Cleanup();
         }
 
         #region Function Groups
@@ -101,9 +92,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         public IEnumerable<FunctionGroup> GetFunctionGroups()
         {
-
-            return libraryServices.BuiltinFunctionGroups.Union(
-                       libraryServices.ImportedLibraries.SelectMany(lib => libraryServices.GetFunctionGroups(lib)));
+            return libraryServices.GetAllFunctionGroups();
         }
 
         /// <summary>
@@ -164,15 +153,15 @@ namespace Dynamo.DSEngine
                 }
                 catch (Exception ex)
                 {
-                    dynamoModel.Logger.Log(
-                        "Failed to get mirror for variable: " + variableName + "; reason: " +
-                            ex.Message);
+                    Log("Failed to get mirror for variable: " + variableName + "; reason: " +
+                        ex.Message);
                 }
 
                 return mirror;
             }
         }
         
+        /// <summary>
         /// Get a list of IGraphicItem of variable if it is a geometry object;
         /// otherwise returns null.
         /// </summary>
@@ -189,14 +178,13 @@ namespace Dynamo.DSEngine
 
         #endregion
 
-
         /// <summary>
         /// Generate graph sync data based on the input Dynamo nodes. Return 
         /// false if all nodes are clean.
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public bool GenerateGraphSyncData(HomeWorkspaceModel homeWorkspace, IEnumerable<NodeModel> nodes)
+        public bool GenerateGraphSyncData(ICollection<NodeModel> nodes)
         {
             lock (macroMutex)
             {
@@ -205,23 +193,20 @@ namespace Dynamo.DSEngine
                 if (activeNodes.Any())
                     astBuilder.CompileToAstNodes(activeNodes, true);
 
-                return VerifyGraphSyncData(homeWorkspace);
+                return VerifyGraphSyncData(nodes);
             }
         }
-
-
-#if ENABLE_DYNAMO_SCHEDULER
 
         /// <summary>
         /// This method is called on the main thread from UpdateGraphAsyncTask
         /// to generate GraphSyncData for a list of updated nodes.
         /// </summary>
+        /// <param name="nodes"></param>
         /// <param name="updatedNodes">The list of all updated nodes.</param>
         /// <returns>This method returns true if GraphSyncData is generated from 
         /// the list of updated nodes. If updatedNodes is empty or does not 
         /// result in any GraphSyncData, then this method returns false.</returns>
-        /// 
-        internal GraphSyncData ComputeSyncData(HomeWorkspaceModel homeWorkspace, IEnumerable<NodeModel> updatedNodes)
+        internal GraphSyncData ComputeSyncData(IEnumerable<NodeModel> nodes, IEnumerable<NodeModel> updatedNodes)
         {
             if (updatedNodes == null)
                 return null;
@@ -232,16 +217,14 @@ namespace Dynamo.DSEngine
                 astBuilder.CompileToAstNodes(activeNodes, true);
             }
 
-            if (!VerifyGraphSyncData(homeWorkspace) || ((graphSyncDataQueue.Count <= 0)))
+            if (!VerifyGraphSyncData(nodes) || ((graphSyncDataQueue.Count <= 0)))
             {
                 return null;
             }
 
             return graphSyncDataQueue.Dequeue();
         }
-
-#endif
-
+        
         /// <summary>
         /// Return true if there are graph sync data in the queue waiting for
         /// being executed.
@@ -261,33 +244,7 @@ namespace Dynamo.DSEngine
                 }
             }
         }
-
-#if !ENABLE_DYNAMO_SCHEDULER
-
-        /// <summary>
-        /// Generate graph sync data based on the input Dynamo custom node information.
-        /// Return false if all nodes are clean.
-        /// </summary>
-        /// <param name="def"></param>
-        /// <param name="nodes"></param>
-        /// <param name="outputs"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public bool GenerateGraphSyncDataForCustomNode(
-            CustomNodeDefinition def,
-            IEnumerable<NodeModel> nodes,
-            IEnumerable<AssociativeNode> outputs,
-            IEnumerable<string> parameters)
-        {
-            lock (macroMutex)
-            {
-                astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
-                return VerifyGraphSyncData();
-            }
-        }
-
-#else
-
+        
         private readonly Queue<GraphSyncData> pendingCustomNodeSyncData = new Queue<GraphSyncData>();
 
         /// <summary>
@@ -295,7 +252,7 @@ namespace Dynamo.DSEngine
         /// Return false if all nodes are clean.
         /// </summary>
         /// <returns></returns>
-        public bool GenerateGraphSyncDataForCustomNode(HomeWorkspaceModel homeWorkspace, CustomNodeDefinition definition)
+        public bool GenerateGraphSyncDataForCustomNode(IEnumerable<NodeModel> nodes, CustomNodeDefinition definition)
         {
             lock (macroMutex)
             {
@@ -315,7 +272,7 @@ namespace Dynamo.DSEngine
                     definition.FunctionName, definition.FunctionBody, definition.OutputNodes,
                     definition.DisplayParameters);
 
-                if (!VerifyGraphSyncData(homeWorkspace) || (graphSyncDataQueue.Count == 0))
+                if (!VerifyGraphSyncData(nodes) || (graphSyncDataQueue.Count == 0))
                     return false;
 
                 // GraphSyncData objects accumulated through the compilation above
@@ -361,15 +318,14 @@ namespace Dynamo.DSEngine
 
 #endif
 
-        private bool VerifyGraphSyncData(HomeWorkspaceModel workspace)
+        private bool VerifyGraphSyncData(IEnumerable<NodeModel> nodes)
         {
             GraphSyncData data = syncDataManager.GetSyncData();
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = new HashSet<Guid>(
-                workspace.Nodes
-                    .Where(n => n.ForceReExecuteOfNode)
-                    .Select(n => n.GUID));
+                nodes.Where(n => n.ForceReExecuteOfNode)
+                     .Select(n => n.GUID));
 
             if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
             {
@@ -398,8 +354,6 @@ namespace Dynamo.DSEngine
             return false;
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
         /// <summary>
         /// This method is called by UpdateGraphAsyncTask in the context of 
         /// ISchedulerThread to kick start an update through LiveRunner.
@@ -427,19 +381,17 @@ namespace Dynamo.DSEngine
             return liveRunnerServices.GetRuntimeWarnings();
         }
 
-#endif
-
         /// <summary>
         /// Update graph with graph sync data.
         /// </summary>
+        /// <param name="nodes"></param>
         /// <param name="fatalException">The exception that is not handled 
         /// anywhere within the LiveRunnerServices.UpdateGraph method. This 
         /// parameter will always be set to null if there is no unhandled 
         /// exception thrown from within the UpdateGraph call.</param>
         /// <returns>Returns true if any update has taken place, or false 
         /// otherwise.</returns>
-        /// 
-        public bool UpdateGraph(HomeWorkspaceModel workspace, out Exception fatalException)
+        public bool UpdateGraph(ICollection<NodeModel> nodes, out Exception fatalException)
         {
             lock (macroMutex)
             {
@@ -447,7 +399,7 @@ namespace Dynamo.DSEngine
                 bool updated = false;
                 fatalException = null;
 
-                ClearWarnings(workspace);
+                ClearWarnings(nodes);
 
                 lock (graphSyncDataQueue)
                 {
@@ -471,15 +423,15 @@ namespace Dynamo.DSEngine
                             if (fatalException == null)
                                 fatalException = e;
 
-                            dynamoModel.Logger.Log("Update graph failed: " + e.Message);
+                            Log("Update graph failed: " + e.Message);
                         }
                     }
                 }
 
                 if (updated)
                 {
-                    ShowBuildWarnings(workspace);
-                    ShowRuntimeWarnings(workspace);
+                    ShowBuildWarnings(nodes);
+                    ShowRuntimeWarnings(nodes);
                 }
 
                 return updated;
@@ -487,9 +439,9 @@ namespace Dynamo.DSEngine
         }
 
         //TODO(Steve): This definitely doesn't belong here...
-        private void ClearWarnings(HomeWorkspaceModel workspace)
+        private void ClearWarnings(IEnumerable<NodeModel> nodes)
         {
-            var warningNodes = workspace.Nodes.Where(n => n.State == ElementState.Warning);
+            var warningNodes = nodes.Where(n => n.State == ElementState.Warning);
 
             foreach (var node in warningNodes)
             {
@@ -498,14 +450,14 @@ namespace Dynamo.DSEngine
         }
 
         //TODO(Steve): This definitely doesn't belong here...
-        private void ShowRuntimeWarnings(HomeWorkspaceModel workspace)
+        private void ShowRuntimeWarnings(IEnumerable<NodeModel> nodes)
         {
             // Clear all previous warnings
             var warnings = liveRunnerServices.GetRuntimeWarnings();
             foreach (var item in warnings)
             {
                 Guid guid = item.Key;
-                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                var node = nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
                     string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
@@ -514,14 +466,14 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void ShowBuildWarnings(HomeWorkspaceModel workspace)
+        private void ShowBuildWarnings(IEnumerable<NodeModel> nodes)
         {
             // Clear all previous warnings
             var warnings = liveRunnerServices.GetBuildWarnings();
             foreach (var item in warnings)
             {
                 Guid guid = item.Key;
-                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                var node = nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
                     string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
@@ -575,13 +527,12 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        //TODO(Steve): Does this belong here?
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
             string newLibrary = e.LibraryPath;
 
             // Load all functions defined in that library.
-            dynamoModel.SearchModel.Add(LibraryServices.GetFunctionGroups(newLibrary));
+            dynamoModel.SearchModel.Add(LibraryServices.GetFunctionGroups(newLibrary)); //TODO(Steve)
 
             // Reset the VM
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
@@ -592,6 +543,7 @@ namespace Dynamo.DSEngine
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
+            //TODO(Steve)
             foreach (var node in dynamoModel.HomeSpace.Nodes)
             {
                 node.RequiresRecalc = true;
@@ -624,13 +576,14 @@ namespace Dynamo.DSEngine
         /// NodeDeleted event handler.
         /// </summary>
         /// <param name="node"></param>
-        private void NodeDeleted(NodeModel node)
+        public void NodeDeleted(NodeModel node)
         {
             syncDataManager.DeleteNodes(node.GUID);
         }
 
         #region Node2Code
 
+        [Obsolete("Node2Code disabled, API subject to change.")]
         public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string, string> variableNames)
         {
             variableNames = new Dictionary<string, string>();
@@ -717,7 +670,7 @@ namespace Dynamo.DSEngine
 
         private bool HasVariableDefined(string var)
         {
-            var cbs = libraryCore.CodeBlockList;
+            var cbs = libraryServices.LibraryManagementCore.CodeBlockList;
             if (cbs == null || cbs.Count > 0)
             {
                 return false;

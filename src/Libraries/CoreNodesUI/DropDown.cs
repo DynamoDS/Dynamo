@@ -11,6 +11,36 @@ using Dynamo.Nodes;
 namespace DSCoreNodesUI
 {
     /// <summary>
+    /// A class used to store a name and associated item for a drop down menu
+    /// </summary>
+    public class DynamoDropDownItem : IComparable
+    {
+        public string Name { get; set; }
+        public object Item { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public DynamoDropDownItem(string name, object item)
+        {
+            Name = name;
+            Item = item;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var a = obj as DynamoDropDownItem;
+            if (a == null)
+                return 1;
+
+            return Name.CompareTo(a);
+        }
+
+    }
+
+    /// <summary>
     /// Base class for all nodes allowing selection using a drop-down
     /// </summary>
     public abstract class DSDropDownBase : NodeModel
@@ -44,19 +74,19 @@ namespace DSCoreNodesUI
             }
         }
 
-        protected DSDropDownBase(WorkspaceModel workspaceModel, string outputName) : base()
+        protected DSDropDownBase(string outputName)
         {
             OutPortData.Add(new PortData(outputName, string.Format("The selected {0}", outputName)));
             RegisterAllPorts();
             PopulateItems();
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void Serialize(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             nodeElement.SetAttribute("index", SaveSelectedIndex(SelectedIndex, Items));            
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void Deserialize(XmlElement nodeElement, SaveContext context)
         {
             // Drop downs previsouly saved their selected index as an int.
             // Between versions of host applications where the number or order of items

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using Autodesk.Revit.DB;
-using RevitServices.Threading;
 
 namespace RevitServices.Transactions
 {
@@ -93,7 +91,7 @@ namespace RevitServices.Transactions
             {
                 throw new ArgumentNullException(
                     "strategy",
-                    "Strategy must not be null, to use a default call the overload with no arguments");
+                    @"Strategy must not be null, to use a default call the overload with no arguments");
             }
             Strategy = strategy;
             TransactionWrapper = new TransactionWrapper();
@@ -105,8 +103,6 @@ namespace RevitServices.Transactions
         /// </summary>
         public void EnsureInTransaction(Document document)
         {
-            AssertInIdleThread();
-
             //Hand off the behaviour to the strategy
             handle = Strategy.EnsureInTransaction(TransactionWrapper, document);
         }
@@ -117,8 +113,6 @@ namespace RevitServices.Transactions
         /// </summary>
         public void TransactionTaskDone()
         {
-            AssertInIdleThread();
-
             //Hand off the behaviour to the strategy
             Strategy.TransactionTaskDone(handle);
         }
@@ -128,8 +122,6 @@ namespace RevitServices.Transactions
         /// </summary>
         public void ForceCloseTransaction()
         {
-             AssertInIdleThread();
-            
             //Hand off the behaviour to the strategy
             Strategy.ForceCloseTransaction(handle);
         }
@@ -137,19 +129,9 @@ namespace RevitServices.Transactions
         /// <summary>
         ///     Ensures that the current execution context is an IdleThread
         /// </summary>
+        [Obsolete("Does nothing.", true)]
         public void AssertInIdleThread()
         {
-#if !ENABLE_DYNAMO_SCHEDULER
-            // SCHEDULER: The stub for IdlePromise has been moved out into DynamoRevit,
-            // which means we do not have a way to check here to see if the call's been 
-            // made from within an idle thread. This needs a little tweaking if we are 
-            // not ready to "assume" that callers of this method always get invoked in 
-            // an idle thread.
-            // 
-            if (DoAssertInIdleThread)
-                if (!IdlePromise.InIdleThread)
-                    throw new Exception("Cannot start a transaction outside of the Revit idle thread.");
-#endif
         }
 
         /// <summary>

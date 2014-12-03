@@ -56,6 +56,30 @@ namespace Dynamo.Nodes
         }
     }
 
+    public class StringInput : MigrationNode
+    {
+        [NodeMigration(from: "0.5.3.0", to: "0.6.3.0")]
+        public static NodeMigrationData Migrate_0530_to_0600(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            XmlNode nodeElement = data.MigratedNodes.ElementAt(0);
+            XmlNode newNode = nodeElement.CloneNode(true);
+
+            var query = from XmlNode subNode in newNode.ChildNodes
+                        where subNode.Name.Equals(typeof(string).FullName)
+                        from XmlAttribute attr in subNode.Attributes
+                        where attr.Name.Equals("value")
+                        select attr;
+
+            foreach (XmlAttribute attr in query)
+                attr.Value = HttpUtility.UrlDecode(attr.Value);
+
+            migrationData.AppendNode(newNode as XmlElement);
+            return migrationData;
+        }
+    }
+
     public class NewList : MigrationNode
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -1090,14 +1114,9 @@ namespace Dynamo.Nodes
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Transpose", "List.Transpose@var[]..[]");
         }
     }
-
-#if false
-
+    
     public class Sublists : MigrationNode
     {
-        internal static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
-        internal static readonly string[] RangeSeparatorTokens = { "..", ":", };
-
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
@@ -1109,6 +1128,7 @@ namespace Dynamo.Nodes
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "List.Sublists", "List.Sublists@var[]..[],var[]..[],int");
+            newNode.SetAttribute("lacing", "shortest");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -1121,35 +1141,33 @@ namespace Dynamo.Nodes
             }
 
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
-                data.Document, rangesString);
+                data.Document, oldNode, 0, rangesString);
             migrationData.AppendNode(codeBlockNode);
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
             // Update connectors
             for (int idx = 0; true; idx++)
             {
-                PortId oldInPort = new PortId(newNodeId, idx + 2, PortType.INPUT);
-                PortId newInPort = new PortId(codeBlockNodeId, idx, PortType.INPUT);
+                PortId oldInPort = new PortId(newNodeId, idx + 2, PortType.Input);
+                PortId newInPort = new PortId(codeBlockNodeId, idx, PortType.Input);
                 XmlElement connector = data.FindFirstConnector(oldInPort);
-                
+
                 if (connector == null)
                     break;
 
                 data.ReconnectToPort(connector, newInPort);
             }
 
-            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.Input);
+            PortId newInPort2 = new PortId(newNodeId, 2, PortType.Input);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
-            
+
             data.ReconnectToPort(connector1, newInPort2);
             data.CreateConnector(codeBlockNode, 0, newNode, 1);
 
             return migrationData;
         }
     }
-
-#endif
 
     public class Repeat : MigrationNode
     {

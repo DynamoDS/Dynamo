@@ -1,6 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 using Dynamo.DSEngine;
@@ -63,7 +61,7 @@ namespace Dynamo.Core.Threading
                 TargetedWorkspace = workspace;
 
                 modifiedNodes = ComputeModifiedNodes(workspace);
-                graphSyncData = engineController.ComputeSyncData(modifiedNodes);
+                graphSyncData = engineController.ComputeSyncData(workspace.Nodes, modifiedNodes);
                 return graphSyncData != null;
             }
             catch (Exception)
@@ -126,5 +124,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif

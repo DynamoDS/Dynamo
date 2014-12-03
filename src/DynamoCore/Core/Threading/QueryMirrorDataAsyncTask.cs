@@ -4,8 +4,6 @@ using Dynamo.DSEngine;
 
 using ProtoCore.Mirror;
 
-#if ENABLE_DYNAMO_SCHEDULER
-
 namespace Dynamo.Core.Threading
 {
     struct QueryMirrorDataParams
@@ -67,5 +65,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif

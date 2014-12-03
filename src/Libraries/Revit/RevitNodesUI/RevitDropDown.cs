@@ -31,7 +31,7 @@ namespace DSRevitNodesUI
 {
     public abstract class RevitDropDownBase : DSDropDownBase
     {
-        protected RevitDropDownBase(WorkspaceModel workspaceModel, string value) : base(workspaceModel, value)
+        protected RevitDropDownBase(WorkspaceModel workspaceModel, string value) : base(value)
         {
             var revModel = workspaceModel.dynamoModel as RevitDynamoModel;
             if (revModel != null) 
@@ -490,8 +490,8 @@ namespace DSRevitNodesUI
 
     public abstract class AllElementsInBuiltInCategory : RevitDropDownBase 
     {
-        private string noTypesMessage;
-        private BuiltInCategory category;
+        private readonly string noTypesMessage;
+        private readonly BuiltInCategory category;
 
         internal AllElementsInBuiltInCategory(
             BuiltInCategory category, string outputMessage, string noTypesMessage, WorkspaceModel workspaceModel)

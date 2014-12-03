@@ -1,6 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 
@@ -226,5 +224,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif

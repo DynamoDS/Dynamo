@@ -18,8 +18,10 @@ namespace Dynamo
         public CustomNodeDefinition(
             Guid functionId,
             string displayName,
-            IList<NodeModel> nodeModels)
+            IList<NodeModel> nodeModels=null)
         {
+            nodeModels = nodeModels ?? new List<NodeModel>();
+
             #region Find outputs
 
             // Find output elements for the node

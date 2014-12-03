@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-#if ENABLE_DYNAMO_SCHEDULER
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.DSEngine;
@@ -178,4 +177,3 @@ namespace Dynamo.Core.Threading
     }
 }
 
-#endif

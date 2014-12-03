@@ -1,14 +1,36 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Threading;
+using DSNodeServices;
+using Dynamo.Core.Threading;
+using Dynamo.DSEngine;
+using Dynamo.Services;
+using Dynamo.Utilities;
+using DynamoUtilities;
 
 namespace Dynamo.Models
 {
     public class HomeWorkspaceModel : WorkspaceModel
     {
-        public HomeWorkspaceModel()
-            : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        { }
+        public EngineController EngineController { get; private set; }
+        private readonly DynamoScheduler scheduler;
+        
+        public bool RunEnabled;
+        public bool DynamicRunEnabled;
+
+        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler) : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        {
+            this.scheduler = scheduler;
+            EngineController = new EngineController(libraryServices, DynamoPathManager.Instance.GeometryFactory);
+            EngineController.MessageLogged += Log;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            EngineController.MessageLogged -= Log;
+        }
 
         private readonly DispatcherTimer runExpressionTimer;
 
@@ -31,10 +53,9 @@ namespace Dynamo.Models
         {
 // ReSharper disable once PossibleNullReferenceException
             (sender as DispatcherTimer).Stop();
-            this.dynamoModel.RunExpression();
+            Run();
         }
-
-
+        
         protected override void OnModified()
         {
             base.OnModified();
@@ -42,7 +63,8 @@ namespace Dynamo.Models
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check that shutdown has not been requested.
-            if (this.dynamoModel.DynamicRunEnabled && !dynamoModel.ShutdownRequested)
+            //TODO(Steve): Move ShutdownRequested management to scheduler
+            if (DynamicRunEnabled && !dynamoModel.ShutdownRequested)
             {
                 // This dispatch timer is to avoid updating graph too frequently.
                 // It happens when we are modifying a bunch of connections in 
@@ -67,5 +89,161 @@ namespace Dynamo.Models
             runExpressionTimer.Stop();
             base.ResetWorkspaceCore();
         }
+
+        #region evaluation
+        
+        /// <summary>
+        /// Call this method to reset the virtual machine, avoiding a race 
+        /// condition by using a thread join inside the vm executive.
+        /// TODO(Luke): Push this into a resync call with the engine controller
+        /// </summary>
+        /// <param name="markNodesAsDirty">Set this parameter to true to force 
+        /// reset of the execution substrait. Note that setting this parameter 
+        /// to true will have a negative performance impact.</param>
+        /// 
+        public virtual void ResetEngine(bool markNodesAsDirty = false)
+        {
+            ResetEngineInternal();
+            if (markNodesAsDirty)
+            {
+                foreach (var node in Nodes)
+                {
+                    //TODO(Steve): Update place where we're tracking modifications, no need to call each individual node.
+                    node.RequiresRecalc = true;
+                }
+            }
+        }
+
+        private void ResetEngineInternal()
+        {
+            var libServices = EngineController.LibraryServices;
+
+            if (EngineController != null)
+            {
+                EngineController.Dispose();
+                EngineController = null;
+            }
+
+            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
+            EngineController = new EngineController(libServices, geomFactory);
+            
+            //TODO(Steve)
+            customNodeManager.RecompileAllNodes(EngineController);
+        }
+
+        /// <summary>
+        /// This callback method is invoked in the context of ISchedulerThread 
+        /// when UpdateGraphAsyncTask is completed.
+        /// </summary>
+        /// <param name="task">The original UpdateGraphAsyncTask instance.</param>
+        private void OnUpdateGraphCompleted(AsyncTask task)
+        {
+            var updateTask = task as UpdateGraphAsyncTask;
+            var messages = new Dictionary<Guid, string>();
+
+            // Runtime warnings take precedence over build warnings.
+            foreach (var warning in updateTask.RuntimeWarnings)
+            {
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
+                messages.Add(warning.Key, message);
+            }
+
+            foreach (var warning in updateTask.BuildWarnings)
+            {
+                // If there is already runtime warnings for 
+                // this node, then ignore the build warnings.
+                if (messages.ContainsKey(warning.Key))
+                    continue;
+
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
+                messages.Add(warning.Key, message);
+            }
+
+            var workspace = updateTask.TargetedWorkspace;
+            foreach (var message in messages)
+            {
+                var guid = message.Key;
+                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                if (node == null)
+                    continue;
+
+                node.Warning(message.Value); // Update node warning message.
+            }
+
+            // This method is guaranteed to be called in the context of 
+            // ISchedulerThread (for Revit's case, it is the idle thread).
+            // Dispatch the failure message display for execution on UI thread.
+            // 
+            if (task.Exception != null && (dynamoModel.IsTestMode == false))
+            {
+                Action showFailureMessage = () =>
+                    Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(dynamoModel, task.Exception);
+
+                OnRequestDispatcherBeginInvoke(showFailureMessage);
+            }
+
+            // Refresh values of nodes that took part in update.
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.RequestValueUpdateAsync();
+            }
+
+            // Notify listeners (optional) of completion.
+            RunEnabled = true; // Re-enable 'Run' button.
+
+            // Notify handlers that evaluation took place.
+            var e = new EvaluationCompletedEventArgs(true);
+            OnEvaluationCompleted(this, e);
+        }
+
+        /// <summary>
+        /// This method is typically called from the main application thread (as 
+        /// a result of user actions such as button click or node UI changes) to
+        /// schedule an update of the graph. This call may or may not represent 
+        /// an actual update. In the event that the user action does not result 
+        /// in actual graph update (e.g. moving of node on UI), the update task 
+        /// will not be scheduled for execution.
+        /// </summary>
+        public void Run()
+        {
+            var traceData = PreloadedTraceData;
+            if ((traceData != null) && traceData.Any())
+            {
+                // If we do have preloaded trace data, set it here first.
+                var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
+                if (setTraceDataTask.Initialize(EngineController, this))
+                    scheduler.ScheduleForExecution(setTraceDataTask);
+            }
+
+            // If one or more custom node have been updated, make sure they
+            // are compiled first before the home workspace gets evaluated.
+            // 
+            EngineController.ProcessPendingCustomNodeSyncData(scheduler);
+
+            var task = new UpdateGraphAsyncTask(scheduler);
+            if (task.Initialize(EngineController, this))
+            {
+                task.Completed += OnUpdateGraphCompleted;
+                RunEnabled = false; // Disable 'Run' button.
+                scheduler.ScheduleForExecution(task);
+            }
+            else
+            {
+                // Notify handlers that evaluation did not take place.
+                var e = new EvaluationCompletedEventArgs(false);
+                OnEvaluationCompleted(this, e);
+            }
+        }
+
+        public void ForceRun()
+        {
+            Log("Beginning engine reset");
+            ResetEngine();
+            Log("Reset complete");
+
+            Run();
+        }
+
+        #endregion
     }
 }

@@ -37,7 +37,7 @@ namespace DSCoreNodesUI
 
     public abstract class EnumBase<T> : DSDropDownBase
     {
-        protected EnumBase(WorkspaceModel workspace) : base(workspace, typeof(T).ToString()) { }
+        protected EnumBase(WorkspaceModel workspace) : base(typeof(T).ToString()) { }
 
         public override void PopulateItems()
         {
@@ -57,7 +57,7 @@ namespace DSCoreNodesUI
     /// </summary>
     public abstract class AllChildrenOfType<T> : DSDropDownBase
     {
-        protected AllChildrenOfType(WorkspaceModel workspace) : base(workspace, "Types")
+        protected AllChildrenOfType(WorkspaceModel workspace) : base("Types")
         {
             RegisterAllPorts();
         }

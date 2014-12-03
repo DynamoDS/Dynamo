@@ -194,8 +194,6 @@ namespace Dynamo.Applications.Models
             base.OnEvaluationCompleted(sender, e);
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
         protected override void PreShutdownCore(bool shutdownHost)
         {
             if (shutdownHost)
@@ -214,18 +212,6 @@ namespace Dynamo.Applications.Models
             RevitDynamoModel.ShutdownRevitHost();
         }
 
-#else
-
-        protected override void PreShutdownCore(bool shutdownHost)
-        {
-            if (shutdownHost)
-                IdlePromise.ExecuteOnShutdown(ShutdownRevitHost);
-
-            base.PreShutdownCore(shutdownHost);
-        }
-
-#endif
-
         protected override void ShutDownCore(bool shutDownHost)
         {
             DisposeLogic.IsShuttingDown = true;
@@ -239,17 +225,6 @@ namespace Dynamo.Applications.Models
             UnsubscribeRevitServicesUpdaterEvents();
             UnsubscribeTransactionManagerEvents();
         }
-
-#if !ENABLE_DYNAMO_SCHEDULER
-
-        protected override void PostShutdownCore(bool shutdownHost)
-        {
-            IdlePromise.ClearPromises();
-            IdlePromise.Shutdown();
-            base.PostShutdownCore(shutdownHost);
-        }
-
-#endif
 
         public override void ResetEngine(bool markNodesAsDirty = false)
         {

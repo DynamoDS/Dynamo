@@ -47,11 +47,7 @@ namespace Dynamo
         private bool alternateDrawingContextAvailable;
         private long taskId = -1;
         private List<long> taskList = new List<long>();
-
-#if !ENABLE_DYNAMO_SCHEDULER
-        private readonly RenderManager renderManager;
-#endif
-
+        
         #endregion
 
         #region public properties
@@ -231,12 +227,7 @@ namespace Dynamo
         public VisualizationManager(DynamoModel dynamoModel)
         {
             this.dynamoModel = dynamoModel;
-
-#if !ENABLE_DYNAMO_SCHEDULER
-            renderManager = new RenderManager(this, dynamoModel);
-            //octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
-#endif
-
+            
             dynamoModel.WorkspaceClearing += Pause;
             dynamoModel.WorkspaceCleared += UnPauseAndUpdate;
 
@@ -514,13 +505,8 @@ namespace Dynamo
                     break;
             }
 
-#if !ENABLE_DYNAMO_SCHEDULER
-            if (updateVisualization)
-                renderManager.RequestRenderAsync(new RenderTask());
-#else
             if (updateVisualization)
                 RequestNodeVisualUpdateAsync(null);
-#endif
         }
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -568,19 +554,7 @@ namespace Dynamo
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
             dynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
-
-#if !ENABLE_DYNAMO_SCHEDULER
-            renderManager.RenderComplete += RenderManagerOnRenderComplete;
-#endif
         }
-
-#if !ENABLE_DYNAMO_SCHEDULER
-
-        private void RenderManagerOnRenderComplete(object sender, RenderCompletionEventArgs renderCompletionEventArgs)
-        {
-            OnRenderComplete(this, renderCompletionEventArgs);
-        }
-#endif
 
         private void UnregisterEventListeners()
         {
@@ -590,10 +564,6 @@ namespace Dynamo
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
             dynamoModel.Nodes.ForEach(n => n.PropertyChanged -= NodePropertyChanged);
-
-#if !ENABLE_DYNAMO_SCHEDULER
-            renderManager.RenderComplete -= RenderManagerOnRenderComplete;
-#endif
         }
 
         /// <summary>
@@ -609,15 +579,9 @@ namespace Dynamo
             if (args != null && !args.EvaluationTookPlace)
                 return;
 
-#if !ENABLE_DYNAMO_SCHEDULER
-            renderManager.RequestRenderAsync(new RenderTask());
-#else
             RequestNodeVisualUpdateAsync(null);
-#endif
         }
-
-#if ENABLE_DYNAMO_SCHEDULER
-
+        
         protected virtual void HandleRenderPackagesReadyCore()
         {
             // Default visualization manager does nothing here.
@@ -678,8 +642,6 @@ namespace Dynamo
             OnResultsReadyToVisualize(this, e);
         }
 
-#endif
-
         private void Clear(DynamoModel dynamoModel)
         {
             Pause(this, EventArgs.Empty);
@@ -726,10 +688,6 @@ namespace Dynamo
         public void Cleanup()
         {
             UnregisterEventListeners();
-
-#if !ENABLE_DYNAMO_SCHEDULER
-            renderManager.CleanUp();
-#endif
         }
 
         #endregion

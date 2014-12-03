@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Dynamo.Interfaces;
 using Dynamo.Models;
 
 using ProtoCore;
@@ -28,14 +28,12 @@ namespace Dynamo.DSEngine
     /// <summary>
     ///     AstBuilder is a factory class to create different kinds of AST nodes.
     /// </summary>
-    public class AstBuilder
+    public class AstBuilder : LogSourceBase
     {
-        private readonly DynamoModel dynamoModel;
         private readonly IAstNodeContainer nodeContainer;
 
-        public AstBuilder(DynamoModel dynamoModel, IAstNodeContainer nodeContainer)
+        public AstBuilder(IAstNodeContainer nodeContainer)
         {
-            this.dynamoModel = dynamoModel;
             this.nodeContainer = nodeContainer;
         }
 
@@ -128,7 +126,7 @@ namespace Dynamo.DSEngine
 
             //TODO: This should do something more than just log a generic message. --SJE
             if (node.State == ElementState.Error)
-                dynamoModel.Logger.Log("Error in Node. Not sent for building and compiling");
+                Log("Error in Node. Not sent for building and compiling");
 
             if (isDeltaExecution)
                 OnAstNodeBuilding(node.GUID);
@@ -144,11 +142,11 @@ namespace Dynamo.DSEngine
                     ? scopedNode.BuildAstInScope(inputAstNodes)
                     : node.BuildAst(inputAstNodes);
             
-            if (dynamoModel.DebugSettings.VerboseLogging)
+            if (dynamoModel.DebugSettings.VerboseLogging) //TODO(Steve)
             {
                 foreach (var n in astNodes)
                 {
-                    dynamoModel.Logger.Log(n.ToString());
+                    Log(n.ToString());
                 }
             }
 
@@ -172,7 +170,7 @@ namespace Dynamo.DSEngine
                         //Register the function node in global scope with Graph Sync data,
                         //so that we don't have a function definition inside the function def
                         //of custom node.
-                        OnAstNodeBuilt(node.GUID, new AssociativeNode[] { item });
+                        OnAstNodeBuilt(node.GUID, new[] { item });
                     }
                     else
                         resultList.Add(item);

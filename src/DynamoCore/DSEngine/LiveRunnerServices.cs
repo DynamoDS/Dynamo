@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Dynamo.Interfaces;
 using Dynamo.Models;
 
 using ProtoCore.Mirror;
@@ -12,20 +12,18 @@ namespace Dynamo.DSEngine
     {
         internal static ILiveRunner CreateLiveRunner(EngineController controller, string geometryFactoryFileName)
         {
-            LiveRunner.Configuration configuration = new LiveRunner.Configuration();
+            var configuration = new LiveRunner.Configuration();
             configuration.PassThroughConfiguration.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, geometryFactoryFileName);
             return new LiveRunner(configuration);
         }
     }
 
-    public class LiveRunnerServices : IDisposable
+    public class LiveRunnerServices : LogSourceBase, IDisposable
     {
-        private ILiveRunner liveRunner;
-        private readonly DynamoModel dynamoModel;
-
-        public LiveRunnerServices(DynamoModel dynamoModel, EngineController controller, string geometryFactoryFileName)
+        private readonly ILiveRunner liveRunner;
+        
+        public LiveRunnerServices(EngineController controller, string geometryFactoryFileName)
         {
-            this.dynamoModel = dynamoModel;
             liveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
         }
 
@@ -49,7 +47,7 @@ namespace Dynamo.DSEngine
             var mirror = liveRunner.InspectNodeValue(var);
 
             if (dynamoModel.DebugSettings.VerboseLogging)
-                dynamoModel.Logger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
+                Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
 
             return mirror;
 
@@ -62,7 +60,7 @@ namespace Dynamo.DSEngine
         public void UpdateGraph(GraphSyncData graphData)
         {
             if (dynamoModel.DebugSettings.VerboseLogging)
-                dynamoModel.Logger.Log("LRS.UpdateGraph: " + graphData);
+                Log("LRS.UpdateGraph: " + graphData);
 
             liveRunner.UpdateGraph(graphData);
         }

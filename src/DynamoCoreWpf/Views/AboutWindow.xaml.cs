@@ -24,11 +24,6 @@ namespace Dynamo.UI.Views
             InstallNewUpdate = false;
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = dynamoViewModel;
-
-#if ENABLE_DYNAMO_SCHEDULER
-            // SCHEDULER: Temporary way to tell that scheduler is enabled.
-            VersionNumber.Foreground = new SolidColorBrush(Colors.Yellow);
-#endif
         }
 
         public bool InstallNewUpdate { get; private set; }

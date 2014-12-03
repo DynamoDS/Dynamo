@@ -1,6 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-using System;
+﻿using System;
 
 namespace Dynamo.Core.Threading
 {
@@ -50,5 +48,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif

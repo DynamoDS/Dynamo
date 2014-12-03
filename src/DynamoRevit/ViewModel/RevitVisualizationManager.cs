@@ -48,15 +48,11 @@ namespace Dynamo
             }
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
         protected override void HandleRenderPackagesReadyCore()
         {
             // Trigger an update of visualization in alternate context.
             VisualizationManagerRenderComplete(this, EventArgs.Empty);
         }
-
-#endif
 
         private void CleanupVisualizations(object sender, EventArgs e)
         {
