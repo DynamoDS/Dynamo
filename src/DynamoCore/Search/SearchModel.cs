@@ -603,8 +603,11 @@ namespace Dynamo.Search
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, 
-                t.Assembly.GetName().Name + ".dll");
+            var assemblyName = t.Assembly.GetName().Name + ".dll";
+            if (!DynamoLoader.LoadedAssemblyNames.Contains(assemblyName))
+                assemblyName = t.Assembly.Location;
+
+            var searchEle = new NodeSearchElement(name, description, tags, assemblyName);
             searchEle.Executed += this.OnExecuted;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
