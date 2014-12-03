@@ -414,8 +414,7 @@ namespace Dynamo.UI.Controls
             if (text == "")
             {
                 this.nodeViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(
-                        this.nodeViewModel.NodeModel.GUID, "esc", text));
+                    new DynCmd.DeleteModelCommand(this.nodeViewModel.NodeModel.GUID));             
             }
         }
         #endregion

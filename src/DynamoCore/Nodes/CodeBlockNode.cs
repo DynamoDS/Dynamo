@@ -252,30 +252,7 @@ namespace Dynamo.Nodes
                 if (!value.Equals(this.Code))
                     Code = value;                               
                 return true;
-            }
-            //Since an empty Code Block Node should not exist, this checks for such instances.
-            // If an empty Code Block Node is found on an Esc key press, it is deleted. The empty code block is
-            // recorded and deleted.
-            if(name == "esc")
-            {
-                //this.Workspace.UndoRecorder.PopFromUndoGroup();
-                value = CodeBlockUtils.FormatUserText(value);
-
-                if (value == "")
-                {
-                    this.Workspace.UndoRecorder.PopFromUndoGroup();
-                    this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });                 
-                    Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
-                    this.Workspace.Nodes.Remove(this);
-                }
-                else
-                {
-                    if (!value.Equals(this.Code))
-                        Code = value;     
-                }
-                return true;
-            }
-
+            }            
             return base.UpdateValueCore(name, value);
         }
 
