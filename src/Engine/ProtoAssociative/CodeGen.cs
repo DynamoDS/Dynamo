@@ -462,7 +462,7 @@ namespace ProtoAssociative
             bool allocateForBaseVar = classScope < classIndex;
             bool isProperty = classIndex != Constants.kInvalidIndex && funcIndex == Constants.kInvalidIndex;
             if (!allocateForBaseVar && !isProperty && core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
-                buildStatus.LogSemanticError(ident + " is a class name, can't be used as a variable.", null, line, col, graphNode);
+                buildStatus.LogSemanticError(ident + Resource.logSemanticErrorClassName, null, line, col, graphNode);
 
             ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode();
             symbolnode.name = ident;
@@ -4102,7 +4102,7 @@ namespace ProtoAssociative
             ProtoCore.DSASM.SymbolNode symnode = Allocate(classIndex, classScope, ProtoCore.DSASM.Constants.kGlobalScope, name, ptrType, datasize, isStatic, access);
             if (null == symnode)
             {
-                buildStatus.LogSemanticError("Member variable '" + name + "' is already defined in class " + core.ClassTable.ClassNodes[classIndex].name);
+                buildStatus.LogSemanticError(Resource.logSemanticErrorMemberVariable + name + Resource.logSemanticErrorAlreadyDefined + core.ClassTable.ClassNodes[classIndex].name);
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
             }
 
@@ -4793,7 +4793,7 @@ namespace ProtoAssociative
                 if (ProtoCore.Language.kAssociative == langblock.codeblock.language && !isTopBlock)
                 {
                     // TODO Jun: Move the associative and all common string into some table
-                    buildStatus.LogSyntaxError("An associative language block is declared within an associative language block.", core.CurrentDSFileName, langblock.line, langblock.col);
+                    buildStatus.LogSyntaxError(Resource.logSyntaxErrorAssociativeLanguageBlockIsDeclaredInside, core.CurrentDSFileName, langblock.line, langblock.col);
                 }
 
 
@@ -5178,7 +5178,7 @@ namespace ProtoAssociative
                 // Populating the class tables with the class names
                 if (null != codeBlock.parent)
                 {
-                    buildStatus.LogSemanticError("A class cannot be defined inside a language block.\n", core.CurrentDSFileName, classDecl.line, classDecl.col);
+                    buildStatus.LogSemanticError(Resource.logSemanticErrorClassCannotBeDefinedInsideALanguageBlock, core.CurrentDSFileName, classDecl.line, classDecl.col);
                 }
 
 
@@ -8190,7 +8190,7 @@ namespace ProtoAssociative
 
                 if (inferedType.UID == (int)PrimitiveType.kTypeFunctionPointer && subPass != ProtoCore.Compiler.Associative.SubCompilePass.kUnboundIdentifier && emitDebugInfo)
                 {
-                    buildStatus.LogSemanticError("Function pointer is not allowed at binary expression other than assignment!", core.CurrentDSFileName, bnode.LeftNode.line, bnode.LeftNode.col);
+                    buildStatus.LogSemanticError(Resource.logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression, core.CurrentDSFileName, bnode.LeftNode.line, bnode.LeftNode.col);
                 }
 
                 leftType.UID = inferedType.UID;
@@ -8269,7 +8269,7 @@ namespace ProtoAssociative
 
                 if (inferedType.UID == (int)PrimitiveType.kTypeFunctionPointer && emitDebugInfo)
                 {
-                    buildStatus.LogSemanticError("Function pointer is not allowed at binary expression other than assignment!", core.CurrentDSFileName, bnode.RightNode.line, bnode.RightNode.col);
+                    buildStatus.LogSemanticError(Resource.logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression, core.CurrentDSFileName, bnode.RightNode.line, bnode.RightNode.col);
                 }
                 EmitBinaryOperation(leftType, rightType, bnode.Optr);
                 isBooleanOp = false;
@@ -8366,7 +8366,7 @@ namespace ProtoAssociative
                         {
                             if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
                             {
-                                buildStatus.LogSemanticError("\"" + t.Name + "\"" + " is a function and not allowed as a variable name", core.CurrentDSFileName, t.line, t.col);
+                                buildStatus.LogSemanticError("\"" + t.Name + "\"" + Resource.logSemanticErrorFunction, core.CurrentDSFileName, t.line, t.col);
                             }
                         }
                     }
