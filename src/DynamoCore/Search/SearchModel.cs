@@ -18,7 +18,7 @@ namespace Dynamo.Search
 {
     public class SearchModel : NotificationObject
     {
-        #region Events 
+        #region Events
 
         /// <summary>
         /// Can be invoked in order to signify that the UI should be updated after
@@ -68,7 +68,7 @@ namespace Dynamo.Search
         private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return _browserRootCategories; } 
+            get { return _browserRootCategories; }
             set { _browserRootCategories = value; }
         }
 
@@ -562,7 +562,7 @@ namespace Dynamo.Search
                     // add all search tags
                     function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
 
-                    
+
                 }
             }
 
@@ -788,8 +788,10 @@ namespace Dynamo.Search
             var parent = XmlHelper.AddNode(document.DocumentElement, "NodesList");
             var assembliesRoot = XmlHelper.AddNode(parent, "Assemblies");
             var packagesRoot = XmlHelper.AddNode(parent, "Packages");
+            var customNodes = XmlHelper.AddNode(parent, "CustomNodes");
 
             XmlNode currNode;
+            IEnumerable<SearchElementBase> elementsToAdd;
 
             // Adding NodeModel and ZeroTouch assemblies. Packages assemblies will be added later
 
@@ -805,8 +807,9 @@ namespace Dynamo.Search
                 parent = XmlHelper.AddNode(assembliesRoot, "Assembly");
                 XmlHelper.AddAttribute(parent, "Name", currAssembly);
 
-                foreach (var currElement in _searchElements.Where(el => el.Assembly == currAssembly)
-                                                           .OrderBy(el => el.FullName))
+                elementsToAdd = _searchElements.Where(el => el.Assembly == currAssembly)
+                                             .OrderBy(el => el.FullName);
+                foreach (var currElement in elementsToAdd)
                 {
                     currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
 
@@ -814,23 +817,49 @@ namespace Dynamo.Search
                 }
             }
 
-            // Adding packages nodes: custom nodes, NodeModel and ZeroTouch assemblies.
-            // Also here are added custom nodes which are not belong to packages
-
+            // Adding packages nodes: custom nodes, NodeModel and ZeroTouch assemblies.                        
             foreach (var currPackage in DynamoModel.Loader.PackageLoader.LocalPackages)
             {
                 parent = XmlHelper.AddNode(packagesRoot, "Package");
                 XmlHelper.AddAttribute(parent, "Name", currPackage.Name);
                 XmlHelper.AddAttribute(parent, "VersionName", currPackage.VersionName);
-                //_searchElements.Where(el=>currPackage.LoadedAssemblies.FirstOrDefault)
-                //foreach (var currElement in currPackage.LoadedCustomNodes)
-                //{
-                //    currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
 
-                //    SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
-                //}
+                elementsToAdd = _searchElements.Where(el =>
+                {
+                    bool cond = currPackage.LoadedAssemblies.Any(la => la.Assembly.Location == el.Assembly);
+                    if (cond) return cond;
+
+                    var customElement = el as CustomNodeSearchElement;
+                    if (customElement != null && customElement.Package == currPackage.Name)
+                        return true;
+                    else
+                        return false;
+                }).OrderBy(el => el.FullName);
+
+                foreach (var currElement in elementsToAdd)
+                {
+                    currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
+
+                    SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
+                }
             }
 
+            // Adding custom nodes which are not belong to packages.
+            elementsToAdd = _searchElements.Where(el =>
+            {
+                var customElement = el as CustomNodeSearchElement;
+                if (customElement != null && string.IsNullOrEmpty(customElement.Package))
+                    return true;
+
+                return false;
+            }).OrderBy(el => el.FullName);
+
+            foreach (var currElement in elementsToAdd)
+            {
+                currNode = XmlHelper.AddNode(customNodes, currElement.GetType().ToString());
+
+                SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
+            }
 
             // Building 'NodesTree'
             parent = XmlHelper.AddNode(document.DocumentElement, "NodesTree");
