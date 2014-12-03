@@ -787,6 +787,7 @@ namespace Dynamo.Search
             // Building 'NodesList'
             var parent = XmlHelper.AddNode(document.DocumentElement, "NodesList");
             var assembliesRoot = XmlHelper.AddNode(parent, "Assemblies");
+            var packagesRoot = XmlHelper.AddNode(parent, "Packages");
 
             XmlNode currNode;
 
@@ -812,6 +813,24 @@ namespace Dynamo.Search
                     SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
                 }
             }
+
+            // Adding packages nodes: custom nodes, NodeModel and ZeroTouch assemblies.
+            // Also here are added custom nodes which are not belong to packages
+
+            foreach (var currPackage in DynamoModel.Loader.PackageLoader.LocalPackages)
+            {
+                parent = XmlHelper.AddNode(packagesRoot, "Package");
+                XmlHelper.AddAttribute(parent, "Name", currPackage.Name);
+                XmlHelper.AddAttribute(parent, "VersionName", currPackage.VersionName);
+                //_searchElements.Where(el=>currPackage.LoadedAssemblies.FirstOrDefault)
+                //foreach (var currElement in currPackage.LoadedCustomNodes)
+                //{
+                //    currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
+
+                //    SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
+                //}
+            }
+
 
             // Building 'NodesTree'
             parent = XmlHelper.AddNode(document.DocumentElement, "NodesTree");
@@ -853,8 +872,12 @@ namespace Dynamo.Search
         {
             XmlHelper.AddNode(node, "FullName", element.FullName);
             XmlHelper.AddNode(node, "FullCategoryName", element.FullCategoryName);
-            XmlHelper.AddNode(node, "Name", element.Name);            
+            XmlHelper.AddNode(node, "Name", element.Name);
             XmlHelper.AddNode(node, "Description", element.Description);
+
+            var customElement = element as CustomNodeSearchElement;
+            if (customElement != null)
+                XmlHelper.AddNode(node, "Package", customElement.Package);
         }
     }
 }

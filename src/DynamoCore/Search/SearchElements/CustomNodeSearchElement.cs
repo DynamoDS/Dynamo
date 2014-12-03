@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -15,20 +13,26 @@ namespace Dynamo.Search.SearchElements
         public string Path
         {
             get { return _path; }
-            set { 
-                _path = value; 
-                RaisePropertyChanged("Path"); 
+            set
+            {
+                _path = value;
+                RaisePropertyChanged("Path");
             }
         }
 
+        private string _package;
+        public string Package { get { return _package; } }
+
         public override string Type { get { return "Custom Node"; } }
 
-        public CustomNodeSearchElement(CustomNodeInfo info) : base(info.Name, info.Description, new List<string>())
+        public CustomNodeSearchElement(CustomNodeInfo info)
+            : base(info.Name, info.Description, new List<string>())
         {
             this.Node = null;
             this.FullCategoryName = info.Category;
             this.Guid = info.Guid;
             this._path = info.Path;
+            this._package = info.PackageName;
         }
 
         public override NodeSearchElement Copy()
