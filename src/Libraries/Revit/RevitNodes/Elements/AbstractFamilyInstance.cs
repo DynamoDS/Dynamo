@@ -18,6 +18,17 @@ namespace Revit.Elements
     public abstract class AbstractFamilyInstance : Element
     {
 
+#region internal constructors
+
+        /// <summary>
+        /// The constructor which takes an function as input which is passed from
+        /// the derived constructors.
+        /// </summary>
+        /// <param name="constructor"></param>
+        internal AbstractFamilyInstance(ConstructDelegate constructor) : base(constructor) { }
+
+#endregion
+
         #region Internal properties
 
         /// <summary>

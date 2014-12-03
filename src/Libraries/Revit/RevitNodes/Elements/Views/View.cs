@@ -12,6 +12,15 @@ namespace Revit.Elements.Views
     //[SupressImportIntoVM]
     public abstract class View : Element
     {
+#region internal constructors
+        /// <summary>
+        /// The constructor which takes an function as input which is passed from
+        /// the derived constructors.
+        /// </summary>
+        /// <param name="constructor"></param>
+        internal View(ConstructDelegate constructor) : base(constructor) { }
+#endregion
+
         /// <summary>
         /// Obtain the reference Element as a View
         /// </summary>

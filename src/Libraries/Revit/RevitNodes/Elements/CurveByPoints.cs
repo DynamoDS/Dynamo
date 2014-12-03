@@ -39,43 +39,47 @@ namespace Revit.Elements
         /// </summary>
         /// <param name="curveByPoints"></param>
         private CurveByPoints(Autodesk.Revit.DB.CurveByPoints curveByPoints)
-        {
-            InternalSetCurveElement(curveByPoints);
-        }
+            : base((x) =>
+                {
+                    CurveByPoints t = x as CurveByPoints;
+                    t.InternalSetCurveElement(curveByPoints);
+                }) { }
 
         private CurveByPoints(IEnumerable<Autodesk.Revit.DB.ReferencePoint> refPoints, bool isReferenceLine)
-        {
-            //Add all of the elements in the sequence to a ReferencePointArray.
-            var refPtArr = new ReferencePointArray();
-            foreach (var refPt in refPoints)
+            : base((x) =>
             {
-                refPtArr.Append(refPt);
-            }
+                    CurveByPoints t = x as CurveByPoints;
+                    //Add all of the elements in the sequence to a ReferencePointArray.
+                    var refPtArr = new ReferencePointArray();
+                    foreach (var refPt in refPoints)
+                    {
+                        refPtArr.Append(refPt);
+                    }
 
-            //Phase 1 - Check to see if the object exists and should be rebound
-            var cbp =
-                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.CurveByPoints>(Document);
+                    //Phase 1 - Check to see if the object exists and should be rebound
+                    var cbp =
+                        ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.CurveByPoints>(Document);
 
-            if (cbp != null)
-            {
-                InternalSetCurveElement(cbp);
-                InternalSetReferencePoints(refPtArr);
-                cbp.IsReferenceLine = isReferenceLine;
-                return;
-            }
+                    if (cbp != null)
+                    {
+                        t.InternalSetCurveElement(cbp);
+                        t.InternalSetReferencePoints(refPtArr);
+                        cbp.IsReferenceLine = isReferenceLine;
+                        return;
+                    }
 
-            TransactionManager.Instance.EnsureInTransaction(Document);
+                    TransactionManager.Instance.EnsureInTransaction(Document);
 
-            cbp = DocumentManager.Instance.CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
+                    cbp = DocumentManager.Instance.CurrentDBDocument.FamilyCreate.NewCurveByPoints(refPtArr);
 
-            cbp.IsReferenceLine = isReferenceLine;
+                    cbp.IsReferenceLine = isReferenceLine;
 
-            InternalSetCurveElement(cbp);
+                    t.InternalSetCurveElement(cbp);
 
-            TransactionManager.Instance.TransactionTaskDone();
+                    TransactionManager.Instance.TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalElement);
-        }
+                    ElementBinder.SetElementForTrace(t.InternalElement);
+                }) { }
 
         #endregion
 
