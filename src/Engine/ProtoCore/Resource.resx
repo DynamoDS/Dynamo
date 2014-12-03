@@ -318,4 +318,67 @@
   <data name="kUsingThisInStaticFunction" xml:space="preserve">
     <value>'this' cannot be used in static method.</value>
   </data>
+  <data name="logSemanticErrorAttributeArgumentMustBeConstantExpression" xml:space="preserve">
+    <value>An attribute argument must be a constant expression</value>
+  </data>
+  <data name="logSemanticErrorFailedToImport" xml:space="preserve">
+    <value>Failed to import {0}</value>
+  </data>
+  <data name="logSemanticErrorImportStatementsAreNotSupported" xml:space="preserve">
+    <value>Import statements are not supported in CodeBlock Nodes.</value>
+  </data>
+  <data name="logSemanticErrorModifierBlocksAreNotSupported" xml:space="preserve">
+    <value>Modifier Blocks are not supported currently.</value>
+  </data>
+  <data name="logSemanticErrorNoConstructorForAttribute" xml:space="preserve">
+    <value>No constructors for Attribute '{0}' takes {1} arguments</value>
+  </data>
+  <data name="logSemanticErrorReturnStatementIsNotAllowed" xml:space="preserve">
+    <value>return statement is not allowed in constructor</value>
+  </data>
+  <data name="logSemanticErrorUnknownAttribute" xml:space="preserve">
+    <value>Unknown attribute {0}</value>
+  </data>
+  <data name="logSyntaxErrorTooManyCharacters" xml:space="preserve">
+    <value>Too many characters in character literal</value>
+  </data>
+  <data name="semErrCannotBeUsedAsConstructorName" xml:space="preserve">
+    <value>\"{0}\" is a keyword, can't be used as constructor name</value>
+  </data>
+  <data name="semErrEmptyCharacter" xml:space="preserve">
+    <value>Empty character literal.</value>
+  </data>
+  <data name="semErrFunctionCallIsNotAllowedAtLeftHand" xml:space="preserve">
+    <value>function call is not allowed at the left hand side of an assignment</value>
+  </data>
+  <data name="semErrIdentifierExpected" xml:space="preserve">
+    <value>\"{0}\" is a keyword, identifier expected</value>
+  </data>
+  <data name="semErrInvalidLanguageBlockIdenifier" xml:space="preserve">
+    <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
+  </data>
+  <data name="synErrBaseExpected" xml:space="preserve">
+    <value>'base' is expected here to call base constructor.</value>
+  </data>
+  <data name="synErrIncompleteClosure" xml:space="preserve">
+    <value>expected - Imcomplete Closure</value>
+  </data>
+  <data name="synErrInvalidSymbol" xml:space="preserve">
+    <value>Syntax Error: invalid symbol '</value>
+  </data>
+  <data name="synErrInvalidSymbolContinue" xml:space="preserve">
+    <value>'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
+  </data>
+  <data name="synErrReturnStatementIsInvalid" xml:space="preserve">
+    <value>Return statement is invalid. Do you mean: return =</value>
+  </data>
+  <data name="synErrSemiColonExpected" xml:space="preserve">
+    <value>';' is expected.</value>
+  </data>
+  <data name="synErrStatementCanOnlyBeUsedInImpreativeLanguageBlock" xml:space="preserve">
+    <value>statement can only be used in imperative language block.</value>
+  </data>
+  <data name="synErrStatementCanOnlyBeUsedInImpreativeLanguageBlockConsiderUsingInlineConditional" xml:space="preserve">
+    <value>statement can only be used in imperative language block, consider using an inline conditional instead?</value>
+  </data>
 </root>

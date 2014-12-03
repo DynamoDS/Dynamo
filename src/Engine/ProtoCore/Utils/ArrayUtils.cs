@@ -551,7 +551,7 @@ namespace ProtoCore.Utils
             Validity.Assert(array.IsArray || array.IsString);
             if (array.IsString && !value.IsChar)
             {
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ResourceProtoCore.kAssignNonCharacterToString);
+                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, Resource.kAssignNonCharacterToString);
                 return StackValue.Null;
             }
 
@@ -827,7 +827,7 @@ namespace ProtoCore.Utils
                 {
                     if (!array.IsArray)
                     {
-                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, ResourceProtoCore.kArrayOverIndexed);
+                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resource.kArrayOverIndexed);
                         return StackValue.Null;
                     }
                     array = GetValueFromIndex(array, index, core);
@@ -835,7 +835,7 @@ namespace ProtoCore.Utils
 
                 if (!array.IsArray && !array.IsString)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, ResourceProtoCore.kArrayOverIndexed);
+                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resource.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
@@ -859,7 +859,7 @@ namespace ProtoCore.Utils
             }
             else if (!array.IsArray && !array.IsString)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, ResourceProtoCore.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resource.kArrayOverIndexed);
                 return StackValue.Null;
             }
 

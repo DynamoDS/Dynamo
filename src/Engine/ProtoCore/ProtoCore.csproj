@@ -140,10 +140,10 @@
     <Compile Include="Reflection\Mirror.cs" />
     <Compile Include="Reflection\MirrorData.cs" />
     <Compile Include="Reflection\Reflection.cs" />
-    <Compile Include="ResourceProtoCore.Designer.cs">
+    <Compile Include="Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ResourceProtoCore.resx</DependentUpon>
+      <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="RuntimeContext.cs" />
     <Compile Include="RuntimeMemory.cs" />
@@ -216,9 +216,9 @@
     <None Include="Parser\Scanner.frame" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ResourceProtoCore.resx">
+    <EmbeddedResource Include="Resource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ResourceProtoCore.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

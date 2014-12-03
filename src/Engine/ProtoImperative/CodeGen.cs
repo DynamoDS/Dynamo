@@ -635,7 +635,7 @@ namespace ProtoImperative
                         if (!isAccessible)
                         {
                             type = lefttype = realType;
-                            string message = String.Format(ProtoCore.ResourceProtoCore.kMethodIsInaccessible, procName);
+                            string message = String.Format(ProtoCore.Resource.kMethodIsInaccessible, procName);
                             buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                             hasLogError = true;
                         }
@@ -643,7 +643,7 @@ namespace ProtoImperative
                     // To support unamed constructor, x = A();
                     else if (refClassIndex != Constants.kInvalidIndex)
                     {
-                        string message = String.Format(ResourceProtoCore.kCallingNonStaticMethod, core.ClassTable.ClassNodes[refClassIndex].name, procName);
+                        string message = String.Format(Resource.kCallingNonStaticMethod, core.ClassTable.ClassNodes[refClassIndex].name, procName);
                         buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
@@ -726,7 +726,7 @@ namespace ProtoImperative
 
                         if (!isAccessible)
                         {
-                            string message = String.Format(ProtoCore.ResourceProtoCore.kMethodIsInaccessible, procName);
+                            string message = String.Format(ProtoCore.Resource.kMethodIsInaccessible, procName);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
@@ -802,12 +802,12 @@ namespace ProtoImperative
                             string property;
                             if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
-                                string message = String.Format(ProtoCore.ResourceProtoCore.kPropertyNotFound, property);
+                                string message = String.Format(ProtoCore.Resource.kPropertyNotFound, property);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kPropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                             }
                             else
                             {
-                                string message = String.Format(ProtoCore.ResourceProtoCore.kMethodNotFound, procName);
+                                string message = String.Format(ProtoCore.Resource.kMethodNotFound, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                             }
                         }
@@ -1015,14 +1015,14 @@ namespace ProtoImperative
                 {
                     if (localProcedure.isStatic)
                     {
-                        string message = ResourceProtoCore.kUsingThisInStaticFunction;
+                        string message = Resource.kUsingThisInStaticFunction;
                         core.BuildStatus.LogWarning(WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
                     }
                     else if (localProcedure.classScope == Constants.kGlobalScope)
                     {
-                        string message = ResourceProtoCore.kInvalidThis;
+                        string message = Resource.kInvalidThis;
                         core.BuildStatus.LogWarning(WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
@@ -1035,7 +1035,7 @@ namespace ProtoImperative
                 }
                 else
                 {
-                    string message = ResourceProtoCore.kInvalidThis;
+                    string message = Resource.kInvalidThis;
                     core.BuildStatus.LogWarning(WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     EmitPushNull();
                     return;
@@ -1089,13 +1089,13 @@ namespace ProtoImperative
                 {
                     if (!isAccessible)
                     {
-                        string message = String.Format(ResourceProtoCore.kPropertyIsInaccessible, t.Value);
+                        string message = String.Format(Resource.kPropertyIsInaccessible, t.Value);
                         buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
                 }
                 else
                 {
-                    string message = String.Format(ResourceProtoCore.kUnboundIdentifierMsg, t.Value);
+                    string message = String.Format(Resource.kUnboundIdentifierMsg, t.Value);
                     buildStatus.LogWarning(WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                 }
 
@@ -1305,7 +1305,7 @@ namespace ProtoImperative
                 localProcedure.returntype.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
                 if (localProcedure.returntype.UID == (int)PrimitiveType.kInvalidType)
                 {
-                    string message = String.Format(ProtoCore.ResourceProtoCore.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
+                    string message = String.Format(ProtoCore.Resource.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, funcDef.line, funcDef.col, firstSSAGraphNode);
                     localProcedure.returntype.UID = (int)PrimitiveType.kTypeVar;
                 }
@@ -1496,7 +1496,7 @@ namespace ProtoImperative
                 {
                     if (!core.Options.SuppressFunctionResolutionWarning)
                     {
-                        string message = String.Format(ProtoCore.ResourceProtoCore.kFunctionNotReturnAtAllCodePaths, localProcedure.name);
+                        string message = String.Format(ProtoCore.Resource.kFunctionNotReturnAtAllCodePaths, localProcedure.name);
                         core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kMissingReturnStatement, message, core.CurrentDSFileName, funcDef.line, funcDef.col, firstSSAGraphNode);
                     }
 
@@ -2290,7 +2290,7 @@ namespace ProtoImperative
 
                         if ((int)PrimitiveType.kInvalidType == castUID)
                         {
-                            string message = String.Format(ProtoCore.ResourceProtoCore.kTypeUndefined, tident.datatype.Name);
+                            string message = String.Format(ProtoCore.Resource.kTypeUndefined, tident.datatype.Name);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, b.line, b.col, graphNode);
                             castType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
                             castType.Name = tident.datatype.Name;
@@ -2775,11 +2775,11 @@ namespace ProtoImperative
 
                         if (step == 0)
                         {
-                            warningMsg = ResourceProtoCore.kRangeExpressionWithStepSizeZero;
+                            warningMsg = Resource.kRangeExpressionWithStepSizeZero;
                         }
                         else if ((end > current && step < 0) || (end < current && step > 0))
                         {
-                            warningMsg = ResourceProtoCore.kRangeExpressionWithInvalidStepSize;
+                            warningMsg = Resource.kRangeExpressionWithInvalidStepSize;
                         }
                     }
                 }
@@ -2787,26 +2787,26 @@ namespace ProtoImperative
                 {
                     if (hasAmountOp)
                     {
-                        warningMsg = ResourceProtoCore.kRangeExpressionConflictOperator;
+                        warningMsg = Resource.kRangeExpressionConflictOperator;
                     }
                     else if (range.StepNode != null && !(range.StepNode is IntNode))
                     {
-                        warningMsg = ResourceProtoCore.kRangeExpressionWithNonIntegerStepNumber;
+                        warningMsg = Resource.kRangeExpressionWithNonIntegerStepNumber;
                     }
                     else if (step <= 0)
                     {
-                        warningMsg = ResourceProtoCore.kRangeExpressionWithNegativeStepNumber;
+                        warningMsg = Resource.kRangeExpressionWithNegativeStepNumber;
                     }
                 }
                 else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.approxsize)
                 {
                     if (hasAmountOp)
                     {
-                        warningMsg = ResourceProtoCore.kRangeExpressionConflictOperator;
+                        warningMsg = Resource.kRangeExpressionConflictOperator;
                     }
                     else if (step == 0)
                     {
-                        warningMsg = ResourceProtoCore.kRangeExpressionWithStepSizeZero;
+                        warningMsg = Resource.kRangeExpressionWithStepSizeZero;
                     }
                 }
 
@@ -2892,7 +2892,7 @@ namespace ProtoImperative
             {
                 if (localProcedure != null)
                 {
-                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionAbnormalExit, ProtoCore.ResourceProtoCore.kInvalidBreakForFunction , core.CurrentDSFileName, node.line, node.col);
+                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionAbnormalExit, ProtoCore.Resource.kInvalidBreakForFunction , core.CurrentDSFileName, node.line, node.col);
                     EmitPushNull();
                     EmitReturnToRegister();
                 }
@@ -2914,7 +2914,7 @@ namespace ProtoImperative
             {
                 if (localProcedure != null)
                 {
-                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionAbnormalExit, ProtoCore.ResourceProtoCore.kInvalidContinueForFunction, core.CurrentDSFileName, node.line, node.col);
+                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionAbnormalExit, ProtoCore.Resource.kInvalidContinueForFunction, core.CurrentDSFileName, node.line, node.col);
                     EmitPushNull();
                     EmitReturnToRegister();
                 }
@@ -2967,7 +2967,7 @@ namespace ProtoImperative
                 catchHandler.FilterTypeUID = core.TypeSystem.GetType(filterNode.type.Name);
                 if (catchHandler.FilterTypeUID == (int)PrimitiveType.kInvalidType)
                 {
-                    string message = String.Format(ProtoCore.ResourceProtoCore.kExceptionTypeUndefined, filterNode.type.Name);
+                    string message = String.Format(ProtoCore.Resource.kExceptionTypeUndefined, filterNode.type.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, filterNode.line, filterNode.col);
                     catchHandler.FilterTypeUID = (int)PrimitiveType.kTypeVar;
                 }
@@ -3381,7 +3381,7 @@ namespace ProtoImperative
             int uid = core.TypeSystem.GetType(argNode.ArgumentType.Name);
             if (uid == (int)PrimitiveType.kInvalidType && !core.IsTempVar(argNode.NameNode.Name))
             {
-                string message = String.Format(ResourceProtoCore.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
+                string message = String.Format(Resource.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
                 buildStatus.LogWarning(WarningID.kTypeUndefined, message, null, argNode.line, argNode.col, graphNode);
             }
 

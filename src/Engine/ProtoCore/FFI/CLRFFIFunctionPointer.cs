@@ -266,7 +266,7 @@ namespace ProtoFFI
                 }
                 catch (InvalidOperationException)
                 {
-                    string message = String.Format(ProtoCore.ResourceProtoCore.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    string message = String.Format(ProtoCore.Resource.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
                     dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation, message);
                     return null;
                 }
@@ -314,7 +314,7 @@ namespace ProtoFFI
                 }
                 catch (InvalidOperationException)
                 {
-                    string message = String.Format(ProtoCore.ResourceProtoCore.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    string message = String.Format(ProtoCore.Resource.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
                     dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation, message);
                     return null;
                 }

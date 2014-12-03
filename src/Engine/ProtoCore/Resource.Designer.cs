@@ -22,14 +22,14 @@ namespace ProtoCore {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ResourceProtoCore {
+    public class Resource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ResourceProtoCore() {
+        internal Resource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace ProtoCore {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ProtoCore.ResourceProtoCore", typeof(ResourceProtoCore).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ProtoCore.Resource", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -660,6 +660,196 @@ namespace ProtoCore {
         public static string kUsingThisInStaticFunction {
             get {
                 return ResourceManager.GetString("kUsingThisInStaticFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An attribute argument must be a constant expression.
+        /// </summary>
+        public static string logSemanticErrorAttributeArgumentMustBeConstantExpression {
+            get {
+                return ResourceManager.GetString("logSemanticErrorAttributeArgumentMustBeConstantExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to import {0}.
+        /// </summary>
+        public static string logSemanticErrorFailedToImport {
+            get {
+                return ResourceManager.GetString("logSemanticErrorFailedToImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import statements are not supported in CodeBlock Nodes..
+        /// </summary>
+        public static string logSemanticErrorImportStatementsAreNotSupported {
+            get {
+                return ResourceManager.GetString("logSemanticErrorImportStatementsAreNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modifier Blocks are not supported currently..
+        /// </summary>
+        public static string logSemanticErrorModifierBlocksAreNotSupported {
+            get {
+                return ResourceManager.GetString("logSemanticErrorModifierBlocksAreNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No constructors for Attribute &apos;{0}&apos; takes {1} arguments.
+        /// </summary>
+        public static string logSemanticErrorNoConstructorForAttribute {
+            get {
+                return ResourceManager.GetString("logSemanticErrorNoConstructorForAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to return statement is not allowed in constructor.
+        /// </summary>
+        public static string logSemanticErrorReturnStatementIsNotAllowed {
+            get {
+                return ResourceManager.GetString("logSemanticErrorReturnStatementIsNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown attribute {0}.
+        /// </summary>
+        public static string logSemanticErrorUnknownAttribute {
+            get {
+                return ResourceManager.GetString("logSemanticErrorUnknownAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many characters in character literal.
+        /// </summary>
+        public static string logSyntaxErrorTooManyCharacters {
+            get {
+                return ResourceManager.GetString("logSyntaxErrorTooManyCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to \&quot;{0}\&quot; is a keyword, can&apos;t be used as constructor name.
+        /// </summary>
+        public static string semErrCannotBeUsedAsConstructorName {
+            get {
+                return ResourceManager.GetString("semErrCannotBeUsedAsConstructorName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty character literal..
+        /// </summary>
+        public static string semErrEmptyCharacter {
+            get {
+                return ResourceManager.GetString("semErrEmptyCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to function call is not allowed at the left hand side of an assignment.
+        /// </summary>
+        public static string semErrFunctionCallIsNotAllowedAtLeftHand {
+            get {
+                return ResourceManager.GetString("semErrFunctionCallIsNotAllowedAtLeftHand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to \&quot;{0}\&quot; is a keyword, identifier expected.
+        /// </summary>
+        public static string semErrIdentifierExpected {
+            get {
+                return ResourceManager.GetString("semErrIdentifierExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to \&quot;{0}\&quot; is not a valid language block identifier, do you mean \&quot;Associative\&quot; or \&quot;Imperative\&quot;?.
+        /// </summary>
+        public static string semErrInvalidLanguageBlockIdenifier {
+            get {
+                return ResourceManager.GetString("semErrInvalidLanguageBlockIdenifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;base&apos; is expected here to call base constructor..
+        /// </summary>
+        public static string synErrBaseExpected {
+            get {
+                return ResourceManager.GetString("synErrBaseExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to expected - Imcomplete Closure.
+        /// </summary>
+        public static string synErrIncompleteClosure {
+            get {
+                return ResourceManager.GetString("synErrIncompleteClosure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syntax Error: invalid symbol &apos;.
+        /// </summary>
+        public static string synErrInvalidSymbol {
+            get {
+                return ResourceManager.GetString("synErrInvalidSymbol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;. (Did you mean to use Modifier Stack \&quot; =&gt; \&quot;).
+        /// </summary>
+        public static string synErrInvalidSymbolContinue {
+            get {
+                return ResourceManager.GetString("synErrInvalidSymbolContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Return statement is invalid. Do you mean: return =.
+        /// </summary>
+        public static string synErrReturnStatementIsInvalid {
+            get {
+                return ResourceManager.GetString("synErrReturnStatementIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;;&apos; is expected..
+        /// </summary>
+        public static string synErrSemiColonExpected {
+            get {
+                return ResourceManager.GetString("synErrSemiColonExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to statement can only be used in imperative language block..
+        /// </summary>
+        public static string synErrStatementCanOnlyBeUsedInImpreativeLanguageBlock {
+            get {
+                return ResourceManager.GetString("synErrStatementCanOnlyBeUsedInImpreativeLanguageBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to statement can only be used in imperative language block, consider using an inline conditional instead?.
+        /// </summary>
+        public static string synErrStatementCanOnlyBeUsedInImpreativeLanguageBlockConsiderUsingInlineConditional {
+            get {
+                return ResourceManager.GetString("synErrStatementCanOnlyBeUsedInImpreativeLanguageBlockConsiderUsingInlineCondition" +
+                        "al", resourceCulture);
             }
         }
     }

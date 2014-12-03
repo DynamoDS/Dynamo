@@ -339,7 +339,11 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetFirstMemberFunctionBy(string procName, int argCount)
         {
-            if (vtable == null)            {                return null;            }
+            if (vtable == null)
+            {
+                return null;
+            }
+
             ProcedureNode procNode = vtable.GetFunctionsBy(procName, argCount).FirstOrDefault();
             if (procNode != null)
             {
@@ -651,7 +655,7 @@ namespace ProtoCore.DSASM
                 var symbols = symbolTable.GetAllSymbols(name);
                 if (symbols.Count > 1)
                 {
-                    string message = string.Format(ResourceProtoCore.kMultipleSymbolFound, name, "");
+                    string message = string.Format(Resource.kMultipleSymbolFound, name, "");
                     foreach (var symbol in symbols)
                     {
                         message += ", " + symbol.FullName;

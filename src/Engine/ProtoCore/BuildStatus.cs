@@ -539,7 +539,7 @@ namespace ProtoCore
         /// <param name="duplicateSymbolNames"></param>
         public void LogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
         {
-            string message = string.Format(ResourceProtoCore.kMultipleSymbolFoundFromName, symbolName, "");
+            string message = string.Format(Resource.kMultipleSymbolFoundFromName, symbolName, "");
             message += String.Join(", ", collidingSymbolNames);
             LogWarning(BuildData.WarningID.kMultipleSymbolFoundFromName, message);
         }
