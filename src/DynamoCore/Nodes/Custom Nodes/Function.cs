@@ -10,6 +10,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
 using ProtoCore;
 using ProtoCore.DSASM;
+using DynamoUtilities;
 
 namespace Dynamo.Nodes
 {
@@ -358,8 +359,8 @@ namespace Dynamo.Nodes
                     //    x = default_value
                     //    x : type
                     //    x : type = default_value
-                    IdentifierNode identifierNode = new IdentifierNode();
-                    AssociativeNode defaultValueNode = null;
+                    IdentifierNode identifierNode;
+                    AssociativeNode defaultValueNode;
 
                     if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValueNode))
                     {
@@ -379,22 +380,13 @@ namespace Dynamo.Nodes
 
                         if (defaultValueNode != null)
                         {
-                            if (defaultValueNode is IntNode)
-                            {
-                                defaultValue = (defaultValueNode as IntNode).Value;
-                            }
-                            else if (defaultValueNode is DoubleNode)
-                            {
-                                defaultValue = (defaultValueNode as DoubleNode).Value;
-                            }
-                            else if (defaultValueNode is BooleanNode)
-                            {
-                                defaultValue = (defaultValueNode as BooleanNode).Value;
-                            }
-                            else if (defaultValueNode is StringNode)
-                            {
-                                defaultValue = (defaultValueNode as StringNode).value;
-                            }
+                            TypeSwitch.Do(
+                                defaultValueNode,
+                                TypeSwitch.Case<IntNode>(n => defaultValue = n.Value),
+                                TypeSwitch.Case<DoubleNode>(n => defaultValue = n.Value),
+                                TypeSwitch.Case<BooleanNode>(n => defaultValue = n.Value),
+                                TypeSwitch.Case<StringNode>(n => defaultValue = n.value),
+                                TypeSwitch.Default(() => defaultValue = null));
                         }
                     }
                 }
