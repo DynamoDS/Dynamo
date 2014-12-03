@@ -190,15 +190,7 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            if (Definition.IsProxy)
-            {
-                var rhs = AstFactory.BuildNullNode();
-                return new[] { AstFactory.BuildAssignment(AstIdentifierForPreview, rhs) };
-            }
-            else
-            {
-                return Controller.BuildAst(this, inputAstNodes);
-            }
+            return Controller.BuildAst(this, inputAstNodes);
         }
 
         #region Serialization/Deserialization methods
