@@ -1,3 +1,5 @@
+using System.Linq;
+
 using Dynamo.Applications;
 
 #region
@@ -294,16 +296,6 @@ namespace Dynamo.Applications
         {
             AppDomain.CurrentDomain.AssemblyResolve +=
                 Analyze.Render.AssemblyHelper.ResolveAssemblies;
-
-            //Add an assembly load step for the System.Windows.Interactivity assembly
-            //Revit owns a version of this as well. Adding our step here prevents a duplicative
-            //load of the dll at a later time.
-            string interactivityPath = Path.Combine(
-                DynamoPathManager.Instance.MainExecPath,
-                "System.Windows.Interactivity.dll");
-
-            if (File.Exists(interactivityPath))
-                Assembly.LoadFrom(interactivityPath);
         }
 
         private static void InitializeDocumentManager(ExternalCommandData commandData)
