@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -34,7 +35,8 @@ namespace Revit.GeometryConversion
                 throw new Exception("An unexpected failure occurred when attempting to convert the curve");
             }
 
-            converted = performHostUnitConversion ? converted.InDynamoUnits() : converted;
+            if (performHostUnitConversion)
+                UnitConverter.ConvertToDynamoUnits(ref converted);
 
             // If possible, add a geometry reference for downstream Element creation
             var revitRef = referenceOverride ?? revitCurve.Reference;
@@ -56,20 +58,31 @@ namespace Revit.GeometryConversion
 
             var protoCurves = revitCurves.Cast<Autodesk.Revit.DB.Curve>().Select(x => x.ToProtoType(false));
             var converted = PolyCurve.ByJoinedCurves(protoCurves.ToArray());
+            foreach (var curve in protoCurves)
+            {
+                curve.Dispose();
+            }
 
             if (converted == null)
             {
                 throw new Exception("An unexpected failure occurred when attempting to convert the curve");
             }
 
-            return performHostUnitConversion ? converted.InDynamoUnits() : converted;
+            if (performHostUnitConversion)
+                UnitConverter.ConvertToDynamoUnits(ref converted);
+
+            return converted;
         }
 
         public static Autodesk.DesignScript.Geometry.PolyCurve ToProtoType(this Autodesk.Revit.DB.PolyLine geom,
             bool performHostUnitConversion = true)
         {
             var converted = PolyCurve.ByPoints(geom.GetCoordinates().Select(x => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x.X, x.Y, x.Z)).ToArray());
-            return performHostUnitConversion ? converted.InDynamoUnits() : converted;
+
+            if (performHostUnitConversion)
+                UnitConverter.ConvertToDynamoUnits(ref converted);
+
+            return converted;
         }
 
         #region Conversions
@@ -204,10 +217,10 @@ namespace Revit.GeometryConversion
                 startParam = crv.GetEndParameter(0).ToDegrees() + 90;
             }
 
-            var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(false), majorAxis, minorAxis);
-
-            return EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, major, minor, startParam, span);
-
+            using (var pl = Plane.ByOriginXAxisYAxis(crv.Center.ToPoint(false), majorAxis, minorAxis))
+            {
+                return EllipseArc.ByPlaneRadiiStartAngleSweepAngle(pl, major, minor, startParam, span);
+            }
         }
 
         private static Autodesk.DesignScript.Geometry.Helix Convert(Autodesk.Revit.DB.CylindricalHelix crv)

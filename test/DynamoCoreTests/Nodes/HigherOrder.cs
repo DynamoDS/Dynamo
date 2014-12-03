@@ -39,7 +39,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(TestFolder, "core", "compose", "LoopWhile_Fibonacci.dyn");
             RunModel(testFilePath);
 
-            AssertPreviewValue("07dd69e8-5354-4c69-8e4c-69725bc9883f", new int[] { 0, 1, 1, 2, 3, 5, 8, 13, 21, 34 });
+            AssertPreviewValue("07dd69e8-5354-4c69-8e4c-69725bc9883f", new int[] { 0, 1, 1, 2, 3, 5, 8, 13});
         }
         
     }
