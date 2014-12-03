@@ -213,7 +213,6 @@ namespace Dynamo.Models
         ///     All of the notes currently in the workspace.
         /// </summary>
         public ObservableCollection<NoteModel> Notes { get { return notes; } }
-
         /// <summary>
         ///     Path to the file this workspace is associated with. If null or empty, this workspace has never been saved.
         /// </summary>
@@ -953,7 +952,6 @@ namespace Dynamo.Models
                 codeBlockNode = new CodeBlockNodeModel(
                     code,
                     nodeId,
-                    this,
                     totalX/nodeCount,
                     totalY/nodeCount);
                 UndoRecorder.RecordCreationForUndo(codeBlockNode);

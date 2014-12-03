@@ -4,9 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Collections.ObjectModel;
-using System.Web;
 using System.Xml;
-
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.Core.Threading;
@@ -20,6 +18,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Models
 {
@@ -37,13 +36,17 @@ namespace Dynamo.Models
         private string nickName;
         private ElementState state;
         private string toolTipText = "";
-        private bool saveResult;
         private string description;
 
-        // Data caching related class members.
+        // Data caching related class members. There are multiple parties at
+        // play when it comes to caching MirrorData for a NodeModel, this value
+        // is accessed from UI thread for display (e.g. preview bubble) and it's
+        // updated by QueryMirrorDataAsyncTask on ISchedulerThread's context. 
+        // Access to the cached data is guarded by cachedMirrorDataMutex object.
+        // 
         private bool isUpdated;
         private MirrorData cachedMirrorData;
-        
+        private readonly object cachedMirrorDataMutex = new object();
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
@@ -55,7 +58,8 @@ namespace Dynamo.Models
 
         #region public members
 
-        //public WorkspaceModel Workspace { get; internal set; }
+        [Obsolete("No longer supported.", true)]
+        public WorkspaceModel Workspace { get; internal set; }
 
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
 
@@ -83,8 +87,6 @@ namespace Dynamo.Models
         }
 
         public bool HasRenderPackages { get; set; }
-
-        protected IdentifierNode Identifier;
 
         #endregion
 
@@ -162,12 +164,23 @@ namespace Dynamo.Models
             get { return state; }
             set
             {
-                if (value != ElementState.Error)
+                if (value != ElementState.Error && value != ElementState.AstBuildBroken)
                     ClearTooltipText();
 
                 state = value;
 
                 RaisePropertyChanged("State");
+            }
+        }
+
+        /// <summary>
+        ///   If the state of node is Error or AstBuildBroken
+        /// </summary>
+        public bool IsInErrorState
+        {
+            get
+            {
+                return state == ElementState.AstBuildBroken || state == ElementState.Error;
             }
         }
 
@@ -297,6 +310,17 @@ namespace Dynamo.Models
             }
         }
 
+        public MirrorData CachedValue
+        {
+            get
+            {
+                lock (cachedMirrorDataMutex)
+                {
+                    return cachedMirrorData;
+                }
+            }
+        }
+
         public MirrorData GetCachedValueFromEngine(EngineController engine)
         {
             if (cachedMirrorData != null)
@@ -326,10 +350,15 @@ namespace Dynamo.Models
             set
             {
                 isUpdated = value;
-                if (isUpdated)      // When a NodeModel is updated, its 
-                    cachedMirrorData = null; // cached data should be invalidated.
-
-                RaisePropertyChanged("IsUpdated");
+                if (isUpdated)
+                {
+                    // When a NodeModel is updated, its
+                    // cached data should be invalidated.
+                    lock (cachedMirrorDataMutex)
+                    {
+                        cachedMirrorData = null;
+                    }
+                }
             }
         }
 
@@ -384,9 +413,9 @@ namespace Dynamo.Models
         ///     ProtoAST Identifier for result of the node before any output unpacking has taken place.
         ///     If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
         /// </summary>
-        internal IdentifierNode AstIdentifierForPreview
+        public IdentifierNode AstIdentifierForPreview
         {
-            get { return Identifier ?? (Identifier = AstFactory.BuildIdentifier(AstIdentifierBase)); }
+            get { return AstFactory.BuildIdentifier(AstIdentifierBase); }
         }
 
         /// <summary>
@@ -769,7 +798,35 @@ namespace Dynamo.Models
         {
             OnBuilt();
 
-            var result = BuildOutputAst(inputAstNodes);
+            IEnumerable<AssociativeNode> result = null;
+
+            try
+            {
+                result = BuildOutputAst(inputAstNodes);
+            }
+            catch (Exception e)
+            {
+                // If any exception from BuildOutputAst(), we emit
+                // a function call "var_guid = %nodeAstFailed(full.node.name)"
+                // for this node, set the state of node to AstBuildBroken and
+                // disply the corresponding error message. 
+                // 
+                // The return value of function %nodeAstFailed() is always 
+                // null.
+                const string errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
+                var fullMsg = String.Format(errorMsg, e.Message);
+                this.NotifyAstBuildBroken(fullMsg);
+
+                var fullName = this.GetType().ToString();
+                var astNodeFullName = AstFactory.BuildStringNode(fullName);
+                var arguments = new List<AssociativeNode> { astNodeFullName };
+                var func = AstFactory.BuildFunctionCall(Constants.kNodeAstFailed, arguments); 
+
+                return new []
+                {
+                    AstFactory.BuildAssignment(AstIdentifierForPreview, func)
+                };
+            }
 
             if (OutPortData.Count == 1)
             {
@@ -880,11 +937,6 @@ namespace Dynamo.Models
         public bool IsTopmost
         {
             get { return OutPorts == null || OutPorts.All(x => !x.Connectors.Any()); }
-        }
-
-        public IEnumerable<int> GetConnectedInputs()
-        {
-            return Enumerable.Range(0, InPortData.Count).Where(HasConnectedInput);
         }
 
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
@@ -1099,6 +1151,17 @@ namespace Dynamo.Models
             ToolTipText = p;
         }
 
+        /// <summary>
+        /// Change the state of node to ElementState.AstBuildBroken and display
+        /// "p" in tooltip window. 
+        /// </summary>
+        /// <param name="p"></param>
+        public void NotifyAstBuildBroken(string p)
+        {
+            State = ElementState.AstBuildBroken;
+            ToolTipText = p;
+        }
+
         #endregion
 
         #region Port Management
@@ -1174,12 +1237,11 @@ namespace Dynamo.Models
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.Input, pd, count);
-
                 //MVVM: AddPort now returns a port model. You can't set the data context here.
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
+                count++;            
             }
 
             if (inPorts.Count > count)
@@ -1193,6 +1255,9 @@ namespace Dynamo.Models
                 for (int i = inPorts.Count - 1; i >= count; i--)
                     inPorts.RemoveAt(i);
             }
+
+            //Configure Snap Edges
+            ConfigureSnapEdges(inPorts);
         }
 
         /// <summary>
@@ -1214,7 +1279,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
+                count++;              
             }
 
             if (outPorts.Count > count)
@@ -1226,6 +1291,38 @@ namespace Dynamo.Models
                     outPorts.RemoveAt(i);
 
                 //OutPorts.RemoveRange(count, outPorts.Count - count);
+            }
+
+            //configure snap edges
+            ConfigureSnapEdges(outPorts);
+        }
+
+        /// <summary>
+        /// Configures the snap edges.
+        /// </summary>
+        /// <param name="ports">The ports.</param>
+        private void ConfigureSnapEdges(ObservableCollection<PortModel> ports)
+        {
+            if (ports.Count == 1) //only one port
+                ports[0].extensionEdges = SnapExtensionEdges.Top | SnapExtensionEdges.Bottom;
+            else if (ports.Count == 2) //has two ports
+            {
+                ports[0].extensionEdges = SnapExtensionEdges.Top;
+                ports[1].extensionEdges = SnapExtensionEdges.Bottom;
+            }
+            else if (ports.Count > 1)
+            {
+                ports[0].extensionEdges = SnapExtensionEdges.Top;
+                ports[ports.Count - 1].extensionEdges = SnapExtensionEdges.Bottom;
+                foreach (
+                    PortModel port in
+                        ports.Where(
+                            port =>
+                                !port.extensionEdges.HasFlag(
+                                    SnapExtensionEdges.Top | SnapExtensionEdges.Bottom)))
+                {
+                    port.extensionEdges = SnapExtensionEdges.None;
+                }
             }
         }
 
@@ -1269,7 +1366,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(portType, this, data.NickName)
+                    p = new PortModel(portType, this, data)
                     {
                         UsingDefaultValue = data.HasDefaultValue,
                         DefaultValueEnabled = data.HasDefaultValue
@@ -1286,7 +1383,8 @@ namespace Dynamo.Models
                     //register listeners on the port
                     p.PortConnected += p_PortConnected;
                     p.PortDisconnected += p_PortDisconnected;
-
+                    
+                   
                     return p;
 
                 case PortType.Output:
@@ -1298,7 +1396,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(portType, this, data.NickName)
+                    p = new PortModel(portType, this, data)
                     {
                         UsingDefaultValue = false,
                         MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0)
@@ -1316,6 +1414,7 @@ namespace Dynamo.Models
             return null;
         }
 
+      
         private void p_PortConnected(object sender, EventArgs e)
         {
             ValidateConnections();
@@ -1415,6 +1514,15 @@ namespace Dynamo.Models
             if (name == "NickName")
             {
                 NickName = value;
+                return true;
+            }
+
+            if (name == "ArgumentLacing")
+            {
+                LacingStrategy strategy;
+                if (!Enum.TryParse(value, out strategy))
+                    strategy = LacingStrategy.Disabled;
+                ArgumentLacing = strategy;
                 return true;
             }
 
@@ -1583,7 +1691,42 @@ namespace Dynamo.Models
         /// 
         public void RequestValueUpdateAsync()
         {
-            // TODO(Ben): Update cachedMirrorData asynchronously.
+            // A NodeModel should have its cachedMirrorData reset when it is 
+            // requested to update its value. When the QueryMirrorDataAsyncTask 
+            // returns, it will update cachedMirrorData with the latest value.
+            // 
+            lock (cachedMirrorDataMutex)
+            {
+                cachedMirrorData = null;
+            }
+
+            // Do not have an identifier for preview right now. For an example,
+            // this can be happening at the beginning of a code block node creation.
+            var variableName = AstIdentifierForPreview.Value;
+            if (string.IsNullOrEmpty(variableName))
+                return;
+
+            var scheduler = Workspace.DynamoModel.Scheduler;
+            var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams()
+            {
+                DynamoScheduler = scheduler,
+                EngineController = Workspace.DynamoModel.EngineController,
+                VariableName = variableName
+            });
+
+            task.Completed += OnNodeValueQueried;
+            scheduler.ScheduleForExecution(task);
+        }
+
+        private void OnNodeValueQueried(AsyncTask asyncTask)
+        {
+            lock (cachedMirrorDataMutex)
+            {
+                var task = asyncTask as QueryMirrorDataAsyncTask;
+                cachedMirrorData = task.MirrorData;
+            }
+
+            RaisePropertyChanged("IsUpdated");
         }
 
         /// <summary>
@@ -1610,11 +1753,6 @@ namespace Dynamo.Models
                 renderPackages.Clear();
                 HasRenderPackages = false;
             }
-
-            // If a node is in either of the following states, then it will not 
-            // produce any geometric output. Bail after clearing the render packages.
-            if ((State == ElementState.Error) || !IsVisible)// || CachedValue == null)
-                return;
 
             RequestVisualUpdateAsyncCore(maxTesselationDivisions);
         }
@@ -1775,6 +1913,7 @@ namespace Dynamo.Models
         {
             return true; // Default implementation: always show preview.
         }
+      
     }
 
     public enum ElementState
@@ -1782,7 +1921,8 @@ namespace Dynamo.Models
         Dead,
         Active,
         Warning,
-        Error
+        Error,
+        AstBuildBroken
     };
 
 
@@ -1794,6 +1934,28 @@ namespace Dynamo.Models
         Longest,
         CrossProduct
     };
+
+    public enum PortEventType
+    {
+        MouseEnter,
+        MouseLeave,
+        MouseLeftButtonDown
+    };
+
+    public enum PortPosition
+    {
+        First,
+        Top,
+        Middle,
+        Last
+    }
+    [Flags]
+    public enum SnapExtensionEdges
+    {
+        None,
+        Top = 0x1,
+        Bottom = 0x2
+    }
 
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);

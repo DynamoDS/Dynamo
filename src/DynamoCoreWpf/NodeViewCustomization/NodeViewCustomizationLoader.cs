@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Models;
 
 namespace Dynamo.Wpf
 {
@@ -17,13 +18,11 @@ namespace Dynamo.Wpf
             var types = new Dictionary<Type, IEnumerable<Type>>();
 
             var customizerType = typeof(INodeViewCustomization<>);
-
-            var customizerImps = assem.GetTypes()
-                .Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
+            var customizerImps  =  assem.GetTypes().Where(t => !t.IsAbstract && ImplementsGeneric(customizerType, t));
 
             foreach (var customizerImp in customizerImps)
             {
-                var nodeModelType = GetCustomizerTypeParameter(customizerImp);
+                var nodeModelType = GetCustomizerTypeParameters(customizerImp);
 
                 if (nodeModelType == null) continue;
 
@@ -40,42 +39,72 @@ namespace Dynamo.Wpf
             return new NodeViewCustomizations(types);
         }
 
-        private static Type GetCustomizerTypeParameter(Type toCheck)
+        private static Type GetCustomizerTypeParameters(Type toCheck)
         {
-            while (toCheck != null && toCheck != typeof(object))
-            {
-                var genInterf = toCheck.GetInterfaces().FirstOrDefault(
-                    x =>
-                        x.IsGenericType &&
-                            x.GetGenericTypeDefinition() == typeof(INodeViewCustomization<>));
+            var customizerInterfaces = toCheck.GetInterfaces().Where(
+                x =>
+                    x.IsGenericType &&
+                    x.GetGenericTypeDefinition() == typeof (INodeViewCustomization<>)).ToList();
 
-                if (genInterf != null)
+            var customizerTypeArgs = customizerInterfaces.Select(x => x.GetGenericArguments()[0]);
+            var mostDerived = MostDerivedCommonBase(customizerTypeArgs);
+            if (mostDerived == null) return null;
+
+            var ints = customizerInterfaces.FirstOrDefault(x => x.GetGenericArguments()[0] == mostDerived);
+
+            return ints != null ? ints.GetGenericArguments()[0] : null;
+        }
+
+        public static IEnumerable<Type> TypeHierarchy(this Type type)
+        {
+            do
+            {
+                yield return type;
+                type = type.BaseType;
+            } while (type != null);
+        }
+
+        public static Type MostDerivedCommonBase(IEnumerable<Type> types)
+        {
+            if (!types.Any()) return null;
+
+            if (!types.Skip(1).Any()) return types.First();
+
+            var counts = types.SelectMany(t => t.TypeHierarchy())
+                              .GroupBy(t => t)
+                              .ToDictionary(g => g.Key, g => g.Count());
+
+            Type type = counts.First().Key;
+            var min = counts.First().Value;
+            foreach (var ele in counts.Skip(1))
+            {
+                if (ele.Value < min)
                 {
-                    return genInterf.GetGenericArguments()[0];
+                    type = ele.Key;
+                    min = ele.Value;
                 }
-                toCheck = toCheck.BaseType;
             }
 
-            return null;
+            return type;
+
+            //var total = counts[typeof(object)]; 
+            //return types.First().TypeHierarchy().First(t => counts[t] == total);
         }
 
         private static bool ImplementsGeneric(Type generic, Type toCheck)
         {
-            while (toCheck != null && toCheck != typeof(object))
+            var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+
+            var isGenInterf = cur.GetInterfaces().Any(
+                x =>
+                    x.IsGenericType &&
+                        x.GetGenericTypeDefinition() == generic);
+
+            if (generic == cur || isGenInterf)
             {
-                var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
-
-                var isGenInterf = cur.GetInterfaces().Any(
-                    x =>
-                        x.IsGenericType &&
-                            x.GetGenericTypeDefinition() == generic);
-
-                if (generic == cur || isGenInterf)
-                {
-                    return true;
-                }
-                toCheck = toCheck.BaseType;
+                return true;
             }
+
             return false;
         }
     }

@@ -23,19 +23,19 @@ namespace DSIronPythonNode
         private DynamoViewModel dynamoViewModel;
         private PythonNode model;
 
-        public void CustomizeView(PythonNode nodeModel, dynNodeView view)
+        public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
-            base.CustomizeView(nodeModel, view);
+            base.CustomizeView(nodeModel, nodeView);
 
             this.model = nodeModel;
-            this.dynamoViewModel = view.ViewModel.DynamoViewModel;
+            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
             var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
-            view.MainContextMenu.Items.Add(editWindowItem);
+            nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += delegate { EditScriptContent(); };
-            view.UpdateLayout();
+            nodeView.UpdateLayout();
 
-            view.MouseDown += view_MouseDown;
+            nodeView.MouseDown += view_MouseDown;
         }
 
         private void view_MouseDown(object sender, MouseButtonEventArgs e)

@@ -18,6 +18,7 @@ using Color = System.Windows.Media.Color;
 
 namespace Dynamo.Controls
 {
+
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
@@ -195,6 +196,19 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
+
+        }
+
+        public Watch3DView(Guid id, IWatchViewModel dataContext)
+        {
+            this.DataContext = dataContext;
+
+            InitializeComponent();
+            watch_view.DataContext = this;
+            Loaded += OnViewLoaded;
+            Unloaded += OnViewUnloaded;
+
+            _id = id;
         }
 
         #endregion
@@ -215,12 +229,13 @@ namespace Dynamo.Controls
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
-            MouseLeftButtonDown += new MouseButtonEventHandler(view_MouseButtonIgnore);
-            MouseLeftButtonUp += new MouseButtonEventHandler(view_MouseButtonIgnore);
-            MouseRightButtonUp += new MouseButtonEventHandler(view_MouseRightButtonUp);
-            PreviewMouseRightButtonDown += new MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
+            MouseLeftButtonDown += view_MouseButtonIgnore;
+            MouseLeftButtonUp += view_MouseButtonIgnore;
+            MouseRightButtonUp += view_MouseRightButtonUp;
+            PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
 
             var vm = DataContext as IWatchViewModel;
+            
             //check this for null so the designer can load the preview
             if (vm != null)
             {

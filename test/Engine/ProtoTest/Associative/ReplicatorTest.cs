@@ -10,22 +10,14 @@ using ProtoCore.Lang.Replication;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class ReplicatorTest
+    class ReplicatorTest : ProtoTestBase
     {
-        ProtoCore.Core core;
         DebugRunner fsr;
         ProtoScript.Config.RunConfiguration runnerConfig;
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
+
+        public override void Setup()
         {
             // Specify some of the requirements of IDE.
-            var options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
@@ -33,15 +25,17 @@ namespace ProtoTest.Associative
             CLRModuleType.ClearTypes();
         }
 
-
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         //Test "SomeNulls()"
         public void ComputeReducedParams()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4115
             string code =
-                           @"                      a = {1,2};                      b = {3,4};                  ";
+                           @"
+                      a = {1,2};
+                      b = {3,4};
+                  ";
 
             //Run
             fsr.PreStart(code, runnerConfig);

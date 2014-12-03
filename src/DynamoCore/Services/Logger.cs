@@ -17,8 +17,6 @@ namespace Dynamo.Services
     public class InstrumentationLogger
     {
 
-        private static readonly DynamoModel dynamoModel;
-
         private const bool IS_VERBOSE_DIAGNOSTICS = false;
 
         private static readonly string userID = GetUserID();
@@ -40,9 +38,8 @@ namespace Dynamo.Services
         //Service start
         public static void Start(DynamoModel dynamoModel)
         {
-            string appVersion = Process.GetCurrentProcess().ProcessName + "-"
-                                + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
 
+            string appVersion = dynamoModel.AppVersion;
 
             CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
                 "Dynamo", appVersion);

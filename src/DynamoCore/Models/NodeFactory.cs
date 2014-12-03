@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
@@ -113,7 +114,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Create a NodeModel from a type object
         /// </summary>
-        /// <param name="elementType"> The Type object from which the node can be activated </param>
+        /// <param name="data"> The Type object from which the node can be activated </param>
         /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
         /// <param name="signature"> The signature of the function along with parameter information </param>
         /// <param name="guid"> The unique identifier for the node in the workspace. </param>
@@ -324,8 +325,7 @@ namespace Dynamo.Models
                 // To open old file
                 var helper =
                     nodeElement.ChildNodes.Cast<XmlElement>()
-                        .Where(
-                            subNode => subNode.Name.Equals(typeof(FunctionDescriptor).FullName))
+                        .Where(subNode => subNode.Name.Equals(typeof(FunctionDescriptor).FullName))
                         .Select(subNode => new XmlElementHelper(subNode))
                         .FirstOrDefault();
 
@@ -345,8 +345,7 @@ namespace Dynamo.Models
                 string xmlSignature = nodeElement.Attributes["function"].Value;
 
                 string hintedSigniture =
-                    libraryServices
-                        .FunctionSignatureFromFunctionSignatureHint(xmlSignature);
+                    libraryServices.FunctionSignatureFromFunctionSignatureHint(xmlSignature);
 
                 function = hintedSigniture ?? xmlSignature;
             }
@@ -370,9 +369,15 @@ namespace Dynamo.Models
                 throw new UnresolvedFunctionException(function);
             }
 
-            if (descriptor.IsVarArg)
-                return new DSVarArgFunction(descriptor);
-            return new DSFunction(descriptor);
+            DSFunctionBase result = descriptor.IsVarArg
+                ? new DSVarArgFunction(descriptor)
+                : new DSFunction(descriptor);
+
+            //TODO(Steve): Move to DSFunctionBase constructor
+            if (descriptor.IsObsolete)
+                result.Warning(descriptor.ObsoleteMessage);
+
+            return result;
         }
     }
 

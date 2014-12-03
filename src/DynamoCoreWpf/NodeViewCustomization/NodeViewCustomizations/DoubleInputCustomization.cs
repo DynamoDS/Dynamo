@@ -10,7 +10,7 @@ namespace Dynamo.Wpf
 {
     public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
     {
-        public void CustomizeView(DoubleInput nodeModel, dynNodeView nodeView)
+        public void CustomizeView(DoubleInput nodeModel, NodeView nodeView)
         {
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(nodeModel.Value ?? "0.0")

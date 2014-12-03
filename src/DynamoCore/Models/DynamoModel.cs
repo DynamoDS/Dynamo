@@ -169,6 +169,16 @@ namespace Dynamo.Models
         public NodeSearchModel SearchModel { get; private set; }
 
         /// <summary>
+        /// The application version string for analytics reporting APIs
+        /// </summary>
+        internal virtual String AppVersion { 
+            get {
+                return Process.GetCurrentProcess().ProcessName + "-"
+                    + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
+            }
+        }
+
+        /// <summary>
         /// TODO
         /// </summary>
         public DebugSettings DebugSettings { get; private set; }
@@ -845,7 +855,11 @@ namespace Dynamo.Models
             CurrentWorkspace.ClearUndoRecorder();
             CurrentWorkspace.ResetWorkspace();
 
-            ResetEngine();
+            // Don't bother resetting the engine during shutdown (especially 
+            // since ResetEngine destroys and recreates a new EngineController).
+            if (!ShutdownRequested)
+                ResetEngine();
+
             CurrentWorkspace.PreloadedTraceData = null;
         }
 
@@ -885,6 +899,22 @@ namespace Dynamo.Models
         internal bool CanGoHome(object parameter)
         {
             return CurrentWorkspace != HomeSpace;
+        }
+
+        internal void DumpLibraryToXml(object parameter)
+        {
+            string directory = DynamoPathManager.Instance.Logs;
+            string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string fullFileName = Path.Combine(directory, fileName);
+
+            this.SearchModel.DumpLibraryToXml(fullFileName);
+
+            Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
+        }
+
+        internal bool CanDumpLibraryToXml(object obj)
+        {
+            return true;
         }
 
         #endregion
@@ -1218,6 +1248,7 @@ namespace Dynamo.Models
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
                         var type = Utils.ResolveType(this, typeName);
+                        var tld = Utils.GetDataForType(this, type);
 
                         el = NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid, Logger);
                         el.Load(dummyElement);
@@ -1433,22 +1464,25 @@ namespace Dynamo.Models
         {
             ClipBoard.Clear();
 
-            foreach (
-                var el in
-                    DynamoSelection.Instance.Selection.OfType<ModelBase>()
-                        .Where(el => !ClipBoard.Contains(el)))
+            foreach (var el in
+                DynamoSelection.Instance.Selection.OfType<ModelBase>())
             {
-                ClipBoard.Add(el);
+                if (!ClipBoard.Contains(el))
+                {
+                    ClipBoard.Add(el);
 
-                //dynNodeView n = el as dynNodeView;
-                var n = el as NodeModel;
-                if (n == null)
-                    continue;
-                var connectors = n.InPorts.ToList().SelectMany(x => x.Connectors)
-                    .Concat(n.OutPorts.ToList().SelectMany(x => x.Connectors))
-                    .Where(x => x.End != null && x.End.Owner.IsSelected && !ClipBoard.Contains(x));
+                    var n = el as NodeModel;
+                    if (n != null)
+                    {
+                        var connectors =
+                            n.InPorts.ToList()
+                                .SelectMany(x => x.Connectors)
+                                .Concat(n.OutPorts.ToList().SelectMany(x => x.Connectors))
+                                .Where(x => x.End != null && x.End.Owner.IsSelected && !ClipBoard.Contains(x));
 
-                ClipBoard.AddRange(connectors);
+                        ClipBoard.AddRange(connectors);
+                    }
+                }
             }
         }
 
@@ -1473,7 +1507,7 @@ namespace Dynamo.Models
 
             var connectors = ClipBoard.OfType<ConnectorModel>();
 
-            foreach (NodeModel node in nodes)
+            foreach (var node in nodes)
             {
                 //create a new guid for us to use
                 Guid newGuid = Guid.NewGuid();
@@ -1498,7 +1532,7 @@ namespace Dynamo.Models
                         ? (node as Symbol).InputSymbol
                         : (node as Output).Symbol);
                     var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
-                    newNode = new CodeBlockNodeModel(CurrentWorkspace, code);
+                    newNode = new CodeBlockNodeModel(code);
 
                     CurrentWorkspace.AddNode(newNode, newGuid, node.X, node.Y + 100, false, false);
                 }

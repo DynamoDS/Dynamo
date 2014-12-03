@@ -5,14 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Dynamo.Controls;
+using System.Windows;
+using System.Xml;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using Dynamo.Selection;
-using Dynamo.ViewModels;
+using Dynamo.Utilities;
+using DynamoUtilities;
 using NUnit.Framework;
-using System.Windows;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -162,7 +162,7 @@ namespace Dynamo.Tests
         public void ValidateConnectionsDoesNotClearError()
         {
             var model = ViewModel.Model;
-            model.CurrentWorkspace.Nodes.Add(new CodeBlockNodeModel("30", Guid.NewGuid(), model.CurrentWorkspace, 100.0, 100.0));
+            model.CurrentWorkspace.Nodes.Add(new CodeBlockNodeModel("30", Guid.NewGuid(), 100.0, 100.0));
             Assert.AreEqual(1, model.Nodes.Count());
 
             // Make sure we have the number node created in active state.
@@ -377,6 +377,37 @@ namespace Dynamo.Tests
             Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes[1]);
         }
 
+        [Test]
+        public void TestFileDirtyOnLacingChange()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\LacingTest.dyn");            
+            ViewModel.OpenCommand.Execute(openPath);
+
+            WorkspaceModel workspace = ViewModel.CurrentSpace;            
+            Assert.AreEqual(false, workspace.CanUndo);
+            Assert.AreEqual(false, workspace.CanRedo);
+
+            //Assert HasUnsavedChanges is false 
+            Assert.AreEqual(false, workspace.HasUnsavedChanges);
+
+            Assert.AreEqual(5, workspace.Nodes.Count);          
+            
+            //Get the first node and assert the lacing strategy
+            var node = ViewModel.Model.Nodes[0];
+            Assert.IsNotNull(node);
+            Assert.AreEqual(LacingStrategy.Shortest, node.ArgumentLacing);
+
+            var workSpaceViewModel = ViewModel.CurrentSpaceViewModel;
+            var nodes = workSpaceViewModel.Nodes;
+            var nodeViewModel = nodes.First(x => x.NodeLogic == node);
+            
+            //change the lacing strategy
+            nodeViewModel.SetLacingTypeCommand.Execute("Longest");
+            Assert.AreEqual(LacingStrategy.Longest, node.ArgumentLacing);
+          
+            Assert.AreEqual(true, workspace.HasUnsavedChanges);
+        }
+
         // SaveImage
 
         //[Test]
@@ -562,8 +593,8 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
 
             model.CurrentWorkspace.AddNode(Guid.NewGuid(), "+@,", 0, 0, true, true);
-            model.CurrentWorkspace.Nodes.Add(new CodeBlockNodeModel("2", Guid.NewGuid(), model.CurrentWorkspace, 100.0, 100.0));
-            model.CurrentWorkspace.Nodes.Add(new CodeBlockNodeModel("2", Guid.NewGuid(), model.CurrentWorkspace, 100.0, 100.0));
+            model.CurrentWorkspace.Nodes.Add(new CodeBlockNodeModel("2", Guid.NewGuid(), 100.0, 100.0));
+            model.CurrentWorkspace.Nodes.Add(new CodeBlockNodeModel("2", Guid.NewGuid(), 100.0, 100.0));
             model.CurrentWorkspace.AddNode(100.0, 300.0, "Dynamo.Nodes.Watch");
 
             model.CurrentWorkspace.AddConnection(ViewModel.Model.Nodes[1], ViewModel.Model.Nodes[0], 0, 0);

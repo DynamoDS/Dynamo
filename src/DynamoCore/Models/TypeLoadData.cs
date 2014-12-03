@@ -25,9 +25,20 @@ namespace Dynamo.Models
         /// </summary>
         public readonly Type Type;
 
-        public TypeLoadData(Type typeIn)
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public readonly string ObsoleteMessage;
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
+
+        public TypeLoadData(Type typeIn, string obsoleteMsg)
         {
             Type = typeIn;
+            ObsoleteMessage = obsoleteMsg;
 
             AlsoKnownAs = Type.GetCustomAttributes<AlsoKnownAsAttribute>(false)
                 .SelectMany(aka => aka.Values)

@@ -244,7 +244,7 @@ limitations under the License.
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="PackageManager\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
-    <Compile Include="Nodes\BaseTypes.cs" />
+    <Compile Include="Nodes\NodeCategories.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\Files.cs" />
     <Compile Include="Nodes\Custom Nodes\Function.cs" />

@@ -1,0 +1,37 @@
+<Workspace Version="0.7.4.3221" X="408.044223621641" Y="318.651115410126" zoom="0.928560939687735" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="07dd69e8-5354-4c69-8e4c-69725bc9883f" nickname="LoopWhile" x="542.035666566028" y="49.0239925720349" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="LoopWhile@var[]..[],_FunctionObject,_FunctionObject" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="658a5994-a238-4aba-80a4-b7b1e82a63a1" nickname="Fibonacci" x="169.002214413653" y="264.146698913332" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="bfa8a25a-065a-47ba-9a6b-f3acddbd7bf6" />
+      <Name value="Fibonacci" />
+      <Description value="" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="fibonacci_series" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="012fb834-8bdf-48a4-a6ff-ce6f875c1d3f" nickname="Code Block" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{0,1};" ShouldFocus="false" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="7ae20dec-8913-4051-8d0c-c71243100a20" nickname="LastItemLessThan" x="185.649244154549" y="126.78714099216" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="bd92d09f-2cad-4b2a-aacc-9b3d4f777f1e" />
+      <Name value="CountLessThan" />
+      <Description value="" />
+      <Inputs>
+        <Input value="lessThan" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="success" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="1112724b-5f0b-43ea-85ae-e08a2ada7f20" nickname="Code Block" x="-55" y="114" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="10;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="658a5994-a238-4aba-80a4-b7b1e82a63a1" start_index="0" end="07dd69e8-5354-4c69-8e4c-69725bc9883f" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="012fb834-8bdf-48a4-a6ff-ce6f875c1d3f" start_index="0" end="07dd69e8-5354-4c69-8e4c-69725bc9883f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7ae20dec-8913-4051-8d0c-c71243100a20" start_index="0" end="07dd69e8-5354-4c69-8e4c-69725bc9883f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1112724b-5f0b-43ea-85ae-e08a2ada7f20" start_index="0" end="7ae20dec-8913-4051-8d0c-c71243100a20" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -10,16 +10,8 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.ProtoAST
 {
-    public class RoundTripTests
+    class RoundTripTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
         public void TestRoundTrip_Assign01()
         {

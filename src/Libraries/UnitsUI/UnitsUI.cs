@@ -32,35 +32,35 @@ namespace UnitsUI
         private DynamoViewModel dynamoViewModel;
         private DynamoTextBox tb;
 
-        public void CustomizeView(MeasurementInputBase model, dynNodeView nodeUI)
+        public void CustomizeView(MeasurementInputBase model, NodeView nodeView)
         {
             this.mesBaseModel = model;
-            this.dynamoViewModel = nodeUI.ViewModel.DynamoViewModel;
+            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new System.Windows.Controls.MenuItem()
+            var editWindowItem = new MenuItem()
             {
                 Header = "Edit...",
                 IsCheckable = false,
-                Tag = nodeUI.ViewModel.DynamoViewModel
+                Tag = nodeView.ViewModel.DynamoViewModel
             };
 
-            nodeUI.MainContextMenu.Items.Add(editWindowItem);
+            nodeView.MainContextMenu.Items.Add(editWindowItem);
 
-            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            editWindowItem.Click += editWindowItem_Click;
 
             //add a text box to the input grid of the control
             this.tb = new DynamoTextBox();
             tb.HorizontalAlignment = HorizontalAlignment.Stretch;
             tb.VerticalAlignment = VerticalAlignment.Center;
-            nodeUI.inputGrid.Children.Add(tb);
+            nodeView.inputGrid.Children.Add(tb);
             Grid.SetColumn(tb, 0);
             Grid.SetRow(tb, 0);
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = model;
-            tb.BindToProperty(new System.Windows.Data.Binding("Value")
+            tb.BindToProperty(new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new MeasureConverter(),
@@ -72,7 +72,7 @@ namespace UnitsUI
 
             tb.OnChangeCommitted += delegate { model.RequiresRecalc = true; };
 
-            (nodeUI.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+            (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
         }
 
         void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -91,7 +91,7 @@ namespace UnitsUI
         {
             var viewModel = this.dynamoViewModel;
             var editWindow = new EditWindow(viewModel) { DataContext = this.mesBaseModel };
-            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
+            editWindow.BindToProperty(null, new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new MeasureConverter(),
@@ -188,9 +188,9 @@ namespace UnitsUI
     public class LengthFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
                                                          INodeViewCustomization<LengthFromString>
     {
-        public void CustomizeView(LengthFromString model, dynNodeView view)
+        public void CustomizeView(LengthFromString model, NodeView nodeView)
         {
-            base.CustomizeView(model, view);
+            base.CustomizeView(model, nodeView);
         }
     }
 
@@ -237,9 +237,9 @@ namespace UnitsUI
     public class AreaFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
                                                      INodeViewCustomization<AreaFromString>
     {
-        public void CustomizeView(AreaFromString model, dynNodeView view)
+        public void CustomizeView(AreaFromString model, NodeView nodeView)
         {
-            base.CustomizeView(model, view);
+            base.CustomizeView(model, nodeView);
         }
     }
 
@@ -268,9 +268,9 @@ namespace UnitsUI
     public class VolumeFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
                                                  INodeViewCustomization<VolumeFromString>
     {
-        public void CustomizeView(VolumeFromString model, dynNodeView view)
+        public void CustomizeView(VolumeFromString model, NodeView nodeView)
         {
-            base.CustomizeView(model, view);
+            base.CustomizeView(model, nodeView);
         }
     }
 

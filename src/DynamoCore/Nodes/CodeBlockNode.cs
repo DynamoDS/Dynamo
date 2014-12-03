@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
+using Dynamo.Selection;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -28,7 +29,12 @@ namespace Dynamo.Nodes
         private List<string> tempVariables = new List<string>();
         private string previewVariable = null;
 
-        public bool ShouldFocus { get; set; }
+        private bool shouldFocus = true;
+        public bool ShouldFocus
+        {
+            get { return shouldFocus;  }
+            internal set { shouldFocus = value; }
+        }
 
         private struct Formatting
         {
@@ -38,34 +44,31 @@ namespace Dynamo.Nodes
 
         #region Public Methods
 
-        public CodeBlockNodeModel(WorkspaceModel workspace)
-            : base()
+        public CodeBlockNodeModel()
         {
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public CodeBlockNodeModel(WorkspaceModel workspace, string userCode) 
-            : this(workspace)
+        public CodeBlockNodeModel(string userCode) : this()
         {
             code = userCode;
             ProcessCodeDirect();
         }
-        
-        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workspace, double xPos, double yPos) : base()
+
+        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            this.X = xPos;
-            this.Y = yPos;
-            this.code = userCode;
-            this.GUID = guid;
-            this.ShouldFocus = false;
+            X = xPos;
+            Y = yPos;
+            code = userCode;
+            GUID = guid;
+            ShouldFocus = false;
             ProcessCodeDirect();
         }
 
         /// <summary>
         ///     It removes all the in ports and out ports so that the user knows there is an error.
         /// </summary>
-        /// <param name="errorMessage"> Error message to be displayed </param>
         private void ProcessError()
         {
             previewVariable = null;
@@ -141,7 +144,10 @@ namespace Dynamo.Nodes
 
         public override string AstIdentifierBase
         {
-            get { return (State == ElementState.Error) ? null : previewVariable; }
+            get
+            {
+                return previewVariable ?? base.AstIdentifierBase;
+            }
         }
 
         public string Code
@@ -224,7 +230,7 @@ namespace Dynamo.Nodes
             base.SaveNode(xmlDoc, nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
             helper.SetAttribute("CodeText", code);
-            helper.SetAttribute("ShouldFocus", ShouldFocus);
+            helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -233,7 +239,7 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(nodeElement as XmlElement);
             code = helper.ReadString("CodeText");
             ProcessCodeDirect();
-            ShouldFocus = helper.ReadBoolean("ShouldFocus");
+            shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
 
         protected override bool UpdateValueCore(string name, string value)
@@ -250,20 +256,20 @@ namespace Dynamo.Nodes
                 value = CodeBlockUtils.FormatUserText(value);
                 if (value == "")
                 {
-                    if (this.Code == "")
+                    if (Code == "")
                     {
                         this.Workspace.UndoRecorder.PopFromUndoGroup();
-                        Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
+                        DynamoSelection.Instance.Selection.Remove(this);
                         this.Workspace.Nodes.Remove(this);
                     }
                     else
                     {
-                        this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
+                        this.Workspace.RecordAndDeleteModels(new List<ModelBase>() { this });
                     }
                 }
                 else
                 {
-                    if (!value.Equals(this.Code))
+                    if (!value.Equals(Code))
                         Code = value;
                 }
                 return true;
@@ -277,7 +283,7 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
-            helper.SetAttribute("ShouldFocus", ShouldFocus);
+            helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -286,7 +292,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 var helper = new XmlElementHelper(element);
-                ShouldFocus = helper.ReadBoolean("ShouldFocus");
+                shouldFocus = helper.ReadBoolean("ShouldFocus");
                 code = helper.ReadString("CodeText");
                 ProcessCodeDirect();
             }
@@ -295,7 +301,7 @@ namespace Dynamo.Nodes
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             //Do not build if the node is in error.
-            if (this.State == ElementState.Error)
+            if (State == ElementState.Error)
             {
                 return null;
             }
@@ -303,8 +309,8 @@ namespace Dynamo.Nodes
             var resultNodes = new List<AssociativeNode>();
 
             // Define unbound variables if necessary
-            if (inputIdentifiers != null && 
-                inputAstNodes != null && 
+            if (inputIdentifiers != null &&
+                inputAstNodes != null &&
                 inputIdentifiers.Count == inputAstNodes.Count)
             {
                 var initStatments = inputIdentifiers.Zip(inputAstNodes,
@@ -319,9 +325,9 @@ namespace Dynamo.Nodes
 
             foreach (var stmnt in codeStatements)
             {
-                var astNode = ProtoCore.Utils.NodeUtils.Clone(stmnt.AstNode);
+                var astNode = NodeUtils.Clone(stmnt.AstNode);
                 MapIdentifiers(astNode);
-                resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
+                resultNodes.Add(astNode as AssociativeNode);
             }
 
             return resultNodes;
@@ -363,7 +369,7 @@ namespace Dynamo.Nodes
                 return null;
 
             var identNode = binExprNode.LeftNode as IdentifierNode;
-            var mappedIdent = ProtoCore.Utils.NodeUtils.Clone(identNode);
+            var mappedIdent = NodeUtils.Clone(identNode);
             MapIdentifiers(mappedIdent);
             return mappedIdent as IdentifierNode;
         }
@@ -372,7 +378,7 @@ namespace Dynamo.Nodes
 
         #region Private Methods
 
-        private void ProcessCodeDirect()
+        internal void ProcessCodeDirect()
         {
             string errorMessage = string.Empty;
             string warningMessage = string.Empty;
@@ -407,7 +413,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                ParseParam parseParam = new ParseParam(this.GUID, code);
+                var parseParam = new ParseParam(GUID, code);
                 if (Workspace.DynamoModel.EngineController.TryParseCode(ref parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
@@ -469,12 +475,12 @@ namespace Dynamo.Nodes
 
         private void SetPreviewVariable(IEnumerable<Node> parsedNodes)
         {
-            this.previewVariable = null;
+            previewVariable = null;
             if (parsedNodes == null || (!parsedNodes.Any()))
                 return;
 
             IdentifierNode identifierNode = null;
-            foreach(var parsedNode in parsedNodes.Reverse())
+            foreach (var parsedNode in parsedNodes.Reverse())
             {
                 var statement = parsedNode as BinaryExpressionNode;
                 if (null == statement)
@@ -512,7 +518,6 @@ namespace Dynamo.Nodes
             // instead of the full expression with array indexers.
             // 
             previewVariable = duplicatedNode.Value;
-            this.Identifier = null; // Reset preview identifier for regeneration.
         }
 
         /// <summary>
@@ -540,7 +545,7 @@ namespace Dynamo.Nodes
         private void SetInputPorts()
         {
             // Generate input port data list from the unbound identifiers.
-            var inportData = CodeBlockUtils.GenerateInputPortData(this.inputIdentifiers);
+            var inportData = CodeBlockUtils.GenerateInputPortData(inputIdentifiers);
             foreach (var portData in inportData)
                 InPortData.Add(portData);
         }
@@ -569,7 +574,7 @@ namespace Dynamo.Nodes
                 return;
 
             double prevPortBottom = 0.0;
-            var map = CodeBlockUtils.MapLogicalToVisualLineIndices(this.code);
+            var map = CodeBlockUtils.MapLogicalToVisualLineIndices(code);
             foreach (var def in allDefs)
             {
                 // Map the given logical line index to its corresponding visual 
@@ -586,7 +591,7 @@ namespace Dynamo.Nodes
 
                 double portCoordsY = Formatting.InitialMargin;
                 portCoordsY += visualIndex * Configurations.CodeBlockPortHeightInPixels;
-                
+
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
                     VerticalMargin = portCoordsY - prevPortBottom,
@@ -799,9 +804,9 @@ namespace Dynamo.Nodes
             {
                 var identNode = astNode as IdentifierNode;
                 var ident = identNode.Value;
-                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident)) 
+                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident))
                     && !tempVariables.Contains(ident)
-                    && !identNode.Equals(this.Identifier))
+                    && !identNode.Equals(AstIdentifierForPreview))
                 {
                     identNode.Name = identNode.Value = LocalizeIdentifier(ident);
                 }
@@ -870,7 +875,7 @@ namespace Dynamo.Nodes
 
         private string LocalizeIdentifier(string identifierName)
         {
-            var guid = this.GUID.ToString().Replace("-", string.Empty);
+            var guid = GUID.ToString().Replace("-", string.Empty);
             return string.Format("{0}_{1}", identifierName, guid);
         }
 
@@ -1074,7 +1079,7 @@ namespace Dynamo.Nodes
             StartLine = parsedNode.line;
             EndLine = parsedNode.endLine;
             CurrentType = GetStatementType(parsedNode);
-            this.AstNode = parsedNode;
+            AstNode = parsedNode;
 
             if (parsedNode is BinaryExpressionNode)
             {
@@ -1104,6 +1109,7 @@ namespace Dynamo.Nodes
 
         #endregion
     }
+
 
     public class Variable
     {

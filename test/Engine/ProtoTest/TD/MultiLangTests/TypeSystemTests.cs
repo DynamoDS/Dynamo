@@ -4,14 +4,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
     [TestFixture]
-    class TypeSystemTests
+    class TypeSystemTests : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void SetUp()
-        {
-        }
-
         [Test]
         [Category("Type System")]
         public void TS001_IntToDoubleTypeConversion()

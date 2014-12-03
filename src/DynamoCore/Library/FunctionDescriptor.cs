@@ -54,7 +54,7 @@ namespace Dynamo.DSEngine
         public FunctionDescriptor(
             string assembly, string className, string functionName, IEnumerable<TypedParameter> parameters,
             string returnType, FunctionType type, bool isOverloaded, bool isVisibleInLibrary = true,
-            IEnumerable<string> returnKeys = null, bool isVarArg = false)
+            IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
             : this(
                 assembly,
                 className,
@@ -66,12 +66,13 @@ namespace Dynamo.DSEngine
                 isOverloaded,
                 isVisibleInLibrary,
                 returnKeys,
-                isVarArg) { }
+                isVarArg,
+                obsoleteMsg) { }
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, string summary,
             IEnumerable<TypedParameter> parameters, string returnType, FunctionType type, bool isOverloaded,
-            bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false)
+            bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
         {
             this.summary = summary;
             IsOverloaded = isOverloaded;
@@ -96,6 +97,7 @@ namespace Dynamo.DSEngine
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;
             IsVisibleInLibrary = isVisibleInLibrary;
+            ObsoleteMessage = obsoleteMsg;
         }
 
         public bool IsOverloaded { get; private set; }
@@ -136,6 +138,9 @@ namespace Dynamo.DSEngine
         ///     Does the function accept a variable number of arguments?
         /// </summary>
         public bool IsVarArg { get; private set; }
+
+        public string ObsoleteMessage { get; protected set; }
+        public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
         /// <summary>
         ///     Function type.

@@ -7,6 +7,6 @@ namespace Dynamo.Wpf
 {
     public interface INodeViewCustomization<in T> : IDisposable where T : NodeModel
     {
-        void CustomizeView(T model, dynNodeView view);
+        void CustomizeView(T model, NodeView nodeView);
     }
 }

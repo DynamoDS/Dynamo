@@ -625,6 +625,9 @@ namespace Dynamo.PackageManager
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResults(string query)
         {
+            // if last sync isn't populated, we can't search
+            if (LastSync == null) return;
+
             this.SearchText = query;
 
             var t = Search(query);
@@ -688,21 +691,22 @@ namespace Dynamo.PackageManager
         /// <param name="query"> The search query </param>
         internal IEnumerable<PackageManagerSearchElementViewModel> Search(string query)
         {
+            if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
+
             if (!String.IsNullOrEmpty(query))
             {
                 return
                     SearchDictionary.Search(query, MaxNumSearchResults)
                         .Select(x => new PackageManagerSearchElementViewModel(x));
             }
-            else
-            {
-                // with null query, don't show deprecated packages
-                var list =
-                    LastSync.Where(x => !x.IsDeprecated)
-                        .Select(x => new PackageManagerSearchElementViewModel(x)).ToList();
-                Sort(list, this.SortingKey);
-                return list;
-            }
+
+            // with null query, don't show deprecated packages
+            var list =
+                LastSync.Where(x => !x.IsDeprecated)
+                    .Select(x => new PackageManagerSearchElementViewModel(x)).ToList();
+            Sort(list, this.SortingKey);
+            return list;
+
         }
 
         /// <summary>

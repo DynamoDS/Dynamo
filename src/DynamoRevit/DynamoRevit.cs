@@ -52,11 +52,24 @@ namespace RevitServices.Threading
             set { idle = value; }
         }
 
-        public static void ExecuteOnIdleAsync(Action p)
+        /// <summary>
+        /// Call this method to schedule a DelegateBasedAsyncTask for execution.
+        /// </summary>
+        /// <param name="p">The delegate to execute on the idle thread.</param>
+        /// <param name="completionHandler">Event handler that will be invoked 
+        /// when the scheduled DelegateBasedAsyncTask is completed. This parameter
+        /// is optional.</param>
+        /// 
+        internal static void ExecuteOnIdleAsync(Action p,
+            AsyncTaskCompletedHandler completionHandler = null)
         {
             var scheduler = DynamoRevit.RevitDynamoModel.Scheduler;
             var task = new DelegateBasedAsyncTask(scheduler);
+
             task.Initialize(p);
+            if (completionHandler != null)
+                task.Completed += completionHandler;
+
             scheduler.ScheduleForExecution(task);
         }
     }
@@ -82,7 +95,35 @@ namespace Dynamo.Applications
             try
             {
                 extCommandData = commandData;
-                commandData.Application.Idling += OnRevitIdleOnce;
+
+                // create core data models
+                revitDynamoModel = InitializeCoreModel(extCommandData);
+                dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
+
+                // handle initialization steps after RevitDynamoModel is created.
+                revitDynamoModel.HandlePostInitialization();
+
+                // show the window
+                InitializeCoreView().Show();
+
+                TryOpenWorkspaceInCommandData(extCommandData);
+                SubscribeApplicationEvents(extCommandData);
+#else
+
+                IdlePromise.ExecuteOnIdleAsync(
+                    delegate
+                    {
+                        // create core data models
+                        revitDynamoModel = InitializeCoreModel(commandData);
+                        dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
+
+                        // show the window
+                        InitializeCoreView().Show();
+
+                        TryOpenWorkspaceInCommandData(commandData);
+                        SubscribeViewActivating(commandData);
+                    });
+#endif
 
                 // Disable the Dynamo button to prevent a re-run
                 DynamoRevitApp.DynamoButton.Enabled = false;
@@ -113,32 +154,6 @@ namespace Dynamo.Applications
             {
                 revitDynamoModel = value;
             }
-        }
-
-        /// <summary>
-        /// This method (Application.Idling event handler) is called exactly once
-        /// during the creation of Dynamo Revit plug-in. It is in this call both 
-        /// DynamoScheduler and its RevitSchedulerThread objects are created. All 
-        /// other AsyncTask beyond this point are scheduled through the scheduler.
-        /// </summary>
-        /// 
-        private static void OnRevitIdleOnce(object sender, IdlingEventArgs e)
-        {
-            // We only need to initialize this once, unregister.
-            extCommandData.Application.Idling -= OnRevitIdleOnce;
-
-            // create core data models
-            revitDynamoModel = InitializeCoreModel(extCommandData);
-            dynamoViewModel = InitializeCoreViewModel(revitDynamoModel);
-
-            // handle initialization steps after RevitDynamoModel is created.
-            revitDynamoModel.HandlePostInitialization();
-
-            // show the window
-            InitializeCoreView().Show();
-
-            TryOpenWorkspaceInCommandData(extCommandData);
-            SubscribeApplicationEvents(extCommandData);
         }
 
         #region Initialization
@@ -346,9 +361,6 @@ namespace Dynamo.Applications
             finally
             {
                 args.Handled = true;
-
-                // KILLDYNSETTINGS - this is suspect
-                revitDynamoModel.Logger.Dispose();
                 DynamoRevitApp.DynamoButton.Enabled = true;
             }
         }

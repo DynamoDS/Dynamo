@@ -512,6 +512,7 @@ namespace Dynamo.ViewModels
             #region User Input Event Handlers
 
             private MouseClickHistory prevClick;
+          
 
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {

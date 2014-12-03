@@ -408,6 +408,8 @@ namespace ProtoCore.Lang
 
                     return StackValue.BuildInt(typeUID);
                 case BuiltInMethods.MethodID.kToString:
+                case BuiltInMethods.MethodID.kToStringFromObject:
+                case BuiltInMethods.MethodID.kToStringFromArray:
                     ret = StringUtils.ConvertToString(formalParameters[0], core, core.Rmem);
                     break;
                 case BuiltInMethods.MethodID.kImportData:
@@ -490,6 +492,11 @@ namespace ProtoCore.Lang
                     {
                         ret = StackValue.Null;
                     }
+                    break;
+                case BuiltInMethods.MethodID.kNodeAstFailed:
+                    var nodeFullName = formalParameters[0];
+                    var fullName = StringUtils.GetStringValue(nodeFullName, core);
+                    ret = StackValue.Null;
                     break;
                 default:
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
@@ -2138,7 +2145,7 @@ namespace ProtoCore.Lang
             }
             bool is2DArray = false;
             var svarr = ArrayUtils.GetValues(sv, runtime.runtime.Core);
-            int numOfCols = 1;
+            int numOfCols = 0;
             int numOfRows = svarr.Count();
             foreach(StackValue element in svarr)
                 if (element.IsArray)

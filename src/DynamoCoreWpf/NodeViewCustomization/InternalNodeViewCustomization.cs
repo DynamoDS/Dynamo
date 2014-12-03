@@ -18,7 +18,7 @@ namespace Dynamo.Wpf
         private readonly Type nodeModelType;
         private readonly Type customizerType;
         private readonly MethodInfo customizeViewMethodInfo;
-        private Func<NodeModel, dynNodeView, IDisposable> compiledCustomizationCall;
+        private Func<NodeModel, NodeView, IDisposable> compiledCustomizationCall;
 
         internal static InternalNodeViewCustomization Create(Type nodeModelType, Type customizerType)
         {
@@ -53,12 +53,12 @@ namespace Dynamo.Wpf
             this.customizeViewMethodInfo = customizeViewMethod;
         }
 
-        public Func<NodeModel, dynNodeView, IDisposable> CustomizeView
+        public Func<NodeModel, NodeView, IDisposable> CustomizeView
         {
             get { return Compile(); }
         }
 
-        private Func<NodeModel, dynNodeView, IDisposable> Compile()
+        private Func<NodeModel, NodeView, IDisposable> Compile()
         {
             // generate:
             //
@@ -73,23 +73,23 @@ namespace Dynamo.Wpf
             
             // parameters for the lambda
             var modelParam = Expression.Parameter(typeof(NodeModel), "model");
-            var viewParam = Expression.Parameter(typeof(dynNodeView), "view");
+            var viewParam = Expression.Parameter(typeof(NodeView), "view");
 
             // var c = new NodeViewCustomizer();
             var custLam = Expression.Lambda(Expression.New(customizerType));
-            InvocationExpression custExp = Expression.Invoke(custLam);
+            var custExp = Expression.Invoke(custLam);
             var varExp = Expression.Variable(customizerType);
             var assignExp = Expression.Assign(varExp, custExp);
 
             // c.CustomizeView( model as NodeModelType, view );
-            UnaryExpression castModelExp = Expression.TypeAs(modelParam, nodeModelType);
+            var castModelExp = Expression.TypeAs(modelParam, nodeModelType);
             var invokeExp = Expression.Call(varExp, customizeViewMethodInfo, castModelExp, viewParam);
 
             // new OnceDisposable(c);
             var onceDispConstInfo = typeof(OnceDisposable).GetConstructor(new[] { typeof(IDisposable) });
             if (onceDispConstInfo == null) throw new Exception("Could not obtain OnceDisposable constructor!");
             var onceDisp = Expression.Lambda(Expression.New(onceDispConstInfo, varExp));
-            InvocationExpression onceDispExp = Expression.Invoke(onceDisp);
+            var onceDispExp = Expression.Invoke(onceDisp);
 
             // make full block
             var block = Expression.Block(
@@ -99,7 +99,7 @@ namespace Dynamo.Wpf
                 onceDispExp);
 
             // compile
-            return compiledCustomizationCall = Expression.Lambda<Func<NodeModel, dynNodeView, IDisposable>>(
+            return compiledCustomizationCall = Expression.Lambda<Func<NodeModel, NodeView, IDisposable>>(
                 block,
                 modelParam,
                 viewParam).Compile();

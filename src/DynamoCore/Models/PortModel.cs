@@ -38,10 +38,10 @@ namespace Dynamo.Models
         PortType portType;
         string name;
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
-        private bool _usingDefaultValue;
-        private bool _defaultValueEnabled;
+        private bool usingDefaultValue;
+        private bool defaultValueEnabled;
         private Thickness marginThickness;
-
+        
         #endregion
 
         #region public members
@@ -99,18 +99,11 @@ namespace Dynamo.Models
         {
             get
             {
-                if (Owner != null)
-                {
-                    if (PortType == PortType.Input)
-                    {
-                        return Owner.InPortData[Index].ToolTipString;
-                    }
-                    else
-                    {
-                        return Owner.OutPortData[Index].ToolTipString;
-                    }
-                }
-                return "";
+                return Owner != null
+                    ? (PortType == PortType.Input
+                        ? Owner.InPortData[Index].ToolTipString
+                        : Owner.OutPortData[Index].ToolTipString)
+                    : "";
             }
         }
 
@@ -138,16 +131,19 @@ namespace Dynamo.Models
         {
             get
             {
-                double halfHeight = this.Height * 0.5;
-                double headerHeight = 25;
+                double halfHeight = Height * 0.5;
+                const double headerHeight = 25;
 
                 double offset = owner.GetPortVerticalOffset(this);
                 double y = owner.Y + headerHeight + 5 + halfHeight + offset;
 
-                if (portType == PortType.Input)
-                    return new Point(owner.X, y);
-                else if (portType == PortType.Output)
-                    return new Point(owner.X + owner.Width, y);
+                switch (portType)
+                {
+                    case PortType.Input:
+                        return new Point(owner.X, y);
+                    case PortType.Output:
+                        return new Point(owner.X + owner.Width, y);
+                }
 
                 return new Point();
             }
@@ -158,10 +154,10 @@ namespace Dynamo.Models
         /// </summary>
         public bool UsingDefaultValue
         {
-            get { return _usingDefaultValue; }
+            get { return usingDefaultValue; }
             set
             {
-                _usingDefaultValue = value; 
+                usingDefaultValue = value; 
                 RaisePropertyChanged("UsingDefaultValue");
             }
         }
@@ -171,10 +167,10 @@ namespace Dynamo.Models
         /// </summary>
         public bool DefaultValueEnabled
         {
-            get { return _defaultValueEnabled; }
+            get { return defaultValueEnabled; }
             set
             {
-                _defaultValueEnabled = value;
+                defaultValueEnabled = value;
                 RaisePropertyChanged("DefaultValueEnabled");
             }
         }
@@ -192,18 +188,21 @@ namespace Dynamo.Models
             }
         }
 
+        public SnapExtensionEdges extensionEdges { get; set; }        
+    
         #endregion
 
-        public PortModel(PortType portType, NodeModel owner, string name)
+        public PortModel(PortType portType, NodeModel owner, PortData data)
         {
             IsConnected = false;
             PortType = portType;
             Owner = owner;
-            PortName = name;
+            PortName = data.NickName;
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
-            this.Height = Configurations.PortHeightInPixels;
+
+            Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }
 
         /// <summary>
@@ -299,6 +298,8 @@ namespace Dynamo.Models
         public object DefaultValue { get; set; }
         public double VerticalMargin { get; set; }
 
+        public double Height { get; set; }
+
         public PortData(string nickName, string tip) : this(nickName, tip, null) { }
 
         public PortData(string nickName, string toolTipString, object defaultValue)
@@ -307,6 +308,7 @@ namespace Dynamo.Models
             ToolTipString = toolTipString;
             DefaultValue = defaultValue;
             VerticalMargin = 0;
+            Height = 0;
         }
 
         public bool HasDefaultValue 

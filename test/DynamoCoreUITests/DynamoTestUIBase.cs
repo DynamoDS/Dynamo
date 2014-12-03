@@ -105,6 +105,17 @@ namespace DynamoCoreUITests
 
         #region Utility functions
 
+        public void Open(string pathInTestsDir)
+        {
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
+            ViewModel.OpenCommand.Execute(openPath);
+        }
+
+        public void Run()
+        {
+            ViewModel.Model.RunExpression();
+        }
+
         public static string GetTestDirectory(string executingDirectory)
         {
             var directory = new DirectoryInfo(executingDirectory);

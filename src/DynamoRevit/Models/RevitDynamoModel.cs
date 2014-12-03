@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Windows.Forms;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 
-using ProtoCore;
+using Dynamo.Core.Threading;
 using DSIronPython;
 using DSNodeServices;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 using Revit.Elements;
@@ -44,6 +41,15 @@ namespace Dynamo.Applications.Models
 
         #region Properties/Fields
         public RevitServicesUpdater RevitServicesUpdater { get; private set; }
+
+        internal override string AppVersion
+        {
+            get
+            {
+                return base.AppVersion + 
+                    "-R" + DocumentManager.Instance.CurrentUIApplication.Application.VersionBuild;
+            }
+        }
      
         #endregion
 
@@ -67,8 +73,6 @@ namespace Dynamo.Applications.Models
 
             if (configuration.Preferences == null)
                 configuration.Preferences = new PreferenceSettings();
-            if (configuration.Runner == null)
-                configuration.Runner = new RevitDynamoRunner();
 
             return new RevitDynamoModel(configuration);
         }
@@ -225,12 +229,50 @@ namespace Dynamo.Applications.Models
             UnsubscribeRevitServicesUpdaterEvents();
             UnsubscribeTransactionManagerEvents();
         }
-
+        
+        /// <summary>
+        /// This method is typically called when a new workspace is opened or
+        /// when user forcefully resets the engine in the event of an error.
+        /// </summary>
+        /// <param name="markNodesAsDirty">RequiresRecalc property of all nodes
+        /// in the home workspace will be set to 'true' if this parameter is 
+        /// true.</param>
+        /// 
         public override void ResetEngine(bool markNodesAsDirty = false)
         {
-            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal);
-            if (markNodesAsDirty)
-                Nodes.ForEach(n => n.RequiresRecalc = true);
+            AsyncTaskCompletedHandler handler = HandleResetEngineCompletion;
+            if (markNodesAsDirty || DynamicRunEnabled)
+                handler = OnResetMarkNodesAsDirty;
+
+            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal, handler);
+        }
+
+        /// <summary>
+        /// This event handler is called if 'markNodesAsDirty' in a 
+        /// prior call to RevitDynamoModel.ResetEngine was set to 'true'.
+        /// </summary>
+        /// <param name="asyncTask">The DelegateBasedAsyncTask that was scheduled
+        /// for execution in RevitDynamoModel.ResetEngine method.</param>
+        /// 
+        private void OnResetMarkNodesAsDirty(AsyncTask asyncTask)
+        {
+            Nodes.ForEach(n => n.RequiresRecalc = true);
+            HandleResetEngineCompletion(asyncTask);
+        }
+
+        /// <summary>
+        /// This event handler is called when DelegateBasedAsyncTask scheduled 
+        /// in RevitDynamoModel.ResetEngine is completed. If dynamic run is 
+        /// enabled, this method kicks start another round of evaluation based 
+        /// on the newly created engine.
+        /// </summary>
+        /// <param name="asyncTask">The DelegateBasedAsyncTask that was scheduled
+        /// for execution in RevitDynamoModel.ResetEngine method.</param>
+        /// 
+        private void HandleResetEngineCompletion(AsyncTask asyncTask)
+        {
+            if (DynamicRunEnabled)
+                RunExpression();
         }
 
         public void SetRunEnabledBasedOnContext(Autodesk.Revit.DB.View newView)

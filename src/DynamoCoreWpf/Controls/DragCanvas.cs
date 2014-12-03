@@ -19,7 +19,7 @@ namespace Dynamo.Controls
         #region Data
 
         // The owning workspace for this DragCanvas
-        public Dynamo.Views.dynWorkspaceView owningWorkspace = null;
+        public Dynamo.Views.WorkspaceView owningWorkspace = null;
 
         #endregion // Data
 
@@ -192,15 +192,7 @@ namespace Dynamo.Controls
            if(this.IsMouseCaptured)
                this.ReleaseMouseCapture();
         }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            //if the mouse is released outside the canvas then remove the selection 
-            object dataContext = this.owningWorkspace.DataContext;
-            WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
-            wvm.HandleFocusChanged(this, false);
-        }
-
+       
         protected override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
         {
             // If the focus falls on a node's text box, or a slider's thumb, 

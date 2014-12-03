@@ -70,8 +70,7 @@ namespace DSCore
             return new Color(a, r, g, b);
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        public static Color ByColor(System.Drawing.Color color)
+        internal static Color ByColor(System.Drawing.Color color)
         {
             return new Color(color);
         }

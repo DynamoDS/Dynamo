@@ -11,7 +11,7 @@ namespace Dynamo.Wpf
     {
         private Dynamo.Nodes.Function functionNodeModel;
 
-        public void CustomizeView(Dynamo.Nodes.Function function, dynNodeView nodeView)
+        public void CustomizeView(Dynamo.Nodes.Function function, NodeView nodeView)
         {
             this.functionNodeModel = function;
 

@@ -6,39 +6,38 @@ using RevitServices.Persistence;
 using RevitTestServices;
 
 using RTF.Framework;
+using Revit.GeometryConversion;
+using RevitNodesTests;
 
 namespace RevitNodesTests.Elements
 {
+    [TestFixture]
     public class SunSettingsTests : RevitNodeTestBase
     {
         [Test, TestModel(@".\Empty.rvt")]
         public void Current()
         {
-            Assert.AreSame(
-                DocumentManager.Instance.CurrentDBDocument.ActiveView.SunAndShadowSettings,
-                SunSettings.Current());
+            Assert.AreEqual(DocumentManager.Instance.CurrentDBDocument.ActiveView.
+                SunAndShadowSettings.Id, SunSettings.Current().InternalSunAndShadowSettings.Id);
         }
 
         [Test, TestModel(@".\Empty.rvt")]
         public void Direction()
         {
-            Assert.AreEqual(Vector.ByCoordinates(39.898, -28.624, 87.114), SunSettings.Current().SunDirection);
+            Vector.ByCoordinates(39.898058, -28.624325, 87.113678).ShouldBeApproximately(
+                SunSettings.Current().SunDirection);
         }
 
         [Test, TestModel(@".\Empty.rvt")]
         public void Altitude()
         {
-            Assert.AreEqual(
-                DocumentManager.Instance.CurrentDBDocument.ActiveView.SunAndShadowSettings.Altitude,
-                SunSettings.Current().Altitude);
+            SunSettings.Current().Altitude.ShouldBeApproximately(60.591011);
         }
 
         [Test, TestModel(@".\Empty.rvt")]
         public void Azimuth()
         {
-            Assert.AreEqual(
-                DocumentManager.Instance.CurrentDBDocument.ActiveView.SunAndShadowSettings.Azimuth,
-                SunSettings.Current().Azimuth);
+            SunSettings.Current().Azimuth.ShouldBeApproximately(125.657039);
         }
 
         [Test, TestModel(@".\Empty.rvt")]

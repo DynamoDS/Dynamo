@@ -291,6 +291,53 @@ namespace Dynamo.Controls
         }
     }
 
+    public class SnapRegionMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            Thickness thickness = new Thickness(0, 0, 0, 0);
+            PortModel port = value as PortModel;
+            if (port != null)
+            {
+                PortType type = port.PortType;
+                double left = port.MarginThickness.Left;
+                double top = port.MarginThickness.Top;
+                double right = port.MarginThickness.Right;
+                double bottom = port.MarginThickness.Bottom;
+                switch (type)
+                {
+                    case PortType.INPUT:
+                        thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
+                        if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
+                            thickness = new Thickness(left - 25, top - 10, right - 25, bottom - 10);
+                        else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
+                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom + 3);
+                        else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
+                            thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
+                        break;
+
+                    case PortType.OUTPUT:
+                        thickness = new Thickness(left + 0, top + 3, right - 25, bottom + 3);
+                        if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
+                            thickness = new Thickness(left + 0, top - 10, right - 25, bottom - 10);
+                        else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
+                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom + 3);
+                        else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
+                            thickness = new Thickness(left + 0, top + 3, right - 25, bottom - 10);
+                        break;
+                }
+            }
+            return thickness;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+         CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class MarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -485,6 +532,11 @@ namespace Dynamo.Controls
         public SolidColorBrush HeaderBorderError { get; set; }
         public SolidColorBrush OuterBorderError { get; set; }
         public SolidColorBrush BodyBackgroundError { get; set; }
+        public SolidColorBrush HeaderBackgroundBroken { get; set; }
+        public SolidColorBrush HeaderForegroundBroken { get; set; }
+        public SolidColorBrush HeaderBorderBroken { get; set; }
+        public SolidColorBrush OuterBorderBroken { get; set; }
+        public SolidColorBrush BodyBackgroundBroken { get; set; }
         public SolidColorBrush OuterBorderSelection { get; set; }
 
         public enum NodePart
@@ -529,6 +581,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return HeaderBackgroundActive;
                 case ElementState.Warning: return HeaderBackgroundWarning;
                 case ElementState.Error: return HeaderBackgroundError;
+                case ElementState.AstBuildBroken: return HeaderBackgroundBroken;
             }
 
             throw new NotImplementedException();
@@ -542,6 +595,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return HeaderForegroundActive;
                 case ElementState.Warning: return HeaderForegroundWarning;
                 case ElementState.Error: return HeaderForegroundError;
+                case ElementState.AstBuildBroken: return HeaderForegroundBroken;
             }
 
             throw new NotImplementedException();
@@ -555,6 +609,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return HeaderBorderActive;
                 case ElementState.Warning: return HeaderBorderWarning;
                 case ElementState.Error: return HeaderBorderError;
+                case ElementState.AstBuildBroken: return HeaderBorderBroken;
             }
 
             throw new NotImplementedException();
@@ -568,6 +623,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return OuterBorderActive;
                 case ElementState.Warning: return OuterBorderWarning;
                 case ElementState.Error: return OuterBorderError;
+                case ElementState.AstBuildBroken: return OuterBorderBroken;
             }
 
             throw new NotImplementedException();
@@ -581,6 +637,7 @@ namespace Dynamo.Controls
                 case ElementState.Active: return BodyBackgroundActive;
                 case ElementState.Warning: return BodyBackgroundWarning;
                 case ElementState.Error: return BodyBackgroundError;
+                case ElementState.AstBuildBroken: return BodyBackgroundBroken;
             }
 
             throw new NotImplementedException();

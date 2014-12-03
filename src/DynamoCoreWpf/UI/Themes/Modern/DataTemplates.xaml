@@ -2,7 +2,7 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                       xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf" 
-                      xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore"
+                      xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
 
     <ResourceDictionary.MergedDictionaries>
@@ -10,11 +10,11 @@
     </ResourceDictionary.MergedDictionaries>
     
     <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
-        <controls:dynNodeView></controls:dynNodeView>
+        <controls:NodeView></controls:NodeView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
-        <nodes:dynNoteView></nodes:dynNoteView>
+        <nodes:NoteView></nodes:NoteView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModels:InfoBubbleViewModel}">

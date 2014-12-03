@@ -123,7 +123,7 @@ namespace Dynamo.Controls
 
         private void ApplyNodeViewCustomization(object nodeView, EventArgs args)
         {
-            var nodeViewImp = nodeView as dynNodeView;
+            var nodeViewImp = nodeView as NodeView;
             if (nodeViewImp != null)
             {
                 this.nodeViewCustomizationLibrary.Apply(nodeViewImp);
@@ -505,8 +505,7 @@ namespace Dynamo.Controls
 
             if (result == MessageBoxResult.Yes)
             {
-                dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
-                e.Success = true;
+                e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
             else if (result == MessageBoxResult.Cancel)
             {
@@ -541,7 +540,7 @@ namespace Dynamo.Controls
         {
             if (!string.IsNullOrEmpty(e.Path))
             {
-                var control = WpfUtilities.FindChild<DragCanvas>(this, null);
+                var control = WpfUtilities.ChildOfType<DragCanvas>(this, null);
 
                 double width = 1;
                 double height = 1;
@@ -696,8 +695,14 @@ namespace Dynamo.Controls
 
             if (dynamoViewModel.PerformShutdownSequence(sp))
             {
+                //Shutdown wasn't cancelled
                 SizeChanged -= DynamoView_SizeChanged;
                 LocationChanged -= DynamoView_LocationChanged;
+            }
+            else
+            {
+                //Shutdown was cancelled
+                e.Cancel = true;
             }
         }
 

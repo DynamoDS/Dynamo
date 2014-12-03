@@ -6,15 +6,8 @@ using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    class ReplicationGuide
+    class ReplicationGuide : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        public string ReplicationRoot = "..\\..\\..\\Scripts\\TD\\Associative\\ReplicationGuide\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("Replication")]
         public void T0001_Replication_Guide_Function_With_2_Arg()

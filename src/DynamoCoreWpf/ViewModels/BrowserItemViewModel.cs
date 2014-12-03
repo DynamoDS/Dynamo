@@ -13,7 +13,7 @@ namespace Dynamo.Wpf.ViewModels
 {
     public abstract class BrowserItemViewModel : NotificationObject
     {
-        public ICommand ToggleIsExpandedCommand { get; private set; }
+        public ICommand ToggleIsExpandedCommand { get; protected set; }
         public BrowserItem Model { get; private set; }
         public ObservableCollection<BrowserItemViewModel> Items { get; set; }
 

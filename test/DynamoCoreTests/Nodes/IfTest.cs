@@ -72,5 +72,16 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("d70fab7e-7a2c-495e-a301-0b0797d86118", 720);
         }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void TestScopeIfForPreview()
+        {
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(testFolder, "testScopeIf.dyn");
+            RunModel(testFilePath);
+            AssertPreviewValue("9fe8e82f-760d-43a6-90b2-5f9c252139d7", 42);
+            AssertPreviewValue("23a03082-5807-4e44-9a3d-2d1eec4a914c", 42);
+        }
     }
 }
