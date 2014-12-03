@@ -645,13 +645,13 @@
                                        Margin="10, 10, 10, 10"
                                        Foreground="#bbbbbb"
                                        FontSize="14px"  
-                                       Visibility="{Binding Path=RunButtonContentVisible, Mode = TwoWay}"
+                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsEnabled, Converter={StaticResource RunButtonTextVisibleConverter}}"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
                             <Viewbox Width="50" 
                                      Margin="10" 
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
-                                     Visibility="{Binding Path = ProcessingImageEnabled, Mode = TwoWay}">
+                                     Visibility="{Binding ElementName=text,Path=Visibility, Converter={StaticResource RunButtonTextVisibleConverter}}">
                                     <dynui:CircularProgressBar />
                             </Viewbox>
                         </Grid>

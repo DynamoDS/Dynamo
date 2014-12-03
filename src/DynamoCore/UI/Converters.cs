@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using Dynamo.UI;
 using Dynamo.Models;
@@ -1633,6 +1634,32 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class RunButtonTextVisibleConverter : IValueConverter
+    {      
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool)
+            {
+                if((bool)value)
+                    return Visibility.Visible;
+                return Visibility.Hidden;
+            }
+            else if (value is Visibility)
+            {
+                if ((Visibility) value ==   Visibility.Visible)
+                    return Visibility.Hidden;
+                return Visibility.Visible;
+            }
+            return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
         {
             return null;
         }

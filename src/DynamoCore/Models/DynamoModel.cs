@@ -103,8 +103,7 @@ namespace Dynamo.Models
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
         private bool runEnabled = true;
-        private Visibility processingImageVisible = Visibility.Hidden;
-        private Visibility runButtonContentVisible = Visibility.Visible;
+        private Visibility processingImageVisible = Visibility.Hidden;        
         #endregion
 
         #region Static properties
@@ -250,27 +249,7 @@ namespace Dynamo.Models
             }
         }
         public bool RunInDebug { get; set; }
-
-        public Visibility ProcessingImageEnabled
-        {
-            get { return processingImageVisible; }
-            set
-            {
-                processingImageVisible = value;
-                RaisePropertyChanged("ProcessingImageEnabled");
-            }
-        }
-
-        public Visibility RunButtonContentVisible
-        {
-            get { return runButtonContentVisible; }
-            set
-            {
-                runButtonContentVisible = value;
-                RaisePropertyChanged("RunButtonContentVisible");
-            }
-        }
-
+      
         /// <summary>
         /// All nodes in all workspaces. 
         /// </summary>
@@ -571,10 +550,8 @@ namespace Dynamo.Models
             var task = new UpdateGraphAsyncTask(scheduler);
             if (task.Initialize(EngineController, HomeSpace))
             {
-                task.Completed += OnUpdateGraphCompleted;
-                RunButtonContentVisible = Visibility.Hidden;
-                RunEnabled = false; // Disable 'Run' button.               
-                ProcessingImageEnabled = Visibility.Visible;
+                task.Completed += OnUpdateGraphCompleted;                
+                RunEnabled = false; // Disable 'Run' button.                              
                 scheduler.ScheduleForExecution(task);
             }
             else
@@ -645,9 +622,7 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
-            ProcessingImageEnabled = Visibility.Hidden;
-            RunButtonContentVisible = Visibility.Visible;
-            
+           
             // Notify handlers that evaluation took place.
             var e = new EvaluationCompletedEventArgs(true);
             OnEvaluationCompleted(this, e);

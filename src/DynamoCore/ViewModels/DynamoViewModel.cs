@@ -74,22 +74,7 @@ namespace Dynamo.ViewModels
                 model.RunEnabled = value;
             }
         }
-
-        public Visibility ProcessingImageEnabled
-        {
-            get { return model.ProcessingImageEnabled; }
-            set { model.ProcessingImageEnabled = value; }
-        }
-
-        public Visibility RunButtonContentVisible
-        {
-            get { return model.RunButtonContentVisible; }
-            set
-            {
-                model.RunButtonContentVisible = value;               
-            }
-        }
-
+       
         public virtual bool CanRunDynamically
         {
             get
@@ -773,11 +758,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("IsOrbiting");
             }
             else if (e.PropertyName == "RunEnabled")
-                RaisePropertyChanged("RunEnabled");
-            else if (e.PropertyName == "ProcessingImageEnabled")
-                RaisePropertyChanged("ProcessingImageEnabled");
-            else if (e.PropertyName == "RunButtonContentVisible")
-                RaisePropertyChanged("RunButtonContentVisible");
+                RaisePropertyChanged("RunEnabled");                   
         }
 
         private void CleanUp(DynamoModel dynamoModel)

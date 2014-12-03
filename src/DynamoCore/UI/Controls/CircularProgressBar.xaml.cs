@@ -8,11 +8,10 @@ using System.Windows.Shapes;
 
 namespace Dynamo.UI.Controls
 {
-
     public partial class CircularProgressBar
     {
-        #region Data
-        private readonly DispatcherTimer animationTimer;       
+        #region Properties
+        private readonly DispatcherTimer dispatcherTimer;       
         #endregion
 
         #region Constructor
@@ -20,27 +19,27 @@ namespace Dynamo.UI.Controls
         {
             InitializeComponent();
 
-            animationTimer = new DispatcherTimer(
+            dispatcherTimer = new DispatcherTimer(
                 DispatcherPriority.Background, Dispatcher);
-            animationTimer.Interval = new TimeSpan(0, 0, 0, 0, 75);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 75);
         }
         #endregion
 
         #region Private Methods
         private void Start()
         {                      
-            animationTimer.Tick += HandleAnimationTick;
-            animationTimer.Start();
+            dispatcherTimer.Tick += OnDispatcherTimerTick;
+            dispatcherTimer.Start();
         }
 
         private void Stop()
         {
-            animationTimer.Stop();
+            dispatcherTimer.Stop();
             Mouse.OverrideCursor = Cursors.Arrow;
-            animationTimer.Tick -= HandleAnimationTick;
+            dispatcherTimer.Tick -= OnDispatcherTimerTick;
         }
 
-        private void HandleAnimationTick(object sender, EventArgs e)
+        private void OnDispatcherTimerTick(object sender, EventArgs e)
         {
             SpinnerRotate.Angle = (SpinnerRotate.Angle + 36) % 360;
         }
