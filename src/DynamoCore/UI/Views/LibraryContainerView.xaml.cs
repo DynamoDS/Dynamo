@@ -251,7 +251,7 @@ namespace Dynamo.Search
             e.Handled = true;
         }
 
-		private void OnLibraryExpanderClick(object sender, RoutedEventArgs e)
+        private void OnLibraryExpanderClick(object sender, RoutedEventArgs e)
         {
             //this.Width = 5;
             //if (this.Visibility == Visibility.Collapsed)
