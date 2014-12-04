@@ -187,57 +187,63 @@ namespace DynamoCoreUITests
 
             var nodeView = NodeViewOf<Dynamo.Nodes.Watch>();
 
-            var eles = nodeView.ChildrenOfType<WatchTree>();
-            Assert.AreEqual(1, eles.Count());
+            var tree = nodeView.ChildrenOfType<WatchTree>();
+            Assert.AreEqual(1, tree.Count());
 
-            Assert.AreEqual(0, eles.First().Children().Count());
+            var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(0, items.Count());
         }
 
         [Test]
         public void WatchContainsExpectedUiElements()
         {
-            Open(@"UI\WatchUINodes.dyn");
+            OpenAndRun(@"UI\WatchUINodes.dyn");
 
             var nodeView = NodeViewOf<Dynamo.Nodes.Watch>();
 
-            Run();
+            var tree = nodeView.ChildrenOfType<WatchTree>();
+            Assert.AreEqual(1, tree.Count());
 
-            var eles = nodeView.ChildrenOfType<WatchTree>();
-            Assert.AreEqual(1, eles.Count());
-
-            // 3 elements in the list
-            Assert.AreEqual(1, eles.First().Children().Count());
-            Assert.AreEqual(3, eles.First().Children().First().Children().Count());
+            var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(8, items.Count());
         }
 
         [Test]
         public void WatchImageCoreContainsImage()
         {
-            Open(@"UI\WatchUINodes.dyn");
+            OpenAndRun(@"UI\WatchUINodes.dyn");
 
             var nodeView = NodeViewOf<Dynamo.Nodes.WatchImageCore>();
 
-            Assert.Fail();
+            var images = nodeView.ChildrenOfType<Image>();
+
+            Assert.AreEqual(1, images.Count());
         }
 
         [Test]
         public void Watch3DContainsExpectedGeometry()
         {
-            Open(@"UI\WatchUINodes.dyn");
+            OpenAndRun(@"UI\WatchUINodes.dyn");
 
             var nodeView = NodeViewOf<Dynamo.Nodes.Watch3D>();
 
-            Assert.Fail();
+            var watch3ds = nodeView.ChildrenOfType<Watch3DView>();
+
+            Assert.AreEqual(1, watch3ds.Count());
+
+            var watch3DView = watch3ds.First();
+
+            Assert.AreEqual(1, watch3DView.Points.Count);
         }
 
         [Test]
         public void CustomNodeIsCustomized()
         {
-            Open(@"UI\CustomNodeUI.dyn");
+            Open(@"UI\CoreUINodes.dyn");
 
             var nodeView = NodeViewOf<Dynamo.Nodes.Function>();
 
-            Assert.Fail();
+            Assert.True( nodeView.customNodeBorder0.Visibility == Visibility.Visible);
         }
     }
 }

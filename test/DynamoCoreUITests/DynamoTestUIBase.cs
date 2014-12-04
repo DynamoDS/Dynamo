@@ -105,6 +105,12 @@ namespace DynamoCoreUITests
 
         #region Utility functions
 
+        public void OpenAndRun(string pathInTestsDir)
+        {
+            Open(pathInTestsDir);
+            Run();
+        }
+
         public void Open(string pathInTestsDir)
         {
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
@@ -113,7 +119,19 @@ namespace DynamoCoreUITests
 
         public void Run()
         {
+            var complete = false;
+
+            EventHandler<EvaluationCompletedEventArgs> markDone = (e, a) => { complete = true;  };
+            ViewModel.Model.EvaluationCompleted += markDone;
+
             ViewModel.Model.RunExpression();
+
+            while (!complete)
+            {
+                Thread.Sleep(1);
+            }
+
+            ViewModel.Model.EvaluationCompleted -= markDone;
         }
 
         public static string GetTestDirectory(string executingDirectory)
