@@ -266,6 +266,9 @@ public Node root { get; set; }
 		if (core.ParsingMode != ParseMode.AllowNonAssignment)
             return false;
 
+		if (IsTypedVariable())
+            return false;
+
         Token pt = la;
         while (pt.kind != _EOF)
         {

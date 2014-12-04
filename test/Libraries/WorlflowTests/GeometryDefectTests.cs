@@ -198,6 +198,33 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void IndexOutsideBounds_3399()
+        {
+            // This will test user workflow which contains many nodes.
+            // Crash with "Index was outside the bounds of the array"
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\WorkflowTestFiles\20140418_buildingSetback_standalone.dyn");
+
+            var FARId = "c03065ec-fe54-40de-8c27-8089c7fe1b73";
+            Assert.DoesNotThrow(() => RunModel(openPath));
+
+
+        }
+        [Test]
+        public void Recursion_CustomNode_5176()
+        {
+
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5176
+            // Unhandled Exception in Dynamo Engine on second run of recursive custom node
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\WorkflowTestFiles\ChordMarching_customNode02.dyn");
+            DynamoModel model = ViewModel.Model;
+            Assert.DoesNotThrow(() => RunModel(openPath));
+            var watchVal = model.CurrentWorkspace.NodeFromWorkspace("d70522b3-b5e0-4ce4-a765-9daf1bd05b44");
+            Assert.IsNotNull(watchVal);
+
+        }
+        [Test]
         public void MAGN_5155_CrashCurveDivideByLengthFromParameter()
         {
             // Details are available in defect 
@@ -412,5 +439,7 @@ namespace Dynamo.Tests
                 Assert.IsNotNull(allLines);
             }
         }
+     
+        
     }
 }

@@ -5,14 +5,8 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class FunctionObjectTest
+    class FunctionObjectTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void LoopWhile01()
         {

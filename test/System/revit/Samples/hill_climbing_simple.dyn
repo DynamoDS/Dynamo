@@ -1,0 +1,52 @@
+<Workspace Version="0.6.3.41115" X="27.220603172892" Y="9.467972035447" zoom="0.669251772459604" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="e7185b20-e4a3-4946-9983-87079745d701" nickname="XYZ" x="157.946307915889" y="-154.285241994917" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="9765f147-2df1-4e48-88a3-13d880e6bd54" nickname="Number" x="-75.7785885983099" y="-123.875279807699" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="100" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="4c329eff-74ae-4a47-b16c-3538c5e94de5" nickname="XYZ" x="287.590909090909" y="162.727272727273" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.Random type="Dynamo.Nodes.Random" guid="1fcc0dab-073f-4fea-8f11-34a4e3ad01c5" nickname="Random Number" x="-61.8690465912753" y="240.078824452615" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Multiplication type="Dynamo.Nodes.Multiplication" guid="1cb4fc61-5cad-482e-8854-92a1cdcbebfb" nickname="Multiply" x="119.426934176934" y="204.222471972472" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzDistance type="Dynamo.Nodes.XyzDistance" guid="e24ecc85-a8de-4249-b748-05655b07aeb7" nickname="XYZ Distance" x="454.968598726861" y="41.196098309098" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="71b23b05-9534-49bd-b49e-8c160bde564d" nickname="ProduceChild" x="503.329589017234" y="240.726819633962" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="8aa18edf-6bf5-4a8d-85b6-546054a4f04d" />
+      <Name value="ProduceChild" />
+      <Description value="" />
+      <Inputs>
+        <Input value="parent xyz" />
+        <Input value="goal xyz" />
+      </Inputs>
+      <Outputs>
+        <Output value="child xyz" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e7185b20-e4a3-4946-9983-87079745d701" start_index="0" end="e24ecc85-a8de-4249-b748-05655b07aeb7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e7185b20-e4a3-4946-9983-87079745d701" start_index="0" end="71b23b05-9534-49bd-b49e-8c160bde564d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9765f147-2df1-4e48-88a3-13d880e6bd54" start_index="0" end="e7185b20-e4a3-4946-9983-87079745d701" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9765f147-2df1-4e48-88a3-13d880e6bd54" start_index="0" end="e7185b20-e4a3-4946-9983-87079745d701" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9765f147-2df1-4e48-88a3-13d880e6bd54" start_index="0" end="e7185b20-e4a3-4946-9983-87079745d701" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9765f147-2df1-4e48-88a3-13d880e6bd54" start_index="0" end="1cb4fc61-5cad-482e-8854-92a1cdcbebfb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4c329eff-74ae-4a47-b16c-3538c5e94de5" start_index="0" end="e24ecc85-a8de-4249-b748-05655b07aeb7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4c329eff-74ae-4a47-b16c-3538c5e94de5" start_index="0" end="71b23b05-9534-49bd-b49e-8c160bde564d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1fcc0dab-073f-4fea-8f11-34a4e3ad01c5" start_index="0" end="1cb4fc61-5cad-482e-8854-92a1cdcbebfb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1cb4fc61-5cad-482e-8854-92a1cdcbebfb" start_index="0" end="4c329eff-74ae-4a47-b16c-3538c5e94de5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1cb4fc61-5cad-482e-8854-92a1cdcbebfb" start_index="0" end="4c329eff-74ae-4a47-b16c-3538c5e94de5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1cb4fc61-5cad-482e-8854-92a1cdcbebfb" start_index="0" end="4c329eff-74ae-4a47-b16c-3538c5e94de5" end_index="2" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="This is the first parent fitness, we use distance here as a literal distance metric" x="412.335967415675" y="-19.1531261227242" />
+    <Dynamo.Models.NoteModel text="This is the altered child - by adding a new vector - this is also a recursive node" x="497.044470918582" y="172.757237819614" />
+    <Dynamo.Models.NoteModel text="generate the first random parent" x="69.675466041004" y="142.511910117787" />
+    <Dynamo.Models.NoteModel text="THIS IS THE GOAL POINT - how we evaluate fitness is distance to this point" x="81.4844236054409" y="-220.448815316783" />
+  </Notes>
+</Workspace>

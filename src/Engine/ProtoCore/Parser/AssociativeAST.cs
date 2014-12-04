@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -872,7 +873,6 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class FunctionDotCallNode : AssociativeNode
     {
-        public IdentifierNode StaticLHSIdent { get; set; }
         public FunctionCallNode DotCall { get; set; }
         public FunctionCallNode FunctionCall { get; set; }
         public FunctionCallNode NameMangledCall { get; set; }
@@ -885,7 +885,6 @@ namespace ProtoCore.AST.AssociativeAST
             FunctionCall = callNode;
             lhsName = string.Empty;
             isLastSSAIdentListFactor = false;
-            StaticLHSIdent = null;
         }
 
         public FunctionDotCallNode(string lhsName, FunctionCallNode callNode)
@@ -893,7 +892,6 @@ namespace ProtoCore.AST.AssociativeAST
             this.lhsName = lhsName;
             FunctionCall = callNode;
             isLastSSAIdentListFactor = false;
-            StaticLHSIdent = null;
         }
 
         public FunctionDotCallNode(FunctionDotCallNode rhs): base(rhs)
@@ -902,7 +900,6 @@ namespace ProtoCore.AST.AssociativeAST
             FunctionCall = new FunctionCallNode(rhs.FunctionCall);
             lhsName = rhs.lhsName;
             isLastSSAIdentListFactor = rhs.isLastSSAIdentListFactor;
-            StaticLHSIdent = rhs.StaticLHSIdent;
         }
 
         public IdentifierListNode GetIdentList()
@@ -2472,6 +2469,9 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static StringNode BuildStringNode(string str)
         {
+            if (str == null)
+                throw new ArgumentNullException("str");
+
             return new StringNode { value = str };
         }
 
@@ -2518,6 +2518,15 @@ namespace ProtoCore.AST.AssociativeAST
         public static InlineConditionalNode BuildConditionalNode(
             AssociativeNode condition, AssociativeNode trueExpr, AssociativeNode falseExpr)
         {
+            if (condition == null)
+                throw new ArgumentNullException("condition");
+
+            if (trueExpr == null)
+                throw new ArgumentNullException("trueExpr");
+
+            if (falseExpr == null)
+                throw new ArgumentNullException("falseExpr");
+
             var cond = new InlineConditionalNode
             {
                 ConditionExpression = condition,
@@ -2742,6 +2751,12 @@ namespace ProtoCore.AST.AssociativeAST
         public static AssociativeNode BuildFunctionCall(
             string className, string functionName, List<AssociativeNode> arguments, Core core = null)
         {
+            if (string.IsNullOrEmpty(className))
+                throw new ArgumentException("className");
+
+            if (string.IsNullOrEmpty(functionName))
+                throw new ArgumentException("functionName");
+
             return new IdentifierListNode
             {
                 LeftNode = new IdentifierNode(className),
@@ -2753,6 +2768,12 @@ namespace ProtoCore.AST.AssociativeAST
         public static AssociativeNode BuildFunctionCall(
             string functionName, List<AssociativeNode> arguments, Core core = null)
         {
+            if (string.IsNullOrEmpty(functionName))
+                throw new ArgumentException("functionName");
+
+            if (arguments == null)
+                throw new ArgumentNullException("arguments");
+
             var funcCall = new FunctionCallNode
             {
                 Function = BuildIdentifier(functionName),
@@ -2763,11 +2784,20 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static IdentifierNode BuildIdentifier(string name)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
             return new IdentifierNode(name);
         }
 
         public static IdentifierNode BuildIdentifier(string name, AssociativeNode arrayIndex)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("name");
+
+            if (arrayIndex == null)
+                throw new ArgumentNullException("arrayIndex");
+
             return new IdentifierNode(name)
             {
                 ArrayDimensions = new ArrayNode { Expr = arrayIndex }
@@ -2776,11 +2806,17 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static ExprListNode BuildExprList(List<AssociativeNode> nodes)
         {
+            if (nodes == null)
+                throw new ArgumentNullException("nodes");
+
             return new ExprListNode { list = nodes };
         }
 
         public static ExprListNode BuildExprList(List<string> exprs)
         {
+            if (exprs == null)
+                throw new ArgumentNullException("exprs");
+
             var nodes = exprs.Select(BuildIdentifier).Cast<AssociativeNode>().ToList();
             return BuildExprList(nodes);
         }
@@ -2789,17 +2825,35 @@ namespace ProtoCore.AST.AssociativeAST
                                                                  AssociativeNode rhs,
                                                                  Operator op)
         {
+            if (lhs == null)
+                throw new ArgumentNullException("lhs");
+
+            if (rhs == null)
+                throw new ArgumentNullException("rhs");
+
+            if (op == null)
+                throw new ArgumentNullException("op");
+
             return new BinaryExpressionNode(lhs, rhs, op);
         }
 
         public static BinaryExpressionNode BuildAssignment(AssociativeNode lhs,
                                                            AssociativeNode rhs)
         {
+            if (lhs == null)
+                throw new ArgumentNullException("lhs");
+
+            if (rhs == null)
+                throw new ArgumentNullException("rhs");
+
             return new BinaryExpressionNode(lhs, rhs, Operator.assign);
         }
 
         public static VarDeclNode BuildParamNode(string paramName)
         {
+            if (string.IsNullOrEmpty(paramName))
+                throw new ArgumentException("paramName");
+
             return BuildParamNode(
                 paramName,
                 TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0));
@@ -2807,6 +2861,9 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static VarDeclNode BuildParamNode(string paramName, Type type)
         {
+            if (string.IsNullOrEmpty(paramName))
+                throw new ArgumentException("paramName");
+
             return new VarDeclNode
             {
                 NameNode = BuildIdentifier(paramName),
@@ -2816,6 +2873,9 @@ namespace ProtoCore.AST.AssociativeAST
 
         public static BinaryExpressionNode BuildReturnStatement(AssociativeNode rhs)
         {
+            if (rhs == null)
+                throw new ArgumentNullException("rhs");
+
             var retNode = BuildIdentifier(Keyword.Return);
             return BuildAssignment(retNode, rhs);
         }
@@ -2826,6 +2886,15 @@ namespace ProtoCore.AST.AssociativeAST
             IEnumerable<int> connectedIndices,
             List<AssociativeNode> inputs)
         {
+            if (string.IsNullOrEmpty(functionName))
+                throw new ArgumentException("functionname");
+
+            if (connectedIndices == null)
+                throw new ArgumentNullException("connectedIndices");
+
+            if (inputs == null)
+                throw new ArgumentNullException("inputs");
+
             return BuildFunctionObject(BuildIdentifier(functionName), numParams, connectedIndices, inputs);
         }
 
@@ -2835,6 +2904,15 @@ namespace ProtoCore.AST.AssociativeAST
             IEnumerable<int> connectedIndices,
             List<AssociativeNode> inputs)
         {
+            if (functionNode == null)
+                throw new ArgumentNullException("functionNode");
+
+            if (connectedIndices == null)
+                throw new ArgumentNullException("connectedIndices");
+
+            if (inputs == null)
+                throw new ArgumentNullException("input");
+
             var paramNumNode = new IntNode(numParams);
             var positionNode = BuildExprList(connectedIndices.Select(BuildIntNode).Cast<AssociativeNode>().ToList());
             var arguments = BuildExprList(inputs);
@@ -2861,6 +2939,9 @@ namespace ProtoCore.AST.AssociativeAST
                                                           List<int> guides,
                                                           bool isLongest)
         {
+            if (node == null)
+                throw new ArgumentNullException("node");
+
             if (guides == null)
                 throw new ArgumentNullException("guides");
 

@@ -108,4 +108,5 @@
     <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>
     <controls:StringLengthToVisibilityConverter x:Key="StringLengthToVisibilityConverter" />
     <controls:RunButtonTextVisibleConverter x:Key="RunButtonTextVisibleConverter"/>   
+    <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter"/>
 </ResourceDictionary>
