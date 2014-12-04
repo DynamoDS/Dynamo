@@ -771,6 +771,8 @@ namespace Dynamo.Search
 
         #endregion
 
+        #region Dumping library to XMl
+
         internal void DumpLibraryToXml(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -782,13 +784,19 @@ namespace Dynamo.Search
 
         internal XmlDocument ComposeXmlForLibrary()
         {
-            int countFlat = 0;
-            int countTree = 0;
-
             var document = XmlHelper.CreateDocument("Library");
 
-            // Building 'NodesList'
             var parent = XmlHelper.AddNode(document.DocumentElement, "NodesList");
+            ComposeNodesList(parent);
+
+            parent = XmlHelper.AddNode(document.DocumentElement, "NodesTree");
+            ComposeNodesTree(parent);
+
+            return document;
+        }
+
+        private void ComposeNodesList(XmlNode parent)
+        {
             var assembliesRoot = XmlHelper.AddNode(parent, "Assemblies");
             var packagesRoot = XmlHelper.AddNode(parent, "Packages");
             var customNodesRoot = XmlHelper.AddNode(parent, "CustomNodes");
@@ -798,26 +806,25 @@ namespace Dynamo.Search
             IEnumerable<SearchElementBase> elementsToAdd;
 
             // Adding NodeModel and ZeroTouch assemblies. Packages assemblies will be added later
-
             var nodeModelAssemblies = DynamoLoader.LoadedAssemblyNames;
             // All ZeroTouch libraries are members of ImportedLibraries collection. But there
             // we hame assemblies which are belong to packages. Those assemblies should be excluded.
             var zeroTouchAssemblies = DynamoModel.EngineController.LibraryServices.ImportedLibraries.Except(
                 DynamoModel.Loader.PackageLoader.GetAllPackagesAssemblies());
 
-            var assemblyList = nodeModelAssemblies.Union(zeroTouchAssemblies).OrderBy(a => a);
+            IEnumerable<string> assemblyList = nodeModelAssemblies.Union(zeroTouchAssemblies)
+                                                                  .OrderBy(a => a);
+            assemblyList = FixRevitAssemblyNames(assemblyList);
             foreach (var currAssembly in assemblyList)
             {
                 parent = XmlHelper.AddNode(assembliesRoot, "Assembly");
                 XmlHelper.AddAttribute(parent, "Name", currAssembly);
 
                 elementsToAdd = _searchElements.Where(el => el.Assembly == currAssembly)
-                                             .OrderBy(el => el.FullName);
+                                               .OrderBy(el => el.FullName);
                 foreach (var currElement in elementsToAdd)
                 {
-                    countFlat++;
                     currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
-
                     SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
                 }
             }
@@ -840,12 +847,9 @@ namespace Dynamo.Search
                     else
                         return false;
                 }).OrderBy(el => el.FullName);
-
                 foreach (var currElement in elementsToAdd)
                 {
-                    countFlat++;
                     currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
-
                     SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
                 }
             }
@@ -859,59 +863,51 @@ namespace Dynamo.Search
 
                 return false;
             }).OrderBy(el => el.FullName);
-
             foreach (var currElement in elementsToAdd)
             {
-                countFlat++;
                 currNode = XmlHelper.AddNode(customNodesRoot, currElement.GetType().ToString());
-
                 SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
             }
 
-            // Adding Builin Functions / Operators
+            // Adding Builin Functions and Operators
             elementsToAdd = _searchElements.Where(el => el.FullCategoryName == "Builtin Functions" ||
-                                                        el.FullCategoryName == "Operators").OrderBy(el => el.FullName);
-
+                                                        el.FullCategoryName == "Operators")
+                                           .OrderBy(el => el.FullName);
             foreach (var currElement in elementsToAdd)
             {
-                countFlat++;
                 currNode = XmlHelper.AddNode(specificsRoot, currElement.GetType().ToString());
-
                 SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
             }
+        }
 
-            // Building 'NodesTree'
-            parent = XmlHelper.AddNode(document.DocumentElement, "NodesTree");
-
+        private void ComposeNodesTree(XmlNode parent)
+        {
+            XmlNode currNode;
             foreach (var category in BrowserRootCategories)
             {
-                currNode = XmlHelper.AddNode(specificsRoot, category.GetType().ToString());
+                currNode = XmlHelper.AddNode(parent, category.GetType().ToString());
                 XmlHelper.AddAttribute(currNode, "Name", category.Name);
 
-                AddChildrenToXml(currNode, category.Items, ref countTree);
+                AddChildrenToXml(currNode, category.Items);
 
                 parent.AppendChild(currNode);
             }
-            DynamoModel.Logger.Log(string.Format("CountFlat:{0};CountTree:{1}", countFlat, countTree));
-            return document;
         }
 
-        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children, ref int countTree)
+        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
         {
-            
             foreach (var child in children)
             {
                 var element = XmlHelper.AddNode(parent, child.GetType().ToString());
 
                 if (child is NodeSearchElement)
                 {
-                    countTree++;
                     XmlHelper.AddAttribute(element, "FullName", (child as NodeSearchElement).FullName);
                 }
                 else
                 {
                     XmlHelper.AddAttribute(element, "Name", child.Name);
-                    AddChildrenToXml(element, child.Items, ref countTree);
+                    AddChildrenToXml(element, child.Items);
                 }
 
                 parent.AppendChild(element);
@@ -924,11 +920,33 @@ namespace Dynamo.Search
             XmlHelper.AddNode(node, "FullCategoryName", element.FullCategoryName);
             XmlHelper.AddNode(node, "Name", element.Name);
             XmlHelper.AddNode(node, "Description", element.Description);
-
-            var customElement = element as CustomNodeSearchElement;
-            if (customElement != null)
-                XmlHelper.AddNode(node, "Package", customElement.Package);
         }
+
+        private IEnumerable<string> FixRevitAssemblyNames(IEnumerable<string> assemblyList)
+        {
+            // For nodes which are belongs to preloaded ZeroTouch library Assembly property is
+            // specified as library dll filename. But in assemblyList we have full paths 
+            // for those libraries. As result nodes are not added to dump. This method should
+            // replace full names for "RevitNodes.dll" and "SimpleRaaS.dll".
+            var list = assemblyList.ToList();
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].Contains("RevitNodes.dll"))
+                {
+                    list[i] = "RevitNodes.dll";
+                    continue;
+                }
+                if (list[i].Contains("SimpleRaaS.dll"))
+                {
+                    list[i] = "SimpleRaaS.dll";
+                    continue;
+                }
+            }
+
+            return list;
+        }
+
+        #endregion
     }
 }
 
