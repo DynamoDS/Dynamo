@@ -315,7 +315,7 @@ namespace Dynamo.Tests
                                             .Cast<XmlNode>()
                                             .Select(node => node.Value);
 
-            Assert.AreEqual(nodesListIDs, nodesTreeIDs);
+            Assert.AreEqual(nodesListIDs.Count(), nodesTreeIDs.Count());
             Assert.AreEqual(0, nodesListIDs.Except(nodesTreeIDs).Count());
         }
 
@@ -339,7 +339,8 @@ namespace Dynamo.Tests
 
             var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
             var assemblyNode = document.DocumentElement.SelectSingleNode(
-                "NodesList/Assemblies/Assembly[Name='DSOffice.dll']");
+                "NodesList/Assemblies/Assembly[@Name='DSOffice.dll']");
+            Assert.IsNotNull(assemblyNode);
 
             XmlNode node, subNode;
             foreach (var functionGroup in fgToCompare)
@@ -416,6 +417,51 @@ namespace Dynamo.Tests
                         function.Category + "." + function.Name));
                     Assert.IsNotNull(node);
                 }
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DumpLibraryToXmlPackageTest()
+        {
+            // Getting package for test
+            var pkgName = "Custom Rounding";
+            var loader = ViewModel.Model.Loader.PackageLoader;
+            var package = loader.LocalPackages.FirstOrDefault(pkg => pkg.Name == pkgName);
+            if (package == null)
+            {
+                var pkgDir = Path.Combine(this.GetTestDirectory(), "pkgs", "Custom Rounding");
+                package = loader.ScanPackageDirectory(pkgDir);
+                package.LoadIntoDynamo(ViewModel.Model.Loader, ViewModel.Model.Logger, ViewModel.Model.EngineController.LibraryServices);
+            }
+
+            var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
+            var packageNode = document.DocumentElement.SelectSingleNode(string.Format(
+                "NodesList/Packages/Package[@Name='{0}' and @VersionName='{1}']",
+                package.Name, package.VersionName));
+            Assert.IsNotNull(packageNode);
+
+            XmlNode node, subNode;
+            foreach (var customNode in package.LoadedCustomNodes)
+            {
+                node = packageNode.SelectSingleNode(string.Format(
+                    "Dynamo.Search.SearchElements.CustomNodeSearchElement[FullName='{0}']",
+                    customNode.Category + "." + customNode.Name));
+                Assert.IsNotNull(node);
+
+                // 'FullName' is already checked.
+
+                subNode = node.SelectSingleNode("FullCategoryName");
+                Assert.IsNotNull(subNode);
+                Assert.AreEqual(customNode.Category, subNode.FirstChild.Value);
+
+                subNode = node.SelectSingleNode("Name");
+                Assert.IsNotNull(subNode);
+                Assert.AreEqual(customNode.Name, subNode.FirstChild.Value);
+
+                subNode = node.SelectSingleNode("Description");
+                Assert.IsNotNull(subNode);
+                Assert.AreEqual(customNode.Description, subNode.FirstChild.Value);
             }
         }
 
