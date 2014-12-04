@@ -182,7 +182,7 @@
                                Text="{Binding Name}"
                                VerticalAlignment="Top"
                                Margin="5,10,0,0"
-                               Foreground="#999999"
+                               Foreground="#989898"
                                FontSize="13" />
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
@@ -887,13 +887,56 @@
                     </uicontrols:AddonsTreeView.Visibility>
                 </uicontrols:AddonsTreeView>
                 <Button Grid.Row="2"
-                        Width="150"
-                        Height="40"
-                        Style="{StaticResource STextButton}"
+                        Height="23"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Click="OnImportAddonButtonClick"
-                        Content="Import add-on" />
+                        Content="Add">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Border x:Name="container"
+                                    Background="#282828"
+                                    BorderBrush="#555555"
+                                    BorderThickness="1">
+                                <Grid x:Name="inner">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="text"
+                                               VerticalAlignment="Center"
+                                               Margin="10, 0, 10, 0"
+                                               Foreground="#989898"
+                                               FontSize="13px"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                    <Image x:Name="image"
+                                           Grid.Column="1"
+                                           Margin="0,3,10,4"
+                                           Width="16"
+                                           Height="16"
+                                           Source="/DynamoCore;component/UI/Images/dropdown_normal.png" />
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Button.IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#2F2F2F" />
+                                    <Setter TargetName="image"
+                                            Property="Source"
+                                            Value="/DynamoCore;component/UI/Images/dropdown_hover.png" />
+                                </Trigger>
+                                <Trigger Property="Button.IsPressed"
+                                         Value="True">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#222222" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </Grid>
         </ScrollViewer>
 
