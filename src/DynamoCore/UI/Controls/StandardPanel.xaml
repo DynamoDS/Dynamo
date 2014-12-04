@@ -176,12 +176,12 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Button Margin="16,0,0,0"
+            <Button Margin="16,0,0,10"
                     Background="#393939"
                     Content="{Binding PrimaryHeaderText}"
                     Template="{StaticResource PrimaryHeaderButtonTemplate}">
                 <Button.Visibility>
-                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                    <Binding Path="IsPrimaryHeaderVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </Button.Visibility>
             </Button>
@@ -213,6 +213,10 @@
             <Border Padding="0,10,0,10"
                     Grid.Row="2"
                     Grid.ColumnSpan="2">
+                <Border.Visibility>
+                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </Border.Visibility>
                 <StackPanel Orientation="Horizontal"
                             Margin="16,0,0,0">
                     <Button Tag="Action"
