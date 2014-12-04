@@ -926,6 +926,22 @@ namespace Dynamo.Models
             return CurrentWorkspace != HomeSpace;
         }
 
+        internal void DumpLibraryToXml(object parameter)
+        {
+            string directory = DynamoPathManager.Instance.Logs;
+            string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string fullFileName = Path.Combine(directory, fileName);
+
+            this.SearchModel.DumpLibraryToXml(fullFileName);
+
+            Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
+        }
+
+        internal bool CanDumpLibraryToXml(object obj)
+        {
+            return true;
+        }
+
         #endregion
 
         #region public methods

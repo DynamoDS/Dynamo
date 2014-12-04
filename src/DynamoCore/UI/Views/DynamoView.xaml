@@ -2,29 +2,27 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:Dynamo.Views"
-        xmlns:utilities="clr-namespace:Dynamo.Utilities"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:models="clr-namespace:Dynamo.Models"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
-        xmlns:commands="clr-namespace:Dynamo.UI.Commands"
         xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
         d:DataContext="{d:DesignInstance ViewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
-        mc:Ignorable="d" 
+        mc:Ignorable="d"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:um="clr-namespace:Dynamo.UpdateManager"
         x:Name="_this"
-        Height="768" 
+        Height="768"
         Width="1024"
-        Closing="WindowClosing" 
+        Closing="WindowClosing"
         Closed="WindowClosed"
-        MinHeight="600" 
-        MinWidth="800" 
+        MinHeight="600"
+        MinWidth="800"
         Title="Dynamo"
-        AllowsTransparency="False" 
+        AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
         Background="#FF353535"
@@ -34,15 +32,11 @@
         Cursor="/DynamoCore;component/UI/Images/pointer.cur"
         Style="{DynamicResource DynamoWindowStyle}">
 
-    <Window.CommandBindings>
-
-    </Window.CommandBindings>
-
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}"/>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
@@ -52,129 +46,137 @@
     <Window.InputBindings>
 
         <KeyBinding Key="Tab"
-                                Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="Delete"
-                                Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="N"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.NewHomeWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.NewHomeWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="N"
-                                Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.ShowNewFunctionDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control+Shift"
+                    Command="{Binding Path=DataContext.ShowNewFunctionDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="R"
-                                Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.SaveRecordedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control+Shift"
+                    Command="{Binding Path=DataContext.SaveRecordedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Q"
-                                Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.InsertPausePlaybackCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control+Shift"
+                    Command="{Binding Path=DataContext.InsertPausePlaybackCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="L"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.GraphAutoLayoutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.GraphAutoLayoutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Tab"
-                                Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="C"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.CopyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.CopyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Z"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.UndoCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.UndoCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Y"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.RedoCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.RedoCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="A"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.SelectAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.SelectAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="D"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.CurrentSpaceViewModel.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.CurrentSpaceViewModel.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="V"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="G"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="W"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.AddNoteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.AddNoteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="V"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="S"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.ShowSaveDialogIfNeededAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.ShowSaveDialogIfNeededAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="S"
-                                Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.ShowSaveDialogAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control+Shift"
+                    Command="{Binding Path=DataContext.ShowSaveDialogAndSaveResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="O"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="H"
-                                Modifiers="Control"
-                                Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Up"
-                                Modifiers="Control+Shift"
-                                Command="{Binding Path=DataContext.ToggleConsoleShowingCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Modifiers="Control+Shift"
+                    Command="{Binding Path=DataContext.ToggleConsoleShowingCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="F4"
-                Modifiers="Alt"
-                                Command="{Binding Path=DataContext.ExitCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-        
+                    Modifiers="Alt"
+                    Command="{Binding Path=DataContext.ExitCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="D"
+                    Modifiers="Ctrl+Alt"
+                    Command="{Binding Path=DataContext.DumpLibraryToXmlCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+
         <KeyBinding Key="Left"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
-                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Right"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Right"
-                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Up"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Up"
-                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Down"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Down"
-                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.PanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="OemPlus"
                     Modifiers="Ctrl"
-                    Command="{Binding Path=DataContext.ZoomInCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.ZoomInCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="OemMinus"
                     Modifiers="Ctrl"
-                    Command="{Binding Path=DataContext.ZoomOutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.ZoomOutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="D0"
                     Modifiers="Ctrl"
-                    Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="P"
                     Modifiers="Ctrl"
-                    Command="{Binding Path=TogglePanCommand}"/>
+                    Command="{Binding Path=TogglePanCommand}" />
         <KeyBinding Key="F5"
                     Modifiers="Shift"
                     Command="{Binding Path=DataContext.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="F5"
                     Command="{Binding Path=DataContext.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                    CommandParameter="{Binding Path=DataContext.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
+                    CommandParameter="{Binding Path=DataContext.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
 
-    <Grid Name="mainGrid" FocusManager.IsFocusScope="True" PreviewMouseDown="Window_PreviewMouseDown" PreviewMouseUp="Window_PreviewMouseUp">
+    <Grid Name="mainGrid"
+          FocusManager.IsFocusScope="True"
+          PreviewMouseDown="Window_PreviewMouseDown"
+          PreviewMouseUp="Window_PreviewMouseUp">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Name="consoleRow" Height="{Binding ConsoleHeight, Mode=TwoWay, Converter={StaticResource ConsoleHeightConverter}}"/>
-            <RowDefinition Height="48"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Name="consoleRow"
+                           Height="{Binding ConsoleHeight, Mode=TwoWay, Converter={StaticResource ConsoleHeightConverter}}" />
+            <RowDefinition Height="48" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MaxWidth="500"/>
+            <ColumnDefinition Width="Auto"
+                              MaxWidth="500" />
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
@@ -189,231 +191,594 @@
             <Grid Name="titleBarGrid">
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <!--Menu-->
-                <Menu IsMainMenu="True" Name="menu1" Style="{StaticResource MainMenu}" >
+                <Menu IsMainMenu="True"
+                      Name="menu1"
+                      Style="{StaticResource MainMenu}">
 
-                    <MenuItem Header="_File" Name="fileMenu" Focusable="False">
-                        <MenuItem Header="_New" Name="newMenu" Focusable="False">
-                            <MenuItem Header="_Home Workspace..." Command="{Binding NewHomeWorkspaceCommand}"  Name="newHomeWorkspace" InputGestureText="Ctrl + N" Focusable="False">
+                    <MenuItem Header="_File"
+                              Name="fileMenu"
+                              Focusable="False">
+                        <MenuItem Header="_New"
+                                  Name="newMenu"
+                                  Focusable="False">
+                            <MenuItem Header="_Home Workspace..."
+                                      Command="{Binding NewHomeWorkspaceCommand}"
+                                      Name="newHomeWorkspace"
+                                      InputGestureText="Ctrl + N"
+                                      Focusable="False">
                             </MenuItem>
-                            <MenuItem Header="_Custom Node..." Command="{Binding ShowNewFunctionDialogCommand}"  Name="newFuncButton" InputGestureText="Ctrl + Shift + N" Focusable="False">
+                            <MenuItem Header="_Custom Node..."
+                                      Command="{Binding ShowNewFunctionDialogCommand}"
+                                      Name="newFuncButton"
+                                      InputGestureText="Ctrl + Shift + N"
+                                      Focusable="False">
                             </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="_Open..." Command="{Binding ShowOpenDialogAndOpenResultCommand}" Name="openButton" InputGestureText="Ctrl + O" Focusable="False">
+                        <MenuItem Header="_Open..."
+                                  Command="{Binding ShowOpenDialogAndOpenResultCommand}"
+                                  Name="openButton"
+                                  InputGestureText="Ctrl + O"
+                                  Focusable="False">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/openHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCore;component/UI/Images/openHS.png"
+                                       Width="14"
+                                       Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="_Save" Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}" Name="saveThisButton" InputGestureText="Ctrl + S" Focusable="False">
+                        <MenuItem Header="_Save"
+                                  Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}"
+                                  Name="saveThisButton"
+                                  InputGestureText="Ctrl + S"
+                                  Focusable="False">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCore;component/UI/Images/saveHS.png"
+                                       Width="14"
+                                       Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="_Save As..." Command="{Binding ShowSaveDialogAndSaveResultCommand}" Name="saveButton" InputGestureText="Ctrl + Shift + S">
+                        <MenuItem Focusable="False"
+                                  Header="_Save As..."
+                                  Command="{Binding ShowSaveDialogAndSaveResultCommand}"
+                                  Name="saveButton"
+                                  InputGestureText="Ctrl + Shift + S">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/saveHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCore;component/UI/Images/saveHS.png"
+                                       Width="14"
+                                       Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Focusable="False" Header="_Import Library..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>
+                        <MenuItem Focusable="False"
+                                  Header="_Import Library..."
+                                  Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  Name="importLibrary" />
                         <Separator />
-                        <MenuItem Focusable="False" Header="_Export Workspace As Image..." Command="{Binding ShowSaveImageDialogAndSaveResultCommand}" Name="saveImage">
+                        <MenuItem Focusable="False"
+                                  Header="_Export Workspace As Image..."
+                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  Name="saveImage">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/screenshot_normal.png" Width="14" Height="14"/>
+                                <Image Source="/DynamoCore;component/UI/Images/screenshot_normal.png"
+                                       Width="14"
+                                       Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
+                        <MenuItem Focusable="False"
+                                  Header="_Export Model to STL..."
+                                  Command="{Binding ExportToSTLCommand}"
+                                  Name="saveSTL">
                         </MenuItem>
                         <Separator />
-                        
-                        <MenuItem Header="_Recent Files" ItemsSource="{Binding RecentFiles}">
+
+                        <MenuItem Header="_Recent Files"
+                                  ItemsSource="{Binding RecentFiles}">
                             <MenuItem.ItemContainerStyle>
                                 <Style TargetType="MenuItem">
-                                    <Setter Property="Header" Value="{Binding Converter={StaticResource FilePathDisplayConverter}}" />
-                                    <Setter Property="Command" Value="{Binding DataContext.OpenRecentCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
-                                    <Setter Property="CommandParameter" Value="{Binding}" />
+                                    <Setter Property="Header"
+                                            Value="{Binding Converter={StaticResource FilePathDisplayConverter}}" />
+                                    <Setter Property="Command"
+                                            Value="{Binding DataContext.OpenRecentCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
+                                    <Setter Property="CommandParameter"
+                                            Value="{Binding}" />
                                 </Style>
                             </MenuItem.ItemContainerStyle>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt + F4" Focusable="False"/>
+                        <MenuItem Header="_Exit"
+                                  Command="{Binding ExitCommand}"
+                                  Name="exit"
+                                  InputGestureText="Alt + F4"
+                                  Focusable="False" />
                     </MenuItem>
 
-                    <MenuItem Header="_Edit" Name="editMenu" Focusable="False">
-                        <MenuItem Focusable="False" Header="_Undo" Command="{Binding UndoCommand}" Name="undo" InputGestureText="Ctrl+Z"/>
-                        <MenuItem Focusable="False" Header="_Redo" Command="{Binding RedoCommand}"  Name="redo" InputGestureText="Ctrl+Y"/>
-                        <Separator/>
-                        <MenuItem Focusable="False" Header="_Copy" Command="{Binding CopyCommand}" Name="copy" InputGestureText="Ctrl + C"/>
-                        <MenuItem Focusable="False" Header="_Paste" Command="{Binding PasteCommand}"  Name="paste" InputGestureText="Ctrl + V"/>
-                        <Separator/>
-                        <MenuItem Focusable="False" Header="_Create Note" Command="{Binding AddNoteCommand}"  Name="noteMenuItem" InputGestureText="Ctrl + W" />
-                        <MenuItem Focusable="False" Header="_Create Node From Selection" Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"  Name="nodeFromSelection" InputGestureText="Ctrl + D"/>
-                        <MenuItem Focusable="False" Header="_Select All" Command="{Binding SelectAllCommand}"  Name="selectAll" InputGestureText="Ctrl + A"/>
-                        <MenuItem Focusable="False" Header="_Delete Selected" Command="{Binding DeleteCommand}"  Name="deleteSelected" InputGestureText="Delete"/>
+                    <MenuItem Header="_Edit"
+                              Name="editMenu"
+                              Focusable="False">
+                        <MenuItem Focusable="False"
+                                  Header="_Undo"
+                                  Command="{Binding UndoCommand}"
+                                  Name="undo"
+                                  InputGestureText="Ctrl+Z" />
+                        <MenuItem Focusable="False"
+                                  Header="_Redo"
+                                  Command="{Binding RedoCommand}"
+                                  Name="redo"
+                                  InputGestureText="Ctrl+Y" />
+                        <Separator />
+                        <MenuItem Focusable="False"
+                                  Header="_Copy"
+                                  Command="{Binding CopyCommand}"
+                                  Name="copy"
+                                  InputGestureText="Ctrl + C" />
+                        <MenuItem Focusable="False"
+                                  Header="_Paste"
+                                  Command="{Binding PasteCommand}"
+                                  Name="paste"
+                                  InputGestureText="Ctrl + V" />
+                        <Separator />
+                        <MenuItem Focusable="False"
+                                  Header="_Create Note"
+                                  Command="{Binding AddNoteCommand}"
+                                  Name="noteMenuItem"
+                                  InputGestureText="Ctrl + W" />
+                        <MenuItem Focusable="False"
+                                  Header="_Create Node From Selection"
+                                  Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
+                                  Name="nodeFromSelection"
+                                  InputGestureText="Ctrl + D" />
+                        <MenuItem Focusable="False"
+                                  Header="_Select All"
+                                  Command="{Binding SelectAllCommand}"
+                                  Name="selectAll"
+                                  InputGestureText="Ctrl + A" />
+                        <MenuItem Focusable="False"
+                                  Header="_Delete Selected"
+                                  Command="{Binding DeleteCommand}"
+                                  Name="deleteSelected"
+                                  InputGestureText="Delete" />
                         <!--<MenuItem Focusable="False" Header="_Select Neighbors" Command="{Binding Path=ExpandSelectionCommand}"  Name="expandSelect" InputGestureText="Tab"/>-->
-                        <MenuItem  Header="_Align Selection"  Name="Align">
-                            <MenuItem  Header="_X Average"  Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalCenter" Focusable="False"/>
-                            <MenuItem  Header="_Left" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalLeft" Focusable="False"/>
-                            <MenuItem  Header="_Right" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalRight" Focusable="False"/>
-                            <MenuItem  Header="_Y Average" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalCenter" Focusable="False"/>
-                            <MenuItem  Header="_Top" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalTop" Focusable="False"/>
-                            <MenuItem  Header="_Bottom" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalBottom" Focusable="False"/>
-                            <MenuItem  Header="_Y Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="VerticalDistribute" Focusable="False"/>
-                            <MenuItem  Header="_X Distribute" Command="{Binding AlignSelectedCommand}" CommandParameter="HorizontalDistribute" Focusable="False"/>
+                        <MenuItem  Header="_Align Selection"
+                                   Name="Align">
+                            <MenuItem  Header="_X Average"
+                                       Command="{Binding AlignSelectedCommand}"
+                                       CommandParameter="HorizontalCenter"
+                                       Focusable="False" />
+                            <MenuItem  Header="_Left"
+                                       Command="{Binding AlignSelectedCommand}"
+                                       CommandParameter="HorizontalLeft"
+                                       Focusable="False" />
+                            <MenuItem  Header="_Right"
+                                       Command="{Binding AlignSelectedCommand}"
+                                       CommandParameter="HorizontalRight"
+                                       Focusable="False" />
+                            <MenuItem  Header="_Y Average"
+                                       Command="{Binding AlignSelectedCommand}"
+                                       CommandParameter="VerticalCenter"
+                                       Focusable="False" />
+                            <MenuItem  Header="_Top"
+                                       Command="{Binding AlignSelectedCommand}"
+                                       CommandParameter="VerticalTop"
+                                       Focusable="False" />
+                            <MenuItem  Header="_Bottom"
+                                       Command="{Binding AlignSelectedCommand}"
+                                       CommandParameter="VerticalBottom"
+                                       Focusable="False" />
+                            <MenuItem  Header="_Y Distribute"
+                                       Command="{Binding AlignSelectedCommand}"
+                                       CommandParameter="VerticalDistribute"
+                                       Focusable="False" />
+                            <MenuItem  Header="_X Distribute"
+                                       Command="{Binding AlignSelectedCommand}"
+                                       CommandParameter="HorizontalDistribute"
+                                       Focusable="False" />
                         </MenuItem>
-                        <Separator/>
-                        <MenuItem Focusable="False" Header="_Cleanup Node Layout" Command="{Binding GraphAutoLayoutCommand}" Name="GraphAutoLayout" InputGestureText="Ctrl + L"/>
+                        <Separator />
+                        <MenuItem Focusable="False"
+                                  Header="_Cleanup Node Layout"
+                                  Command="{Binding GraphAutoLayoutCommand}"
+                                  Name="GraphAutoLayout"
+                                  InputGestureText="Ctrl + L" />
                     </MenuItem>
 
-                    <MenuItem Header="_View" Name="viewMenu" Focusable="False">
-                        <MenuItem Header="_Zoom" Name="zoomMenu">
-                            <MenuItem  Header="Zoom In (Mouse wheel down)"  Command="{Binding ZoomInCommand}" InputGestureText="Ctrl + ="/>
-                            <MenuItem  Header="Zoom Out (Mouse wheel up)" Command="{Binding ZoomOutCommand}" InputGestureText="Ctrl + -"/>
+                    <MenuItem Header="_View"
+                              Name="viewMenu"
+                              Focusable="False">
+                        <MenuItem Header="_Zoom"
+                                  Name="zoomMenu">
+                            <MenuItem  Header="Zoom In (Mouse wheel down)"
+                                       Command="{Binding ZoomInCommand}"
+                                       InputGestureText="Ctrl + =" />
+                            <MenuItem  Header="Zoom Out (Mouse wheel up)"
+                                       Command="{Binding ZoomOutCommand}"
+                                       InputGestureText="Ctrl + -" />
                         </MenuItem>
 
-                        <MenuItem Header="_Pan" Name="panMenu">
-                            <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Alt + Left"/>
-                            <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}" CommandParameter="Right" InputGestureText="Ctrl + Alt + Right"/>
-                            <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Alt + Up"/>
-                            <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Alt + Down"/>
-                        </MenuItem>    
+                        <MenuItem Header="_Pan"
+                                  Name="panMenu">
+                            <MenuItem  Header="Pan Left (Mouse wheel drag left)"
+                                       Command="{Binding PanCommand}"
+                                       CommandParameter="Left"
+                                       InputGestureText="Ctrl + Alt + Left" />
+                            <MenuItem  Header="Pan Right (Mouse wheel drag right)"
+                                       Command="{Binding PanCommand}"
+                                       CommandParameter="Right"
+                                       InputGestureText="Ctrl + Alt + Right" />
+                            <MenuItem  Header="Pan Up (Mouse wheel drag up)"
+                                       Command="{Binding PanCommand}"
+                                       CommandParameter="Up"
+                                       InputGestureText="Ctrl + Alt + Up" />
+                            <MenuItem  Header="Pan Down (Mouse wheel drag down)"
+                                       Command="{Binding PanCommand}"
+                                       CommandParameter="Down"
+                                       InputGestureText="Ctrl + Alt + Down" />
+                        </MenuItem>
 
                         <MenuItem Header="{Binding Path=ConsoleHeight, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                              Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Shift + Up"/>
+                                  Command="{Binding ToggleConsoleShowingCommand}"
+                                  InputGestureText="Ctrl + Shift + Up" />
 
-                        <MenuItem Header="_Connectors" Name="connectorMenu">
-                            <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
-                                <MenuItem Focusable="False" Name="settings_curves" IsCheckable="True" IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}" Command="{Binding SetConnectorTypeCommand}" CommandParameter="BEZIER" Header="Curves"/>
-                                <MenuItem Name="settings_plines" IsCheckable="True" IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}" Command="{Binding SetConnectorTypeCommand}" CommandParameter="POLYLINE" Header="Polylines"/>
+                        <MenuItem Header="_Connectors"
+                                  Name="connectorMenu">
+                            <MenuItem Focusable="False"
+                                      Header="_Connector Type"
+                                      IsEnabled="True">
+                                <MenuItem Focusable="False"
+                                          Name="settings_curves"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=BEZIER, Mode=TwoWay}"
+                                          Command="{Binding SetConnectorTypeCommand}"
+                                          CommandParameter="BEZIER"
+                                          Header="Curves" />
+                                <MenuItem Name="settings_plines"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=ConnectorType,Converter={StaticResource EnumToBoolConverter},ConverterParameter=POLYLINE, Mode=TwoWay}"
+                                          Command="{Binding SetConnectorTypeCommand}"
+                                          CommandParameter="POLYLINE"
+                                          Header="Polylines" />
                             </MenuItem>
-                            <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem" IsChecked="{Binding Path=IsShowingConnectors}" Command="{Binding ShowHideConnectorsCommand}">
+                            <MenuItem Focusable="False"
+                                      Header="_Show Connectors"
+                                      IsCheckable="True"
+                                      Name="ShowHideConnectorsMenuItem"
+                                      IsChecked="{Binding Path=IsShowingConnectors}"
+                                      Command="{Binding ShowHideConnectorsCommand}">
                             </MenuItem>
                         </MenuItem>
-                        <MenuItem Header ="{Binding AlternateContextGeometryDisplayText}" 
-                                  Name="showGeometryInAlternateContextMenu" 
-                                  Focusable="False" 
+                        <MenuItem Header="{Binding AlternateContextGeometryDisplayText}"
+                                  Name="showGeometryInAlternateContextMenu"
+                                  Focusable="False"
                                   Visibility="{Binding Path=VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=VisualizationManager.DrawToAlternateContext}">
                         </MenuItem>
-                        <MenuItem Header="_Background 3D Preview" Name="background3dMenu" Focusable="False">
-                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" 
-                                      IsChecked="{Binding Path=FullscreenWatchShowing}" Command="{Binding ToggleFullscreenWatchShowingCommand}"  Focusable="False"/>
+                        <MenuItem Header="_Background 3D Preview"
+                                  Name="background3dMenu"
+                                  Focusable="False">
+                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
+                                      IsChecked="{Binding Path=FullscreenWatchShowing}"
+                                      Command="{Binding ToggleFullscreenWatchShowingCommand}"
+                                      Focusable="False" />
                             <MenuItem Header="Navigate Background 3D Preview"
-                                          IsEnabled="{Binding Path=FullscreenWatchShowing}"
-                                          IsChecked="{Binding Path=CanNavigateBackground}"
-                                          InputGestureText="Ctrl + G"
-                                          Focusable="False"
-                                          Command="{Binding ToggleCanNavigateBackgroundCommand}"/>
+                                      IsEnabled="{Binding Path=FullscreenWatchShowing}"
+                                      IsChecked="{Binding Path=CanNavigateBackground}"
+                                      InputGestureText="Ctrl + G"
+                                      Focusable="False"
+                                      Command="{Binding ToggleCanNavigateBackgroundCommand}" />
                         </MenuItem>
                     </MenuItem>
-                    
-                    <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
-                        <MenuItem Focusable="False" Header="_Search for a Package..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
-                        <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
-                        <MenuItem Focusable="False" Header="_Publish New Package..." Command="{Binding Path=DataContext.PublishNewPackageCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishNewPackage" />
-                        <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
-                        <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
+
+                    <MenuItem Header="_Packages"
+                              Name="PackageManagerMenu"
+                              Focusable="False"
+                              IsEnabled="True">
+                        <MenuItem Focusable="False"
+                                  Header="_Search for a Package..."
+                                  Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  Name="showPMSearch" />
+                        <MenuItem Focusable="False"
+                                  Header="_Manage Packages..."
+                                  Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  Name="showPMInstalled" />
+                        <MenuItem Focusable="False"
+                                  Header="_Publish New Package..."
+                                  Command="{Binding Path=DataContext.PublishNewPackageCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  Name="publishNewPackage" />
+                        <MenuItem Focusable="False"
+                                  Header="_Publish Selected Nodes..."
+                                  Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  Name="publishSelected" />
+                        <MenuItem Focusable="False"
+                                  Header="_Publish Current Workspace..."
+                                  Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  Name="publishCurrent" />
                     </MenuItem>
 
-                    <MenuItem Header="_Settings" Name="SettingsMenu" Focusable="False" IsEnabled="True">
+                    <MenuItem Header="_Settings"
+                              Name="SettingsMenu"
+                              Focusable="False"
+                              IsEnabled="True">
                         <MenuItem Header="_Enable detailed usability data reporting"
                                   Name="ToggleIsUsageReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="Detailed reporting sends behaviour data that we use for improving Dynamo.&#x0a;It includes the graph being created as well as errors and warnings"
-                                  Focusable="False"/>
+                                  Focusable="False" />
                         <MenuItem Header="Enable anonymous summary reporting"
                                   Name="ToggleIsAnalyticsReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&#x0a;It does not contain your graph or any personal data"
-                                  Focusable="False"/>
-                        
-                        <MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
-                            <MenuItem Focusable="False" Name="units_inch_1" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalInch" Header="Decimal Inch"/>
-                            <MenuItem Focusable="False" Name="units_inch_2" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalInch" Header="Fractional Inch"/>
-                            <MenuItem Focusable="False" Name="units_foot_1" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalFoot, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalFoot" Header="Decimal Foot"/>
-                            <MenuItem Focusable="False" Name="units_foot_2" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalFoot, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalFoot" Header="Fractional Foot"/>
-                            <MenuItem Focusable="False" Name="units_mm" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Millimeter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Millimeter" Header="Millimeter"/>
-                            <MenuItem Focusable="False" Name="units_cm" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Centimeter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Centimeter" Header="Centimeter"/>
-                            <MenuItem Focusable="False" Name="units_m" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Meter" Header="Meter"/>
+                                  Focusable="False" />
+
+                        <MenuItem Focusable="False"
+                                  Header="Length Display Units"
+                                  Name="LengthUnitsMenu">
+                            <MenuItem Focusable="False"
+                                      Name="units_inch_1"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}"
+                                      Command="{Binding SetLengthUnitCommand}"
+                                      CommandParameter="DecimalInch"
+                                      Header="Decimal Inch" />
+                            <MenuItem Focusable="False"
+                                      Name="units_inch_2"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}"
+                                      Command="{Binding SetLengthUnitCommand}"
+                                      CommandParameter="FractionalInch"
+                                      Header="Fractional Inch" />
+                            <MenuItem Focusable="False"
+                                      Name="units_foot_1"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalFoot, Mode=TwoWay}"
+                                      Command="{Binding SetLengthUnitCommand}"
+                                      CommandParameter="DecimalFoot"
+                                      Header="Decimal Foot" />
+                            <MenuItem Focusable="False"
+                                      Name="units_foot_2"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalFoot, Mode=TwoWay}"
+                                      Command="{Binding SetLengthUnitCommand}"
+                                      CommandParameter="FractionalFoot"
+                                      Header="Fractional Foot" />
+                            <MenuItem Focusable="False"
+                                      Name="units_mm"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Millimeter, Mode=TwoWay}"
+                                      Command="{Binding SetLengthUnitCommand}"
+                                      CommandParameter="Millimeter"
+                                      Header="Millimeter" />
+                            <MenuItem Focusable="False"
+                                      Name="units_cm"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Centimeter, Mode=TwoWay}"
+                                      Command="{Binding SetLengthUnitCommand}"
+                                      CommandParameter="Centimeter"
+                                      Header="Centimeter" />
+                            <MenuItem Focusable="False"
+                                      Name="units_m"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}"
+                                      Command="{Binding SetLengthUnitCommand}"
+                                      CommandParameter="Meter"
+                                      Header="Meter" />
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="Area Display Units" Name="AreaUnitsMenu">
-                            <MenuItem Focusable="False" Name="units_area_inch" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareInch, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareInch" Header="Square Inch"/>
-                            <MenuItem Focusable="False" Name="units_area_foot" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareFoot, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareFoot" Header="Square Foot"/>
-                            <MenuItem Focusable="False" Name="units_area_millimeter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMillimeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareMillimeter" Header="Square Millimeter"/>
-                            <MenuItem Focusable="False" Name="units_area_centimeter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareCentimeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareCentimeter" Header="Square Centimeter"/>
-                            <MenuItem Focusable="False" Name="units_area_meter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareMeter" Header="Square Meter"/>
+                        <MenuItem Focusable="False"
+                                  Header="Area Display Units"
+                                  Name="AreaUnitsMenu">
+                            <MenuItem Focusable="False"
+                                      Name="units_area_inch"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareInch, Mode=TwoWay}"
+                                      Command="{Binding SetAreaUnitCommand}"
+                                      CommandParameter="SquareInch"
+                                      Header="Square Inch" />
+                            <MenuItem Focusable="False"
+                                      Name="units_area_foot"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareFoot, Mode=TwoWay}"
+                                      Command="{Binding SetAreaUnitCommand}"
+                                      CommandParameter="SquareFoot"
+                                      Header="Square Foot" />
+                            <MenuItem Focusable="False"
+                                      Name="units_area_millimeter"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMillimeter, Mode=TwoWay}"
+                                      Command="{Binding SetAreaUnitCommand}"
+                                      CommandParameter="SquareMillimeter"
+                                      Header="Square Millimeter" />
+                            <MenuItem Focusable="False"
+                                      Name="units_area_centimeter"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareCentimeter, Mode=TwoWay}"
+                                      Command="{Binding SetAreaUnitCommand}"
+                                      CommandParameter="SquareCentimeter"
+                                      Header="Square Centimeter" />
+                            <MenuItem Focusable="False"
+                                      Name="units_area_meter"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMeter, Mode=TwoWay}"
+                                      Command="{Binding SetAreaUnitCommand}"
+                                      CommandParameter="SquareMeter"
+                                      Header="Square Meter" />
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="Volume Display Units" Name="VolumeUnitsMenu">
-                            <MenuItem Focusable="False" Name="units_volume_inch" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicInch, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicInch" Header="Cubic Inch"/>
-                            <MenuItem Focusable="False" Name="units_volume_foot" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicFoot, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicFoot" Header="Cubic Foot"/>
-                            <MenuItem Focusable="False" Name="units_volume_millimeter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMillimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicMillimeter" Header="Cubic Millimeter"/>
-                            <MenuItem Focusable="False" Name="units_volume_centimeter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicCentimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicCentimeter" Header="Cubic Centimeter"/>
-                            <MenuItem Focusable="False" Name="units_volume_meter" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="SquareMeter" Header="Cubic Meter"/>
+                        <MenuItem Focusable="False"
+                                  Header="Volume Display Units"
+                                  Name="VolumeUnitsMenu">
+                            <MenuItem Focusable="False"
+                                      Name="units_volume_inch"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicInch, Mode=TwoWay}"
+                                      Command="{Binding SetVolumeUnitCommand}"
+                                      CommandParameter="CubicInch"
+                                      Header="Cubic Inch" />
+                            <MenuItem Focusable="False"
+                                      Name="units_volume_foot"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicFoot, Mode=TwoWay}"
+                                      Command="{Binding SetVolumeUnitCommand}"
+                                      CommandParameter="CubicFoot"
+                                      Header="Cubic Foot" />
+                            <MenuItem Focusable="False"
+                                      Name="units_volume_millimeter"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMillimeter, Mode=TwoWay}"
+                                      Command="{Binding SetVolumeUnitCommand}"
+                                      CommandParameter="CubicMillimeter"
+                                      Header="Cubic Millimeter" />
+                            <MenuItem Focusable="False"
+                                      Name="units_volume_centimeter"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicCentimeter, Mode=TwoWay}"
+                                      Command="{Binding SetVolumeUnitCommand}"
+                                      CommandParameter="CubicCentimeter"
+                                      Header="Cubic Centimeter" />
+                            <MenuItem Focusable="False"
+                                      Name="units_volume_meter"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMeter, Mode=TwoWay}"
+                                      Command="{Binding SetVolumeUnitCommand}"
+                                      CommandParameter="SquareMeter"
+                                      Header="Cubic Meter" />
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="Number Format" Name="NumberFormat">
-                            <MenuItem Focusable="False" Header="0" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f0, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f0"/>
-                            <MenuItem Focusable="False" Header="0.0" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f1, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f1"/>
-                            <MenuItem Focusable="False" Header="0.00" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f2, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f2"/>
-                            <MenuItem Focusable="False" Header="0.000" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f3, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f3"/>
-                            <MenuItem Focusable="False" Header="0.0000" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f4, Mode=TwoWay}" Command="{Binding SetNumberFormatCommand}" CommandParameter="f4"/>
+                        <MenuItem Focusable="False"
+                                  Header="Number Format"
+                                  Name="NumberFormat">
+                            <MenuItem Focusable="False"
+                                      Header="0"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f0, Mode=TwoWay}"
+                                      Command="{Binding SetNumberFormatCommand}"
+                                      CommandParameter="f0" />
+                            <MenuItem Focusable="False"
+                                      Header="0.0"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f1, Mode=TwoWay}"
+                                      Command="{Binding SetNumberFormatCommand}"
+                                      CommandParameter="f1" />
+                            <MenuItem Focusable="False"
+                                      Header="0.00"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f2, Mode=TwoWay}"
+                                      Command="{Binding SetNumberFormatCommand}"
+                                      CommandParameter="f2" />
+                            <MenuItem Focusable="False"
+                                      Header="0.000"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f3, Mode=TwoWay}"
+                                      Command="{Binding SetNumberFormatCommand}"
+                                      CommandParameter="f3" />
+                            <MenuItem Focusable="False"
+                                      Header="0.0000"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding Model.PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter=f4, Mode=TwoWay}"
+                                      Command="{Binding SetNumberFormatCommand}"
+                                      CommandParameter="f4" />
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="Render Precision">
-                            <StackPanel Orientation="Horizontal" Width="Auto">
-                                <TextBlock Text="Low" Margin="0,0,10,0"></TextBlock>
-                                <Slider Width ="100" Minimum="12" Maximum="512" Value="{Binding MaxTesselationDivisions, Mode=TwoWay}"></Slider>
-                                <TextBlock Text="High" Margin="10,0,0,0"></TextBlock>
+                        <MenuItem Focusable="False"
+                                  Header="Render Precision">
+                            <StackPanel Orientation="Horizontal"
+                                        Width="Auto">
+                                <TextBlock Text="Low"
+                                           Margin="0,0,10,0"></TextBlock>
+                                <Slider Width="100"
+                                        Minimum="12"
+                                        Maximum="512"
+                                        Value="{Binding MaxTesselationDivisions, Mode=TwoWay}"></Slider>
+                                <TextBlock Text="High"
+                                           Margin="10,0,0,0"></TextBlock>
                             </StackPanel>
                         </MenuItem>
                     </MenuItem>
-                    
-                    <MenuItem Header="Help" Focusable="False">
-                        <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
+
+                    <MenuItem Header="Help"
+                              Focusable="False">
+                        <MenuItem Focusable="False"
+                                  Header="Samples"
+                                  Name="SamplesMenu">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png"
+                                       Width="14"
+                                       Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}" Focusable="False"/>
-                        <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}" Focusable="False"/>
-                        <MenuItem Header="Go To Project _Wiki" Command="{Binding GoToWikiCommand}" Focusable="False"/>
-                        <MenuItem Header="_Display Start Page" Command="{Binding DisplayStartPageCommand}" Focusable="False"/>
-                        <MenuItem Header="_About..." Command="{Binding ShowAboutWindowCommand}" Focusable="False" />
+                        <MenuItem Header="_Report A Bug"
+                                  Command="{Binding ReportABugCommand}"
+                                  Focusable="False" />
+                        <MenuItem Header="_Go To Project Website"
+                                  Command="{Binding GoToSourceCodeCommand}"
+                                  Focusable="False" />
+                        <MenuItem Header="Go To Project _Wiki"
+                                  Command="{Binding GoToWikiCommand}"
+                                  Focusable="False" />
+                        <MenuItem Header="_Display Start Page"
+                                  Command="{Binding DisplayStartPageCommand}"
+                                  Focusable="False" />
+                        <MenuItem Header="_About..."
+                                  Command="{Binding ShowAboutWindowCommand}"
+                                  Focusable="False" />
                     </MenuItem>
 
-                    <MenuItem Header="Debug" Focusable="False" Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                        <MenuItem Focusable="False" Name="VerboseLogging" IsCheckable="True" IsChecked="{Binding VerboseLogging}" Header="Verbose Logging"/>
-                        <MenuItem Focusable="False" Name="ShowDebugASTs" IsCheckable="True" Header ="Show Debug ASTs" IsChecked="{Binding ShowDebugASTs}" ></MenuItem>
-                        <MenuItem Focusable="False" Name="ForceReexec" Header="Force Re-execute" 
-                                    Command="{Binding ForceRunExpressionCommand}"
-                                    CommandParameter="{Binding Path=RunInDebug}"
-                                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
-                        <MenuItem Focusable="False" Name="MutateTest" Header="Run mutation test" 
-                                    Command="{Binding MutateTestDelegateCommand}"
-                                    CommandParameter="{Binding Path=RunInDebug}"
-                                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" ></MenuItem>
-                        <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
-                                  IsCheckable="True" IsChecked="{Binding Path=CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
-                        <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
-                                      IsCheckable="True" IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}"/>
+                    <MenuItem Header="Debug"
+                              Focusable="False"
+                              Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <MenuItem Focusable="False"
+                                  Name="VerboseLogging"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding VerboseLogging}"
+                                  Header="Verbose Logging" />
+                        <MenuItem Focusable="False"
+                                  Name="ShowDebugASTs"
+                                  IsCheckable="True"
+                                  Header="Show Debug ASTs"
+                                  IsChecked="{Binding ShowDebugASTs}"></MenuItem>
+                        <MenuItem Focusable="False"
+                                  Name="ForceReexec"
+                                  Header="Force Re-execute"
+                                  Command="{Binding ForceRunExpressionCommand}"
+                                  CommandParameter="{Binding Path=RunInDebug}"
+                                  IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"></MenuItem>
+                        <MenuItem Focusable="False"
+                                  Name="MutateTest"
+                                  Header="Run mutation test"
+                                  Command="{Binding MutateTestDelegateCommand}"
+                                  CommandParameter="{Binding Path=RunInDebug}"
+                                  IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"></MenuItem>
+                        <MenuItem Focusable="False"
+                                  Name="CheckDailyBuilds"
+                                  Header="Check Daily Builds"
+                                  DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
+                        <MenuItem Focusable="False"
+                                  Name="ForceUpdate"
+                                  Header="Force Update"
+                                  DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}" />
+                        <MenuItem Focusable="False"
+                                  Header="Dump Library"
+                                  Command="{Binding DumpLibraryToXmlCommand}"
+                                  IsEnabled="True" />
                     </MenuItem>
                 </Menu>
 
                 <!--Titlebar buttons-->
-                <Grid Name="titleBarButtonsGrid" Grid.Column="1">
+                <Grid Name="titleBarButtonsGrid"
+                      Grid.Column="1">
                 </Grid>
 
             </Grid>
         </Border>
-        
+
         <!--Shortcuts Toolbar-->
         <Border Name="shortcutBarBorder"
                 Grid.Row="1"
@@ -431,7 +796,8 @@
               Grid.Row="2"
               Grid.Column="2"
               Grid.RowSpan="3"
-              Background="#232323" Name="background_grid">
+              Background="#232323"
+              Name="background_grid">
             <Canvas Name="backgroundCanvas"
                     Margin="0,20,0,0"
                     ClipToBounds="True"
@@ -462,7 +828,8 @@
                 Grid.Column="2"
                 SizeChanged="Workspace_SizeChanged">
 
-            <Grid AllowDrop="True" Drop="DynamoView_OnDrop">
+            <Grid AllowDrop="True"
+                  Drop="DynamoView_OnDrop">
                 <TabControl ItemsSource="{Binding Path=Workspaces, NotifyOnTargetUpdated=True}"
                             Name="WorkspaceTabs"
                             SelectedIndex="{Binding CurrentWorkspaceIndex}"
@@ -583,7 +950,7 @@
                                                                     </Setter.Value>
                                                                 </Setter>
                                                             </Style>
-                                                            
+
                                                             <!-- The style for MenuItems that represent TabItems -->
                                                             <Style x:Key="TabMenuItem"
                                                                    BasedOn="{StaticResource MenuItemStyle}"
@@ -726,7 +1093,7 @@
                                                                         <Setter Property="Tag"
                                                                                 Value="" />
                                                                     </DataTrigger>
-                                                                    
+
                                                                     <Trigger Property="Role"
                                                                              Value="SubmenuHeader">
                                                                         <Setter Property="Template"
@@ -791,7 +1158,7 @@
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
-                            
+
                             <!-- The close button for workspace is no longer hidden on the HOME 
                                  tab page, since it is used to bring up the Start Page when pressed.
                             
@@ -803,7 +1170,7 @@
                                 </DataTrigger>
                             </Style.Triggers>
                             -->
-                            
+
                         </Style>
 
                         <Style TargetType="{x:Type TabItem}">
@@ -1054,7 +1421,7 @@
             </Grid>
 
         </Border>
-        
+
         <!--Collapsed Sidebar-->
         <StackPanel Grid.Row="2"
                     Grid.Column="2"
@@ -1067,26 +1434,44 @@
                     VerticalAlignment="Top"
                     Margin="0,120,0,0"
                     Visibility="Hidden">
-            <Grid Background="#222222" Cursor="Hand">
-                <Button Click="Button_Click" Template="{DynamicResource BackgroundButton}">
+            <Grid Background="#222222"
+                  Cursor="Hand">
+                <Button Click="Button_Click"
+                        Template="{DynamicResource BackgroundButton}">
                     <Button.Resources>
-                        <ControlTemplate x:Key="BackgroundButton" TargetType="Button">
-                            <Border Name="border" BorderThickness="0" BorderBrush="Black" VerticalAlignment="Stretch" Padding="5,0,5,0">
-                                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        <ControlTemplate x:Key="BackgroundButton"
+                                         TargetType="Button">
+                            <Border Name="border"
+                                    BorderThickness="0"
+                                    BorderBrush="Black"
+                                    VerticalAlignment="Stretch"
+                                    Padding="5,0,5,0">
+                                <ContentPresenter HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch" />
                             </Border>
                         </ControlTemplate>
                     </Button.Resources>
-                    <Grid Mouse.MouseEnter="Button_MouseEnter" Mouse.MouseLeave="Button_MouseLeave">
+                    <Grid Mouse.MouseEnter="Button_MouseEnter"
+                          Mouse.MouseLeave="Button_MouseLeave">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="1" Source="/DynamoCore;component/UI/Images/expand_normal.png" Visibility="Visible" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5">
+                        <Image Grid.Column="1"
+                               Source="/DynamoCore;component/UI/Images/expand_normal.png"
+                               Visibility="Visible"
+                               Width="20"
+                               Height="20"
+                               RenderTransformOrigin="0.5, 0.5">
                             <Image.RenderTransform>
-                                <RotateTransform Angle="90"/>
+                                <RotateTransform Angle="90" />
                             </Image.RenderTransform>
                         </Image>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Stretch" Foreground="#aaaaaa" FontWeight="Normal" Margin="5 0 5 0" >
+                        <TextBlock Grid.Column="0"
+                                   VerticalAlignment="Stretch"
+                                   Foreground="#aaaaaa"
+                                   FontWeight="Normal"
+                                   Margin="5 0 5 0">
                             Library
                         </TextBlock>
                     </Grid>
@@ -1094,41 +1479,63 @@
             </Grid>
 
             <StackPanel.RenderTransform>
-                <RotateTransform Angle="-90"/>
+                <RotateTransform Angle="-90" />
             </StackPanel.RenderTransform>
         </StackPanel>
 
-        <ScrollViewer Name="LogScroller" 
-                    VerticalAlignment="Stretch"
-                    VerticalScrollBarVisibility="Auto" 
-                    HorizontalAlignment="Stretch"
-                    HorizontalScrollBarVisibility="Hidden"
-                    Background="Black" 
-                    Opacity="1" 
-                    Visibility="Visible"
-                    Grid.Row="4"
-                    Grid.Column="0" 
-                    Grid.ColumnSpan="3">
+        <ScrollViewer Name="LogScroller"
+                      VerticalAlignment="Stretch"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalAlignment="Stretch"
+                      HorizontalScrollBarVisibility="Hidden"
+                      Background="Black"
+                      Opacity="1"
+                      Visibility="Visible"
+                      Grid.Row="4"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="3">
 
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Clear" Command="{Binding ClearLogCommand}"/>
+                    <MenuItem Header="Clear"
+                              Command="{Binding ClearLogCommand}" />
                 </ContextMenu>
             </ScrollViewer.ContextMenu>
 
-            <TextBox Text="{Binding Path=LogText, Mode=OneWay}" 
-                    Foreground="#FF888888" BorderThickness="0" BorderBrush="#00000000" Background="Black"
-                    Margin="0" TextWrapping="Wrap"
-                    IsReadOnly="True" IsReadOnlyCaretVisible="True" IsUndoEnabled="False" 
-                    IsTabStop="False" FontFamily="Consolas" TextChanged="TextBoxBase_OnTextChanged" />
+            <TextBox Text="{Binding Path=LogText, Mode=OneWay}"
+                     Foreground="#FF888888"
+                     BorderThickness="0"
+                     BorderBrush="#00000000"
+                     Background="Black"
+                     Margin="0"
+                     TextWrapping="Wrap"
+                     IsReadOnly="True"
+                     IsReadOnlyCaretVisible="True"
+                     IsUndoEnabled="False"
+                     IsTabStop="False"
+                     FontFamily="Consolas"
+                     TextChanged="TextBoxBase_OnTextChanged" />
         </ScrollViewer>
 
         <!--Sidebar-->
-        <Grid Height="Auto" Width="Auto" HorizontalAlignment="Stretch" Name="sidebarGrid" VerticalAlignment="Stretch" Visibility="Visible" 
-              Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" Background="Black">
+        <Grid Height="Auto"
+              Width="Auto"
+              HorizontalAlignment="Stretch"
+              Name="sidebarGrid"
+              VerticalAlignment="Stretch"
+              Visibility="Visible"
+              Grid.Row="2"
+              Grid.Column="0"
+              Grid.RowSpan="2"
+              Background="Black">
         </Grid>
 
-        <WrapPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+        <WrapPanel Orientation="Horizontal"
+                   Grid.Row="5"
+                   Grid.Column="0"
+                   Grid.RowSpan="1"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
                    Grid.ColumnSpan="3">
 
             <WrapPanel.Background>
@@ -1141,31 +1548,58 @@
                 </LinearGradientBrush>
             </WrapPanel.Background>
 
-            <Grid Name="bottomBarGrid" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid Name="bottomBarGrid"
+                  Grid.Row="4"
+                  Grid.Column="0"
+                  Grid.RowSpan="1"
+                  Grid.ColumnSpan="3"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="1">
-                    
-                    <Button Name="RunButton" Width="100" Content="Run" 
-                    Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
-                    Click="RunButton_OnClick"
-                    Command="{Binding RunExpressionCommand}"
-                    CommandParameter="{Binding Path=RunInDebug}"
-                    ToolTip="Run Workflow (F5)"
-                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
+                <WrapPanel Orientation="Horizontal"
+                           Grid.Row="0"
+                           Grid.Column="0"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch">
 
-                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}"
-                            ToolTip="Cancel Run (Shift+F5)"
-                            Command="{Binding CancelRunCommand}" Margin="5"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Name="RunButton"
+                                Width="100"
+                                Content="Run"
+                                Margin="5"
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                Click="RunButton_OnClick"
+                                Command="{Binding RunExpressionCommand}"
+                                CommandParameter="{Binding Path=RunInDebug}"
+                                ToolTip="Run Workflow (F5)"
+                                IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"
+                                Focusable="False" />
 
-                    <CheckBox Margin="10"
-                      Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"
-                      Content="Run Automatically" FontSize="11" IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
-                      IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
-                      VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                        <Button Name="cancelButton"
+                                Width="100"
+                                Content="Cancel"
+                                Focusable="False"
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                ToolTip="Cancel Run (Shift+F5)"
+                                Command="{Binding CancelRunCommand}"
+                                Margin="5" />
+
+                        <CheckBox Margin="10"
+                                  Name="dynamicCheckBox"
+                                  x:FieldModifier="public"
+                                  Focusable="False"
+                                  Foreground="Gray"
+                                  Content="Run Automatically"
+                                  FontSize="11"
+                                  IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
+                                  IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
+                                  VerticalAlignment="Center"
+                                  VerticalContentAlignment="Center" />
+                    </StackPanel>
 
                     <!--CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
@@ -1173,52 +1607,66 @@
                       Content="Debug" VerticalContentAlignment="Center"/-->
 
                 </WrapPanel>
-                <TextBlock Name="warningText" Grid.Column="1" Text="{Binding Path=Model.Logger.Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}" FontStyle="Italic" FontSize="12" 
-                       VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" TextTrimming="WordEllipsis" Margin="10"
-                       Foreground="{Binding Path=Model.Logger.WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" >
+                <TextBlock Name="warningText"
+                           Grid.Column="1"
+                           Text="{Binding Path=Model.Logger.Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}"
+                           FontStyle="Italic"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Stretch"
+                           TextAlignment="Right"
+                           TextTrimming="WordEllipsis"
+                           Margin="10"
+                           Foreground="{Binding Path=Model.Logger.WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
                     <TextBlock.Triggers>
-                            <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Opacity)">
-                                            <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0" />
-                                            <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.35" />
-                                            <LinearDoubleKeyFrame Value="1" KeyTime="0:0:5" />
-                                            <LinearDoubleKeyFrame Value="0" KeyTime="0:0:5.35" /> 
-                                        </DoubleAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
+                        <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Opacity)">
+                                        <LinearDoubleKeyFrame Value="0"
+                                                              KeyTime="0:0:0" />
+                                        <LinearDoubleKeyFrame Value="1"
+                                                              KeyTime="0:0:0.35" />
+                                        <LinearDoubleKeyFrame Value="1"
+                                                              KeyTime="0:0:5" />
+                                        <LinearDoubleKeyFrame Value="0"
+                                                              KeyTime="0:0:5.35" />
+                                    </DoubleAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                     </TextBlock.Triggers>
                 </TextBlock>
             </Grid>
 
         </WrapPanel>
 
-            <GridSplitter ResizeDirection="Rows" 
-                        Grid.Column="2" 
-                        Grid.ColumnSpan="1"
-                        Grid.Row="3" 
-                        Grid.RowSpan="1"
-                        Width="Auto"
-                        Height="2" 
-                        Name="horizontalSplitter"
-                        HorizontalAlignment="Stretch" 
-                        VerticalAlignment="Stretch" 
-                        Margin="0" Background="#999"
-                        Cursor="/DynamoCore;component/UI/Images/resize_vertical.cur"/>
+        <GridSplitter ResizeDirection="Rows"
+                      Grid.Column="2"
+                      Grid.ColumnSpan="1"
+                      Grid.Row="3"
+                      Grid.RowSpan="1"
+                      Width="Auto"
+                      Height="2"
+                      Name="horizontalSplitter"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Margin="0"
+                      Background="#999"
+                      Cursor="/DynamoCore;component/UI/Images/resize_vertical.cur" />
 
-            <GridSplitter ResizeDirection="Auto" 
-                          Grid.Column="1" 
-                          Grid.Row="2"
-                          Grid.RowSpan="2"
-                          Height="Auto"
-                          Width="3"
-                          Name="verticalSplitter"
-                          HorizontalAlignment="Stretch" 
-                          VerticalAlignment="Stretch" 
-                          Margin="0" Background="Transparent"
-                          Cursor="/DynamoCore;component/UI/Images/resize_horizontal.cur"/>
+        <GridSplitter ResizeDirection="Auto"
+                      Grid.Column="1"
+                      Grid.Row="2"
+                      Grid.RowSpan="2"
+                      Height="Auto"
+                      Width="3"
+                      Name="verticalSplitter"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Margin="0"
+                      Background="Transparent"
+                      Cursor="/DynamoCore;component/UI/Images/resize_horizontal.cur" />
 
         <ItemsControl Name="startPageItemsControl"
                       Grid.Row="2"
@@ -1245,7 +1693,7 @@
                          UpdateSourceTrigger="Explicit" />
             </ItemsControl.Visibility>
         </ItemsControl>
-        
+
     </Grid>
 
 

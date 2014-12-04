@@ -148,7 +148,7 @@ namespace ProtoTestFx.TD
 
         public ExecutionMirror RunScript(string pathname, string errorstring = "", string includePath = "")
         {
-            var testCore = SetupTestCore();
+            SetupTestCore();
             Console.WriteLine( errorstring);
             if (!String.IsNullOrEmpty(includePath))
             {
@@ -239,7 +239,7 @@ namespace ProtoTestFx.TD
             }
             else
             {
-                var testCore = SetupTestCore();
+                SetupTestCore();
                 if (!String.IsNullOrEmpty(includePath))
                 {
                     if (System.IO.Directory.Exists(includePath))
@@ -280,7 +280,7 @@ namespace ProtoTestFx.TD
         /// <returns></returns>
         public ExecutionMirror RunASTSource(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, string errorstring = "", string includePath = "")
         {
-            var testCore = SetupTestCore();
+            SetupTestCore();
             if (!String.IsNullOrEmpty(includePath))
             {
                 if (System.IO.Directory.Exists(includePath))
@@ -772,7 +772,11 @@ namespace ProtoTestFx.TD
 
         public void CleanUp()
         {
-            testCore.Cleanup();
+            if (testCore != null)
+            {
+                testCore.Cleanup();
+                testCore = null;
+            }
         }
     }
 }
