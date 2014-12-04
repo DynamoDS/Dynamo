@@ -44,7 +44,7 @@ namespace Dynamo.DSEngine
 
         public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
-            this.dynamoModel = dynamoModel;          
+            this.dynamoModel = dynamoModel;            
             // Create a core which is used for parsing code and loading libraries
             libraryCore = new ProtoCore.Core(new Options()
             {
@@ -69,8 +69,6 @@ namespace Dynamo.DSEngine
 
             dynamoModel.NodeDeleted += NodeDeleted;
         }
-
-       
 
         public void Dispose()
         {
@@ -240,6 +238,13 @@ namespace Dynamo.DSEngine
             return graphSyncDataQueue.Dequeue();
         }
 
+        /// <summary>
+        ///  This is called on the main thread from PreviewGraphSyncData
+        ///  to generate the list of node id's that will be executed on the next run
+        /// </summary>
+        /// <param name="updatedNodes">The updated nodes.</param>
+        /// <returns>This method returns the list of all reachable node id's from the given
+        /// updated nodes</returns>
         internal List<Guid> PreviewGraphSyncData(IEnumerable<NodeModel> updatedNodes)
         {
             if (updatedNodes == null)
@@ -251,6 +256,7 @@ namespace Dynamo.DSEngine
                 astBuilder.CompileToAstNodes(activeNodes, true);
             }
 
+            graphSyncdata = syncDataManager.GetSyncData();
             List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata);
 
              lock (previewGraphQueue)

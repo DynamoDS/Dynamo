@@ -1,5 +1,5 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
+﻿using System.Linq;
+#if ENABLE_DYNAMO_SCHEDULER
 using System;
 using System.Collections.Generic;
 
@@ -64,7 +64,8 @@ namespace Dynamo.Core.Threading
                 TargetedWorkspace = workspace;
 
                 modifiedNodes = ComputeModifiedNodes(workspace);
-                previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes);
+                if (modifiedNodes.Count() > 0 )
+                    previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes);
                 return previewGraphData;
             }
             catch (Exception)

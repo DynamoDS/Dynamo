@@ -590,7 +590,8 @@ namespace Dynamo.Models
         protected internal void ReportModification()
         {
             if (IsReportingModifications && Workspace != null)
-            {              
+            {
+                Workspace.FindNextExecutingNodes();
                 Workspace.Modified();
             }
         }
@@ -1455,7 +1456,7 @@ namespace Dynamo.Models
         }
 
         private bool forceReExec = false;
-        private bool isNodeExecuted = false;
+        private bool isNodeExecuted = true;
 
         /// <summary>
         ///     This property forces all AST nodes that generated from this node

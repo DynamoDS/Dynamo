@@ -231,6 +231,7 @@ namespace Dynamo.Models
             foreach (var n in HomeSpace.Nodes)
             {
                 n.ForceReExecuteOfNode = false;
+                n.IsNodeExecuted = false;
             }
 
             if (EvaluationCompleted != null)

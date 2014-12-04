@@ -658,6 +658,12 @@ namespace Dynamo.Models
         {
             RaisePropertyChanged("Position");
         }
+
+        public void FindNextExecutingNodes()
+        {
+            DynamoModel.OnGetExecutingNodes();
+        }
+
       
         #endregion
 

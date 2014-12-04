@@ -96,6 +96,48 @@ namespace Dynamo.Models
                 ShutdownCompleted(this);
         }
 
+        private bool graphExecuted;
+        /// <summary>
+        /// This method is called from Workspace to get all the
+        /// node id's that will be executed in the next run
+        /// </summary>
+        internal void OnGetExecutingNodes()
+        {
+            var task = new PreviewGraphAsyncTask(scheduler);
+            if (graphExecuted)
+            {
+                if (task.Initialize(EngineController, HomeSpace) != null)
+                {
+                    task.Completed += OnPreviewGraphCompleted;
+                    scheduler.ScheduleForExecution(task);
+                }
+            }                   
+        }
+
+        /// <summary>
+        ///  This method "color" all the nodes that executes in the next run
+        /// </summary>
+        /// <param name="asyncTask">The asynchronous task.</param>
+        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
+        {
+            var updateTask = asyncTask as PreviewGraphAsyncTask;
+            if (updateTask != null)
+            {
+                var nodeGuids = updateTask.previewGraphData;
+                foreach (var nodeModel in nodeMap)
+                {                   
+                    foreach (Guid t in nodeGuids)
+                    {
+                        if (nodeModel.Key == t)
+                        {
+                            nodeModel.Value.IsNodeExecuted = true;
+                        }
+                    }
+                }
+            }            
+        }
+
+
         #endregion
 
         #region internal members
@@ -521,6 +563,7 @@ namespace Dynamo.Models
         /// 
         public void RunExpression()
         {
+            graphExecuted = true;
             var traceData = HomeSpace.PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
@@ -598,39 +641,9 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
-            OnEvaluationCompleted(this, EventArgs.Empty);
-
-            var previewTask = new PreviewGraphAsyncTask(scheduler);
-            if (previewTask.Initialize(EngineController, HomeSpace) != null)
-            {
-                previewTask.Completed += OnPreviewGraphCompleted;
-                scheduler.ScheduleForExecution(previewTask);
-            }
+            OnEvaluationCompleted(this, EventArgs.Empty);         
         }
-
-        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
-        {
-            var updateTask = asyncTask as PreviewGraphAsyncTask;
-            if (updateTask != null)
-            {
-                var nodeGuids = updateTask.previewGraphData;
-                foreach (var id in nodeMap)
-                {
-                    var nodeModel = id.Value as NodeModel;
-                    nodeModel.IsNodeExecuted = false;
-                    for (int i = 0; i < nodeGuids.Count; i++)
-                    {
-                        if (id.Key == nodeGuids[i])
-                        {
-                            nodeModel.IsNodeExecuted = true;
-                        }
-                    }
-
-                }
-            }
-            OnEvaluationCompleted(this, EventArgs.Empty);
-        }
-
+       
         /// <summary>
         /// This event handler is invoked when DynamoScheduler changes the state 
         /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more 
