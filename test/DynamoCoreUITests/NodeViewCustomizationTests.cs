@@ -22,12 +22,13 @@ namespace DynamoCoreUITests
     {
         public NodeView NodeViewOf<T>() where T : NodeModel
         {
-            var nodeViews = View.NodeViewsInFirstWorkspace().OfNodeModelType<T>();
+            var nodeViews0 = View.NodeViewsInFirstWorkspace();
+            
+            var nodeViews = nodeViews0.OfNodeModelType<T>();
 
             Assert.AreEqual(1, nodeViews.Count(), "Expected a single NodeView of provided type in the workspace!");
 
-            //var models = nodeViews0.Select(x => x.ViewModel.NodeModel);
-            //var nodeViews = nodeViews0;
+            var models = nodeViews0.Select(x => x.ViewModel.NodeModel);
 
             return nodeViews.First();
         }
@@ -199,17 +200,24 @@ namespace DynamoCoreUITests
         [Test]
         public void WatchContainsExpectedUiElements()
         {
-            Open(@"UI\WatchUI.dyn");
+            Open(@"UI\WatchUINodes.dyn");
 
             var nodeView = NodeViewOf<Dynamo.Nodes.Watch>();
 
-            Assert.Fail();
+            Run();
+
+            var eles = nodeView.ChildrenOfType<WatchTree>();
+            Assert.AreEqual(1, eles.Count());
+
+            // 3 elements in the list
+            Assert.AreEqual(1, eles.First().Children().Count());
+            Assert.AreEqual(3, eles.First().Children().First().Children().Count());
         }
 
         [Test]
         public void WatchImageCoreContainsImage()
         {
-            Open(@"UI\WatchUI.dyn");
+            Open(@"UI\WatchUINodes.dyn");
 
             var nodeView = NodeViewOf<Dynamo.Nodes.WatchImageCore>();
 
@@ -219,7 +227,7 @@ namespace DynamoCoreUITests
         [Test]
         public void Watch3DContainsExpectedGeometry()
         {
-            Open(@"UI\WatchUI.dyn");
+            Open(@"UI\WatchUINodes.dyn");
 
             var nodeView = NodeViewOf<Dynamo.Nodes.Watch3D>();
 
