@@ -306,9 +306,9 @@ namespace Dynamo.Controls
                 switch (type)
                 {
                     case PortType.INPUT:
-                        thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
+                        thickness = new Thickness(left - 25, top + 3, right + 0, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left - 25, top - 10, right - 25, bottom - 10);
+                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom - 10);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
                             thickness = new Thickness(left - 25, top - 10, right + 0, bottom + 3);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
