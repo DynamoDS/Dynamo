@@ -117,25 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="logSemanticErrorAlreadyDefined" xml:space="preserve">
+  <data name="alreadyDefined" xml:space="preserve">
     <value>' is already defined in class</value>
   </data>
-  <data name="logSemanticErrorClassCannotBeDefinedInsideALanguageBlock" xml:space="preserve">
+  <data name="associativeLanguageBlockIsDeclaredInside" xml:space="preserve">
+    <value>An associative language block is declared within an associative language block.</value>
+  </data>
+  <data name="classCannotBeDefinedInsideALanguageBlock" xml:space="preserve">
     <value>A class cannot be defined inside a language block.\n</value>
   </data>
-  <data name="logSemanticErrorClassName" xml:space="preserve">
+  <data name="className" xml:space="preserve">
     <value> is a class name, can't be used as a variable.</value>
   </data>
-  <data name="logSemanticErrorFunction" xml:space="preserve">
+  <data name="function" xml:space="preserve">
     <value> is a function and not allowed as a variable name</value>
   </data>
-  <data name="logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression" xml:space="preserve">
+  <data name="functionPointerIsNotAllowedAtBinaryExpression" xml:space="preserve">
     <value>Function pointer is not allowed at binary expression other than assignment!</value>
   </data>
-  <data name="logSemanticErrorMemberVariable" xml:space="preserve">
+  <data name="memberVariable" xml:space="preserve">
     <value>Member variable '</value>
-  </data>
-  <data name="logSyntaxErrorAssociativeLanguageBlockIsDeclaredInside" xml:space="preserve">
-    <value>An associative language block is declared within an associative language block.</value>
   </data>
 </root>

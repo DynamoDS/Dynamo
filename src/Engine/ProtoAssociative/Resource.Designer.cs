@@ -63,63 +63,63 @@ namespace ProtoAssociative {
         /// <summary>
         ///   Looks up a localized string similar to &apos; is already defined in class.
         /// </summary>
-        internal static string logSemanticErrorAlreadyDefined {
+        internal static string alreadyDefined {
             get {
-                return ResourceManager.GetString("logSemanticErrorAlreadyDefined", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A class cannot be defined inside a language block.\n.
-        /// </summary>
-        internal static string logSemanticErrorClassCannotBeDefinedInsideALanguageBlock {
-            get {
-                return ResourceManager.GetString("logSemanticErrorClassCannotBeDefinedInsideALanguageBlock", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  is a class name, can&apos;t be used as a variable..
-        /// </summary>
-        internal static string logSemanticErrorClassName {
-            get {
-                return ResourceManager.GetString("logSemanticErrorClassName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  is a function and not allowed as a variable name.
-        /// </summary>
-        internal static string logSemanticErrorFunction {
-            get {
-                return ResourceManager.GetString("logSemanticErrorFunction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Function pointer is not allowed at binary expression other than assignment!.
-        /// </summary>
-        internal static string logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression {
-            get {
-                return ResourceManager.GetString("logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Member variable &apos;.
-        /// </summary>
-        internal static string logSemanticErrorMemberVariable {
-            get {
-                return ResourceManager.GetString("logSemanticErrorMemberVariable", resourceCulture);
+                return ResourceManager.GetString("alreadyDefined", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to An associative language block is declared within an associative language block..
         /// </summary>
-        internal static string logSyntaxErrorAssociativeLanguageBlockIsDeclaredInside {
+        internal static string associativeLanguageBlockIsDeclaredInside {
             get {
-                return ResourceManager.GetString("logSyntaxErrorAssociativeLanguageBlockIsDeclaredInside", resourceCulture);
+                return ResourceManager.GetString("associativeLanguageBlockIsDeclaredInside", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A class cannot be defined inside a language block.\n.
+        /// </summary>
+        internal static string classCannotBeDefinedInsideALanguageBlock {
+            get {
+                return ResourceManager.GetString("classCannotBeDefinedInsideALanguageBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  is a class name, can&apos;t be used as a variable..
+        /// </summary>
+        internal static string className {
+            get {
+                return ResourceManager.GetString("className", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  is a function and not allowed as a variable name.
+        /// </summary>
+        internal static string function {
+            get {
+                return ResourceManager.GetString("function", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function pointer is not allowed at binary expression other than assignment!.
+        /// </summary>
+        internal static string functionPointerIsNotAllowedAtBinaryExpression {
+            get {
+                return ResourceManager.GetString("functionPointerIsNotAllowedAtBinaryExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member variable &apos;.
+        /// </summary>
+        internal static string memberVariable {
+            get {
+                return ResourceManager.GetString("memberVariable", resourceCulture);
             }
         }
     }
