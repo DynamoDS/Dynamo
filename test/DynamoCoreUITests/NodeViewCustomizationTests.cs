@@ -22,16 +22,11 @@ namespace DynamoCoreUITests
     {
         public NodeView NodeViewOf<T>() where T : NodeModel
         {
-            var nodeViews0 = View.NodeViewsInFirstWorkspace();
-            
-            var nodeViews = nodeViews0.OfNodeModelType<T>();
+            var nodeViews = View.NodeViewsInFirstWorkspace();
+            var nodeViewsOfType = nodeViews.OfNodeModelType<T>();
+            Assert.AreEqual(1, nodeViewsOfType.Count(), "Expected a single NodeView of provided type in the workspace!");
 
-            var models = nodeViews0.Select(x => x.ViewModel.NodeModel);
-
-            Assert.AreEqual(1, nodeViews.Count(), "Expected a single NodeView of provided type in the workspace!");
-
-
-            return nodeViews.First();
+            return nodeViewsOfType.First();
         }
 
         [Test]
@@ -162,10 +157,10 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<DoubleInput>();
+            var nodeView = NodeViewOf<PythonNode>();
 
             var eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
-            Assert.AreEqual(4, eles.Count());
+            Assert.AreEqual(2, eles.Count());
 
             var inPortGrid = nodeView.inPortGrid;
             Assert.AreEqual(3, inPortGrid.ChildrenOfType<TextBlock>().Count());
@@ -179,7 +174,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewOf<PythonStringNode>();
 
             var eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
-            Assert.AreEqual(4, eles.Count());
+            Assert.AreEqual(2, eles.Count());
 
             var inPortGrid = nodeView.inPortGrid;
             Assert.AreEqual(4, inPortGrid.ChildrenOfType<TextBlock>().Count());
