@@ -63,81 +63,81 @@ namespace ProtoImperative {
         /// <summary>
         ///   Looks up a localized string similar to Array declaration expected constant expression.
         /// </summary>
-        internal static string logSemanticErrorArrayDeclarationExpectedConstantExpression {
+        internal static string arrayDeclarationExpectedConstantExpression {
             get {
-                return ResourceManager.GetString("logSemanticErrorArrayDeclarationExpectedConstantExpression", resourceCulture);
+                return ResourceManager.GetString("arrayDeclarationExpectedConstantExpression", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to array initializer must be an expression list.
         /// </summary>
-        internal static string logSemanticErrorArrayInitializer {
+        internal static string arrayInitializer {
             get {
-                return ResourceManager.GetString("logSemanticErrorArrayInitializer", resourceCulture);
+                return ResourceManager.GetString("arrayInitializer", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Array size overflow.
         /// </summary>
-        internal static string logSemanticErrorArraySizeOverFlow {
+        internal static string arraySizeOverFlow {
             get {
-                return ResourceManager.GetString("logSemanticErrorArraySizeOverFlow", resourceCulture);
+                return ResourceManager.GetString("arraySizeOverFlow", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to  is a class name, can&apos;t be used as a variable..
         /// </summary>
-        internal static string logSemanticErrorClassName {
+        internal static string className {
             get {
-                return ResourceManager.GetString("logSemanticErrorClassName", resourceCulture);
+                return ResourceManager.GetString("className", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to is a function and not allowed as a variable name.
         /// </summary>
-        internal static string logSemanticErrorFunction {
+        internal static string function {
             get {
-                return ResourceManager.GetString("logSemanticErrorFunction", resourceCulture);
+                return ResourceManager.GetString("function", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Function pointer is not allowed at binary expression other than assignment!.
         /// </summary>
-        internal static string logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression {
+        internal static string functionPointerIsNotAllowedAtBinaryExpression {
             get {
-                return ResourceManager.GetString("logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to redefinition of identifier &apos;.
-        /// </summary>
-        internal static string logSemanticErrorRedefinitionOfIdentifier {
-            get {
-                return ResourceManager.GetString("logSemanticErrorRedefinitionOfIdentifier", resourceCulture);
+                return ResourceManager.GetString("functionPointerIsNotAllowedAtBinaryExpression", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to An imperative language block is declared within an imperative language block..
         /// </summary>
-        internal static string logSyntaxErrorImperativeLanguageBlockIsDeclareInside {
+        internal static string imperativeLanguageBlockIsDeclareInside {
             get {
-                return ResourceManager.GetString("logSyntaxErrorImperativeLanguageBlockIsDeclareInside", resourceCulture);
+                return ResourceManager.GetString("imperativeLanguageBlockIsDeclareInside", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Only identifier or identifier list can appear on the left hand side of assignment..
         /// </summary>
-        internal static string logSyntaxErrorOnlyIdentifierOrIdentifierListCanAppearOnLeftSide {
+        internal static string onlyIdentifierOrIdentifierListCanAppearOnLeftSide {
             get {
-                return ResourceManager.GetString("logSyntaxErrorOnlyIdentifierOrIdentifierListCanAppearOnLeftSide", resourceCulture);
+                return ResourceManager.GetString("onlyIdentifierOrIdentifierListCanAppearOnLeftSide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to redefinition of identifier &apos;.
+        /// </summary>
+        internal static string redefinitionOfIdentifier {
+            get {
+                return ResourceManager.GetString("redefinitionOfIdentifier", resourceCulture);
             }
         }
     }

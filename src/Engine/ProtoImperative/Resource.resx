@@ -117,31 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="logSemanticErrorArrayDeclarationExpectedConstantExpression" xml:space="preserve">
+  <data name="arrayDeclarationExpectedConstantExpression" xml:space="preserve">
     <value>Array declaration expected constant expression</value>
   </data>
-  <data name="logSemanticErrorArrayInitializer" xml:space="preserve">
+  <data name="arrayInitializer" xml:space="preserve">
     <value>array initializer must be an expression list</value>
   </data>
-  <data name="logSemanticErrorArraySizeOverFlow" xml:space="preserve">
+  <data name="arraySizeOverFlow" xml:space="preserve">
     <value>Array size overflow</value>
   </data>
-  <data name="logSemanticErrorClassName" xml:space="preserve">
+  <data name="className" xml:space="preserve">
     <value> is a class name, can't be used as a variable.</value>
   </data>
-  <data name="logSemanticErrorFunction" xml:space="preserve">
+  <data name="function" xml:space="preserve">
     <value>is a function and not allowed as a variable name</value>
   </data>
-  <data name="logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression" xml:space="preserve">
+  <data name="functionPointerIsNotAllowedAtBinaryExpression" xml:space="preserve">
     <value>Function pointer is not allowed at binary expression other than assignment!</value>
   </data>
-  <data name="logSemanticErrorRedefinitionOfIdentifier" xml:space="preserve">
-    <value>redefinition of identifier '</value>
-  </data>
-  <data name="logSyntaxErrorImperativeLanguageBlockIsDeclareInside" xml:space="preserve">
+  <data name="imperativeLanguageBlockIsDeclareInside" xml:space="preserve">
     <value>An imperative language block is declared within an imperative language block.</value>
   </data>
-  <data name="logSyntaxErrorOnlyIdentifierOrIdentifierListCanAppearOnLeftSide" xml:space="preserve">
+  <data name="onlyIdentifierOrIdentifierListCanAppearOnLeftSide" xml:space="preserve">
     <value>Only identifier or identifier list can appear on the left hand side of assignment.</value>
+  </data>
+  <data name="redefinitionOfIdentifier" xml:space="preserve">
+    <value>redefinition of identifier '</value>
   </data>
 </root>

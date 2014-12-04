@@ -176,11 +176,11 @@ namespace ProtoImperative
                 }
                 catch (OverflowException)
                 {
-                    buildStatus.LogSemanticError(Resource.logSemanticErrorArraySizeOverFlow, core.CurrentDSFileName, t.line, t.col);
+                    buildStatus.LogSemanticError(Resource.arraySizeOverFlow, core.CurrentDSFileName, t.line, t.col);
                 }
                 catch (FormatException)
                 {
-                    buildStatus.LogSemanticError(Resource.logSemanticErrorArrayDeclarationExpectedConstantExpression, core.CurrentDSFileName, t.line, t.col);
+                    buildStatus.LogSemanticError(Resource.arrayDeclarationExpectedConstantExpression, core.CurrentDSFileName, t.line, t.col);
                 } 
             }
             else if (node is BinaryExpressionNode)
@@ -382,7 +382,7 @@ namespace ProtoImperative
             ProtoCore.DSASM.MemoryRegion region = ProtoCore.DSASM.MemoryRegion.kMemStack)
         {
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
-                buildStatus.LogSemanticError(ident + Resource.logSemanticErrorClassName);
+                buildStatus.LogSemanticError(ident + Resource.className);
 
             ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode(
                 ident, 
@@ -489,7 +489,7 @@ namespace ProtoImperative
             int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
             if (ProtoCore.DSASM.Constants.kInvalidIndex != codeBlock.symbolTable.IndexOf(symbolnode))
             {
-                buildStatus.LogSemanticError(Resource.logSemanticErrorRedefinitionOfIdentifier + ident + "'");
+                buildStatus.LogSemanticError(Resource.redefinitionOfIdentifier + ident + "'");
             }
             else
             {
@@ -1217,7 +1217,7 @@ namespace ProtoImperative
                 if (ProtoCore.Language.kImperative == langblock.codeblock.language)
                 {
                     // TODO Jun: Move the associative and all common string into some table
-                    buildStatus.LogSyntaxError(Resource.logSyntaxErrorImperativeLanguageBlockIsDeclareInside, core.CurrentDSFileName, langblock.line, langblock.col);
+                    buildStatus.LogSyntaxError(Resource.imperativeLanguageBlockIsDeclareInside, core.CurrentDSFileName, langblock.line, langblock.col);
                 }
 
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
@@ -1996,7 +1996,7 @@ namespace ProtoImperative
                     }
                     else
                     {
-                        buildStatus.LogSemanticError(Resource.logSemanticErrorArrayInitializer, core.CurrentDSFileName, bNode.RightNode.line, bNode.RightNode.col);
+                        buildStatus.LogSemanticError(Resource.arrayInitializer, core.CurrentDSFileName, bNode.RightNode.line, bNode.RightNode.col);
                     }
                 }
                 else
@@ -2052,7 +2052,7 @@ namespace ProtoImperative
 
                 if (inferedType.UID == (int)PrimitiveType.kTypeFunctionPointer && emitDebugInfo)
                 {
-                    buildStatus.LogSemanticError(Resource.logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression, core.CurrentDSFileName, b.LeftNode.line, b.LeftNode.col);
+                    buildStatus.LogSemanticError(Resource.functionPointerIsNotAllowedAtBinaryExpression, core.CurrentDSFileName, b.LeftNode.line, b.LeftNode.col);
                 }
 
                 leftType.UID = inferedType.UID;
@@ -2155,7 +2155,7 @@ namespace ProtoImperative
             {
                 if (inferedType.UID == (int)PrimitiveType.kTypeFunctionPointer && emitDebugInfo)
                 {
-                    buildStatus.LogSemanticError(Resource.logSemanticErrorFunctionPointerIsNotAllowedAtBinaryExpression, core.CurrentDSFileName, b.RightNode.line, b.RightNode.col);
+                    buildStatus.LogSemanticError(Resource.functionPointerIsNotAllowedAtBinaryExpression, core.CurrentDSFileName, b.RightNode.line, b.RightNode.col);
                 }
                 EmitBinaryOperation(leftType, rightType, b.Optr);
                 isBooleanOp = false;
@@ -2198,7 +2198,7 @@ namespace ProtoImperative
                         {
                             if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
                             {
-                                buildStatus.LogSemanticError("\"" + t.Name + "\"" + Resource.logSemanticErrorFunction, core.CurrentDSFileName, t.line, t.col);
+                                buildStatus.LogSemanticError("\"" + t.Name + "\"" + Resource.function, core.CurrentDSFileName, t.line, t.col);
                             }
                         }
                     }
@@ -3221,7 +3221,7 @@ namespace ProtoImperative
                 }
                 else
                 {
-                    core.BuildStatus.LogSyntaxError(Resource.logSyntaxErrorOnlyIdentifierOrIdentifierListCanAppearOnLeftSide, core.CurrentDSFileName, inode.RightNode.line, inode.RightNode.col);
+                    core.BuildStatus.LogSyntaxError(Resource.onlyIdentifierOrIdentifierListCanAppearOnLeftSide, core.CurrentDSFileName, inode.RightNode.line, inode.RightNode.col);
                 }
             }
             else
