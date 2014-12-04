@@ -252,27 +252,18 @@ namespace DynamoWebServer.Messages
                 }
                 else
                 {
-                    // If workspace has its own filename use it during saving
-                    if (!string.IsNullOrEmpty(workspaceToSave.FileName))
+                    // Add to file name a correct extension 
+                    // dependently on its type (custom node or home)
+                    if (workspaceToSave is CustomNodeWorkspaceModel)
                     {
-                        fileName = Path.GetFileName(workspaceToSave.FileName);
-                        filePath = workspaceToSave.FileName;
+                        fileName = (workspaceToSave.Name != null ? workspaceToSave.Name : "MyCustomNode") + ".dyf";
                     }
                     else
                     {
-                        // Add to file name a correct extension 
-                        // dependently on its type (custom node or home)
-                        if (workspaceToSave is CustomNodeWorkspaceModel)
-                        {
-                            fileName = (workspaceToSave.Name != null ? workspaceToSave.Name : "MyCustomNode") + ".dyf";
-                        }
-                        else
-                        {
-                            fileName = (workspaceToSave.Name != null ? workspaceToSave.Name : "Home") + ".dyn";
-                        }
-
-                        filePath = Path.GetTempPath() + "\\" + fileName;
+                        fileName = (workspaceToSave.Name != null ? workspaceToSave.Name : "Home") + ".dyn";
                     }
+
+                    filePath = Path.GetTempPath() + "\\" + fileName;
 
                     // Temporarily save workspace into a drive 
                     // using existing functionality for saving
