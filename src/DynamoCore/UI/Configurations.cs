@@ -201,6 +201,7 @@ namespace Dynamo.UI
         public const string LargeIconPostfix = ".Large";
         public const string ResourcesDLL = ".resources.dll";
         public const string DefaultIcon = "DefaultIcon";
+        public const string DefaultCustomNodeIcon = "DefaultCustomNode";
         public const string DefaultAssembly = "DynamoCore";
 
         #endregion
@@ -213,7 +214,7 @@ namespace Dynamo.UI
 
         #region LibraryView
 
-        public const double MinWidthLibraryView = 308;
+        public const double MinWidthLibraryView = 204;
 
         public const string TopResult = "Top Result";
         public const string CategoryGroupCreate = "Create";
