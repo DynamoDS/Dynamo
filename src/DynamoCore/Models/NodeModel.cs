@@ -540,6 +540,7 @@ namespace Dynamo.Models
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
             IsReportingModifications = true;
+            IsNodeExecuted = workspaceModel.DynamoModel.ShowNodeExecution;
         }
 
         /// <summary>

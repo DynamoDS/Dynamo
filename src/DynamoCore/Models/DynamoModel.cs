@@ -104,14 +104,21 @@ namespace Dynamo.Models
         internal void OnGetExecutingNodes()
         {
             var task = new PreviewGraphAsyncTask(scheduler);
-            if (graphExecuted)
+            if (graphExecuted && ShowNodeExecution)
             {
                 if (task.Initialize(EngineController, HomeSpace) != null)
                 {
                     task.Completed += OnPreviewGraphCompleted;
                     scheduler.ScheduleForExecution(task);
                 }
-            }                   
+            } 
+            else
+            {
+                foreach (var nodeModel in nodeMap)
+                {
+                    nodeModel.Value.IsNodeExecuted = showNodeExecution;
+                }
+            }
         }
 
         /// <summary>
@@ -179,8 +186,7 @@ namespace Dynamo.Models
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
         public DynamoScheduler Scheduler { get { return scheduler; } }
-        public bool ShutdownRequested { get; internal set; }
-
+        public bool ShutdownRequested { get; internal set; }       
         // KILLDYNSETTINGS: wut am I!?!
         public string UnlockLoadPath { get; set; }
 
@@ -310,6 +316,18 @@ namespace Dynamo.Models
         {
             get { return nodeMap; }
             set { nodeMap = value; }
+        }
+
+        private bool showNodeExecution;
+
+        public bool ShowNodeExecution
+        {
+            get { return showNodeExecution; }
+            set
+            {
+                showNodeExecution = value;
+                OnGetExecutingNodes();
+            }
         }
 
         #endregion

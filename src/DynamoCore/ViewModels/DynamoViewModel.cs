@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
@@ -401,6 +402,14 @@ namespace Dynamo.ViewModels
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
+        public bool ShowNodeExecution
+        {
+            get { return model.ShowNodeExecution; }
+            set
+            {
+                model.ShowNodeExecution = value;                
+            }
+        }
         #endregion
 
         public struct StartConfiguration
