@@ -1,4 +1,5 @@
-﻿using System;
+﻿//http://www.codeproject.com/Articles/49853/Better-WPF-Circular-Progress-Bar
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
