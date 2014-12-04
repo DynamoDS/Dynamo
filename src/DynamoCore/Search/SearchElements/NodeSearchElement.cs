@@ -86,15 +86,15 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string _assembly = "")
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string assembly = "")
         {
             this.Node = null;
             this._name = name;
             this.Weight = 1;
             this.Keywords = String.Join(" ", tags);
             this._type = "Node";
-            this._description = description;            
-            this.Assembly = _assembly;
+            this._description = description;
+            this.Assembly = assembly;
         }
 
         public virtual NodeSearchElement Copy()

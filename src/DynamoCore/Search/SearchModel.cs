@@ -782,13 +782,17 @@ namespace Dynamo.Search
 
         internal XmlDocument ComposeXmlForLibrary()
         {
+            int countFlat = 0;
+            int countTree = 0;
+
             var document = XmlHelper.CreateDocument("Library");
 
             // Building 'NodesList'
             var parent = XmlHelper.AddNode(document.DocumentElement, "NodesList");
             var assembliesRoot = XmlHelper.AddNode(parent, "Assemblies");
             var packagesRoot = XmlHelper.AddNode(parent, "Packages");
-            var customNodes = XmlHelper.AddNode(parent, "CustomNodes");
+            var customNodesRoot = XmlHelper.AddNode(parent, "CustomNodes");
+            var specificsRoot = XmlHelper.AddNode(parent, "Specifics");
 
             XmlNode currNode;
             IEnumerable<SearchElementBase> elementsToAdd;
@@ -811,6 +815,7 @@ namespace Dynamo.Search
                                              .OrderBy(el => el.FullName);
                 foreach (var currElement in elementsToAdd)
                 {
+                    countFlat++;
                     currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
 
                     SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
@@ -838,6 +843,7 @@ namespace Dynamo.Search
 
                 foreach (var currElement in elementsToAdd)
                 {
+                    countFlat++;
                     currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
 
                     SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
@@ -856,7 +862,20 @@ namespace Dynamo.Search
 
             foreach (var currElement in elementsToAdd)
             {
-                currNode = XmlHelper.AddNode(customNodes, currElement.GetType().ToString());
+                countFlat++;
+                currNode = XmlHelper.AddNode(customNodesRoot, currElement.GetType().ToString());
+
+                SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
+            }
+
+            // Adding Builin Functions / Operators
+            elementsToAdd = _searchElements.Where(el => el.FullCategoryName == "Builtin Functions" ||
+                                                        el.FullCategoryName == "Operators").OrderBy(el => el.FullName);
+
+            foreach (var currElement in elementsToAdd)
+            {
+                countFlat++;
+                currNode = XmlHelper.AddNode(specificsRoot, currElement.GetType().ToString());
 
                 SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
             }
@@ -866,31 +885,33 @@ namespace Dynamo.Search
 
             foreach (var category in BrowserRootCategories)
             {
-                currNode = XmlHelper.AddNode(parent, category.GetType().ToString());
+                currNode = XmlHelper.AddNode(specificsRoot, category.GetType().ToString());
                 XmlHelper.AddAttribute(currNode, "Name", category.Name);
 
-                AddChildrenToXml(currNode, category.Items);
+                AddChildrenToXml(currNode, category.Items, ref countTree);
 
                 parent.AppendChild(currNode);
             }
-
+            DynamoModel.Logger.Log(string.Format("CountFlat:{0};CountTree:{1}", countFlat, countTree));
             return document;
         }
 
-        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
+        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children, ref int countTree)
         {
+            
             foreach (var child in children)
             {
                 var element = XmlHelper.AddNode(parent, child.GetType().ToString());
 
                 if (child is NodeSearchElement)
                 {
-                    SpecifyNodeInfo(element, child as NodeSearchElement);
+                    countTree++;
+                    XmlHelper.AddAttribute(element, "FullName", (child as NodeSearchElement).FullName);
                 }
                 else
                 {
                     XmlHelper.AddAttribute(element, "Name", child.Name);
-                    AddChildrenToXml(element, child.Items);
+                    AddChildrenToXml(element, child.Items, ref countTree);
                 }
 
                 parent.AppendChild(element);
