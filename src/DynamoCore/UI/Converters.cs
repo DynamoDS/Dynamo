@@ -1742,11 +1742,14 @@ namespace Dynamo.Controls
         }
     }
 
-    /// This converter makes TextBlock UnderLine.Pen.Thickness = 1 if it is currently selected.
+    /// This converter modifies TextBlock Background depending on DisplayMode.
     /// To know for which TextBlock the converter works the parameter used.
     /// Converter is used on StandardPanel.
-    public class DisplayModeToTextDecorationsConverter : IMultiValueConverter
+    public class DisplayModeToBackgroundConverter : IMultiValueConverter
     {
+        public SolidColorBrush NormalColor { get; set; }
+        public SolidColorBrush ActiveColor { get; set; }
+
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values.Length != 2 && parameter == null)
@@ -1755,14 +1758,14 @@ namespace Dynamo.Controls
             var isSecondaryHeaderRightVisible = (bool)values[1];
             // If only left header is presented, it should be selected.
             if (!isSecondaryHeaderRightVisible)
-                return 1.0;
+                return ActiveColor;
 
             var displayMode = (ClassInformation.DisplayMode)values[0];
 
             if (displayMode.ToString() == parameter.ToString())
-                return 1.0;
+                return ActiveColor;
 
-            return 0.0;
+            return NormalColor;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -1871,25 +1874,6 @@ namespace Dynamo.Controls
 
         public object ConvertBack(
             object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class MultiBoolToVisibilityConverter : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            bool allTrue = true;
-            foreach (var value in values)
-                // If at least one will be false, the result will be false.
-                allTrue = allTrue && ((bool)value);
-
-            return allTrue ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        public object[] ConvertBack(
-            object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
         }
