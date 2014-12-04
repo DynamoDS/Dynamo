@@ -22,6 +22,9 @@ namespace Dynamo.Wpf
         public void CustomizeView(Nodes.Watch nodeModel, NodeView nodeView)
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+
+            // TODO(Peter): Watch should not know about the ViewModel layer MAGN-5590
+            nodeModel.DynamoViewModel = this.dynamoViewModel;
             this.watchNodeModel = nodeModel;
 
             watchTree = new WatchTree();

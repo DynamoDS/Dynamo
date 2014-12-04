@@ -21,12 +21,8 @@ namespace Dynamo.Nodes
     {
         #region private members
 
-        private DynamoViewModel dynamoViewModel;
         private WatchTree watchTree;
-        private WatchViewModel root;
-
         private IdentifierNode astBeingWatched;
-
 
         #endregion
 
@@ -34,9 +30,9 @@ namespace Dynamo.Nodes
 
         public new object CachedValue { get; internal set; }
 
-        /// <summary>
-        /// The root node of the watch's tree.
-        /// </summary>
+        // TODO(Peter): This stuff should not live in the Model layer MAGN-5590
+        internal DynamoViewModel DynamoViewModel { get; set; }
+        private WatchViewModel root;
         public WatchViewModel Root
         {
             get { return root; }
@@ -213,14 +209,14 @@ namespace Dynamo.Nodes
 
             if (Root != null)
             {
-                return dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
+                return DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                     CachedValue,
                     core,
                     inputVar,
                     Root.ShowRawData);
             }
             else
-                return dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
+                return DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
         }
 
 #if ENABLE_DYNAMO_SCHEDULER
