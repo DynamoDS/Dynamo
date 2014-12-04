@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
@@ -407,7 +406,8 @@ namespace Dynamo.ViewModels
             get { return model.ShowNodeExecution; }
             set
             {
-                model.ShowNodeExecution = value;                
+                model.ShowNodeExecution = value;
+                RaisePropertyChanged("ShowNodeExecution");
             }
         }
         #endregion

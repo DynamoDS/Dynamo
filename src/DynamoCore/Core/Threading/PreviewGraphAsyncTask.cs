@@ -52,8 +52,7 @@ namespace Dynamo.Core.Threading
         /// <param name="workspace">Reference to the WorkspaceModel from which a 
         /// set of updated nodes is computed. The EngineController generates the 
         /// resulting GraphSyncData from this list of updated nodes.</param>
-        /// <returns>Returns true if there is any GraphSyncData, or false otherwise
-        /// (in which case there will be no need to schedule UpdateGraphAsyncTask 
+        /// <returns>Returns the list of node id's that will be executed in the next run
         /// for execution).</returns>
         /// 
         internal List<Guid> Initialize(EngineController controller, WorkspaceModel workspace)
@@ -63,9 +62,8 @@ namespace Dynamo.Core.Threading
                 engineController = controller;
                 TargetedWorkspace = workspace;
 
-                modifiedNodes = ComputeModifiedNodes(workspace);
-                if (modifiedNodes.Count() > 0 )
-                    previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes);
+                modifiedNodes = ComputeModifiedNodes(workspace);                
+                previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes);
                 return previewGraphData;
             }
             catch (Exception)
@@ -86,36 +84,13 @@ namespace Dynamo.Core.Threading
 
         protected override void HandleTaskCompletionCore()
         {
-            // Retrieve warnings in the context of ISchedulerThread.
-            BuildWarnings = engineController.GetBuildWarnings();
-            RuntimeWarnings = engineController.GetRuntimeWarnings();
-
-            // Mark all modified nodes as being updated (if the task has been 
-            // successfully scheduled, executed and completed, it is expected 
-            // for "modifiedNodes" to be both non-null and non-empty.
-            // 
-            // In addition to marking modified nodes as being updated, their 
-            // warning states are cleared (which include the tool-tip). Any node
-            // that has build/runtime warnings assigned to it will properly be 
-            // restored to warning state when task completion handler sets the 
-            // corresponding build/runtime warning on it.
-            // 
-            foreach (var modifiedNode in modifiedNodes)
-            {
-                modifiedNode.IsUpdated = true;
-                if (modifiedNode.State == ElementState.Warning)
-                    modifiedNode.ClearRuntimeError();
-            }
+           
         }
 
         #endregion
 
         #region Public Class Properties
-
-        internal WorkspaceModel TargetedWorkspace { get; private set; }
-        internal IDictionary<Guid, List<BuildWarning>> BuildWarnings { get; private set; }
-        internal IDictionary<Guid, List<RuntimeWarning>> RuntimeWarnings { get; private set; }
-
+        internal WorkspaceModel TargetedWorkspace { get; private set; }       
         #endregion
 
         #region Private Class Helper Methods

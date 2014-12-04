@@ -104,6 +104,7 @@ namespace Dynamo.Models
         internal void OnGetExecutingNodes()
         {
             var task = new PreviewGraphAsyncTask(scheduler);
+            //The Graph is executed and Show node execution is checked on the Debug menu
             if (graphExecuted && ShowNodeExecution)
             {
                 if (task.Initialize(EngineController, HomeSpace) != null)
@@ -112,6 +113,7 @@ namespace Dynamo.Models
                     scheduler.ScheduleForExecution(task);
                 }
             } 
+            //Show node exection is checked but the graph has not RUN
             else
             {
                 foreach (var nodeModel in nodeMap)
