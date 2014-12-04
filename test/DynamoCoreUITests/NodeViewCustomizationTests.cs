@@ -26,9 +26,10 @@ namespace DynamoCoreUITests
             
             var nodeViews = nodeViews0.OfNodeModelType<T>();
 
+            var models = nodeViews0.Select(x => x.ViewModel.NodeModel);
+
             Assert.AreEqual(1, nodeViews.Count(), "Expected a single NodeView of provided type in the workspace!");
 
-            var models = nodeViews0.Select(x => x.ViewModel.NodeModel);
 
             return nodeViews.First();
         }
@@ -187,7 +188,7 @@ namespace DynamoCoreUITests
         [Test]
         public void WatchIsEmptyWhenLoaded()
         {
-            Open(@"UI\CoreUINodes.dyn");
+            Open(@"UI\WatchUINodes.dyn");
 
             var nodeView = NodeViewOf<Dynamo.Nodes.Watch>();
 

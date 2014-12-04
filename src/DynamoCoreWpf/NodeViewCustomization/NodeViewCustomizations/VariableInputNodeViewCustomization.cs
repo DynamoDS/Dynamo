@@ -11,7 +11,7 @@ using Dynamo.Wpf;
 
 namespace Dynamo.Wpf
 {
-    public abstract class VariableInputNodeViewCustomization : INodeViewCustomization<VariableInputNode>
+    public class VariableInputNodeViewCustomization : INodeViewCustomization<VariableInputNode>
     {
         public virtual void CustomizeView(VariableInputNode nodeModel, NodeView nodeView)
         {
