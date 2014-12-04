@@ -278,6 +278,9 @@ namespace DynamoWebServer.Messages
                     OnResultReady(this, new ResultReadyEventArgs(
                         new SavedFileResponse(fileName, fileContent), sessionId));
                 }
+
+                // reset file path
+                workspaceToSave.FileName = null;
             }
             catch
             {
