@@ -25,6 +25,7 @@ namespace Dynamo.Wpf
         public void CustomizeView(Nodes.WatchImageCore nodeModel, NodeView nodeView)
         {
             this.nodeModel = nodeModel;
+            this.nodeView = nodeView;
 
             image = new Image
             {
@@ -35,6 +36,8 @@ namespace Dynamo.Wpf
                 VerticalAlignment = System.Windows.VerticalAlignment.Center
             };
 
+            // Update the image when the property is updated
+            // TODO(Peter): This is a hack written a long time ago, should be cleaned up
             nodeModel.PropertyChanged += NodeModelOnPropertyChanged;
 
             nodeView.PresentationGrid.Children.Add(image);
@@ -45,7 +48,7 @@ namespace Dynamo.Wpf
         {
             if (args.PropertyName != "IsUpdated") return;
             var im = GetImageFromMirror();
-            nodeView.Dispatcher.Invoke(new Action<Bitmap>(SetImageSource), new object[] { im });
+            nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { im });
         }
 
         private void SetImageSource(System.Drawing.Bitmap bmp)
