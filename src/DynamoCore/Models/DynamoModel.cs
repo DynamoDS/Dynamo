@@ -490,20 +490,6 @@ namespace Dynamo.Models
 
             UpdateManager.UpdateManager.CheckForProductUpdate();
 
-            // Reset virtual machine to avoid a race condition by causing a 
-            // thread join inside the vm exec. Since DynamoModel is being called 
-            // on the main/idle thread, it is safe to call ResetEngineInternal 
-            // directly (we cannot call virtual method ResetEngine here).
-            // 
-            ResetEngineInternal();
-
-            //TODO(Steve): Update location where nodes are marked dirty
-            foreach (var n in CurrentWorkspace.Nodes)
-            {
-                n.RequiresRecalc = true;
-                n.ForceReExecuteOfNode = true;
-            }
-
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
@@ -758,14 +744,22 @@ namespace Dynamo.Models
                 workspaceInfo.X,
                 workspaceInfo.Y);
 
+            RegisterHomeWorkspace(newWorkspace);
+            
+            workspace = newWorkspace;
+            return true;
+        }
+
+        private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
+        {
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+                newWorkspace.RegisterCustomNodeDefinitionWithEngine(def);
+
             CustomNodeManager.DefinitionUpdated += newWorkspace.RegisterCustomNodeDefinitionWithEngine;
             newWorkspace.Disposed += () =>
             {
                 CustomNodeManager.DefinitionUpdated -= newWorkspace.RegisterCustomNodeDefinitionWithEngine;
             };
-            
-            workspace = newWorkspace;
-            return true;
         }
         
         #endregion

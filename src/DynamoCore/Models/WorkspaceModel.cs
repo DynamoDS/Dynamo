@@ -469,6 +469,7 @@ namespace Dynamo.Models
         {
             nodes.Add(model);
             model.Modified += OnModified;
+            model.Disposed += () => { model.Modified -= OnModified; };
             OnNodeAdded(model);
         }
 

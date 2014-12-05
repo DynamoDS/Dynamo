@@ -455,22 +455,27 @@ namespace Dynamo.Utilities
                 workspaceInfo.X,
                 workspaceInfo.Y,
                 functionId);
+            
+            RegisterCustomNodeWorkspace(newWorkspace);
 
+            workspace = newWorkspace;
+            return true;
+        }
+
+        private void RegisterCustomNodeWorkspace(CustomNodeWorkspaceModel newWorkspace)
+        {
             var def = newWorkspace.CustomNodeDefinition;
             SetFunctionDefinition(def);
             OnDefinitionUpdated(def);
-            SetNodeInfo(newWorkspace.CustomNodeInfo);
-
             newWorkspace.DefinitionUpdated += () =>
             {
                 var newDef = newWorkspace.CustomNodeDefinition;
                 SetFunctionDefinition(newDef);
                 OnDefinitionUpdated(newDef);
             };
+
+            SetNodeInfo(newWorkspace.CustomNodeInfo);
             newWorkspace.InfoChanged += () => OnInfoUpdated(newWorkspace.CustomNodeInfo);
-            
-            workspace = newWorkspace;
-            return true;
         }
 
         /// <summary>
@@ -516,6 +521,21 @@ namespace Dynamo.Utilities
                 workspace = null;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="category"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
+        public WorkspaceModel CreateCustomNode(string name, string category, string description)
+        {
+            var newId = Guid.NewGuid();
+            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId);
+            RegisterCustomNodeWorkspace(workspace);
+            return workspace;
         }
 
         internal static string RemoveChars(string s, IEnumerable<string> chars)
