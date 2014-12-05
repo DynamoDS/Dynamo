@@ -165,7 +165,7 @@ namespace Dynamo.Applications.Models
             // Ensure that the current document has the needed materials
             // and graphic styles to support visualization in Revit.
             var mgr = MaterialsManager.Instance;
-            IdlePromise.ExecuteOnIdleAsync(mgr.InitializeForActiveDocumentOnIdle);
+            IdlePromise.ExecuteOnIdleAsync(this.Scheduler, mgr.InitializeForActiveDocumentOnIdle);
         }
 
         #endregion
@@ -287,7 +287,7 @@ namespace Dynamo.Applications.Models
             if (markNodesAsDirty || DynamicRunEnabled)
                 handler = OnResetMarkNodesAsDirty;
 
-            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal, handler);
+            IdlePromise.ExecuteOnIdleAsync(this.Scheduler, ResetEngineInternal, handler);
         }
 
         /// <summary>
