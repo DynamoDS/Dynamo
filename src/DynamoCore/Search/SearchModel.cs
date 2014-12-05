@@ -732,7 +732,7 @@ namespace Dynamo.Search
         //TODO(Steve): Remove all custom-node-specific stuff from Search.
         internal bool Refactor(CustomNodeInfo nodeInfo)
         {
-            RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
+            RemoveNodeAndEmptyParentCategory(nodeInfo.FunctionId);
             return Add(nodeInfo);
         }
 

@@ -17,7 +17,7 @@ namespace Dynamo.Core.Threading
             get { return TaskPriority.Highest; }
         }
 
-        internal SetTraceDataAsyncTask(DynamoScheduler scheduler)
+        internal SetTraceDataAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }

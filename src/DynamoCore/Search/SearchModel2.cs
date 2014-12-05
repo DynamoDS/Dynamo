@@ -187,7 +187,7 @@ namespace Dynamo.Search
 
         public void SyncWithCustomNodeInfo(CustomNodeInfo info)
         {
-            id = info.Guid;
+            id = info.FunctionId;
             Name = info.Name;
             Categories = info.Category.AsSingleton();
             Description = info.Description;

@@ -511,7 +511,7 @@ namespace Dynamo.PackageManager
                 Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
                 CustomNodeDefinitions =
                     l.LoadedCustomNodes.Select(
-                        x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.Guid, TODO))
+                        x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.FunctionId, TODO))
                         .ToList(),
                 Assemblies = l.LoadedAssemblies.ToList(),
                 Name = l.Name,
@@ -769,14 +769,14 @@ namespace Dynamo.PackageManager
 
         private void AddCustomNodeFile(string filename)
         {
-            var nodeInfo = this.dynamoViewModel.Model.CustomNodeManager.AddFileToPath(filename);
+            var nodeInfo = this.dynamoViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(filename);
             if (nodeInfo != null)
             {
                 // add the new packages folder to path
                 this.dynamoViewModel.Model.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(filename));
                 this.dynamoViewModel.Model.CustomNodeManager.ScanSearchPaths();
 
-                var funcDef = this.dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid, TODO);
+                var funcDef = this.dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.FunctionId, TODO);
 
                 if (funcDef != null && this.CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                 {

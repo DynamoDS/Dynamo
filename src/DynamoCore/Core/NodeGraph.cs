@@ -136,18 +136,6 @@ namespace Dynamo.Core
 
             return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes };
 
-            //=====HOME=====
-
-            HomeSpace.FileName = xmlPath;
-
-            // Allow live runner a chance to preload trace data from XML.
-            var engine = EngineController;
-            if (engine != null && (engine.LiveRunnerCore != null))
-            {
-                var data = Utils.LoadTraceDataFromXmlDocument(xmlDoc);
-                CurrentWorkspace.PreloadedTraceData = data;
-            }
-
             //====CUSTOM====
 
             def.IsBeingLoaded = false;

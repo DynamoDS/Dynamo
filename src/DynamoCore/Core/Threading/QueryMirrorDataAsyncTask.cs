@@ -8,7 +8,7 @@ namespace Dynamo.Core.Threading
 {
     struct QueryMirrorDataParams
     {
-        internal DynamoScheduler DynamoScheduler { get; set; }
+        internal IScheduler Scheduler { get; set; }
         internal EngineController EngineController { get; set; }
         internal string VariableName { get; set; }
     }
@@ -17,9 +17,9 @@ namespace Dynamo.Core.Threading
     {
         #region Class Data Members and Properties
 
-        private string variableName;
+        private readonly string variableName;
         private MirrorData cachedMirrorData;
-        private EngineController engineController;
+        private readonly EngineController engineController;
 
         internal override TaskPriority Priority
         {
@@ -36,7 +36,7 @@ namespace Dynamo.Core.Threading
         #region Public Class Operational Methods
 
         internal QueryMirrorDataAsyncTask(QueryMirrorDataParams initParams)
-            : base(initParams.DynamoScheduler)
+            : base(initParams.Scheduler)
         {
             if (initParams.EngineController == null)
                 throw new ArgumentNullException("initParams.EngineController");

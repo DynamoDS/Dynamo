@@ -4,18 +4,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using Dynamo.DSEngine;
-using Dynamo.Library;
 using Dynamo.Nodes;
-using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
     public class CustomNodeWorkspaceModel : WorkspaceModel
     {
-        [Obsolete("No longer supported.", true)]
-        private DynamoModel dynamoModel;
-
         public Guid CustomNodeId { get; private set; }
 
         #region Contructors
@@ -28,13 +22,14 @@ namespace Dynamo.Models
                 description,
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<ConnectorModel>(),
+                Enumerable.Empty<NoteModel>(),
                 x,
                 y, customNodeId) { }
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, IEnumerable<NodeModel> e,
-            IEnumerable<ConnectorModel> c, double x, double y, Guid customNodeId) 
-            : base(name, e, c, x, y)
+            IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y, Guid customNodeId) 
+            : base(name, e, c, n, x, y)
         {
             CustomNodeId = customNodeId;
             //WatchChanges = true;
@@ -93,6 +88,16 @@ namespace Dynamo.Models
             }
         }
 
+        public void SetInfo(string newName, string newCategory, string newDescription)
+        {
+            PropertyChanged -= OnPropertyChanged;
+            Name = newName;
+            Category = newCategory;
+            Description = newDescription;
+            PropertyChanged += OnPropertyChanged;
+            OnInfoChanged();
+        }
+
         /// <summary>
         ///     Search category for this workspace, if it is a Custom Node.
         /// </summary>
@@ -121,6 +126,13 @@ namespace Dynamo.Models
         }
         private string description;
 
+        protected override void OnModified()
+        {
+            base.OnModified();
+            HasUnsavedChanges = true;
+            OnDefinitionUpdated();
+        }
+
         public event Action InfoChanged;
         protected virtual void OnInfoChanged()
         {
@@ -128,13 +140,11 @@ namespace Dynamo.Models
             if (handler != null) handler();
         }
 
-        [Obsolete("No longer supported.", true)]
-        public List<Function> GetExistingNodes()
+        public event Action DefinitionUpdated;
+        protected virtual void OnDefinitionUpdated()
         {
-            return dynamoModel.AllNodes
-                .OfType<Function>()
-                .Where(el => el.Definition == CustomNodeDefinition)
-                .ToList();
+            var handler = DefinitionUpdated;
+            if (handler != null) handler();
         }
 
         public override bool SaveAs(string newPath, ProtoCore.Core core)

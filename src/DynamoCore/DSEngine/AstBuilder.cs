@@ -321,14 +321,14 @@ namespace Dynamo.DSEngine
 
         public class ASTBuiltEventArgs : EventArgs
         {
-            public ASTBuiltEventArgs(Guid node, IEnumerable<AssociativeNode> astNodes)
+            public ASTBuiltEventArgs(Guid node, ICollection<AssociativeNode> astNodes)
             {
                 Node = node;
                 AstNodes = astNodes;
             }
 
             public Guid Node { get; private set; }
-            public IEnumerable<AssociativeNode> AstNodes { get; private set; }
+            public ICollection<AssociativeNode> AstNodes { get; private set; }
         }
 
         private enum MarkFlag

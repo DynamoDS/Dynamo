@@ -88,16 +88,6 @@ namespace Dynamo.Models
             }
         }
 
-        public event Action Modified;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected virtual void OnModified()
-        {
-            if (Modified != null)
-                Modified();
-        }
-
         public event Action WorkspaceSaved;
         /// <summary>
         ///     If there are observers for the save, notifies them
@@ -392,13 +382,15 @@ namespace Dynamo.Models
 
         #region constructors
 
-        protected WorkspaceModel(string name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
+        protected WorkspaceModel(
+            string name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n,
+            double x, double y)
         {
             Name = name;
 
             nodes = new ObservableCollection<NodeModel>(e);
             connectors = new ObservableCollection<ConnectorModel>(c);
-            notes = new ObservableCollection<NoteModel>();
+            notes = new ObservableCollection<NoteModel>(n);
             X = x;
             Y = y;
 
@@ -478,6 +470,14 @@ namespace Dynamo.Models
             nodes.Add(model);
             model.Modified += OnModified;
             OnNodeAdded(model);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected virtual void OnModified()
+        {
+
         }
 
         /// <summary>

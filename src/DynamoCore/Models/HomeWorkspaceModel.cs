@@ -19,11 +19,33 @@ namespace Dynamo.Models
         public bool RunEnabled;
         public bool DynamicRunEnabled;
 
-        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler) : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler)
+            : this(
+                libraryServices,
+                scheduler,
+                Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
+                Enumerable.Empty<NodeModel>(),
+                Enumerable.Empty<ConnectorModel>(),
+                Enumerable.Empty<NoteModel>(),
+                0,
+                0) { }
+
+        public HomeWorkspaceModel(
+            LibraryServices libraryServices, DynamoScheduler scheduler,
+            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e,
+            IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y)
+            : base("Home", e, c, n, x, y)
         {
+            PreloadedTraceData = traceData;
             this.scheduler = scheduler;
-            EngineController = new EngineController(libraryServices, DynamoPathManager.Instance.GeometryFactory);
+
+            EngineController = new EngineController(
+                libraryServices,
+                DynamoPathManager.Instance.GeometryFactory);
             EngineController.MessageLogged += Log;
+
+            runExpressionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+            runExpressionTimer.Tick += OnRunExpression;
         }
 
         public override void Dispose()
@@ -40,13 +62,6 @@ namespace Dynamo.Models
             {
                 return runExpressionTimer != null && runExpressionTimer.IsEnabled;
             }
-        }
-
-        public HomeWorkspaceModel(IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base("Home", e, c, x, y)
-        {
-            runExpressionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
-            runExpressionTimer.Tick += OnRunExpression;
         }
 
         private void OnRunExpression(object sender, EventArgs e)
@@ -91,7 +106,16 @@ namespace Dynamo.Models
         }
 
         #region evaluation
-        
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="definition"></param>
+        public void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
+        {
+            EngineController.GenerateGraphSyncDataForCustomNode(Nodes, definition);
+        }
+
         /// <summary>
         /// Call this method to reset the virtual machine, avoiding a race 
         /// condition by using a thread join inside the vm executive.

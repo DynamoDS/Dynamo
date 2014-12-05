@@ -70,7 +70,7 @@ namespace Dynamo.Tests
 
             foreach (var nodeInfo in pkg.LoadedCustomNodes)
             {
-                var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+                var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.FunctionId);
                 Assert.IsNotNull(funcDef);
 
                 var foundPkg = loader.GetOwnerPackage(funcDef);

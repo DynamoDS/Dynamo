@@ -631,9 +631,9 @@ namespace RevitSystemTests
             Assert.IsTrue(File.Exists(customDefPath2), "Cannot find specified custom definition to load for testing." + customDefPath2);
 
             Assert.DoesNotThrow(() =>
-                         ViewModel.Model.CustomNodeManager.AddFileToPath(customDefPath2));
+                         ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(customDefPath2));
             Assert.DoesNotThrow(() =>
-                          ViewModel.Model.CustomNodeManager.AddFileToPath(customDefPath1));
+                          ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(customDefPath1));
 
 
 
@@ -648,7 +648,7 @@ namespace RevitSystemTests
                 Assert.Fail("Number of Dummy Node found in Sample: " + noOfNdoes);
             }
 
-            Assert.AreEqual(2, ViewModel.Model.CustomNodeManager.LoadedCustomNodes.Count);
+            Assert.AreEqual(2, ViewModel.Model.CustomNodeManager.LoadedDefinitions.Count);
             // check all the nodes and connectors are loaded
             Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);

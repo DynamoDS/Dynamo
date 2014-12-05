@@ -53,7 +53,7 @@ namespace Dynamo.Search.SearchElements
             this.nodeSource = nodeSource;
             Node = null;
             FullCategoryName = info.Category;
-            Guid = info.Guid;
+            Guid = info.FunctionId;
             path = info.Path;
         }
 

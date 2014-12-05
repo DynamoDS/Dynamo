@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using Dynamo.Interfaces;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using System.Collections.Generic;
 using System.IO;
@@ -91,6 +94,52 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="fileVersion"></param>
+        /// <param name="currentVersion"></param>
+        /// <param name="xmlPath"></param>
+        /// <param name="isTestMode"></param>
+        /// <param name="logger"></param>
+        /// <returns></returns>
+        public static Decision ProcessWorkspace(
+            XmlDocument xmlDoc, Version fileVersion, Version currentVersion, string xmlPath, bool isTestMode,
+            ILogger logger)
+        {
+            switch (ShouldMigrateFile(fileVersion, currentVersion, isTestMode))
+            {
+                case Decision.Abort:
+                    return Decision.Abort;
+                case Decision.Migrate:
+                    string backupPath = String.Empty;
+                    if (!isTestMode && BackupOriginalFile(xmlPath, ref backupPath))
+                    {
+                        string message = String.Format(
+                            "Original file '{0}' gets backed up at '{1}'",
+                            Path.GetFileName(xmlPath),
+                            backupPath);
+
+                        logger.Log(message);
+                    }
+
+                    //Hardcode the file version to 0.6.0.0. The file whose version is 0.7.0.x
+                    //needs to be forced to be migrated. The version number needs to be changed from
+                    //0.7.0.x to 0.6.0.0.
+                    if (fileVersion == new Version(0, 7, 0, 0))
+                        fileVersion = new Version(0, 6, 0, 0);
+
+                    Instance.ProcessWorkspaceMigrations(currentVersion, xmlDoc, fileVersion);
+                    Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion, currentVersion);
+                    return Decision.Migrate;
+                case Decision.Retain:
+                    return Decision.Retain;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        /// <summary>
         /// Runs all migration methods found on the listed migration target types.
         /// </summary>
         /// <param name="currentVersion"></param>
@@ -123,7 +172,7 @@ namespace Dynamo.Models
             }
         }
 
-        public void ProcessNodesInWorkspace(DynamoModel dynamoModel, XmlDocument xmlDoc, Version workspaceVersion)
+        public void ProcessNodesInWorkspace(XmlDocument xmlDoc, Version workspaceVersion, Version currentVersion)
         {
             if(DynamoModel.EnableMigrationLogging)
             {
@@ -142,23 +191,21 @@ namespace Dynamo.Models
             foreach (XmlNode elNode in elNodesList.ChildNodes)
             {
                 string typeName = elNode.Attributes["type"].Value;
-                typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
+                typeName = Nodes.Utilities.PreprocessTypeName(typeName);
 
-
-                System.Type type = Dynamo.Nodes.Utilities.ResolveType(dynamoModel, typeName);
-
-                if (type == null)
+                Type type;
+                if (!NodeFactory.ResolveType(typeName, out type))
                 {
                     // If we are not able to resolve the type given its name, 
                     // turn it into a deprecated node so that user is aware.
-                    migratedNodes.Add(MigrationManager.CreateMissingNode(
+                    migratedNodes.Add(CreateMissingNode(
                         elNode as XmlElement, 1, 1));
 
                     continue; // Error displayed in console, continue on.
                 }
 
                 // Migrate the given node into one or more new nodes.
-                var migrationData = this.MigrateXmlNode(dynamoModel.HomeSpace, elNode, type, workspaceVersion);
+                var migrationData = MigrateXmlNode(currentVersion, elNode, type, workspaceVersion);
                 migratedNodes.AddRange(migrationData.MigratedNodes);
             }
 
@@ -173,14 +220,14 @@ namespace Dynamo.Models
             // any attribute here, it is safe. Added an assertion to make sure 
             // we revisit this codes if we do add attributes to 'elNodesList'.
             // 
-            System.Diagnostics.Debug.Assert(elNodesList.Attributes.Count == 0);
+            Debug.Assert(elNodesList.Attributes.Count == 0);
             elNodesList.RemoveAll();
 
             foreach (XmlElement migratedNode in migratedNodes)
                 elNodesList.AppendChild(migratedNode);
         }
 
-        public NodeMigrationData MigrateXmlNode(WorkspaceModel homespace, XmlNode elNode, System.Type type, Version workspaceVersion)
+        public NodeMigrationData MigrateXmlNode(Version currentVersion, XmlNode elNode, Type type, Version workspaceVersion)
         {
             var migrations = (from method in type.GetMethods()
                               let attribute =
@@ -190,10 +237,8 @@ namespace Dynamo.Models
                               orderby result.From
                               select result).ToList();
 
-            var currentVersion = MigrationManager.VersionFromWorkspace(homespace);
-
-            XmlElement nodeToMigrate = elNode as XmlElement;
-            NodeMigrationData migrationData = new NodeMigrationData(elNode.OwnerDocument);
+            var nodeToMigrate = elNode as XmlElement;
+            var migrationData = new NodeMigrationData(elNode.OwnerDocument);
             migrationData.AppendNode(elNode as XmlElement);
 
             while (workspaceVersion != null && workspaceVersion < currentVersion)
@@ -232,18 +277,18 @@ namespace Dynamo.Models
 
             if (string.IsNullOrEmpty(originalPath))
                 throw new ArgumentException("Argument cannot be empty", "originalPath");
-            if (!System.IO.File.Exists(originalPath))
-                throw new System.IO.FileNotFoundException("File not found", originalPath);
+            if (!File.Exists(originalPath))
+                throw new FileNotFoundException("File not found", originalPath);
 
             try
             {
                 string folder = GetBackupFolder(Path.GetDirectoryName(originalPath), true);
                 string destFileName = GetUniqueFileName(folder, Path.GetFileName(originalPath));
-                System.IO.File.Copy(originalPath, destFileName);
+                File.Copy(originalPath, destFileName);
                 backupPath = destFileName;
                 return true;
             }
-            catch (System.IO.IOException)
+            catch (IOException)
             {
                 // If we caught an IO exception, fall through and let the rest handle this 
                 // (by saving to other locations). Any other exception will be thrown to the 
@@ -255,11 +300,11 @@ namespace Dynamo.Models
                 var myDocs = Environment.SpecialFolder.MyDocuments;
                 string folder = GetBackupFolder(Environment.GetFolderPath(myDocs), true);
                 string destFileName = GetUniqueFileName(folder, Path.GetFileName(originalPath));
-                System.IO.File.Copy(originalPath, destFileName);
+                File.Copy(originalPath, destFileName);
                 backupPath = destFileName;
                 return true;
             }
-            catch (System.IO.IOException)
+            catch (IOException)
             {
                 return false; // Okay I give up.
             }
@@ -311,7 +356,7 @@ namespace Dynamo.Models
                 throw new ArgumentException(message, "rootFolder");
             }
 
-            var backupFolderName = Dynamo.UI.Configurations.BackupFolderName;
+            var backupFolderName = Configurations.BackupFolderName;
 
             var subFolder = Path.Combine(baseFolder, backupFolderName);
             if (create && (Directory.Exists(subFolder) == false))
@@ -424,24 +469,20 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="fileVersion">The version of input file.</param>
         /// <param name="currVersion">The version of Dynamo software.</param>
+        /// <param name="isTestMode"></param>
         /// <returns>Returns the decision if the migration should take place or 
         /// not. See "Decision" enumeration for details of each field.</returns>
-        /// 
-        internal static Decision ShouldMigrateFile(
-            Version fileVersion, Version currVersion)
+        internal static Decision ShouldMigrateFile(Version fileVersion, Version currVersion, bool isTestMode)
         {
             // We currently enable migration for testing scenario. This is to 
             // avoid large number of test failures with this change, and also 
             // ensure that our tests continue to exercise migration code changes.
             // 
-            if (DynamoModel.IsTestMode)
+            if (isTestMode)
             {
-                if (fileVersion < currVersion)
-                    return Decision.Migrate;
-
-                return Decision.Retain;
+                return fileVersion < currVersion ? Decision.Migrate : Decision.Retain;
             }
-           
+
             //Force the file to go through the migration process, when the file version
             //is 0.7.0.x. 
             //Reason: There were files creaeted in 0.6.x with wrong version number 0.7.0.
@@ -1002,9 +1043,9 @@ namespace Dynamo.Models
         public PortId(string owningNode, int portIndex, PortType type)
             : this()
         {
-            this.OwningNode = owningNode;
-            this.PortIndex = portIndex;
-            this.PortType = type;
+            OwningNode = owningNode;
+            PortIndex = portIndex;
+            PortType = type;
         }
 
         public string OwningNode { get; private set; }
@@ -1025,7 +1066,7 @@ namespace Dynamo.Models
 
         public NodeMigrationData(XmlDocument document)
         {
-            this.Document = document;
+            Document = document;
 
             XmlNodeList cNodes = document.GetElementsByTagName("Connectors");
             if (cNodes.Count == 0)
@@ -1220,7 +1261,7 @@ namespace Dynamo.Models
         public void CreateConnector(XmlElement startNode,
             int startIndex, XmlElement endNode, int endIndex)
         {
-            XmlElement connector = this.Document.CreateElement(
+            XmlElement connector = Document.CreateElement(
                 "Dynamo.Models.ConnectorModel");
 
             connector.SetAttribute("start", MigrationManager.GetGuidFromXmlElement(startNode));
@@ -1236,7 +1277,7 @@ namespace Dynamo.Models
         public void CreateConnectorFromId(string startNodeId,
             int startIndex, string endNodeId, int endIndex)
         {
-            XmlElement connector = this.Document.CreateElement(
+            XmlElement connector = Document.CreateElement(
                 "Dynamo.Models.ConnectorModel");
 
             connector.SetAttribute("start", startNodeId);
@@ -1271,7 +1312,7 @@ namespace Dynamo.Models
 
         public IEnumerable<XmlElement> MigratedNodes
         {
-            get { return this.migratedNodes; }
+            get { return migratedNodes; }
         }
 
         #endregion

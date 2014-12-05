@@ -355,7 +355,7 @@ namespace DynamoCoreUITests
         public void VisualizationsAreCreatedForCustomNodes()
         {
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Points.dyf"))
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Points.dyf"))
                 != null);
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_customNode.dyn");
             ViewModel.OpenCommand.Execute(openPath);

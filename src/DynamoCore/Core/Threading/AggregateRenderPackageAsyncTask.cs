@@ -50,7 +50,7 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal AggregateRenderPackageAsyncTask(DynamoScheduler scheduler)
+        internal AggregateRenderPackageAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
             normalRenderPackages = new List<IRenderPackage>();

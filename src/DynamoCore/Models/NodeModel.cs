@@ -1689,7 +1689,7 @@ namespace Dynamo.Models
         /// called from the main/UI thread.
         /// </summary>
         /// 
-        public void RequestValueUpdateAsync()
+        public void RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
         {
             // A NodeModel should have its cachedMirrorData reset when it is 
             // requested to update its value. When the QueryMirrorDataAsyncTask 
@@ -1706,11 +1706,10 @@ namespace Dynamo.Models
             if (string.IsNullOrEmpty(variableName))
                 return;
 
-            var scheduler = Workspace.DynamoModel.Scheduler;
-            var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams()
+            var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams
             {
-                DynamoScheduler = scheduler,
-                EngineController = Workspace.DynamoModel.EngineController,
+                Scheduler = scheduler,
+                EngineController = engine,
                 VariableName = variableName
             });
 
@@ -1734,10 +1733,11 @@ namespace Dynamo.Models
         /// this node. This method accesses core properties of a NodeModel and 
         /// therefore is typically called on the main/UI thread.
         /// </summary>
+        /// <param name="engine"></param>
+        /// <param name="scheduler"></param>
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
-        /// 
-        public void RequestVisualUpdateAsync(int maxTesselationDivisions)
+        public void RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
             //if (Workspace.DynamoModel == null)
             //    return;
@@ -1754,7 +1754,7 @@ namespace Dynamo.Models
                 HasRenderPackages = false;
             }
 
-            RequestVisualUpdateAsyncCore(maxTesselationDivisions);
+            RequestVisualUpdateAsyncCore(scheduler, engine, maxTesselationDivisions);
         }
 
         /// <summary>
@@ -1764,21 +1764,21 @@ namespace Dynamo.Models
         /// to prevent render packages to be generated if they do not require 
         /// geometric preview.
         /// </summary>
+        /// <param name="engine"></param>
+        /// <param name="scheduler"></param>
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
-        /// 
-        protected virtual void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
+        protected virtual void RequestVisualUpdateAsyncCore(IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
             var initParams = new UpdateRenderPackageParams()
             {
                 Node = this,
                 MaxTesselationDivisions = maxTesselationDivisions,
-                EngineController = Workspace.DynamoModel.EngineController,
+                EngineController = engine,
                 DrawableIds = GetDrawableIds(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name
             };
 
-            var scheduler = Workspace.DynamoModel.Scheduler;
             var task = new UpdateRenderPackageAsyncTask(scheduler);
             if (task.Initialize(initParams))
             {

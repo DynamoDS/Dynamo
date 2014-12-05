@@ -1268,7 +1268,7 @@ namespace Dynamo
             var task = new FakeQueryMirrorDataAsyncTask(
                 new QueryMirrorDataParams()
                 {
-                    DynamoScheduler = dynamoModel.Scheduler,
+                    Scheduler = dynamoModel.Scheduler,
                     EngineController = dynamoModel.EngineController,
                     VariableName = variableName
                 });

@@ -24,7 +24,7 @@ namespace Dynamo.Core.Threading
         }
     }
 
-    internal abstract class AsyncTask
+    public abstract class AsyncTask
     {
         #region Private Class Data Members
 
@@ -62,7 +62,7 @@ namespace Dynamo.Core.Threading
             KeepOther
         }
 
-        private readonly DynamoScheduler scheduler;
+        private readonly IScheduler scheduler;
 
         #endregion
 
@@ -104,7 +104,7 @@ namespace Dynamo.Core.Threading
         /// <param name="scheduler">A reference to the DynamoScheduler, this 
         /// parameter cannot be null.</param>
         /// 
-        protected AsyncTask(DynamoScheduler scheduler)
+        protected AsyncTask(IScheduler scheduler)
         {
             if (scheduler == null)
                 throw new ArgumentNullException("scheduler");

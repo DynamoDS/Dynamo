@@ -16,7 +16,7 @@
             get { return TaskPriority.Normal; }
         }
 
-        internal NotifyRenderPackagesReadyAsyncTask(DynamoScheduler scheduler)
+        internal NotifyRenderPackagesReadyAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }

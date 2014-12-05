@@ -46,10 +46,13 @@ namespace Dynamo.Utilities
             }
         }
 
-        public static Version GetDynamoVersion()
+        public static Version GetDynamoVersion(bool includeRevisionNumber=true)
         {
             var assembly = Assembly.GetCallingAssembly();
-            return assembly.GetName().Version;
+            var version = assembly.GetName().Version;
+            return includeRevisionNumber
+                ? version
+                : new Version(version.Major, version.Minor, version.Build, 0);
         }
 
         public static Assembly LoadLibG()

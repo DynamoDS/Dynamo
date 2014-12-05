@@ -31,7 +31,7 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal CompileCustomNodeAsyncTask(DynamoScheduler scheduler)
+        internal CompileCustomNodeAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }

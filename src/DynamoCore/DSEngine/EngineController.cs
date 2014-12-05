@@ -251,6 +251,8 @@ namespace Dynamo.DSEngine
         /// Generate graph sync data based on the input Dynamo custom node information.
         /// Return false if all nodes are clean.
         /// </summary>
+        /// <param name="nodes"></param>
+        /// <param name="definition"></param>
         /// <returns></returns>
         public bool GenerateGraphSyncDataForCustomNode(IEnumerable<NodeModel> nodes, CustomNodeDefinition definition)
         {
@@ -268,8 +270,11 @@ namespace Dynamo.DSEngine
                 }
 
                 astBuilder.CompileCustomNodeDefinition(
-                    definition.FunctionId, definition.ReturnKeys,
-                    definition.FunctionName, definition.FunctionBody, definition.OutputNodes,
+                    definition.FunctionId,
+                    definition.ReturnKeys,
+                    definition.FunctionName,
+                    definition.FunctionBody,
+                    definition.OutputNodes,
                     definition.DisplayParameters);
 
                 if (!VerifyGraphSyncData(nodes) || (graphSyncDataQueue.Count == 0))
@@ -300,11 +305,11 @@ namespace Dynamo.DSEngine
         /// <param name="scheduler">The scheduler on which custom node compilation 
         /// task can be scheduled.</param>
         /// 
-        internal void ProcessPendingCustomNodeSyncData(DynamoScheduler scheduler)
+        internal void ProcessPendingCustomNodeSyncData(IScheduler scheduler)
         {
             while (pendingCustomNodeSyncData.Count > 0)
             {
-                var initParams = new CompileCustomNodeParams()
+                var initParams = new CompileCustomNodeParams
                 {
                     SyncData = pendingCustomNodeSyncData.Dequeue(),
                     EngineController = this
@@ -548,7 +553,7 @@ namespace Dynamo.DSEngine
             {
                 // All CBN's need to be pre-compiled again after a new library is loaded
                 // to warn for any new namespace conflicts that may arise.
-                CodeBlockNodeModel codeBlockNode = node as CodeBlockNodeModel;
+                var codeBlockNode = node as CodeBlockNodeModel;
                 if (codeBlockNode != null)
                 {
                     codeBlockNode.ProcessCodeDirect();
@@ -569,15 +574,13 @@ namespace Dynamo.DSEngine
 
         public void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
-            foreach (var astNode in astNodes)
-            {
+            var associativeNodes = astNodes as IList<AssociativeNode> ?? astNodes.ToList();
+
+            foreach (var astNode in associativeNodes)
                 syncDataManager.AddNode(nodeGuid, astNode);
-            }
 
             if (AstBuilt != null)
-            {
-                AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(nodeGuid, astNodes));
-            }
+                AstBuilt(this, new AstBuilder.ASTBuiltEventArgs(nodeGuid, associativeNodes));
         }
 
         #endregion

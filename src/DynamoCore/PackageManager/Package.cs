@@ -347,7 +347,7 @@ namespace Dynamo.PackageManager
         private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)
         {
             // get all of the function ids from the custom nodes in this package
-            var guids = LoadedCustomNodes.Select(x => x.Guid);
+            var guids = LoadedCustomNodes.Select(x => x.FunctionId);
 
             // check if any of the custom nodes is in a workspace
             return dynamoModel.AllNodes.Where(x => x is Function)
@@ -359,7 +359,7 @@ namespace Dynamo.PackageManager
         private bool IsWorkspaceFromPackageOpen(DynamoModel dynamoModel)
         {
             // get all of the function ids from the custom nodes in this package
-            var guids = LoadedCustomNodes.Select(x => x.Guid);
+            var guids = LoadedCustomNodes.Select(x => x.FunctionId);
 
             return
                 dynamoModel.Workspaces.Any(
@@ -396,7 +396,7 @@ namespace Dynamo.PackageManager
 
             try
             {
-                LoadedCustomNodes.ToList().ForEach(x => customNodeManager.RemoveFromDynamo(x.Guid));
+                LoadedCustomNodes.ToList().ForEach(x => customNodeManager.RemoveFromDynamo(x.FunctionId));
                 packageLoader.LocalPackages.Remove(this);
                 Directory.Delete(RootDirectory, true);
             }

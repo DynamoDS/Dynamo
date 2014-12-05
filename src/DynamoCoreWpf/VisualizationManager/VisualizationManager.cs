@@ -41,8 +41,8 @@ namespace Dynamo
         private string alternateContextName = "Host";
         private bool drawToAlternateContext = true;
         //private Octree.OctreeSearch.Octree octree;
-        private bool updatingPaused = false;
-        protected readonly DynamoModel dynamoModel;
+        private bool updatingPaused;
+        [Obsolete("No Longer Supported.", true)] protected readonly DynamoModel dynamoModel;
         private readonly List<RenderPackage> currentTaggedPackages = new List<RenderPackage>();
         private bool alternateDrawingContextAvailable;
         private long taskId = -1;
@@ -224,10 +224,8 @@ namespace Dynamo
 
         #region constructors
 
-        public VisualizationManager(DynamoModel dynamoModel)
+        public VisualizationManager()
         {
-            this.dynamoModel = dynamoModel;
-            
             dynamoModel.WorkspaceClearing += Pause;
             dynamoModel.WorkspaceCleared += UnPauseAndUpdate;
 
@@ -636,7 +634,7 @@ namespace Dynamo
             rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
             rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
 
-            Debug.WriteLine(string.Format("Render aggregation complete for {0}", task.NodeId));
+            Debug.WriteLine("Render aggregation complete for {0}", task.NodeId);
 
             var e = new VisualizationEventArgs(rps, task.NodeId, -1);
             OnResultsReadyToVisualize(this, e);
@@ -647,28 +645,29 @@ namespace Dynamo
             Pause(this, EventArgs.Empty);
             Cleanup();
         }
-        
+
         /// <summary>
         /// Gathers the Ids of the upstream drawable nodes.
         /// </summary>
         /// <param name="inputs">A dictionary describing the inputs on the node.</param>
+        /// <param name="recursionLevelCount"></param>
         /// <returns>A collection of strings.</returns>
-        private IEnumerable<IRenderPackage> GetUpstreamPackages(Dictionary<int, Tuple<int, NodeModel>> inputs, 
+        private static IEnumerable<IRenderPackage> GetUpstreamPackages(Dictionary<int, Tuple<int, NodeModel>> inputs, 
             int recursionLevelCount)
         {
 #if DEBUG
-            const int MAX_RECURSION = 200;
-            Validity.Assert(recursionLevelCount < MAX_RECURSION, "Stack Overflow protection trap");
+            const int maxRecursion = 200;
+            Validity.Assert(recursionLevelCount < maxRecursion, "Stack Overflow protection trap");
 #endif
 
             var packages = new List<IRenderPackage>();
 
-            foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
+            foreach (
+                NodeModel node in
+                    from pair in inputs
+                    where pair.Value != null && (pair.Value.Item2 != null)
+                    select pair.Value.Item2)
             {
-                if (pair.Value == null || (pair.Value.Item2 == null))
-                    continue;
-
-                NodeModel node = pair.Value.Item2;
                 lock (node.RenderPackagesMutex)
                 {
                     packages.AddRange(node.RenderPackages);

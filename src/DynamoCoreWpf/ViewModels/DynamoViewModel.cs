@@ -670,7 +670,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanDisplayFunction(object parameters)
         {
-            return Model.CustomNodes.Any(x => x.Value == (Guid)parameters);
+            return Model.CustomNodeManager.Contains((Guid)parameters);
         }
 
         public static void ReportABug(object parameter)
