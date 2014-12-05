@@ -1,18 +1,20 @@
-﻿using Dynamo.Controls;
-using Dynamo.Nodes.Search;
-using Dynamo.Search.SearchElements;
-using Dynamo.Search;
-using Dynamo.ViewModels;
-using Dynamo.Utilities;
-using Dynamo.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
+using Dynamo.Controls;
 using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Nodes.Search;
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
+using Dynamo.UI;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 using NUnit.Framework;
-using System.Windows;
-using System;
-using System.Collections.Generic;
-using System.Windows.Media;
-using System.Windows.Controls;
 
 namespace Dynamo
 {
@@ -568,6 +570,20 @@ namespace Dynamo
             thickness = new Thickness(0, 0, -6.6733333333333338, 0);
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(thickness, result);
+        }
+
+        [Test]
+        public void ShowMoreTextConverterTest()
+        {
+            ShowMoreTextConverter converter = new ShowMoreTextConverter();
+
+            Assert.Throws<InvalidCastException>(() => converter.Convert("the string", null, null, null));
+
+            var expected = string.Format(Configurations.MoreButtonTextFormat, -1);
+            Assert.AreEqual(expected, converter.Convert(-1, null, null, null));
+
+            expected = string.Format(Configurations.MoreButtonTextFormat, 14);
+            Assert.AreEqual(expected, converter.Convert(14, null, null, null));
         }
     }
 }
