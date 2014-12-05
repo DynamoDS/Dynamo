@@ -64,10 +64,9 @@ namespace RevitServices.Threading
         /// when the scheduled DelegateBasedAsyncTask is completed. This parameter
         /// is optional.</param>
         /// 
-        internal static void ExecuteOnIdleAsync(Action p,
+        internal static void ExecuteOnIdleAsync(DynamoScheduler scheduler, Action p,
             AsyncTaskCompletedHandler completionHandler = null)
         {
-            var scheduler = DynamoRevit.RevitDynamoModel.Scheduler;
             var task = new DelegateBasedAsyncTask(scheduler);
 
             task.Initialize(p);
