@@ -16,7 +16,7 @@ using ProtoCore;
 
 namespace ProtoTest.LiveRunner
 {
-    public class PreviewChangeSetTests// : ProtoTestBase
+    class PreviewChangeSetTests : ProtoTestBase
     {
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
