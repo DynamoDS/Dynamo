@@ -911,7 +911,7 @@ namespace ProtoCore
                     {
                         if (isAllocated && !isAccessible)
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, identnode.Value);
+                            string message = String.Format(Resource.kPropertyIsInaccessible, identnode.Value);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
@@ -919,7 +919,7 @@ namespace ProtoCore
                         }
                         else
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kUnboundIdentifierMsg, identnode.Value);
+                            string message = String.Format(Resource.kUnboundIdentifierMsg, identnode.Value);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                         }
 
@@ -962,17 +962,17 @@ namespace ProtoCore
 
                             if (null != staticProcCallNode)
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodHasInvalidArguments, procName);
+                                string message = String.Format(Resource.kMethodHasInvalidArguments, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, property);
+                                string message = String.Format(Resource.kPropertyIsInaccessible, property);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
+                                string message = String.Format(Resource.kMethodIsInaccessible, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
 
@@ -2230,7 +2230,7 @@ namespace ProtoCore
             String value = Encoding.UTF8.GetString(utf8bytes);
             if (value.Length > 1)
             {
-                buildStatus.LogSyntaxError("Too many characters in character literal", null, node.line, node.col);
+                buildStatus.LogSyntaxError(Resource.logSyntaxErrorTooManyCharacters, null, node.line, node.col);
             }
   
             String strValue = "'" + value + "'";
@@ -2605,7 +2605,7 @@ namespace ProtoCore
                 localProcedure.isConstructor &&
                 core.IsFunctionCodeBlock(codeBlock))
             {
-                buildStatus.LogSemanticError("return statement is not allowed in constructor", 
+                buildStatus.LogSemanticError(Resource.logSemanticErrorReturnStatementIsNotAllowed, 
                                              core.CurrentDSFileName, 
                                              node.line, 
                                              node.col);
@@ -2960,7 +2960,7 @@ namespace ProtoCore
             int cix = core.ClassTable.IndexOf(string.Format("{0}Attribute", anode.Function.Name));
             if (cix == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
-                buildStatus.LogSemanticError(string.Format("Unknown attribute {0}", anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resource.logSemanticErrorUnknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
             }
             ProtoCore.DSASM.AttributeEntry attribute = new ProtoCore.DSASM.AttributeEntry();
             attribute.ClassIndex = cix;
@@ -2969,7 +2969,7 @@ namespace ProtoCore
             {
                 if (!IsConstantExpression(attr))
                 {
-                    buildStatus.LogSemanticError("An attribute argument must be a constant expression", core.CurrentDSFileName, anode.line, anode.col);
+                    buildStatus.LogSemanticError(Resource.logSemanticErrorAttributeArgumentMustBeConstantExpression, core.CurrentDSFileName, anode.line, anode.col);
                     return null;
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);
@@ -2987,7 +2987,7 @@ namespace ProtoCore
             }
             if (!hasMatchedConstructor)
             {
-                buildStatus.LogSemanticError(string.Format("No constructors for Attribute '{0}' takes {1} arguments", anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resource.logSemanticErrorNoConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
                 return null;
             }
             
