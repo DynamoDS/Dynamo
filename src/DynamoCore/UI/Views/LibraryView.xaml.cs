@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Nodes.Search;
@@ -133,17 +134,26 @@ namespace Dynamo.UI.Views
             }
         }
 
-        private void OnImportAddonButtonClick(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Import add-on button is clicked");
-        }
-
         private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
         {
             // Because of bug we mark event as handled for all automatic requests 
             // until count of our requests less than 1. First request is done for
             // opened top category when dynamo starts.
             e.Handled = BringIntoViewCount < 2;
+        }
+
+        private void OnAddButtonPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                var button = sender as Button;
+                var contextMenu = button.ContextMenu;
+                contextMenu.Placement = PlacementMode.Bottom;
+                contextMenu.PlacementTarget = button;
+                contextMenu.IsOpen = true;
+            }
+
+            e.Handled = true;
         }
     }
 }
