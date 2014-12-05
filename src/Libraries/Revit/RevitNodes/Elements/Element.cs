@@ -27,6 +27,24 @@ namespace Revit.Elements
     public abstract class Element : IDisposable, IGraphicItem, IFormattable
     {
         /// <summary>
+        /// Handling exceptions when calling the initializing function
+        /// </summary>
+        /// <param name="init"></param>
+        protected void SafeInit(Action init)
+        {
+            try
+            {
+                init();
+            }
+            catch (Exception e)
+            {
+                var elementManager = ElementIDLifecycleManager<int>.GetInstance();
+                elementManager.UnRegisterAssociation(Id, this);
+                throw e;
+            }
+        }
+
+        /// <summary>
         /// A reference to the current Document.
         /// </summary>
         internal static Document Document

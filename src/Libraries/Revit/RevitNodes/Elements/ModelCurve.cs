@@ -29,10 +29,11 @@ namespace Revit.Elements
         /// Construct a model curve from the document.  The result is Dynamo owned
         /// </summary>
         /// <param name="curve"></param>
-        private ModelCurve(Autodesk.Revit.DB.ModelCurve curve)
-        {
-            InternalSetCurveElement(curve);
-        }
+        private ModelCurve(Autodesk.Revit.DB.ModelCurve curve) : base((x)=>
+            {
+                ModelCurve t = x as ModelCurve;
+                t.InternalSetCurveElement(curve);
+            }){}
 
         // PB: This implementation borrows the somewhat risky notions from the original Dynamo
         // implementation.  In short, it has the ability to infer a sketch plane,
@@ -44,65 +45,67 @@ namespace Revit.Elements
         /// <param name="crv"></param>
         /// <param name="makeReferenceCurve"></param>
         private ModelCurve(Autodesk.Revit.DB.Curve crv, bool makeReferenceCurve)
-        {
-            //Phase 1 - Check to see if the object exists and should be rebound
-            var mc =
-                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ModelCurve>(Document);
-
-            //There was a modelcurve, try and set sketch plane
-            // if you can't, rebuild 
-            if (mc != null)
-            {
-                InternalSetCurveElement(mc);
-                if (!InternalSetSketchPlaneFromCurve(crv))
+            : base((x) =>
                 {
-                    InternalSetCurve(crv);
-                    return;
-                }
-            }
+                    ModelCurve t = x as ModelCurve;
+                    //Phase 1 - Check to see if the object exists and should be rebound
+                    var mc =
+                        ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ModelCurve>(Document);
 
-            ElementId oldId = (mc != null) ? mc.Id : ElementId.InvalidElementId;
-            string oldUniqueId = (mc != null) ? mc.UniqueId : string.Empty;
+                    //There was a modelcurve, try and set sketch plane
+                    // if you can't, rebuild 
+                    if (mc != null)
+                    {
+                        t.InternalSetCurveElement(mc);
+                        if (!t.InternalSetSketchPlaneFromCurve(crv))
+                        {
+                            t.InternalSetCurve(crv);
+                            return;
+                        }
+                    }
 
-            TransactionManager.Instance.EnsureInTransaction(Document);
+                    ElementId oldId = (mc != null) ? mc.Id : ElementId.InvalidElementId;
+                    string oldUniqueId = (mc != null) ? mc.UniqueId : string.Empty;
 
-            // (sic erat scriptum)
-            var sp = GetSketchPlaneFromCurve(crv);
-            var plane = sp.GetPlane();
+                    TransactionManager.Instance.EnsureInTransaction(Document);
 
-            if (CurveUtils.GetPlaneFromCurve(crv, true) == null)
-            {
-                var flattenCurve = Flatten3dCurveOnPlane(crv, plane);
-                mc = Document.IsFamilyDocument
-                    ? Document.FamilyCreate.NewModelCurve(flattenCurve, sp)
-                    : Document.Create.NewModelCurve(flattenCurve, sp);
+                    // (sic erat scriptum)
+                    var sp = GetSketchPlaneFromCurve(crv);
+                    var plane = sp.GetPlane();
 
-                setCurveMethod(mc, crv);
-            }
-            else
-            {
-                mc = Document.IsFamilyDocument
-                    ? Document.FamilyCreate.NewModelCurve(crv, sp)
-                    : Document.Create.NewModelCurve(crv, sp);
-            }
+                    if (CurveUtils.GetPlaneFromCurve(crv, true) == null)
+                    {
+                        var flattenCurve = Flatten3dCurveOnPlane(crv, plane);
+                        mc = Document.IsFamilyDocument
+                            ? Document.FamilyCreate.NewModelCurve(flattenCurve, sp)
+                            : Document.Create.NewModelCurve(flattenCurve, sp);
 
-            if (mc.SketchPlane.Id != sp.Id)
-            {
-                //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
-                DocumentManager.Instance.DeleteElement(new ElementUUID(sp.UniqueId));
-            }
+                        setCurveMethod(mc, crv);
+                    }
+                    else
+                    {
+                        mc = Document.IsFamilyDocument
+                            ? Document.FamilyCreate.NewModelCurve(crv, sp)
+                            : Document.Create.NewModelCurve(crv, sp);
+                    }
 
-            InternalSetCurveElement(mc);
-            if (oldId != mc.Id && oldId != ElementId.InvalidElementId)
-                DocumentManager.Instance.DeleteElement(new ElementUUID(oldUniqueId));
-            if (makeReferenceCurve)
-                mc.ChangeToReferenceLine();
+                    if (mc.SketchPlane.Id != sp.Id)
+                    {
+                        //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
+                        DocumentManager.Instance.DeleteElement(new ElementUUID(sp.UniqueId));
+                    }
 
-            TransactionManager.Instance.TransactionTaskDone();
+                    t.InternalSetCurveElement(mc);
+                    if (oldId != mc.Id && oldId != ElementId.InvalidElementId)
+                        DocumentManager.Instance.DeleteElement(new ElementUUID(oldUniqueId));
+                    if (makeReferenceCurve)
+                        mc.ChangeToReferenceLine();
 
-            ElementBinder.SetElementForTrace(this.InternalElement);
+                    TransactionManager.Instance.TransactionTaskDone();
 
-        }
+                    ElementBinder.SetElementForTrace(t.InternalElement);
+
+                }) {}
 
         #endregion
 

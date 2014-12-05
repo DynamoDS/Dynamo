@@ -31,7 +31,16 @@ namespace Revit.Elements
         /// <param name="fs">FamilySymbol to place</param>
         private AdaptiveComponent(Point[] pts, FamilySymbol fs)
         {
+            SafeInit(()=>this.InitAdaptiveComponent(pts, fs));
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pts"></param>
+        /// <param name="fs"></param>
+        private void InitAdaptiveComponent(Point[] pts, FamilySymbol fs)
+        {
             // if the family instance is present in trace...
             var oldFam =
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.FamilyInstance>(Document);
@@ -39,9 +48,9 @@ namespace Revit.Elements
             // just mutate it...
             if (oldFam != null)
             {
-               InternalSetFamilyInstance(oldFam);
+                InternalSetFamilyInstance(oldFam);
                 if (fs.InternalFamilySymbol.Id != oldFam.Symbol.Id)
-                   InternalSetFamilySymbol(fs);
+                    InternalSetFamilySymbol(fs);
                 InternalSetPositions(pts.ToXyzs());
                 return;
             }

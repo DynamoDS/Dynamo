@@ -13,6 +13,18 @@ namespace Revit.Elements.Views
     //[SupressImportIntoVM]
     public abstract class View3D : View
     {
+
+#region internal constructors
+
+        /// <summary>
+        /// The constructor which takes an function as input which is passed from
+        /// the derived constructors.
+        /// </summary>
+        /// <param name="constructor"></param>
+        internal View3D(ConstructDelegate constructor) : base(constructor) { }
+
+#endregion
+
         [IsVisibleInDynamoLibrary(false)]
         public const string DEFAULT_VIEW_NAME = "dynamo3D";
 

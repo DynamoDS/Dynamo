@@ -17,7 +17,6 @@ namespace Revit.Elements
     [IsVisibleInDynamoLibrary(false)]
     public abstract class AbstractFamilyInstance : Element
     {
-
         #region Internal properties
 
         /// <summary>

@@ -10,6 +10,17 @@ namespace Revit.Elements
 {
     public abstract class CurveElement : Element, IGraphicItem
     {
+#region internal constructors
+        /// <summary>
+        /// The constructor which takes an function as input which is passed from
+        /// the derived constructors.
+        /// </summary>
+        /// <param name="constructor"></param>
+        internal CurveElement(ConstructDelegate constructor) : base(constructor)
+        {
+        }
+#endregion
+
         public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalCurveElement; }
