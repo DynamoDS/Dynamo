@@ -70,7 +70,7 @@
             <EventSetter Event="MouseLeave"
                          Handler="OnPopupMouseLeave" />
         </Style>
-        <Style x:Key="STextButton"
+        <Style x:Key="MoreButtonStyle"
                TargetType="{x:Type Button}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -80,8 +80,8 @@
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Center"
                                        TextAlignment="Center"
-                                       Foreground="#DDD"
-                                       FontSize="20px">
+                                       Foreground="#4691CE"
+                                       FontSize="13">
                                 <TextBlock.Text>
                                     <Binding Path="Content"
                                              RelativeSource="{RelativeSource TemplatedParent}" />
@@ -281,9 +281,9 @@
             <Button Grid.Row="4"
                     Grid.ColumnSpan="2"
                     Height="32"
-                    Style="{StaticResource STextButton}"
+                    Style="{StaticResource MoreButtonStyle}"
                     Click="OnMoreButtonClick"
-                    Content="...">
+                    Content="SHOW MORE (n)">
                 <Button.Visibility>
                     <Binding Path="IsMoreButtonVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
