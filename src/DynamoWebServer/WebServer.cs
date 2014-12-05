@@ -196,11 +196,11 @@ namespace DynamoWebServer
         {
             if (enqueue)
             {
-                messageQueue.EnqueueMessage(() => messageHandler.Execute(dynamoModel, message, sessionId));
+                messageQueue.EnqueueMessage(() => messageHandler.Execute(message, sessionId));
             }
             else
             {
-                messageHandler.Execute(dynamoModel, message, sessionId);
+                messageHandler.Execute(message, sessionId);
             }
         }
 

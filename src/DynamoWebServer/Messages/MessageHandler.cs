@@ -95,25 +95,25 @@ namespace DynamoWebServer.Messages
         /// <param name="dynamo">DynamoViewModel</param>
         /// <param name="message">Message</param>
         /// <param name="sessionId">The identifier string that represents the current session</param>
-        internal void Execute(DynamoModel dynamo, Message message, string sessionId)
+        internal void Execute(Message message, string sessionId)
         {
             if (message is RunCommandsMessage)
             {
-                ExecuteCommands(dynamo, message, sessionId);
+                ExecuteCommands(message, sessionId);
             }
             else if (message is GetLibraryItemsMessage)
             {
                 OnResultReady(this, new ResultReadyEventArgs(
-                    new LibraryItemsListResponse(dynamo.SearchModel.GetAllLibraryItemsByCategory()),
+                    new LibraryItemsListResponse(dynamoModel.SearchModel.GetAllLibraryItemsByCategory()),
                     sessionId));
             }
             else if (message is SaveFileMessage)
             {
-                SaveFile(dynamo, message as SaveFileMessage, sessionId);
+                SaveFile(message as SaveFileMessage, sessionId);
             }
             else if (message is UploadFileMessage)
             {
-                UploadFile(dynamo, message as UploadFileMessage, sessionId);
+                UploadFile(message as UploadFileMessage, sessionId);
             }
             else if (message is GetNodeGeometryMessage)
             {
@@ -216,12 +216,12 @@ namespace DynamoWebServer.Messages
 
         #region Private Class Helper Methods
 
-        private void UploadFile(DynamoModel dynamo, UploadFileMessage message, string sessionId)
+        private void UploadFile(UploadFileMessage message, string sessionId)
         {
-            var result = uploader.ProcessFileData(message, dynamo);
+            var result = uploader.ProcessFileData(message, dynamoModel);
             if (result != ProcessResult.Failed)
             {
-                dynamo.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
+                dynamoModel.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
                 WaitForRunCompletion();
                 bool respondWithPath = (result == ProcessResult.RespondWithPath);
                 NodesDataCreated(sessionId, respondWithPath);
@@ -233,7 +233,7 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void SaveFile(DynamoModel dynamo, SaveFileMessage message, string sessionId)
+        private void SaveFile(SaveFileMessage message, string sessionId)
         {
             WorkspaceModel workspaceToSave = GetWorkspaceByGuid(message.Guid);
             if (workspaceToSave == null)
@@ -296,15 +296,15 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private void ExecuteCommands(DynamoModel dynamo, Message message, string sessionId)
+        private void ExecuteCommands(Message message, string sessionId)
         {
             var recordableCommandMsg = (RunCommandsMessage)message;
 
-            SelectTabByGuid(dynamo, recordableCommandMsg.WorkspaceGuid);
+            SelectTabByGuid(recordableCommandMsg.WorkspaceGuid);
 
             foreach (var command in recordableCommandMsg.Commands)
             {
-                dynamo.ExecuteCommand(command);
+                dynamoModel.ExecuteCommand(command);
                 if (command is DynamoModel.RunCancelCommand)
                 {
                     WaitForRunCompletion();
@@ -336,26 +336,26 @@ namespace DynamoWebServer.Messages
             nextRunAllowed.WaitOne(maxMsToWait);
         }
 
-        private void SelectTabByGuid(DynamoModel dynamo, Guid guid)
+        private void SelectTabByGuid(Guid guid)
         {
             // If guid is Empty - switch to HomeWorkspace
-            if (guid.Equals(Guid.Empty) && dynamo.CurrentWorkspace != dynamo.HomeSpace)
+            if (guid.Equals(Guid.Empty) && dynamoModel.CurrentWorkspace != dynamoModel.HomeSpace)
             {
-                dynamo.Home(null);
+                dynamoModel.Home(null);
             }
 
             if (!guid.Equals(Guid.Empty))
             {
-                if (dynamo.CustomNodeManager.LoadedCustomNodes.Contains(guid))
+                if (dynamoModel.CustomNodeManager.LoadedCustomNodes.Contains(guid))
                 {
-                    var node = (CustomNodeDefinition)dynamo.CustomNodeManager.LoadedCustomNodes[guid];
+                    var node = (CustomNodeDefinition)dynamoModel.CustomNodeManager.LoadedCustomNodes[guid];
                     var name = node.WorkspaceModel.Name;
-                    var workspace = dynamo.Workspaces.FirstOrDefault(elem => elem.Name == name);
+                    var workspace = dynamoModel.Workspaces.FirstOrDefault(elem => elem.Name == name);
                     if (workspace != null)
                     {
-                        var index = dynamo.Workspaces.IndexOf(workspace);
+                        var index = dynamoModel.Workspaces.IndexOf(workspace);
 
-                        dynamo.ExecuteCommand(new DynamoModel.SwitchTabCommand(index));
+                        dynamoModel.ExecuteCommand(new DynamoModel.SwitchTabCommand(index));
                     }
                 }
             }
