@@ -13,7 +13,7 @@ namespace Dynamo.Models
 {
     public class HomeWorkspaceModel : WorkspaceModel
     {
-        public EngineController EngineController { get; private set; }
+        private EngineController engineController;
         private readonly DynamoScheduler scheduler;
         
         public bool RunEnabled;
@@ -39,10 +39,10 @@ namespace Dynamo.Models
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
 
-            EngineController = new EngineController(
+            engineController = new EngineController(
                 libraryServices,
                 DynamoPathManager.Instance.GeometryFactory);
-            EngineController.MessageLogged += Log;
+            engineController.MessageLogged += Log;
 
             runExpressionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             runExpressionTimer.Tick += OnRunExpression;
@@ -51,7 +51,10 @@ namespace Dynamo.Models
         public override void Dispose()
         {
             base.Dispose();
-            EngineController.MessageLogged -= Log;
+            engineController.MessageLogged -= Log;
+            engineController.Dispose();
+            runExpressionTimer.Stop();
+            runExpressionTimer.Tick -= OnRunExpression;
         }
 
         private readonly DispatcherTimer runExpressionTimer;
@@ -113,7 +116,7 @@ namespace Dynamo.Models
         /// <param name="definition"></param>
         public void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
         {
-            EngineController.GenerateGraphSyncDataForCustomNode(Nodes, definition);
+            engineController.GenerateGraphSyncDataForCustomNode(Nodes, definition);
         }
 
         /// <summary>
@@ -121,38 +124,36 @@ namespace Dynamo.Models
         /// condition by using a thread join inside the vm executive.
         /// TODO(Luke): Push this into a resync call with the engine controller
         /// </summary>
+        /// <param name="customNodeDefinitions"></param>
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
-        /// reset of the execution substrait. Note that setting this parameter 
-        /// to true will have a negative performance impact.</param>
-        /// 
-        public virtual void ResetEngine(bool markNodesAsDirty = false)
+        ///     reset of the execution substrait. Note that setting this parameter 
+        ///     to true will have a negative performance impact.</param>
+        public virtual void ResetEngine(IEnumerable<CustomNodeDefinition> customNodeDefinitions, bool markNodesAsDirty = false)
         {
-            ResetEngineInternal();
+            ResetEngineInternal(customNodeDefinitions);
             if (markNodesAsDirty)
             {
                 foreach (var node in Nodes)
-                {
-                    //TODO(Steve): Update place where we're tracking modifications, no need to call each individual node.
-                    node.RequiresRecalc = true;
-                }
+                    node.ForceReExecuteOfNode = true;
+                OnModified();
             }
         }
 
-        private void ResetEngineInternal()
+        private void ResetEngineInternal(IEnumerable<CustomNodeDefinition> customNodeDefinitions)
         {
-            var libServices = EngineController.LibraryServices;
+            var libServices = engineController.LibraryServices;
 
-            if (EngineController != null)
+            if (engineController != null)
             {
-                EngineController.Dispose();
-                EngineController = null;
+                engineController.Dispose();
+                engineController = null;
             }
 
             var geomFactory = DynamoPathManager.Instance.GeometryFactory;
-            EngineController = new EngineController(libServices, geomFactory);
+            engineController = new EngineController(libServices, geomFactory);
             
-            //TODO(Steve)
-            customNodeManager.RecompileAllNodes(EngineController);
+            foreach (var def in customNodeDefinitions)
+                RegisterCustomNodeDefinitionWithEngine(def);
         }
 
         /// <summary>
@@ -209,7 +210,7 @@ namespace Dynamo.Models
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
             {
-                modifiedNode.RequestValueUpdateAsync();
+                modifiedNode.RequestValueUpdateAsync(scheduler, engineController);
             }
 
             // Notify listeners (optional) of completion.
@@ -235,17 +236,17 @@ namespace Dynamo.Models
             {
                 // If we do have preloaded trace data, set it here first.
                 var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
-                if (setTraceDataTask.Initialize(EngineController, this))
+                if (setTraceDataTask.Initialize(engineController, this))
                     scheduler.ScheduleForExecution(setTraceDataTask);
             }
 
             // If one or more custom node have been updated, make sure they
             // are compiled first before the home workspace gets evaluated.
             // 
-            EngineController.ProcessPendingCustomNodeSyncData(scheduler);
+            engineController.ProcessPendingCustomNodeSyncData(scheduler);
 
             var task = new UpdateGraphAsyncTask(scheduler);
-            if (task.Initialize(EngineController, this))
+            if (task.Initialize(engineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunEnabled = false; // Disable 'Run' button.
@@ -259,10 +260,14 @@ namespace Dynamo.Models
             }
         }
 
-        public void ForceRun()
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="customNodeDefinitions"></param>
+        public void ForceRun(IEnumerable<CustomNodeDefinition> customNodeDefinitions)
         {
             Log("Beginning engine reset");
-            ResetEngine();
+            ResetEngine(customNodeDefinitions);
             Log("Reset complete");
 
             Run();
