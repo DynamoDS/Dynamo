@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <Product Id="F295EB3F-AAD2-4514-B466-6F0375AAEEE5"
-           Name="Dynamo 0.7.5"
+  <Product Id="A0A6A915-F284-4CB4-90D3-C1356052D456"
+           Name="Dynamo 0.7.6"
            Language="1033"
-           Version="0.7.5"
+           Version="0.7.6"
            Manufacturer="Dynamo"
            UpgradeCode="733f1d21-d745-47aa-bbb5-4a39b5996e4e">
 
