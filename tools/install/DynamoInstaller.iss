@@ -8,16 +8,16 @@ AppCopyright=
 AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=http://www.dynamobim.org
 AppUpdatesURL=http://www.dynamobim.org
-AppVersion=0.7.5
-VersionInfoVersion=0.7.5
+AppVersion=0.7.6
+VersionInfoVersion=0.7.6
 VersionInfoCompany=Dynamo 
-VersionInfoDescription=Dynamo 0.7.5
-VersionInfoTextVersion=Dynamo 0.7.5
+VersionInfoDescription=Dynamo 0.7.6
+VersionInfoTextVersion=Dynamo 0.7.6
 VersionInfoCopyright=
 DefaultDirName={pf64}\Dynamo 0.7
 DefaultGroupName=Dynamo
 OutputDir=Installers
-OutputBaseFilename=InstallDynamo0.7.5
+OutputBaseFilename=InstallDynamo0.7.6
 SetupIconFile=Extra\DynamoInstaller.ico
 Compression=lzma
 SolidCompression=true
@@ -27,7 +27,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\DynamoInstaller.ico
-UninstallDisplayName=Dynamo 0.7.5
+UninstallDisplayName=Dynamo 0.7.6
 UsePreviousAppDir=no
 
 [Dirs]
@@ -291,6 +291,11 @@ begin
 
       // Query for 0.7.3 MSI uninstall string.
       sUninstallString := GetUninstallStringForMSI('{F295EB3F-AAD2-4514-B466-6F0375AAEEE5}');
+      if sUninstallString <> '' then
+        UnInstallOldMSI(sUninstallString);
+	  
+	  // Query for 0.7.6 MSI uninstall string.
+      sUninstallString := GetUninstallStringForMSI('{A0A6A915-F284-4CB4-90D3-C1356052D456}');
       if sUninstallString <> '' then
         UnInstallOldMSI(sUninstallString);
 
