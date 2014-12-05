@@ -277,7 +277,7 @@ namespace Dynamo.Applications.Models
             if (markNodesAsDirty || DynamicRunEnabled)
                 handler = OnResetMarkNodesAsDirty;
 
-            IdlePromise.ExecuteOnIdleAsync(ResetEngineInternal, handler);
+            IdlePromise.ExecuteOnIdleAsync(this.Scheduler, ResetEngineInternal, handler);
         }
 
         /// <summary>
