@@ -1,0 +1,14 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="470" Y="389" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="537" Y="435" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand NodeId="37c9b30b-1b78-442a-b433-ec31da996c52" NodeName="Code Block" X="537" Y="435" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="37c9b30b-1b78-442a-b433-ec31da996c52" Name="Code" Value="a=({1,2}&lt;1&gt;+(2*{1,2})&lt;2&gt;)/((3*{1,2})&lt;1&gt;);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="First" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="37c9b30b-1b78-442a-b433-ec31da996c52" Name="Code" Value="a=({1,2}&lt;1&gt;+(2*{1,2})&lt;2&gt;)/((3*{1,2})&lt;1&gt;);&#xD;&#xA;b=1;" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>
