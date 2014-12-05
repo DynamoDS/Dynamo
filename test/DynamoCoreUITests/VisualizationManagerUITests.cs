@@ -459,7 +459,7 @@ namespace DynamoCoreUITests
             var examplePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\");
             ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "visualize_line_incustom.dyn"));
             ViewModel.Model.RunExpression();
-            Assert.AreEqual(1, BackgroundPreview.Lines.Count / 2);
+            Assert.AreEqual(1, BackgroundPreview.Lines.Lines.Count() / 2);
 
             // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
             var workspace = model.CurrentWorkspace;
@@ -487,7 +487,7 @@ namespace DynamoCoreUITests
             DynamoSelection.Instance.Selection.Add(node);
 
             // No preview in the background
-            Assert.AreEqual(0, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(0, BackgroundPreview.Lines.Lines.Count());
         }
 
         private int GetTotalDrawablesInModel()
