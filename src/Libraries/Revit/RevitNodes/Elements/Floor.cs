@@ -51,8 +51,16 @@ namespace Revit.Elements
         {
             TransactionManager.Instance.EnsureInTransaction(Document);
 
-            // we assume the floor is not structural here, this may be a bad assumption
-            var floor = Document.Create.NewFloor(curveArray, floorType, level, false);
+            Autodesk.Revit.DB.Floor floor = null;
+            if (floorType.IsFoundationSlab)
+            {
+                floor = Document.Create.NewFoundationSlab(curveArray, floorType, level, false, XYZ.BasisZ);
+            }
+            else
+            {
+                // we assume the floor is not structural here, this may be a bad assumption
+                floor = Document.Create.NewFloor(curveArray, floorType, level, false);
+            }
 
             InternalSetFloor( floor );
 
