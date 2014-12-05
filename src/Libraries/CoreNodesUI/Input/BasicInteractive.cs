@@ -215,8 +215,7 @@ namespace DSCoreNodesUI
         {
             if (name == "Value")
             {
-                var converter = new InverseBoolDisplay();
-                Value = (bool)converter.ConvertBack(value, typeof(bool), null, null);
+                Value = bool.Parse(value);
                 return true;
             }
 
