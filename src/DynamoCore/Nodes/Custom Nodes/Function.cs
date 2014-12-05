@@ -306,6 +306,7 @@ namespace Dynamo.Nodes
         {
             Controller.Definition = def;
             ResyncWithDefinition();
+            RequiresRecalc = true;
         }
     }
 
