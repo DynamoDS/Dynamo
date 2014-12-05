@@ -1227,7 +1227,8 @@ namespace Dynamo.Models
                 ports[ports.Count - 1].extensionEdges = SnapExtensionEdges.Bottom;
                 foreach (PortModel port in ports)
                 {
-                    if (!port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
+                    if (!port.extensionEdges.HasFlag(SnapExtensionEdges.Top)
+                        && !port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
                         port.extensionEdges = SnapExtensionEdges.None;
                 }
             } 
