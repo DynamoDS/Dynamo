@@ -238,6 +238,7 @@ namespace Revit.Elements
         /// <param name="structuralType">The type of the structural element - a beam, column, etc</param>
         /// <param name="structuralFramingType">The structural framing type representing the structural type</param>
         /// <returns></returns>
+        [Obsolete("Use StructuralFraming.BeamByCurve, StructuralFraming.BraceByCurve, or StructuralFraming.BraceByCurve instead.")]
         public static StructuralFraming ByCurveLevelUpVectorAndType(Autodesk.DesignScript.Geometry.Curve curve, Level level, 
             Autodesk.DesignScript.Geometry.Vector upVector, StructuralType structuralType, FamilySymbol structuralFramingType)
         {
