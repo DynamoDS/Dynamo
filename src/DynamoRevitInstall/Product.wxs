@@ -2,9 +2,9 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <Product Id="6F1B7397-5DED-400D-90BE-135E05091DB3"
-           Name="Dynamo Revit 0.7.5"
+           Name="Dynamo Revit 0.7.6"
            Language="1033"
-           Version="0.7.5"
+           Version="0.7.6"
            Manufacturer="Dynamo"
            UpgradeCode="2baac14c-bcc4-423b-baec-7b3acecd6d12">
 
