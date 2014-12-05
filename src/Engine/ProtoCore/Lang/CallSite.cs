@@ -1094,7 +1094,7 @@ namespace ProtoCore
                 if (candidateFunctions.Count == 0)
                 {
                     core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAmbiguousMethodDispatch,
-                                                  RuntimeData.WarningMessage.kAmbigousMethodDispatch);
+                                                  StringConstant.kAmbigousMethodDispatch);
                     return null;
                 }
 
@@ -1925,7 +1925,7 @@ namespace ProtoCore
                 //@TODO(Luke): log no-type coercion possible warning
 
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible,
-                                              ProtoCore.RuntimeData.WarningMessage.kConvertNonConvertibleTypes);
+                                              ProtoCore.StringConstant.kConvertNonConvertibleTypes);
 
                 return StackValue.Null;
             }
