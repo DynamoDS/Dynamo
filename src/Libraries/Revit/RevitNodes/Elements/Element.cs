@@ -238,7 +238,9 @@ namespace Revit.Elements
             switch (param.StorageType)
             {
                 case StorageType.ElementId:
-                    result = param.AsElementId();
+                    int id = param.AsElementId().IntegerValue;
+                    var ele = ElementIDLifecycleManager<int>.GetInstance().GetFirstWrapper(id) as Element;
+                    result = ElementSelector.ByElementId(id, ele == null ? true : ele.IsRevitOwned);
                     break;
                 case StorageType.String:
                     result = param.AsString();

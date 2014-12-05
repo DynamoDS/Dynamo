@@ -137,6 +137,23 @@ namespace RevitServices.Persistence
         }
 
         /// <summary>
+        /// Return null if no wrappers are registered with this ID.
+        /// Otherwise, returns the first wrapper.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public object GetFirstWrapper(T id)
+        {
+            List<object> wrappersForGivenId;
+            if (wrappers.TryGetValue(id, out wrappersForGivenId))
+            {
+                if (null != wrappersForGivenId && wrappersForGivenId.Count > 0)
+                    return wrappersForGivenId.First();
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Checks whether an element has been deleted in Revit
         /// </summary>
         /// <param name="id"></param>
