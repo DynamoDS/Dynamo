@@ -548,6 +548,21 @@ namespace Dynamo.Models
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
             IsReportingModifications = true;
+
+            Workspace.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
+        }
+
+        public virtual void Preferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "LengthUnit":
+                case "AreaUnit":
+                case "VolumeUnit":
+                    ForceReExecuteOfNode = true;
+                    RequiresRecalc = true;
+                    break;
+            }
         }
 
         /// <summary>

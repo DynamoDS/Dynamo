@@ -428,12 +428,26 @@ namespace DynamoUnits
         }
  
         public abstract double ConvertToHostUnits();
+
+    }
+
+    public abstract class UIUnit : SIUnit
+    {
+        /// <summary>
+        /// Construct an UIUnit object with a value.
+        /// </summary>
+        /// <param name="value"></param>
+        protected UIUnit(double value) : base (value)
+        {
+        }
+
+        public abstract double ValueInDynamoUIUnits();
     }
 
     /// <summary>
     /// A length stored in meters.
     /// </summary>
-    public class Length : SIUnit, IComparable, IEquatable<Length>
+    public class Length : UIUnit, IComparable, IEquatable<Length>
     {
         //length conversions
         private const double METER_TO_MILLIMETER = 1000;
@@ -476,6 +490,19 @@ namespace DynamoUnits
 
         public static Length FromDouble(double value)
         {
+            return new Length(value);
+        }
+
+        /// <summary>
+        /// The value will be assumed to be in the unit specified in the UI
+        /// and be converted to be the value in meter and a new length will
+        /// be created from it.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Length FromDoubleInUIUnit(double value)
+        {
+            value /= BaseUnit.UiLengthConversion;
             return new Length(value);
         }
 
@@ -728,12 +755,23 @@ namespace DynamoUnits
 
             return volumeHashCode;
         }
+
+        /// <summary>
+        /// Convert the value from meter to the value in the length unit specified
+        /// in the UI settings
+        /// </summary>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public override double ValueInDynamoUIUnits()
+        {
+            return Value * BaseUnit.UiLengthConversion;
+        }
     }
 
     /// <summary>
     /// An area stored in square meters.
     /// </summary>
-    public class Area : SIUnit, IComparable, IEquatable<Area>
+    public class Area : UIUnit, IComparable, IEquatable<Area>
     {
         //area conversions
         private const double SQUARE_METERS_TO_SQUARE_MILLIMETERS = 1000000;
@@ -771,6 +809,19 @@ namespace DynamoUnits
 
         public static Area FromDouble(double value)
         {
+            return new Area(value);
+        }
+
+        /// <summary>
+        /// The value will be assumed to be in the unit specified in the UI
+        /// and be converted to be the value in meter*meter and a new area will
+        /// be created from it.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Area FromDoubleInUiUnit(double value)
+        {
+            value /= BaseUnit.UiAreaConversion;
             return new Area(value);
         }
 
@@ -1016,12 +1067,23 @@ namespace DynamoUnits
 
             return volumeHashCode;
         }
+
+        /// <summary>
+        /// Convert the value from meter*meter to the value in the area unit specified
+        /// in the UI settings
+        /// </summary>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public override double ValueInDynamoUIUnits()
+        {
+            return Value * BaseUnit.UiAreaConversion;
+        }
     }
 
     /// <summary>
     /// A volume stored in cubic meters.
     /// </summary>
-    public class Volume : SIUnit, IComparable, IEquatable<Volume>
+    public class Volume : UIUnit, IComparable, IEquatable<Volume>
     {
         //volume conversions
         private const double CUBIC_METERS_TO_CUBIC_MILLIMETERS = 1000000000;
@@ -1059,6 +1121,19 @@ namespace DynamoUnits
 
         public static Volume FromDouble(double value)
         {
+            return new Volume(value);
+        }
+
+        /// <summary>
+        /// The value will be assumed to be in the unit specified in the UI
+        /// and be converted to be the value in meter*meter*meter and a new volume will
+        /// be created from it.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Volume FromDoubleInUiUnit(double value)
+        {
+            value /= BaseUnit.UiVolumeConversion;
             return new Volume(value);
         }
 
@@ -1294,6 +1369,17 @@ namespace DynamoUnits
             var volumeHashCode = Convert.ToInt32(_value);
 
             return volumeHashCode;
+        }
+
+        /// <summary>
+        /// Convert the value from meter*meter*meter to the value in the area unit specified
+        /// in the UI settings
+        /// </summary>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public override double ValueInDynamoUIUnits()
+        {
+            return Value * BaseUnit.UiVolumeConversion;
         }
     }
 

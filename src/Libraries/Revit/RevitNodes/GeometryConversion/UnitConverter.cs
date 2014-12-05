@@ -13,7 +13,7 @@ namespace Revit.GeometryConversion
     {
         public static double DynamoToHostFactor
         {
-            get { return Length.FromDouble(1.0).ConvertToHostUnits(); }
+            get { return Length.FromDoubleInUIUnit(1.0).ConvertToHostUnits(); }
         }
 
         public static double HostToDynamoFactor

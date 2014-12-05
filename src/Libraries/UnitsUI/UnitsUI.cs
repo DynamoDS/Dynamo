@@ -171,7 +171,7 @@ namespace UnitsUI
     {
         public LengthFromString(WorkspaceModel ws) : base(ws)
         {
-            _measure = Length.FromDouble(0.0);
+            _measure = Length.FromDoubleInUIUnit(0.0);
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters."));
             RegisterAllPorts();
         }
@@ -197,7 +197,7 @@ namespace UnitsUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var doubleNode = AstFactory.BuildDoubleNode(Value);
-            var functionCall = AstFactory.BuildFunctionCall(new Func<double,Length>(Length.FromDouble), new List<AssociativeNode> { doubleNode });
+            var functionCall = AstFactory.BuildFunctionCall(new Func<double, Length>(Length.FromDoubleInUIUnit), new List<AssociativeNode> { doubleNode });
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
@@ -211,7 +211,7 @@ namespace UnitsUI
     {
         public AreaFromString(WorkspaceModel workspaceModel) : base(workspaceModel) 
         {
-            _measure = Area.FromDouble(0.0);
+            _measure = Area.FromDoubleInUiUnit(0.0);
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared."));
             RegisterAllPorts();
         }
@@ -219,7 +219,7 @@ namespace UnitsUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var doubleNode = AstFactory.BuildDoubleNode(Value);
-            var functionCall = AstFactory.BuildFunctionCall(new Func<double,Area>(Area.FromDouble), new List<AssociativeNode> { doubleNode });
+            var functionCall = AstFactory.BuildFunctionCall(new Func<double, Area>(Area.FromDoubleInUiUnit), new List<AssociativeNode> { doubleNode });
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
@@ -233,7 +233,7 @@ namespace UnitsUI
     {
         public VolumeFromString(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            _measure = Volume.FromDouble(0.0);
+            _measure = Volume.FromDoubleInUiUnit(0.0);
             OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed."));
             RegisterAllPorts();
         }
@@ -241,7 +241,7 @@ namespace UnitsUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var doubleNode = AstFactory.BuildDoubleNode(Value);
-            var functionCall = AstFactory.BuildFunctionCall(new Func<double, Volume>(Volume.FromDouble), new List<AssociativeNode> { doubleNode });
+            var functionCall = AstFactory.BuildFunctionCall(new Func<double, Volume>(Volume.FromDoubleInUiUnit), new List<AssociativeNode> { doubleNode });
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
