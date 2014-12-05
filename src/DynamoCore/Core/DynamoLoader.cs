@@ -308,7 +308,7 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Load Custom Nodes from the CustomNodeLoader search path and update search
         /// </summary>
-        public List<CustomNodeInfo> LoadPackageCustomNodes(string path, string packageName)
+        public List<CustomNodeInfo> LoadCustomNodesFromPackage(string path, string packageName)
         {
             if (!Directory.Exists(path))
                 return new List<CustomNodeInfo>();

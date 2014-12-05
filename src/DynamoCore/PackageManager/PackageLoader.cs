@@ -220,6 +220,6 @@ namespace Dynamo.PackageManager
             }
             
             preferences.PackageDirectoriesToUninstall.RemoveAll(pkgDirsRemoved.Contains);
-        }                
+        }
     }
 }
