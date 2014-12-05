@@ -814,7 +814,7 @@ namespace Dynamo.Search
 
             IEnumerable<string> assemblyList = nodeModelAssemblies.Union(zeroTouchAssemblies)
                                                                   .OrderBy(a => a);
-            assemblyList = FixRevitAssemblyNames(assemblyList);
+            assemblyList = FixAssemblyNames(assemblyList);
             foreach (var currAssembly in assemblyList)
             {
                 parent = XmlHelper.AddNode(assembliesRoot, "Assembly");
@@ -922,25 +922,21 @@ namespace Dynamo.Search
             XmlHelper.AddNode(node, "Description", element.Description);
         }
 
-        private IEnumerable<string> FixRevitAssemblyNames(IEnumerable<string> assemblyList)
+        private IEnumerable<string> FixAssemblyNames(IEnumerable<string> assemblyList)
         {
             // For nodes which are belongs to preloaded ZeroTouch library Assembly property is
             // specified as library dll filename. But in assemblyList we have full paths 
-            // for those libraries. As result nodes are not added to dump. This method should
-            // replace full names for "RevitNodes.dll" and "SimpleRaaS.dll".
+            // for those libraries. As result nodes are not added to dump. This method fixes it.
+
+            var assembliesToFix = DynamoPathManager.Instance.PreloadLibraries.Where(pl => pl != Path.GetFileName(pl));
+            if (!assembliesToFix.Any())
+                return assemblyList;
+
             var list = assemblyList.ToList();
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].Contains("RevitNodes.dll"))
-                {
-                    list[i] = "RevitNodes.dll";
-                    continue;
-                }
-                if (list[i].Contains("SimpleRaaS.dll"))
-                {
-                    list[i] = "SimpleRaaS.dll";
-                    continue;
-                }
+                if (assembliesToFix.Contains(list[i]))
+                    list[i] = Path.GetFileName(list[i]);
             }
 
             return list;
