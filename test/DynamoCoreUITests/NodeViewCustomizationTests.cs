@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using DSCore.File;
 using DSCoreNodesUI;
 using DSIronPythonNode;
@@ -82,7 +83,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewOf<DoubleSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
-            Assert.AreEqual(0, element.Value, 1e-6);
+            Assert.AreEqual(1.0, element.Value, 1e-6);
         }
 
         [Test]
@@ -204,8 +205,13 @@ namespace DynamoCoreUITests
             var tree = nodeView.ChildrenOfType<WatchTree>();
             Assert.AreEqual(1, tree.Count());
 
-            var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
-            Assert.AreEqual(8, items.Count());
+            Action assert = () =>
+            {
+                var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
+                Assert.AreEqual(8, items.Count());
+            };
+
+            AssertWhenDispatcherDone(assert);
         }
 
         [Test]
@@ -215,9 +221,19 @@ namespace DynamoCoreUITests
 
             var nodeView = NodeViewOf<Dynamo.Nodes.WatchImageCore>();
 
-            var images = nodeView.ChildrenOfType<Image>();
+            var imgs = nodeView.ChildrenOfType<Image>();
 
-            Assert.AreEqual(1, images.Count());
+            Assert.AreEqual(1, imgs.Count());
+
+            var img = imgs.First();
+
+            Action assert = () =>
+            {
+                Assert.Greater(img.ActualWidth, 10);
+                Assert.Greater(img.ActualHeight, 10);
+            };
+
+            AssertWhenDispatcherDone(assert);
         }
 
         [Test]
@@ -233,7 +249,9 @@ namespace DynamoCoreUITests
 
             var watch3DView = watch3ds.First();
 
-            Assert.AreEqual(1, watch3DView.Points.Count);
+            Action assert = () => Assert.AreEqual(1, watch3DView.Points.Count);
+            AssertWhenDispatcherDone(assert);
+            
         }
 
         [Test]

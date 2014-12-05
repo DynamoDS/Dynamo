@@ -48,7 +48,7 @@ namespace Dynamo.Wpf
         {
             if (args.PropertyName != "IsUpdated") return;
             var im = GetImageFromMirror();
-            nodeView.Dispatcher.Invoke(new Action<Bitmap>(SetImageSource), new object[] { im });
+            nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { im });
         }
 
         private void SetImageSource(System.Drawing.Bitmap bmp)
