@@ -38,6 +38,9 @@ namespace RevitTestServices
 
             // Tests do not run from idle thread.
             TransactionManager.Instance.DoAssertInIdleThread = false;
+
+            // Start a transaction
+            TransactionManager.Instance.EnsureInTransaction(DocumentManager.Instance.CurrentDBDocument);
         }
 
         public void DisableElementBinder()
