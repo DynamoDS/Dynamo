@@ -211,6 +211,18 @@ namespace DSCoreNodesUI
             return this.Value.ToString();
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                var converter = new InverseBoolDisplay();
+                Value = (bool)converter.ConvertBack(value, typeof(bool), null, null);
+                return true;
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildBooleanNode(Value);

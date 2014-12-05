@@ -1464,6 +1464,12 @@ namespace Dynamo.Controls
             {
                 return !(bool)value;
             }
+
+            if (value is string)
+            {
+                return bool.Parse(value as string);
+            }
+
             return value;
         }
     }
