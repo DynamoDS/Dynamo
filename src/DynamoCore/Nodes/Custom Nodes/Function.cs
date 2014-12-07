@@ -21,38 +21,18 @@ namespace Dynamo.Nodes
     public class Function 
         : FunctionCallBase<CustomNodeController<CustomNodeDefinition>, CustomNodeDefinition>
     {
-        public Function(CustomNodeDefinition def)
+        public Function(CustomNodeDefinition def, string description, string category)
             : base(new CustomNodeController<CustomNodeDefinition>(def))
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            Description = description;
+            Category = category;
         }
-
-        public override string Description
-        {
-            get { return Definition == null ? string.Empty : Definition.Workspace.Description; }
-            set
-            {
-                Definition.Workspace.Description = value;
-                RaisePropertyChanged("Description");
-            }
-        }
-
+        
         [Obsolete("Use Definition.FunctionId.ToString()", true)]
         public string Symbol
         {
             get { return Definition.FunctionId.ToString(); }
-        }
-
-        //TODO(Steve): Remove if possible
-        public new string Category
-        {
-            get
-            {
-                var infos = Workspace.DynamoModel.CustomNodeManager.NodeInfos;
-                return infos.ContainsKey(Definition.FunctionId)
-                    ? infos[Definition.FunctionId].Category
-                    : "Custom Nodes";
-            }
         }
 
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
@@ -282,6 +262,7 @@ namespace Dynamo.Nodes
         {
             Controller.Definition = def;
             Controller.SyncNodeWithDefinition(this);
+            OnModified();
         }
     }
 

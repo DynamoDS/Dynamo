@@ -116,6 +116,12 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
         }
 
+        public void OpenAndRun(string pathInTestsDir)
+        {
+            Open(pathInTestsDir);
+            Run();
+        }
+
         public void AssertWhenDispatcherDone(Action action)
         {
             View.Dispatcher.Invoke(DispatcherPriority.SystemIdle, action);

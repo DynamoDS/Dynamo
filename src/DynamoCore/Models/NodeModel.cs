@@ -294,20 +294,33 @@ namespace Dynamo.Models
         /// <value>
         ///     If the node has a category, return it.  Other wise return empty string.
         /// </value>
-        public virtual string Category
+        public string Category
         {
             get
             {
-                Type type = GetType();
-                object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
-                if (type.Namespace == "Dynamo.Nodes" && !type.IsAbstract && attribs.Length > 0
-                    && type.IsSubclassOf(typeof(NodeModel)))
-                {
-                    var elCatAttrib = attribs[0] as NodeCategoryAttribute;
-                    return elCatAttrib.ElementCategory;
-                }
-                return "";
+                category = category ?? GetCategoryStringFromAttributes();
+                return category;
             }
+            set
+            {
+                category = value;
+                RaisePropertyChanged("Category");
+            }
+        }
+
+        private string category;
+
+        private string GetCategoryStringFromAttributes()
+        {
+            Type type = GetType();
+            object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+            
+            if (type.Namespace != "Dynamo.Nodes" || type.IsAbstract || attribs.Length <= 0
+                || !type.IsSubclassOf(typeof(NodeModel))) 
+                return "";
+
+            var elCatAttrib = attribs[0] as NodeCategoryAttribute;
+            return elCatAttrib.ElementCategory;
         }
 
         public MirrorData CachedValue
@@ -381,7 +394,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Description of this Node.
         /// </summary>
-        public virtual string Description
+        public string Description
         {
             get
             {
@@ -1301,28 +1314,34 @@ namespace Dynamo.Models
         /// Configures the snap edges.
         /// </summary>
         /// <param name="ports">The ports.</param>
-        private void ConfigureSnapEdges(ObservableCollection<PortModel> ports)
+        private static void ConfigureSnapEdges(ObservableCollection<PortModel> ports)
         {
-            if (ports.Count == 1) //only one port
-                ports[0].extensionEdges = SnapExtensionEdges.Top | SnapExtensionEdges.Bottom;
-            else if (ports.Count == 2) //has two ports
+            switch (ports.Count)
             {
-                ports[0].extensionEdges = SnapExtensionEdges.Top;
-                ports[1].extensionEdges = SnapExtensionEdges.Bottom;
-            }
-            else if (ports.Count > 1)
-            {
-                ports[0].extensionEdges = SnapExtensionEdges.Top;
-                ports[ports.Count - 1].extensionEdges = SnapExtensionEdges.Bottom;
-                foreach (
-                    PortModel port in
-                        ports.Where(
-                            port =>
-                                !port.extensionEdges.HasFlag(
-                                    SnapExtensionEdges.Top | SnapExtensionEdges.Bottom)))
-                {
-                    port.extensionEdges = SnapExtensionEdges.None;
-                }
+                case 0:
+                    break;
+                case 1:
+                    ports[0].extensionEdges = SnapExtensionEdges.Top | SnapExtensionEdges.Bottom;
+                    break;
+                case 2:
+                    ports[0].extensionEdges = SnapExtensionEdges.Top;
+                    ports[1].extensionEdges = SnapExtensionEdges.Bottom;
+                    break;
+                default:
+                    ports[0].extensionEdges = SnapExtensionEdges.Top;
+                    ports[ports.Count - 1].extensionEdges = SnapExtensionEdges.Bottom;
+                    foreach (
+                        PortModel port in
+                            ports.Where(
+                                port =>
+                                    !port.extensionEdges.HasFlag(
+                                        SnapExtensionEdges.Top | SnapExtensionEdges.Bottom)))
+                    {
+                        if (!port.extensionEdges.HasFlag(SnapExtensionEdges.Top)
+                            && !port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
+                            port.extensionEdges = SnapExtensionEdges.None;
+                    }
+                    break;
             }
         }
 
