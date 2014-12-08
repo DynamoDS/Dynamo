@@ -7,8 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using System.Windows.Threading;
 using System.Xml;
 
 using DSNodeServices;
@@ -808,7 +806,7 @@ namespace Dynamo.Models
             }
 
             var vm = this.Workspaces.First(x => x == ws);
-            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
+            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(workspaceHeader.X, workspaceHeader.Y)));
 
             this.CurrentWorkspace = ws;
         }
@@ -1074,7 +1072,7 @@ namespace Dynamo.Models
                 CurrentWorkspace.Zoom = zoom;
 
                 var vm = this.Workspaces.First(x => x == CurrentWorkspace);
-                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
+                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(cx, cy)));
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");

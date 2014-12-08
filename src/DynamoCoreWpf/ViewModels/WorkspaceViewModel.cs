@@ -477,7 +477,7 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
-        internal void SelectInRegion(Rect region, bool isCrossSelect)
+        internal void SelectInRegion(Rect2D region, bool isCrossSelect)
         {
             bool fullyEnclosed = !isCrossSelect;
 
@@ -516,14 +516,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private static bool IsInRegion(Rect region, ILocatable locatable, bool fullyEnclosed)
+        private static bool IsInRegion(Rect2D region, ILocatable locatable, bool fullyEnclosed)
         {
             double x0 = locatable.X;
             double y0 = locatable.Y;
 
             if (false == fullyEnclosed) // Cross selection.
             {
-                var test = new Rect(x0, y0, locatable.Width, locatable.Height);
+                var test = new Rect2D(x0, y0, locatable.Width, locatable.Height);
                 return region.IntersectsWith(test);
             }
 
@@ -835,7 +835,7 @@ namespace Dynamo.ViewModels
                 maxY = nodes.Select(y => y.Y + y.Height).Max();
             }
 
-            var offset = new Point(minX, minY);
+            var offset = new Point2D(minX, minY);
             double focusWidth = maxX - minX;
             double focusHeight = maxY - minY;
 
@@ -977,7 +977,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsHomeSpace");
 
             // New workspace or swapped workspace to follow it offset and zoom
-            this.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(Model.X, Model.Y)));
+            this.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(Model.X, Model.Y)));
             this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
         }
 

@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Xml;
 using System.Globalization;
 using Dynamo.Core;
@@ -282,9 +281,9 @@ namespace Dynamo.Models
         /// <summary>
         ///     Get the bounds of the workspace.
         /// </summary>
-        public Rect Rect
+        public Rect2D Rect
         {
-            get { return new Rect(_x, _y, _width, _height); }
+            get { return new Rect2D(_x, _y, _width, _height); }
         }
 
         /// <summary>

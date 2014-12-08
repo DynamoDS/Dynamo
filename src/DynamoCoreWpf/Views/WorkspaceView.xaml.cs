@@ -11,6 +11,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.UI;
 using System.Collections.Specialized;
+using Dynamo.Wpf.Utilities;
 
 
 namespace Dynamo.Views
@@ -367,12 +368,12 @@ namespace Dynamo.Views
                 resultZoom = WorkspaceModel.ZOOM_MAXIMUM;
 
             // Get Viewpoint Center point
-            Point centerPoint = new Point();
+            var centerPoint = new Point2D();
             centerPoint.X = outerCanvas.ActualWidth / 2;
             centerPoint.Y = outerCanvas.ActualHeight / 2;
 
             // Get relative point of ZoomBorder child in relates to viewpoint center point
-            Point relativePoint = new Point();
+            var relativePoint = new Point2D();
             relativePoint.X = (centerPoint.X - ViewModel.Model.X) / ViewModel.Model.Zoom;
             relativePoint.Y = (centerPoint.Y - ViewModel.Model.Y) / ViewModel.Model.Zoom;
 
@@ -396,12 +397,12 @@ namespace Dynamo.Views
         void vm_ZoomAtViewportPoint(object sender, EventArgs e)
         {
             double zoom = AdjustZoomForCurrentZoomAmount((e as ZoomEventArgs).Zoom);
-            Point point = (e as ZoomEventArgs).Point;
+            Point2D point = (e as ZoomEventArgs).Point;
 
             ZoomAtViewportPoint(zoom, point);
         }
 
-        private void ZoomAtViewportPoint(double zoom, Point relative)
+        private void ZoomAtViewportPoint(double zoom, Point2D relative)
         {
             // Limit zoom
             double resultZoom = ViewModel.Model.Zoom + zoom;
@@ -413,7 +414,7 @@ namespace Dynamo.Views
             double absoluteX, absoluteY;
             absoluteX = relative.X * ViewModel.Model.Zoom + ViewModel.Model.X;
             absoluteY = relative.Y * ViewModel.Model.Zoom + ViewModel.Model.Y;
-            Point resultOffset = new Point();
+            var resultOffset = new Point2D();
             resultOffset.X = absoluteX - (relative.X * resultZoom);
             resultOffset.Y = absoluteY - (relative.Y * resultZoom);
 
@@ -454,7 +455,7 @@ namespace Dynamo.Views
             double centerOffsetX = viewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
             double centerOffsetY = viewportPadding + (fitHeight - (zoomArgs.FocusHeight * scaleRequired)) / 2;
 
-            Point resultOffset = new Point();
+            var resultOffset = new Point2D();
             resultOffset.X = -(zoomArgs.Offset.X * scaleRequired) + centerOffsetX;
             resultOffset.Y = -(zoomArgs.Offset.Y * scaleRequired) + centerOffsetY;
 
@@ -618,7 +619,7 @@ namespace Dynamo.Views
 
                         //vm.CurrentOffset = offset;
 
-                        zoomBorder.SetTranslateTransformOrigin(new Point(vm.Model.X - deltaX, vm.Model.Y - deltaY));
+                        zoomBorder.SetTranslateTransformOrigin(new Point2D(vm.Model.X - deltaX, vm.Model.Y - deltaY));
                     }
                 });
         }

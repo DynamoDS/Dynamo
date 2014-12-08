@@ -115,6 +115,7 @@ limitations under the License.
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Search\BrowserRootElement.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
+    <Compile Include="Utilities\ModifierKeys.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
     <Compile Include="Core\Threading\NotifyRenderPackagesReadyAsyncTask.cs" />
@@ -198,7 +199,9 @@ limitations under the License.
     <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\MigrationReport.cs" />
-    <Compile Include="Utilities\ProxyTypes.cs" />
+    <Compile Include="Utilities\Point2D.cs" />
+    <Compile Include="Utilities\Rect2D.cs" />
+    <Compile Include="Utilities\Thickness.cs" />
     <Compile Include="Utilities\ThreadSafeList.cs" />
     <Compile Include="Utilities\TypeExtensions.cs" />
     <Compile Include="Utilities\VersionUtilities.cs" />

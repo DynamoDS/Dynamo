@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Input;
 using System.Xml;
 using Dynamo.Utilities;
 
@@ -604,7 +602,7 @@ namespace Dynamo.Models
         {
             #region Public Class Methods
 
-            public SelectInRegionCommand(Rect region, bool isCrossSelection)
+            public SelectInRegionCommand(Rect2D region, bool isCrossSelection)
             {
                 redundant = true; // High-frequency command.
 
@@ -621,7 +619,7 @@ namespace Dynamo.Models
                 double width = helper.ReadDouble("Width");
                 double height = helper.ReadDouble("Height");
 
-                Rect region = new Rect(x, y, width, height);
+                Rect2D region = new Rect2D(x, y, width, height);
                 bool isCrossSelection = helper.ReadBoolean("IsCrossSelection");
                 return new SelectInRegionCommand(region, isCrossSelection);
             }
@@ -630,7 +628,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal Rect Region { get; private set; }
+            internal Rect2D Region { get; private set; }
             internal bool IsCrossSelection { get; private set; }
 
             #endregion
@@ -658,7 +656,7 @@ namespace Dynamo.Models
 
             public enum Operation { BeginDrag, EndDrag }
 
-            public DragSelectionCommand(Point mouseCursor, Operation operation)
+            public DragSelectionCommand(Point2D mouseCursor, Operation operation)
             {
                 MouseCursor = mouseCursor;
                 DragOperation = operation;
@@ -670,7 +668,7 @@ namespace Dynamo.Models
                 double x = helper.ReadDouble("X");
                 double y = helper.ReadDouble("Y");
                 int op = helper.ReadInteger("DragOperation");
-                return new DragSelectionCommand(new Point(x, y), ((Operation)op));
+                return new DragSelectionCommand(new Point2D(x, y), ((Operation)op));
             }
 
             #endregion
@@ -678,7 +676,7 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             internal Operation DragOperation { get; private set; }
-            internal Point MouseCursor { get; private set; }
+            internal Point2D MouseCursor { get; private set; }
 
             #endregion
 

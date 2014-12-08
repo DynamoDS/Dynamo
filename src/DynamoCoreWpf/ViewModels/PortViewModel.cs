@@ -64,7 +64,7 @@ namespace Dynamo.ViewModels
 
         public Point Center
         {
-            get { return _port.Center; }
+            get { return _port.Center.AsWindowsType(); }
         }
 
         public ElementState State
@@ -87,7 +87,7 @@ namespace Dynamo.ViewModels
         public System.Windows.Thickness MarginThickness
         {
 
-            get { return _port.MarginThickness.AsWindowsThickness(); }
+            get { return _port.MarginThickness.AsWindowsType(); }
             set
             {
                 _port.MarginThickness = new Utilities.Thickness()

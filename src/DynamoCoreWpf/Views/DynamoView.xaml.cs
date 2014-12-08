@@ -768,7 +768,7 @@ namespace Dynamo.Controls
                 if (workspace_index == -1) return;
 
                 var workspace_vm = dynamoViewModel.Workspaces[workspace_index];
-                workspace_vm.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspace_vm.Model.X, workspace_vm.Model.Y)));
+                workspace_vm.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(workspace_vm.Model.X, workspace_vm.Model.Y)));
                 workspace_vm.Model.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
 
                 ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);

@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -78,7 +79,7 @@ namespace Dynamo.Nodes
         {
             System.Guid noteGuid = this.ViewModel.Model.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers));
+                new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers.AsDynamoType()));
         }
 
         private void OnEditItemClick(object sender, RoutedEventArgs e)

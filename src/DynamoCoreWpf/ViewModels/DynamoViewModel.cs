@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Globalization;
+
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 using Dynamo.UI;
@@ -32,7 +31,7 @@ namespace Dynamo.ViewModels
 
         private readonly DynamoModel model;
 
-        private Point transformOrigin;
+        private System.Windows.Point transformOrigin;
         private bool runEnabled = true;
         protected bool canRunDynamically = true;
         protected bool debug = false;
@@ -59,7 +58,7 @@ namespace Dynamo.ViewModels
             get { return model; }
         }
 
-        public Point TransformOrigin
+        public System.Windows.Point TransformOrigin
         {
             get { return transformOrigin; }
             set
@@ -1164,7 +1163,7 @@ namespace Dynamo.ViewModels
 
             //set the zoom and offsets events
             var vm = this.Model.Workspaces.First(x => x == newWs);
-            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(newWs.X, newWs.Y)));
+            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(newWs.X, newWs.Y)));
             vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
@@ -1357,7 +1356,7 @@ namespace Dynamo.ViewModels
             model.CurrentWorkspace.Zoom = 1.0;
 
             var ws = this.Model.Workspaces.First(x => x == model.CurrentWorkspace);
-            ws.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(0, 0)));
+            ws.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(0, 0)));
         }
 
         internal bool CanGoHomeView(object parameter)
@@ -1661,7 +1660,7 @@ namespace Dynamo.ViewModels
             Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", model.CurrentWorkspace.X, model.CurrentWorkspace.Y, model.CurrentWorkspace.Zoom));
             var panType = parameter.ToString();
             double pan = 10;
-            var pt = new Point(model.CurrentWorkspace.X, model.CurrentWorkspace.Y);
+            var pt = new Point2D(model.CurrentWorkspace.X, model.CurrentWorkspace.Y);
 
             switch (panType)
             {

@@ -6,9 +6,12 @@ using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Core;
 using Dynamo.UI;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
+using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
@@ -53,7 +56,7 @@ namespace Dynamo.ViewModels
             return stateMachine.HandleMouseMove(sender, e);
         }
 
-        internal bool HandleMouseMove(object sender, Point mouseCursor)
+        internal bool HandleMouseMove(object sender, System.Windows.Point mouseCursor)
         {
             return stateMachine.HandleMouseMove(sender, mouseCursor);
         }
@@ -83,7 +86,7 @@ namespace Dynamo.ViewModels
             stateMachine.CancelActiveState();
         }
 
-        internal void BeginDragSelection(Point mouseCursor)
+        internal void BeginDragSelection(Point2D mouseCursor)
         {
             // This represents the first mouse-move event after the mouse-down
             // event. Note that a mouse-down event can either be followed by a
@@ -109,7 +112,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void UpdateDraggedSelection(Point mouseCursor)
+        internal void UpdateDraggedSelection(Point2D mouseCursor)
         {
             if (draggedNodes.Count <= 0)
             {
@@ -121,7 +124,7 @@ namespace Dynamo.ViewModels
                 draggedNode.Update(mouseCursor);
         }
 
-        internal void EndDragSelection(Point mouseCursor)
+        internal void EndDragSelection(Point2D mouseCursor)
         {
             UpdateDraggedSelection(mouseCursor); // Final position update.
             draggedNodes.Clear(); // We are no longer dragging anything.
@@ -194,7 +197,7 @@ namespace Dynamo.ViewModels
             this.SetActiveConnector(null);
         }
 
-        internal void UpdateActiveConnector(Point mouseCursor)
+        internal void UpdateActiveConnector(System.Windows.Point mouseCursor)
         {
             if (null != this.activeConnector)
                 this.activeConnector.Redraw(mouseCursor);
@@ -278,14 +281,14 @@ namespace Dynamo.ViewModels
             /// be moved. However, the movement of ILocatable will be limited by 
             /// region and that it cannot be moved beyond the region.</param>
             /// 
-            public DraggedNode(ILocatable locatable, Point mouseCursor)
+            public DraggedNode(ILocatable locatable, Point2D mouseCursor)
             {
                 this.locatable = locatable;
                 deltaX = mouseCursor.X - locatable.X;
                 deltaY = mouseCursor.Y - locatable.Y;
             }
 
-            public void Update(Point mouseCursor)
+            public void Update(Point2D mouseCursor)
             {
                 // Make sure the nodes do not go beyond the region.
                 double x = mouseCursor.X - deltaX;
@@ -599,7 +602,7 @@ namespace Dynamo.ViewModels
                 {
                     Point mouseCursor = e.GetPosition(sender as IInputElement);
                     var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
-                    var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
+                    var command = new DynCmd.DragSelectionCommand(mouseCursor.AsDynamoType(), operation);
 
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
@@ -652,7 +655,7 @@ namespace Dynamo.ViewModels
                     args.SetSelectionMode(isCrossSelection);
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
 
-                    var rect = new Rect(x, y, width, height);
+                    var rect = new Dynamo.Utilities.Rect2D(x, y, width, height);
 
                     var command = new DynCmd.SelectInRegionCommand(rect, isCrossSelection);
 
@@ -670,7 +673,7 @@ namespace Dynamo.ViewModels
 
                     // Record and begin the drag operation for selected nodes.
                     var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
-                    var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
+                    var command = new DynCmd.DragSelectionCommand(mouseCursor.AsDynamoType(), operation);
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
                     SetCurrentState(State.NodeReposition);
@@ -679,7 +682,7 @@ namespace Dynamo.ViewModels
                 else if (this.currentState == State.NodeReposition)
                 {
                     // Update the dragged nodes (note: this isn't recorded).
-                    owningWorkspace.UpdateDraggedSelection(mouseCursor);
+                    owningWorkspace.UpdateDraggedSelection(mouseCursor.AsDynamoType());
                 }
 
                 return false; // Mouse event not handled.
@@ -780,7 +783,7 @@ namespace Dynamo.ViewModels
                 foreach (var selectable in DynamoSelection.Instance.Selection)
                 {
                     var locatable = selectable as ILocatable;
-                    if (locatable == null || (!locatable.Rect.Contains(point)))
+                    if (locatable == null || (!locatable.Rect.Contains(point.AsDynamoType())))
                         continue;
 
                     return selectable;
@@ -808,7 +811,7 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException();
 
                 // Clear existing selection set.
-                var selectNothing = new DynCmd.SelectModelCommand(Guid.Empty, ModifierKeys.None);
+                var selectNothing = new DynCmd.SelectModelCommand(Guid.Empty, ModifierKeys.None.AsDynamoType());
 
                 owningWorkspace.DynamoViewModel.ExecuteCommand(selectNothing);
 

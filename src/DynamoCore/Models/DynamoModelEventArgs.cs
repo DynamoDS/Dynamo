@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -13,11 +13,11 @@ namespace Dynamo.Models
             ByFitView = 0x00000004
         }
 
-        internal Point Point { get; set; }
+        internal Point2D Point { get; set; }
         internal double Zoom { get; set; }
         internal ZoomModes Modes { get; private set; }
 
-        internal Point Offset { get; set; }
+        internal Point2D Offset { get; set; }
         internal double FocusWidth { get; set; }
         internal double FocusHeight { get; set; }
 
@@ -27,20 +27,20 @@ namespace Dynamo.Models
             this.Modes = ZoomModes.ByFactor;
         }
 
-        internal ZoomEventArgs(Point point)
+        internal ZoomEventArgs(Point2D point)
         {
             this.Point = point;
             this.Modes = ZoomModes.ByPoint;
         }
 
-        internal ZoomEventArgs(double zoom, Point point)
+        internal ZoomEventArgs(double zoom, Point2D point)
         {
             this.Point = point;
             this.Zoom = zoom;
             this.Modes = ZoomModes.ByPoint | ZoomModes.ByFactor;
         }
 
-        internal ZoomEventArgs(Point offset, double focusWidth, double focusHeight)
+        internal ZoomEventArgs(Point2D offset, double focusWidth, double focusHeight)
         {
             this.Offset = offset;
             this.FocusWidth = focusWidth;
@@ -48,7 +48,7 @@ namespace Dynamo.Models
             this.Modes = ZoomModes.ByFitView;
         }
 
-        internal ZoomEventArgs(Point offset, double focusWidth, double focusHeight, double zoom)
+        internal ZoomEventArgs(Point2D offset, double focusWidth, double focusHeight, double zoom)
         {
             this.Offset = offset;
             this.FocusWidth = focusWidth;
@@ -175,9 +175,9 @@ namespace Dynamo.Models
 
     public class PointEventArgs : EventArgs
     {
-        public Point Point { get; set; }
+        public Point2D Point { get; set; }
 
-        public PointEventArgs(Point p)
+        public PointEventArgs(Point2D p)
         {
             Point = p;
         }

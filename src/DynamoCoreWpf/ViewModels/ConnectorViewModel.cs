@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Dynamo.Models;
-
+using Dynamo.Utilities;
 using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
@@ -66,9 +66,9 @@ namespace Dynamo.ViewModels
             get
             {
                 if (_model == null)
-                    return _activeStartPort.Center;
+                    return _activeStartPort.Center.AsWindowsType();
                 else if (_model.Start != null)
-                    return _model.Start.Center;
+                    return _model.Start.Center.AsWindowsType();
                 else
                     return new Point();
             }
