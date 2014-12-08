@@ -93,7 +93,7 @@ namespace Dynamo.Utilities
 
                 dynamoModel.Logger.LogWarning("Could not repair 1-node holes", WarningLevel.Mild);
 
-                // PB: This was already broken - Apply1 is a dummy node
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
                 //var curriedNodeArgs =
                 //    new HashSet<NodeModel>(
                 //        inputs.Select(x => x.Item3.Item2)
