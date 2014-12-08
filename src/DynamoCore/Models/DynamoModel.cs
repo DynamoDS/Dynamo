@@ -103,6 +103,7 @@ namespace Dynamo.Models
         private ObservableCollection<WorkspaceModel> workspaces = new ObservableCollection<WorkspaceModel>();
         private Dictionary<Guid, NodeModel> nodeMap = new Dictionary<Guid, NodeModel>();
         private bool runEnabled = true;
+        private Visibility processingImageVisible = Visibility.Hidden;        
         #endregion
 
         #region Static properties
@@ -248,7 +249,7 @@ namespace Dynamo.Models
             }
         }
         public bool RunInDebug { get; set; }
-
+      
         /// <summary>
         /// All nodes in all workspaces. 
         /// </summary>
@@ -549,8 +550,8 @@ namespace Dynamo.Models
             var task = new UpdateGraphAsyncTask(scheduler);
             if (task.Initialize(EngineController, HomeSpace))
             {
-                task.Completed += OnUpdateGraphCompleted;
-                RunEnabled = false; // Disable 'Run' button.
+                task.Completed += OnUpdateGraphCompleted;                
+                RunEnabled = false; // Disable 'Run' button.                              
                 scheduler.ScheduleForExecution(task);
             }
             else
@@ -621,7 +622,7 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
-            
+           
             // Notify handlers that evaluation took place.
             var e = new EvaluationCompletedEventArgs(true);
             OnEvaluationCompleted(this, e);

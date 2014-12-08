@@ -213,6 +213,9 @@ limitations under the License.
     <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
     <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
     <Compile Include="TestInfrastructure\StringInputMutator.cs" />
+    <Compile Include="UI\Controls\CircularProgressBar.xaml.cs">
+      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Controls\CodeBlockEditor.xaml.cs">
       <DependentUpon>CodeBlockEditor.xaml</DependentUpon>
     </Compile>
@@ -566,6 +569,10 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Controls\CircularProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Controls\CodeBlockEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

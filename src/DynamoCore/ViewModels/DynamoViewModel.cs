@@ -74,7 +74,7 @@ namespace Dynamo.ViewModels
                 model.RunEnabled = value;
             }
         }
-
+       
         public virtual bool CanRunDynamically
         {
             get
@@ -758,7 +758,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("IsOrbiting");
             }
             else if (e.PropertyName == "RunEnabled")
-                RaisePropertyChanged("RunEnabled");
+                RaisePropertyChanged("RunEnabled");                   
         }
 
         private void CleanUp(DynamoModel dynamoModel)

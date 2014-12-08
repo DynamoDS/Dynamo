@@ -1560,46 +1560,25 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <WrapPanel Orientation="Horizontal"
-                           Grid.Row="0"
-                           Grid.Column="0"
-                           HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch">
+                <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="1">
+                    
+                    <Button Name="RunButton" Width="100" Content="Run" 
+                    Margin="5" Style="{DynamicResource ResourceKey=SRunTextButton}" 
+                    Click="RunButton_OnClick"
+                    Command="{Binding RunExpressionCommand}"
+                    CommandParameter="{Binding Path=RunInDebug}"
+                    ToolTip="Run Workflow (F5)"
+                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-                    <StackPanel Orientation="Horizontal">
-                        <Button Name="RunButton"
-                                Width="100"
-                                Content="Run"
-                                Margin="5"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                Click="RunButton_OnClick"
-                                Command="{Binding RunExpressionCommand}"
-                                CommandParameter="{Binding Path=RunInDebug}"
-                                ToolTip="Run Workflow (F5)"
-                                IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"
-                                Focusable="False" />
+                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}"
+                            ToolTip="Cancel Run (Shift+F5)"
+                            Command="{Binding CancelRunCommand}" Margin="5"/>
 
-                        <Button Name="cancelButton"
-                                Width="100"
-                                Content="Cancel"
-                                Focusable="False"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                ToolTip="Cancel Run (Shift+F5)"
-                                Command="{Binding CancelRunCommand}"
-                                Margin="5" />
-
-                        <CheckBox Margin="10"
-                                  Name="dynamicCheckBox"
-                                  x:FieldModifier="public"
-                                  Focusable="False"
-                                  Foreground="Gray"
-                                  Content="Run Automatically"
-                                  FontSize="11"
-                                  IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
-                                  IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
-                                  VerticalAlignment="Center"
-                                  VerticalContentAlignment="Center" />
-                    </StackPanel>
+                    <CheckBox Margin="10"
+                      Name="dynamicCheckBox" x:FieldModifier="public" Focusable="False" Foreground="Gray"
+                      Content="Run Automatically" FontSize="11" IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
+                      IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
+                      VerticalAlignment="Center" VerticalContentAlignment="Center"/>
 
                     <!--CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
