@@ -10,6 +10,7 @@ namespace Dynamo.Utilities
         U Match<U>(Func<TLeft, U> leftCase, Func<TRight, U> rightCase);
         TLeft LeftValue { get; }
         TRight RightValue { get; }
+        bool IsLeft { get; }
     }
 
     public static class Either
@@ -36,7 +37,22 @@ namespace Dynamo.Utilities
             return either.Select(left => left, selector);
         }
 
-        private class _Left<T, T1> : IEither<T, T1>
+        public static void Match<TLeft, TRight>(this IEither<TLeft, TRight> either, Action<TLeft> leftAction, Action<TRight> rightAction)
+        {
+            either.Match<object>(
+                left =>
+                {
+                    leftAction(left);
+                    return null;
+                },
+                right =>
+                {
+                    rightAction(right);
+                    return null;
+                });
+        }
+
+        private sealed class _Left<T, T1> : IEither<T, T1>
         {
             private readonly T value;
 
@@ -77,9 +93,11 @@ namespace Dynamo.Utilities
                     throw new InvalidOperationException("Cannot get LeftValue from Right Either type.");
                 }
             }
+
+            public bool IsLeft { get { return true; } }
         }
 
-        private class _Right<T, T1> : IEither<T, T1>
+        private sealed class _Right<T, T1> : IEither<T, T1>
         {
             private readonly T1 value;
 
@@ -111,6 +129,11 @@ namespace Dynamo.Utilities
             public T1 RightValue
             {
                 get { return value; }
+            }
+
+            public bool IsLeft
+            {
+                get { return false; }
             }
 
             public T LeftValue

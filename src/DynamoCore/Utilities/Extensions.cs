@@ -8,27 +8,27 @@ using ICSharpCode.AvalonEdit.Utils; //TODO(Steve): Replace with .NET ImmutableCo
 
 namespace Dynamo.Utilities
 {
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IRecursiveGrouping<out T> : IGrouping<T, IRecursiveGrouping<T>> { }
+
     public static class ExtensionMethods
     {
         /// <summary>
         /// TODO
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public interface IRecursiveGrouping<out T> : IGrouping<T, IRecursiveGrouping<T>> { }
-
-        /// <summary>
-        /// TODO
-        /// </summary>
         /// <typeparam name="TLeaf"></typeparam>
         /// <typeparam name="TNodeKey"></typeparam>
-        /// <param name="entries"></param>
+        /// <param name="allLeaves"></param>
         /// <param name="keySelector"></param>
         /// <returns></returns>
         public static IEnumerable<IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>> GroupByRecursive<TLeaf, TNodeKey>(
-            this IEnumerable<TLeaf> entries, Func<TLeaf, ICollection<TNodeKey>> keySelector)
+            this IEnumerable<TLeaf> allLeaves, Func<TLeaf, ICollection<TNodeKey>> keySelector)
         {
             var query =
-                entries.Select(
+                allLeaves.Select(
                     x =>
                         new KeyValuePair<TLeaf, ImmutableStack<TNodeKey>>(
                             x,
@@ -40,7 +40,43 @@ namespace Dynamo.Utilities
             return GroupByRecursive(query);
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <typeparam name="TLeaf"></typeparam>
+        /// <typeparam name="TNodeKey"></typeparam>
+        /// <typeparam name="TTree"></typeparam>
+        /// <param name="allLeaves"></param>
+        /// <param name="keySelector"></param>
+        /// <param name="treeCreator"></param>
+        /// <param name="rootKey"></param>
+        /// <returns></returns>
+        public static TTree GroupByRecursive<TLeaf, TNodeKey, TTree>(
+            this IEnumerable<TLeaf> allLeaves, Func<TLeaf, ICollection<TNodeKey>> keySelector,
+            Func<TNodeKey, IEnumerable<TTree>, IEnumerable<TLeaf>, TTree> treeCreator, TNodeKey rootKey)
+        {
+            return GroupByRecursive(allLeaves.GroupByRecursive(keySelector), treeCreator, rootKey);
+        }
+
         #region GroupByRecursive helpers
+        private static V GroupByRecursive<TLeaf, TNodeKey, V>(
+            IEnumerable<IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>> grouped,
+            Func<TNodeKey, IEnumerable<V>, IEnumerable<TLeaf>, V> grouper, TNodeKey rootKey)
+        {
+            var leaves = new List<TLeaf>();
+            var subCategories = new List<V>();
+
+            foreach (var grouping in grouped)
+            {
+                IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>> grouping1 = grouping;
+                grouping.Key
+                    .SelectLeft(categoryName => GroupByRecursive(grouping1, grouper, categoryName))
+                    .Match(subCategories.Add, leaves.AddRange);
+            }
+
+            return grouper(rootKey, subCategories, leaves);
+        }
+
         private static IEnumerable<IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>> GroupByRecursive
             <TLeaf, TNodeKey>(IEnumerable<KeyValuePair<TLeaf, ImmutableStack<TNodeKey>>> entries)
         {

@@ -1,4 +1,8 @@
-﻿using Dynamo.DSEngine;
+﻿using System.ComponentModel;
+using System.Xml;
+
+using Dynamo.Annotations;
+using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -6,6 +10,8 @@ using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using DynamoUtilities;
 
 namespace Dynamo.Search
 {
@@ -52,27 +58,176 @@ namespace Dynamo.Search
     /// <summary>
     ///     Searchable library of NodeSearchElements that can produce NodeModels.
     /// </summary>
-    public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
+    public class NodeSearchModel : CategorizedSearchModel<NodeSearchElement, NodeModel>
     {
         public void Add(NodeSearchElement entry)
         {
-            Add(entry, entry.SearchKeywords);
+            Library.Add(entry, entry.SearchKeywords);
+        }
+
+        public void Remove(NodeSearchElement entry)
+        {
+            Library.Remove(entry);
+        }
+
+        //TODO(Steve): Search() method
+
+        protected override ICollection<string> GetCategories(NodeSearchElement entry)
+        {
+            return entry.Categories;
+        }
+
+        #region Xml Dump
+        public void DumpLibraryToXml(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return;
+
+            var document = ComposeXmlForLibrary();
+            document.Save(fileName);
+        }
+
+        public XmlDocument ComposeXmlForLibrary()
+        {
+            var document = XmlHelper.CreateDocument("LibraryTree");
+
+            foreach (var category in Root.SubCategories)
+                AddCategoryToXml(document.DocumentElement, category);
+
+            foreach (var entry in Root.Entries)
+                AddEntryToXml(document.DocumentElement, entry);
+
+            return document;
+        }
+
+        private static void AddEntryToXml(XmlNode parent, NodeSearchElement entry)
+        {
+            var element = XmlHelper.AddNode(parent, entry.GetType().ToString());
+            XmlHelper.AddNode(element, "FullCategoryName", entry.FullCategoryName);
+            XmlHelper.AddNode(element, "Name", entry.Name);
+            XmlHelper.AddNode(element, "Description", entry.Description);
+        }
+
+        private static void AddCategoryToXml(
+            XmlNode parent, ISearchCategory<NodeSearchElement> category)
+        {
+            var element = XmlHelper.AddNode(parent, category.GetType().ToString());
+            XmlHelper.AddAttribute(element, "Name", category.Name);
+
+            foreach (var subCategory in category.SubCategories)
+                AddCategoryToXml(element, subCategory);
+
+            foreach (var entry in category.Entries)
+                AddEntryToXml(element, entry);
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <typeparam name="TEntry"></typeparam>
+    public interface ISearchCategory<out TEntry>
+    {
+        string Name { get; }
+        IEnumerable<TEntry> Entries { get; }
+        IEnumerable<ISearchCategory<TEntry>> SubCategories { get; }
+    }
+    
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <typeparam name="TEntry"></typeparam>
+    /// <typeparam name="TItem"></typeparam>
+    public abstract class CategorizedSearchModel<TEntry, TItem>  : ISource<TItem>
+        where TEntry : ISearchEntry, ISource<TItem>
+    {
+        private sealed class SearchCategory : ISearchCategory<TEntry>
+        {
+            private SearchCategory(string name, IEnumerable<TEntry> entries, IEnumerable<SearchCategory> subCategories)
+            {
+                SubCategories = subCategories;
+                Entries = entries;
+                Name = name;
+            }
+
+            public static SearchCategory Create(string categoryName, IEnumerable<SearchCategory> subCategories, IEnumerable<TEntry> entries)
+            {
+                return new SearchCategory(categoryName, entries, subCategories);
+            }
+
+            public string Name { get; private set; }
+            public IEnumerable<TEntry> Entries { get; private set; }
+            public IEnumerable<ISearchCategory<TEntry>> SubCategories { get; private set; }
+        }
+
+        protected readonly SearchLibrary<TEntry, TItem> Library;
+        
+        public ISearchCategory<TEntry> Root
+        {
+            get
+            {
+                return Library.SearchEntries.GroupByRecursive<TEntry, string, SearchCategory>(
+                    GetCategories,
+                    SearchCategory.Create,
+                    "Root");
+            }
+        }
+
+        protected abstract ICollection<string> GetCategories(TEntry entry);
+
+        protected CategorizedSearchModel()
+        {
+            Library = new SearchLibrary<TEntry, TItem>();
+            Library.ItemProduced += OnItemProduced;
+        }
+
+        public event Action<TItem> ItemProduced;
+        protected virtual void OnItemProduced(TItem obj)
+        {
+            var handler = ItemProduced;
+            if (handler != null) handler(obj);
         }
     }
 
     /// <summary>
     /// TODO
     /// </summary>
-    public abstract class NodeSearchElement : ISearchEntry, ISource<NodeModel>
+    public abstract class NodeSearchElement : INotifyPropertyChanged, ISearchEntry, ISource<NodeModel>
     {
-        public IEnumerable<string> Categories { get; set; }
+        private readonly HashSet<string> keywords = new HashSet<string>();
+        private string fullCategoryName;
+        private string description;
+        private string name;
+
+        public ICollection<string> Categories
+        {
+            get { return FullCategoryName.Split('.'); }
+        }
 
         public string FullCategoryName
         {
-            get { return string.Join(".", Categories); }
+            get { return fullCategoryName; }
+            set
+            {
+                if (value == fullCategoryName) return;
+                fullCategoryName = value;
+                OnPropertyChanged("FullCategoryName");
+                OnPropertyChanged("Categories");
+            }
         }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                if (value == name) return;
+                name = value;
+                OnPropertyChanged("Name");
+            }
+        }
+
         public double Weight = 1;
 
         public ICollection<string> SearchKeywords
@@ -80,23 +235,24 @@ namespace Dynamo.Search
             get { return keywords; }
         }
 
-        private readonly HashSet<string> keywords = new HashSet<string>();
-
-        public string Description { get; set; }
+        public string Description
+        {
+            get { return description; }
+            set
+            {
+                if (value == description) return;
+                description = value;
+                OnPropertyChanged("Description");
+            }
+        }
 
         public event Action<NodeModel> ItemProduced;
-
         protected virtual void OnItemProduced(NodeModel obj)
         {
             var handler = ItemProduced;
             if (handler != null) handler(obj);
         }
-
-        private string PrependCategory(string name)
-        {
-            return string.Join(".", Categories.Concat(name.AsSingleton()));
-        }
-
+        
         protected abstract NodeModel ConstructNewNodeModel();
 
         public void ProduceNode()
@@ -110,10 +266,20 @@ namespace Dynamo.Search
             {
                 return
                     SearchKeywords.Concat(Name.AsSingleton())
-                        .SelectMany(baseName => new[] { baseName, PrependCategory(baseName) })
+                        .SelectMany(
+                            baseName => new[] { baseName, FullCategoryName + "." + baseName })
                         .Concat(Description.AsSingleton())
                         .ToList();
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
@@ -129,7 +295,7 @@ namespace Dynamo.Search
             Name = typeLoadData.Name;
             foreach (var aka in typeLoadData.AlsoKnownAs.Concat(typeLoadData.SearchKeys))
                 SearchKeywords.Add(aka);
-            Categories = typeLoadData.Category.Split('.');
+            FullCategoryName = typeLoadData.Category;
             Description = typeLoadData.Description;
 
             constructor = typeLoadData.Type.GetDefaultConstructor<NodeModel>();
@@ -157,7 +323,7 @@ namespace Dynamo.Search
                 displayName += "(" + string.Join(", ", functionDescriptor.Parameters) + ")";
 
             Name = displayName;
-            Categories = functionDescriptor.Category.Split('.');
+            FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
             foreach (var tag in functionDescriptor.GetSearchTags())
                 SearchKeywords.Add(tag);
@@ -189,7 +355,7 @@ namespace Dynamo.Search
         {
             id = info.FunctionId;
             Name = info.Name;
-            Categories = info.Category.AsSingleton();
+            FullCategoryName = info.Category;
             Description = info.Description;
         }
 
