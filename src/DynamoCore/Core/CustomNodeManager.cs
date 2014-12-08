@@ -115,9 +115,9 @@ namespace Dynamo.Utilities
         public Function CreateCustomNodeInstance(Guid id, string nickname=null, bool isTestMode=false)
         {
             CustomNodeDefinition def;
+            CustomNodeInfo info;
             if (!TryGetFunctionDefinition(id, isTestMode, out def))
             {
-                CustomNodeInfo info;
                 if (nickname == null || !TryGetNodeInfo(nickname, out info))
                 {
                     Log(
@@ -128,8 +128,15 @@ namespace Dynamo.Utilities
                 id = info.FunctionId;
                 def = loadedCustomNodes[id] as CustomNodeDefinition;
             }
+            else if (!TryGetNodeInfo(id, out info))
+            {
+                Log(
+                    "Unable to create instance of custom node with id: \"" + id + "\"",
+                    WarningLevel.Error);
+                return null;
+            }
 
-            var node = new Function(def);
+            var node = new Function(def, info.Description, info.Category);
             Action<CustomNodeDefinition> defUpdatedHandler = definition =>
             {
                 if (definition.FunctionId == id)

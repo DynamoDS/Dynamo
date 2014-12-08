@@ -41,7 +41,7 @@ namespace Dynamo.Models
         #endregion 
 
         #region constructors
-        
+
         /// <summary>
         /// Factory method to create a connector.  Checks to make sure that the start and end ports are valid, 
         /// otherwise returns null.
@@ -50,32 +50,31 @@ namespace Dynamo.Models
         /// <param name="end">The port where the connector ends</param>
         /// <param name="startIndex"></param>
         /// <param name="endIndex"></param>
-        /// <param name="portType"></param>
         /// <returns>The valid connector model or null if the connector is invalid</returns>
-        internal static ConnectorModel Make(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
+        internal static ConnectorModel Make(
+            NodeModel start, NodeModel end, int startIndex, int endIndex)
         {
             if (start != null && end != null && start != end && startIndex >= 0
-                && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex )
+                && endIndex >= 0 && start.OutPorts.Count > startIndex
+                && end.InPorts.Count > endIndex)
             {
-                return new ConnectorModel(start, end, startIndex, endIndex, portType);
+                return new ConnectorModel(start, end, startIndex, endIndex);
             }
-            
+
             return null;
         }
 
-        private ConnectorModel(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
+        private ConnectorModel(
+            NodeModel start, NodeModel end, int startIndex, int endIndex)
         {
             pStart = start.OutPorts[startIndex];
 
-            PortModel endPort = null;
-
-            if (portType == PortType.Input)
-                endPort = end.InPorts[endIndex];
+            PortModel endPort = end.InPorts[endIndex];
 
             pStart.Connect(this);
             Connect(endPort);
         }
-        
+
         #endregion
         
         public bool Connect(PortModel p)
@@ -150,7 +149,7 @@ namespace Dynamo.Models
             helper.SetAttribute("start_index", Start.Index);
             helper.SetAttribute("end", End.Owner.GUID);
             helper.SetAttribute("end_index", End.Index);
-            helper.SetAttribute("portType", ((int) End.PortType));
+            //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)

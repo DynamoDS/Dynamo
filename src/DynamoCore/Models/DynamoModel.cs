@@ -364,6 +364,7 @@ namespace Dynamo.Models
             public IPreferences Preferences { get; set; }
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
+            public ISchedulerThread SchedulerThread { get; set; }
         }
 
         /// <summary>
@@ -473,10 +474,11 @@ namespace Dynamo.Models
             DisposeLogic.IsShuttingDown = false;
             
             // Create a core which is used for parsing code and loading libraries
-            var libraryCore = new ProtoCore.Core(new Options()
+            var libraryCore = new ProtoCore.Core(new Options
             {
                 RootCustomPropertyFilterPathName = string.Empty
             });
+
             libraryCore.Executives.Add(Language.kAssociative, new ProtoAssociative.Executive(libraryCore));
             libraryCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
@@ -913,7 +915,7 @@ namespace Dynamo.Models
         /// <param name="node"></param>
         public void AddNodeToCurrentWorkspace(NodeModel node)
         {
-            CurrentWorkspace.AddNode(node);
+            CurrentWorkspace.AddNode(node, TODO);
             OnNodeAdded(node);
             
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection.
@@ -925,40 +927,40 @@ namespace Dynamo.Models
         /// Copy selected ISelectable objects to the clipboard.
         /// </summary>
         /// <param name="parameters"></param>
-        public void Copy(object parameters) // TODO(Steve): Route to CurrentWorkspace
+        public void Copy(object parameters)
         {
             ClipBoard.Clear();
 
-            foreach (var el in
-                DynamoSelection.Instance.Selection.OfType<ModelBase>())
+            foreach (
+                var el in
+                    DynamoSelection.Instance.Selection.OfType<ModelBase>()
+                        .Where(el => !ClipBoard.Contains(el)))
             {
-                if (!ClipBoard.Contains(el))
-                {
-                    ClipBoard.Add(el);
+                ClipBoard.Add(el);
 
-                    var n = el as NodeModel;
-                    if (n != null)
-                    {
-                        var connectors =
-                            n.InPorts.ToList()
-                                .SelectMany(x => x.Connectors)
-                                .Concat(n.OutPorts.ToList().SelectMany(x => x.Connectors))
-                                .Where(x => x.End != null && x.End.Owner.IsSelected && !ClipBoard.Contains(x));
+                if (!(el is NodeModel))
+                    continue;
 
-                        ClipBoard.AddRange(connectors);
-                    }
-                }
+                var node = el as NodeModel;
+                var connectors =
+                    node.InPorts.Concat(node.OutPorts).SelectMany(port => port.Connectors)
+                        .Where(
+                            connector =>
+                                connector.End != null && connector.End.Owner.IsSelected
+                                    && !ClipBoard.Contains(connector));
+
+                ClipBoard.AddRange(connectors);
             }
         }
 
         /// <summary>
         ///     Paste ISelectable objects from the clipboard to the workspace.
         /// </summary>
-        public void Paste() //TODO(Steve): Route to CurrentWorkspace
+        public void Paste()
         {
             //make a lookup table to store the guids of the
             //old nodes and the guids of their pasted versions
-            var nodeLookup = new Dictionary<Guid, Guid>();
+            var nodeLookup = new Dictionary<Guid, NodeModel>();
 
             //make a list of all newly created models so that their
             //creations can be recorded in the undo recorder.
@@ -972,22 +974,12 @@ namespace Dynamo.Models
 
             var connectors = ClipBoard.OfType<ConnectorModel>();
 
+            var xmlDoc = new XmlDocument();
+
             foreach (var node in nodes)
             {
                 //create a new guid for us to use
                 Guid newGuid = Guid.NewGuid();
-                nodeLookup.Add(node.GUID, newGuid);
-
-                string nodeName = node.GetType().ToString();
-
-                if (node is Function)
-                    nodeName = ((node as Function).Definition.FunctionId).ToString();
-                else if (node is DSFunction)
-                    nodeName = ((node as DSFunction).Controller.MangledName);
-                else if (node is DSVarArgFunction)
-                    nodeName = ((node as DSVarArgFunction).Controller.MangledName);
-                
-                var xmlDoc = new XmlDocument();
 
                 NodeModel newNode;
 
@@ -997,79 +989,73 @@ namespace Dynamo.Models
                         ? (node as Symbol).InputSymbol
                         : (node as Output).Symbol);
                     var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
-                    newNode = new CodeBlockNodeModel(code);
-
-                    CurrentWorkspace.AddNode(newNode, newGuid, node.X, node.Y + 100, false, false);
+                    newNode = new CodeBlockNodeModel(code)
+                    {
+                        X = node.X,
+                        Y = node.Y + 100
+                    };
                 }
                 else
                 {
-                    var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
-                    xmlDoc.AppendChild(dynEl);
-                    node.Save(xmlDoc, dynEl, SaveContext.Copy);
-
-                    newNode = CurrentWorkspace.AddNode(
-                        newGuid,
-                        nodeName,
-                        node.X,
-                        node.Y + 100,
-                        false,
-                        false,
-                        dynEl);
+                    var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
+                    newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy);
                 }
-
-                createdModels.Add(newNode);
 
                 newNode.ArgumentLacing = node.ArgumentLacing;
                 if (!string.IsNullOrEmpty(node.NickName))
-                {
                     newNode.NickName = node.NickName;
-                }
+
+                CurrentWorkspace.AddNode(newNode, false);
+                createdModels.Add(newNode);
+                nodeLookup.Add(node.GUID, newNode);
             }
 
             OnRequestLayoutUpdate(this, EventArgs.Empty);
 
-            Guid start;
-            Guid end;
-            createdModels.AddRange(
+            NodeModel start;
+            NodeModel end;
+            var newConnectors =
                 from c in connectors
-                let startGuid =
+                let startNode =
                     nodeLookup.TryGetValue(c.Start.Owner.GUID, out start)
                         ? start
-                        : c.Start.Owner.GUID
-                let endGuid =
+                        : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.Start.Owner.GUID)
+                let endNode =
                     nodeLookup.TryGetValue(c.End.Owner.GUID, out end)
                         ? end
-                        : c.End.Owner.GUID
-                let startNode = CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == startGuid)
-                let endNode = CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == endGuid)
+                        : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
                 where startNode != null && endNode != null
-                where startNode.Workspace == CurrentWorkspace
                 select
-                    CurrentWorkspace.AddConnection(startNode, endNode, c.Start.Index, c.End.Index, TODO));
+                    ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
+
+            foreach (var connector in newConnectors)
+            {
+                CurrentWorkspace.AddConnection(connector);
+                createdModels.Add(connector);
+            }
 
             //process the queue again to create the connectors
             //DynamoCommands.ProcessCommandQueue();
 
             var notes = ClipBoard.OfType<NoteModel>();
 
-            foreach (NoteModel note in notes)
+            var newNotes = from note in notes
+                           let newGUID = Guid.NewGuid()
+                           let sameSpace =
+                               CurrentWorkspace.Notes.Any(x => x.GUID == note.GUID)
+                           let newX = sameSpace ? note.X + 20 : note.X
+                           let newY = sameSpace ? note.Y + 20 : note.Y
+                           select new NoteModel(newX, newY, note.Text, newGUID);
+
+            foreach (var newNote in newNotes)
             {
-                var newGUID = Guid.NewGuid();
-
-                var sameSpace = CurrentWorkspace.Notes.Any(x => x.GUID == note.GUID);
-                var newX = sameSpace ? note.X + 20 : note.X;
-                var newY = sameSpace ? note.Y + 20 : note.Y;
-
-                createdModels.Add(CurrentWorkspace.AddNote(false, newX, newY, note.Text, newGUID));
-
-                // TODO: Why can't we just add "noteData" instead of doing a look-up?
-                AddToSelection(CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == newGUID));
+                CurrentWorkspace.AddNote(newNote, false);
+                createdModels.Add(newNote);
+                AddToSelection(newNote);
             }
 
-            foreach (var de in nodeLookup)
-            {
-                AddToSelection(CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == de.Value));
-            }
+            foreach (var de in nodeLookup.Values)
+                AddToSelection(de);
 
             // Record models that are created as part of the command.
             CurrentWorkspace.RecordCreatedModels(createdModels);

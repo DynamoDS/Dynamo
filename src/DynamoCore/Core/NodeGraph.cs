@@ -53,13 +53,13 @@ namespace Dynamo.Core
             XmlAttribute intStartAttrib = connEl.Attributes[1];
             XmlAttribute guidEndAttrib = connEl.Attributes[2];
             XmlAttribute intEndAttrib = connEl.Attributes[3];
-            XmlAttribute portTypeAttrib = connEl.Attributes[4];
+            //XmlAttribute portTypeAttrib = connEl.Attributes[4];
 
             var guidStart = new Guid(guidStartAttrib.Value);
             var guidEnd = new Guid(guidEndAttrib.Value);
             int startIndex = Convert.ToInt16(intStartAttrib.Value);
             int endIndex = Convert.ToInt16(intEndAttrib.Value);
-            var portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
+            //var portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
 
             //find the elements to connect
             NodeModel start;
@@ -68,7 +68,7 @@ namespace Dynamo.Core
                 NodeModel end;
                 if (nodes.TryGetValue(guidEnd, out end))
                 {
-                    connector = ConnectorModel.Make(start, end, startIndex, endIndex, portType);
+                    connector = ConnectorModel.Make(start, end, startIndex, endIndex);
                     return connector != null;
                 }
             }
