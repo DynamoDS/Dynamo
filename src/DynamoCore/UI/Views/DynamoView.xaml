@@ -172,21 +172,13 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-<<<<<<< HEAD
             <ColumnDefinition Width="1*"
                               MaxWidth="500"
                               MinWidth="204"
-                              Name="LibraryViewColumn"/>
-            <!--MinWidth fix for GridSplitter dragging in frameless window-->
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="5*"/>
-=======
-            <ColumnDefinition Width="Auto"
-                              MaxWidth="500" />
+                              Name="LibraryViewColumn" />
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
->>>>>>> e1b8e17f36c14fca5ee7224377860d0b1079a7f3
+            <ColumnDefinition Width="5*" />
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
@@ -1444,15 +1436,10 @@
                     VerticalAlignment="Top"
                     Margin="0,120,0,0"
                     Visibility="Hidden">
-<<<<<<< HEAD
-            <Grid Background="#222222" Cursor="Hand">
-                <Button Click="OnCollapsedSidebarClick" Template="{DynamicResource BackgroundButton}">
-=======
             <Grid Background="#222222"
                   Cursor="Hand">
-                <Button Click="Button_Click"
+                <Button Click="OnCollapsedSidebarClick"
                         Template="{DynamicResource BackgroundButton}">
->>>>>>> e1b8e17f36c14fca5ee7224377860d0b1079a7f3
                     <Button.Resources>
                         <ControlTemplate x:Key="BackgroundButton"
                                          TargetType="Button">
