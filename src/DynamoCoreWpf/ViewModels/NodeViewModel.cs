@@ -760,17 +760,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void SetupCustomUIElements(object nodeUI)
-        {
-            // SEPARATECORE
-            //nodeLogic.InitializeUI(nodeUI);
-        }
-
-        private bool CanSetupCustomUIElements(object NodeUI)
-        {
-            return true;
-        }
-
         private void SetState(object parameter)
         {
             nodeLogic.State = (ElementState)parameter;

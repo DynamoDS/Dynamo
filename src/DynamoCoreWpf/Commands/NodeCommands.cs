@@ -10,7 +10,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _selectCommand;
         private DelegateCommand _showHelpCommand;
         private DelegateCommand _viewCustomNodeWorkspaceCommand;
-        private DelegateCommand _setupCustomUiElementsCommand;
         private DelegateCommand _validateConnectionsCommand;
         private DelegateCommand _toggleIsVisibleCommand;
         private DelegateCommand _toggleIsUpstreamVisibleCommand;
@@ -100,15 +99,6 @@ namespace Dynamo.ViewModels
                         new DelegateCommand(ViewCustomNodeWorkspace, CanViewCustomNodeWorkspace);
 
                 return _viewCustomNodeWorkspaceCommand;
-            }
-        }
-
-        public DelegateCommand SetupCustomUIElementsCommand
-        {
-            get {
-                return _setupCustomUiElementsCommand
-                    ?? (_setupCustomUiElementsCommand =
-                        new DelegateCommand(SetupCustomUIElements, CanSetupCustomUIElements));
             }
         }
 
