@@ -1,8 +1,4 @@
-﻿
-using System.Windows;
-using Dynamo.Utilities;
-
-using Color = System.Windows.Media.Color;
+﻿using Dynamo.Utilities;
 
 namespace Dynamo.UI
 {
@@ -46,7 +42,6 @@ namespace Dynamo.UI
         // Grid Settings
         public static readonly int GridSpacing = 100;
         public static readonly int GridThickness = 2;
-        public static readonly Color GridLineColor = Color.FromRgb(232, 232, 232);
 
         // Canvas Control
         public static readonly double ZoomIncrement = 0.05;
@@ -111,7 +106,6 @@ namespace Dynamo.UI
         public static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
 
         public static double ErrorTextFontSize = 13;
-        public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
 
         public static double ErrorArrowWidth = 12;
@@ -127,7 +121,6 @@ namespace Dynamo.UI
         public static double NodeTooltipContentMaxHeight = NodeTooltipMaxHeight - 16;
 
         public static double NodeTooltipTextFontSize = 11;
-        public static FontWeight NodeTooltipTextFontWeight = FontWeights.Light;
 
         public static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
         public static Thickness NodeTooltipContentMarginRight = new Thickness(5, 5, 11, 5);
@@ -151,7 +144,6 @@ namespace Dynamo.UI
         public static double LibraryTooltipContentMaxHeight = LibraryTooltipMaxHeight - 17;
 
         public static double LibraryTooltipTextFontSize = 11;
-        public static FontWeight LibraryTooltipTextFontWeight = FontWeights.Normal;
         public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
 
         public static double LibraryTooltipArrowHeight = 12;

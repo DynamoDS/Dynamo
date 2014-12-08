@@ -7,7 +7,7 @@ using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 
 using Dynamo.UI;
-
+using Dynamo.Wpf.UI;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
@@ -295,7 +295,7 @@ namespace Dynamo.Controls
 
             ContentFontSize = Configurations.ErrorTextFontSize;
             ContentForeground = FrozenResources.WarningTextForeground;
-            ContentFontWeight = Configurations.ErrorTextFontWeight;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_WarningCondensed()
@@ -315,7 +315,7 @@ namespace Dynamo.Controls
 
             ContentFontSize = Configurations.ErrorTextFontSize;
             ContentForeground = FrozenResources.WarningTextForeground;
-            ContentFontWeight = Configurations.ErrorTextFontWeight;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_Error()
@@ -333,7 +333,7 @@ namespace Dynamo.Controls
 
             ContentFontSize = Configurations.ErrorTextFontSize;
             ContentForeground = FrozenResources.ErrorTextForeground;
-            ContentFontWeight = Configurations.ErrorTextFontWeight;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_ErrorCondensed()
@@ -353,7 +353,7 @@ namespace Dynamo.Controls
 
             ContentFontSize = Configurations.ErrorTextFontSize;
             ContentForeground = FrozenResources.ErrorTextForeground;
-            ContentFontWeight = Configurations.ErrorTextFontWeight;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
         }
 
         #endregion
