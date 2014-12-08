@@ -5,7 +5,7 @@ namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A base class for elements found in search </summary>
-    public abstract class SearchElementBase<T> : BrowserInternalElement
+    public abstract class SearchElementBase : BrowserInternalElement
     {
         /// <summary>
         /// Searchable property </summary>
@@ -38,20 +38,18 @@ namespace Dynamo.Search.SearchElements
         /// Higher = closer to the top of search results </value>
         public abstract double Weight { get; set; }
 
-        public abstract T GetSearchResult();
-
-        public override void Execute()
+        public virtual void Execute()
         {
-            this.OnExecuted(GetSearchResult());
+            this.OnExecuted();
         }
 
-        //TODO(Steve): Figure out relationship with BrowserInternalElement
-        internal event Action<T> Executed;
-        protected void OnExecuted(T searchResult)
+        public delegate void SearchElementHandler(SearchElementBase ele);
+        internal event SearchElementHandler Executed;
+        protected void OnExecuted()
         {
             if (Executed != null)
             {
-                Executed(searchResult);
+                Executed(this);
             }
         }
     }

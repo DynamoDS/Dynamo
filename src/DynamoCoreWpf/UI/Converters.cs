@@ -744,7 +744,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is NodeSearchElement)
+            if (value is NodeModelSearchElement)
                 return true;
 
             return false;
