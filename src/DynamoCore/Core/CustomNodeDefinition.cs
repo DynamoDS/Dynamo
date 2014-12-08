@@ -98,6 +98,19 @@ namespace Dynamo
         /// </summary>
         public bool RequiresRecalc { get; internal set; }
 
+        #region Override functions
+
+        public override bool Equals(object obj)
+        {
+            CustomNodeDefinition otherDefinition = obj as CustomNodeDefinition;
+            if (otherDefinition == null)
+                return false;
+
+            return this.FunctionId.Equals(otherDefinition.FunctionId);
+        }
+
+        #endregion
+
         #region Dependencies
 
         public IEnumerable<CustomNodeDefinition> Dependencies
@@ -244,9 +257,8 @@ namespace Dynamo
             var paramList = parameters.Zip(Parameters, (p, P) => Tuple.Create(p, P.Type));
 
             //Update existing function nodes which point to this function to match its changes
-            var customNodeInstances = dynamoModel.AllNodes
-                        .OfType<Function>()
-                        .Where(el => el.Definition != null && el.Definition == this);
+            var customNodeInstances = 
+                dynamoModel.AllNodes.OfType<Function>().Where(x => this.Equals(x.Definition));
             
             foreach (var node in customNodeInstances)
                 node.ResyncWithDefinition();

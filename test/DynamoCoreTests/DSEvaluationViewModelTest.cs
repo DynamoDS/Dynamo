@@ -1097,6 +1097,33 @@ namespace Dynamo.Tests
 
 
         }
+        [Test]
+        public void TestRunTimeWarning_3132()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3132
+            // test for run time warning is thrown or not 
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsfunction\RunTimeWarning_3132.dyn");
+
+            RunModel(dynFilePath);
+            var guid = System.Guid.Parse("88f376fa-634b-422e-b853-6afa8af8d286");
+            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+           
+            Assert.IsTrue(node.State == Models.ElementState.Warning);
+        }
+        
+        [Test]
+        public void List_Map_Default_5233()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
+            //List.map with default arguments 
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\list\List_Map_DefaultArg5233.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("6a0207d9-78d7-4fd3-829f-d19644acdc1b", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        }
+       
+        
     }
 
     [Category("DSCustomNode")]
