@@ -947,10 +947,6 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="UI\Images\addon_update_available.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\dropdown_hover.png" />
-    <Resource Include="UI\Images\dropdown_normal.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"

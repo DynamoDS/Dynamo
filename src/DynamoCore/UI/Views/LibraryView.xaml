@@ -935,14 +935,16 @@
                                                VerticalAlignment="Center"
                                                Margin="10, 0, 10, 0"
                                                Foreground="#989898"
-                                               FontSize="13px"
+                                               FontSize="13"
                                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
-                                    <Image x:Name="image"
-                                           Grid.Column="1"
-                                           Margin="0,3,10,4"
-                                           Width="16"
-                                           Height="16"
-                                           Source="/DynamoCore;component/UI/Images/dropdown_normal.png" />
+
+                                    <TextBlock x:Name="arrow"
+                                               Grid.Column="1"
+                                               VerticalAlignment="Center"
+                                               Margin="0, 0, 10, 0"
+                                               Foreground="#989898"
+                                               FontSize="9"
+                                               Text="&#x25BC;" />
                                 </Grid>
                             </Border>
                             <ControlTemplate.Triggers>
@@ -951,9 +953,9 @@
                                     <Setter TargetName="container"
                                             Property="Background"
                                             Value="#2F2F2F" />
-                                    <Setter TargetName="image"
-                                            Property="Source"
-                                            Value="/DynamoCore;component/UI/Images/dropdown_hover.png" />
+                                    <Setter TargetName="arrow"
+                                            Property="Foreground"
+                                            Value="#AAABAB" />
                                 </Trigger>
                                 <Trigger Property="Button.IsPressed"
                                          Value="True">
