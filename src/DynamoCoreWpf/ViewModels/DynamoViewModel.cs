@@ -482,7 +482,7 @@ namespace Dynamo.ViewModels
 
         #region Event handler destroy/create
 
-        internal void UnsubscibeAllEvents()
+        internal void UnsubscribeAllEvents()
         {
             UnsubscribeDispatcherEvents();
             UnsubscribeModelUiEvents();
@@ -794,7 +794,7 @@ namespace Dynamo.ViewModels
 
         private void CleanUp(DynamoModel dynamoModel)
         {
-            UnsubscibeAllEvents();
+            UnsubscribeAllEvents();
         }
 
         internal bool CanWriteToLog(object parameters)
