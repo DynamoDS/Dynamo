@@ -1304,22 +1304,7 @@ namespace Dynamo.Models
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
 
-                // We don't want to put this action into Dispatcher's queue 
-                // in test mode because it would never get a chance to execute.
-                // As Dispatcher is a static object, DynamoModel instance will 
-                // be referenced by Dispatcher until nunit finishes all test 
-                // cases. 
-                if (!IsTestMode)
-                {
-                    // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-                    Dispatcher.CurrentDispatcher.BeginInvoke(
-                        DispatcherPriority.Background,
-                        new Action(() =>
-                        {
-                            sw.Stop();
-                            Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
-                        }));
-                }
+                sw.Stop();
 
                 #endregion
 
