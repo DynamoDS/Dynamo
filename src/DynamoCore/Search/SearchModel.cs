@@ -858,8 +858,6 @@ namespace Dynamo.Search
                     XmlHelper.AddAttribute(element, "Name", child.Name);
                     AddChildrenToXml(element, child.Items);
                 }
-
-                parent.AppendChild(element);
             }
         }
 
