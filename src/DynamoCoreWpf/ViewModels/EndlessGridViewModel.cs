@@ -121,7 +121,6 @@ namespace Dynamo.ViewModels
             get { return workspaceVM.DynamoViewModel.FullscreenWatchShowing; }
         }
 
-
         #region Private
         private WorkspaceViewModel workspaceVM;
 

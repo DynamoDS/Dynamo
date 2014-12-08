@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 using Dynamo.UI;
@@ -15,7 +17,8 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UpdateManager;
-
+using Dynamo.Utilities;
+using Dynamo.Wpf.UI;
 using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -453,7 +456,7 @@ namespace Dynamo.ViewModels
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
             SubscribeUpdateManagerHandlers();
-       
+            
             InitializeAutomationSettings(commandFilePath);
 
             InitializeDelegateCommands();
@@ -529,12 +532,14 @@ namespace Dynamo.ViewModels
 
         private void SubscribeModelUiEvents()
         {
+            CodeBlockUtils.RequestLogicalToVisualLineIndexMap += VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
             model.RequestBugReport += ReportABug;
             model.RequestDownloadDynamo += DownloadDynamo;
         }
 
         private void UnsubscribeModelUiEvents()
         {
+            CodeBlockUtils.RequestLogicalToVisualLineIndexMap -= VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
             model.RequestBugReport -= ReportABug;
             model.RequestDownloadDynamo -= DownloadDynamo;
         }
