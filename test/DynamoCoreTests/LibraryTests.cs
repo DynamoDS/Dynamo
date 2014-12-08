@@ -274,14 +274,7 @@ namespace Dynamo.Tests
 
             var libraryRoot = document.DocumentElement;
 
-            var nodesListRoot = libraryRoot.SelectSingleNode("NodesList");
-            Assert.IsNotNull(nodesListRoot);
-
-            Assert.IsNotNull(nodesListRoot.SelectSingleNode("Assemblies"));
-            Assert.IsNotNull(nodesListRoot.SelectSingleNode("Packages"));
-            Assert.IsNotNull(nodesListRoot.SelectSingleNode("CustomNodes"));
-            Assert.IsNotNull(nodesListRoot.SelectSingleNode("Specifics"));
-
+            Assert.IsNotNull(libraryRoot.SelectSingleNode("NodesList"));
             Assert.IsNotNull(libraryRoot.SelectSingleNode("NodesTree"));
         }
 
@@ -338,9 +331,7 @@ namespace Dynamo.Tests
             var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
 
             var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
-            var assemblyNode = document.DocumentElement.SelectSingleNode(
-                "NodesList/Assemblies/Assembly[@Name='DSOffice.dll']");
-            Assert.IsNotNull(assemblyNode);
+            var nodesList = document.DocumentElement.SelectSingleNode("NodesList");
 
             XmlNode node, subNode;
             foreach (var functionGroup in fgToCompare)
@@ -352,8 +343,8 @@ namespace Dynamo.Tests
                     if (function.IsObsolete || !function.IsVisibleInLibrary || function.Name.Contains("GetType"))
                         continue;
 
-                    node = assemblyNode.SelectSingleNode(string.Format(
-                        "Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[FullName='{0}']",
+                    node = nodesList.SelectSingleNode(string.Format(
+                        "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[FullName='{0}']",
                         function.Category + "." + function.Name));
                     Assert.IsNotNull(node);
 
@@ -377,6 +368,10 @@ namespace Dynamo.Tests
                     // For example: 
                     // tests  function.Description: Excel.ReadFromFile (file: FileInfo, sheetName: string): var[][]
                     // normal function.Description: Excel.ReadFromFile (file: var, sheetName: string): var[][]
+
+                    subNode = node.SelectSingleNode("Assembly");
+                    Assert.IsNotNull(subNode);
+                    Assert.AreEqual(function.Assembly, subNode.FirstChild.Value);
                 }
             }
         }
@@ -436,16 +431,14 @@ namespace Dynamo.Tests
             }
 
             var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
-            var packageNode = document.DocumentElement.SelectSingleNode(string.Format(
-                "NodesList/Packages/Package[@Name='{0}' and @VersionName='{1}']",
-                package.Name, package.VersionName));
-            Assert.IsNotNull(packageNode);
+            var nodesList = document.DocumentElement.SelectSingleNode("NodesList");
+            Assert.IsNotNull(nodesList);
 
             XmlNode node, subNode;
             foreach (var customNode in package.LoadedCustomNodes)
             {
-                node = packageNode.SelectSingleNode(string.Format(
-                    "Dynamo.Search.SearchElements.CustomNodeSearchElement[FullName='{0}']",
+                node = nodesList.SelectSingleNode(string.Format(
+                    "//Dynamo.Search.SearchElements.CustomNodeSearchElement[FullName='{0}']",
                     customNode.Category + "." + customNode.Name));
                 Assert.IsNotNull(node);
 
@@ -462,6 +455,10 @@ namespace Dynamo.Tests
                 subNode = node.SelectSingleNode("Description");
                 Assert.IsNotNull(subNode);
                 Assert.AreEqual(customNode.Description, subNode.FirstChild.Value);
+
+                subNode = node.SelectSingleNode("Package");
+                Assert.IsNotNull(subNode);
+                Assert.AreEqual(customNode.PackageName, subNode.FirstChild.Value);
             }
         }
 
