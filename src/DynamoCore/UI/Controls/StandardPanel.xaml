@@ -82,7 +82,7 @@
                                        VerticalAlignment="Center"
                                        TextAlignment="Center"
                                        Foreground="#4691CE"
-                                       FontSize="13"
+                                       FontSize="12"
                                        Margin="71,0,0,0">
                                 <TextBlock.Text>
                                     <Binding Path="Content"
