@@ -188,12 +188,6 @@ namespace Dynamo.PackageManager
             return LocalPackages.FirstOrDefault(ele => ele.ContainsFile(path));
         }
 
-        public IEnumerable<string> GetAllPackagesAssemblies()
-        {
-            return LocalPackages.SelectMany(pkg => pkg.LoadedAssemblies)
-                                .Select(pa => pa.Assembly.Location);
-        }
-
         private static bool hasAttemptedUninstall = false;
 
         internal void DoCachedPackageUninstalls( IPreferences preferences )
