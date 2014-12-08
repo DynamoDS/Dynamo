@@ -8,7 +8,7 @@ namespace Dynamo.UI.Prompts
     
     public partial class GenericTaskDialog : Window
     {
-        private DynamoModel.TaskDialogEventArgs taskDialogParams = null;
+        private TaskDialogEventArgs taskDialogParams = null;
 
         #region Public Operational Methods
 
@@ -17,7 +17,7 @@ namespace Dynamo.UI.Prompts
             InitializeComponent();
         }
 
-        internal GenericTaskDialog(DynamoModel.TaskDialogEventArgs taskDialogParams)
+        internal GenericTaskDialog(TaskDialogEventArgs taskDialogParams)
         {
             this.taskDialogParams = taskDialogParams;
             InitializeComponent();

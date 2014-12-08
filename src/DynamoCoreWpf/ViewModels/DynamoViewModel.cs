@@ -1141,7 +1141,7 @@ namespace Dynamo.ViewModels
             //set the zoom and offsets events
             var vm = this.Model.Workspaces.First(x => x == newWs);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(newWs.X, newWs.Y)));
-            vm.OnZoomChanged(this, new DynamoModel.ZoomEventArgs(newWs.Zoom));
+            vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
         internal void ShowElement(NodeModel e)

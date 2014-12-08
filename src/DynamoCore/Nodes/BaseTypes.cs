@@ -572,7 +572,7 @@ namespace Dynamo.Nodes
                 "be opened by this version of Dynamo ({2})", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File", summary, description);
 
@@ -613,7 +613,7 @@ namespace Dynamo.Nodes
             }
 
             var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
 
@@ -659,7 +659,7 @@ namespace Dynamo.Nodes
                 "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);
             args.ClickedButtonId = (int)Utilities.ButtonId.Cancel;

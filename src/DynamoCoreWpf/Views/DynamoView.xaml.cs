@@ -529,7 +529,7 @@ namespace Dynamo.Controls
             prompt.ShowDialog();
         }
 
-        void Controller_RequestTaskDialog(object sender, DynamoModel.TaskDialogEventArgs e)
+        void Controller_RequestTaskDialog(object sender, TaskDialogEventArgs e)
         {
             var taskDialog = new Dynamo.UI.Prompts.GenericTaskDialog(e);
             taskDialog.ShowDialog();
@@ -769,7 +769,7 @@ namespace Dynamo.Controls
 
                 var workspace_vm = dynamoViewModel.Workspaces[workspace_index];
                 workspace_vm.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspace_vm.Model.X, workspace_vm.Model.Y)));
-                workspace_vm.Model.OnZoomChanged(this, new DynamoModel.ZoomEventArgs(workspace_vm.Zoom));
+                workspace_vm.Model.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
 
                 ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
             }

@@ -43,6 +43,7 @@ namespace Dynamo.Models
     {
         #region Events
 
+        public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
         public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
         {
