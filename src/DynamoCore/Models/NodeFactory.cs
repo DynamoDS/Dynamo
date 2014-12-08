@@ -89,100 +89,6 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        ///     Create a NodeModel from a function descriptor name, a NodeModel name, a NodeModel nickname, or a custom node name
-        /// </summary>
-        /// <param name="name">A name</param>
-        /// <param name="engineController"></param>
-        /// <param name="manager"></param>
-        /// <returns>If the name is valid, a new NodeModel.  Otherwise, null.</returns>
-        [Obsolete("Lookup by type instead", true)]
-        public NodeModel CreateNodeInstance(string name, EngineController engineController, CustomNodeManager manager)
-        {
-            NodeModel node;
-
-            // Depending on node type, get a node instance
-            FunctionDescriptor functionItem = engineController.GetFunctionDescriptor(name);
-            if (functionItem != null)
-                node = GetDSFunctionFromFunctionItem(functionItem);
-            else if (!GetNodeModelInstanceByName(name, null, default(SaveContext), out node))
-                node = GetCustomNodeByName(manager, name);
-
-            return node;
-        }
-
-        /// <summary>
-        ///     Create a NodeModel from a type object
-        /// </summary>
-        /// <param name="data"> The Type object from which the node can be activated </param>
-        /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
-        /// <param name="signature"> The signature of the function along with parameter information </param>
-        /// <param name="guid"> The unique identifier for the node in the workspace. </param>
-        /// <returns> The newly instantiated NodeModel</returns>
-        [Obsolete("Lookup by type instead", true)]
-        public NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
-        {
-            object createdNode = null; //GetNodeModelInstanceByType(elementType);
-
-            // The attempt to create node instance may fail due to "elementType"
-            // being something else other than "NodeModel" derived object type. 
-            // This is possible since some legacy nodes have been made to derive
-            // from "MigrationNode" object that is not derived from "NodeModel".
-            // 
-            var node = createdNode as NodeModel;
-            if (node == null)
-                return null;
-
-            if (!string.IsNullOrEmpty(signature))
-            {
-                var libraryServices = dynamoModel.EngineController.LibraryServices;
-                node.NickName = libraryServices.NicknameFromFunctionSignatureHint(signature);
-            }
-            else if (!string.IsNullOrEmpty(nickName)) 
-            {
-                node.NickName = nickName;
-            }
-            else
-            {
-                var elNameAttrib =
-                    node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
-                if (elNameAttrib != null)
-                {
-                    node.NickName = elNameAttrib.Name;
-                }
-            }
-
-            node.GUID = guid;
-
-            return node;
-        }
-        
-        [Obsolete("This is handled in the TypeLoadData for DSFunction (and sub-classes)", true)]
-        private static NodeModel GetDSFunctionFromFunctionItem(FunctionDescriptor functionItem)
-        {
-            if (functionItem.IsVarArg)
-                return new DSVarArgFunction(functionItem);
-            return new DSFunction(functionItem);
-        }
-
-        //TODO(Steve): Move to CustomNodeManager
-        [Obsolete("Lookup by type instead", true)]
-        private NodeModel GetCustomNodeByName(CustomNodeManager manager, string name)
-        {
-            CustomNodeDefinition def;
-
-            if (manager.GetDefinition(Guid.Parse(name), out def, false))
-            {
-                return new Function(def)
-                {
-                    NickName = def.Workspace.Name
-                };
-            }
-
-            Log("Failed to find CustomNodeDefinition!");
-            return null;
-        }
-
         private bool GetNodeSourceFromType(Type type, out INodeLoader<NodeModel> data)
         {
             if (nodeSources.TryGetValue(type.FullName, out data))
@@ -370,7 +276,7 @@ namespace Dynamo.Models
             }
 
             DSFunctionBase result = descriptor.IsVarArg
-                ? new DSVarArgFunction(descriptor)
+                ? new DSVarArgFunction(descriptor) as DSFunctionBase
                 : new DSFunction(descriptor);
 
             //TODO(Steve): Move to DSFunctionBase constructor

@@ -442,35 +442,24 @@ namespace Dynamo.Models
             return true;
         }
 
-        [Obsolete("Use AddNode(NodeModel)", true)]
-        public NodeModel AddNode(double xPos, double yPos, string nodeName, NodeFactory factory, EngineController engine, CustomNodeManager manager)
-        {
-            var id = Guid.NewGuid();
-            return AddNode(id, nodeName, xPos, yPos, false, false, factory, engine, manager);
-        }
-
-        [Obsolete("Use AddNode(NodeModel)", true)]
-        public T AddNode<T>(NodeFactory factory) where T : NodeModel
-        {
-            var node = (T)factory.CreateNodeInstance(null, null, null); 
-            //var node = factory.CreateNodeInstance<T>();
-            if (node == null) throw new Exception("The supplied node Type was invalid!");
-
-            nodes.Add(node);
-
-            return node;
-        }
-
         /// <summary>
         ///     Adds a node to this workspace.
         /// </summary>
-        /// <param name="model"></param>
-        public void AddNode(NodeModel model)
+        /// <param name="node"></param>
+        /// <param name="centered"></param>
+        public void AddNode(NodeModel node, bool centered)
         {
-            nodes.Add(model);
-            model.Modified += OnModified;
-            model.Disposed += () => { model.Modified -= OnModified; };
-            OnNodeAdded(model);
+            node.Modified += OnModified;
+            node.Disposed += () => { node.Modified -= OnModified; };
+
+            if (centered)
+            {
+                var args = new ModelEventArgs(node, true);
+                OnRequestNodeCentered(this, args);
+            }
+
+            nodes.Add(node);
+            OnNodeAdded(node);
         }
 
         /// <summary>
@@ -494,127 +483,20 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// Create a node with the given parameters. Since this method is called
-        /// on an instance of DynamoModel, it also raises node added event to any
-        /// event handlers, typically useful for real user scenario (listeners 
-        /// may include package manager and other UI components).
-        /// </summary>
-        /// <param name="nodeId">The Guid to be used for the new node, it cannot
-        ///     be Guid.Empty since this method does not attempt to internally generate 
-        ///     a new Guid. An ArgumentException will be thrown if this argument is 
-        ///     Guid.Empty.</param>
-        /// <param name="nodeName">The name of the node type to be created.</param>
-        /// <param name="xPos">The x coordinates where the newly created node should 
-        ///     be placed. This value is ignored if useDefaultPos is true.</param>
-        /// <param name="yPos">The y coordinates where the newly created node should 
-        ///     be placed. This value is ignored if useDefaultPos is true.</param>
-        /// <param name="useDefaultPos">This parameter indicates if the node 
-        ///     should be created at the default position. If this parameter is true,
-        ///     the node is created at the center of view, and both x and y parameters
-        ///     are ignored. If this is false, the values for both x and y parameters 
-        ///     will be used as the initial position of the new node.</param>
-        /// <param name="transformCoordinates">If this parameter is true, then the
-        ///     position of new node will be transformed from outerCanvas space into 
-        ///     zoomCanvas space.</param>
-        /// <param name="factory"></param>
-        /// <param name="dynamoLogger"></param>
-        /// <param name="engine"></param>
-        /// <param name="customNodeManager"></param>
-        /// <param name="xmlNode">This argument carries information that a node 
-        ///     may require for its creation. The new node loads itself from this 
-        ///     parameter if one is specified. This parameter is optional.</param>
-        /// <returns>Returns the created NodeModel, or null if the operation has 
-        /// failed.</returns>
-        [Obsolete("Use AddNode(NodeModel)", true)]
-        public NodeModel AddNode(Guid nodeId, string nodeName, double xPos, double yPos, bool useDefaultPos, bool transformCoordinates, NodeFactory factory, EngineController engine, CustomNodeManager customNodeManager, XmlElement xmlNode = null)
+        public void AddConnection(ConnectorModel connector)
         {
-            if (nodeId == Guid.Empty)
-                throw new ArgumentException(@"Node ID must be specified", "nodeId");
-
-            NodeModel node = factory.CreateNodeInstance(nodeName, engine, customNodeManager);
-            if (node == null)
-            {
-                const string format = "Failed to create node '{0}' (GUID: {1})";
-                Log(string.Format(format, nodeName, nodeId));
-                return null;
-            }
-
-            AddNode(node, nodeId, x, y, useDefaultPos, transformCoordinates, xmlNode);
-            return node;
+            Connectors.Add(connector);
+            OnConnectorAdded(connector);
         }
 
-        [Obsolete("Use AddNode(NodeModel)", true)]
-        public void AddNode(
-            NodeModel node, Guid nodeId, double xPos, double yPos,
-            bool useDefaultPos, bool transformCoordinates, XmlElement xmlNode = null)
+        public void AddNote(NoteModel note, bool centered)
         {
-            // Fix for: 
-            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4024
-            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5045
-            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4767
-            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4946
-            // 
-            // Various derived classes of NodeModel like CodeBlockNode, build 
-            // their internal variables based on the node's GUID. In cases like 
-            // this, a node's GUID must be finalized before variable generation 
-            // logic kicks in.
-            // 
-            node.GUID = nodeId; // Set the node's GUID before anything else.
-
-            if (useDefaultPos == false) // Position was specified.
+            if (centered)
             {
-                node.X = xPos;
-                node.Y = yPos;
+                var args = new ModelEventArgs(note, true);
+                OnRequestNodeCentered(this, args);
             }
-
-            Nodes.Add(node);
-
-            if (null != xmlNode)
-                node.Load(xmlNode);
-
-            ModelEventArgs args = null;
-            if (!useDefaultPos)
-                args = new ModelEventArgs(node, x, y, transformCoordinates);
-            else
-            {
-                // The position of the new node has not been specified.
-                args = new ModelEventArgs(node, transformCoordinates);
-            }
-
-            OnRequestNodeCentered(this, args);
-
-            node.EnableInteraction();
-
-            OnNodeAdded(node);
-        }
-
-        [Obsolete("Use AddConnection(ConnectorModel) instead", true)]
-        public ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType = PortType.Input)
-        {
-            try
-            {
-                var c = ConnectorModel.Make(start, end, startIndex, endIndex, portType );
-
-                if (c != null)
-                    Connectors.Add(c);
-
-                OnConnectorAdded(c);
-
-                return c;
-            }
-            catch (Exception e)
-            {
-                Log(LogMessage.Error(e));
-            }
-
-            return null;
-        }
-
-        public void AddConnection(ConnectorModel model)
-        {
-            Connectors.Add(model);
-            OnConnectorAdded(model);
+            Notes.Add(note);
         }
 
         public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
