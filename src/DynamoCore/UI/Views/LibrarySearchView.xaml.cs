@@ -53,7 +53,10 @@ namespace Dynamo.UI.Views
         {
             var searchElement = listBoxItem.DataContext as SearchElementBase;
             if (searchElement != null)
+            {
                 searchElement.Execute();
+                libraryToolTipPopup.SetDataContext(null, true);
+            }
         }
 
         #endregion
