@@ -797,86 +797,21 @@ namespace Dynamo.Search
 
         private void ComposeNodesList(XmlNode parent)
         {
-            var assembliesRoot = XmlHelper.AddNode(parent, "Assemblies");
-            var packagesRoot = XmlHelper.AddNode(parent, "Packages");
-            var customNodesRoot = XmlHelper.AddNode(parent, "CustomNodes");
-            var specificsRoot = XmlHelper.AddNode(parent, "Specifics");
-
-            XmlNode currNode;
-            IEnumerable<SearchElementBase> elementsToAdd;
-
-            // Adding NodeModel and ZeroTouch assemblies. Packages assemblies will be added later
-            var nodeModelAssemblies = DynamoLoader.LoadedAssemblyNames;
-            // All ZeroTouch libraries are members of ImportedLibraries collection. But there
-            // we hame assemblies which are belong to packages. Those assemblies should be excluded.
-            var zeroTouchAssemblies = DynamoModel.EngineController.LibraryServices.ImportedLibraries.Except(
-                DynamoModel.Loader.PackageLoader.GetAllPackagesAssemblies());
-
-            IEnumerable<string> assemblyList = nodeModelAssemblies.Union(zeroTouchAssemblies)
-                                                                  .OrderBy(a => a);
-            assemblyList = FixAssemblyNames(assemblyList);
-            foreach (var currAssembly in assemblyList)
+            XmlNode categoryNode, currNode;
+            List<NodeSearchElement> elementsToAdd;
+            foreach (var category in BrowserRootCategories.OrderBy(cat => cat.Name))
             {
-                parent = XmlHelper.AddNode(assembliesRoot, "Assembly");
-                XmlHelper.AddAttribute(parent, "Name", currAssembly);
+                categoryNode = XmlHelper.AddNode(parent, "Category");
+                XmlHelper.AddAttribute(categoryNode, "Name", category.Name);
 
-                elementsToAdd = _searchElements.Where(el => el.Assembly == currAssembly)
-                                               .OrderBy(el => el.FullName);
-                foreach (var currElement in elementsToAdd)
+                elementsToAdd = new List<NodeSearchElement>();
+                CollectItemsOfNode(category, elementsToAdd);
+
+                foreach (var element in elementsToAdd.OrderBy(el => el.FullName))
                 {
-                    currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
-                    SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
+                    currNode = XmlHelper.AddNode(categoryNode, element.GetType().ToString());
+                    SpecifyNodeInfo(currNode, element);
                 }
-            }
-
-            // Adding packages nodes: custom nodes, NodeModel and ZeroTouch assemblies.                        
-            foreach (var currPackage in DynamoModel.Loader.PackageLoader.LocalPackages)
-            {
-                parent = XmlHelper.AddNode(packagesRoot, "Package");
-                XmlHelper.AddAttribute(parent, "Name", currPackage.Name);
-                XmlHelper.AddAttribute(parent, "VersionName", currPackage.VersionName);
-
-                elementsToAdd = _searchElements.Where(el =>
-                {
-                    bool cond = currPackage.LoadedAssemblies.Any(la => la.Assembly.Location == el.Assembly);
-                    if (cond) return cond;
-
-                    var customElement = el as CustomNodeSearchElement;
-                    if (customElement != null && customElement.Package == currPackage.Name)
-                        return true;
-                    else
-                        return false;
-                }).OrderBy(el => el.FullName);
-                foreach (var currElement in elementsToAdd)
-                {
-                    currNode = XmlHelper.AddNode(parent, currElement.GetType().ToString());
-                    SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
-                }
-            }
-
-            // Adding custom nodes which are not belong to packages.
-            elementsToAdd = _searchElements.Where(el =>
-            {
-                var customElement = el as CustomNodeSearchElement;
-                if (customElement != null && string.IsNullOrEmpty(customElement.Package))
-                    return true;
-
-                return false;
-            }).OrderBy(el => el.FullName);
-            foreach (var currElement in elementsToAdd)
-            {
-                currNode = XmlHelper.AddNode(customNodesRoot, currElement.GetType().ToString());
-                SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
-            }
-
-            // Adding Builin Functions and Operators
-            elementsToAdd = _searchElements.Where(el => el.FullCategoryName == "Builtin Functions" ||
-                                                        el.FullCategoryName == "Operators")
-                                           .OrderBy(el => el.FullName);
-            foreach (var currElement in elementsToAdd)
-            {
-                currNode = XmlHelper.AddNode(specificsRoot, currElement.GetType().ToString());
-                SpecifyNodeInfo(currNode, currElement as NodeSearchElement);
             }
         }
 
@@ -889,8 +824,22 @@ namespace Dynamo.Search
                 XmlHelper.AddAttribute(currNode, "Name", category.Name);
 
                 AddChildrenToXml(currNode, category.Items);
+            }
+        }
 
-                parent.AppendChild(currNode);
+        private void CollectItemsOfNode(BrowserItem root, List<NodeSearchElement> items)
+        {
+            var children = root.Items;
+            foreach (var child in children)
+            {
+                if (child is NodeSearchElement)
+                {
+                    items.Add(child as NodeSearchElement);
+                }
+                else
+                {
+                    CollectItemsOfNode(child, items);
+                }
             }
         }
 
@@ -920,26 +869,16 @@ namespace Dynamo.Search
             XmlHelper.AddNode(node, "FullCategoryName", element.FullCategoryName);
             XmlHelper.AddNode(node, "Name", element.Name);
             XmlHelper.AddNode(node, "Description", element.Description);
-        }
 
-        private IEnumerable<string> FixAssemblyNames(IEnumerable<string> assemblyList)
-        {
-            // For nodes which are belongs to preloaded ZeroTouch library Assembly property is
-            // specified as library dll filename. But in assemblyList we have full paths 
-            // for those libraries. As result nodes are not added to dump. This method fixes it.
-
-            var assembliesToFix = DynamoPathManager.Instance.PreloadLibraries.Where(pl => pl != Path.GetFileName(pl));
-            if (!assembliesToFix.Any())
-                return assemblyList;
-
-            var list = assemblyList.ToList();
-            for (int i = 0; i < list.Count; i++)
+            if (element is CustomNodeSearchElement)
             {
-                if (assembliesToFix.Contains(list[i]))
-                    list[i] = Path.GetFileName(list[i]);
+                var customElement = element as CustomNodeSearchElement;
+                XmlHelper.AddNode(node, "Package", customElement.Package);
             }
-
-            return list;
+            else
+            {
+                XmlHelper.AddNode(node, "Assembly", element.Assembly);
+            }
         }
 
         #endregion
