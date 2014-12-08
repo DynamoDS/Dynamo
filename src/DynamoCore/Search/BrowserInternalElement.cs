@@ -406,6 +406,16 @@ namespace Dynamo.Nodes.Search
             {
                 hiddenSecondaryMembersCount = value;
                 RaisePropertyChanged("HiddenSecondaryMembersCount");
+                RaisePropertyChanged("MoreButtonText");
+            }
+        }
+
+        public string MoreButtonText
+        {
+            get
+            {
+                var count = HiddenSecondaryMembersCount;
+                return string.Format(Configurations.MoreButtonTextFormat, count);
             }
         }
 

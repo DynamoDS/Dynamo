@@ -20,7 +20,6 @@
         <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
                                           TrueBrush="#333333"
                                           FalseBrush="#272727" />
-        <controls:ShowMoreTextConverter x:Key="ShowMoreTextConverter" />
 
         <Style TargetType="{x:Type ScrollViewer}">
             <Setter Property="HorizontalScrollBarVisibility"
@@ -290,8 +289,7 @@
                              Converter="{StaticResource IntToVisibilityConverter}" />
                 </Button.Visibility>
                 <Button.Content>
-                    <Binding Path="HiddenSecondaryMembersCount"
-                             Converter="{StaticResource ShowMoreTextConverter}" />
+                    <Binding Path="MoreButtonText" />
                 </Button.Content>
             </Button>
             <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"

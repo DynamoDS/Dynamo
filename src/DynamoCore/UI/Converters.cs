@@ -2011,19 +2011,4 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-
-    // This converter is used to show More button text StandardPanel control.
-    public class ShowMoreTextConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var count = (int)value;
-            return string.Format(Configurations.MoreButtonTextFormat, count);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

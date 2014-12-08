@@ -571,19 +571,5 @@ namespace Dynamo
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(thickness, result);
         }
-
-        [Test]
-        public void ShowMoreTextConverterTest()
-        {
-            ShowMoreTextConverter converter = new ShowMoreTextConverter();
-
-            Assert.Throws<InvalidCastException>(() => converter.Convert("the string", null, null, null));
-
-            var expected = string.Format(Configurations.MoreButtonTextFormat, -1);
-            Assert.AreEqual(expected, converter.Convert(-1, null, null, null));
-
-            expected = string.Format(Configurations.MoreButtonTextFormat, 14);
-            Assert.AreEqual(expected, converter.Convert(14, null, null, null));
-        }
     }
 }
