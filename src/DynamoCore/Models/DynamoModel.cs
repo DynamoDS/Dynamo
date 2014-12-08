@@ -398,7 +398,6 @@ namespace Dynamo.Models
 
         }
 
-        //SEPARATECORE: causes mono crash
         private void InitializeInstrumentationLogger()
         {
             if (DynamoModel.IsTestMode == false)
