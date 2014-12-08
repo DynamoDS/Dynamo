@@ -911,7 +911,7 @@ namespace ProtoCore
                     {
                         if (isAllocated && !isAccessible)
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, identnode.Value);
+                            string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, identnode.Value);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
@@ -919,7 +919,7 @@ namespace ProtoCore
                         }
                         else
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kUnboundIdentifierMsg, identnode.Value);
+                            string message = String.Format(ProtoCore.StringConstants.kUnboundIdentifierMsg, identnode.Value);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                         }
 
@@ -962,17 +962,17 @@ namespace ProtoCore
 
                             if (null != staticProcCallNode)
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodHasInvalidArguments, procName);
+                                string message = String.Format(ProtoCore.StringConstants.kMethodHasInvalidArguments, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, property);
+                                string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, property);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
+                                string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
 
