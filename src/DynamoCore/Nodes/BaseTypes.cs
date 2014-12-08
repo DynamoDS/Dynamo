@@ -623,9 +623,8 @@ namespace Dynamo.Nodes
 
             dynamoModel.OnRequestTaskDialog(null, args);
 
-            //SEPARATECORE
-            //if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit){}
-            //    DynamoViewModel.ReportABug(null);
+            if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit) { }
+                dynamoModel.OnRequestBugReport();
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
@@ -671,9 +670,7 @@ namespace Dynamo.Nodes
             dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
-                // this should be an event on DynamoModel
-                // SEPARATECORE
-                //DynamoViewModel.DownloadDynamo();
+                dynamoModel.OnRequestDownloadDynamo();
                 return false;
             }
 

@@ -219,6 +219,21 @@ namespace Dynamo.Models
                 RequestTaskDialog(sender, args);
         }
 
+        internal delegate void VoidHandler();
+        internal event VoidHandler RequestDownloadDynamo;
+        internal void OnRequestDownloadDynamo()
+        {
+            if (RequestDownloadDynamo != null)
+                RequestDownloadDynamo();
+        }
+
+        internal event VoidHandler RequestBugReport;
+        internal void OnRequestBugReport()
+        {
+            if (RequestBugReport != null)
+                RequestBugReport();
+        }
+
         /// <summary>
         /// An event triggered when a single graph evaluation completes.
         /// </summary>

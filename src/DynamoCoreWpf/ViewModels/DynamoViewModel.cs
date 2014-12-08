@@ -450,6 +450,7 @@ namespace Dynamo.ViewModels
             model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
             SubscribeModelCleaningUpEvent();
+            SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
             SubscribeUpdateManagerHandlers();
        
@@ -484,6 +485,7 @@ namespace Dynamo.ViewModels
         internal void UnsubscibeAllEvents()
         {
             UnsubscribeDispatcherEvents();
+            UnsubscribeModelUiEvents();
             UnsubscribeModelChangedEvents();
             UnsubscribeUpdateManagerEvents();
             UnsubscribeLoggerEvents();
@@ -523,6 +525,18 @@ namespace Dynamo.ViewModels
         {
             UpdateManager.UpdateManager.Instance.UpdateDownloaded -= Instance_UpdateDownloaded;
             UpdateManager.UpdateManager.Instance.ShutdownRequested -= updateManager_ShutdownRequested;
+        }
+
+        private void SubscribeModelUiEvents()
+        {
+            model.RequestBugReport += ReportABug;
+            model.RequestDownloadDynamo += DownloadDynamo;
+        }
+
+        private void UnsubscribeModelUiEvents()
+        {
+            model.RequestBugReport -= ReportABug;
+            model.RequestDownloadDynamo -= DownloadDynamo;
         }
 
         private void SubscribeModelCleaningUpEvent()
@@ -676,6 +690,11 @@ namespace Dynamo.ViewModels
         public static void ReportABug(object parameter)
         {
             Process.Start(Configurations.GitHubBugReportingLink);
+        }
+
+        public static void ReportABug()
+        {
+            ReportABug(null);
         }
 
         internal static void DownloadDynamo()
