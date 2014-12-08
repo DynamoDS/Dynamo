@@ -1,5 +1,4 @@
-﻿using System.Linq;
-#if ENABLE_DYNAMO_SCHEDULER
+﻿#if ENABLE_DYNAMO_SCHEDULER
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +9,7 @@ using ProtoScript.Runners;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Core.Threading
 {
@@ -20,11 +20,11 @@ namespace Dynamo.Core.Threading
         private GraphSyncData graphSyncData;
         private EngineController engineController;
         private IEnumerable<NodeModel> modifiedNodes;
-        public List<Guid> previewGraphData; 
-
+        public List<Guid> previewGraphData;
+        
         internal override TaskPriority Priority
         {
-            get { return TaskPriority.AboveNormal; }
+            get { return TaskPriority.Normal; }
         }
 
         internal IEnumerable<NodeModel> ModifiedNodes
@@ -55,19 +55,19 @@ namespace Dynamo.Core.Threading
         /// <returns>Returns the list of node id's that will be executed in the next run
         /// for execution).</returns>
         /// 
-        internal List<Guid> Initialize(EngineController controller, WorkspaceModel workspace)
+        internal List<Guid> Initialize(EngineController controller, WorkspaceModel workspace,ILogger dynamoLogger)
         {
             try
             {
                 engineController = controller;
-                TargetedWorkspace = workspace;
-
+                TargetedWorkspace = workspace;                
                 modifiedNodes = ComputeModifiedNodes(workspace);                
                 previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes);
                 return previewGraphData;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                dynamoLogger.Log(e.GetType() + ": " + e.Message);
                 return null;
             }
         }
@@ -78,8 +78,7 @@ namespace Dynamo.Core.Threading
 
         protected override void HandleTaskExecutionCore()
         {
-            // Updating graph in the context of ISchedulerThread.
-            engineController.UpdateGraphImmediate(graphSyncData);
+            
         }
 
         protected override void HandleTaskCompletionCore()

@@ -40,8 +40,7 @@ namespace Dynamo.DSEngine
         private readonly DynamoModel dynamoModel;
         private readonly ProtoCore.Core libraryCore;
         private readonly Object macroMutex = new Object();
-        private GraphSyncData graphSyncdata;
-
+       
         public EngineController(DynamoModel dynamoModel, string geometryFactoryFileName)
         {
             this.dynamoModel = dynamoModel;            
@@ -256,7 +255,7 @@ namespace Dynamo.DSEngine
                 astBuilder.CompileToAstNodes(activeNodes, true);
             }
 
-            graphSyncdata = syncDataManager.GetSyncData();
+            GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
             List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata);
 
              lock (previewGraphQueue)
@@ -394,7 +393,7 @@ namespace Dynamo.DSEngine
 
         private bool VerifyGraphSyncData()
         {
-            graphSyncdata = syncDataManager.GetSyncData();
+            GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = dynamoModel.HomeSpace.Nodes

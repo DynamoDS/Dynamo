@@ -107,7 +107,7 @@ namespace Dynamo.Models
             //The Graph is executed and Show node execution is checked on the Debug menu
             if (graphExecuted && ShowNodeExecution)
             {
-                if (task.Initialize(EngineController, HomeSpace) != null)
+                if (task.Initialize(EngineController, HomeSpace, Logger) != null)
                 {
                     task.Completed += OnPreviewGraphCompleted;
                     scheduler.ScheduleForExecution(task);

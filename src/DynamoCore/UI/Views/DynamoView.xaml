@@ -336,7 +336,8 @@
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&#x0a;It does not contain your graph or any personal data"
                                   Focusable="False"/>
-                        
+                        <MenuItem Focusable="False" Name="ShowNodeExecution" IsCheckable="True" IsChecked="{Binding ShowNodeExecution}" Header="Show Node Execution"/>
+
                         <MenuItem Focusable="False" Header="Length Display Units" Name="LengthUnitsMenu">
                             <MenuItem Focusable="False" Name="units_inch_1" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalInch" Header="Decimal Inch"/>
                             <MenuItem Focusable="False" Name="units_inch_2" IsCheckable="True" IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalInch" Header="Fractional Inch"/>
@@ -403,8 +404,7 @@
                         <MenuItem Focusable="False" Name="CheckDailyBuilds" Header="Check Daily Builds" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
                                   IsCheckable="True" IsChecked="{Binding Path=CheckNewerDailyBuilds, Mode=TwoWay}"></MenuItem>
                         <MenuItem Focusable="False" Name="ForceUpdate" Header="Force Update" DataContext="{Binding Source={x:Static um:UpdateManager.Instance}}"
-                                      IsCheckable="True" IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}"/>
-                        <MenuItem Focusable="False" Name="ShowNodeExecution" IsCheckable="True" IsChecked="{Binding ShowNodeExecution}" Header="Show Node Execution"/>
+                                      IsCheckable="True" IsChecked="{Binding Path=ForceUpdate, Mode=TwoWay}"/>                       
                     </MenuItem>
                 </Menu>
 
