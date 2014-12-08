@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Dynamo.Models;
 
 using String = System.String;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -11,7 +13,7 @@ namespace Dynamo.Search.SearchElements
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
-        internal readonly string FullName;
+        internal readonly string FullName ;
 
         #region Properties
 
@@ -102,6 +104,18 @@ namespace Dynamo.Search.SearchElements
             var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this.FullName);
             f.FullCategoryName = this.FullCategoryName;
             return f;
+        }
+
+        private void ToggleIsVisible(object parameter)
+        {
+            if (this.DescriptionVisibility != true)
+            {
+                this.DescriptionVisibility = true;
+            }
+            else
+            {
+                this.DescriptionVisibility = false;
+            }
         }
 
         public override bool Equals(object obj)
