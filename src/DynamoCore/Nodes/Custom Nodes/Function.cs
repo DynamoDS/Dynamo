@@ -318,11 +318,8 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public partial class Symbol : NodeModel
     {
-        private string inputSymbol = "";
-        private string nickName = "";
-        private const char Seperator = ':';
-        private const string CannotFindType = "Cannot find type '{0}'";
-        private const string InvalidFormat = "Invalid input.\n\nThe name of parameter should start with alphabetic character. You can specify its type and default value.\n\nE.g., input : var[]..[]\nvalue: bool = false";
+        private string inputSymbol = String.Empty;
+        private string nickName = String.Empty; 
 
         public Symbol(WorkspaceModel workspace) : base(workspace)
         {
@@ -332,7 +329,7 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
 
-            InputSymbol = "";
+            InputSymbol = String.Empty; 
         }
 
         public string InputSymbol
@@ -343,7 +340,7 @@ namespace Dynamo.Nodes
                 inputSymbol = value;
 
                 ClearRuntimeError();
-                var substrings = inputSymbol.Split(Seperator);
+                var substrings = inputSymbol.Split(':');
 
                 nickName = substrings[0].Trim();
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
@@ -351,7 +348,7 @@ namespace Dynamo.Nodes
 
                 if (substrings.Count() > 2)
                 {
-                    this.Warning(InvalidFormat);
+                    this.Warning(Properties.Resources.WarningInvalidInput);
                 }
                 else if (!string.IsNullOrEmpty(nickName) &&
                          (substrings.Count() == 2 || InputSymbol.Contains("=")))
@@ -365,13 +362,16 @@ namespace Dynamo.Nodes
 
                     if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValueNode))
                     {
-                        this.Warning(InvalidFormat);
+                        this.Warning(Properties.Resources.WarningInvalidInput);
                     }
                     else
                     {
                         if (identifierNode.datatype.UID == Constants.kInvalidIndex)
                         {
-                            this.Warning(String.Format(CannotFindType, identifierNode.datatype.Name));
+                            string warningMessage = String.Format(
+                                Properties.Resources.WarningCannotFindType, 
+                                identifierNode.datatype.Name);
+                            this.Warning(warningMessage);
                         }
                         else
                         {
