@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ProtoCore.AST.AssociativeAST;
@@ -12,7 +12,7 @@ namespace ProtoCore.DSASM
     {
         public string name { get; set; }
         public SymbolTable symbols { get; set; }
-        public List<AST.AssociativeAST.BinaryExpressionNode> defaultArgExprList { get; set; } 
+        public List<AST.AssociativeAST.BinaryExpressionNode> defaultArgExprList { get; set; }
         public ProcedureTable vtable { get; set; }
         public int size { get; set; }
         public int rank { get; set; }
@@ -66,23 +66,23 @@ namespace ProtoCore.DSASM
             Validity.Assert((int)PrimitiveType.kInvalidType != classId);
 
             if ((int)PrimitiveType.kTypeNull == classId || coerceTypes.ContainsKey(type))
-            { 
+            {
                 return true;
             }
 
             //chars are convertible to string
 
-            else if (classId == (int)PrimitiveType.kTypeChar && type==(int)PrimitiveType.kTypeString)
+            else if (classId == (int)PrimitiveType.kTypeChar && type == (int)PrimitiveType.kTypeString)
             {
                 return true;
             }
 
             //user defined type to bool
-            else if (classId >=(int)PrimitiveType.kMaxPrimitives && type == (int)PrimitiveType.kTypeBool)
+            else if (classId >= (int)PrimitiveType.kMaxPrimitives && type == (int)PrimitiveType.kTypeBool)
             {
                 return true;
             }
-                
+
                 //string to boolean
 
             else if (classId == (int)PrimitiveType.kTypeString && type == (int)PrimitiveType.kTypeBool)
@@ -94,7 +94,7 @@ namespace ProtoCore.DSASM
             {
                 return true;
             }
-            
+
             return false;
         }
 
@@ -168,13 +168,13 @@ namespace ProtoCore.DSASM
 
             IEnumerable<SymbolNode> allSymbols = symbols.GetNodeForName(name);
             if (allSymbols == null)
-            {                
+            {
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
             }
 
             int myself = typeSystem.classTable.IndexOf(this.name);
             bool isInMemberFunctionContext = (classScope == myself) && (functionScope != ProtoCore.DSASM.Constants.kInvalidIndex);
-            bool isInStaticFunction = isInMemberFunctionContext &&  (vtable.procList[functionScope].isStatic);
+            bool isInStaticFunction = isInMemberFunctionContext && (vtable.procList[functionScope].isStatic);
 
             // Try for member function variables
             var blocks = core.GetAncestorBlockIdsOfBlock(blockId);
@@ -286,7 +286,7 @@ namespace ProtoCore.DSASM
                 {
                     isAccessible = (procNode.access == Compiler.AccessSpecifier.kPublic);
                 }
-                else if (classScope == myClassIndex) 
+                else if (classScope == myClassIndex)
                 {
                     isAccessible = true;
                 }
@@ -343,7 +343,6 @@ namespace ProtoCore.DSASM
             {
                 return null;
             }
-
             ProcedureNode procNode = vtable.GetFunctionsBy(procName, argCount).FirstOrDefault();
             if (procNode != null)
             {
@@ -369,7 +368,7 @@ namespace ProtoCore.DSASM
                 return null;
             }
 
-            return  vtable.GetFunctionsBy(procName, argCount)
+            return vtable.GetFunctionsBy(procName, argCount)
                           .Where(p => p.isConstructor)
                           .FirstOrDefault();
         }
@@ -508,7 +507,7 @@ namespace ProtoCore.DSASM
     public class ClassTable
     {
         // Don't directly modify class table list.
-        public ReadOnlyCollection<ClassNode> ClassNodes 
+        public ReadOnlyCollection<ClassNode> ClassNodes
         {
             get
             {
@@ -570,7 +569,7 @@ namespace ProtoCore.DSASM
             Namespace.Symbol symbol = null;
             if (symbolTable.TryGetUniqueSymbol(partialName, out symbol))
                 return symbol.Id;
-            
+
             return ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
@@ -634,7 +633,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                return ClassNodes[UID].name; 
+                return ClassNodes[UID].name;
             }
         }
 
@@ -655,7 +654,7 @@ namespace ProtoCore.DSASM
                 var symbols = symbolTable.GetAllSymbols(name);
                 if (symbols.Count > 1)
                 {
-                    string message = string.Format(StringConstant.kMultipleSymbolFound, name, "");
+                    string message = string.Format(StringConstants.kMultipleSymbolFound, name, "");
                     foreach (var symbol in symbols)
                     {
                         message += ", " + symbol.FullName;

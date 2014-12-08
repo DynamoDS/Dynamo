@@ -130,7 +130,7 @@ namespace ProtoCore
                 CodeGen.AuditCodeLocation(core, ref filename, ref line, ref col);
             }
 
-            var warningMsg = string.Format(StringConstant.kConsoleStringConstant, 
+            var warningMsg = string.Format(StringConstants.kConsoleStringConstant, 
                                            message, filename, line, col);
 
             if (core.Options.Verbose)
@@ -194,7 +194,7 @@ namespace ProtoCore
         public void LogFunctionGroupNotFoundWarning(
             string methodName)
         {
-            String message = string.Format(StringConstant.FUNCTION_GROUP_RESOLUTION_FAILURE, methodName);
+            String message = string.Format(StringConstants.FUNCTION_GROUP_RESOLUTION_FAILURE, methodName);
             LogWarning(WarningID.kMethodResolutionFailure, message);
         }
 
@@ -212,17 +212,17 @@ namespace ProtoCore
                 if (classScope != Constants.kGlobalScope)
                 {
                     string classname = core.ClassTable.ClassNodes[classScope].name;
-                    message = string.Format(StringConstant.kPropertyOfClassNotFound, classname, propertyName);
+                    message = string.Format(StringConstants.kPropertyOfClassNotFound, classname, propertyName);
                 }
                 else
                 {
-                    message = string.Format(StringConstant.kPropertyNotFound, propertyName);
+                    message = string.Format(StringConstants.kPropertyNotFound, propertyName);
                 }
             }
             else if (CoreUtils.TryGetOperator(methodName, out op))
             {
                 string strOp = Op.GetOpSymbol(op);
-                message = String.Format(StringConstant.kMethodResolutionFailureForOperator,
+                message = String.Format(StringConstants.kMethodResolutionFailureForOperator,
                                         strOp,
                                         core.TypeSystem.GetType(arguments[0].metaData.type),
                                         core.TypeSystem.GetType(arguments[1].metaData.type));
@@ -241,7 +241,7 @@ namespace ProtoCore
                 typesList = typesList + ")";
 
 
-                message = string.Format(StringConstant.kMethodResolutionFailureWithTypes, methodName, typesList);
+                message = string.Format(StringConstants.kMethodResolutionFailureWithTypes, methodName, typesList);
             }
 
             LogWarning(WarningID.kMethodResolutionFailure, message);
@@ -254,11 +254,11 @@ namespace ProtoCore
 
             if (CoreUtils.TryGetPropertyName(methodName, out propertyName))
             {
-                message = String.Format(StringConstant.kPropertyInaccessible, propertyName);
+                message = String.Format(StringConstants.kPropertyInaccessible, propertyName);
             }
             else
             {
-                message = String.Format(StringConstant.kMethodResolutionFailure, methodName);
+                message = String.Format(StringConstants.kMethodResolutionFailure, methodName);
             }
             LogWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure, message);
         }

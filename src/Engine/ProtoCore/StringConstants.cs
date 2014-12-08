@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProtoCore
 {
-    public struct StringConstant
+    public struct StringConstants
     {
         public const string kAssingToThis = "'this' is readonly and cannot be assigned to.";
         public const string kCallingNonStaticProperty = "'{0}.{1}' is not a static property.";
