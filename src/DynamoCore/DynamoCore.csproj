@@ -135,6 +135,7 @@ limitations under the License.
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Nodes\DummyNode.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Search\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchModel2.cs" />
