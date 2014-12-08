@@ -33,6 +33,13 @@ namespace Dynamo.ViewModels
                 RequestReturnFocusToSearch(this, e);
         }
 
+        public event EventHandler SearchChanged;
+        public void OnSearchChanged(object sender, EventArgs e)
+        {
+            if (SearchChanged != null)
+                SearchChanged(this, e);
+        }
+
         #endregion
 
         #region Properties/Fields
@@ -60,6 +67,7 @@ namespace Dynamo.ViewModels
             set
             {
                 searchText = value;
+                OnSearchChanged(this, new EventArgs());
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("CurrentMode");
             }

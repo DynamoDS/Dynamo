@@ -20,6 +20,18 @@ namespace Dynamo.UI.Views
         public LibrarySearchView()
         {
             InitializeComponent();
+
+            Loaded += OnLibrarySearchViewLoaded;
+        }
+
+        private void OnLibrarySearchViewLoaded(object sender, RoutedEventArgs e)
+        {
+            (DataContext as SearchViewModel).SearchChanged += OnLibrarySearchViewSearchChanged;
+        }
+
+        private void OnLibrarySearchViewSearchChanged(object sender, System.EventArgs e)
+        {
+            topResultPanel.BringIntoView();
         }
 
         #region MethodButton

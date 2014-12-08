@@ -519,7 +519,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <StackPanel DataContext="{Binding TopResult}">
+                <StackPanel x:Name="topResultPanel"
+                            DataContext="{Binding TopResult}">
                     <StackPanel.Visibility>
                         <Binding Converter="{StaticResource NullValueToCollapsedConverter}" />
                     </StackPanel.Visibility>
