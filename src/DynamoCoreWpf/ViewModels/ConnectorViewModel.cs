@@ -341,7 +341,15 @@ namespace Dynamo.ViewModels
         /// <param name="p2">The position of the end point</param>
         public void Redraw(object parameter)
         {
-            Point p2 = (Point)parameter;
+            var p2 = new Point();
+
+            if (parameter is Point)
+            {
+                p2 = (Point) parameter;
+            } else if (parameter is Point2D)
+            {
+                p2 = ((Point2D)parameter).AsWindowsType();
+            }
 
             CurvePoint3 = p2;
 

@@ -200,7 +200,7 @@ namespace Dynamo.ViewModels
         internal void UpdateActiveConnector(System.Windows.Point mouseCursor)
         {
             if (null != this.activeConnector)
-                this.activeConnector.Redraw(mouseCursor);
+                this.activeConnector.Redraw(mouseCursor.AsDynamoType());
 
         }
 
