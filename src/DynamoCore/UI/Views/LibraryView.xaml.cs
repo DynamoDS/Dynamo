@@ -14,6 +14,11 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibraryView : UserControl
     {
+        // Right after click on member OnMemberMouseEnter executed.
+        // But ToolTip shouldn't be shown untel mouse moved to another member. 
+        // For this pusposes flag is used.
+        private bool doNotShowToolTip;
+
         // This property is used to prevent a bug.
         // When user clicks on category it scrolls instead of category content expanding.
         // The reason is "CategoryTreeView" does not show full content because it is too
@@ -92,6 +97,12 @@ namespace Dynamo.UI.Views
 
         private void OnMemberMouseEnter(object sender, MouseEventArgs e)
         {
+            if (doNotShowToolTip)
+            {
+                doNotShowToolTip = false;
+                return;
+            }
+
             FrameworkElement fromSender = sender as FrameworkElement;
             libraryToolTipPopup.PlacementTarget = fromSender;
             libraryToolTipPopup.SetDataContext(fromSender.DataContext);
@@ -144,6 +155,15 @@ namespace Dynamo.UI.Views
             // until count of our requests less than 1. First request is done for
             // opened top category when dynamo starts.
             e.Handled = BringIntoViewCount < 2;
+        }
+
+        private void OnExpanderButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if ((sender as Button).DataContext is NodeSearchElement)
+            {
+                libraryToolTipPopup.SetDataContext(null, true);
+                doNotShowToolTip = true;
+            }
         }
     }
 }

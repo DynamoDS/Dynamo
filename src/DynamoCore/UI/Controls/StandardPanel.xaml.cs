@@ -90,7 +90,10 @@ namespace Dynamo.UI.Controls
         {
             var searchElement = listBoxItem.DataContext as SearchElementBase;
             if (searchElement != null)
+            {
                 searchElement.Execute();
+                libraryToolTipPopup.SetDataContext(null, true);
+            }
         }
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)

@@ -226,7 +226,7 @@ namespace Dynamo.Nodes
 
                 if (OnChangeCommitted != null)
                     OnChangeCommitted();
-                
+
                 Pending = false;
             }
         }
@@ -496,10 +496,15 @@ namespace Dynamo.UI.Controls
             };
         }
 
-        public void SetDataContext(object dataContext)
+        public void SetDataContext(object dataContext, bool force = false)
         {
             if (dataContext == null)
             {
+                if (force)
+                {
+                    CloseLibraryToolTipPopup(null, null);
+                    return;
+                }
                 showTimer.Stop();
                 dispatcherTimer.Start();
                 return;
