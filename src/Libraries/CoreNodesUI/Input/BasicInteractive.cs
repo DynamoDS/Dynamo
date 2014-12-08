@@ -215,7 +215,7 @@ namespace DSCoreNodesUI
         {
             if (name == "Value")
             {
-                Value = bool.Parse(value);
+                Value = DeserializeValue(value);
                 return true;
             }
 
