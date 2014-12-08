@@ -241,7 +241,7 @@ limitations under the License.
     <Compile Include="Core\NodeCollapser.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
-    <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\NodeModelSearchElement.cs" />
     <Compile Include="PackageManager\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Nodes\NodeCategories.cs" />
