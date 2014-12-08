@@ -182,7 +182,7 @@ namespace Dynamo.Tests
             };
 
             Message message = messageHandler.DeserializeMessage(createCommand);
-            messageHandler.Execute(Model, message, "");
+            messageHandler.Execute(message, "");
 
             var resultPath = Path.Combine(GetTestDirectory(), @"core\commands\codeBlockExpectedResult.txt");
             var expectedResult = File.ReadAllText(resultPath);
