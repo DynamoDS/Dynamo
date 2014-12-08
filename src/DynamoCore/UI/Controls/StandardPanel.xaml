@@ -78,11 +78,12 @@
                     <ControlTemplate>
                         <Grid x:Name="container">
                             <TextBlock x:Name="text"
-                                       HorizontalAlignment="Stretch"
+                                       HorizontalAlignment="Left"
                                        VerticalAlignment="Center"
                                        TextAlignment="Center"
                                        Foreground="#4691CE"
-                                       FontSize="13">
+                                       FontSize="13"
+                                       Margin="71,0,0,0">
                                 <TextBlock.Text>
                                     <Binding Path="Content"
                                              RelativeSource="{RelativeSource TemplatedParent}" />
