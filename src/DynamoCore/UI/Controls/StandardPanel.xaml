@@ -50,12 +50,12 @@
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#444444" />
+                                        Value="#404040" />
                             </Trigger>
                             <Trigger Property="IsFocused"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#444444" />
+                                        Value="#404040" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
