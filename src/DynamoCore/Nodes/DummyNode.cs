@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
@@ -29,52 +26,14 @@ namespace Dynamo.Nodes
             LegacyNodeName = "DSCoreNodesUI.DummyNode";
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
+            Description = GetDescription();
         }
 
-        protected override void LoadNode(XmlElement nodeElement)
+        #region SerializeCore/DeserializeCore
+
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var inputCount = nodeElement.Attributes["inputCount"];
-            var outputCount = nodeElement.Attributes["outputCount"];
-            var legacyName = nodeElement.Attributes["legacyNodeName"];
-
-            InputCount = Int32.Parse(inputCount.Value);
-            OutputCount = Int32.Parse(outputCount.Value);
-            LegacyNodeName = legacyName.Value;
-
-            OriginalNodeContent =
-                nodeElement.ChildNodes.Cast<XmlNode>()
-                    .First(childNode => childNode.Name.Equals("OriginalNodeContent"))
-                    .FirstChild;
-
-            var legacyAsm = nodeElement.Attributes["legacyAssembly"];
-            if (legacyAsm != null)
-                LegacyAssembly = legacyAsm.Value;
-
-            var nodeNature = nodeElement.Attributes["nodeNature"];
-            if (nodeNature != null)
-            {
-                var nature = Enum.Parse(typeof(Nature), nodeNature.Value);
-                NodeNature = ((Nature)nature);
-            }
-
-            for (int input = 0; input < InputCount; input++)
-            {
-                var name = string.Format("Port {0}", input + 1);
-                InPortData.Add(new PortData(name, ""));
-            }
-
-            for (int output = 0; output < OutputCount; output++)
-            {
-                var name = string.Format("Port {0}", output + 1);
-                OutPortData.Add(new PortData(name, ""));
-            }
-
-            RegisterAllPorts();
-        }
-
-        protected override void SaveNode(XmlDocument xmlDoc,
-            XmlElement nodeElement, SaveContext context)
-        {
+            base.SerializeCore(nodeElement, context);
             if (context == SaveContext.Copy || context == SaveContext.Undo)
             {
                 //Dump all the information into memory
@@ -87,7 +46,7 @@ namespace Dynamo.Nodes
 
                 if (OriginalNodeContent != null && nodeElement.OwnerDocument != null)
                 {
-                    XmlElement originalNode = xmlDoc.CreateElement("OriginalNodeContent");
+                    XmlElement originalNode = nodeElement.OwnerDocument.CreateElement("OriginalNodeContent");
                     XmlElement nodeContent = nodeElement.OwnerDocument.CreateElement(OriginalNodeContent.Name);
 
                     var attributes = OriginalNodeContent.Attributes as IEnumerable
@@ -96,9 +55,10 @@ namespace Dynamo.Nodes
                     foreach (XmlAttribute attribute in attributes)
                         nodeContent.SetAttribute(attribute.Name, attribute.Value);
 
-                    foreach (XmlNode childNode in OriginalNodeContent.ChildNodes)
+                    foreach (XmlNode child in
+                        from XmlNode childNode in OriginalNodeContent.ChildNodes
+                        select nodeContent.OwnerDocument.ImportNode(childNode, true))
                     {
-                        XmlNode child = nodeContent.OwnerDocument.ImportNode(childNode, true);
                         nodeContent.AppendChild(child.CloneNode(true));
                     }
 
@@ -145,21 +105,50 @@ namespace Dynamo.Nodes
             }
         }
 
-        #region SerializeCore/DeserializeCore
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context);
-            SaveNode(element.OwnerDocument, element, context);
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             InPortData.Clear();  // In/out ports are going to be recreated in 
             OutPortData.Clear(); // LoadNode, clear them so they don't accumulate.
 
-            base.DeserializeCore(element, context);
-            LoadNode(element);
+            base.DeserializeCore(nodeElement, context);
+
+            var inputCount = nodeElement.Attributes["inputCount"];
+            var outputCount = nodeElement.Attributes["outputCount"];
+            var legacyName = nodeElement.Attributes["legacyNodeName"];
+
+            InputCount = Int32.Parse(inputCount.Value);
+            OutputCount = Int32.Parse(outputCount.Value);
+            LegacyNodeName = legacyName.Value;
+
+            OriginalNodeContent =
+                nodeElement.ChildNodes.Cast<XmlNode>()
+                    .First(childNode => childNode.Name.Equals("OriginalNodeContent"))
+                    .FirstChild;
+
+            var legacyAsm = nodeElement.Attributes["legacyAssembly"];
+            if (legacyAsm != null)
+                LegacyAssembly = legacyAsm.Value;
+
+            var nodeNature = nodeElement.Attributes["nodeNature"];
+            if (nodeNature != null)
+            {
+                var nature = Enum.Parse(typeof(Nature), nodeNature.Value);
+                NodeNature = ((Nature)nature);
+            }
+
+            for (int input = 0; input < InputCount; input++)
+            {
+                var name = string.Format("Port {0}", input + 1);
+                InPortData.Add(new PortData(name, ""));
+            }
+
+            for (int output = 0; output < OutputCount; output++)
+            {
+                var name = string.Format("Port {0}", output + 1);
+                OutPortData.Add(new PortData(name, ""));
+            }
+
+            RegisterAllPorts();
         }
 
         #endregion
@@ -201,12 +190,6 @@ namespace Dynamo.Nodes
 
             const string message = "Unhandled 'DummyNode.NodeNature' value: {0}";
             throw new InvalidOperationException(string.Format(message, NodeNature));
-        }
-
-        public override string Description
-        {
-            get { return GetDescription(); }
-            set { base.Description = value; }
         }
 
         public int InputCount { get; private set; }

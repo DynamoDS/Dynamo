@@ -320,7 +320,12 @@ namespace Dynamo.Models
                 funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nickname);
             }
 
-            return customNodeManager.CreateCustomNodeInstance(funcId, nickname, isTestMode);
+            var node = customNodeManager.CreateCustomNodeInstance(funcId, nickname, isTestMode);
+            if (node == null)
+            {
+                //TODO(Steve): Create and return proxy instead.
+            }
+            return node;
         }
     }
 }

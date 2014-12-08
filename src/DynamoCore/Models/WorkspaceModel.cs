@@ -480,7 +480,16 @@ namespace Dynamo.Models
             {
                 model.Modified -= OnModified;
                 model.Dispose();
+                OnNodeDeleted(model);
             }
+        }
+
+        public event Action<NodeModel> NodeDeleted;
+
+        protected virtual void OnNodeDeleted(NodeModel obj)
+        {
+            var handler = NodeDeleted;
+            if (handler != null) handler(obj);
         }
 
         public void AddConnection(ConnectorModel connector)
@@ -713,7 +722,7 @@ namespace Dynamo.Models
             ModelBase model = GetModelInternal(modelGuid);
             if (null != model)
             {
-                RecordModelForModification(model);
+                RecordModelForModification(model, UndoRecorder);
                 if (!model.HandleModelEvent(eventName))
                 {
                     string type = model.GetType().FullName;
@@ -739,7 +748,7 @@ namespace Dynamo.Models
             ModelBase model = GetModelInternal(modelGuid);
             if (null != model)
             {
-                RecordModelForModification(model);
+                RecordModelForModification(model, UndoRecorder);
                 if (!model.UpdateValue(propertyName, value))
                 {
                     string type = model.GetType().FullName;
@@ -762,7 +771,7 @@ namespace Dynamo.Models
         }
 
         [Obsolete("Node to Code not enabled, API subject to change.")]
-        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController)
+        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController, ProtoCore.Core core, bool verboseLogging)
         {
             IEnumerable<NodeModel> selectedNodes =
                 DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
@@ -771,7 +780,7 @@ namespace Dynamo.Models
                 return;
 
             Dictionary<string, string> variableNameMap;
-            string code = engineController.ConvertNodesToCode(selectedNodes, out variableNameMap);
+            string code = engineController.ConvertNodesToCode(selectedNodes, out variableNameMap, verboseLogging);
 
             CodeBlockNodeModel codeBlockNode;
 
@@ -836,7 +845,8 @@ namespace Dynamo.Models
                     code,
                     nodeId,
                     totalX/nodeCount,
-                    totalY/nodeCount);
+                    totalY/nodeCount,
+                    core);
                 UndoRecorder.RecordCreationForUndo(codeBlockNode);
                 Nodes.Add(codeBlockNode);
                 #endregion
@@ -892,12 +902,12 @@ namespace Dynamo.Models
         }
 
         // See RecordModelsForModification below for more details.
-        public void RecordModelForModification(ModelBase model)
+        public static void RecordModelForModification(ModelBase model, UndoRedoRecorder recorder)
         {
             if (null != model)
             {
                 var models = new List<ModelBase> { model };
-                RecordModelsForModification(models);
+                RecordModelsForModification(models, recorder);
             }
         }
 
@@ -911,18 +921,18 @@ namespace Dynamo.Models
         /// sooner than later.
         /// </summary>
         /// <param name="models">The models to be recorded for undo.</param>
-        /// 
-        internal void RecordModelsForModification(List<ModelBase> models)
+        /// <param name="recorder"></param>
+        internal static void RecordModelsForModification(List<ModelBase> models, UndoRedoRecorder recorder)
         {
-            if (null == undoRecorder)
+            if (null == recorder)
                 return;
             if (!ShouldProceedWithRecording(models))
                 return;
 
-            using (undoRecorder.BeginActionGroup())
+            using (recorder.BeginActionGroup())
             {
-                foreach (ModelBase model in models)
-                    undoRecorder.RecordModificationForUndo(model);
+                foreach (var model in models)
+                    recorder.RecordModificationForUndo(model);
             }
         }
 
@@ -1212,9 +1222,13 @@ namespace Dynamo.Models
                 int startIndex = codeBlockNode.OutPorts.IndexOf(portModel);
 
                 //Make the new connection and then record and add it
-                var newConnector = AddConnection(codeBlockNode, connector.End.Owner,
-                    startIndex, endIndex);
+                var newConnector = ConnectorModel.Make(
+                    codeBlockNode,
+                    connector.End.Owner,
+                    startIndex,
+                    endIndex);
 
+                AddConnection(newConnector);
                 UndoRecorder.RecordCreationForUndo(newConnector);
             }
         }
@@ -1247,11 +1261,12 @@ namespace Dynamo.Models
                 if (Connectors.All(c => c.End != codeBlockNode.InPorts[endIndex]))
                 {
                     //Make the new connection and then record and add it
-                    var newConnector = AddConnection(
+                    var newConnector = ConnectorModel.Make(
                         connector.Start.Owner,
                         codeBlockNode,
                         startIndex,
                         endIndex);
+                    AddConnection(newConnector);
                     UndoRecorder.RecordCreationForUndo(newConnector);
                 }
             }

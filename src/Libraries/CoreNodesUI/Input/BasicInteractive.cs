@@ -79,13 +79,13 @@ namespace DSCoreNodesUI
             }
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context); // Base implementation must be called
+            base.DeserializeCore(nodeElement, context); // Base implementation must be called
 
             if (context == SaveContext.Undo)
             {
-                foreach (XmlNode subNode in element.ChildNodes.Cast<XmlNode>()
+                foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name.Equals(typeof(T).FullName)))
                 {
                     // ReSharper disable once PossibleNullReferenceException

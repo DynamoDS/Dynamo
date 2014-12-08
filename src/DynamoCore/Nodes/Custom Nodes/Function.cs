@@ -137,6 +137,7 @@ namespace Dynamo.Nodes
             if (!Controller.IsInSyncWithNode(this))
             {
                 Controller.SyncNodeWithDefinition(this);
+                OnModified();
             }
             else
             {
@@ -183,19 +184,19 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context); //Base implementation must be called
+            base.DeserializeCore(nodeElement, context); //Base implementation must be called
 
             if (context != SaveContext.Undo) return;
 
-            var helper = new XmlElementHelper(element);
+            var helper = new XmlElementHelper(nodeElement);
             NickName = helper.ReadString("functionName");
 
-            Controller.DeserializeCore(element, context);
+            Controller.DeserializeCore(nodeElement, context);
 
-            XmlNodeList inNodes = element.SelectNodes("functionInput");
-            XmlNodeList outNodes = element.SelectNodes("functionOutput");
+            XmlNodeList inNodes = nodeElement.SelectNodes("functionInput");
+            XmlNodeList outNodes = nodeElement.SelectNodes("functionOutput");
 
             var inData =
                 inNodes.Cast<XmlNode>()
@@ -239,7 +240,7 @@ namespace Dynamo.Nodes
             #region Legacy output support
 
             foreach (var portData in 
-                from XmlNode subNode in element.ChildNodes
+                from XmlNode subNode in nodeElement.ChildNodes
                 where subNode.Name.Equals("Output")
                 select new PortData(subNode.Attributes[0].Value, "function output"))
             {

@@ -90,29 +90,16 @@ namespace Dynamo.Nodes
             VariableInputController.OnBuilt();
         }
 
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            base.SaveNode(xmlDoc, nodeElement, context);
-            VariableInputController.SaveNode(xmlDoc, nodeElement, context);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            base.LoadNode(nodeElement);
-            VariableInputController.LoadNode(nodeElement);
-        }
-
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
             VariableInputController.SerializeCore(element, context);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context);
-            VariableInputController.DeserializeCore(element, context);
+            base.DeserializeCore(nodeElement, context);
+            VariableInputController.DeserializeCore(nodeElement, context);
         }
 
         protected override bool HandleModelEventCore(string eventName)
@@ -169,10 +156,11 @@ namespace Dynamo.Nodes
         private void UpdateRecalcState()
         {
             var dirty = model.InPortData.Count != inputAmtLastBuild
-                || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
+                || Enumerable.Range(0, model.InPortData.Count)
+                    .Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
 
             if (dirty)
-                model.RequiresRecalc = true;
+                model.OnModified();
         }
 
         /// <summary>
@@ -195,55 +183,21 @@ namespace Dynamo.Nodes
             foreach (var idx in Enumerable.Range(0, model.InPortData.Count))
                 connectedLastBuild[idx] = model.HasInput(idx);
         }
-
-        #region Load/Save
-
-        public void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            nodeElement.SetAttribute("inputcount", model.InPortData.Count.ToString());
-        }
-
-        public void LoadNode(XmlNode nodeElement)
-        {
-            if (nodeElement.Attributes != null) 
-            {
-                int amt = Convert.ToInt32(nodeElement.Attributes["inputcount"].Value);
-                SetNumInputs(amt);
-                model.RegisterAllPorts();
-            }
-        }
-
-        #endregion
-
+        
         #region Serialization/Deserialization Methods
 
         public void SerializeCore(XmlElement element, SaveContext context)
         {
             //base.SerializeCore(element, context); //Base implementation must be called
-            XmlDocument xmlDoc = element.OwnerDocument;
-            foreach (var inport in model.InPortData)
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-                input.SetAttribute("name", inport.NickName);
-                element.AppendChild(input);
-            }
+            element.SetAttribute("inputcount", model.InPortData.Count.ToString());
         }
 
         public void DeserializeCore(XmlElement element, SaveContext context)
         {
             //base.DeserializeCore(element, context); //Base implementation must be called
-
-            if (context == SaveContext.Undo)
-            {
-                //Reads in the new number of ports required from the data stored in the Xml Element
-                //during Serialize (nextLength). Changes the current In Port Data to match the
-                //required size by adding or removing port data.
-                XmlNodeList inNodes = element.SelectNodes("Input");
-                int nextLength = inNodes.Count;
-                SetNumInputs(nextLength);
-                model.RegisterAllPorts();
-            }
+            int amt = Convert.ToInt32(element.Attributes["inputcount"].Value);
+            SetNumInputs(amt);
+            model.RegisterAllPorts();
         }
 
         #endregion
@@ -271,7 +225,7 @@ namespace Dynamo.Nodes
                 model.Workspace.RecordModelsForUndo(models);
             }
             else
-                model.Workspace.RecordModelForModification(model);
+                model.Workspace.RecordModelForModification(model, TODO);
         }
 
         public bool HandleModelEventCore(string eventName)

@@ -24,28 +24,16 @@ namespace Dynamo.Nodes
             VarInputController = new ZeroTouchVarInputController(this);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            base.SaveNode(xmlDoc, nodeElement, context);
-            VarInputController.SaveNode(xmlDoc, nodeElement, context);
-        }
-
-        protected override void LoadNode(XmlElement nodeElement)
-        {
-            base.LoadNode(nodeElement);
-            VarInputController.LoadNode(nodeElement);
-        }
-
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
             VarInputController.SerializeCore(element, context);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context);
-            VarInputController.DeserializeCore(element, context);
+            base.DeserializeCore(nodeElement, context);
+            VarInputController.DeserializeCore(nodeElement, context);
         }
 
         protected override bool HandleModelEventCore(string eventName)
@@ -111,9 +99,12 @@ namespace Dynamo.Nodes
         {
             var typedParameters = parameters as IList<TypedParameter> ?? parameters.ToList();
             base.InitializeFunctionParameters(model, typedParameters.Take(typedParameters.Count() - 1));
-            var arg = parameters.LastOrDefault();
-            var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
-            model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
+            if (parameters.Any())
+            {
+                var arg = parameters.Last();
+                var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
+                model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
+            }
         }
 
         protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)

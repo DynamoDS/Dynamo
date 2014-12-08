@@ -94,7 +94,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution)
+        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution, bool verboseLogging)
         {
 
             var inputAstNodes = new List<AssociativeNode>();
@@ -139,10 +139,10 @@ namespace Dynamo.DSEngine
             var scopedNode = node as ScopedNodeModel;
             IEnumerable<AssociativeNode> astNodes = 
                 scopedNode != null
-                    ? scopedNode.BuildAstInScope(inputAstNodes)
+                    ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging)
                     : node.BuildAst(inputAstNodes);
             
-            if (dynamoModel.DebugSettings.VerboseLogging) //TODO(Steve)
+            if (verboseLogging) //TODO(Steve)
             {
                 foreach (var n in astNodes)
                 {
@@ -184,7 +184,8 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="isDeltaExecution"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
+        /// <param name="verboseLogging"></param>
+        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
@@ -201,7 +202,7 @@ namespace Dynamo.DSEngine
 
             foreach (NodeModel node in sortedNodes)
             {
-                _CompileToAstNodes(node, result, isDeltaExecution);
+                _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging);
             }
 
             return result;
@@ -211,24 +212,19 @@ namespace Dynamo.DSEngine
         /// <summary>
         ///     Compiles a collection of Dynamo nodes into a function definition for a custom node.
         /// </summary>
+        /// <param name="functionId"></param>
+        /// <param name="returnKeys"></param>
         /// <param name="functionName"></param>
         /// <param name="funcBody"></param>
         /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
-        /// <param name="functionId"></param>
-        /// <param name="returnKeys"></param>
-        public void CompileCustomNodeDefinition(
-            Guid functionId,
-            IEnumerable<string> returnKeys,
-            string functionName,
-            IEnumerable<NodeModel> funcBody,
-            IEnumerable<AssociativeNode> outputNodes,
-            IEnumerable<string> parameters)
+        /// <param name="verboseLogging"></param>
+        public void CompileCustomNodeDefinition(Guid functionId, IEnumerable<string> returnKeys, string functionName, IEnumerable<NodeModel> funcBody, IEnumerable<AssociativeNode> outputNodes, IEnumerable<string> parameters, bool verboseLogging)
         {
             OnAstNodeBuilding(functionId);
 
             var functionBody = new CodeBlockNode();
-            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
+            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false, verboseLogging));
 
             var outputs = outputNodes.ToList();
             if (outputs.Count > 1)

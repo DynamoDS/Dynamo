@@ -107,9 +107,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context); //Base implementation must be called
+            base.DeserializeCore(nodeElement, context); //Base implementation must be called
 
             if (context == SaveContext.Undo)
             {
@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
                 //during Serialize (nextLength). Changes the current In Port Data to match the
                 //required size by adding or removing port data.
                 int currLength = InPortData.Count;
-                XmlNodeList inNodes = element.SelectNodes("Input");
+                XmlNodeList inNodes = nodeElement.SelectNodes("Input");
                 int nextLength = inNodes.Count;
                 if (nextLength > currLength)
                 {

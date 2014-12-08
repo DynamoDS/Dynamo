@@ -182,8 +182,9 @@ namespace Dynamo.Models
         /// compile its children into some scopes.
         /// </summary>
         /// <param name="inputAstNodes"></param>
+        /// <param name="verboseLogging"></param>
         /// <returns></returns>
-        public virtual IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
+        public virtual IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes, bool verboseLogging)
         {
             throw new NotImplementedException("BuildOutputAstInScope");
         }
@@ -194,11 +195,12 @@ namespace Dynamo.Models
         /// are satisfied. 
         /// </summary>
         /// <param name="inputAstNodes"></param>
+        /// <param name="verboseLogging"></param>
         /// <returns></returns>
-        internal virtual IEnumerable<AssociativeNode> BuildAstInScope(List<AssociativeNode> inputAstNodes)
+        internal virtual IEnumerable<AssociativeNode> BuildAstInScope(List<AssociativeNode> inputAstNodes, bool verboseLogging)
         {
             OnBuilt();
-            var result = BuildOutputAstInScope(inputAstNodes);
+            var result = BuildOutputAstInScope(inputAstNodes, verboseLogging);
             return result;
         }
     }

@@ -200,10 +200,10 @@ namespace DSIronPythonNode
             helper.SetAttribute("Script", Script);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context);
-            var helper = new XmlElementHelper(element);
+            base.DeserializeCore(nodeElement, context);
+            var helper = new XmlElementHelper(nodeElement);
             var script = helper.ReadString("Script", string.Empty);
             this.script = script;
         }

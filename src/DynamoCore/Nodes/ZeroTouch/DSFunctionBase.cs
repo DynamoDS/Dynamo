@@ -19,18 +19,10 @@ namespace Dynamo.Nodes
             : base(controller)
         {
             ArgumentLacing = LacingStrategy.Shortest;
+            Description = Controller.Description;
+            Category = Controller.Category;
         }
-
-        public override string Description
-        {
-            get { return Controller.Description; }
-        }
-
-        public override string Category
-        {
-            get { return Controller.Category; }
-        }
-
+        
         public override bool IsConvertible
         {
             get { return true; }
@@ -77,10 +69,10 @@ namespace Dynamo.Nodes
             Controller.SerializeCore(element, context);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context);
-            Controller.DeserializeCore(element, context);
+            base.DeserializeCore(nodeElement, context);
+            Controller.DeserializeCore(nodeElement, context);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -225,7 +217,7 @@ namespace Dynamo.Nodes
             return AstFactory.BuildFunctionObject(
                 functionNode,
                 model.InPorts.Count(),
-                model.GetConnectedInputs(),
+                Enumerable.Range(0, model.InPorts.Count).Where(model.HasConnectedInput),
                 inputs);
         }
 

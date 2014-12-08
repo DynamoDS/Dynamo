@@ -19,7 +19,9 @@ namespace Dynamo.Models
         public bool RunEnabled;
         public bool DynamicRunEnabled;
 
-        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler)
+        public readonly bool VerboseLogging;
+
+        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler, bool verboseLogging)
             : this(
                 libraryServices,
                 scheduler,
@@ -28,16 +30,17 @@ namespace Dynamo.Models
                 Enumerable.Empty<ConnectorModel>(),
                 Enumerable.Empty<NoteModel>(),
                 0,
-                0) { }
+                0, verboseLogging) { }
 
         public HomeWorkspaceModel(
             LibraryServices libraryServices, DynamoScheduler scheduler,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e,
-            IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y)
+            IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y, bool verboseLogging)
             : base("Home", e, c, n, x, y)
         {
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
+            VerboseLogging = verboseLogging;
 
             engineController = new EngineController(
                 libraryServices,
@@ -116,7 +119,7 @@ namespace Dynamo.Models
         /// <param name="definition"></param>
         public void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
         {
-            engineController.GenerateGraphSyncDataForCustomNode(Nodes, definition);
+            engineController.GenerateGraphSyncDataForCustomNode(Nodes, definition, VerboseLogging);
         }
 
         /// <summary>
@@ -125,10 +128,11 @@ namespace Dynamo.Models
         /// TODO(Luke): Push this into a resync call with the engine controller
         /// </summary>
         /// <param name="customNodeDefinitions"></param>
+        /// <param name="verboseLogging"></param>
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
-        public virtual void ResetEngine(IEnumerable<CustomNodeDefinition> customNodeDefinitions, bool markNodesAsDirty = false)
+        public virtual void ResetEngine(IEnumerable<CustomNodeDefinition> customNodeDefinitions, bool verboseLogging, bool markNodesAsDirty = false)
         {
             ResetEngineInternal(customNodeDefinitions);
             if (markNodesAsDirty)
@@ -245,7 +249,7 @@ namespace Dynamo.Models
             // 
             engineController.ProcessPendingCustomNodeSyncData(scheduler);
 
-            var task = new UpdateGraphAsyncTask(scheduler);
+            var task = new UpdateGraphAsyncTask(scheduler, VerboseLogging);
             if (task.Initialize(engineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
@@ -264,10 +268,11 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         /// <param name="customNodeDefinitions"></param>
-        public void ForceRun(IEnumerable<CustomNodeDefinition> customNodeDefinitions)
+        /// <param name="verboseLogging"></param>
+        public void ForceRun(IEnumerable<CustomNodeDefinition> customNodeDefinitions, bool verboseLogging)
         {
             Log("Beginning engine reset");
-            ResetEngine(customNodeDefinitions);
+            ResetEngine(customNodeDefinitions, verboseLogging);
             Log("Reset complete");
 
             Run();

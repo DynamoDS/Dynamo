@@ -152,7 +152,7 @@ namespace Dynamo.Models
             //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             //This is now handled via NodeGraph.LoadConnectorFromXml
 

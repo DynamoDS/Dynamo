@@ -17,6 +17,7 @@ namespace Dynamo.Core.Threading
 
         private GraphSyncData graphSyncData;
         private EngineController engineController;
+        private bool verboseLogging;
 
         internal override TaskPriority Priority
         {
@@ -29,7 +30,10 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal UpdateGraphAsyncTask(IScheduler scheduler) : base(scheduler) { }
+        internal UpdateGraphAsyncTask(IScheduler scheduler, bool verboseLogging1) : base(scheduler)
+        {
+            verboseLogging = verboseLogging;
+        }
 
         /// <summary>
         /// This method is called by codes that intent to start a graph update.
@@ -54,7 +58,7 @@ namespace Dynamo.Core.Threading
                 TargetedWorkspace = workspace;
 
                 ModifiedNodes = ComputeModifiedNodes(workspace);
-                graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes);
+                graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes, verboseLogging);
                 return graphSyncData != null;
             }
             catch (Exception)

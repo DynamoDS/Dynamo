@@ -396,7 +396,7 @@ namespace Dynamo
         private readonly FakeAsyncTaskData data;
 
         internal FakeUpdateGraphAsyncTask(FakeAsyncTaskData data)
-            : base(data.Scheduler)
+            : base(data.Scheduler, false)
         {
             this.data = data;
         }

@@ -1,4 +1,13 @@
-﻿using DSNodeServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
+using DSNodeServices;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
@@ -12,18 +21,9 @@ using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using DynamoUnits;
 using DynamoUtilities;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
 using ProtoCore;
+using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
-using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -105,8 +105,7 @@ namespace Dynamo.Models
 
         #region public properties
         //TODO(Steve): Attempt to make the majority of these readonly fields
-
-
+        
         public readonly LibraryServices LibraryServices;
 
         /// <summary>
@@ -479,7 +478,7 @@ namespace Dynamo.Models
                 RootCustomPropertyFilterPathName = string.Empty
             });
 
-            libraryCore.Executives.Add(Language.kAssociative, new ProtoAssociative.Executive(libraryCore));
+            libraryCore.Executives.Add(Language.kAssociative, new Executive(libraryCore));
             libraryCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
@@ -508,9 +507,7 @@ namespace Dynamo.Models
         /// <param name="sender">The scheduler which raised the event.</param>
         /// <param name="e">Task state changed event argument.</param>
         /// 
-        private void OnAsyncTaskStateChanged(
-            DynamoScheduler sender,
-            TaskStateChangedEventArgs e)
+        private void OnAsyncTaskStateChanged(DynamoScheduler sender, TaskStateChangedEventArgs e)
         {
             switch (e.CurrentState)
             {
@@ -527,8 +524,10 @@ namespace Dynamo.Models
                         long end = e.Task.ExecutionEndTime.TickCount;
                         var executionTimeSpan = new TimeSpan(end - start);
 
-                        InstrumentationLogger.LogAnonymousTimedEvent("Perf",
-                            e.Task.GetType().Name, executionTimeSpan);
+                        InstrumentationLogger.LogAnonymousTimedEvent(
+                            "Perf",
+                            e.Task.GetType().Name,
+                            executionTimeSpan);
 
                         Logger.Log("Evaluation completed in " + executionTimeSpan);
                         ExecutionEvents.OnGraphPostExecution();
@@ -550,18 +549,47 @@ namespace Dynamo.Models
             }
 
             // Import Zero Touch libs
-            foreach (var funcGroup in LibraryServices.GetAllFunctionGroups())
+            var functionGroups = LibraryServices.GetAllFunctionGroups();
+            foreach (var funcGroup in functionGroups)
                 AddZeroTouchNodeToSearch(funcGroup);
+#if DEBUG_LIBRARY
+            DumpLibrarySnapshot(functionGroups);
+#endif
 
             // Load Packages
             PackageLoader.DoCachedPackageUninstalls(preferences);
             //TODO(Steve): This will need refactoring
-            PackageLoader.LoadPackagesIntoDynamo(preferences, LibraryServices);
+            PackageLoader.LoadPackagesIntoDynamo(preferences, LibraryServices, Loader);
 
             // Load local custom nodes
             CustomNodeManager.AddUninitializedCustomNodesInPath(DynamoPathManager.Instance.UserDefinitions, IsTestMode);
             CustomNodeManager.AddUninitializedCustomNodesInPath(DynamoPathManager.Instance.CommonDefinitions, IsTestMode);
         }
+
+#if DEBUG_LIBRARY
+        private void DumpLibrarySnapshot(IEnumerable<DSEngine.FunctionGroup> functionGroups)
+        {
+            if (null == functionGroups)
+                return;
+
+            var descriptions =
+                functionGroups.Select(functionGroup => functionGroup.Functions.ToList())
+                    .Where(functions => functions.Any())
+                    .SelectMany(
+                        functions => 
+                            (from function in functions
+                             where function.IsVisibleInLibrary
+                             let displayString = function.UserFriendlyName
+                             where !displayString.Contains("GetType")
+                             select string.IsNullOrEmpty(function.Namespace)
+                                ? ""
+                                : function.Namespace + "." + function.Signature + "\n"));
+            
+            var sb = string.Join("\n", descriptions);
+
+            Logger.Log(sb, LogLevel.File);
+        }
+#endif
 
         private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
         {
@@ -615,7 +643,7 @@ namespace Dynamo.Models
 
         private void InitializeCurrentWorkspace()
         {
-            var defaultWorkspace = new HomeWorkspaceModel(LibraryServices, Scheduler);
+            var defaultWorkspace = new HomeWorkspaceModel(LibraryServices, Scheduler, DebugSettings.VerboseLogging);
             Workspaces.Add(defaultWorkspace);
             CurrentWorkspace = defaultWorkspace;
             //AddHomeWorkspace();
@@ -744,7 +772,8 @@ namespace Dynamo.Models
                 nodeGraph.Connectors,
                 nodeGraph.Notes,
                 workspaceInfo.X,
-                workspaceInfo.Y);
+                workspaceInfo.Y,
+                DebugSettings.VerboseLogging);
 
             RegisterHomeWorkspace(newWorkspace);
             
@@ -758,12 +787,11 @@ namespace Dynamo.Models
                 newWorkspace.RegisterCustomNodeDefinitionWithEngine(def);
 
             CustomNodeManager.DefinitionUpdated += newWorkspace.RegisterCustomNodeDefinitionWithEngine;
-            newWorkspace.Disposed += () =>
-            {
-                CustomNodeManager.DefinitionUpdated -= newWorkspace.RegisterCustomNodeDefinitionWithEngine;
-            };
+            newWorkspace.Disposed +=
+                () =>
+                    CustomNodeManager.DefinitionUpdated -= newWorkspace.RegisterCustomNodeDefinitionWithEngine;
         }
-        
+
         #endregion
 
         #region internal methods
@@ -895,6 +923,7 @@ namespace Dynamo.Models
             workspace.WorkspaceSaved += savedHandler;
             
             workspace.NodeAdded += OnNodeAdded;
+            workspace.NodeDeleted += OnNodeDeleted;
             workspace.ConnectorAdded += OnConnectorAdded;
             workspace.MessageLogged += LogMessage;
 
@@ -902,6 +931,7 @@ namespace Dynamo.Models
             {
                 workspace.WorkspaceSaved -= savedHandler;
                 workspace.NodeAdded -= OnNodeAdded;
+                workspace.NodeDeleted -= OnNodeDeleted;
                 workspace.ConnectorAdded -= OnConnectorAdded;
                 workspace.MessageLogged -= LogMessage;
             };
@@ -915,7 +945,7 @@ namespace Dynamo.Models
         /// <param name="node"></param>
         public void AddNodeToCurrentWorkspace(NodeModel node)
         {
-            CurrentWorkspace.AddNode(node, TODO);
+            CurrentWorkspace.AddNode(node, centered: true);
             OnNodeAdded(node);
             
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection.
@@ -989,7 +1019,7 @@ namespace Dynamo.Models
                         ? (node as Symbol).InputSymbol
                         : (node as Output).Symbol);
                     var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
-                    newNode = new CodeBlockNodeModel(code)
+                    newNode = new CodeBlockNodeModel(code, LibraryServices.LibraryManagementCore)
                     {
                         X = node.X,
                         Y = node.Y + 100

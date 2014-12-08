@@ -239,7 +239,6 @@ limitations under the License.
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\DynamoLoader.cs" />
-    <Compile Include="Core\NodeCollapser.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeModelSearchElement.cs" />
@@ -247,7 +246,6 @@ limitations under the License.
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Nodes\NodeCategories.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
-    <Compile Include="Nodes\Files.cs" />
     <Compile Include="Nodes\Custom Nodes\Function.cs" />
     <Compile Include="Models\NodeModel.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />

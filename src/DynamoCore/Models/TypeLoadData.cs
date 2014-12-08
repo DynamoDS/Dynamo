@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -35,10 +34,14 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
-        public TypeLoadData(Type typeIn, string obsoleteMsg)
+        public TypeLoadData(Type typeIn)
         {
             Type = typeIn;
-            ObsoleteMessage = obsoleteMsg;
+
+            ObsoleteMessage = string.Join(
+                "\n",
+                Type.GetCustomAttributes<ObsoleteAttribute>(true)
+                    .Select(x => string.IsNullOrEmpty(x.Message) ? "Obsolete" : x.Message));
 
             AlsoKnownAs = Type.GetCustomAttributes<AlsoKnownAsAttribute>(false)
                 .SelectMany(aka => aka.Values)

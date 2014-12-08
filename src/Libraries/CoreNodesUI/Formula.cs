@@ -110,13 +110,13 @@ namespace DSCoreNodesUI
             }
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context); //Base implementation must be called
+            base.DeserializeCore(nodeElement, context); //Base implementation must be called
 
             if (context == SaveContext.Undo)
             {
-                var helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(nodeElement);
                 FormulaString = helper.ReadString("formulaString");
             }
         }

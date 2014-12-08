@@ -137,10 +137,7 @@ namespace Dynamo.Nodes
             if (IsInSyncWithNode(model)) 
                 return;
             
-            model.DisableReporting();
             base.SyncNodeWithDefinition(model);
-            model.EnableReporting();
-            model.RequiresRecalc = true;
         }
 
         public override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext saveContext)

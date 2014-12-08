@@ -30,22 +30,22 @@ namespace Dynamo.Models
         void OpenFileImpl(OpenFileCommand command)
         {
             string xmlFilePath = command.XmlFilePath;
-            OpenInternal(xmlFilePath);
+            OpenFileFromPath(xmlFilePath);
 
             //clear the clipboard to avoid copying between dyns
-            ClipBoard.Clear();
+            //ClipBoard.Clear(); //TODO(Steve): Make sure this now works
         }
 
         void RunCancelImpl(RunCancelCommand command)
         {
-            RunCancelInternal(
-                command.ShowErrors, command.CancelRun);
+            var model = CurrentWorkspace as HomeWorkspaceModel;
+            if (model != null)
+                model.Run();
         }
 
         void ForceRunCancelImpl(ForceRunCancelCommand command)
         {
-            ForceRunCancelInternal(
-                command.ShowErrors, command.CancelRun);
+            //TODO(Steve): This currently does nothing as of the Scheduler PR
         }
 
         void CreateNodeImpl(CreateNodeCommand command)
@@ -243,9 +243,13 @@ namespace Dynamo.Models
         }
 
         [Obsolete("Node to Code not enabled, API subject to change.")]
-        void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
+        private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
-            CurrentWorkspace.ConvertNodesToCodeInternal(command.NodeId, EngineController, Logger);
+            CurrentWorkspace.ConvertNodesToCodeInternal(
+                command.NodeId,
+                EngineController,
+                LibraryServices.LibraryManagementCore, );
+
             CurrentWorkspace.HasUnsavedChanges = true;
         }
 

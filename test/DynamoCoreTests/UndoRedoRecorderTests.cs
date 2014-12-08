@@ -57,9 +57,9 @@ namespace Dynamo.Tests
             helper.SetAttribute(DummyModel.IdName, this.Identifier);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            XmlElementHelper helper = new XmlElementHelper(element);
+            XmlElementHelper helper = new XmlElementHelper(nodeElement);
             this.Radius = helper.ReadInteger(DummyModel.RadiusName);
             this.Identifier = helper.ReadInteger(DummyModel.IdName);
         }

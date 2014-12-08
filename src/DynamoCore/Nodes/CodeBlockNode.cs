@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -26,8 +27,9 @@ namespace Dynamo.Nodes
         private readonly List<Statement> codeStatements = new List<Statement>();
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
-        private List<string> tempVariables = new List<string>();
-        private string previewVariable = null;
+        private readonly List<string> tempVariables = new List<string>();
+        private string previewVariable;
+        private readonly ProtoCore.Core core;
 
         private bool shouldFocus = true;
         public bool ShouldFocus
@@ -44,23 +46,25 @@ namespace Dynamo.Nodes
 
         #region Public Methods
 
-        public CodeBlockNodeModel()
+        public CodeBlockNodeModel(ProtoCore.Core core)
         {
+            this.core = core;
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public CodeBlockNodeModel(string userCode) : this()
+        public CodeBlockNodeModel(string userCode, ProtoCore.Core core) : this(core)
         {
             code = userCode;
             ProcessCodeDirect();
         }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos)
+        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, ProtoCore.Core core)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             X = xPos;
             Y = yPos;
             code = userCode;
+            this.core = core;
             GUID = guid;
             ShouldFocus = false;
             ProcessCodeDirect();
@@ -162,9 +166,7 @@ namespace Dynamo.Nodes
                     {
                         string errorMessage = string.Empty;
                         string warningMessage = string.Empty;
-
-                        DisableReporting();
-
+                        
                         using (Workspace.UndoRecorder.BeginActionGroup())
                         {
                             var inportConnections = new OrderedDictionary();
@@ -187,15 +189,8 @@ namespace Dynamo.Nodes
                         }
 
                         RaisePropertyChanged("Code");
-                        RequiresRecalc = true;
+                        OnModified();
                         ReportPosition();
-
-                        if (Workspace != null)
-                        {
-                            Workspace.Modified();
-                        }
-
-                        EnableReporting();
 
                         ClearRuntimeError();
                         if (!string.IsNullOrEmpty(errorMessage))
@@ -224,23 +219,6 @@ namespace Dynamo.Nodes
         #endregion
 
         #region Protected Methods
-
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            base.SaveNode(xmlDoc, nodeElement, context);
-            var helper = new XmlElementHelper(nodeElement);
-            helper.SetAttribute("CodeText", code);
-            helper.SetAttribute("ShouldFocus", shouldFocus);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            base.LoadNode(nodeElement);
-            var helper = new XmlElementHelper(nodeElement as XmlElement);
-            code = helper.ReadString("CodeText");
-            ProcessCodeDirect();
-            shouldFocus = helper.ReadBoolean("ShouldFocus");
-        }
 
         protected override bool UpdateValueCore(string name, string value)
         {
@@ -286,12 +264,12 @@ namespace Dynamo.Nodes
             helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context);
+            base.DeserializeCore(nodeElement, context);
             if (context == SaveContext.Undo)
             {
-                var helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(nodeElement);
                 shouldFocus = helper.ReadBoolean("ShouldFocus");
                 code = helper.ReadString("CodeText");
                 ProcessCodeDirect();
@@ -323,9 +301,8 @@ namespace Dynamo.Nodes
                 resultNodes.AddRange(initStatments);
             }
 
-            foreach (var stmnt in codeStatements)
+            foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
-                var astNode = NodeUtils.Clone(stmnt.AstNode);
                 MapIdentifiers(astNode);
                 resultNodes.Add(astNode as AssociativeNode);
             }
@@ -385,13 +362,8 @@ namespace Dynamo.Nodes
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
-            RequiresRecalc = true;
-
-            if (Workspace != null)
-            {
-                Workspace.Modified();
-            }
-
+            OnModified();
+            
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
@@ -414,7 +386,7 @@ namespace Dynamo.Nodes
             try
             {
                 var parseParam = new ParseParam(GUID, code);
-                if (Workspace.DynamoModel.EngineController.TryParseCode(ref parseParam))
+                if (CompilerUtils.PreCompileCodeBlock(core, ref parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
                     {
@@ -444,11 +416,11 @@ namespace Dynamo.Nodes
                     // To check function redefinition, we need to check other
                     // CBN to find out if it has been defined yet. Now just
                     // skip this warning.
-                    var warnings = parseParam.Warnings.Where((w) =>
-                    {
-                        return w.ID != WarningID.kIdUnboundIdentifier
-                            && w.ID != WarningID.kFunctionAlreadyDefined;
-                    });
+                    var warnings =
+                        parseParam.Warnings.Where(
+                            w =>
+                                w.ID != WarningID.kIdUnboundIdentifier
+                                    && w.ID != WarningID.kFunctionAlreadyDefined);
 
                     if (warnings.Any())
                     {
@@ -480,12 +452,8 @@ namespace Dynamo.Nodes
                 return;
 
             IdentifierNode identifierNode = null;
-            foreach (var parsedNode in parsedNodes.Reverse())
+            foreach (var statement in parsedNodes.Reverse().OfType<BinaryExpressionNode>())
             {
-                var statement = parsedNode as BinaryExpressionNode;
-                if (null == statement)
-                    continue;
-
                 identifierNode = statement.LeftNode as IdentifierNode;
                 if (identifierNode != null) // Found the identifier...
                 {
@@ -611,18 +579,18 @@ namespace Dynamo.Nodes
         ///     Deletes all the connections and saves their data (the start and end port)
         ///     so that they can be recreated if needed.
         /// </summary>
-        /// <param name="portConnections">A list of connections that will be destroyed</param>
-        private void SaveAndDeleteConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections)
+        /// <param name="inportConnections">A list of connections that will be destroyed</param>
+        /// <param name="outportConnections"></param>
+        private void SaveAndDeleteConnectors(IDictionary inportConnections, IDictionary outportConnections)
         {
             //----------------------------Inputs---------------------------------
-            for (int i = 0; i < InPorts.Count; i++)
+            foreach (var portModel in InPorts)
             {
-                PortModel portModel = InPorts[i];
-                string portName = portModel.ToolTipContent;
+                var portName = portModel.ToolTipContent;
                 if (portModel.Connectors.Count != 0)
                 {
                     inportConnections.Add(portName, new List<PortModel>());
-                    foreach (ConnectorModel connector in portModel.Connectors)
+                    foreach (var connector in portModel.Connectors)
                     {
                         (inportConnections[portName] as List<PortModel>).Add(connector.Start);
                         Workspace.UndoRecorder.RecordDeletionForUndo(connector);
@@ -765,13 +733,11 @@ namespace Dynamo.Nodes
              *   function tries to reuse any existing connections by attaching 
              *   them to any ports that have not already been given connections
              */
-            List<List<PortModel>> unusedConnections = new List<List<PortModel>>();
-            foreach (List<PortModel> portModelList in outportConnections.Values.Cast<List<PortModel>>())
-            {
-                if (portModelList == null)
-                    continue;
-                unusedConnections.Add(portModelList);
-            }
+            List<List<PortModel>> unusedConnections =
+                outportConnections.Values.Cast<List<PortModel>>()
+                    .Where(portModelList => portModelList != null)
+                    .ToList();
+
             while (undefinedIndices.Count > 0 && unusedConnections.Count != 0)
             {
                 foreach (PortModel endPortModel in unusedConnections[0])

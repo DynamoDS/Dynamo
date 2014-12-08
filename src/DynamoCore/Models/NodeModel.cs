@@ -543,16 +543,7 @@ namespace Dynamo.Models
             };
 
             //Fetch the element name from the custom attribute.
-            object[] nameArray = GetType().GetCustomAttributes(typeof(NodeNameAttribute), true);
-
-            if (nameArray.Length > 0)
-            {
-                var elNameAttrib = nameArray[0] as NodeNameAttribute;
-                if (elNameAttrib != null)
-                    NickName = elNameAttrib.Name;
-            }
-            else
-                NickName = "";
+            SetNickNameFromAttribute();
 
             IsSelected = false;
             State = ElementState.Dead;
@@ -572,9 +563,25 @@ namespace Dynamo.Models
         /// </summary>
         public event Action Disposed;
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="outPortIndex"></param>
+        /// <param name="engine"></param>
+        /// <returns></returns>
         public MirrorData GetValue(int outPortIndex, EngineController engine)
         {
             return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value).GetData();
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public void SetNickNameFromAttribute()
+        {
+            var elNameAttrib = GetType().GetCustomAttributes<NodeNameAttribute>(false).FirstOrDefault();
+            if (elNameAttrib != null)
+                NickName = elNameAttrib.Name;
         }
 
         #region Modification Reporting
@@ -631,8 +638,8 @@ namespace Dynamo.Models
         /// <param name="xmlDoc">The XmlDocument representing the whole Workspace containing this Element.</param>
         /// <param name="nodeElement">The XmlElement representing this Element.</param>
         /// <param name="context">Why is this being called?</param>
+        [Obsolete("Use Setialize() method instead.", true)]
         protected virtual void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context) { }
-
 
         /// <summary>
         ///     Saves this node into an XML Document.
@@ -1314,7 +1321,7 @@ namespace Dynamo.Models
         /// Configures the snap edges.
         /// </summary>
         /// <param name="ports">The ports.</param>
-        private static void ConfigureSnapEdges(ObservableCollection<PortModel> ports)
+        private static void ConfigureSnapEdges(IList<PortModel> ports)
         {
             switch (ports.Count)
             {
@@ -1330,17 +1337,13 @@ namespace Dynamo.Models
                 default:
                     ports[0].extensionEdges = SnapExtensionEdges.Top;
                     ports[ports.Count - 1].extensionEdges = SnapExtensionEdges.Bottom;
-                    foreach (
-                        PortModel port in
-                            ports.Where(
-                                port =>
-                                    !port.extensionEdges.HasFlag(
-                                        SnapExtensionEdges.Top | SnapExtensionEdges.Bottom)))
-                    {
-                        if (!port.extensionEdges.HasFlag(SnapExtensionEdges.Top)
-                            && !port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
-                            port.extensionEdges = SnapExtensionEdges.None;
-                    }
+                    var query =
+                        ports.Where(
+                            port => !port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom)
+                                && !port.extensionEdges.HasFlag(SnapExtensionEdges.Top)
+                                && !port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom));
+                    foreach (var port in query)
+                        port.extensionEdges = SnapExtensionEdges.None;
                     break;
             }
         }
@@ -1590,9 +1593,9 @@ namespace Dynamo.Models
                 OnSave();
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var helper = new XmlElementHelper(element);
+            var helper = new XmlElementHelper(nodeElement);
             GUID = helper.ReadGuid("guid", Guid.NewGuid());
 
             // Resolve node nick name.
@@ -1617,7 +1620,7 @@ namespace Dynamo.Models
             var portInfoProcessed = new HashSet<int>();
 
             //read port information
-            foreach (XmlNode subNode in element.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name == "PortInfo")
                 {
@@ -1661,7 +1664,7 @@ namespace Dynamo.Models
 
         #region Dirty Management
         
-        [Obsolete("Call OnModified() isntead", true)]
+        [Obsolete("Call OnModified() instead", true)]
         private bool dirty = true;
 
         /// <summary>

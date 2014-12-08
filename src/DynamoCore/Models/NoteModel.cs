@@ -50,9 +50,9 @@ namespace Dynamo.Models
             helper.SetAttribute("y", Y);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var helper = new XmlElementHelper(element);
+            var helper = new XmlElementHelper(nodeElement);
             GUID = helper.ReadGuid("guid", GUID);
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);

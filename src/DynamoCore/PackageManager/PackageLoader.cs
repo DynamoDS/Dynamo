@@ -32,7 +32,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackagesIntoDynamo( IPreferences preferences, LibraryServices libraryServices )
+        public void LoadPackagesIntoDynamo(IPreferences preferences, LibraryServices libraryServices, DynamoLoader loader)
         {
             ScanAllPackageDirectories( preferences );
 
@@ -41,7 +41,7 @@ namespace Dynamo.PackageManager
 
             foreach (var pkg in LocalPackages)
             {
-                pkg.LoadIntoDynamo(loader, logger, libraryServices);
+                pkg.LoadIntoDynamo(loader, AsLogger(), libraryServices);
             }
         }
 
@@ -138,9 +138,9 @@ namespace Dynamo.PackageManager
             return LocalPackages.Any(ele => ele.ContainsFile(path));
         }
 
-        public bool IsUnderPackageControl(CustomNodeDefinition def)
+        public bool IsUnderPackageControl(CustomNodeInfo def)
         {
-            return IsUnderPackageControl(def.Workspace.FileName);
+            return IsUnderPackageControl(def.Path);
         }
 
         public bool IsUnderPackageControl(Type t)
@@ -163,9 +163,9 @@ namespace Dynamo.PackageManager
             return LocalPackages.FirstOrDefault(package => package.LoadedTypes.Contains(t));
         }
 
-        public Package GetOwnerPackage(CustomNodeDefinition def)
+        public Package GetOwnerPackage(CustomNodeInfo def)
         {
-            return GetOwnerPackage(def.Workspace.FileName);
+            return GetOwnerPackage(def.Path);
         }
 
         public Package GetOwnerPackage(string path)

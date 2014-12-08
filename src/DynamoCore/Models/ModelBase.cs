@@ -211,6 +211,7 @@ namespace Dynamo.Models
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
         /// 
+        //TODO(Steve): Should we accept an UndoRedoRecorder as an argument?
         protected virtual bool UpdateValueCore(string name, string value)
         {
             return false; // Base class does not handle this.
@@ -239,7 +240,7 @@ namespace Dynamo.Models
         }
 
         protected abstract void SerializeCore(XmlElement element, SaveContext context);
-        protected abstract void DeserializeCore(XmlElement element, SaveContext context);
+        protected abstract void DeserializeCore(XmlElement nodeElement, SaveContext context);
 
         #endregion
 

@@ -183,15 +183,16 @@ namespace Dynamo.DSEngine
         /// false if all nodes are clean.
         /// </summary>
         /// <param name="nodes"></param>
+        /// <param name="verboseLogging"></param>
         /// <returns></returns>
-        public bool GenerateGraphSyncData(ICollection<NodeModel> nodes)
+        public bool GenerateGraphSyncData(ICollection<NodeModel> nodes, bool verboseLogging)
         {
             lock (macroMutex)
             {
                 var activeNodes = nodes.Where(n => !n.IsInErrorState);
 
                 if (activeNodes.Any())
-                    astBuilder.CompileToAstNodes(activeNodes, true);
+                    astBuilder.CompileToAstNodes(activeNodes, true, verboseLogging);
 
                 return VerifyGraphSyncData(nodes);
             }
@@ -203,10 +204,11 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="updatedNodes">The list of all updated nodes.</param>
+        /// <param name="verboseLogging"></param>
         /// <returns>This method returns true if GraphSyncData is generated from 
         /// the list of updated nodes. If updatedNodes is empty or does not 
         /// result in any GraphSyncData, then this method returns false.</returns>
-        internal GraphSyncData ComputeSyncData(IEnumerable<NodeModel> nodes, IEnumerable<NodeModel> updatedNodes)
+        internal GraphSyncData ComputeSyncData(IEnumerable<NodeModel> nodes, IEnumerable<NodeModel> updatedNodes, bool verboseLogging)
         {
             if (updatedNodes == null)
                 return null;
@@ -214,7 +216,7 @@ namespace Dynamo.DSEngine
             var activeNodes = updatedNodes.Where(n => !n.IsInErrorState);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, true);
+                astBuilder.CompileToAstNodes(activeNodes, true, verboseLogging);
             }
 
             if (!VerifyGraphSyncData(nodes) || ((graphSyncDataQueue.Count <= 0)))
@@ -253,8 +255,9 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="definition"></param>
+        /// <param name="verboseLogging"></param>
         /// <returns></returns>
-        public bool GenerateGraphSyncDataForCustomNode(IEnumerable<NodeModel> nodes, CustomNodeDefinition definition)
+        public bool GenerateGraphSyncDataForCustomNode(IEnumerable<NodeModel> nodes, CustomNodeDefinition definition, bool verboseLogging)
         {
             lock (macroMutex)
             {
@@ -275,7 +278,7 @@ namespace Dynamo.DSEngine
                     definition.FunctionName,
                     definition.FunctionBody,
                     definition.OutputNodes,
-                    definition.DisplayParameters);
+                    definition.DisplayParameters, verboseLogging);
 
                 if (!VerifyGraphSyncData(nodes) || (graphSyncDataQueue.Count == 0))
                     return false;
@@ -320,8 +323,6 @@ namespace Dynamo.DSEngine
                     scheduler.ScheduleForExecution(compileTask);
             }
         }
-
-#endif
 
         private bool VerifyGraphSyncData(IEnumerable<NodeModel> nodes)
         {
@@ -597,13 +598,13 @@ namespace Dynamo.DSEngine
         #region Node2Code
 
         [Obsolete("Node2Code disabled, API subject to change.")]
-        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string, string> variableNames)
+        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string, string> variableNames, bool verboseLogging)
         {
             variableNames = new Dictionary<string, string>();
             if (!nodes.Any())
                 return string.Empty;
 
-            string code = NodeToCodeUtils.ConvertNodesToCode(dynamoModel, nodes);
+            string code = NodeToCodeUtils.ConvertNodesToCode(dynamoModel, nodes, verboseLogging);
             if (string.IsNullOrEmpty(code))
                 return code;
 

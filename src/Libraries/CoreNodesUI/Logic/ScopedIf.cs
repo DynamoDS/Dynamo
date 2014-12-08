@@ -30,7 +30,7 @@ namespace DSCoreNodesUI.Logic
             RegisterAllPorts();
         }
 
-        private List<AssociativeNode> GetAstsForBranch(int branch, List<AssociativeNode> inputAstNodes)
+        private List<AssociativeNode> GetAstsForBranch(int branch, List<AssociativeNode> inputAstNodes, bool verboseLogging)
         {
             AstBuilder astBuilder = new AstBuilder(this.Workspace.DynamoModel, null);
 
@@ -41,7 +41,7 @@ namespace DSCoreNodesUI.Logic
             // The second parameter, isDeltaExecution, is set to false so that
             // all AST nodes will be added to this IF graph node instead of 
             // adding to the corresponding graph node. 
-            var astNodes = astBuilder.CompileToAstNodes(nodes, false);
+            var astNodes = astBuilder.CompileToAstNodes(nodes, false, verboseLogging);
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes;
         }
@@ -82,7 +82,7 @@ namespace DSCoreNodesUI.Logic
             return AstIdentifierForPreview;
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes, bool verboseLogging)
         {
             // This function will compile IF node to the following format:
             //
@@ -102,8 +102,8 @@ namespace DSCoreNodesUI.Logic
             //     }
             //
 
-            var astsInTrueBranch = GetAstsForBranch(1, inputAstNodes);
-            var astsInFalseBranch = GetAstsForBranch(2, inputAstNodes);
+            var astsInTrueBranch = GetAstsForBranch(1, inputAstNodes, verboseLogging);
+            var astsInFalseBranch = GetAstsForBranch(2, inputAstNodes, verboseLogging);
 
             // if (cond) {
             //     return = [Associative] {...}
