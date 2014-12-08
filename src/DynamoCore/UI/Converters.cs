@@ -1464,6 +1464,7 @@ namespace Dynamo.Controls
             {
                 return !(bool)value;
             }
+
             return value;
         }
     }
