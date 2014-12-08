@@ -561,11 +561,6 @@ namespace Dynamo.Tests
 
             result = converter.Convert(rootElement.Items[0], null, null, null);
             Assert.AreEqual(Visibility.Collapsed, result);
-
-            rootElement.Items.Add(new BrowserInternalElement());
-
-            result = converter.Convert(rootElement.Items[0], null, null, null);
-            Assert.AreEqual(Visibility.Visible, result);
         }
 
         [Test]
