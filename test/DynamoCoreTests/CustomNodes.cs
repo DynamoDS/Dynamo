@@ -656,20 +656,66 @@ namespace Dynamo.Tests
                     .Cast<object>().Any());
         }
 
-        //[Test]
-        //public void CanGetDependenciesFromFunctionDefinition()
-        //{
+        [Test]
+        public void CollapsedNodeShouldHaveNewIdentfifer()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "collapse-newname.dyn"));
 
+            // Convert a DSFunction node Point.ByCoordinates to custom node.
+            var workspace = model.CurrentWorkspace;
+            var node = workspace.Nodes.OfType<DSFunction>().First();
 
+            var originalGuid = node.GUID;
+            var originalIdentifierName = node.AstIdentifierBase;
+            var originalIdentifier = node.AstIdentifierForPreview;
 
-        //    if (CustomNodeDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
-        //        || CustomNodeDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
-        //    {
-        //        return new FunctionWithRevit(inputs, outputs, CustomNodeDefinition);
-        //    }
-        //    return base.CreateFunction(inputs, outputs, CustomNodeDefinition);
-        //}
+            List<NodeModel> selectionSet = new List<NodeModel>() { node };
+            NodeCollapser.Collapse(ViewModel.Model,
+                selectionSet.AsEnumerable(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
 
+            // Making sure we have a Function node after the conversion.
+            Assert.IsNotNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
 
+            var customWorkspace = model.Workspaces.Where(w => w is CustomNodeWorkspaceModel).First() 
+                                    as CustomNodeWorkspaceModel;
+            // As there is only one node is converted to custom node, get
+            // the first one
+            var collapsedNode = customWorkspace.Nodes.OfType<DSFunction>().First();
+            
+            // Node -> custom node just copy node from home workspace to 
+            // custom workspace, so they are the same node
+            Assert.IsTrue(object.ReferenceEquals(node, collapsedNode));
+
+            // But they should have different guid and different identifier name
+            Assert.AreNotEqual(originalGuid, collapsedNode.GUID);
+            Assert.AreNotEqual(originalIdentifierName, collapsedNode.AstIdentifierBase);
+            Assert.AreNotEqual(originalIdentifier, collapsedNode.AstIdentifierForPreview);
+        }
+
+        [Test]
+        public void EvaluateProxyCustomNodeInstances()
+        {
+            // Defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5555
+            // Dyn file contains a proxy custom node. Evaluating the whole graph
+            // should evaluate all nodes except those proxy custom node instance. 
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\missing_custom_node.dyn");
+
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            ViewModel.Model.RunExpression();
+
+            AssertPreviewValue("1b8b309b-ee2e-44fe-ac98-2123b2711bea", 1);
+            AssertPreviewValue("08db7d60-845c-439c-b7ca-c2a06664a948", 2);
+        }
     }
 }

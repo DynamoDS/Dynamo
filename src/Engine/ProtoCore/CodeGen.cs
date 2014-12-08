@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -96,7 +97,6 @@ namespace ProtoCore
 
         // These variables hold data when backtracking static SSA'd calls
         protected string staticClass = null;
-        protected bool resolveStatic = false;
 
         public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null)
         {
@@ -911,7 +911,7 @@ namespace ProtoCore
                     {
                         if (isAllocated && !isAccessible)
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, identnode.Value);
+                            string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, identnode.Value);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
@@ -919,7 +919,7 @@ namespace ProtoCore
                         }
                         else
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kUnboundIdentifierMsg, identnode.Value);
+                            string message = String.Format(ProtoCore.StringConstants.kUnboundIdentifierMsg, identnode.Value);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                         }
 
@@ -962,17 +962,17 @@ namespace ProtoCore
 
                             if (null != staticProcCallNode)
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodHasInvalidArguments, procName);
+                                string message = String.Format(ProtoCore.StringConstants.kMethodHasInvalidArguments, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyIsInaccessible, property);
+                                string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, property);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
+                                string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
 
@@ -2754,26 +2754,6 @@ namespace ProtoCore
 
             ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
             bool isFirstIdent = true;
-
-
-            // Handle static calls to reflect the original call
-            if (resolveStatic)
-            {
-                ProtoCore.AST.AssociativeAST.IdentifierListNode identList = node as ProtoCore.AST.AssociativeAST.IdentifierListNode;
-                Validity.Assert(identList.LeftNode is ProtoCore.AST.AssociativeAST.IdentifierNode);
-
-                ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = identList.LeftNode as ProtoCore.AST.AssociativeAST.IdentifierNode;
-                if (leftNode.Name != ProtoCore.DSDefinitions.Keyword.This)
-                {
-                    Validity.Assert(!string.IsNullOrEmpty(staticClass));
-                    identList.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode(staticClass);
-
-                    staticClass = null;
-                    resolveStatic = false;
-
-                    ssaPointerList.Clear();
-                }
-            }
 
             BuildSSADependency(node, graphNode);
             if (core.Options.GenerateSSA)

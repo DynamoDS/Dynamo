@@ -11,6 +11,9 @@ using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
+using System.IO;
+using System.Xml;
+using DynamoUtilities;
 
 namespace Dynamo.Search
 {
@@ -620,6 +623,7 @@ namespace Dynamo.Search
 
         #endregion
 
+<<<<<<< HEAD
         internal void ChangeCategoryExpandState(string categoryName, bool isExpanded)
         {
             BrowserItem category = BrowserCategoriesBuilder.GetCategoryByName(categoryName);
@@ -667,6 +671,56 @@ namespace Dynamo.Search
             }
 
             return category.Substring(0, index);
+=======
+        internal void DumpLibraryToXml(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return;
+
+            var document = ComposeXmlForLibrary();
+            document.Save(fileName);
+        }
+
+        internal XmlDocument ComposeXmlForLibrary()
+        {
+            var document = XmlHelper.CreateDocument("LibraryTree");
+
+            foreach (var category in BrowserRootCategories)
+            {
+                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString());
+                XmlHelper.AddAttribute(element, "Name", category.Name);
+
+                AddChildrenToXml(element, category.Items);
+
+                document.DocumentElement.AppendChild(element);
+            }
+
+            return document;
+        }
+
+        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
+        {
+            foreach (var child in children)
+            {
+                var element = XmlHelper.AddNode(parent, child.GetType().ToString());
+
+                if (child is NodeSearchElement)
+                {
+                    var castedChild = child as NodeSearchElement;
+                    XmlHelper.AddNode(element, "FullCategoryName", castedChild.FullCategoryName);
+                    XmlHelper.AddNode(element, "FullName", castedChild.FullName);
+                    XmlHelper.AddNode(element, "Name", castedChild.Name);
+                    XmlHelper.AddNode(element, "Description", castedChild.Description);
+                }
+                else
+                {
+                    XmlHelper.AddAttribute(element, "Name", child.Name);
+                    AddChildrenToXml(element, child.Items);
+                }
+
+                parent.AppendChild(element);
+            }
+>>>>>>> e1b8e17f36c14fca5ee7224377860d0b1079a7f3
         }
     }
 }

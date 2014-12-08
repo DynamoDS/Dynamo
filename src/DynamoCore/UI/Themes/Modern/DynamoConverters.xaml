@@ -106,4 +106,9 @@
     <controls:NumberFormatToBoolConverter x:Key="NumberFormatToBoolConverter"/>
     <controls:DoubleDisplay x:Key="DoubleDisplayConverter"/>
     <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>
+<<<<<<< HEAD
+=======
+    <controls:StringLengthToVisibilityConverter x:Key="StringLengthToVisibilityConverter" />
+    <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter"/>
+>>>>>>> e1b8e17f36c14fca5ee7224377860d0b1079a7f3
 </ResourceDictionary>

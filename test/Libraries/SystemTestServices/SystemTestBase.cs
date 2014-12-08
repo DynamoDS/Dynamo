@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -63,7 +63,6 @@ namespace SystemTestServices
 
             DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
 
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
@@ -82,7 +81,8 @@ namespace SystemTestServices
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = true,
+                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
                 });
 
             ViewModel = DynamoViewModel.Start(
