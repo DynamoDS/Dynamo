@@ -648,7 +648,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                model.StartPeriodicEvaluation(100);
+                model.StartPeriodicEvaluation(300);
             }
 
             RaisePropertyChanged("PeriodicEvaluationText");
