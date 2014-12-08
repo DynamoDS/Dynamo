@@ -942,9 +942,9 @@
                                                Grid.Column="1"
                                                VerticalAlignment="Center"
                                                Margin="0, 0, 10, 0"
-                                               Foreground="#989898"
-                                               FontSize="9"
-                                               Text="&#x25BC;" />
+                                               Foreground="#787879"
+                                               FontSize="14"
+                                               Text="&#x25BE;" />
                                 </Grid>
                             </Border>
                             <ControlTemplate.Triggers>
