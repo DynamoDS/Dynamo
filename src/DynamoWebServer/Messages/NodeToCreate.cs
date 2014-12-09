@@ -70,6 +70,10 @@ namespace DynamoWebServer.Messages
                 bool.TryParse(data, out boolValue);
                 Value = boolValue;
             }
+            else if (CreationName == "String")
+            {
+                Value = data;
+            }
             else if (node is CodeBlockNodeModel || node is Function)
             {
                 Value = data;
