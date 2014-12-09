@@ -27,7 +27,7 @@ using ProtoCore.DSASM;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase, IBlockingModel
+    public abstract class NodeModel : ModelBase
     {
         #region private members
 
