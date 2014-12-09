@@ -9,8 +9,6 @@ using DynamoUtilities;
 
 using NUnit.Framework;
 
-using RevitNodesTests;
-
 namespace TestServices
 {
     public class GeometricTestBase
@@ -19,9 +17,10 @@ namespace TestServices
         TestExecutionSession session = new TestExecutionSession();
 
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             AssemblyResolver.Setup();
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
             application.OnBeginExecution(session);
             HostFactory.Instance.StartUp();
         }

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Threading;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -104,6 +105,47 @@ namespace DynamoCoreUITests
         }
 
         #region Utility functions
+
+        /// <summary>
+        /// Open a file from the Dynamo test directory
+        /// </summary>
+        /// <param name="pathInTestsDir">A relative path from the test directory</param>
+        public void Open(string pathInTestsDir)
+        {
+            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
+            ViewModel.OpenCommand.Execute(openPath);
+        }
+
+        public void OpenAndRun(string pathInTestsDir)
+        {
+            Open(pathInTestsDir);
+            Run();
+        }
+
+        public void AssertWhenDispatcherDone(Action action)
+        {
+            View.Dispatcher.Invoke(DispatcherPriority.SystemIdle, action);
+        }
+
+        /// <summary>
+        /// Run the current workspace.  Doesn't return until 
+        /// </summary>
+        public void Run()
+        {
+            var complete = false;
+
+            EventHandler<EvaluationCompletedEventArgs> markDone = (e, a) => { complete = true;  };
+            ViewModel.Model.EvaluationCompleted += markDone;
+
+            ViewModel.Model.RunExpression();
+
+            while (!complete)
+            {
+                Thread.Sleep(1);
+            }
+
+            ViewModel.Model.EvaluationCompleted -= markDone;
+        }
 
         public static string GetTestDirectory(string executingDirectory)
         {

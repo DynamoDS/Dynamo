@@ -5,14 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows;
+using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoUtilities;
 using NUnit.Framework;
-using System.Windows;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -377,6 +379,37 @@ namespace Dynamo.Tests
             Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes[1]);
         }
 
+        [Test]
+        public void TestFileDirtyOnLacingChange()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\LacingTest.dyn");            
+            ViewModel.OpenCommand.Execute(openPath);
+
+            WorkspaceModel workspace = ViewModel.CurrentSpace;            
+            Assert.AreEqual(false, workspace.CanUndo);
+            Assert.AreEqual(false, workspace.CanRedo);
+
+            //Assert HasUnsavedChanges is false 
+            Assert.AreEqual(false, workspace.HasUnsavedChanges);
+
+            Assert.AreEqual(5, workspace.Nodes.Count);          
+            
+            //Get the first node and assert the lacing strategy
+            var node = ViewModel.Model.Nodes[0];
+            Assert.IsNotNull(node);
+            Assert.AreEqual(LacingStrategy.Shortest, node.ArgumentLacing);
+
+            var workSpaceViewModel = ViewModel.CurrentSpaceViewModel;
+            var nodes = workSpaceViewModel.Nodes;
+            var nodeViewModel = nodes.First(x => x.NodeLogic == node);
+            
+            //change the lacing strategy
+            nodeViewModel.SetLacingTypeCommand.Execute("Longest");
+            Assert.AreEqual(LacingStrategy.Longest, node.ArgumentLacing);
+          
+            Assert.AreEqual(true, workspace.HasUnsavedChanges);
+        }
+
         // SaveImage
 
         //[Test]
@@ -635,7 +668,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.AddNode(16, 32, "Add");
             NodeModel locatable = ViewModel.Model.Nodes[0];
 
-            Point startPoint = new Point(8, 64);
+            var startPoint = new Point2D(8, 64);
             var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);
 
             // Initial node position.
@@ -643,7 +676,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(32, locatable.Y);
 
             // Move the mouse cursor to move node.
-            dn.Update(new Point(-16, 72));
+            dn.Update(new Point2D(-16, 72));
             Assert.AreEqual(-8, locatable.X);
             Assert.AreEqual(40, locatable.Y);
         }

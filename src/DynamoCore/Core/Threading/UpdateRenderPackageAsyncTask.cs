@@ -4,8 +4,6 @@ using System;
 using System.Collections;
 using System.Linq;
 
-using GraphLayout;
-
 using ProtoCore.Mirror;
 using System.Collections.Generic;
 
@@ -83,6 +81,15 @@ namespace Dynamo.Core.Threading
             if (!nodeModel.IsUpdated && (!nodeModel.RequiresRecalc))
                 return false; // Not has not been updated at all.
 
+            // If a node is in either of the following states, then it will not 
+            // produce any geometric output. Bail after clearing the render packages.
+            if (nodeModel.IsInErrorState || !nodeModel.IsVisible)
+                return false;
+
+            // Without AstIdentifierForPreview, a node cannot have MirrorData.
+            if (string.IsNullOrEmpty(nodeModel.AstIdentifierForPreview.Value))
+                return false;
+
             drawableIds = initParams.DrawableIds;
             if (!drawableIds.Any())
                 return false; // Nothing to be drawn.
@@ -111,9 +118,9 @@ namespace Dynamo.Core.Threading
 
             var data = from varName in drawableIds
                        select engineController.GetMirror(varName)
-                       into mirror
-                       where mirror != null
-                       select mirror.GetData();
+                           into mirror
+                           where mirror != null
+                           select mirror.GetData();
 
             var labelMap = new List<string>();
             foreach (var mirrorData in data)

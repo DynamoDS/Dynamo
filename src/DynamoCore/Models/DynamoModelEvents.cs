@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
 
 using Dynamo.Core;
-using Dynamo.UI.Prompts;
-using Dynamo.ViewModels;
 
 namespace Dynamo.Models
 {
@@ -217,21 +219,39 @@ namespace Dynamo.Models
                 RequestTaskDialog(sender, args);
         }
 
+        internal delegate void VoidHandler();
+        internal event VoidHandler RequestDownloadDynamo;
+        internal void OnRequestDownloadDynamo()
+        {
+            if (RequestDownloadDynamo != null)
+                RequestDownloadDynamo();
+        }
+
+        internal event VoidHandler RequestBugReport;
+        internal void OnRequestBugReport()
+        {
+            if (RequestBugReport != null)
+                RequestBugReport();
+        }
+
         /// <summary>
         /// An event triggered when a single graph evaluation completes.
         /// </summary>
-        public event EventHandler EvaluationCompleted;
-        public virtual void OnEvaluationCompleted(object sender, EventArgs e)
+        public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
+        public virtual void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            // When evaluation is completed, we mark all
-            // nodes as ForceReexecuteOfNode = false to prevent
-            // cyclical graph updates. It is therefore the responsibility 
-            // of the node implementor to mark this flag = true, if they
-            // want to require update.
-            foreach (var n in HomeSpace.Nodes)
+            if (e.EvaluationTookPlace)
             {
-                n.ForceReExecuteOfNode = false;
-                n.IsNodeExecuted = false;
+                // When evaluation is completed, we mark all
+                // nodes as ForceReexecuteOfNode = false to prevent
+                // cyclical graph updates. It is therefore the responsibility 
+                // of the node implementor to mark this flag = true, if they
+                // want to require update.
+                foreach (var n in HomeSpace.Nodes)
+                {
+                    n.ForceReExecuteOfNode = false;
+                    n.IsNodeExecuted = false;
+                }
             }
 
             if (EvaluationCompleted != null)
@@ -240,4 +260,5 @@ namespace Dynamo.Models
 
         #endregion
     }
+
 }

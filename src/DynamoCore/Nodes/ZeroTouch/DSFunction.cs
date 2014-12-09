@@ -225,6 +225,13 @@ namespace Dynamo.Nodes
             helper.SetAttribute("name", Definition.MangledName);
         }
 
+        public override void SyncNodeWithDefinition(NodeModel model)
+        {
+            base.SyncNodeWithDefinition(model);
+            if (Definition != null && Definition.IsObsolete)
+                model.Warning(Definition.ObsoleteMessage);
+        }
+
         /// <summary>
         ///     Creates a FunctionObject representing a partial application of a function.
         /// </summary>
@@ -238,7 +245,7 @@ namespace Dynamo.Nodes
             return AstFactory.BuildFunctionObject(
                 functionNode,
                 model.InPorts.Count(),
-                model.GetConnectedInputs(),
+                Enumerable.Range(0, model.InPortData.Count).Where(model.HasInput),
                 inputs);
         }
 

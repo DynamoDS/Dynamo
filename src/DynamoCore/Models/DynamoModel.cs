@@ -7,21 +7,18 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using System.Windows.Forms.VisualStyles;
-using System.Windows.Threading;
 using System.Xml;
 
 using DSNodeServices;
 
 using Dynamo.Core;
+using Dynamo.UI;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Services;
-using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -29,14 +26,11 @@ using Dynamo.Selection;
 using DynamoUnits;
 
 using DynamoUtilities;
-using GraphLayout;
-using Microsoft.Practices.Prism;
-using ProtoScript.Runners;
+
 using Enum = System.Enum;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
 
-using Dynamo.ViewModels;
 using Dynamo.DSEngine;
 
 using Double = System.Double;
@@ -47,6 +41,7 @@ namespace Dynamo.Models
     {
         #region Events
 
+        public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
         public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
         {
@@ -188,8 +183,20 @@ namespace Dynamo.Models
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
         public DynamoScheduler Scheduler { get { return scheduler; } }
-        public bool ShutdownRequested { get; internal set; }       
-        // KILLDYNSETTINGS: wut am I!?!
+
+        public bool ShutdownRequested { get; internal set; }
+        public int MaxTesselationDivisions { get; set; }
+
+        /// <summary>
+        /// The application version string for analytics reporting APIs
+        /// </summary>
+        internal virtual String AppVersion { 
+            get {
+                return Process.GetCurrentProcess().ProcessName + "-"
+                    + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
+            }
+        }
+
         public string UnlockLoadPath { get; set; }
 
         private WorkspaceModel currentWorkspace;
@@ -379,6 +386,7 @@ namespace Dynamo.Models
 
         protected DynamoModel(StartConfiguration configuration)
         {
+            this.MaxTesselationDivisions = 128;
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
@@ -386,7 +394,6 @@ namespace Dynamo.Models
             bool isTestMode = configuration.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
-            UsageReportingManager.Instance.InitializeCore(this);
 
             Runner = runner;
             Context = context;
@@ -529,7 +536,6 @@ namespace Dynamo.Models
             Logger.Dispose();
 
             DynamoSelection.DestroyInstance();
-            UsageReportingManager.DestroyInstance();
 
             InstrumentationLogger.End();
 
@@ -605,6 +611,12 @@ namespace Dynamo.Models
                 RunEnabled = false; // Disable 'Run' button.
                 scheduler.ScheduleForExecution(task);
             }
+            else
+            {
+                // Notify handlers that evaluation did not take place.
+                var e = new EvaluationCompletedEventArgs(false);
+                OnEvaluationCompleted(this, e);
+            }
         }
 
         /// <summary>
@@ -659,9 +671,17 @@ namespace Dynamo.Models
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
             }
 
+            // Refresh values of nodes that took part in update.
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.RequestValueUpdateAsync();
+            }
+
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
-            OnEvaluationCompleted(this, EventArgs.Empty);         
+            // Notify handlers that evaluation took place.
+            var e = new EvaluationCompletedEventArgs(true);
+            OnEvaluationCompleted(this, e);
         }
        
         /// <summary>
@@ -811,9 +831,6 @@ namespace Dynamo.Models
         {
             Loader.LoadCustomNodes();
 
-            this.SearchModel.RemoveEmptyCategories();
-            this.SearchModel.SortCategoryChildren();
-
             Logger.Log("Welcome to Dynamo!");
         }
 
@@ -852,7 +869,7 @@ namespace Dynamo.Models
             }
 
             var vm = this.Workspaces.First(x => x == ws);
-            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
+            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(workspaceHeader.X, workspaceHeader.Y)));
 
             this.CurrentWorkspace = ws;
         }
@@ -919,7 +936,11 @@ namespace Dynamo.Models
             CurrentWorkspace.ClearUndoRecorder();
             currentWorkspace.ResetWorkspace();
 
-            this.ResetEngine();
+            // Don't bother resetting the engine during shutdown (especially 
+            // since ResetEngine destroys and recreates a new EngineController).
+            if (!ShutdownRequested)
+                this.ResetEngine();
+
             CurrentWorkspace.PreloadedTraceData = null;
         }
 
@@ -957,6 +978,22 @@ namespace Dynamo.Models
         internal bool CanGoHome(object parameter)
         {
             return CurrentWorkspace != HomeSpace;
+        }
+
+        internal void DumpLibraryToXml(object parameter)
+        {
+            string directory = DynamoPathManager.Instance.Logs;
+            string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string fullFileName = Path.Combine(directory, fileName);
+
+            this.SearchModel.DumpLibraryToXml(fullFileName);
+
+            Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
+        }
+
+        internal bool CanDumpLibraryToXml(object obj)
+        {
+            return true;
         }
 
         #endregion
@@ -1098,7 +1135,7 @@ namespace Dynamo.Models
                 CurrentWorkspace.Zoom = zoom;
 
                 var vm = this.Workspaces.First(x => x == CurrentWorkspace);
-                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
+                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(cx, cy)));
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
@@ -1168,7 +1205,11 @@ namespace Dynamo.Models
                         typeName = Utils.PreprocessTypeName(typeName);
                         Type type = Utils.ResolveType(this, typeName);
                         if (type != null)
-                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, signature, guid);
+                        {
+                            var tld = Utils.GetDataForType(this, type);
+                            el = CurrentWorkspace.NodeFactory.CreateNodeInstance(
+                                tld, nickname, signature, guid);
+                        }
 
                         if (el != null)
                         {
@@ -1203,8 +1244,9 @@ namespace Dynamo.Models
                         // The new type representing the dummy node.
                         typeName = dummyElement.GetAttribute("type");
                         var type = Utils.ResolveType(this, typeName);
+                        var tld = Utils.GetDataForType(this, type);
 
-                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(type, nickname, String.Empty, guid);
+                        el = CurrentWorkspace.NodeFactory.CreateNodeInstance(tld, nickname, String.Empty, guid);
                         el.Load(dummyElement);
                     }
 
@@ -1323,22 +1365,7 @@ namespace Dynamo.Models
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
 
-                // We don't want to put this action into Dispatcher's queue 
-                // in test mode because it would never get a chance to execute.
-                // As Dispatcher is a static object, DynamoModel instance will 
-                // be referenced by Dispatcher until nunit finishes all test 
-                // cases. 
-                if (!IsTestMode)
-                {
-                    // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-                    Dispatcher.CurrentDispatcher.BeginInvoke(
-                        DispatcherPriority.Background,
-                        new Action(() =>
-                        {
-                            sw.Stop();
-                            Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
-                        }));
-                }
+                sw.Stop();
 
                 #endregion
 
@@ -1419,17 +1446,14 @@ namespace Dynamo.Models
 
             foreach (ISelectable sel in DynamoSelection.Instance.Selection)
             {
-                //MVVM : selection and clipboard now hold view model objects
-                //UIElement el = sel as UIElement;
-                ModelBase el = sel as ModelBase;
+                var el = sel as ModelBase;
                 if (el != null)
                 {
                     if (!this.ClipBoard.Contains(el))
                     {
                         this.ClipBoard.Add(el);
 
-                        //dynNodeView n = el as dynNodeView;
-                        NodeModel n = el as NodeModel;
+                        var n = el as NodeModel;
                         if (n != null)
                         {
                             var connectors = n.InPorts.ToList().SelectMany(x => x.Connectors)
@@ -1467,7 +1491,7 @@ namespace Dynamo.Models
 
             var connectors = this.ClipBoard.OfType<ConnectorModel>();
 
-            foreach (NodeModel node in nodes)
+            foreach (var node in nodes)
             {
                 //create a new guid for us to use
                 Guid newGuid = Guid.NewGuid();
@@ -1477,12 +1501,10 @@ namespace Dynamo.Models
 
                 if (node is Function)
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
-#if USE_DSENGINE
                 else if (node is DSFunction)
                     nodeName = ((node as DSFunction).Controller.MangledName);
                 else if (node is DSVarArgFunction)
                     nodeName = ((node as DSVarArgFunction).Controller.MangledName);
-#endif
                 
                 var xmlDoc = new XmlDocument();
 

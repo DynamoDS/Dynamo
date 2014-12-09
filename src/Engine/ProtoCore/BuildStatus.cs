@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ProtoCore.DSASM;
 
 namespace ProtoCore
 {
@@ -51,44 +52,6 @@ namespace ProtoCore
             kWarnMax
         }
 
-        public struct WarningMessage
-        {
-            public const string kAssingToThis = "'this' is readonly and cannot be assigned to.";
-            public const string kCallingNonStaticProperty = "'{0}.{1}' is not a static property.";
-            public const string kCallingNonStaticMethod = "'{0}.{1}()' is not a static method.";
-            public const string kMethodHasInvalidArguments = "'{0}()' has some invalid arguments.";
-            public const string kInvalidStaticCyclicDependency = "Cyclic dependency detected at '{0}' and '{1}'.";
-            public const string KCallingConstructorOnInstance = "Cannot call constructor '{0}()' on instance.";
-            public const string kPropertyIsInaccessible = "Property '{0}' is inaccessible.";
-            public const string kMethodIsInaccessible = "Method '{0}()' is inaccessible.";
-            public const string kCallingConstructorInConstructor = "Cannot call constructor '{0}()' in itself.";
-            public const string kPropertyNotFound = "Property '{0}' not found.";
-            public const string kMethodNotFound = "Method '{0}()' not found.";
-            public const string kStaticMethodNotFound = "Cannot find static method or constructor {0}.{1}().";
-            public const string kUnboundIdentifierMsg = "Variable '{0}' hasn't been defined yet.";
-            public const string kFunctionNotReturnAtAllCodePaths = "Method '{0}()' doesn't return at all code paths.";
-            public const string kRangeExpressionWithStepSizeZero = "The step size of range expression should not be 0.";
-            public const string kRangeExpressionWithInvalidStepSize = "The step size of range expression is invalid.";
-            public const string kRangeExpressionWithNonIntegerStepNumber = "The step number of range expression should be integer.";
-            public const string kRangeExpressionWithNegativeStepNumber = "The step number of range expression should be greater than 0.";
-            public const string kRangeExpressionWithInvalidAmount = "The amount of step is invalid.";
-            public const string kRangeExpressionConflictOperator = "The amount operator cannot be used together with step operator.";
-            public const string kTypeUndefined = "Type '{0}' is not defined.";
-            public const string kMethodAlreadyDefined = "Method '{0}()' is already defined.";
-            public const string kReturnTypeUndefined = "Return type '{0}' of method '{1}()' is not defined.";
-            public const string kExceptionTypeUndefined = "Exception type '{0}' is not defined.";
-            public const string kArgumentTypeUndefined = "Type '{0}' of argument '{1}' is not defined.";
-            public const string kInvalidBreakForFunction = "Statement break causes function to abnormally return null.";
-            public const string kInvalidContinueForFunction = "Statement continue cause function to abnormally return null.";
-            public const string kUsingThisInStaticFunction = "'this' cannot be used in static method.";
-            public const string kInvalidThis = "'this' can only be used in member methods.";
-            public const string kUsingNonStaticMemberInStaticContext = "'{0}' is not a static property, so cannot be assigned to static properties or used in static methods.";
-            public const string kFileNotFound = "File : '{0}' not found";
-            public const string kAlreadyImported = "File : '{0}' is already imported";
-            public const string kMultipleSymbolFound = "Multiple definitions for '{0}' are found as {1}";   
-            public const string kMultipleSymbolFoundFromName = "Multiple definitions for '{0}' are found as {1}";   
-        }
-
         public struct ErrorEntry
         {
             public string FileName;
@@ -106,6 +69,7 @@ namespace ProtoCore
             public Guid GraphNodeGuid;
             public int AstID;
             public string FileName;
+            public SymbolNode UnboundVariableSymbolNode;
         }
     }
 
@@ -447,6 +411,19 @@ namespace ProtoCore
             this.MessageHandler = new ConsoleOutputStream();
         }
 
+        /// <summary>
+        /// Remove unbound variable warnings that match all symbols in the symbolList
+        /// </summary>
+        /// <param name="symbolList"></param>
+        public void RemoveUnboundVariableWarnings(HashSet<SymbolNode> symbolList)
+        {
+            foreach (SymbolNode symbol in symbolList)
+            {
+                // Remove all warnings that match the symbol
+                warnings.RemoveAll(w => w.ID == BuildData.WarningID.kIdUnboundIdentifier && w.UnboundVariableSymbolNode != null && w.UnboundVariableSymbolNode.Equals(symbol));
+            }
+        }
+
         public void SetStream(System.IO.TextWriter writer)
         {
             //  flush the stream first
@@ -562,9 +539,29 @@ namespace ProtoCore
         /// <param name="duplicateSymbolNames"></param>
         public void LogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
         {
-            string message = string.Format(BuildData.WarningMessage.kMultipleSymbolFoundFromName, symbolName, "");
+            string message = string.Format(StringConstants.kMultipleSymbolFoundFromName, symbolName, "");
             message += String.Join(", ", collidingSymbolNames);
             LogWarning(BuildData.WarningID.kMultipleSymbolFoundFromName, message);
+        }
+
+        /// <summary>
+        /// Logs the unbound variable warning and sets the unbound symbol
+        /// </summary>
+        /// <param name="unboundSymbol"></param>
+        /// <param name="message"></param>
+        /// <param name="fileName"></param>
+        /// <param name="line"></param>
+        /// <param name="col"></param>
+        /// <param name="graphNode"></param>
+        public void LogUnboundVariableWarning(
+                                SymbolNode unboundSymbol,  
+                                string message, 
+                                string fileName = null, 
+                                int line = -1, 
+                                int col = -1, 
+                                AssociativeGraph.GraphNode graphNode = null)
+        {
+            LogWarning(BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, line, col, graphNode, unboundSymbol);
         }
 
         public void LogWarning(BuildData.WarningID warningID, 
@@ -572,7 +569,8 @@ namespace ProtoCore
                                string fileName = null, 
                                int line = -1, 
                                int col = -1, 
-                               AssociativeGraph.GraphNode graphNode = null)
+                               AssociativeGraph.GraphNode graphNode = null,
+                               SymbolNode associatedSymbol = null)
         { 
             var entry = new BuildData.WarningEntry 
             { 
@@ -582,7 +580,8 @@ namespace ProtoCore
                 Column = col, 
                 GraphNodeGuid = graphNode == null ? default(Guid) : graphNode.guid,
                 AstID = graphNode == null? DSASM.Constants.kInvalidIndex : graphNode.OriginalAstID,
-                FileName = fileName 
+                FileName = fileName,
+                UnboundVariableSymbolNode = associatedSymbol
             };
             warnings.Add(entry);
 

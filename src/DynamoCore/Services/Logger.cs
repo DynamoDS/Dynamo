@@ -17,13 +17,12 @@ namespace Dynamo.Services
     public class InstrumentationLogger
     {
 
-        private static readonly DynamoModel dynamoModel;
-
         private const bool IS_VERBOSE_DIAGNOSTICS = false;
 
         private static readonly string userID = GetUserID();
         private static string sessionID = Guid.NewGuid().ToString();
         private static Log loggerImpl;
+        private static DynamoModel dynamoModel;
 
         //Analytics components
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
@@ -40,9 +39,9 @@ namespace Dynamo.Services
         //Service start
         public static void Start(DynamoModel dynamoModel)
         {
-            string appVersion = Process.GetCurrentProcess().ProcessName + "-"
-                                + UpdateManager.UpdateManager.Instance.ProductVersion.ToString();
+            InstrumentationLogger.dynamoModel = dynamoModel;
 
+            string appVersion = dynamoModel.AppVersion;
 
             CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
                 "Dynamo", appVersion);
@@ -90,7 +89,16 @@ namespace Dynamo.Services
 
         private static bool IsPIILoggingEnabled
         {
-            get { return UsageReportingManager.Instance.IsUsageReportingApproved; }
+            get
+            {
+                if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
+                    return false;
+
+                if (dynamoModel != null)
+                    return dynamoModel.PreferenceSettings.IsUsageReportingApproved;
+
+                return false;
+            }
         }
 
         public static String GetUserID()

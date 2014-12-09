@@ -440,5 +440,38 @@ namespace Dynamo.Tests
             AssertPreviewValue(watchNodeID7, new int[] { 1, 2, 1, 2 });
         }
 
+        [Test, Category("RegressionTests")]
+        public void Boolean_LowerCase_3420()
+        {
+            // No consistent notation of true / false
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3420
+            
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Bool_Case_3420.dyn");
+            RunModel(openPath);
+            
+            
+            AssertPreviewValue("ebd1f642-ee18-46d7-ad76-490d6adcf3f0", true);
+            AssertPreviewValue("b8f4c8fb-fa8b-4c10-96b7-70c5763917cd", 6.9115038378975449);
+
+            AssertPreviewValue("bf766c0b-15b1-49f7-90e3-bc3db3dd1987", true);
+            
+
+            
+        }
+        [Test, Category("RegressionTests")]
+        public void VMFailOnCBN_5173()
+        {
+            // VM CompilerInternalException on CBN with Vector.ZAxis
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5173
+            
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\VMFailOnCBN_5173.dyn");
+            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+
+            
+        }
+        
+        
     }
 }

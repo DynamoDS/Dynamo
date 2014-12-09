@@ -1,16 +1,17 @@
-﻿using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.UI;
-using Dynamo.UI.Controls;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+
+using Dynamo.UI;
+
+using Dynamo.Models;
+using Dynamo.Nodes;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 
 namespace Dynamo.Utilities
 {
@@ -137,6 +138,18 @@ namespace Dynamo.Utilities
             return true;
         }
 
+        public delegate IEnumerable<int> LogicalToVisualLineIndexMapDelegate(string text);
+        public static event LogicalToVisualLineIndexMapDelegate RequestLogicalToVisualLineIndexMap;
+        private static IEnumerable<int> OnRequestLogicalToVisualLineIndexMap(string text)
+        {
+            if (RequestLogicalToVisualLineIndexMap != null)
+            {
+                return RequestLogicalToVisualLineIndexMap(text);
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Call this method to map logical lines in the given text input to their
         /// corresponding visual line index. Due to wrapping behavior, a long line
@@ -175,45 +188,13 @@ namespace Dynamo.Utilities
                 return logicalToVisualLines;
 
             text = NormalizeLineBreaks(text);
-            var lines = text.Split(new char[] { '\n' }, StringSplitOptions.None);
 
-            // We could have hard-coded "pack" instead of "UriSchemePack" here, 
-            // but in NUnit scenario there is no "Application" created. When there 
-            // is no Application instance, the Uri format "pack://" will fail Uri 
-            // object creation. Adding a reference to "UriSchemePack" resolves 
-            // this issue to avoid a "UriFormatException".
-            // 
-            string pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
-            var uri = new Uri(pack + "://application:,,,/DynamoCore;component/");
-            var textFontFamily = new FontFamily(uri, ResourceNames.FontResourceUri);
-
-            var typeface = new Typeface(textFontFamily, FontStyles.Normal,
-                FontWeights.Normal, FontStretches.Normal);
-
-            int totalVisualLinesSoFar = 0;
-            foreach (var line in lines)
+            if (RequestLogicalToVisualLineIndexMap == null)
             {
-                FormattedText ft = new FormattedText(
-                    line, CultureInfo.CurrentCulture,
-                    System.Windows.FlowDirection.LeftToRight, typeface,
-                    Configurations.CBNFontSize, Brushes.Black)
-                {
-                    MaxTextWidth = Configurations.CBNMaxTextBoxWidth,
-                    Trimming = TextTrimming.None
-                };
-
-                logicalToVisualLines.Add(totalVisualLinesSoFar);
-
-                // Empty lines (i.e. those with just a "\n" character) will result 
-                // in "ft.Extent" to be 0.0, but the line still occupies one line
-                // visually. This is why we need to make sure "lineCount" cannot be 
-                // zero.
-                // 
-                var lineCount = Math.Floor(ft.Extent / Configurations.CBNFontSize);
-                totalVisualLinesSoFar += (lineCount < 1.0 ? 1 : ((int)lineCount));
+                throw new InvalidOperationException("MapLogicalToVisualLineIndices requires a registered LogicalToVisualLineIndexMapDelegate!");
             }
 
-            return logicalToVisualLines;
+            return OnRequestLogicalToVisualLineIndexMap(text);
         }
 
         /// <summary>
@@ -298,10 +279,11 @@ namespace Dynamo.Utilities
 
             // If after all the processing we do not end up with an empty code,
             // then we may need a semi-colon at the end. This is provided if the 
-            // code does not end with a closing curly bracket (in which case a 
+            // code does not end with a comment or string (in which case a 
             // trailing semi-colon is not required).
             // 
-            if (!string.IsNullOrEmpty(inputCode) && (!inputCode.EndsWith("}")))
+            if (!string.IsNullOrEmpty(inputCode) && 
+                !CodeCompletionParser.IsInsideCommentOrString(inputCode, inputCode.Length))
             {
                 if (inputCode.EndsWith(";") == false)
                     inputCode = inputCode + ";";
@@ -310,34 +292,6 @@ namespace Dynamo.Utilities
             return inputCode;
         }
 
-        public static HighlightingRule CreateDigitRule()
-        {
-            var digitRule = new HighlightingRule();
-
-            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
-            digitRule.Color = new HighlightingColor()
-            {
-                Foreground = new CustomizedBrush(color)
-            };
-
-            // These Regex's must match with the grammars in the DS ATG for digits
-            // Refer to the 'number' and 'float' tokens in Start.atg
-            //*******************************************************************************
-            // number = digit {digit} .
-            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
-            //*******************************************************************************
-
-            string digit = @"(-?\b\d+)";
-            string floatingPoint = @"(\.[0-9]+)";
-            string numberWithOptionalDecimal = digit + floatingPoint + "?";
-
-            string exponent = @"([eE][+-]?[0-9]+)";
-            string numberWithExponent = digit + floatingPoint + exponent;
-
-            digitRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
-
-            return digitRule;
-        }
     }
 
     /// <summary>
@@ -348,6 +302,8 @@ namespace Dynamo.Utilities
     internal class CodeCompletionParser
     {
         #region private members
+
+        private readonly string text;
 
         // This should match with production for identifier in language parser
         // See Start.atg file: ident = (letter | '_' | '@'){letter | digit | '_' | '@'}.
@@ -381,19 +337,30 @@ namespace Dynamo.Utilities
         /// </summary>
         private string functionName = String.Empty;
 
+        private int argCount = 0;
+
         /// <summary>
         /// Identifier or Class name on which function being typed currently is invoked
         /// </summary>
         private string functionPrefix = String.Empty;
 
         private string type = string.Empty;
-        private int argCount = 0;
+
+        // Context of string being typed for completion
+        private bool isInSingleComment = false;
+        private bool isInString = false;
+        private bool isInChar = false;
+        private bool isInMultiLineComment = false;
 
         #endregion
 
+        private CodeCompletionParser(string text)
+        {
+            this.text = text;
+        }
+
         #region public members
 
-        
         /// <summary>
         /// Parses given block of code and declared variable,
         /// returns the type of the variable: e.g. in:
@@ -421,7 +388,7 @@ namespace Dynamo.Utilities
         /// <param name="code"></param>
         public static string GetStringToComplete(string code)
         {
-            var codeParser = new CodeCompletionParser();
+            var codeParser = new CodeCompletionParser(code);
             // TODO: Discard complete code statements terminated by ';'
             // and extract only the current line being typed
             for (int i = 0; i < code.Length; ++i)
@@ -442,7 +409,7 @@ namespace Dynamo.Utilities
         /// <param name="functionPrefix"> output type or variable on which fn is invoked </param>
         public static void GetFunctionToComplete(string code, out string functionName, out string functionPrefix)
         {
-            var codeParser = new CodeCompletionParser();
+            var codeParser = new CodeCompletionParser(code);
             // TODO: Discard complete code statements terminated by ';'
             // and extract only the current line being typed
             for (int i = 0; i < code.Length; ++i)
@@ -453,7 +420,27 @@ namespace Dynamo.Utilities
             functionPrefix = codeParser.functionPrefix;
         }
 
+        /// <summary>
+        /// Parse text to determine if string being typed at caretPos is in 
+        /// the context of a comment or string or character
+        /// </summary>
+        /// <param name="text"> input block of code </param>
+        /// <param name="caretPos"> caret position in text at which to determine context </param>
+        /// <returns> True if any of above context is true </returns>
+        public static bool IsInsideCommentOrString(string text, int caretPos)
+        {
+            var lexer = new CodeCompletionParser(text);
+            lexer.ParseContext(caretPos);
+            return
+                lexer.isInSingleComment ||
+                    lexer.isInString ||
+                    lexer.isInChar ||
+                    lexer.isInMultiLineComment;
+        }
+
         #endregion
+
+        #region private methods
 
         private static Dictionary<string, string> FindVariableTypes(string code)
         {
@@ -462,7 +449,7 @@ namespace Dynamo.Utilities
 
             // This pattern is used to create a Regex to match expressions such as "a : Point" and add the Pair of ("a", "Point") to the dictionary
             string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + identifierListPattern;
-            
+
             var varDeclarations = Regex.Matches(code, pattern);
             for (int i = 0; i < varDeclarations.Count; i++)
             {
@@ -521,7 +508,7 @@ namespace Dynamo.Utilities
                         // Auto-complete function signature  
                         // Class/Type and function name must be known at this point
                         functionName = GetMemberIdentifier();
-                        if(string.Equals(strPrefix, functionName))
+                        if (string.Equals(strPrefix, functionName))
                             functionPrefix = string.Empty;
                         else
                             functionPrefix = strPrefix.Substring(0, strPrefix.Length - functionName.Length - 1);
@@ -573,7 +560,63 @@ namespace Dynamo.Utilities
             return strPrefix;
         }
 
-        #region private utility methods
+        private void ParseContext(int caretPos)
+        {
+            for (int i = 0; i < caretPos; i++)
+            {
+                char ch = text[i];
+                char lookAhead = i + 1 < text.Length ? text[i + 1] : '\0';
+                switch (ch)
+                {
+                    case '/':
+                        if (isInString || isInChar || isInSingleComment || isInMultiLineComment)
+                            break;
+                        if (lookAhead == '/')
+                        {
+                            i++;
+                            isInSingleComment = true;
+                        }
+                        if (lookAhead == '*')
+                        {
+                            isInMultiLineComment = true;
+                            i++;
+                        }
+                        break;
+                    case '*':
+                        if (isInString || isInChar || isInSingleComment)
+                            break;
+                        if (lookAhead == '/')
+                        {
+                            i++;
+                            isInMultiLineComment = false;
+                        }
+                        break;
+                    case '\n':
+                    case '\r':
+                        isInSingleComment = false;
+                        isInString = false;
+                        isInChar = false;
+                        break;
+                    case '\\':
+                        if (isInString || isInChar)
+                            i++;
+                        break;
+                    case '"':
+                        if (isInSingleComment || isInMultiLineComment || isInChar)
+                            break;
+                        isInString = !isInString;
+                        break;
+                    case '\'':
+                        if (isInSingleComment || isInMultiLineComment || isInString)
+                            break;
+                        isInChar = !isInChar;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         private string GetMemberIdentifier()
         {
             return strPrefix.Split('.').Last();
@@ -590,34 +633,6 @@ namespace Dynamo.Utilities
         }
         #endregion
 
-    }
-
-    // Refer to link: 
-    // http://stackoverflow.com/questions/11806764/adding-syntax-highlighting-rules-to-avalonedit-programmatically
-    internal sealed class CustomizedBrush : HighlightingBrush
-    {
-        private readonly SolidColorBrush brush;
-        public CustomizedBrush(Color color)
-        {
-            brush = CreateFrozenBrush(color);
-        }
-
-        public override Brush GetBrush(ITextRunConstructionContext context)
-        {
-            return brush;
-        }
-
-        public override string ToString()
-        {
-            return brush.ToString();
-        }
-
-        private static SolidColorBrush CreateFrozenBrush(Color color)
-        {
-            SolidColorBrush brush = new SolidColorBrush(color);
-            brush.Freeze();
-            return brush;
-        }
     }
 
 }

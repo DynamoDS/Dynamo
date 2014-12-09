@@ -4,11 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+
+using SystemTestServices;
+
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 using Dynamo.UI.Controls;
@@ -197,7 +201,7 @@ namespace DynamoCoreUITests
         {
             string text = "{-2468.2342E+04, dfsgdfg34534, 34534.345345, 23423, -98.7, 0..10..2, -555};";
 
-            var rule = CodeBlockUtils.CreateDigitRule().Regex;
+            var rule = CodeBlockEditorUtils.CreateDigitRule().Regex;
             var matches = rule.Matches(text);
 
             // Expected results (8):
@@ -227,7 +231,7 @@ namespace DynamoCoreUITests
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
