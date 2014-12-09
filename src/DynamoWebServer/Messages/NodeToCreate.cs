@@ -58,11 +58,17 @@ namespace DynamoWebServer.Messages
         public NodeToCreate(NodeModel node, string data)
         {
             this._id = node.GUID.ToString();
-            this.CreationName = node.CreationName;
+            this.CreationName = GetCreationName(node);
             if (CreationName == "Number")
             {
                 double number;
                 Value = double.TryParse(data, out number) ? number : 0;
+            }
+            else if (CreationName == "Boolean")
+            {
+                bool boolValue;
+                bool.TryParse(data, out boolValue);
+                Value = boolValue;
             }
             else if (node is CodeBlockNodeModel || node is Function)
             {
@@ -72,6 +78,22 @@ namespace DynamoWebServer.Messages
                     
             this.DisplayName = node.NickName;
             this.Position = new List<double> { node.X, node.Y };
+        }
+
+        private string GetCreationName(NodeModel node)
+        {
+            if (!string.IsNullOrEmpty(node.CreationName))
+                return node.CreationName;
+
+            Type type = node.GetType();
+            object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
+            if (attribs.Length > 0)
+            {
+                var elCatAttrib = attribs[0] as NodeNameAttribute;
+                return elCatAttrib.Name;
+            }
+
+            return type.Name;
         }
     }
 }

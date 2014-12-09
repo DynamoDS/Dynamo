@@ -211,6 +211,17 @@ namespace DSCoreNodesUI
             return this.Value.ToString();
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = DeserializeValue(value);
+                return true;
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildBooleanNode(Value);
