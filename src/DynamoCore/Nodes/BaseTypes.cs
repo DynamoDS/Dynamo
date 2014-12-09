@@ -989,9 +989,12 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", type.Name));
         }
 
-        protected override bool ShouldDisplayPreviewCore()
+        protected override bool ShouldDisplayPreviewCore
         {
-            return false; // Previews are not shown for this node type.
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -1328,9 +1331,12 @@ namespace Dynamo.Nodes
             return base.UpdateValueCore(name, value);
         }
 
-        protected override bool ShouldDisplayPreviewCore()
+        protected override bool ShouldDisplayPreviewCore
         {
-            return false; // Previews are not shown for this node type.
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
 
 

@@ -203,7 +203,7 @@ namespace Dynamo.ViewModels
 
         public bool IsPreviewInsetVisible
         {
-            get { return nodeLogic.ShouldDisplayPreview(); }
+            get { return nodeLogic.ShouldDisplayPreview; }
         }
 
         public bool ShouldShowGlyphBar

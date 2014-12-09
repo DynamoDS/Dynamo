@@ -40,9 +40,12 @@ namespace DSCore.File
     {
         public Filename(WorkspaceModel workspace) : base(workspace, "Filename") { }
 
-        protected override bool ShouldDisplayPreviewCore()
+        protected override bool ShouldDisplayPreviewCore
         {
-            return false; // Previews are not shown for this node type.
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
     }
 
@@ -55,9 +58,12 @@ namespace DSCore.File
     {
         public Directory(WorkspaceModel workspace) : base(workspace, "Directory") { }
 
-        protected override bool ShouldDisplayPreviewCore()
+        protected override bool ShouldDisplayPreviewCore
         {
-            return false; // Previews are not shown for this node type.
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
     }
 

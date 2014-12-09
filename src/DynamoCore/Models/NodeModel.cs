@@ -1929,18 +1929,24 @@ namespace Dynamo.Models
             }
         }
 
-        public bool ShouldDisplayPreview()
+        public bool ShouldDisplayPreview
         {
-            // Previews are only shown in Home Workspace.
-            if (!(this.Workspace is HomeWorkspaceModel))
-                return false;
+            get
+            {
+                // Previews are only shown in Home Workspace.
+                if (!(this.Workspace is HomeWorkspaceModel))
+                    return false;
 
-            return this.ShouldDisplayPreviewCore();
+                return this.ShouldDisplayPreviewCore;
+            }
         }
 
-        protected virtual bool ShouldDisplayPreviewCore()
+        protected virtual bool ShouldDisplayPreviewCore
         {
-            return true; // Default implementation: always show preview.
+            get
+            {
+                return true; // Default implementation: always show preview.
+            } 
         }
       
     }

@@ -49,9 +49,12 @@ namespace DSCoreNodesUI
             Value = false;
         }
 
-        protected override bool ShouldDisplayPreviewCore()
+        protected override bool ShouldDisplayPreviewCore
         {
-            return false; // Previews are not shown for this node type.
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
 
     }
