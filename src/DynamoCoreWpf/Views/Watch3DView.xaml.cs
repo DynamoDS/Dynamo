@@ -175,7 +175,9 @@ namespace Dynamo.Controls
 
         public Watch3DView(Guid id, IWatchViewModel dataContext)
         {
-            this.DataContext = dataContext;
+            DataContext = dataContext;
+
+            SetupScene();
 
             InitializeComponent();
             watch_view.DataContext = this;

@@ -44,9 +44,6 @@ namespace Dynamo.Nodes
                 Height = model.WatchHeight
             };
 
-            View.View.Camera.Position = model.CameraPosition;
-            View.View.Camera.LookDirection = model.LookDirection;
-
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
 
             var mi = new MenuItem { Header = "Zoom to Fit" };
