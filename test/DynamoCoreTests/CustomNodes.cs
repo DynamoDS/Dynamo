@@ -123,44 +123,47 @@ namespace Dynamo.Tests
         [Test]
         public void CanCollapseWith1NodeHoleInSelection()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            Assert.Inconclusive();
 
-            string openPath = Path.Combine(examplePath, "collapse-function.dyn");
-            RunModel(openPath);
+        //   http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
+        //    var model = ViewModel.Model;
+        //    var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
-            //Confirm that everything is working OK.
-            ViewModel.Model.RunExpression();
+        //    string openPath = Path.Combine(examplePath, "collapse-function.dyn");
+        //    RunModel(openPath);
 
-            var mulNode = model.CurrentWorkspace.NodeFromWorkspace("7bae9908-6e44-41a4-8b9a-e6cd58791194");
+        //    //Confirm that everything is working OK.
+        //    ViewModel.Model.RunExpression();
 
-            AssertPreviewValue(mulNode.GUID.ToString(), 0);
+        //    var mulNode = model.CurrentWorkspace.NodeFromWorkspace("7bae9908-6e44-41a4-8b9a-e6cd58791194");
 
-            foreach (var node in
-                model.CurrentWorkspace.Nodes.Where(
-                    x => x.GUID.ToString() != "34d7a656-338d-43bd-bb3d-224515a855eb"))
-            {
-                model.AddToSelection(node);
-            }
+        //    AssertPreviewValue(mulNode.GUID.ToString(), 0);
 
-            NodeCollapser.Collapse(ViewModel.Model,
-                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
-                model.CurrentWorkspace,
-                new FunctionNamePromptEventArgs
-                {
-                    Category = "Testing",
-                    Description = "",
-                    Name = "__CollapseTest__",
-                    Success = true
-                });
+        //    foreach (var node in
+        //        model.CurrentWorkspace.Nodes.Where(
+        //            x => x.GUID.ToString() != "34d7a656-338d-43bd-bb3d-224515a855eb"))
+        //    {
+        //        model.AddToSelection(node);
+        //    }
 
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+        //    NodeCollapser.Collapse(ViewModel.Model,
+        //        DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+        //        model.CurrentWorkspace,
+        //        new FunctionNamePromptEventArgs
+        //        {
+        //            Category = "Testing",
+        //            Description = "",
+        //            Name = "__CollapseTest__",
+        //            Success = true
+        //        });
 
-            ViewModel.Model.RunExpression();
+        //    Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
 
-            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+        //    ViewModel.Model.RunExpression();
 
-            AssertPreviewValue(collapsedNode.GUID.ToString(), 0);
+        //    var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+
+        //    AssertPreviewValue(collapsedNode.GUID.ToString(), 0);
         }
 
         [Test]
