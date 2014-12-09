@@ -14,7 +14,7 @@ namespace Dynamo.Models
         /// A version after which this migration will be applied.
         /// </summary>
         public Version Version { get; set; }
-        
+
         /// <summary>
         /// The action to perform during the upgrade.
         /// </summary>
@@ -113,14 +113,14 @@ namespace Dynamo.Models
 
             var migrations =
                 (from method in methods
-                    let attribute =
-                        method.GetCustomAttributes(false)
-                            .OfType<WorkspaceMigrationAttribute>()
-                            .FirstOrDefault()
-                    where attribute != null
-                    let result = new { method, attribute.From, attribute.To }
-                    orderby result.From
-                    select result).ToList();
+                 let attribute =
+                     method.GetCustomAttributes(false)
+                         .OfType<WorkspaceMigrationAttribute>()
+                         .FirstOrDefault()
+                 where attribute != null
+                 let result = new { method, attribute.From, attribute.To }
+                 orderby result.From
+                 select result).ToList();
 
             var currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
 
@@ -138,7 +138,7 @@ namespace Dynamo.Models
 
         public void ProcessNodesInWorkspace(DynamoModel dynamoModel, XmlDocument xmlDoc, Version workspaceVersion)
         {
-            if(DynamoModel.EnableMigrationLogging)
+            if (DynamoModel.EnableMigrationLogging)
             {
                 // For each new file opened, create a new migration report
                 migrationReport = new MigrationReport();
@@ -217,7 +217,7 @@ namespace Dynamo.Models
                 object ret = nextMigration.method.Invoke(this, new object[] { migrationData });
                 migrationData = ret as NodeMigrationData;
 
-                if(DynamoModel.EnableMigrationLogging)
+                if (DynamoModel.EnableMigrationLogging)
                 {
                     // record migration data for successful migrations
                     migrationReport.AddMigrationDataToNodeMap(nodeToMigrate.Name, migrationData.MigratedNodes);
@@ -323,6 +323,7 @@ namespace Dynamo.Models
             }
 
             var backupFolderName = Dynamo.UI.Configurations.BackupFolderName;
+
             var subFolder = Path.Combine(baseFolder, backupFolderName);
             if (create && (Directory.Exists(subFolder) == false))
                 Directory.CreateDirectory(subFolder);
@@ -451,13 +452,13 @@ namespace Dynamo.Models
 
                 return Decision.Retain;
             }
-           
+
             //Force the file to go through the migration process, when the file version
             //is 0.7.0.x. 
             //Reason: There were files creaeted in 0.6.x with wrong version number 0.7.0.
             //Force them to migration will manage to have those files migrated properly.
             //Related YouTrack Defect: MAGN3767
-            if(fileVersion == new Version(0,7,0,0))
+            if (fileVersion == new Version(0, 7, 0, 0))
             {
                 return Decision.Migrate;
             }
@@ -502,7 +503,7 @@ namespace Dynamo.Models
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
                 + nodeIndex * NewNodeOffsetY).ToString());
-            
+
             return element;
         }
 
@@ -528,7 +529,7 @@ namespace Dynamo.Models
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
                 + nodeIndex * NewNodeOffsetY).ToString());
-            
+
             return element;
         }
 
@@ -629,8 +630,8 @@ namespace Dynamo.Models
         /// <param name="inputs">A list of input names.</param>
         /// <param name="outputs">A list of output names.</param>
         /// <returns></returns>
-        public static XmlElement CreateCustomNodeFrom(XmlDocument document, XmlElement srcElement, 
-            string id, string name, string description, List<string> inputs, List<string> outputs )
+        public static XmlElement CreateCustomNodeFrom(XmlDocument document, XmlElement srcElement,
+            string id, string name, string description, List<string> inputs, List<string> outputs)
         {
             if (srcElement == null)
                 throw new ArgumentNullException("srcElement");
@@ -1303,7 +1304,7 @@ namespace Dynamo.Models
         /// </summary>
         public Version To { get; private set; }
 
-        public NodeMigrationAttribute(string from, string to="")
+        public NodeMigrationAttribute(string from, string to = "")
         {
             From = new Version(from);
             To = String.IsNullOrEmpty(to) ? null : new Version(to);
@@ -1316,7 +1317,7 @@ namespace Dynamo.Models
         public Version From { get; private set; }
         public Version To { get; private set; }
 
-        public WorkspaceMigrationAttribute(string from, string to="")
+        public WorkspaceMigrationAttribute(string from, string to = "")
         {
             From = new Version(from);
             To = String.IsNullOrEmpty(to) ? null : new Version(to);
