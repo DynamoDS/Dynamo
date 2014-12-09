@@ -2969,7 +2969,7 @@ namespace ProtoCore
             {
                 if (!IsConstantExpression(attr))
                 {
-                    buildStatus.LogSemanticError(StringConstants.attributeArgumentMustBeAConstantExpression, core.CurrentDSFileName, anode.line, anode.col);
+                    buildStatus.LogSemanticError(StringConstants.attributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
                     return null;
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);

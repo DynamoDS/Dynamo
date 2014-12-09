@@ -866,9 +866,9 @@ public Node root { get; set; }
 			
 		}
 		if (la.val == "if")
-            SynErr(String.Format(StringConstants.usingInlineConditionalInImperativeLanguageBlockInstead, la.val)); 
+            SynErr(String.Format(StringConstants.useInlineConditional, la.val)); 
 		if ((la.val == "for")||(la.val == "while"))
-            SynErr(String.Format(StringConstants.statementUsedInImpreativeLanguageBlockOnly, la.val));  
+            SynErr(String.Format(StringConstants.validForImperativeBlockOnly, la.val));  
 		codeBlockNode = codeblock;
 		
 		// We look ahead (la) here instead of looking at the current token (t)
@@ -1062,7 +1062,7 @@ public Node root { get; set; }
 		isInClass = true;
 		if (IsKeyWord(t.val, true))
 		{
-		    errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		    errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		
 		if (la.kind == 28) {
@@ -1536,9 +1536,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			if (null != node) nodelist.Add(node); 
 		}
 		if (la.val == "if")
-           SynErr(String.Format(StringConstants.usingInlineConditionalInImperativeLanguageBlockInstead, la.val)); 
+           SynErr(String.Format(StringConstants.useInlineConditional, la.val)); 
 		if ((la.val == "for")||(la.val == "while"))
-            SynErr(String.Format(StringConstants.statementUsedInImpreativeLanguageBlockOnly, la.val)); 
+            SynErr(String.Format(StringConstants.validForImperativeBlockOnly, la.val)); 
 		
 	}
 
@@ -1597,7 +1597,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		NodeUtils.SetNodeLocation(varDeclNode, t);
 		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
@@ -1768,7 +1768,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (!disableKwCheck && IsKeyWord(t.val, false, false))
 		{
-		   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
 		if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
@@ -1822,7 +1822,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		methodName = t.val; 
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
 		returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
@@ -1941,7 +1941,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
@@ -2091,7 +2091,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var typedVar = new ProtoCore.AST.AssociativeAST.TypedIdentifierNode();
 			typedVar.Name = typedVar.Value = t.val;
@@ -2141,7 +2141,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var identNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 			identNode.Name = identNode.Value = t.val;
@@ -2156,7 +2156,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var typedVar = new ProtoCore.AST.AssociativeAST.TypedIdentifierNode();
 			typedVar.Name = typedVar.Value = t.val;
@@ -2594,7 +2594,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		
 		catchFilterNode.var =  ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
@@ -3149,7 +3149,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		funcDecl.Name = t.val; NodeUtils.SetNodeEndLocation(funcDecl, t); 
 		if (IsKeyWord(t.val, true))
 		{
-		    errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		    errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		
 		if (la.kind == 51) {
@@ -3508,7 +3508,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var typedVar = new ProtoCore.AST.ImperativeAST.TypedIdentifierNode();
 			typedVar.Name = typedVar.Value = t.val;
@@ -3558,7 +3558,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var identNode = new ProtoCore.AST.ImperativeAST.IdentifierNode();
 			identNode.Name = identNode.Value = t.val;
@@ -3573,7 +3573,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var typedVar = new ProtoCore.AST.ImperativeAST.TypedIdentifierNode();
 			typedVar.Name = typedVar.Value = t.val;
@@ -3655,7 +3655,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (!disableKwCheck && IsKeyWord(t.val, false, false))
 		{
-		   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
 		if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
@@ -4274,7 +4274,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		tNode = BuildImperativeIdentifier(t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
@@ -4427,7 +4427,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format(StringConstants.identifierExpectedForKeyword, t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		
 		catchFilterNode.var =  BuildImperativeIdentifier(t.val);
