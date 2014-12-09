@@ -6,11 +6,12 @@ using Dynamo.Models;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Double Slider")]
+    [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces double values.")]
+    [NodeDescription("A slider that produces numeric values.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
+    [NodeSearchTags(new[] { "double", "number", "float", "integer", "slider" })]
     public class DoubleSlider : SliderBase
     {
         public DoubleSlider(WorkspaceModel workspace)
