@@ -191,7 +191,7 @@ namespace Dynamo.Utilities
 
             if (RequestLogicalToVisualLineIndexMap == null)
             {
-                throw new Exception("MapLogicalToVisualLineIndices requires a registered LogicalToVisualLineIndexMapDelegate!");
+                throw new InvalidOperationException("MapLogicalToVisualLineIndices requires a registered LogicalToVisualLineIndexMapDelegate!");
             }
 
             return OnRequestLogicalToVisualLineIndexMap(text);
