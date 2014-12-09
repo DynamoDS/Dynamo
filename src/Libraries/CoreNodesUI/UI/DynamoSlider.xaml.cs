@@ -12,7 +12,7 @@ namespace Dynamo.UI.Controls
     public partial class DynamoSlider : UserControl
     {
         NodeModel nodeModel;
-        public DynamoSlider(NodeModel model, dynNodeView nodeUI)
+        public DynamoSlider(NodeModel model, NodeView nodeUI)
         {
             InitializeComponent();
 

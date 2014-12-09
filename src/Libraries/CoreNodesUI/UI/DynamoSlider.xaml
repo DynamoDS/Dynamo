@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:nodes="clr-namespace:Dynamo.Nodes"
+             xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
+             xmlns:nodes1="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch">
@@ -12,7 +13,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -21,12 +22,12 @@
         <Expander IsExpanded="false">
             
             <Expander.Header>
-                <Grid Height="{x:Static ui:Configurations.PortHeightInPixels}">
+                <Grid Height="{x:Static ui2:Configurations.PortHeightInPixels}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition MinWidth="150" Width="150"/>
                     </Grid.ColumnDefinitions>
-                    <nodes:DynamoTextBox x:Name="ValTb" Text="{Binding ValueText, Mode=OneWay}" 
+                    <nodes1:DynamoTextBox x:Name="ValTb" Text="{Binding ValueText, Mode=OneWay}" 
                              Grid.Column="0" Margin="2"/>
                     <Slider Name="slider" 
                             Maximum="{Binding Max}" 
@@ -52,13 +53,13 @@
                 <Label Grid.Column="0" Grid.Row="0" Content="Min" VerticalContentAlignment="Center"/>
                 <Label Grid.Column="0" Grid.Row="1" Content="Max" VerticalContentAlignment="Center"/>
                 <Label Grid.Column="0" Grid.Row="2" Content="Step" VerticalContentAlignment="Center"/>
-                <nodes:DynamoTextBox x:Name="MinTb" Grid.Row="0" Grid.Column="1" Margin="2"
+                <nodes1:DynamoTextBox x:Name="MinTb" Grid.Row="0" Grid.Column="1" Margin="2"
                                         VerticalContentAlignment="Center" 
                                         Text="{Binding MinText, Mode=OneWay, UpdateSourceTrigger=Explicit}"/>
-                <nodes:DynamoTextBox x:Name="MaxTb" Grid.Row="1" Grid.Column="1" Margin="2"
+                <nodes1:DynamoTextBox x:Name="MaxTb" Grid.Row="1" Grid.Column="1" Margin="2"
                                         VerticalContentAlignment="Center" 
                                         Text="{Binding MaxText, Mode=OneWay, UpdateSourceTrigger=Explicit}"/>
-                <nodes:DynamoTextBox x:Name="StepTb" Grid.Row="2" Grid.Column="1" Margin="2"
+                <nodes1:DynamoTextBox x:Name="StepTb" Grid.Row="2" Grid.Column="1" Margin="2"
                                         VerticalContentAlignment="Center" 
                                         Text="{Binding StepText, Mode=OneWay, UpdateSourceTrigger=Explicit}"/>
             </Grid>
