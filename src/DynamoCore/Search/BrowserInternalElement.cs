@@ -92,6 +92,18 @@ namespace Dynamo.Nodes.Search
             get { return _name; }
         }
 
+        /// <summary>
+        /// Assembly, from which we can get icon for class button.
+        /// </summary>
+        private string assembly;
+        public string Assembly
+        {
+            get { return assembly; }
+
+            // Note: we need setter, when we set resource assembly in NodeSearchElement.
+            set { assembly = value; }
+        }
+
         public BrowserInternalElement()
         {
             this._name = "Default";
@@ -99,15 +111,17 @@ namespace Dynamo.Nodes.Search
             this.OldParent = null;
         }
 
-        public BrowserInternalElement(string name, BrowserItem parent)
+        public BrowserInternalElement(string name, BrowserItem parent, string _assembly = "")
         {
             this._name = name;
+            this.assembly = _assembly;
             this.Parent = parent;
             this.OldParent = null;
         }
 
-
         public string FullCategoryName { get; set; }
+
+        public string FullName { get { return FullCategoryName + "." + Name; } }
     }
 }
 

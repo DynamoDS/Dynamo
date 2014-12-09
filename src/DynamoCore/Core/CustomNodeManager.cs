@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Xml;
+
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using System.IO;
-
 using DynamoUtilities;
 
 using Enum = System.Enum;
 using Utils = Dynamo.Nodes.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
@@ -23,13 +22,15 @@ namespace Dynamo.Utilities
     /// </summary>
     public class CustomNodeInfo
     {
-        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
+        public CustomNodeInfo(Guid guid, string name, string category, string description,
+            string path, string packageName = "")
         {
             Guid = guid;
             Name = name;
             Category = category;
             Description = description;
             Path = path;
+            PackageName = packageName;
         }
 
         public Guid Guid { get; set; }
@@ -37,6 +38,7 @@ namespace Dynamo.Utilities
         public string Category { get; set; }
         public string Description { get; set; }
         public string Path { get; set; }
+        public string PackageName { get; set; }
     }
 
     public delegate void DefinitionLoadHandler(CustomNodeDefinition def);
@@ -163,11 +165,11 @@ namespace Dynamo.Utilities
         public List<CustomNodeInfo> GetInfosFromFolder(string dir)
         {
             return Directory.Exists(dir) ? Directory.EnumerateFiles(dir, "*.dyf")
-                     .Select( AddFileToPath )
+                     .Select(AddFileToPath)
                      .Where(x => x != null)
                      .ToList() : new List<CustomNodeInfo>();
 
-        } 
+        }
 
         /// <summary>
         ///     Removes the custom nodes loaded from a particular folder.
@@ -386,7 +388,7 @@ namespace Dynamo.Utilities
         {
             var compiledNodes = new HashSet<Guid>();
 
-            var enumerator =  LoadedCustomNodes.GetEnumerator();
+            var enumerator = LoadedCustomNodes.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 var guid = (Guid)enumerator.Key;
@@ -632,7 +634,7 @@ namespace Dynamo.Utilities
                 // handle legacy workspace nodes called dynWorkspace
                 // and new workspaces without the dyn prefix
                 XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName("Workspace");
-                if(workspaceNodes.Count == 0)
+                if (workspaceNodes.Count == 0)
                     workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
 
                 foreach (XmlNode node in workspaceNodes)
@@ -676,7 +678,7 @@ namespace Dynamo.Utilities
                 if (decision == MigrationManager.Decision.Abort)
                 {
                     Utils.DisplayObsoleteFileMessage(this.dynamoModel, xmlPath, fileVersion, currentVersion);
-                    
+
                     def = null;
                     return false;
                 }

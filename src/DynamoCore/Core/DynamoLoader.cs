@@ -308,7 +308,7 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Load Custom Nodes from the CustomNodeLoader search path and update search
         /// </summary>
-        public List<CustomNodeInfo> LoadCustomNodes(string path)
+        public List<CustomNodeInfo> LoadCustomNodesFromPackage(string path, string packageName)
         {
             if (!Directory.Exists(path))
                 return new List<CustomNodeInfo>();
@@ -317,9 +317,13 @@ namespace Dynamo.Utilities
             var searchModel = dynamoModel.SearchModel;
 
             var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
-            
+
             // add nodes to search
-            loadedNodes.ForEach(x => searchModel.Add(x));
+            loadedNodes.ForEach(x =>
+            {
+                x.PackageName = packageName;
+                searchModel.Add(x);
+            });
 
             // update search view
             searchModel.OnRequestSync();

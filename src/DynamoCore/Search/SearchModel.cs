@@ -18,7 +18,7 @@ namespace Dynamo.Search
 {
     public class SearchModel : NotificationObject
     {
-        #region Events 
+        #region Events
 
         /// <summary>
         /// Can be invoked in order to signify that the UI should be updated after
@@ -68,7 +68,7 @@ namespace Dynamo.Search
         private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return _browserRootCategories; } 
+            get { return _browserRootCategories; }
             set { _browserRootCategories = value; }
         }
 
@@ -562,7 +562,7 @@ namespace Dynamo.Search
                     // add all search tags
                     function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
 
-                    
+
                 }
             }
 
@@ -603,7 +603,11 @@ namespace Dynamo.Search
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
+            var assemblyName = t.Assembly.GetName().Name + ".dll";
+            if (!DynamoLoader.LoadedAssemblyNames.Contains(assemblyName))
+                assemblyName = t.Assembly.Location;
+
+            var searchEle = new NodeSearchElement(name, description, tags, assemblyName);
             searchEle.Executed += this.OnExecuted;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
@@ -767,6 +771,8 @@ namespace Dynamo.Search
 
         #endregion
 
+        #region Dumping library to XMl
+
         internal void DumpLibraryToXml(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -778,19 +784,63 @@ namespace Dynamo.Search
 
         internal XmlDocument ComposeXmlForLibrary()
         {
-            var document = XmlHelper.CreateDocument("LibraryTree");
+            var document = XmlHelper.CreateDocument("Library");
 
-            foreach (var category in BrowserRootCategories)
-            {
-                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString());
-                XmlHelper.AddAttribute(element, "Name", category.Name);
+            var parent = XmlHelper.AddNode(document.DocumentElement, "NodesList");
+            ComposeNodesList(parent);
 
-                AddChildrenToXml(element, category.Items);
-
-                document.DocumentElement.AppendChild(element);
-            }
+            parent = XmlHelper.AddNode(document.DocumentElement, "NodesTree");
+            ComposeNodesTree(parent);
 
             return document;
+        }
+
+        private void ComposeNodesList(XmlNode parent)
+        {
+            XmlNode categoryNode, currNode;
+            List<NodeSearchElement> elementsToAdd;
+            foreach (var category in BrowserRootCategories.OrderBy(cat => cat.Name))
+            {
+                categoryNode = XmlHelper.AddNode(parent, "Category");
+                XmlHelper.AddAttribute(categoryNode, "Name", category.Name);
+
+                elementsToAdd = new List<NodeSearchElement>();
+                CollectItemsOfNode(category, elementsToAdd);
+
+                foreach (var element in elementsToAdd.OrderBy(el => el.FullName))
+                {
+                    currNode = XmlHelper.AddNode(categoryNode, element.GetType().ToString());
+                    SpecifyNodeInfo(currNode, element);
+                }
+            }
+        }
+
+        private void ComposeNodesTree(XmlNode parent)
+        {
+            XmlNode currNode;
+            foreach (var category in BrowserRootCategories)
+            {
+                currNode = XmlHelper.AddNode(parent, category.GetType().ToString());
+                XmlHelper.AddAttribute(currNode, "Name", category.Name);
+
+                AddChildrenToXml(currNode, category.Items);
+            }
+        }
+
+        private void CollectItemsOfNode(BrowserItem root, List<NodeSearchElement> items)
+        {
+            var children = root.Items;
+            foreach (var child in children)
+            {
+                if (child is NodeSearchElement)
+                {
+                    items.Add(child as NodeSearchElement);
+                }
+                else
+                {
+                    CollectItemsOfNode(child, items);
+                }
+            }
         }
 
         private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
@@ -801,21 +851,35 @@ namespace Dynamo.Search
 
                 if (child is NodeSearchElement)
                 {
-                    var castedChild = child as NodeSearchElement;
-                    XmlHelper.AddNode(element, "FullCategoryName", castedChild.FullCategoryName);
-                    XmlHelper.AddNode(element, "FullName", castedChild.FullName);
-                    XmlHelper.AddNode(element, "Name", castedChild.Name);
-                    XmlHelper.AddNode(element, "Description", castedChild.Description);
+                    XmlHelper.AddAttribute(element, "FullName", (child as NodeSearchElement).FullName);
                 }
                 else
                 {
                     XmlHelper.AddAttribute(element, "Name", child.Name);
                     AddChildrenToXml(element, child.Items);
                 }
-
-                parent.AppendChild(element);
             }
         }
+
+        private void SpecifyNodeInfo(XmlNode node, NodeSearchElement element)
+        {
+            XmlHelper.AddNode(node, "FullName", element.FullName);
+            XmlHelper.AddNode(node, "FullCategoryName", element.FullCategoryName);
+            XmlHelper.AddNode(node, "Name", element.Name);
+            XmlHelper.AddNode(node, "Description", element.Description);
+
+            if (element is CustomNodeSearchElement)
+            {
+                var customElement = element as CustomNodeSearchElement;
+                XmlHelper.AddNode(node, "Package", customElement.Package);
+            }
+            else
+            {
+                XmlHelper.AddNode(node, "Assembly", element.Assembly);
+            }
+        }
+
+        #endregion
     }
 }
 

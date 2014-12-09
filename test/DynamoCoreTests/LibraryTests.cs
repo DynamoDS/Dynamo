@@ -262,9 +262,59 @@ namespace Dynamo.Tests
                 ProtoCore.StringConstants.kMultipleSymbolFoundFromName, "Point", "")));
         }
 
+        /// <summary>
+        /// Check correctness of XML structure.
+        /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void DumpLibraryToXmlZeroTouchTest()
+        public void DumpLibraryToXmlGeneralStructureTest()
+        {
+            var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
+            Assert.AreEqual("Library", document.DocumentElement.Name);
+
+            var libraryRoot = document.DocumentElement;
+
+            Assert.IsNotNull(libraryRoot.SelectSingleNode("NodesList"));
+            Assert.IsNotNull(libraryRoot.SelectSingleNode("NodesTree"));
+        }
+
+        /// <summary>
+        /// Check if used in both lists IDs (node's field 'FullName') are the same.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void DumpLibraryToXmlAreIDsSameTest()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = "DSOffice.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already here, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(LibraryLoaded);
+            }
+
+            var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
+            var nodesListRoot = document.DocumentElement.SelectSingleNode("NodesList");
+            var nodesTreeRoot = document.DocumentElement.SelectSingleNode("NodesTree");
+
+            var nodesListIDs = nodesListRoot.SelectNodes("//FullName")
+                                            .Cast<XmlNode>()
+                                            .Select(node => node.Value);
+            var nodesTreeIDs = nodesTreeRoot.SelectNodes("//FullName")
+                                            .Cast<XmlNode>()
+                                            .Select(node => node.Value);
+
+            Assert.AreEqual(nodesListIDs.Count(), nodesTreeIDs.Count());
+            Assert.AreEqual(0, nodesListIDs.Except(nodesTreeIDs).Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DumpLibraryToXmlZeroTouchListTest()
         {
             LibraryLoaded = false;
 
@@ -281,8 +331,7 @@ namespace Dynamo.Tests
             var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
 
             var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
-
-            Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
+            var nodesList = document.DocumentElement.SelectSingleNode("NodesList");
 
             XmlNode node, subNode;
             foreach (var functionGroup in fgToCompare)
@@ -294,16 +343,20 @@ namespace Dynamo.Tests
                     if (function.IsObsolete || !function.IsVisibleInLibrary || function.Name.Contains("GetType"))
                         continue;
 
-                    node = document.SelectSingleNode(string.Format(
-                    "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[FullCategoryName='{0}' and Name='{1}']", function.Category, function.Name));
+                    node = nodesList.SelectSingleNode(string.Format(
+                        "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[FullName='{0}']",
+                        function.Category + "." + function.Name));
                     Assert.IsNotNull(node);
 
-                    // 'FullCategoryName' is already checked.
+                    // 'FullName' is already checked.
 
-                    subNode = node.SelectSingleNode("FullName");
+                    subNode = node.SelectSingleNode("FullCategoryName");
                     Assert.IsNotNull(subNode);
+                    Assert.AreEqual(function.Category, subNode.FirstChild.Value);
 
-                    // 'Name' is already checked.
+                    subNode = node.SelectSingleNode("Name");
+                    Assert.IsNotNull(subNode);
+                    Assert.AreEqual(function.Name, subNode.FirstChild.Value);
 
                     subNode = node.SelectSingleNode("Description");
                     Assert.IsNotNull(subNode.FirstChild);
@@ -315,7 +368,97 @@ namespace Dynamo.Tests
                     // For example: 
                     // tests  function.Description: Excel.ReadFromFile (file: FileInfo, sheetName: string): var[][]
                     // normal function.Description: Excel.ReadFromFile (file: var, sheetName: string): var[][]
+
+                    subNode = node.SelectSingleNode("Assembly");
+                    Assert.IsNotNull(subNode);
+                    Assert.AreEqual(function.Assembly, subNode.FirstChild.Value);
                 }
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DumpLibraryToXmlZeroTouchTreeTest()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = "DSOffice.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already here, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                Assert.IsTrue(LibraryLoaded);
+            }
+
+            var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
+
+            var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
+            var nodesTree = document.DocumentElement.SelectSingleNode("NodesTree");
+
+            XmlNode node;
+            foreach (var functionGroup in fgToCompare)
+            {
+                foreach (var function in functionGroup.Functions)
+                {
+                    // Obsolete, not visible and "GetType" functions are not presented in UI tree.
+                    // So they are should not be presented in dump.
+                    if (function.IsObsolete || !function.IsVisibleInLibrary || function.Name.Contains("GetType"))
+                        continue;
+
+                    node = nodesTree.SelectSingleNode(string.Format(
+                        "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[FullName='{0}']",
+                        function.Category + "." + function.Name));
+                    Assert.IsNotNull(node);
+                }
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DumpLibraryToXmlPackageTest()
+        {
+            // Getting package for test
+            var pkgName = "Custom Rounding";
+            var loader = ViewModel.Model.Loader.PackageLoader;
+            var package = loader.LocalPackages.FirstOrDefault(pkg => pkg.Name == pkgName);
+            if (package == null)
+            {
+                var pkgDir = Path.Combine(this.GetTestDirectory(), "pkgs", "Custom Rounding");
+                package = loader.ScanPackageDirectory(pkgDir);
+                package.LoadIntoDynamo(ViewModel.Model.Loader, ViewModel.Model.Logger, ViewModel.Model.EngineController.LibraryServices);
+            }
+
+            var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
+            var nodesList = document.DocumentElement.SelectSingleNode("NodesList");
+            Assert.IsNotNull(nodesList);
+
+            XmlNode node, subNode;
+            foreach (var customNode in package.LoadedCustomNodes)
+            {
+                node = nodesList.SelectSingleNode(string.Format(
+                    "//Dynamo.Search.SearchElements.CustomNodeSearchElement[FullName='{0}']",
+                    customNode.Category + "." + customNode.Name));
+                Assert.IsNotNull(node);
+
+                // 'FullName' is already checked.
+
+                subNode = node.SelectSingleNode("FullCategoryName");
+                Assert.IsNotNull(subNode);
+                Assert.AreEqual(customNode.Category, subNode.FirstChild.Value);
+
+                subNode = node.SelectSingleNode("Name");
+                Assert.IsNotNull(subNode);
+                Assert.AreEqual(customNode.Name, subNode.FirstChild.Value);
+
+                subNode = node.SelectSingleNode("Description");
+                Assert.IsNotNull(subNode);
+                Assert.AreEqual(customNode.Description, subNode.FirstChild.Value);
+
+                subNode = node.SelectSingleNode("Package");
+                Assert.IsNotNull(subNode);
+                Assert.AreEqual(customNode.PackageName, subNode.FirstChild.Value);
             }
         }
 

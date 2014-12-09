@@ -236,7 +236,7 @@ namespace Dynamo.PackageManager
 
         private void LoadCustomNodesIntoDynamo( DynamoLoader loader)
         {
-            loader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
+            loader.LoadCustomNodesFromPackage(CustomNodeDirectory, Name).ForEach(x => LoadedCustomNodes.Add(x));
         }
 
         private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
