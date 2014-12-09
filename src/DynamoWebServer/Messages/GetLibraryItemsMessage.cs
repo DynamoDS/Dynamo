@@ -1,6 +1,4 @@
-﻿using Dynamo.Utilities;
-using System.Runtime.Serialization;
-namespace DynamoWebServer.Messages
+﻿namespace DynamoWebServer.Messages
 {
     class GetLibraryItemsMessage : Message
     {
