@@ -39,7 +39,7 @@ namespace DSCoreNodesUI
     {
         protected EnumBase(WorkspaceModel workspace) : base(workspace, typeof(T).ToString()) { }
 
-        protected override void PopulateItems()
+        public override void PopulateItems()
         {
             Items.Clear();
             foreach (var constant in Enum.GetValues(typeof(T)))
@@ -62,7 +62,7 @@ namespace DSCoreNodesUI
             RegisterAllPorts();
         }
 
-        protected override void PopulateItems()
+        public override void PopulateItems()
         {
             Items.Clear();
 

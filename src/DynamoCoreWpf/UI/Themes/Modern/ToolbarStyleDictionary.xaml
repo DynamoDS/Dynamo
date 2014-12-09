@@ -1,0 +1,52 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  Style for Window Button -->
+    <Style x:Key="WindowButton" TargetType="Button">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Width" Value="25"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Border"
+                            Background="Transparent"
+                            BorderThickness="0 0 0 0"
+                            BorderBrush="#3b3b3b">
+                        <ContentPresenter Margin="1 1 0 0"
+                                          RecognizesAccessKey="True"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Style for ShortCut Button -->
+    <ImageBrush x:Key="ClickBox" ImageSource="pack://application:,,,/DynamoCoreWpf;component/UI/Images/click_background.png"/>
+    <Style x:Key="ShortCutButton" TargetType="Button">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Width" Value="25"/>
+        <Setter Property="Margin" Value="0,0,16,0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Border"                            
+                                    Margin="0"                            
+                                    Width="25"                            
+                                    Height="25"                            
+                                    Background="Transparent">
+                        <ContentPresenter Margin="0" RecognizesAccessKey="True"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ClickBox}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

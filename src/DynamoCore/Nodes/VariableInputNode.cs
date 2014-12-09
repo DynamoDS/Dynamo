@@ -1,27 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
 using System.Xml;
-using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.UI;
 
 namespace Dynamo.Nodes
 {
-    public abstract class VariableInputNode : NodeModel, IWpfNode
+    public abstract class VariableInputNode : NodeModel
     {
-
         protected VariableInputNode(WorkspaceModel workspace) : base(workspace)
         {
             VariableInputController = new BasicVariableInputNodeController(this);
-        }
-
-        public virtual void SetupCustomUIElements(dynNodeView view)
-        {
-            VariableInputController.SetupNodeUI(view);
         }
 
         private BasicVariableInputNodeController VariableInputController { get; set; }
@@ -142,25 +132,6 @@ namespace Dynamo.Nodes
         protected VariableInputNodeController(NodeModel model)
         {
             this.model = model;
-        }
-
-        public void SetupNodeUI(dynNodeView view)
-        {
-            var addButton = new DynamoNodeButton(model, "AddInPort") { Content = "+", Width = 20 };
-            //addButton.Height = 20;
-
-            var subButton = new DynamoNodeButton(model, "RemoveInPort") { Content = "-", Width = 20 };
-            //subButton.Height = 20;
-
-            var wp = new WrapPanel
-            {
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            wp.Children.Add(addButton);
-            wp.Children.Add(subButton);
-
-            view.inputGrid.Children.Add(wp);
         }
 
         protected abstract string GetInputName(int index);
