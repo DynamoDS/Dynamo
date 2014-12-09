@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.UI;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -156,6 +157,11 @@ namespace Dynamo.Nodes
         new public string Text
         {
             get { return base.Text; }
+            set
+            {
+                base.Text = value;
+                UpdateDataSource(true);
+            }
         }
 
         #endregion
@@ -262,38 +268,6 @@ namespace Dynamo.Nodes
             // is pressed, not something that a multi-line string edit box needs.
         }
 
-        #endregion
-    }
-
-    public class DynamoSlider : Slider
-    {
-        NodeModel nodeModel;
-        public DynamoSlider(NodeModel model)
-        {
-            nodeModel = model;
-        }
-
-        #region Event Handlers
-        protected override void OnThumbDragStarted(System.Windows.Controls.Primitives.DragStartedEventArgs e)
-        {
-            base.OnThumbDragStarted(e);
-            nodeModel.Workspace.RecordModelForModification(nodeModel);
-            (nodeModel as IBlockingModel).OnBlockingStarted(EventArgs.Empty);
-        }
-
-        protected override void OnThumbDragCompleted(System.Windows.Controls.Primitives.DragCompletedEventArgs e)
-        {
-            base.OnThumbDragCompleted(e);
-            (nodeModel as IBlockingModel).OnBlockingEnded(EventArgs.Empty);
-            nodeModel.RequiresRecalc = true;
-        }
-
-        protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnPreviewMouseLeftButtonDown(e);
-            if (e.OriginalSource is System.Windows.Shapes.Rectangle)
-                nodeModel.Workspace.RecordModelForModification(nodeModel);
-        }
         #endregion
     }
 
