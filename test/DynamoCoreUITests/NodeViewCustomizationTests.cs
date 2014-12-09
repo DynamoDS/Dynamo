@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
+
 using DSCore.File;
 using DSCoreNodesUI;
 using DSIronPythonNode;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.UI.Controls;
+
 using DynamoCoreUITests.Utility;
 using NUnit.Framework;
 using Dynamo.Utilities;
@@ -83,7 +82,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewOf<DoubleSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
-            Assert.AreEqual(1.0, element.Value, 1e-6);
+            Assert.AreEqual(1.0, element.slider.Value, 1e-6);
         }
 
         [Test]
@@ -94,7 +93,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewOf<IntegerSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
-            Assert.AreEqual(41, element.Value, 1e-6);
+            Assert.AreEqual(41, element.slider.Value, 1e-6);
         }
 
         [Test]
