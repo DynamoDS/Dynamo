@@ -1,10 +1,7 @@
-﻿using System.Drawing;
-#if ENABLE_DYNAMO_SCHEDULER
+﻿#if ENABLE_DYNAMO_SCHEDULER
 using System;
 using System.Collections;
 using System.Linq;
-
-using GraphLayout;
 
 using ProtoCore.Mirror;
 using System.Collections.Generic;
@@ -46,7 +43,6 @@ namespace Dynamo.Core.Threading
         private EngineController engineController;
         private IEnumerable<string> drawableIds;
         private readonly List<IRenderPackage> renderPackages;
-        private System.Drawing.Color color;
 
         internal IEnumerable<IRenderPackage> RenderPackages
         {
@@ -102,7 +98,6 @@ namespace Dynamo.Core.Threading
             maxTesselationDivisions = initParams.MaxTesselationDivisions;
             engineController = initParams.EngineController;
             previewIdentifierName = initParams.PreviewIdentifierName;
-            color = nodeModel.UserColor;
 
             nodeGuid = nodeModel.GUID;
             return true;
@@ -122,9 +117,9 @@ namespace Dynamo.Core.Threading
 
             var data = from varName in drawableIds
                        select engineController.GetMirror(varName)
-                       into mirror
-                       where mirror != null
-                       select mirror.GetData();
+                           into mirror
+                           where mirror != null
+                           select mirror.GetData();
 
             var labelMap = new List<string>();
             foreach (var mirrorData in data)

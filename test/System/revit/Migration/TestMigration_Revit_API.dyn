@@ -1,7 +1,0 @@
-<Workspace Version="0.6.3.7993" X="32.169736115557" Y="-525.44847590464" zoom="0.954042924882813" Description="" Category="" Name="Home">
-  <Elements>
-    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="83baae86-cf30-4d16-9963-47d6c732505c" nickname="Transaction" x="720.539876631442" y="1005.76625892826" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </Elements>
-  <Connectors />
-  <Notes />
-</Workspace>
