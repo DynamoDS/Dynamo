@@ -7,7 +7,7 @@ namespace ProtoImperative
 {
     public struct StringConstants
     {
-        public const string invalidLocationToDeclareImperativeLanguageBlock = "An imperative language block is declared within an imperative language block.";
+        public const string invalidNestedImperativeBlock = "An imperative language block is declared within an imperative language block.";
         public const string onlyIdentifierOrIdentifierListCanBeOnLeftSide = "Only identifier or identifier list can appear on the left hand side of assignment.";
         public const string arraySizeOverflow = "Array size overflow";
         public const string constantExpectedInArrayDeclaration = "Array declaration expected constant expression";

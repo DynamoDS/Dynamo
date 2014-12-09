@@ -7,7 +7,7 @@ namespace ProtoAssociative
 {
     public struct StringConstants
     {
-        public const string invalidLocationToDeclareAssociativeLanguageBlock = "An associative language block is declared within an associative language block.";
+        public const string invalidNestedImperativeBlock = "An associative language block is declared within an associative language block.";
 
         public const string classNameAsVariableError = "{0} is a class name, can't be used as a variable.";
         public const string memberVariableAlreadyDefined = "Member variable '{0}' is already defined in class {1}";

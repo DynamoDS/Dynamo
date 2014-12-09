@@ -4793,7 +4793,7 @@ namespace ProtoAssociative
                 if (ProtoCore.Language.kAssociative == langblock.codeblock.language && !isTopBlock)
                 {
                     // TODO Jun: Move the associative and all common string into some table
-                    buildStatus.LogSyntaxError(StringConstants.invalidLocationToDeclareAssociativeLanguageBlock, core.CurrentDSFileName, langblock.line, langblock.col);
+                    buildStatus.LogSyntaxError(StringConstants.invalidNestedImperativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
                 }
 
 

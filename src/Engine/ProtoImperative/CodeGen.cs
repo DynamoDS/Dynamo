@@ -1217,7 +1217,7 @@ namespace ProtoImperative
                 if (ProtoCore.Language.kImperative == langblock.codeblock.language)
                 {
                     // TODO Jun: Move the associative and all common string into some table
-                    buildStatus.LogSyntaxError(StringConstants.invalidLocationToDeclareImperativeLanguageBlock, core.CurrentDSFileName, langblock.line, langblock.col);
+                    buildStatus.LogSyntaxError(StringConstants.invalidNestedImperativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
                 }
 
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
