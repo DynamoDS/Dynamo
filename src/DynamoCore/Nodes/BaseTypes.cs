@@ -623,8 +623,10 @@ namespace Dynamo.Nodes
 
             dynamoModel.OnRequestTaskDialog(null, args);
 
-            if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit) { }
+            if (args.ClickedButtonId == (int) Utilities.ButtonId.Submit)
+            {
                 dynamoModel.OnRequestBugReport();
+            }
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
