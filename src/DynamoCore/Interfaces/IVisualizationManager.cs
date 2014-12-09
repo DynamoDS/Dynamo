@@ -73,5 +73,6 @@ namespace Dynamo.Interfaces
         /// </summary>
         void CheckIfLatestAndUpdate(long taskId);
 
+        void RequestBranchUpdate(NodeModel node);
     }
 }

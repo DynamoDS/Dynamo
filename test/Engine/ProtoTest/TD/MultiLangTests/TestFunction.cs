@@ -5,27 +5,24 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class TestFunction
+    class TestFunction : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Config.RunConfiguration runnerConfig;
         ProtoScript.Runners.DebugRunner fsr;
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            // Specify some of the requirements of IDE.
-            ProtoCore.Options options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            base.Setup();
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+            fsr = null;
         }
 
         [Test]
@@ -2797,10 +2794,8 @@ e = foo(1, 2.0, 3); // not found, null
         }
 
         [Test]
-        [Category("Failing")]
         public void T93_Function_With_Default_Arg_In_Class()
         {
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4011
             string str = "";
             string code = @"class Test
 {
@@ -3921,7 +3916,7 @@ y;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV39_Defect_1449956_2()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4012
@@ -5705,7 +5700,7 @@ b;c;d;
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV78_Defect_1460866()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4013
@@ -6084,9 +6079,10 @@ a = foo ( { 1, 2 , {3, 4} },  count );
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("Failure")]
         public void TV84_Function_Pointer_Implicit_Conversion_3()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4748
             string code = @"
 def count ( a : double[] )
 {
@@ -6109,14 +6105,15 @@ a = foo ( { 1, 2,  { 3, 4 } },  count );
 d = foo ( { 2, 2.5, { 1, 1.5 }, 1 , false},  count );
 
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4748: Replication Unboxing error";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             thisTest.Verify("a", new object[] { 1, 1, 2 });
             thisTest.Verify("d", new object[] { 1, 1, 2, 1, 1 });
         }
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV84_Function_Pointer_Implicit_Conversion_4()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4014
@@ -6611,7 +6608,7 @@ d1 = [Imperative]
         [Test]
         [Category("Design Issue")]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV88_Defect_1463489_3()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1510
@@ -6885,7 +6882,7 @@ y1;y2;y3;y4;
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV91_Defect_1463703_3()
         {
             // Tracked  by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4013
@@ -7491,7 +7488,7 @@ b1 = foo ( a1 );";
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV89_typeConversion_FunctionArguments_1467060_6()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
@@ -8306,7 +8303,7 @@ d = foo(1.5);";
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         [Category("SmokeTest")]
         public void TV106_Defect_1467132()
         {
@@ -8736,7 +8733,7 @@ r = f.foo(b); // shoudn't be resolved to foo(x = 0, y = 0, z = 0)
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestFunctionOverloadFromNestedLanguageBlock01()
         {
             string code = @"

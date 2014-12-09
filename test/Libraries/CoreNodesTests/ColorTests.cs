@@ -12,6 +12,7 @@ namespace DSCoreNodesTests
     public class ColorTests
     {
         [Test]
+        [Category("UnitTests")]
         public void TestConstructorByARGB()
         {
             Color color = Color.ByARGB(10, 20, 30, 40);
@@ -33,6 +34,7 @@ namespace DSCoreNodesTests
         // }
 
         [Test]
+        [Category("UnitTests")]
         public void TestBrightness()
         {
             Color color = Color.ByARGB(128, 64, 160, 255);
@@ -40,6 +42,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestSaturation()
         {
             Color color = Color.ByARGB(128, 64, 160, 255);
@@ -47,6 +50,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestHue()
         {
             Color color = Color.ByARGB(128, 64, 160, 255);
@@ -54,6 +58,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void TestComponents()
         {
             Color color = Color.ByARGB(128, 64, 160, 255);

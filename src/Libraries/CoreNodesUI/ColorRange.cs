@@ -54,8 +54,11 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall("Color", "BuildColorFromRange", inputAstNodes);
-
+            //var functionCall = AstFactory.BuildFunctionCall("Color", "BuildColorFromRange", inputAstNodes);
+            var functionCall =
+                AstFactory.BuildFunctionCall(
+                    new Func<Color, Color, double, Color>(DSCore.Color.BuildColorFromRange),
+                    inputAstNodes);
             return new[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)
@@ -94,31 +97,47 @@ namespace DSCoreNodesUI
                     object start = null;
                     object end = null;
 
-                    if (startMirror.GetData().IsCollection)
+                    if (startMirror == null)
                     {
-                        start = startMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+                        start = Color.ByARGB(255, 192, 192, 192);
                     }
                     else
                     {
-                        start = startMirror.GetData().Data;
+                        if (startMirror.GetData().IsCollection)
+                        {
+                            start = startMirror.GetData().GetElements().
+                                Select(x => x.Data).FirstOrDefault();
+                        }
+                        else
+                        {
+                            start = startMirror.GetData().Data;
+                        }
                     }
 
-                    if (endMirror.GetData().IsCollection)
+                    if (endMirror == null)
                     {
-                        end = endMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+                        end = Color.ByARGB(255, 64, 64, 64);
                     }
                     else
                     {
-                        end = endMirror.GetData().Data;
+                        if (endMirror.GetData().IsCollection)
+                        {
+                            end = endMirror.GetData().GetElements().
+                                Select(x => x.Data).FirstOrDefault();
+                        }
+                        else
+                        {
+                            end = endMirror.GetData().Data;
+                        }
                     }
 
-                    Color startColor = start as Color;
-                    Color endColor = end as Color;
-                    if (null != startColor && null != endColor)
-                    {
-                        WriteableBitmap bmp = CompleteColorScale(startColor, endColor);
-                        drawPlane.Source = bmp;
-                    }
+                    var startColor = start as DSCore.Color;
+                    var endColor = end as DSCore.Color;
+
+                    if (startColor == null ||  endColor == null) return;
+
+                    WriteableBitmap bmp = CompleteColorScale(startColor, endColor);
+                    drawPlane.Source = bmp;
                 });
             };
         }

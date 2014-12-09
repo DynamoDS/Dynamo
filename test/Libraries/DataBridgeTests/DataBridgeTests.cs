@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +14,7 @@ namespace DataBridgeTests
     public class DataBridgeTests : DSEvaluationViewModelUnitTest
     {
         [Test]
+        [Category("Failure")]
         public void CanUseWatchInCustomNode()
         {
             var examplesPath = Path.Combine(GetTestDirectory(), @"core\watch");

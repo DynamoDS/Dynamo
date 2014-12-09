@@ -1286,7 +1286,7 @@ Imperative_num<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         number  
         (.  
             Int64 value;
-            if (Int64.TryParse(t.val, out value))
+            if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
             {
                 node = new ProtoCore.AST.ImperativeAST.IntNode(value * sign);
             }
@@ -1308,7 +1308,7 @@ Imperative_num<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         float   
         (.  
             double value;
-            if (Double.TryParse(t.val, out value))
+            if (Double.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
             {
                 node = new ProtoCore.AST.ImperativeAST.DoubleNode(value * sign);
             }

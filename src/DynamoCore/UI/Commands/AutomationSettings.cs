@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
+using Dynamo.Models;
 using Dynamo.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.ViewModels
 {
@@ -72,7 +71,7 @@ namespace Dynamo.ViewModels
         private const string IntervalAttribName = "CommandIntervalInMs";
 
         private System.Windows.Window mainWindow = null;
-        private DynamoViewModel owningViewModel = null;
+        private DynamoModel owningDynamoModel = null;
         private DispatcherTimer playbackTimer = null;
         private List<DynCmd.RecordableCommand> loadedCommands = null;
         private List<DynCmd.RecordableCommand> recordedCommands = null;
@@ -113,11 +112,40 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// When "DynamoModel.DynamicRunEnabled" is set to true, "HomeWorkspace"
+        /// starts its internal "DispatcherTimer" whenever its content is being 
+        /// modified. This timer starts a round of evaluation after a predefined 
+        /// amount of time has ellapsed, preventing modifications in quick 
+        /// succession from triggering too many evaluations. However, the timer 
+        /// does not always have a chance to tick. This is especially true when 
+        /// AutomationSettings exhausted all available commands in its list and 
+        /// is ready to end the current test run. The shutdown timer that  
+        /// AutomationSettings kicks start may tick before the evaluation timer 
+        /// in WorkspaceModel has a chance to tick. When this happens, validation
+        /// code at the end of the recorded test ends up with invalid evaluation
+        /// results, failing the test case.
+        /// </summary>
+        /// <returns>Returns true if there is a pending evaluation and that the 
+        /// shutdown process should be deferred.</returns>
+        /// 
+        private bool HasPendingEvaluation
+        {
+            get
+            {
+                var homeWorkspace = owningDynamoModel.HomeSpace;
+                if (homeWorkspace == null)
+                    return false;
+
+                return homeWorkspace.IsEvaluationPending;
+            }
+        }
+
         #endregion
 
         #region Class Operational Methods
 
-        internal AutomationSettings(DynamoViewModel vm, string commandFilePath)
+        internal AutomationSettings(DynamoModel dynamoModel, string commandFilePath)
         {
             this.CommandInterval = 20; // 20ms between two consecutive commands.
             this.PauseAfterPlayback = 10; // 10ms after playback is done.
@@ -139,9 +167,9 @@ namespace Dynamo.ViewModels
                 recordedCommands = new List<DynCmd.RecordableCommand>();
             }
 
-            this.owningViewModel = vm;
-            if (null == this.owningViewModel)
-                throw new ArgumentNullException("vm");
+            this.owningDynamoModel = dynamoModel;
+            if (null == this.owningDynamoModel)
+                throw new ArgumentNullException("dynamoModel");
         }
 
         internal void BeginCommandPlayback(System.Windows.Window mainWindow)
@@ -366,7 +394,7 @@ namespace Dynamo.ViewModels
                 // before the command execution starts. After the command is done,
                 // the timer is then resumed for the next command in queue.
                 // 
-                nextCommand.Execute(this.owningViewModel);
+                this.owningDynamoModel.ExecuteCommand(nextCommand);
             }
             catch (Exception exception)
             {
@@ -397,6 +425,19 @@ namespace Dynamo.ViewModels
         private void OnShutdownTimerTick(object sender, EventArgs e)
         {
             this.playbackTimer.Stop();
+
+            if (HasPendingEvaluation) // See method for documentation.
+            {
+                // When shutdown timer ticks and there is still an outstanding 
+                // evaluation, then let the timer ticks away so it checks back 
+                // later. Here the interval is updated to 20ms -- something that
+                // is independent of the predefined shutdown interval.
+                // 
+                playbackTimer.Interval = TimeSpan.FromMilliseconds(20);
+                playbackTimer.Start();
+                return;
+            }
+
             this.playbackTimer = null;
             ChangeStateInternal(State.Stopped);
 

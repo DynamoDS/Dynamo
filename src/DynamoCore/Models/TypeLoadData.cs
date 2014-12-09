@@ -1,21 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Dynamo.Models
 {
     public class TypeLoadData
     {
-        public Assembly Assembly;
-        public Type Type;
+        public readonly Assembly Assembly;
+        public readonly Type Type;
+        public readonly string ObsoleteMessage;
 
-        public TypeLoadData(Assembly assemblyIn, Type typeIn)
+        public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
+
+        public TypeLoadData(Assembly assemblyIn, Type typeIn, string obsoleteMsg)
         {
             Assembly = assemblyIn;
             Type = typeIn;
+            ObsoleteMessage = obsoleteMsg;
         }
-    }
 
+        public TypeLoadData(Assembly assemblyIn, Type typeIn) : this(assemblyIn, typeIn, "") { }
+    }
 }

@@ -9,12 +9,16 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.DSEngine;
+using Microsoft.Practices.Prism.ViewModel;
+using System.IO;
+using System.Xml;
+using DynamoUtilities;
 
 namespace Dynamo.Search
 {
-    public class SearchModel
+    public class SearchModel : NotificationObject
     {
-        #region Events 
+        #region Events
 
         /// <summary>
         /// Can be invoked in order to signify that the UI should be updated after
@@ -64,7 +68,7 @@ namespace Dynamo.Search
         private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return _browserRootCategories; } 
+            get { return _browserRootCategories; }
             set { _browserRootCategories = value; }
         }
 
@@ -84,7 +88,10 @@ namespace Dynamo.Search
         /// </value>
         internal int MaxNumSearchResults { get; set; }
 
-        private readonly DynamoModel DynamoModel;
+        private readonly DynamoModel dynamoModel;
+
+        //For caching of search elements
+        List<LibraryItem> allLibraryItems;
 
         #endregion
 
@@ -101,8 +108,8 @@ namespace Dynamo.Search
 
         internal SearchModel(DynamoModel model)
         {
-            DynamoModel = model;
-            DynamoModel.CurrentWorkspaceChanged += RevealWorkspaceSpecificNodes;
+            dynamoModel = model;
+            dynamoModel.CurrentWorkspaceChanged += RevealWorkspaceSpecificNodes;
 
             InitializeCore();
         }
@@ -111,7 +118,7 @@ namespace Dynamo.Search
         {
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
-            MaxNumSearchResults = 35;
+            MaxNumSearchResults = 15;
 
             // pre-populate the search categories
             this.AddRootCategory(BuiltinNodeCategories.CORE);
@@ -123,18 +130,6 @@ namespace Dynamo.Search
             this.AddRootCategory("Units");
             this.AddRootCategory("Office");
             this.AddRootCategory("Migration");
-        }
-
-        #endregion
-
-        #region Destructor
-
-        ~SearchModel()
-        {
-            if (DynamoModel != null)
-            {
-                DynamoModel.CurrentWorkspaceChanged -= RevealWorkspaceSpecificNodes;
-            }
         }
 
         #endregion
@@ -179,9 +174,9 @@ namespace Dynamo.Search
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal List<SearchElementBase> Search(string search)
+        internal IEnumerable<SearchElementBase> Search(string search)
         {
-            if (string.IsNullOrEmpty(search) || search == "Search...")
+            if (string.IsNullOrEmpty(search))
             {
                 return _searchElements;
             }
@@ -502,6 +497,36 @@ namespace Dynamo.Search
             return category.Items.FirstOrDefault(x => x.Name == catName);
         }
 
+        public IEnumerable<LibraryItem> GetAllLibraryItemsByCategory()
+        {
+            if (allLibraryItems == null || !allLibraryItems.Any())
+            {
+                allLibraryItems = new List<LibraryItem>();
+                foreach (var elem in BrowserRootCategories)
+                {
+                    allLibraryItems.AddRange(GetLibraryItemsByCategory(elem));
+                }
+            }
+            return allLibraryItems;
+        }
+
+        private IEnumerable<LibraryItem> GetLibraryItemsByCategory(BrowserItem elem)
+        {
+            var result = new List<LibraryItem>();
+            foreach (BrowserItem item in elem.Items)
+            {
+                if (item is SearchElementBase)
+                {
+                    result.Add(new LibraryItem(item as SearchElementBase, dynamoModel));
+                }
+                else
+                {
+                    result.AddRange(GetLibraryItemsByCategory(item));
+                }
+            }
+            return result;
+        }
+
         #endregion
 
         #region Add
@@ -570,7 +595,7 @@ namespace Dynamo.Search
                     // add all search tags
                     function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
 
-                    
+
                 }
             }
 
@@ -627,8 +652,8 @@ namespace Dynamo.Search
             if (attribs.Length > 0)
             {
                 this.NodesHiddenInHomeWorkspace.Add(searchEle);
-                if (this.DynamoModel != null && this.DynamoModel.CurrentWorkspace != null &&
-                    this.DynamoModel.CurrentWorkspace is HomeWorkspaceModel)
+                if (this.dynamoModel != null && this.dynamoModel.CurrentWorkspace != null &&
+                    this.dynamoModel.CurrentWorkspace is HomeWorkspaceModel)
                 {
                     searchEle.SetSearchable(false);
                 }
@@ -638,8 +663,8 @@ namespace Dynamo.Search
             if (attribs.Length > 0)
             {
                 this.NodesHiddenInCustomNodeWorkspace.Add(searchEle);
-                if (this.DynamoModel != null && this.DynamoModel.CurrentWorkspace != null &&
-                    this.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel)
+                if (this.dynamoModel != null && this.dynamoModel.CurrentWorkspace != null &&
+                    this.dynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel)
                 {
                     searchEle.SetSearchable(false);
                 }
@@ -665,12 +690,14 @@ namespace Dynamo.Search
         public bool Add(CustomNodeInfo nodeInfo)
         {
             var nodeEle = new CustomNodeSearchElement(nodeInfo);
-            nodeEle.Executed += this.OnExecuted;
-
             if (SearchDictionary.Contains(nodeEle))
             {
+                // Second node with the same GUID should rewrite the original node. 
+                // Original node is removed from tree.
                 return this.Refactor(nodeInfo);
             }
+
+            nodeEle.Executed += this.OnExecuted;
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, nodeInfo.Category + "." + nodeEle.Name);
@@ -772,6 +799,56 @@ namespace Dynamo.Search
         }
 
         #endregion
+
+        internal void DumpLibraryToXml(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return;
+
+            var document = ComposeXmlForLibrary();
+            document.Save(fileName);
+        }
+
+        internal XmlDocument ComposeXmlForLibrary()
+        {
+            var document = XmlHelper.CreateDocument("LibraryTree");
+
+            foreach (var category in BrowserRootCategories)
+            {
+                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString());
+                XmlHelper.AddAttribute(element, "Name", category.Name);
+
+                AddChildrenToXml(element, category.Items);
+
+                document.DocumentElement.AppendChild(element);
+            }
+
+            return document;
+        }
+
+        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
+        {
+            foreach (var child in children)
+            {
+                var element = XmlHelper.AddNode(parent, child.GetType().ToString());
+
+                if (child is NodeSearchElement)
+                {
+                    var castedChild = child as NodeSearchElement;
+                    XmlHelper.AddNode(element, "FullCategoryName", castedChild.FullCategoryName);
+                    XmlHelper.AddNode(element, "FullName", castedChild.FullName);
+                    XmlHelper.AddNode(element, "Name", castedChild.Name);
+                    XmlHelper.AddNode(element, "Description", castedChild.Description);
+                }
+                else
+                {
+                    XmlHelper.AddAttribute(element, "Name", child.Name);
+                    AddChildrenToXml(element, child.Items);
+                }
+
+                parent.AppendChild(element);
+            }
+        }
     }
 }
 

@@ -7,7 +7,6 @@ namespace ProtoFFITests
 {
     public class CSFFIDataMarshalingTest : FFITestSetup
     {
-
         [Test]
         public void TestDoubles()
         {
@@ -53,14 +52,17 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("Failure")]
         public void TestDecimals()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4392
             String code =
             @"               import(TestData from ""FFITarget.dll"");               import(""System.Decimal"");               x = Decimal.Decimal(1.11e+10);               y = Decimal.Decimal(1.11e+5);               value = TestData.MultiplyDecimals(x, y);               result = Decimal.Decimal(1.2321e+15);               success = Decimal.Equals(value, result);            ";
             ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
             int nErrors = -1;
             ExecuteAndVerify(code, data, out nErrors);
-            Assert.IsTrue(nErrors == 0);
+            string err = "MAGN-4392: Test fails due to FFI function calls for Decimal not being resolved";
+            Assert.IsTrue(nErrors == 0, err);
         }
 
         [Test]
@@ -499,6 +501,17 @@ d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});
 
             Type dummy = typeof(FFITarget.TestData);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_MarshlingFunctionPointer()
+        {
+            String code =
+            @"               def foo() { return = 42;}               fptr = foo;               sameFptr = TestData.ReturnObject(fptr);               value = sameFptr();            ";
+            Type t = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
+            ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = 42, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
     }

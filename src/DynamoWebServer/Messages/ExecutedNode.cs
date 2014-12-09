@@ -14,7 +14,7 @@ namespace DynamoWebServer.Messages
         /// Guid of the specified node
         /// </summary>
         [DataMember]
-        public string NodeID { get; private set; }
+        public string NodeId { get; private set; }
 
         /// <summary>
         /// State of the node after executing
@@ -42,7 +42,7 @@ namespace DynamoWebServer.Messages
 
         public ExecutedNode(NodeModel node, string data)
         {
-            this.NodeID = node.GUID.ToString();
+            this.NodeId = node.GUID.ToString();
             this.State = node.State.ToString();
             this.StateMessage = node.ToolTipText;
             this.Data = data;

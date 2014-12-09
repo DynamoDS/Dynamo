@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
-    public class ForLoop
+    class ForLoop : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\Imperative\\ForLoop\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_TestNegativeSyntax_Negative()
@@ -1242,7 +1235,7 @@ p8 = y[1][1][1];
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T42_Create_3_Dim_Collection_Using_For_Loop_In_Class_Constructor()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4081
@@ -1378,7 +1371,7 @@ p8 = y[1][1][1];
 
         [Test]
         [Category("Array")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T43_Create_CollectioninForLoop_1457172()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4081
@@ -1441,7 +1434,7 @@ p8 = y[2][2];
 
         [Test]
         [Category("Array")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T43_Create_CollectioninForLoop_1457172_2()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4081

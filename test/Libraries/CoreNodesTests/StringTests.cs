@@ -7,27 +7,8 @@ namespace DSCoreNodesTests
     [TestFixture]
     internal static class StringTests
     {
-        #region String.FromObject
-        
-        private class Foo
-        {
-            public const string String = "FOO!";
-
-            public override string ToString()
-            {
-                return String;
-            }
-        }
-
         [Test]
-        public static void FromObject()
-        {
-            Assert.AreEqual(Foo.String, String.FromObject(new Foo()));
-        }
-
-        #endregion
-
-        [Test]
+        [Category("UnitTests")]
         public static void ToNumber()
         {
             Assert.AreEqual(10, String.ToNumber("10"));
@@ -35,6 +16,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Concat()
         {
             Assert.AreEqual("", String.Concat());
@@ -42,6 +24,7 @@ namespace DSCoreNodesTests
         }
         
         [Test]
+        [Category("UnitTests")]
         public static void Length()
         {
             Assert.AreEqual(0, String.Length(""));
@@ -49,6 +32,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Split()
         {
             Assert.AreEqual(new[] { "a", "b", "c", "d", "e", "f" }, String.Split("abcdef", "", "a"));
@@ -56,6 +40,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Join()
         {
             //Joining nothing yeilds nothing
@@ -69,6 +54,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ToUpper()
         {
             Assert.AreEqual("", String.ToUpper(""));
@@ -79,6 +65,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ToLower()
         {
             Assert.AreEqual("", String.ToLower(""));
@@ -89,6 +76,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void ChangeCase()
         {
             Assert.AreEqual("", String.ChangeCase("", false));
@@ -105,6 +93,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Substring()
         {
             Assert.Throws<System.ArgumentOutOfRangeException>(() => String.Substring("", 1, 0));
@@ -118,6 +107,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Contains()
         {
             Assert.IsTrue(String.Contains("", ""));
@@ -133,6 +123,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void CountOccurences()
         {
             Assert.AreEqual(1, String.CountOccurrences("", ""));
@@ -149,6 +140,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Replace()
         {
             Assert.AreEqual("", String.Replace("", "a", "b"));
@@ -159,6 +151,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void EndsWith()
         {
             Assert.IsTrue(String.EndsWith("", ""));
@@ -176,6 +169,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void StartsWith()
         {
             Assert.IsTrue(String.StartsWith("", ""));
@@ -193,6 +187,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void TrimWhitespace()
         {
             Assert.AreEqual("", String.TrimWhitespace(""));
@@ -208,6 +203,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void TrimLeadingWhitespace()
         {
             Assert.AreEqual("", String.TrimLeadingWhitespace(""));
@@ -223,6 +219,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void TrimTrailingWhitespace()
         {
             Assert.AreEqual("", String.TrimTrailingWhitespace(""));
@@ -238,6 +235,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void IndexOf()
         {
             Assert.AreEqual(0, String.IndexOf("", ""));
@@ -261,6 +259,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void LastIndexOf()
         {
             Assert.AreEqual(0, String.LastIndexOf("", ""));
@@ -284,6 +283,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void PadLeft()
         {
             Assert.AreEqual("", String.PadLeft("", 0));
@@ -296,6 +296,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void PadRight()
         {
             Assert.AreEqual("", String.PadRight("", 0));
@@ -308,6 +309,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Center()
         {
             Assert.AreEqual("", String.Center("", 0));
@@ -320,6 +322,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Insert()
         {
             Assert.AreEqual("", String.Insert("", 0, ""));
@@ -333,6 +336,7 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void Remove()
         {
             Assert.AreEqual("", String.Remove("", 0));

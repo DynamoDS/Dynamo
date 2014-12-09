@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 using DSNodeServices;
@@ -10,7 +11,6 @@ using DSNodeServices;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Services;
-using Dynamo.Utilities;
 
 #endregion
 
@@ -53,6 +53,11 @@ namespace Dynamo.Core
 
         public void RunExpression(HomeWorkspaceModel workspaceModel, int? executionInterval = null)
         {
+            if (workspaceModel == null)
+            {
+                return;
+            }
+
             var dynamoModel = workspaceModel.DynamoModel;
 
             execInternval = executionInterval;
@@ -76,7 +81,13 @@ namespace Dynamo.Core
                 IEnumerable<KeyValuePair<Guid, List<string>>> traceData =
                     workspaceModel.PreloadedTraceData;
                 workspaceModel.PreloadedTraceData = null; // Reset.
-                dynamoModel.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData);
+
+                if (dynamoModel == null || dynamoModel.EngineController == null)
+                {
+                    return;
+                }
+
+                dynamoModel.EngineController.LiveRunnerCore.SetTraceDataForNodes(traceData); 
 
                 //We are now considered running
                 Running = true;
@@ -142,7 +153,7 @@ namespace Dynamo.Core
 
             if (cancelSet)
             {
-                dynamoModel.Reset();
+                dynamoModel.ResetEngine(true);
                 cancelSet = false;
             }
         }
@@ -159,9 +170,11 @@ namespace Dynamo.Core
 
                 dynamoModel.EngineController.GenerateGraphSyncData(workspace.Nodes);
 
-                //No additional work needed
                 if (dynamoModel.EngineController.HasPendingGraphSyncData)
+                {
+                    ExecutionEvents.OnGraphPreExecution();
                     Eval(workspace);
+                }
             }
             catch (Exception ex)
             {
@@ -185,7 +198,20 @@ namespace Dynamo.Core
                     string.Format("Evaluation completed in {0}", sw.Elapsed));
             }
 
-            dynamoModel.OnEvaluationCompleted(this, EventArgs.Empty);
+            // When evaluation is completed, we mark all
+            // nodes as ForceReexecuteOfNode = false to prevent
+            // cyclical graph updates. It is therefore the responsibility 
+            // of the node implementor to mark this flag = true, if they
+            // want to require update.
+            foreach (var n in workspace.Nodes)
+            {
+                n.ForceReExecuteOfNode = false;
+            }
+
+            // Notify handlers that evaluation took place.
+            var e = new EvaluationCompletedEventArgs(true);
+            dynamoModel.OnEvaluationCompleted(this, e);
+            ExecutionEvents.OnGraphPostExecution();
         }
 
         private void Eval(HomeWorkspaceModel workspaceModel)

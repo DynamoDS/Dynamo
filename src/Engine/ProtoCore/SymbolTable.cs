@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using ProtoCore.Namespace;
+
 namespace ProtoCore.DSASM
 { 
     /// <summary>
@@ -136,7 +138,7 @@ namespace ProtoCore.DSASM
         public MemoryRegion     memregion;
         public int              symbolTableIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
         public int              runtimeTableIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-        public AccessSpecifier  access;
+        public ProtoCore.Compiler.AccessSpecifier  access;
         public bool isStatic;
         public List<AttributeEntry> Attributes { get; set; }
         public int codeBlockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -171,7 +173,7 @@ namespace ProtoCore.DSASM
             bool isArray = false, 
             List<int> arraySizeList = null, 
             int scope = -1,
-            AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic,
+            ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic,
             bool isStatic = false,
             int codeBlockId = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
@@ -211,7 +213,7 @@ namespace ProtoCore.DSASM
             bool isArray = false,
             List<int> arraySizeList = null,
             int scope = -1,
-            AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic,
+            ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic,
             bool isStatic = false,
             int codeBlockId = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
@@ -236,17 +238,19 @@ namespace ProtoCore.DSASM
             this.forArrayName = forArrayName;
         }
 
-        public bool IsEqual(SymbolNode rhs)
+        public override bool Equals(object obj)
         {
-            return functionIndex == rhs.functionIndex && name == rhs.name;
+            var rhs = obj as SymbolNode;
+            if (rhs == null)
+            {
+                return false;
+            }
+
+            return name.Equals(rhs.name) &&
+                   functionIndex == rhs.functionIndex && 
+                   classScope == rhs.classScope && 
+                   codeBlockId == rhs.codeBlockId;
         }
-
-        public bool IsEqualAtScope(SymbolNode rhs)
-        {
-            return functionIndex == rhs.functionIndex && name == rhs.name && classScope == rhs.classScope && codeBlockId == rhs.codeBlockId;
-        }
-
-
 
         public void SetStaticType(ProtoCore.Type newtype)
         {

@@ -5,14 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 
-using Greg;
 using Greg.Requests;
-using Greg.Responses;
 
 namespace Dynamo.ViewModels
 {
@@ -42,20 +41,18 @@ namespace Dynamo.ViewModels
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
 
         private readonly DynamoViewModel dynamoViewModel;
-        private readonly PackageManagerClient packageManagerClient;
+        public PackageManagerClient Model { get; private set; }
 
         #endregion
 
-        public PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient packageManagerClient )
+        public PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
         {
             this.dynamoViewModel = dynamoViewModel;
-            this.packageManagerClient = packageManagerClient;
+            this.Model = model;
             this.CachedPackageList = new List<PackageManagerSearchElement>();
-            this.packageManagerClient.RequestAuthentication +=
-                dynamoViewModel.OnRequestAuthentication;
         }
 
-        public void PublishCurrentWorkspace()
+        public void PublishCurrentWorkspace(object m)
         {
             var currentFunDef =
                 dynamoViewModel.Model.CustomNodeManager.GetDefinitionFromWorkspace(dynamoViewModel.Model.CurrentWorkspace);
@@ -68,15 +65,25 @@ namespace Dynamo.ViewModels
             {
                 MessageBox.Show("The selected symbol was not found in the workspace", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
             }
-
         }
 
-        public bool CanPublishCurrentWorkspace()
+        public bool CanPublishCurrentWorkspace(object m)
         {
-            return dynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel;
+            return dynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel
+                && Model.HasAuthenticator;
         }
 
-        public void PublishSelectedNode()
+        public void PublishNewPackage(object m)
+        {
+            ShowNodePublishInfo();
+        }
+
+        public bool CanPublishNewPackage(object m)
+        {
+            return Model.HasAuthenticator;
+        }
+
+        public void PublishSelectedNodes(object m)
         {
             var nodeList = DynamoSelection.Instance.Selection
                                 .Where(x => x is Function)
@@ -98,10 +105,17 @@ namespace Dynamo.ViewModels
             ShowNodePublishInfo(defs);
         }
 
-        public bool CanPublishSelectedNode(object m)
+        public bool CanPublishSelectedNodes(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is Function);
+                DynamoSelection.Instance.Selection.All(x => x is Function) &&
+                Model.HasAuthenticator;
+        }
+
+        private void ShowNodePublishInfo()
+        {
+            var newPkgVm = new PublishPackageViewModel(this.dynamoViewModel);
+            this.dynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
 
         private void ShowNodePublishInfo(object funcDef)
@@ -129,8 +143,11 @@ namespace Dynamo.ViewModels
                     }
                 }
 
-                var newPkgVm = new PublishPackageViewModel(this.dynamoViewModel);
-                newPkgVm.FunctionDefinitions = fs;
+                var newPkgVm = new PublishPackageViewModel(this.dynamoViewModel)
+                {
+                    CustomNodeDefinitions = fs
+                };
+
                 this.dynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
             }
             else
@@ -142,7 +159,7 @@ namespace Dynamo.ViewModels
         public List<PackageManagerSearchElement> ListAll()
         {
             this.CachedPackageList =
-                    this.packageManagerClient.ListAll()
+                    this.Model.ListAll()
                                .Select((header) => new PackageManagerSearchElement(this.dynamoViewModel, header))
                                .ToList();
 
@@ -151,7 +168,7 @@ namespace Dynamo.ViewModels
 
         public List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
-            return packageManagerClient.Search(search, maxNumSearchResults)
+            return Model.Search(search, maxNumSearchResults)
                                .Select((header) => new PackageManagerSearchElement(this.dynamoViewModel, header))
                                .ToList();
         }
@@ -165,14 +182,18 @@ namespace Dynamo.ViewModels
         /// <param name="packageDownloadHandle"></param>
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
+            
+
             var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
             this.Downloads.Add(packageDownloadHandle);
+
+            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
 
             Task.Factory.StartNew(() =>
             {
                 try
                 {
-                    var response = packageManagerClient.Client.Execute(pkgDownload);
+                    var response = Model.Client.Execute(pkgDownload);
                     var pathDl = PackageDownload.GetFileFromResponse(response);
 
                     dynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
@@ -186,7 +207,11 @@ namespace Dynamo.ViewModels
                             var firstOrDefault = dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                             if (firstOrDefault != null)
                             {
-                                try { firstOrDefault.UninstallCore(); }
+                                var dynModel = this.dynamoViewModel.Model;
+                                try
+                                {
+                                    firstOrDefault.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.PreferenceSettings, dynModel.Logger);
+                                }
                                 catch
                                 {
                                     MessageBox.Show("Dynamo failed to uninstall the package: " + packageDownloadHandle.Name +
@@ -196,8 +221,13 @@ namespace Dynamo.ViewModels
 
                             if (packageDownloadHandle.Extract(out dynPkg))
                             {
-                                var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, this.dynamoViewModel.Model);
-                                downloadPkg.Load();
+                                var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, this.dynamoViewModel.Model.Logger);
+
+                                var loader = dynamoViewModel.Model.Loader;
+                                var logger = dynamoViewModel.Model.Logger;
+                                var libraryServices = dynamoViewModel.Model.EngineController.LibraryServices;
+                                downloadPkg.LoadIntoDynamo(loader, logger, libraryServices);
+
                                 dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                             }
@@ -225,7 +255,7 @@ namespace Dynamo.ViewModels
 
         internal void GoToWebsite()
         {
-            Process.Start(packageManagerClient.Client.BaseUrl);
+            Process.Start(Model.Client.BaseUrl);
         }
 
     }

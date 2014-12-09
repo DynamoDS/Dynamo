@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Remoting;
-using System.Text;
 
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
@@ -53,6 +48,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Create a NodeModel with a given type as the method generic parameter
+        /// </summary>
+        /// <returns> The newly instantiated NodeModel with a new guid</returns>
+        internal T CreateNodeInstance<T>() where T : NodeModel
+        {
+            var node = this.GetNodeModelInstanceByType<T>();
+            if (node == null) return node;
+
+            node.GUID = Guid.NewGuid();
+
+            return node;
+        }
+
         /// A proxy custom node is a custom node without its definition loaded 
         /// in Dynamo. The creation of a proxy custom node relies on information 
         /// provided by the caller since the definition is not readily available 
@@ -75,8 +83,9 @@ namespace Dynamo.Models
                 return null;
             }
 
+            var tld = Nodes.Utilities.GetDataForType(dynamoModel, typeof(Function));
             // create an instance of Function node 
-            Function result = CreateNodeInstance(typeof(Function), nickName, null, id) as Function;
+            Function result = CreateNodeInstance(tld, nickName, null, id) as Function;
             // create its definition and add inputs and outputs
             result.LoadNode(guid, inputs, outputs);
             return result;
@@ -85,14 +94,14 @@ namespace Dynamo.Models
         /// <summary>
         ///     Create a NodeModel from a type object
         /// </summary>
-        /// <param name="elementType"> The Type object from which the node can be activated </param>
+        /// <param name="data"> The Type object from which the node can be activated </param>
         /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
         /// <param name="signature"> The signature of the function along with parameter information </param>
         /// <param name="guid"> The unique identifier for the node in the workspace. </param>
         /// <returns> The newly instantiated NodeModel</returns>
-        internal NodeModel CreateNodeInstance(Type elementType, string nickName, string signature, Guid guid)
+        internal NodeModel CreateNodeInstance(TypeLoadData data, string nickName, string signature, Guid guid)
         {
-            object createdNode = this.GetNodeModelInstanceByType(elementType);
+            object createdNode = GetNodeModelInstance(data);
 
             // The attempt to create node instance may fail due to "elementType"
             // being something else other than "NodeModel" derived object type. 
@@ -103,7 +112,12 @@ namespace Dynamo.Models
             if (node == null)
                 return null;
 
-            if (!string.IsNullOrEmpty(nickName))
+            if (!string.IsNullOrEmpty(signature))
+            {
+                var libraryServices = dynamoModel.EngineController.LibraryServices;
+                node.NickName = libraryServices.NicknameFromFunctionSignatureHint(signature);
+            }
+            else if (!string.IsNullOrEmpty(nickName)) 
             {
                 node.NickName = nickName;
             }
@@ -151,13 +165,27 @@ namespace Dynamo.Models
         private NodeModel GetNodeModelInstanceByName(string name)
         {
             TypeLoadData tld = dynamoModel.BuiltInTypesByName[name];
-            return this.GetNodeModelInstanceByType(tld.Type);
+            return this.GetNodeModelInstance(tld);
         }
 
         private NodeModel GetNodeModelInstanceByNickName(string name)
         {
             TypeLoadData tld = dynamoModel.BuiltInTypesByNickname[name];
-            return this.GetNodeModelInstanceByType(tld.Type);
+            return this.GetNodeModelInstance(tld);
+        }
+
+        private T GetNodeModelInstanceByType<T>() where T : NodeModel
+        {
+            try
+            {
+                return (T)Activator.CreateInstance(typeof(T), this.workspaceModel);
+            }
+            catch (Exception ex)
+            {
+                dynamoModel.Logger.Log("Failed to load built-in type");
+                dynamoModel.Logger.Log(ex);
+                return null;
+            }
         }
 
         private NodeModel GetNodeModelInstanceByType(Type type)
@@ -172,6 +200,15 @@ namespace Dynamo.Models
                 dynamoModel.Logger.Log(ex);
                 return null;
             }
+            
+        }
+
+        private NodeModel GetNodeModelInstance(TypeLoadData type)
+        {
+            var node = GetNodeModelInstanceByType(type.Type);
+            if (type.IsObsolete)
+                node.Warning(type.ObsoleteMessage);
+            return node;
         }
 
         #endregion

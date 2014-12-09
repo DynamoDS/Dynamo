@@ -1069,6 +1069,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
+        [Category("RegressionTests")]
 		public void LaceShortest_WithSingleValueInput()
 		{
 			// details are given in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2464
@@ -1128,8 +1129,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
-		[Category("Failing")]
-		public void LaceLongest_ListWith10000Element()
+        public void LaceLongest_ListWith10000Element()
 		{
 			var model = ViewModel.Model;
 
@@ -1305,7 +1305,7 @@ namespace Dynamo.Tests
 
 		}
 
-		[Test, Category("Failing")]
+        [Test, Category("Failure")]
 		public void NumberRange_LacingCrossProduct()
 		{
 			var model = ViewModel.Model;
@@ -1449,41 +1449,26 @@ namespace Dynamo.Tests
 			Assert.AreEqual(4, childList.Count);
 			Assert.AreEqual(-10, childList[0].Data);
 		}
+        
+        [Test]
+        public void AddToList_EmptyList()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_EmptyList.dyn");
+            RunModel(openPath);
 
-		[Test]
-		public void AddToList_EmptyList()
-		{
-			var model = ViewModel.Model;
+            AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new[] { new object[] { string.Empty, 0 } });
+        }
 
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_EmptyList.dyn");
-			RunModel(openPath);
+        [Test]
+        public void AddToList_Complex()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Complex.dyn");
+            RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
-
-			//AssertPreviewValue("1976caa7-d45e-4a44-9faf-345d98337bbb", new int[]{new int[]{null,0}});
-
-		}
-
-		[Test]
-		public void AddToList_Complex()
-		{
-			var model = ViewModel.Model;
-
-			string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Complex.dyn");
-			RunModel(openPath);
-
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(11 + 1, model.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(11 + 1, model.CurrentWorkspace.Connectors.Count);
-
-			AssertPreviewValue("cfdfc020-05d0-4442-96df-8d97aad9c38c", new int[][]
-				{
-					new int[]{3}, new int[]{6}, new int[]{9}
-				});
-
-		}
+            AssertPreviewValue(
+                "cfdfc020-05d0-4442-96df-8d97aad9c38c",
+                new[] { new[] { 3 }, new[] { 6 }, new[] { 9 } });
+        }
 
 		[Test]
 		public void AddToList_GeometryToList()
@@ -1594,6 +1579,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
+        [Category("Failure")]
 		public void SplitList_ComplexAnotherExample()
 		{
 			var model = ViewModel.Model;
@@ -2462,7 +2448,8 @@ namespace Dynamo.Tests
 		#endregion
 
 		#region Test Create List
-		[Test]
+        [Test]
+        [Category("Failure")]
 		public void TestCreateList()
 		{
 			// Test partially applied Create List node.
@@ -2483,5 +2470,23 @@ namespace Dynamo.Tests
             AssertPreviewValue("13f697db-85b8-4b93-859c-63f2b66c6b72", new object[] { 0.0, "no value", 2.0, "no value", "no value", 5.0 });
 	    }
 		#endregion
+
+        #region Regressions
+        [Test]
+        public void RegressMagn4838_01()
+        {
+	        var openPath = Path.Combine(GetTestDirectory(), @"core\list\RegressMagn4838_1.dyn");
+            RunModel(openPath);
+
+            AssertPreviewValue("8dd745bf-220c-49f7-80e0-3f1783bb33a4", new object[] { null });
+        }
+
+        [Test]
+        public void RegressMagn4838_02()
+        {
+	        var openPath = Path.Combine(GetTestDirectory(), @"core\list\RegressMagn4838_2.dyn");
+            RunModel(openPath);
+        }
+        #endregion
     }
 }

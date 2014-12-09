@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    internal class CollectionAssignment
+    class CollectionAssignment : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string filePath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\CollectionAssignment\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_Simple_1D_Collection_Assignment()
@@ -1714,7 +1707,7 @@ c = [Imperative]
 
         [Test]
         [Category("Variable resolution")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T26_Defct_DNL_1459616_5()
         {
             string error = "MAGN-1511 Sprint 22 : rev 2362 : [Design Issue ]Global variables cannot be accessed from class scope";

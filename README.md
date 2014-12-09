@@ -1,10 +1,10 @@
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
-Dynamo is a Visual Programming language that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
+Dynamo is a visual programming tool that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
 
 ## Get Dynamo ##
 
-Looking to learn or download Dynamo?  Checkout [dynamobim.org](http://dynamobim.org/learn/)!
+Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim.org/learn/)!
 
 
 ## Build ###
@@ -19,18 +19,100 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
-###0.7.1 ###
-- Package Manager is back
-- [0.6.3 files will be upgraded to 0.7 format] (https://github.com/DynamoDS/Dynamo/wiki/0.6.3-Upgrade-to-0.7-version) 
-- Library Loading (Experimental)
-- Stability Improvments
-- Revit Elements created and Selected during a session will be rememebered in later sessions.
-- Visualization Performance improvments
-- 3d/Graph Navigation Improvements
-- Automated graph organization
-- Node UI Enhancements
-- Preview Bubble overhaul
-- New Sample content and better first experience- 
+###0.7.4 ###
+
+#### New features
+- Automatic update of Dynamo from changes to files on disk.  Use File.FromPath nodes to drive changes from external files like Excel, images, and text files.  Files being read from disk are not locked, so you can edit them on the fly.
+- Added hooks to allow for Dynamo for Structural Analysis (additional Package) workflows with Autodesk Robot.
+- LoopWhile node for iterative workflows
+- Package Manager sync and display improvements 
+- Easier to use Structural Framing nodes
+- List.UniqueItems now works on Revit elements, strings, numbers, and geometry and also handles null values.
+- Migration tools for 3rd party Library loading 
+- View selection via a dropdown
+
+#### Bug fixes
+- Improvements to Autocomplete (Autocomplete is off for comment areas, better handling of conflicts with 3rd party library class names, commit for autocomplete only with tab, enter, dot and single left clicking)
+- Crash fixes for Package Manager
+- Libraries loaded from disk or packages now only exposed needed nodes
+- Changing Lacing triggers re-execcution of the graph
+- Consistent notation for booleans (true/false)
+- Import instance does not create multiple instances when regenerated 
+- Code Block Node output port positioning improvements
+- GroupByKeys, List.Map, List.Scan fixes
+- Surface.byLoft and Solid.byLoft fixes
+- Error message improvements
+- Changing location in revit is not picked up as a document change in Dynamo
+- Custom node creation fixes (crash and bad input ports on creation)
+- Curve extraction from surfaces now works on all surfaces
+- Revit element creation and modification improvements, particularly around Views and Levels
+
+###0.7.3 ###
+
+#### New features
+- Autocomplete in Code Block Nodes
+- Share user-created binaries (.dll files) through the Package Manager 
+- Share sample content (.rvt, .rfa, .dyn files and more) through the Package Manager 
+
+#### Bug fixes
+- Improvements to the core threading model (Scheduler)
+- Reduced incidence of unresponsive graph
+- Better error messages 
+- clearing and updating error messages
+- Many small geometry improvements/fixes
+
+
+###0.7.2 ###
+
+####Incremental Release with:####
+- Significant Stability Improvements
+- More robust interaction with Revit elements
+- Fixes to many small geometry tools
+- Installer overhaul
+
+####Some specifics####
+- Preview Geometry in Revit (2015 Sundial Release only)
+- Smaller download
+- Directly open Samples folder from Help menu
+- Object type is properly labeled on nodes for geometry outputs
+- Improved documentation for 3rd party developers
+- Advanced Tutorial Content
+- Vast Regression Testing overhaul
+- Solid.DifferenceAll(take one solid and get the Boolean difference with it versus a list of other solids0
+- Copy Lacing and Nickname settings when copy/pasting
+- List.UniquItems now works for geometry elements
+- Improved handling of large numbers of geometric elements
+- Improved Align Selection
+- Improved converting Revit Walls to Dynamo geometry
+- Improvements to search speed
+- Improved handling of updates to 0.6.3 packages
+- Improvements to If node uses in custom nodes
+- Fixed Vasari-specific compatibility issues
+- Fixed Model Line creations from Dynamo curves
+- Fixed Surface.ByPatch error with closed polycurve
+- Fixed Solid.ThinShell
+- Fixed crashes in Revit document switching
+- Fixed Mesh improperly scaled when extracted from Topography
+- Fixed Curve.TangentAtParameter on curve from offset Polycurve crashes Dynamo
+- Fixed crash using PolyCurve.Offset
+- Fixes to Curve.Project behavior
+- Fixes to Curve.PullOntoPlane behavior
+- Fixed StructuralFraming.Location
+- Fixed CBN not being parsed as a culturally invariant string
+- Fixed Background preview level of detail for curves
+- Fixed Copy/Paste of Code Block node problems
+- Fixed nested List.Map
+- Fixed Lacing issues on many nodes
+- Fixed for Integer/Double interactions
+- Fixed negative values in range expressions
+- Fixes to multi-output nodes (Raybounce node and others)
+- For more fixes, see https://github.com/DynamoDS/Dynamo/issues?q=is%3Aclosed+is%3Aissue+sort%3Aupdated-desc
+
+####Back office Improvements:####
+- Installer can now run silently for custom deployments
+- MVVM refactoring: Standard Code separation and formatting for greater legibility and code reusability  
+- Separation from Revit dependencies for easier porting of Dynamo to new applications
+- Recursion:  ScopeIf node for use in recursive custom node workflows (experimental)
 
 
 ###Older Releases###
@@ -61,7 +143,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ## Instrumentation ##
-Dynamo now contains an instrumentation system. This anonymously reports usage data to the Dynamo team that will be used to enhance the usability the product. Aggregated summaries of the data will be shared back with the Dynamo community.
+Dynamo contains an instrumentation system that anonymously reports usage data to the Dynamo team. This data will be used to enhance the usability of the product. Aggregated summaries of the data will be shared back with the Dynamo community.
 
 An example of the data communicated is:
 

@@ -47,7 +47,8 @@ namespace Dynamo.Tests
 
             AstBuilder builder = new AstBuilder(model, null);
             var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false);
-            string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astNodes);
+            var codeGen = new ProtoCore.CodeGenDS(astNodes);
+            string code = codeGen.GenerateCode();
             Console.WriteLine(code);
         }
 
@@ -68,7 +69,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestSortNode2()
         {
             // The connections of CBNs are
@@ -109,7 +109,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestSortNode3()
         {
             // The connections of CBNs are
@@ -150,7 +149,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void TestSortNode4()
         {
             // The connections of CBNs are
@@ -190,7 +188,6 @@ namespace Dynamo.Tests
 
 
         [Test]
-        [Category("Failing")]
         public void TestSortNode5()
         {
             // The connections of CBNs are
@@ -228,7 +225,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-		[Category("Failing")]
         public void TestSortNode6()
         {
             // The connections of CBNs are

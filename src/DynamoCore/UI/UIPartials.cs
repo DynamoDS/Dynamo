@@ -13,12 +13,14 @@ using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using MenuItem = System.Windows.Controls.MenuItem;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.Nodes
 {
@@ -207,7 +209,13 @@ namespace Dynamo.Nodes
         {
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
+            var editWindowItem = new MenuItem
+            {
+                Header = "Edit...",
+                IsCheckable = false,
+                Tag = nodeUI.ViewModel.DynamoViewModel
+            };
+
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += editWindowItem_Click;
         }
@@ -309,7 +317,8 @@ namespace Dynamo.Nodes
             var publishCustomNodeItem = new MenuItem
             {
                 Header = "Publish This Custom Node...",
-                IsCheckable = false
+                IsCheckable = false,
+                IsEnabled = nodeUI.ViewModel.DynamoViewModel.PackageManagerClientViewModel.Model.HasAuthenticator
             };
             nodeUI.MainContextMenu.Items.Add(publishCustomNodeItem);
             publishCustomNodeItem.Click += (sender, args) =>
@@ -433,34 +442,24 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var tb = new CodeNodeTextBox(Code)
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
-                AcceptsReturn = true,
-                MaxWidth = Configurations.CBNMaxTextBoxWidth,
-                TextWrapping = TextWrapping.Wrap
-            };
+            var cbe = new CodeBlockEditor(nodeUI.ViewModel);
 
-            nodeUI.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-
-            tb.DataContext = nodeUI.ViewModel;
-            tb.BindToProperty(
+            nodeUI.inputGrid.Children.Add(cbe);
+            Grid.SetColumn(cbe, 0);
+            Grid.SetRow(cbe, 0);
+            
+            cbe.SetBinding(CodeBlockEditor.CodeProperty,
                 new Binding("Code")
                 {
-                    Mode = BindingMode.TwoWay,
+                    Mode = BindingMode.OneWay,
                     NotifyOnValidationError = false,
                     Source = this,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
                 });
+
 
             if (shouldFocus)
             {
-                tb.Focus();
+                cbe.Focus();
                 shouldFocus = false;
             }
         }
@@ -473,7 +472,7 @@ namespace Dynamo.Nodes
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(Symbol)
             {
-                DataContext = nodeUI.ViewModel,
+                DataContext = this,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Background =
@@ -649,7 +648,8 @@ namespace Dynamo.Nodes
     {
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow { DataContext = this };
+            var viewModel = GetDynamoViewModelFromMenuItem(sender as MenuItem);
+            var editWindow = new EditWindow(viewModel) { DataContext = this };
             editWindow.BindToProperty(
                 null,
                 new Binding("Value")
@@ -767,7 +767,7 @@ namespace Dynamo.Nodes
             // 
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
-                var command = new DynamoViewModel.ModelEventCommand(model.GUID, eventName);
+                var command = new DynamoModel.ModelEventCommand(model.GUID, eventName);
                 this.DynamoViewModel.ExecuteCommand(command);
             }
         }

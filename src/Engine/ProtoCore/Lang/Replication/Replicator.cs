@@ -491,7 +491,6 @@ namespace ProtoCore.Lang.Replication
                             //Array arr = formalParams[index].Payload as Array;
                             HeapElement he = ArrayUtils.GetHeapElement(basicList[index], core);
 
-
                             Validity.Assert(he.Stack != null);
 
                             //The elements of the array are still type structures
@@ -937,9 +936,8 @@ namespace ProtoCore.Lang.Replication
 
             //De-ref the sv
             HeapElement he = ProtoCore.Utils.ArrayUtils.GetHeapElement(sv, core);
-            for (int i = 0; i < he.VisibleSize; ++i)
+            foreach (var subSv in he.VisibleItems)
             {
-                StackValue subSv = he.Stack[i];
                 maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, core, depthCount+1));
             }
 

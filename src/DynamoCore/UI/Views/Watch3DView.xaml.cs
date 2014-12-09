@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Dynamo.DSEngine;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
 using Color = System.Windows.Media.Color;
@@ -39,7 +38,7 @@ namespace Dynamo.Controls
 
         #region private members
 
-        private readonly string _id="";
+        private readonly Guid _id=Guid.Empty;
         private Point _rightMousePoint;
         private Point3DCollection _points = new Point3DCollection();
         private Point3DCollection _lines = new Point3DCollection();
@@ -185,15 +184,15 @@ namespace Dynamo.Controls
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Unloaded += OnViewUnloaded;
         }
 
-        public Watch3DView(string id)
+        public Watch3DView(Guid id)
         {
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Unloaded += OnViewUnloaded;
 
             _id = id;
         }
@@ -202,14 +201,13 @@ namespace Dynamo.Controls
 
         #region event handlers
 
-        private void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Watch 3D view unloaded.");
 
-            //check this for null so the designer can load the preview
-            if (DataContext is DynamoViewModel)
+            var vm = DataContext as IWatchViewModel;
+            if (vm != null)
             {
-                var vm = DataContext as DynamoViewModel;
                 vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
                 vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             }
@@ -222,10 +220,10 @@ namespace Dynamo.Controls
             MouseRightButtonUp += new MouseButtonEventHandler(view_MouseRightButtonUp);
             PreviewMouseRightButtonDown += new MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
+            var vm = DataContext as IWatchViewModel;
             //check this for null so the designer can load the preview
-            if (DataContext is DynamoViewModel)
+            if (vm != null)
             {
-                var vm = DataContext as DynamoViewModel;
                 vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
                 vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
@@ -240,7 +238,13 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
         {
-            RenderDrawables(e);
+            if (CheckAccess())
+                RenderDrawables(e);
+            else
+            {
+                // Scheduler invokes ResultsReadyToVisualize on background thread.
+                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(e)));
+            }
         }
 
         /// <summary>
@@ -252,15 +256,17 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         private void VisualizationManagerRenderComplete(object sender, RenderCompletionEventArgs e)
         {
-            Dispatcher.Invoke(new Action(delegate
+            var executeCommand = new Action(delegate
             {
-                var vm = (IWatchViewModel) DataContext;
-
+                var vm = (IWatchViewModel)DataContext;
                 if (vm.GetBranchVisualizationCommand.CanExecute(e.TaskId))
-                {
                     vm.GetBranchVisualizationCommand.Execute(e.TaskId);
-                }
-            }));
+            });
+
+            if (CheckAccess())
+                executeCommand();
+            else
+                Dispatcher.BeginInvoke(executeCommand);
         }
 
         /// <summary>
@@ -386,6 +392,8 @@ namespace Dynamo.Controls
             {
                 return;
             }
+
+            Debug.WriteLine(string.Format("Rendering visuals for {0}", e.Id));
 
             var sw = new Stopwatch();
             sw.Start();
@@ -616,32 +624,6 @@ namespace Dynamo.Controls
                 var normal = new Vector3D(p.TriangleNormals[i],
                                             p.TriangleNormals[i + 1],
                                             p.TriangleNormals[i + 2]);
-
-                //find a matching point
-                //compare the angle between the normals
-                //to discern a 'break' angle for adjacent faces
-                //int foundIndex = -1;
-                //for (int j = 0; j < points.Count; j++)
-                //{
-                //    var testPt = points[j];
-                //    var testNorm = norms[j];
-                //    var ang = Vector3D.AngleBetween(normal, testNorm);
-
-                //    if (new_point.X == testPt.X &&
-                //        new_point.Y == testPt.Y &&
-                //        new_point.Z == testPt.Z &&
-                //        ang > 90.0000)
-                //    {
-                //        foundIndex = j;
-                //        break;
-                //    }
-                //}
-
-                //if (foundIndex != -1)
-                //{
-                //    tris.Add(foundIndex);
-                //    continue;
-                //}
                     
                 tris.Add(points.Count);
                 points.Add(new_point);
@@ -665,28 +647,6 @@ namespace Dynamo.Controls
                 sb.AppendFormat("[{0}]", splits[i]);
             }
             return sb.ToString();
-        }
-
-        private HitTestResultBehavior ResultCallback(HitTestResult result)
-        {
-            // Did we hit 3D?
-            var rayResult = result as RayHitTestResult;
-            if (rayResult != null)
-            {
-                // Did we hit a MeshGeometry3D?
-                var rayMeshResult =
-                    rayResult as RayMeshGeometry3DHitTestResult;
-
-                if (rayMeshResult != null)
-                {
-                    // Yes we did!
-                    var pt = rayMeshResult.PointHit;
-                    ((IWatchViewModel)DataContext).SelectVisualizationInViewCommand.Execute(new double[] { pt.X, pt.Y, pt.Z });
-                    return HitTestResultBehavior.Stop;
-                }
-            }
-
-            return HitTestResultBehavior.Continue;
         }
 
         #endregion

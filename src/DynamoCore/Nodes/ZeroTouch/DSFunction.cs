@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Web.UI.WebControls;
 using System.Xml;
 
 using Dynamo.DSEngine;
@@ -186,7 +187,13 @@ namespace Dynamo.Nodes
                 var xmlAttribute = nodeElement.Attributes["assembly"];
                 if (xmlAttribute != null)
                     assembly = xmlAttribute.Value;
-                function = nodeElement.Attributes["function"].Value;
+
+                string xmlSignature = nodeElement.Attributes["function"].Value;
+
+                string hintedSigniture =
+                        this.engineController.LibraryServices.FunctionSignatureFromFunctionSignatureHint(xmlSignature);
+
+                function = hintedSigniture == null ? xmlSignature : hintedSigniture;
             }
 
             var engine = this.engineController;
@@ -218,6 +225,13 @@ namespace Dynamo.Nodes
             helper.SetAttribute("name", Definition.MangledName);
         }
 
+        public override void SyncNodeWithDefinition(NodeModel model)
+        {
+            base.SyncNodeWithDefinition(model);
+            if (Definition != null && Definition.IsObsolete)
+                model.Warning(Definition.ObsoleteMessage);
+        }
+
         /// <summary>
         ///     Creates a FunctionObject representing a partial application of a function.
         /// </summary>
@@ -231,7 +245,7 @@ namespace Dynamo.Nodes
             return AstFactory.BuildFunctionObject(
                 functionNode,
                 model.InPorts.Count(),
-                model.GetConnectedInputs(),
+                Enumerable.Range(0, model.InPortData.Count).Where(model.HasInput),
                 inputs);
         }
 

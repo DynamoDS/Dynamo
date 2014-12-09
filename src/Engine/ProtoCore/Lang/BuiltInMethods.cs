@@ -2,6 +2,7 @@
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using System.Linq;
 
 namespace ProtoCore.Lang
 {
@@ -58,6 +59,8 @@ namespace ProtoCore.Lang
             kRangeExpression,
             kSum,
             kToString,
+            kToStringFromObject,
+            kToStringFromArray,
             kTranspose,
             kUnion,
             kInlineConditional,
@@ -66,7 +69,9 @@ namespace ProtoCore.Lang
             kGetValues,
             kRemoveKey,
             kContainsKey,
-            kEvaluate
+            kEvaluate,
+            kTryGetValueFromNestedDictionaries,
+            kNodeAstFailed
         }
 
         private static string[] methodNames = new string[]
@@ -118,7 +123,9 @@ namespace ProtoCore.Lang
             "Reorder",                  // kReorder
             Constants.kFunctionRangeExpression, // kGenerateRange
             "Sum",                      // kSum
-            "ToString",                 // kToString
+            "ToString",                 // kToString               
+            "__ToStringFromObject",     // kToStringFromObject
+            "__ToStringFromArray",      // kToStringFromArray
             "Transpose",                // kTranspose
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
@@ -128,6 +135,8 @@ namespace ProtoCore.Lang
             "RemoveKey",                // kRemoveKey
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
+            "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
+            Constants.kNodeAstFailed    // kNodeAstFailed
         };
 
         public static string GetMethodName(MethodID id)
@@ -801,11 +810,34 @@ namespace ProtoCore.Lang
                 new BuiltInMethod
                 {
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
+
+                    Parameters = new [] 
+                    {
+                        new KeyValuePair<string, Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                    }.ToList(),
+                    ID = BuiltInMethods.MethodID.kToString,
+                    MethodAttributes = new MethodAttributes(true, "This node is obsolete, please use \"String from Object\""),
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kToString
+                    ID = BuiltInMethods.MethodID.kToStringFromObject,
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
+
+                    Parameters = new [] 
+                    {
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                    }.ToList(),
+                    ID = BuiltInMethods.MethodID.kToStringFromArray
                 },
 
                 new BuiltInMethod
@@ -885,7 +917,30 @@ namespace ProtoCore.Lang
                     },
                     ID = MethodID.kEvaluate,
                     MethodAttributes = new MethodAttributes(true),
-                }
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string,Type>>
+                    {
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar))
+                    },
+                    ID = MethodID.kTryGetValueFromNestedDictionaries,
+                    MethodAttributes = new MethodAttributes(true),
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    Parameters = new []
+                    {
+                        new KeyValuePair<string, Type>("nodeType", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
+                    }.ToList(),
+                    ID = MethodID.kNodeAstFailed,
+                    MethodAttributes = new MethodAttributes(true),
+                 }
             };
         }
     }

@@ -7,14 +7,9 @@ using System.Text;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class Old_Language_Manual_Examples
+    class Old_Language_Manual_Examples : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void SetUp()
-        {
-        }
 
         [Test]
         [Category("SmokeTest")]
@@ -252,7 +247,7 @@ d = b + a; // { 5, 10}; // Here the length of the resulting variable [d] will be
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void Test_4_22_replication_guide_with_ragged_collection()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1678

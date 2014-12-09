@@ -16,6 +16,24 @@ namespace Dynamo.Tests
 {
     public class DSEvaluationViewModelUnitTest : DynamoViewModelUnitTest
     {
+        protected LibraryServices libraryServices = null;
+        protected ProtoCore.Core libraryServicesCore = null;
+
+        public override void Init()
+        {
+            base.Init();
+
+            var options = new ProtoCore.Options();
+            options.RootModulePathName = string.Empty;
+            libraryServicesCore = new ProtoCore.Core(options);
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
+                new ProtoAssociative.Executive(libraryServicesCore));
+            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
+                new ProtoImperative.Executive(libraryServicesCore));
+
+            libraryServices = new LibraryServices(libraryServicesCore);
+        }
+
         public void OpenModel(string relativeFilePath)
         {
             string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
@@ -126,7 +144,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(mirror);
 
             var data = mirror.GetData();
-            Assert.IsTrue(data.IsCollection);
+            Assert.IsTrue(data.IsCollection, "preview data is not a list");
             Assert.AreEqual(count, data.GetElements().Count);
         }
 
@@ -209,9 +227,15 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
-            Dynamo.DSEngine.LibraryServices.DestroyInstance();
-            GraphToDSCompiler.GraphUtilities.Reset();
+            if (libraryServicesCore != null)
+            {
+                libraryServicesCore.Cleanup();
+                libraryServicesCore = null;
+            }
+            libraryServices = null;
+
             base.Cleanup();
+            DynamoUtilities.DynamoPathManager.DestroyInstance();
         }
     }
 
@@ -252,7 +276,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void Regress618()
         {
             // a=0..10;
@@ -269,7 +292,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
         public void Regress586()
         {
             RunModel(@"core\dsevaluation\regress586.dyn");
@@ -610,6 +632,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_844()
         {
             // CBN: a = 1;
@@ -623,6 +646,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_1()
         {
             // CBN ==> 1=a;
@@ -638,6 +662,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_2()
         {
             // CBN ==> 1=1=a;
@@ -652,6 +677,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_3()
         {
             // CBN ==> a=1=2=3;
@@ -666,6 +692,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_4()
         {
             // CBN ==> a*a=1;;
@@ -680,6 +707,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_829_5()
         {
             // Multiline CBN ==> a=1;
@@ -695,6 +723,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_610()
         {
             // Multiline CBN ==> a={1,2,3};
@@ -705,7 +734,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void UsingFunctionObject01()
         {
             RunModel(@"core\dsevaluation\FunctionObject.dyn");
@@ -713,6 +742,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void UsingFunctionObject02()
         {
             RunModel(@"core\dsevaluation\Apply.dyn");
@@ -745,6 +775,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2363()
         {
             // CBN: 0..#3..10;
@@ -754,6 +785,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2479()
         {
             // Details are available in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2479
@@ -769,6 +801,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2375_3487()
         {
             // This test case is addressing the following two defects:
@@ -817,6 +850,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("9c51f2d5-a9f2-4825-bda6-f062e69efc46", 5.00000);
         }
         [Test]
+        [Category("RegressionTests")]
         public void CBN_Range_1300()
         {
             RunModel(@"core\dsevaluation\CBN_Range_1300.dyn");
@@ -824,6 +858,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void Apply_With_PropertyMethod()
         {
             // Function object to property method and used in apply 
@@ -832,7 +867,8 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3264()
         {
             // Function object to property method and used in apply 
@@ -841,6 +877,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2535()
         {
             // Function object to property method and used in apply 
@@ -851,8 +888,6 @@ namespace Dynamo.Tests
         [Test]
         public void Test_Formula_Lacing()
         {
-            var model = ViewModel.Model;
-
             RunModel(@"core\formula\formula_lacing.dyn");
 
             AssertPreviewValue("d9b9d0a9-1fec-4b20-82c4-2d1665306509", new int[] { 4, 6, 7});
@@ -871,82 +906,64 @@ namespace Dynamo.Tests
         [Test]
         public void Test_Formula_InputWithUnit()
         {
-            var model = ViewModel.Model;
-
             RunModel(@"core\formula\formula-inputWithUnit-test.dyn");
-
             AssertPreviewValue("152a2a64-8c73-4e8c-a418-06ceb4ac0637", 1);
         }
         [Test]
+        [Category("RegressionTests")]
         public void Test_IFnode_3483_1()
         {
-            var model = ViewModel.Model;
-
             RunModel(@"core\dsevaluation\ifnode_3483.dyn");
-
             AssertPreviewValue("516de967-91ac-4a93-87ce-7f130774268a", 5.00);
         }
         [Test]
+        [Category("RegressionTests")]
         public void Test_IFnode_3483_2()
         {
-            var model = ViewModel.Model;
-
             RunModel(@"core\dsevaluation\ifnode_3483_2.dyn");
-
             AssertPreviewValue("70b5aeba-80b7-48cc-a48d-6c755c28555c", new object []{ 1, 1, 1, new object []{ -2, -1, 0, 1, 2 },new object[] { -2, -1, 0, 1, 2 } });
         }
         [Test]
+        [Category("RegressionTests")]
         public void Test_ConditionalCustomFunction_3483()
         {
-            var model = ViewModel.Model;
-
             RunModel(@"core\dsevaluation\conditionalCustomFunction_3483.dyn");
-
             AssertPreviewValue("46f484ed-eecd-45cd-9904-0020a3c98999", 2.647);
-            
-            
         }
         [Test]
+        [Category("RegressionTests")]
         public void Test_CustomFunctionobject_3483()
         {
-            var model = ViewModel.Model;
-
             RunModel(@"core\dsevaluation\CustomFunctionobject_3483.dyn");
-
             AssertPreviewValue("dace0b8c-381e-4de5-824d-c1651ec94bc6", new double[] {1,1,1,1,1,2,3});
         }
         
         [Test]
+        [Category("RegressionTests")]
         public void Test_IfinputFunctionObject_3483()
         {
-            var model = ViewModel.Model;
-
             RunModel(@"core\dsevaluation\IfinputFunctionObject_3483.dyn");
-
             AssertPreviewValue("079fa696-e6e7-402f-866f-9bf4306b5020", 1.00);
         }
         
         [Test]
+        [Category("RegressionTests")]
         public void Test_IfAsFunctionobject_3483()
         {
-            var model = ViewModel.Model;
-
             RunModel(@"core\dsevaluation\IfAsFunctionobject_3483.dyn");
-
             AssertPreviewValue("80d14b69-4796-48c9-a34d-f447abf7b5ba", new object[] {1,1,new double[]{-2,-1,0,1,2},1,1});
         }
         
         [Test]
+        [Category("RegressionTests")]
         public void Test_IfOutputFunctionObject_3483()
         {
-            var model = ViewModel.Model;
-
             RunModel(@"core\dsevaluation\IfOutputCustomFunction_3483.dyn");
-
             AssertPreviewValue("dace0b8c-381e-4de5-824d-c1651ec94bc6", new bool[] { true, true, true, false, false });
         }
         
         [Test]
+        [Category("RegressionTests")]
         public void Test_If_CustomNode_4058()
         {
             var model = ViewModel.Model;
@@ -956,6 +973,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("4c70f814-5c42-4fb9-89b0-b3cfe6f93b6d", 6.00);
         }
         [Test]
+        [Category("RegressionTests")]
         public void TestSingleIFRecusion_4058()
         {
             var model = ViewModel.Model;
@@ -964,6 +982,7 @@ namespace Dynamo.Tests
             
         }
         [Test]
+        [Category("RegressionTests")]
         public void TestMultipleIFCN_4058()
         {
             var model = ViewModel.Model;
@@ -975,6 +994,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("RegressionTests")]
         public void TestMultipleIFRecursion_4058()
         {
             var model = ViewModel.Model;
@@ -986,6 +1006,8 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("RegressionTests")]
+        [Category("Failure")]
         public void TestNestedIFNORecursion_4058()
         {
             var model = ViewModel.Model;
@@ -996,6 +1018,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("RegressionTests")]
         public void TestNestedIFRecursion_4058()
         {
             var model = ViewModel.Model;
@@ -1004,6 +1027,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
+        [Category("RegressionTests")]
         public void NestedIFRecursionMultiple_4058()
         {
             
@@ -1014,6 +1038,89 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("e6a9eec4-a18d-437d-8779-adfd6141bf19", 9);
 
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void CBN_warning_5236()
+        {
+            // Functions does not work in the code block node but works if expanded as a graph
+            // This test regression - issue is described in detail in the bug
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5236
+
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\createCube_codeBlockNode.dyn");
+            AssertPreviewValue("3669d05c-c741-44f9-87ab-8961e7f5f112", 150);
+            var guid = System.Guid.Parse("3669d05c-c741-44f9-87ab-8961e7f5f112");
+            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
+
+
+        }
+        [Test]
+        [Category("RegressionTests")]
+        public void DoubleToInt_NoWarning_5109()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5109
+            //verify  Warning converting double to int is removed
+            RunModel(@"core\dsevaluation\DoubleToInt_5109.dyn");
+            var guid = System.Guid.Parse("d66d3d3e-e13b-460e-a8a7-056c434ee620");
+            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
+        }
+       
+
+     
+        [Test]
+        [Category("RegressionTests")]
+        public void CBN_Variable_Type_5480()
+        {
+            // MAGN-5480 - Defect in parsing typed identifiers in CBN
+
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\CBN_Variable_Type_5480.dyn");
+            AssertPreviewValue("fabaccff-5b8a-4505-b752-7939cba90dc4", 1);
+        }
+
+        [Test]
+        public void TestDefaultValueInFunctionObject()
+        {
+            // Regression test case for
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueInFunctionObject.dyn");
+
+            RunModel(dynFilePath);
+
+            AssertPreviewValue("4218d135-a2c4-4dee-8415-8f0bf1de671c", new[] { 1, 1 });
+
+
+        }
+        [Test]
+        public void TestRunTimeWarning_3132()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3132
+            // test for run time warning is thrown or not 
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsfunction\RunTimeWarning_3132.dyn");
+
+            RunModel(dynFilePath);
+            var guid = System.Guid.Parse("88f376fa-634b-422e-b853-6afa8af8d286");
+            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+           
+            Assert.IsTrue(node.State == Models.ElementState.Warning);
+        }
+        
+        [Test]
+        public void List_Map_Default_5233()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
+            //List.map with default arguments 
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\list\List_Map_DefaultArg5233.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("6a0207d9-78d7-4fd3-829f-d19644acdc1b", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
        
         
@@ -1072,7 +1179,6 @@ namespace Dynamo.Tests
             Assert.IsTrue(
                 ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Centroid.dyf"))
                 != null);
-
             string openPath = Path.Combine(examplePath, "TestCentroid.dyn");
 
             RunModel(openPath);
@@ -1091,7 +1197,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(ViewModel.Model.CustomNodeManager.AddFileToPath(dyfPath));
 
             RunModel(Path.Combine(examplePath, "TestPoly.dyn"));
-
+            
             AssertPreviewValue("8453b5c7-2efc-4ff2-a8f3-7c376d22c240", 5.5);
             AssertPreviewValue("a9868848-0443-431b-bedd-9f63c25157e0", 3.0);
             AssertPreviewValue("9b569c4f-1f09-4ffb-a621-d0341f1fe890", 0.0);
@@ -1100,7 +1206,6 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeConditional()
         {
-            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             Assert.IsTrue(
@@ -1117,7 +1222,6 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("ec2e79de-35ed-44ad-9dea-4bedc526c612", false);
             AssertPreviewValue("7be13594-8d09-4377-98aa-d3cf1c716288", true);
-            
         }
 
         [Test]
@@ -1127,7 +1231,6 @@ namespace Dynamo.Tests
             // which cannot be found, so foo.dyf would be a proxy custom node,
             // as opening a dyn file will compile all custom nodes, the 
             // compilation of that proxy custom node should have any problem.
-            var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             Assert.IsTrue(
@@ -1137,6 +1240,25 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "foobar.dyn");
 
             Assert.DoesNotThrow(() => RunModel(openPath));
+        }
+
+        [Test]
+        public void Regress_Magn_4837()
+        {
+            // Test nested custom node: run and reset engine and re-run.
+            // Original defect: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4837
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\Regress_Magn_4837.dyn");
+
+            RunModel(dynFilePath);
+ 
+            AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
+
+            // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
+            ViewModel.Model.ResetEngine(true);
+            ViewModel.Model.RunExpression();
+
+            AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
     }
 }

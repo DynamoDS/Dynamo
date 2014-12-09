@@ -266,7 +266,7 @@ namespace ProtoFFI
                 }
                 catch (InvalidOperationException)
                 {
-                    string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    string message = String.Format(ProtoCore.StringConstants.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
                     dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation, message);
                     return null;
                 }
@@ -314,7 +314,7 @@ namespace ProtoFFI
                 }
                 catch (InvalidOperationException)
                 {
-                    string message = String.Format(ProtoCore.RuntimeData.WarningMessage.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    string message = String.Format(ProtoCore.StringConstants.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
                     dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kAccessViolation, message);
                     return null;
                 }
@@ -471,14 +471,12 @@ namespace ProtoFFI
                 if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
                     var core = dsi.runtime.Core;
-                    int thisptr = (int)thisObject.opdata;
-
                     int idx = core.ClassTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
-                    StackValue oldValue = core.Heap.Heaplist[(int)thisObject.opdata].GetValue(idx, core);
+                    StackValue oldValue = core.Heap.GetHeapElement(thisObject).GetValue(idx, core);
                     if (!StackUtils.Equals(oldValue, propValue))
                     {
                         GCUtils.GCRetain(propValue, core);
-                        core.Heap.Heaplist[thisptr].SetValue(idx, propValue);
+                        core.Heap.GetHeapElement(thisObject).SetValue(idx, propValue);
                     }
                 }
             }

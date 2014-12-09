@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+
+using DSCore.File;
+
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -348,6 +351,19 @@ namespace Dynamo.Tests
             ViewModel.Model.RunExpression();
 
             AssertPreviewValue(watch.GUID.ToString(), new[] { 5, 5, 5 });
+        }
+
+        [Test]
+        public void RepeatFail()
+        {
+            var examplePath = Path.Combine(GetTestDirectory(), @"core");
+            string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
+
+            //open and run the expression
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var numNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<DoubleInput>().Last();
 
             //test the negative case
             numNode.Value = "-1";
@@ -365,7 +381,7 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
 
             //set the path to the image file
-            var pathNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var pathNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
             pathNode.Value = Path.Combine(examplePath,"honey-badger.jpg");
 
             RunCurrentModel();
@@ -391,13 +407,11 @@ namespace Dynamo.Tests
 
             RunCurrentModel();
 
-            var exportNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
-            AssertPreviewValue(exportNode.GUID.ToString(), true);
-
-            var sr = new StreamReader(pathNode.Value);
-            String line = sr.ReadToEnd();
-
-            StringAssert.AreEqualIgnoringCase("1, 2, 3, 4, 5\r\n-2, 2.6, 9\r\n0\r\n", line);
+            using (var sr = new StreamReader(pathNode.Value))
+            {
+                String line = sr.ReadToEnd();
+                StringAssert.AreEqualIgnoringCase("1, 2, 3, 4, 5\r\n-2, 2.6, 9\r\n0\r\n", line);
+            }
         }
 
         [Test]
@@ -410,9 +424,6 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
 
             RunCurrentModel();
-
-            var exportNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
-            AssertPreviewValue(exportNode.GUID.ToString(), false);
         }
 
         [Test]

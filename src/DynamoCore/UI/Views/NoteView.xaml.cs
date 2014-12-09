@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Nodes
 {
@@ -27,23 +25,16 @@ namespace Dynamo.Nodes
                     if (ViewModel != null)
                         ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
                 };
-            noteText.PreviewMouseDown += noteText_PreviewMouseDown;
+            noteText.PreviewMouseDown += OnNoteTextPreviewMouseDown;
 
-            Loaded += dynNoteView_Loaded;
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Loaded += OnNoteViewLoaded;
+            Unloaded += OnNoteViewUnloaded;
         }
 
-        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Note view unloaded.");
-
-            ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
-        }
-
-        void dynNoteView_Loaded(object sender, RoutedEventArgs e)
+        void OnNoteViewLoaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as NoteViewModel;
-            ViewModel.RequestsSelection += ViewModel_RequestsSelection;
+            ViewModel.RequestsSelection += OnViewModelRequestsSelection;
 
             // NoteModel has default dimension of 100x100 which will not be ideal in 
             // most cases. Here we update the model according to the size of the view.
@@ -54,7 +45,12 @@ namespace Dynamo.Nodes
             ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
         }
 
-        void ViewModel_RequestsSelection(object sender, EventArgs e)
+        void OnNoteViewUnloaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.RequestsSelection -= OnViewModelRequestsSelection;
+        }
+
+        void OnViewModelRequestsSelection(object sender, EventArgs e)
         {
             if (!ViewModel.Model.IsSelected)
             {
@@ -78,17 +74,18 @@ namespace Dynamo.Nodes
             }
         }
 
-        void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        void OnNoteTextPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Guid noteGuid = this.ViewModel.Model.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers));
         }
 
-        private void editItem_Click(object sender, RoutedEventArgs e)
+        private void OnEditItemClick(object sender, RoutedEventArgs e)
         {
             // Setup a binding with the edit window's text field
-            var editWindow = new EditWindow(true);
+            var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
+            var editWindow = new EditWindow(dynamoViewModel, true);
             editWindow.BindToProperty(DataContext, new Binding("Text")
             {
                 Mode = BindingMode.TwoWay,
@@ -99,17 +96,17 @@ namespace Dynamo.Nodes
             editWindow.ShowDialog();
         }
 
-        private void deleteItem_Click(object sender, RoutedEventArgs e)
+        private void OnDeleteItemClick(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
         }
 
-        private void Note_MouseDown(object sender, MouseButtonEventArgs e)
+        private void OnNoteMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount >= 2)
             {
-                editItem_Click(this, null);
+                OnEditItemClick(this, null);
                 e.Handled = true;
             }
         }

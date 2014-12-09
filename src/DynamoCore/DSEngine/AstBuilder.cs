@@ -3,13 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Core;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
+
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using Type = ProtoCore.Type;
 
@@ -136,20 +134,15 @@ namespace Dynamo.DSEngine
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
-            Validity.Assert(!inputAstNodes.Any((n) => n == null), 
+            Validity.Assert(inputAstNodes.All(n => n != null), 
                 "Shouldn't have null nodes in the AST list");
 #endif
 
-            IEnumerable<AssociativeNode> astNodes = null;
             var scopedNode = node as ScopedNodeModel;
-            if (scopedNode != null)
-            {
-                astNodes = scopedNode.BuildAstInScope(inputAstNodes);
-            }
-            else
-            {
-                astNodes = node.BuildAst(inputAstNodes);
-            }
+            IEnumerable<AssociativeNode> astNodes = 
+                scopedNode != null
+                    ? scopedNode.BuildAstInScope(inputAstNodes)
+                    : node.BuildAst(inputAstNodes);
             
             if (dynamoModel.DebugSettings.VerboseLogging)
             {
@@ -239,10 +232,12 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="def"></param>
         /// <param name="funcBody"></param>
-        /// <param name="outputs"></param>
+        /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
         public void CompileCustomNodeDefinition(
-            CustomNodeDefinition def, IEnumerable<NodeModel> funcBody, List<AssociativeNode> outputs,
+            CustomNodeDefinition def,
+            IEnumerable<NodeModel> funcBody,
+            IEnumerable<AssociativeNode> outputNodes,
             IEnumerable<string> parameters)
         {
             OnAstNodeBuilding(def.FunctionId);
@@ -250,6 +245,7 @@ namespace Dynamo.DSEngine
             var functionBody = new CodeBlockNode();
             functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
 
+            var outputs = outputNodes.ToList();
             if (outputs.Count > 1)
             {
                 /* rtn_array = {};
@@ -360,10 +356,11 @@ namespace Dynamo.DSEngine
         internal class StringConstants
         {
             public const string ParamPrefix = @"p_";
-            public const string FunctionPrefix = @"func_";
+            public const string FunctionPrefix = @"__func_";
             public const string VarPrefix = @"var_";
             public const string ShortVarPrefix = @"t_";
             public const string CustomNodeReturnVariable = @"%arr";
+            public const string AstBuildBrokenMessage = "Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}";
         }
     }
 }

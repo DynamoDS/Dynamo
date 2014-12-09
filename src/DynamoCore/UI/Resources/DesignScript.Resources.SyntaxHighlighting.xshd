@@ -1,0 +1,102 @@
+<!-- syntaxdefinition for DesignScript -->
+<SyntaxDefinition name="DesignScript" extensions=".ds">
+  <Environment>
+    <Custom name="TypeReference" bold="false" italic="false" color="#04ABAB" />
+    <Custom name="UnknownEntity" bold="false" italic="false" color="#AB0404" />
+    <Default bold="false" italic="false" color="White" bgcolor="#242424" />
+    <Selection bold="false" italic="false" color="#D4D0C8" bgcolor="Gray" />
+    <VRuler bold="false" italic="false" color="#6897BB" />
+    <InvalidLines bold="false" italic="false" color="#999999" />
+    <CaretMarker bold="false" italic="false" color="#999999" />
+    <LineNumbers bold="false" italic="false" color="#6897BB" bgcolor="#242424" />
+    <FoldLine bold="false" italic="false" color="Gray" bgcolor="Gray" />
+    <FoldMarker bold="false" italic="false" color="Gray" bgcolor="#242424" />
+    <SelectedFoldLine bold="false" italic="false" color="Gray" />
+    <EOLMarkers bold="false" italic="false" color="#999999" />
+    <SpaceMarkers bold="false" italic="false" color="#999999" />
+    <TabMarkers bold="false" italic="false" color="#999999" />
+  </Environment>
+  <Properties>
+    <Property name="LineComment" value="//" />
+  </Properties>
+  <!--<Digits name="Digits" color="#2585E5" />-->
+  <RuleSets>
+    <RuleSet ignorecase="false">
+      <Delimiters>()[]{},:.`=;+-*/%!~#\ &amp;|^&gt;&lt;</Delimiters>
+      <Span name="Char" stopateol="true" color="#885D3B" escapecharacter="\">
+        <Begin>'</Begin>
+        <End>'</End>
+      </Span>      
+      <Span name="LineComment" stopateol="true" color="#309130">
+        <Begin>//</Begin>
+      </Span>
+      <Span name="String" stopateol="true" color="#885D3B" escapecharacter="\">
+        <Begin>"</Begin>
+        <End>"</End>
+      </Span>
+      <!--<MarkPrevious color="#417693">(</MarkPrevious>-->
+      <KeyWords name="BuiltInStatements" color="#8C5EAA">
+        <Key word="local" />
+        <Key word="static" />
+        <Key word="this" />
+      </KeyWords>
+      <KeyWords name="ClassStatement" color="#8C5EAA">
+        <Key word="class" />
+        <Key word="extends" />
+      </KeyWords>
+      <KeyWords name="ExceptionHandlingStatements" color="#8C5EAA">
+        <Key word="throw" />
+        <Key word="catch" />
+        <Key word="try" />
+      </KeyWords>
+      <KeyWords name="Functions" color="#8C5EAA">
+        <Key word="def" />
+        <Key word="function" />
+        <Key word="constructor" />
+      </KeyWords>
+      <KeyWords name="Imports" color="#8C5EAA">
+        <Key word="import" />
+        <Key word="from" />
+      </KeyWords>
+      <KeyWords name="IterationStatements" color="#8C5EAA">
+        <Key word="for" />
+        <Key word="in" />
+        <Key word="while" />
+      </KeyWords>
+      <KeyWords name="JumpStatements" color="#8C5EAA">
+        <Key word="break" />
+        <Key word="continue" />
+        <Key word="return" />
+      </KeyWords>
+      <KeyWords name="AccessSpecifiers" color="#8C5EAA">
+        <Key word="public" />
+        <Key word="private" />
+        <Key word="protected" />
+      </KeyWords>
+      <KeyWords name="PrimitiveTypes" color="#8C5EAA">
+        <Key word="int" />
+        <Key word="double" />
+        <Key word="string" />
+        <Key word="bool" />
+        <Key word="var" />
+        <Key word="char" />
+        <Key word="void" />
+      </KeyWords>
+      <KeyWords name="Constants" color="#8C5EAA">
+        <Key word="true" />
+        <Key word="false" />
+        <Key word="null" />
+      </KeyWords>
+      <KeyWords name="LanguageBlocks" color="#8C5EAA">
+        <Key word="Associative" />
+        <Key word="Imperative" />
+        <Key word="Options" />
+      </KeyWords>
+      <KeyWords name="SelectionStatements" color="#8C5EAA">
+        <Key word="elseif" />
+        <Key word="else" />
+        <Key word="if" />
+      </KeyWords>
+    </RuleSet>
+  </RuleSets>
+</SyntaxDefinition>

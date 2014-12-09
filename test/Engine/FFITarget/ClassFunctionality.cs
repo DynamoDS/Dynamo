@@ -65,6 +65,11 @@ namespace FFITarget
             return this.IntVal + i;
         }
 
+        public static int StaticFunction()
+        {
+            return StaticProp;
+        }
+
         public void Dispose()
         {
             StaticProp++;

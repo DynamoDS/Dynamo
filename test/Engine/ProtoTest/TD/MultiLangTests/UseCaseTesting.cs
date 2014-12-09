@@ -4,14 +4,9 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class UseCaseTesting
+    class UseCaseTesting : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void SetUp()
-        {
-        }
 
         [Test]
         [Category("SmokeTest")]
@@ -198,7 +193,6 @@ b  = b2 + 2;    // 5";
         }
 
         [Test]
-        [Category("Failing")]
         public void T007_surface_trimmed_with_modifier_and_named_states_Robert()
         {
 

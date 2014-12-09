@@ -10,16 +10,8 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.ProtoAST
 {
-    public class RoundTripTests
+    class RoundTripTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
         public void TestRoundTrip_Assign01()
         {
@@ -532,8 +524,11 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("Failure")]
         public void TestAstToCode()
         {
+            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4393
+
             // Convert a list of code -> AST nodes -> code -> AST nodes
             // Compare two AST node lists are equal
 
@@ -562,8 +557,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in statements)
             {
-                ProtoCore.AST.AssociativeAST.CodeBlockNode commentCode = null;
-                var cbn = GraphToDSCompiler.GraphUtilities.Parse(stmt, out commentCode) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)
@@ -579,8 +573,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in new_statements)
             {
-                ProtoCore.AST.AssociativeAST.CodeBlockNode commentCode = null;
-                var cbn = GraphToDSCompiler.GraphUtilities.Parse(stmt, out commentCode) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt) as ProtoCore.AST.AssociativeAST.CodeBlockNode;
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)

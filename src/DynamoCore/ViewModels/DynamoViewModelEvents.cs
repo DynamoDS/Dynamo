@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Dynamo.Models;
 using Dynamo.PackageManager;
@@ -33,13 +30,6 @@ namespace Dynamo.ViewModels
             {
                 RequestPackageManagerSearchDialog(this, e);
             }
-        }
-
-        public event AuthenticationRequestHandler RequestAuthentication;
-        public void OnRequestAuthentication()
-        {
-            if (RequestAuthentication != null)
-                RequestAuthentication(model.PackageManagerClient);
         }
 
         public event ImageSaveEventHandler RequestSaveImage;

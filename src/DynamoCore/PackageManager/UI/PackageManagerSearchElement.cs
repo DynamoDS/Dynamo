@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -26,11 +25,47 @@ namespace Dynamo.PackageManager
         public DelegateCommand DownloadLatest { get; set; }
         public DelegateCommand UpvoteCommand { get; set; }
         public DelegateCommand DownvoteCommand { get; set; }
+        public DelegateCommand VisitSiteCommand { get; set; }
+        public DelegateCommand VisitRepositoryCommand { get; set; }
+
+        internal PackageManagerSearchElement() 
+        {
+            this.IsExpanded = false;
+            this.DownloadLatest = new DelegateCommand((Action)Execute);
+            this.UpvoteCommand = new DelegateCommand((Action)Upvote, CanUpvote);
+            this.DownvoteCommand = new DelegateCommand((Action)Downvote, CanDownvote);
+            this.VisitSiteCommand = 
+                new DelegateCommand(() => GoToUrl(FormatUrl(SiteUrl)), () => !String.IsNullOrEmpty(SiteUrl));
+            this.VisitRepositoryCommand =
+                new DelegateCommand(() => GoToUrl(FormatUrl(RepositoryUrl)), () => !String.IsNullOrEmpty(RepositoryUrl));
+        }
+
+        private static string FormatUrl(string url)
+        {
+            var lurl = url.ToLower();
+
+            // if not preceded by http(s), process start will fail
+            if (!lurl.StartsWith(@"http://") && !lurl.StartsWith(@"https://"))
+            {
+                return @"http://" + url;
+            }
+
+            return url;
+        }
+
+        private static void GoToUrl(string url)
+        {
+            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            {
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(url).AbsoluteUri);
+                Process.Start(sInfo);
+            }
+        }
 
         /// <summary>
         /// The class constructor. </summary>
         /// <param name="header">The PackageHeader object describing the element</param>
-        public PackageManagerSearchElement(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header)
+        public PackageManagerSearchElement(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header) : this()
         {
             this.dynamoViewModel = dynamoViewModel;
 
@@ -46,10 +81,6 @@ namespace Dynamo.PackageManager
                 this.Keywords = "";
             }
             this.Votes = header.votes;
-            this.IsExpanded = false;
-            this.DownloadLatest = new DelegateCommand((Action) Execute);
-            this.UpvoteCommand = new DelegateCommand((Action) Upvote);
-            this.DownvoteCommand = new DelegateCommand((Action) Downvote);
         }
 
         public void Upvote()
@@ -66,6 +97,12 @@ namespace Dynamo.PackageManager
 
         }
 
+        private bool CanUpvote()
+        {
+            if (this.dynamoViewModel == null) return false;
+            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+        }
+
         public void Downvote()
         {
             Task<bool>.Factory.StartNew(() => dynamoViewModel.Model.PackageManagerClient.Downvote(this.Id))
@@ -76,6 +113,12 @@ namespace Dynamo.PackageManager
                         this.Votes -= 1;
                     }
                 } , TaskScheduler.FromCurrentSynchronizationContext()); 
+        }
+
+        private bool CanDownvote()
+        {
+            if (this.dynamoViewModel == null) return false;
+            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
         private static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
@@ -124,6 +167,25 @@ namespace Dynamo.PackageManager
 
                 var allPackageVersions = ListRequiredPackageVersions(headers, version);
 
+                // determine if any of the packages contain binaries or python scripts.  
+                var containsBinaries =
+                    allPackageVersions.Any(
+                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant) || x.Item2.contains_binaries);
+
+                var containsPythonScripts =
+                    allPackageVersions.Any(
+                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant));
+
+                // if any do, notify user and allow cancellation
+                if (containsBinaries || containsPythonScripts)
+                {
+                    var res = MessageBox.Show("The package or one of its dependencies contains Python scripts or binaries. "+
+                        "Do you want to continue?", "Package Download",
+                        MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                    if (res == MessageBoxResult.Cancel) return;
+                }
+
                 // Determine if there are any dependencies that are made with a newer version
                 // of Dynamo (this includes the root package)
                 var dynamoVersion = dynamoViewModel.Model.Version;
@@ -161,25 +223,64 @@ namespace Dynamo.PackageManager
 
                 var localPkgs = dynamoViewModel.Model.Loader.PackageLoader.LocalPackages;
 
+                var uninstallsRequiringRestart = new List<Package>();
+                var uninstallRequiringUserModifications = new List<Package>();
+                var immediateUninstalls = new List<Package>();
+
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
                 foreach ( var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)) )
                 {
                     if (localPkg == null) continue;
-                    string msg;
 
-                    // if the package is in use, we will not be able to uninstall it.  
-                    if (!localPkg.InUse())
+                    if (localPkg.LoadedAssemblies.Any())
                     {
-                        msg = "Dynamo needs to uninstall " + this.Name + " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
-                        MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
-                                        MessageBoxImage.Error);
-                        return;
+                        uninstallsRequiringRestart.Add(localPkg);
+                        continue;
                     }
 
+                    if (localPkg.InUse(this.dynamoViewModel.Model))
+                    {
+                        uninstallRequiringUserModifications.Add(localPkg);
+                        continue;
+                    }
+
+                    immediateUninstalls.Add(localPkg);
+                }
+
+                string msg;
+
+                if (uninstallRequiringUserModifications.Any())
+                {
+                    msg = "Dynamo needs to uninstall " + JoinPackageNames(uninstallRequiringUserModifications) + 
+                        " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
+                    MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                    return;
+                }
+
+                if (uninstallsRequiringRestart.Any())
+                {
+                    // mark for uninstallation
+                    uninstallsRequiringRestart.ForEach(
+                        x =>
+                            x.MarkForUninstall(
+                                this.dynamoViewModel.Model.PreferenceSettings));
+
+                    msg = "Dynamo needs to uninstall " + JoinPackageNames(uninstallsRequiringRestart) + 
+                        " to continue but it contains binaries already loaded into Dynamo.  It's now marked "+
+                        "for removal, but you'll need to first restart Dynamo.";
+                    MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                    return;
+                }
+
+                if (immediateUninstalls.Any())
+                {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    msg = "Dynamo has already installed " + this.Name + ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
-                    if ( MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    msg = "Dynamo has already installed " + JoinPackageNames(immediateUninstalls) + 
+                        ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
+                    if (MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                         return;
                 }
 
@@ -193,21 +294,27 @@ namespace Dynamo.PackageManager
 
         }
 
+        private string JoinPackageNames(IEnumerable<Package> pkgs)
+        {
+            return String.Join(", ", pkgs.Select(x => x.Name));
+        } 
+
         #region Properties 
 
             private PackageVersion versionNumberToDownload = null;
 
+            private List<Tuple<PackageVersion, DelegateCommand>> versions;
             public List<Tuple<PackageVersion, DelegateCommand>> Versions
             {
                 get
                 {
                     return
-                        Header.versions.Select(
+                        versions ?? (versions = Header.versions.Select(
                             x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() =>
-                                {
-                                    this.versionNumberToDownload = x;
-                                    this.Execute();
-                                }, () => true))).ToList();
+                            {
+                                this.versionNumberToDownload = x;
+                                this.Execute();
+                            }, () => true))).ToList());
                 } 
             }
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
@@ -220,8 +327,9 @@ namespace Dynamo.PackageManager
             public bool IsDeprecated { get { return this.Header.deprecated; } }
             public int Downloads { get { return this.Header.downloads; } }
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
-            public int UsedBy { get { return this.Header.used_by.Count; } } 
+            public int UsedBy { get { return this.Header.used_by.Count; } }
             public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
+            public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
             
             /// <summary>
             /// Header property </summary>
@@ -269,6 +377,9 @@ namespace Dynamo.PackageManager
             public string Id { get { return Header._id; } }
 
             public override string Keywords { get; set; }
+
+            public string SiteUrl { get { return Header.site_url; } }
+            public string RepositoryUrl { get { return Header.repository_url; } }
 
         #endregion
         

@@ -62,6 +62,7 @@ namespace Dynamo.Tests
         #endregion
 
         [Test]
+        [Category("UnitTests")]
         public static void GetSearchTags_FunctionDescriptorXDocument_CanFindSearchTagsForInstanceMethod()
         {
             var method = GetTranslateMethod();
@@ -74,6 +75,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void GetSummary_FunctionDescriptorXDocument_CanFindSummaryForBasicInstanceMethod()
         {
             var method = GetTranslateMethod();
@@ -85,6 +87,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public static void GetDescription_TypedParameterXDocument_CanFindParameterDescriptionForBasicInstanceMethod()
         {
             var method = GetTranslateMethod();

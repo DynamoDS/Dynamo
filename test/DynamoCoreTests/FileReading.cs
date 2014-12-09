@@ -31,6 +31,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_781()
         {
             // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-781
@@ -42,6 +43,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_1380_dyn()
         {
             // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1380
@@ -56,6 +58,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_1380_dyf()
         {
             // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1380

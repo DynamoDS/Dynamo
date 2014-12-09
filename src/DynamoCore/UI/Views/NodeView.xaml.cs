@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.AccessControl;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using System.Windows.Media;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using System.Windows.Threading;
-using Dynamo.Core;
+
+using DynCmd = Dynamo.Models.DynamoModel;
+
 using Dynamo.UI.Controls;
 
 namespace Dynamo.Controls
@@ -24,8 +26,7 @@ namespace Dynamo.Controls
     public partial class dynNodeView : IViewModelView<NodeViewModel>
     {
         public delegate void SetToolTipDelegate(string message);
-        public delegate void UpdateLayoutDelegate(FrameworkElement el);
-
+        public delegate void UpdateLayoutDelegate(FrameworkElement el);       
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
 
@@ -73,16 +74,17 @@ namespace Dynamo.Controls
             InitializeComponent();
 
             Loaded += new RoutedEventHandler(OnNodeViewLoaded);
-            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Unloaded += new RoutedEventHandler(OnNodeViewUnloaded);
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
             this.nodeBorder.SizeChanged += OnSizeChanged;
             this.DataContextChanged += OnDataContextChanged;
 
             Canvas.SetZIndex(this, 1);
+
         }
 
-        void Dispatcher_ShutdownStarted(object sender, EventArgs e)
+        private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Node view unloaded.");
 
@@ -149,8 +151,9 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
+           
         }
-
+      
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -220,7 +223,7 @@ namespace Dynamo.Controls
 
             e.Handled = true;
 
-            var editWindow = new EditWindow
+            var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
                 Title = "Edit Node Name"

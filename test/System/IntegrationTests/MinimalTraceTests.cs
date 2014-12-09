@@ -29,6 +29,7 @@ namespace IntegrationTests
         }
 
         [Test]
+        [Category("UnitTests")]
         [Category("Trace")]
         public static void ExecTraceClassWithoutSupport()
         {
@@ -37,6 +38,7 @@ namespace IntegrationTests
         }
 
         [Test]
+        [Category("UnitTests")]
         [Category("Trace")]
         public static void ExecTraceClassWithoutSupport2()
         {
@@ -46,7 +48,8 @@ namespace IntegrationTests
         }
 
         [Test]
-        [Category("Trace")]
+        //[Category("UnitTests")] --uncomment when failure category is removed
+        //[Category("Trace")]
         public static void ExecTraceClassVerifyCleanThread()
         {
             MinimalTracedClass mtc = new MinimalTracedClass();
@@ -57,6 +60,7 @@ namespace IntegrationTests
 
 
         [Test]
+        [Category("UnitTests")]
         [Category("Trace")]
         public void SanityCheckVMExecution()
         {

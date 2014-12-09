@@ -34,9 +34,9 @@ namespace DynamoWebServer
             return webSocketServer.Start();
         }
 
-        public WebSocketSession GetAppSessionByID(string sessionID)
+        public WebSocketSession GetAppSessionById(string sessionId)
         {
-            return webSocketServer.GetAppSessionByID(sessionID);
+            return webSocketServer.GetAppSessionByID(sessionId);
         }
 
         void socketServer_NewSessionConnected(WebSocketSession session)

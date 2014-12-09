@@ -51,22 +51,26 @@
 
                                 <StackPanel Name="SearchEle">
 
-                                    <DockPanel >
+                                    <DockPanel>
                                         
                                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="5,5,5,7">
-                                            <TextBlock Text="{Binding Path=Model.Name}" FontSize="12" MinWidth="200" Margin="10,0,10,0" Foreground="WhiteSmoke"></TextBlock>
-                                            <TextBlock Text="{Binding Path=Model.VersionName}" FontSize="11" Foreground="#CCC"></TextBlock>
+                                            <TextBlock Text="{Binding Path=Model.Name}" FontSize="15" MinWidth="200" Margin="10,0,10,0" Foreground="WhiteSmoke"></TextBlock>
+                                            <TextBlock Text="{Binding Path=Model.VersionName}" MinWidth="50" FontSize="11" Foreground="#CCC"></TextBlock>
+                                            <TextBlock Text="Pending uninstall" Visibility="{Binding Path=Model.MarkedForUninstall, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" 
+                                                       FontSize="11" FontStyle="Italic" Foreground="Red"></TextBlock>
                                         </StackPanel>
 
-                                        <Button Name="MoreButton" HorizontalAlignment="Right" Content="+" Width="40" IsEnabled="True" Style="{DynamicResource ResourceKey=SBadgeButton}" Click="MoreButton_OnClick">
+                                        <Button Name="MoreButton" HorizontalAlignment="Right" Content="⋮" FontWeight="Bold" Foreground="WhiteSmoke" Width="40" FontSize="17" IsEnabled="True" Style="{DynamicResource ResourceKey=SCustomizableBadgeButton}" Click="MoreButton_OnClick">
 
                                             <Button.ContextMenu>
-
                                                 <ContextMenu>
 
-                                                    <MenuItem Name="TypesButton"  Command="{Binding Path=ToggleTypesVisibleInManagerCommand}" Margin="3" ToolTip="See the types loaded by this package" Header="Show Types" /> 
+                                                    <MenuItem Name="ContentsButton"  Command="{Binding Path=ToggleTypesVisibleInManagerCommand}" Margin="3" ToolTip="See the types loaded by this package" Header="Show Contents" /> 
                                                     <!--<MenuItem Name="GetLatestVersionButton"  Command="{Binding Path=GetLatestVersionCommand}" Margin="3" ToolTip="Check if there is a newer version of this package and download it." Header="Get Latest Version" />-->
+                                                    <MenuItem Name="GoToRoot"  Command="{Binding Path=GoToRootDirectoryCommand}" Margin="3" ToolTip="Go to the root folder of this package" Header="Show Root Directory" />
+                                                    <Separator></Separator>
                                                     <MenuItem Name="UninstallButton" Command="{Binding Path=UninstallCommand}" Margin="3" ToolTip="Uninstall this package, only allowed if none of the types are currently in use" Header="Uninstall..." />
+                                                    <MenuItem Name="UnmarkUninstallButton" Command="{Binding Path=UnmarkForUninstallationCommand}" Margin="3" ToolTip="Remove the pending uninstall status" Header="Cancel pending uninstall..." />
                                                     <Separator></Separator>
                                                     <MenuItem Name="MakePackageButton" Command="{Binding Path=PublishNewPackageCommand}" Margin="3" ToolTip="Publish this package, if it has yet to be published." Header="Publish..." />
                                                     <MenuItem Name="MakeNewVersionButton" Command="{Binding Path=PublishNewPackageVersionCommand}" Margin="3" ToolTip="Publish a new version of this package, assuming it has already been published. Only allowed if you're a current maintainer of the package." Header="Publish Version..."  />
@@ -83,49 +87,116 @@
                                     </DockPanel>
                                     
      
-                                <Border BorderThickness="0,1,0,0" BorderBrush="#111" Visibility="{Binding Path=Model.TypesVisibleInManager, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Border BorderThickness="0,1,0,0" BorderBrush="#111" Background="#2c2c2c" Visibility="{Binding Path=Model.TypesVisibleInManager, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                         
                                         <StackPanel Margin="10,5,5,10" >
 
-                                            <Label Content="Loaded Custom Nodes" FontWeight="Bold" Foreground="Gray"></Label>
-                                            <ListBox Name="LoadedCustomNodes" ItemsSource="{Binding Path=Model.LoadedCustomNodes}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+                                            <StackPanel Visibility="{Binding Path=HasCustomNodes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                                
+                                                <Label Content="Custom Nodes" FontWeight="Bold" Foreground="Gray"></Label>
+                                                <ListBox Name="LoadedCustomNodes" ItemsSource="{Binding Path=Model.LoadedCustomNodes}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
 
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
-                                                        </Style.Resources>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                            </Style.Resources>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
 
-                                                <ListBox.ItemTemplate >
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding Path=Name}" Foreground="White" />
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
+                                                    <ListBox.ItemTemplate >
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Path=Name}" Foreground="White" />
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
 
-                                            </ListBox>
+                                                </ListBox>
+                                                
+                                            </StackPanel>
 
-                                            <!--<Label Content="Compiled nodes" Foreground="Lavender"></Label>
-                                            <ListBox Name="CompiledNodes" ItemsSource="{Binding Path=LoadedTypes}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Black" >
+                                            <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                                
+                                                <Label Content="Node Libraries" FontWeight="Bold" Foreground="Gray"></Label>
+                                                <ListBox Name="NodeLibraries" ItemsSource="{Binding Path=Model.LoadedAssemblies}" BorderThickness="0" Padding="0" 
+                                                         Margin="10,0,0,0" Background="Transparent" >
 
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Style.Resources>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
-                                                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
-                                                        </Style.Resources>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                            </Style.Resources>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
 
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding Path=Name}" Foreground="Lavender" />
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Name="Label" Text="{Binding Path=Name}" Foreground="White" />
+                                                            
+                                                            <DataTemplate.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=IsNodeLibrary}" Value="false">
+                                                                    <Setter TargetName="Label" Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </DataTemplate.Triggers>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
 
-                                            </ListBox>-->
+                                                </ListBox>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Visibility="{Binding Path=HasAdditionalAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                                
+                                                <Label Content="Additional Libraries" FontWeight="Bold" Foreground="Gray"></Label>
+                                                <ListBox Name="AddAssemblies" ItemsSource="{Binding Path=Model.LoadedAssemblies}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                            </Style.Resources>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
+
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Name="Label" Text="{Binding Path=Name}" Foreground="White" />
+
+                                                            <DataTemplate.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=IsNodeLibrary}" Value="true">
+                                                                    <Setter TargetName="Label" Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </DataTemplate.Triggers>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+
+                                                </ListBox>
+
+                                            </StackPanel>
+
+                                            <StackPanel Visibility="{Binding Path=HasAdditionalFiles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                                
+                                                <Label Content="Additional Files" FontWeight="Bold" Foreground="Gray"></Label>
+                                                <ListBox Name="AdditionalFiles" ItemsSource="{Binding Path=Model.AdditionalFiles}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Style.Resources>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                            </Style.Resources>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
+
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Path=RelativePath}" Foreground="White" />
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+
+                                                </ListBox>
+                                            </StackPanel>
                                         </StackPanel>
                                     </Border>
                                 </StackPanel>

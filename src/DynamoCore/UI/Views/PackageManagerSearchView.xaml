@@ -3,15 +3,59 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:ui="clr-namespace:Dynamo.UI"
-        xmlns:packageManager="clr-namespace:Dynamo.PackageManager"
-        d:DataContext="{d:DesignInstance packageManager:PackageManagerSearchViewModel, IsDesignTimeCreatable=False}"
+        xmlns:controls="clr-namespace:Dynamo.Controls"
+        d:DataContext="{d:DesignData Source=./SampleData/PackageManagerSearchViewModelSampleData.xaml}"
         mc:Ignorable="d" 
         Title="Online Package Search" Name="PackageSearch"  Height="600" Width="480" MinWidth="480" MaxWidth="480">
     
     <Window.Resources>
         <ResourceDictionary>
+            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+            <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
+
+            <!-- An unstyled button -->
+            <Style x:Key="FlatButton" TargetType="Button">
+                <Setter Property="Background" Value="{x:Null}" />
+                <Setter Property="BorderBrush" Value="{x:Null}" />
+                
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Name="BorderInterior"  Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsKeyboardFocused" Value="true">
+                                </Trigger>
+                                <Trigger Property="IsDefaulted" Value="true">
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="true">
+                                </Trigger>
+                                <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#44000000" />
+                        <Setter Property="BorderBrush" Value="{x:Null}" />
+                        <Setter Property="FontWeight" Value="Normal" />
+                    </Trigger>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter Property="FontWeight" Value="Normal" />
+                    </Trigger>
+                </Style.Triggers>
+                
+            </Style>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
@@ -26,16 +70,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="2"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/> 
             </Grid.RowDefinitions>
-
-        <!--<Border FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="0" BorderBrush="#333" BorderThickness="0,0,0,1" Height="30" Background="#444">
-        </Border>
-
-        <Grid FlowDirection="RightToLeft" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right">
-            <StackPanel Margin="0,5,0,0" Name="titleBarButtonsGrid" FlowDirection="LeftToRight" shell:WindowChrome.IsHitTestVisibleInChrome="True">
-            </StackPanel>
-        </Grid>-->
 
         <Grid Background="Black" Grid.Row="1" MinHeight="200">
 
@@ -99,151 +135,151 @@
 
             </Grid>
 
-            <ScrollViewer HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=RSearchBoxStackPanel}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Grid.ZIndex ="0" >
+            <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" ScrollViewer.VerticalScrollBarVisibility="Visible" BorderThickness="0" Padding="0" Background="Black" Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding Path=SelectedIndex}">
 
-                <ListBox Name="SearchResultsListBox" ItemsSource="{Binding Path=SearchResults}" BorderThickness="0" Padding="0" Background="Black" SelectedIndex="{Binding Path=SelectedIndex}">
+                <ListBox.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                </ListBox.Resources>
 
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Style.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#111"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
-                            </Style.Resources>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
 
-                        </Style>
+                <ListBox.ItemTemplate >
 
-                    </ListBox.ItemContainerStyle>
+                    <DataTemplate>
+                        <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0" Background="#333">
 
-                    <ListBox.ItemTemplate >
+                            <StackPanel Width ="445" Name="SearchEle">
 
-                        <DataTemplate>
-                            <Border BorderBrush="#222" BorderThickness="0,0,0,1">
-                                <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0">
+                                <TextBlock Text="DEPRECATED" Padding="5" Foreground ="#555" ToolTip="The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!" FontSize="10">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
 
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
-                                                        <Setter Property="Background" Value="#222"/>
-                                                    </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
 
-                                                    <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
-                                                        <Setter Property="Background" Value="#333"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
+                                <StackPanel Orientation="Horizontal" Margin="1" Width="440">
 
-                                    <VirtualizingStackPanel Width ="445" Name="SearchEle">
+                                    <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatest}" Foreground="#666">
+                                        <Grid Width="40" Height="64">
+                                            <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="12">⬇</TextBlock>
+                                            <Ellipse
+                                                        Fill="Transparent"
+                                                        Height="36"
+                                                        Width="36"
+                                                        StrokeThickness="3"
+                                                        Stroke="#666" />
+                                        </Grid>
+                                    </Button>
 
-                                        <TextBlock Text="DEPRECATED" Padding="5" Foreground ="#555" ToolTip="The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!" FontSize="10">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                        </DataTrigger>
+                                    <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpanded}" Background="#333">
 
-                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="False">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
+                                        <StackPanel Width="350" Height="75" IsHitTestVisible="True" >
+                                            <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
+
+                                            <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
+
+                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
+                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="✎   " Foreground="Gray" />
+                                                    <TextBlock FontSize="10" MaxWidth="100" Text="{Binding Path=Maintainers}" TextTrimming="WordEllipsis" Foreground="Gray"  />
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
+                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="⚑   " Foreground="Gray" />
+                                                    <TextBlock FontSize="10" Text="{Binding Path=LatestVersion}" Foreground="Gray"  />
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
+                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="▼   " Foreground="Gray" />
+                                                    <TextBlock FontSize="10" Text="{Binding Path=Downloads}" Foreground="Gray"  />
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
+                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="◷   " Foreground="Gray" />
+                                                    <TextBlock FontSize="10" Text="{Binding Path=LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" Foreground="Gray"  />
+                                                </StackPanel>
+
+                                            </StackPanel>
+
+                                            <TextBlock FontSize="11" Margin="3" Foreground="#AAA" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
+
+                                        </StackPanel>
+                                    </Button>
+
+                                    <StackPanel Width="30"  Orientation="Vertical" Margin="10,0,0,0">
+                                        <Button Name="UpvoteButton" FontSize="10" ToolTip="Vote in support of this package"  Content="▲" Foreground="Gray" Command="{Binding Path=UpvoteCommand}" Style="{StaticResource FlatButton}" />
+                                        <TextBlock FontSize="10"  HorizontalAlignment="Center" Padding="0,10" Text="{Binding Path=Votes}" Foreground="Gray"  />
+                                        <Button Name="DownvoteButton" FontSize="10" ToolTip="Downvote to voice lack of support for this package" Foreground="Gray" Content="▼" Command="{Binding Path=DownvoteCommand}" Style="{StaticResource FlatButton}" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
+
+                                    <TextBlock FontSize="11" FontWeight="Bold" Text="Description" Foreground="WhiteSmoke"  Padding="10,10,0,0"/>
+                                    <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
+
+                                    <StackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                        <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                        <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="WhiteSmoke" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
+                                        <TextBlock FontSize="11" FontWeight="Bold" Text="Versions" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                        <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
+
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Style.Resources>
+                                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
+                                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
+                                                    </Style.Resources>
                                                 </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                            
-                                        <VirtualizingStackPanel Orientation="Horizontal" Margin="5">
+                                            </ListBox.ItemContainerStyle>
 
-                                            <Border Width="275" BorderThickness ="0,0,1,0" BorderBrush="#222" >
-                                                <VirtualizingStackPanel>
-                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="WhiteSmoke" Margin="5,5,0,5"/>
-                                                    <TextBlock FontSize="12" Text="{Binding Path=Maintainers}" Foreground="#AAA" Margin="5,5,0,5"/>
-                                                    <TextBlock FontSize="11" Margin="3" Foreground="#999" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
-                                                </VirtualizingStackPanel>
-                                            </Border>
-                                    
-                                             <Border>
-                                                <VirtualizingStackPanel Width="170">
+                                            <ListBox.ItemTemplate >
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
+                                                        <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{StaticResource SBadgeButton}" />
+                                                        <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
 
-                                                    <VirtualizingStackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        </ListBox>
+                                    </StackPanel>
 
-                                                        <VirtualizingStackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="55">
-                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="Installs   " Foreground="Gray" />
-                                                            <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Downloads}" Foreground="Gray"  />
-                                                        </VirtualizingStackPanel>
+                                    <Button Name="SiteButton" Content="Visit package website" Visibility="{Binding Path=SiteUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitSiteCommand}" Style="{StaticResource SBadgeButton}" />
+                                    <Button Name="RepositoryButton" Content="Visit package repository" Visibility="{Binding Path=RepositoryUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitRepositoryCommand}" Style="{StaticResource SBadgeButton}" />
 
-                                                        <Border Margin="5,5,5,5" MinWidth="40" MaxWidth="40">
-                                                            <TextBlock FontSize="10" HorizontalAlignment="Right" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
-                                                        </Border>
+                                </StackPanel>
 
-                                                        <VirtualizingStackPanel Orientation="Horizontal" >
-                                                            <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Padding="10" Command="{Binding Path=UpvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                            <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Content="↓" Padding="10" Command="{Binding Path=DownvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                        </VirtualizingStackPanel>
-                                                        
-                                                    </VirtualizingStackPanel>
+                            </StackPanel>
 
-                                                    <VirtualizingStackPanel Orientation="Vertical" Margin="5,0,5,5">
-                                                        <VirtualizingStackPanel Orientation="Horizontal" Margin="0">
-                                                            <Button Name="LatestButton" Width="90" ToolTip="Install latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                            <Button Name="ExpandButton" Width="60" ToolTip="See more package versions and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                        </VirtualizingStackPanel>
-                                                    </VirtualizingStackPanel>
+                        </Border>
 
-                                                </VirtualizingStackPanel>
-                                             </Border>
-                                        </VirtualizingStackPanel>
+                    </DataTemplate>
 
-                                        <VirtualizingStackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
+                </ListBox.ItemTemplate>
 
-                                            <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
+            </ListBox>
 
-                                            <VirtualizingStackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
-                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
-                                                <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="WhiteSmoke" />
-                                            </VirtualizingStackPanel>
-
-                                            <VirtualizingStackPanel Orientation="Horizontal" Margin="10,10,0,10">
-                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Versions: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
-                                                <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
-
-                                                    <ListBox.ItemContainerStyle>
-                                                        <Style TargetType="ListBoxItem">
-                                                            <Style.Resources>
-                                                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#000"/>
-                                                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
-                                                            </Style.Resources>
-                                                        </Style>
-                                                    </ListBox.ItemContainerStyle>
-
-                                                    <ListBox.ItemTemplate >
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                                <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                                <TextBlock Text="{Binding Path=Item1.created}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </ListBox.ItemTemplate>
-
-                                                </ListBox>
-                                            </VirtualizingStackPanel>
-                                        </VirtualizingStackPanel>
-
-
-                                    </VirtualizingStackPanel>
-                                    
-                                </Border>
-                            </Border>
-
-                        </DataTemplate>
-
-                    </ListBox.ItemTemplate>
-
-                </ListBox>
-
-            </ScrollViewer>
         </Grid>
 
         <GridSplitter ResizeDirection="Rows" 
@@ -265,7 +301,7 @@
             <StackPanel Name="Controls" Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Background="#222" Visibility="{Binding Path=HasDownloads, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                 <Button Name="ClearCompletedButton" Margin="1, 0, 1, 0" ToolTip="Clear Downloads" Content="Clear"
-                      Style="{DynamicResource ResourceKey=SBadgeButton}" Command="{Binding Path=ClearCompletedCommand}"/>
+                      Style="{DynamicResource SBadgeButton}" Command="{Binding Path=ClearCompletedCommand}"/>
 
             </StackPanel>
 

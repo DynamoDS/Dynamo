@@ -5,26 +5,24 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class TestUpdate
+    class TestUpdate : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core;
         ProtoScript.Config.RunConfiguration runnerConfig;
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
-        [SetUp]
-        public void SetUp()
+
+        public override void Setup()
         {
-            // Specify some of the requirements of IDE.
-            ProtoCore.Options options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            base.Setup();
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+            fsr = null;
         }
 
         [Test]
@@ -319,7 +317,7 @@ c = b;";
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T12_Update_Undefined_Variables()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1527
@@ -985,7 +983,7 @@ b = foo ( a ) ;
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T20_Defect_1461391_4()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4085
@@ -1026,7 +1024,7 @@ t2 = y2[1];
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T20_Defect_1461391_5()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4086
@@ -1270,7 +1268,7 @@ a1.a = true;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T23_Update_Class_Instance_Using_Set_Method_6()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1553
@@ -1642,8 +1640,10 @@ x = [Associative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Function()
         {
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4385
             string code = @"
 class A
 { 
@@ -1672,7 +1672,8 @@ x = foo ();
 	  
 	
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            string err = "MAGN-4385 Regression with Modifier blocks used inside function definition";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             Object v1 = null;
             Object[] v2 = new Object[] { 1, 2 };
             Object[] v3 = new Object[] { null, null };
@@ -1736,9 +1737,12 @@ y = a1.a;
 
         [Test]
         [Category("Modifier Block")]
+        [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class_2()
         {
-            string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors"; 
+
+            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4385
+            string errmsg = "MAGN-4385 Modifier block inside function definition seems to corrupt input argument";
             string code = @"class B
 {
     x : var;
@@ -3188,7 +3192,7 @@ a = {
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_3()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4087
@@ -3734,7 +3738,7 @@ z2 = z;
         }
         [Test, Ignore]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T51_Defect_1461388()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4094
@@ -4069,7 +4073,7 @@ z = 2;";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T56_Defect_1467342_Inline_Condition_replication()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4088
@@ -4084,7 +4088,7 @@ x = a > 1 ? a : null; ";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T57_Defect_1467399()
         {
             String code = @"
@@ -4955,7 +4959,7 @@ b;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T63_NoInfiniteLoop_3_1467519()
         {
             String code = @"
@@ -5429,7 +5433,6 @@ pt3 = pt1.XPlusY(pt2);
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
         public void T66_1467513_RighthandsideUpdate_innerassociative()
         {
             String code = @"
@@ -5957,7 +5960,7 @@ a = 2;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T74_TestUpdate_1467533()
         {
             String code = @"
@@ -6355,7 +6358,7 @@ a = 2;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T84_TestUpdate_Crosslangauge_1467513_3()
         {
             String code = @"
@@ -6380,7 +6383,7 @@ a = 2;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T84_TestUpdate_Crosslangauge_1467513_4()
         {
             String code = @"
@@ -6469,7 +6472,6 @@ x1 = 4;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
         public void T85_1467452_update_using_class_methods_3()
         {
             String code = @"
@@ -6500,7 +6502,7 @@ x1 = 4;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T85_1467452_update_using_class_methods_4()
         {
             String code = @"
@@ -6851,7 +6853,7 @@ test = b1.y;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T91_1467547()
         {
             String code = @"
@@ -6880,7 +6882,7 @@ test = b1.y;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T91_1467547_2()
         {
             String code = @"

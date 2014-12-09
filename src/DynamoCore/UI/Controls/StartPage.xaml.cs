@@ -4,17 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
 {
@@ -25,7 +22,7 @@ namespace Dynamo.UI.Controls
     /// See "Action" enumeration below for more details of each item sub-type.
     /// </summary>
     /// 
-    public class StartPageListItem
+    public class StartPageListItem : NotificationObject
     {
         private ImageSource icon = null;
 
@@ -106,25 +103,32 @@ namespace Dynamo.UI.Controls
         List<StartPageListItem> communityLinks = new List<StartPageListItem>();
         List<StartPageListItem> references = new List<StartPageListItem>();
         List<StartPageListItem> contributeLinks = new List<StartPageListItem>();
+        string sampleFolderPath = null;
 
         // Dynamic lists that update views on the fly.
-        ObservableCollection<StartPageListItem> sampleFiles = null;
+        ObservableCollection<SampleFileEntry> sampleFiles = null;
         ObservableCollection<StartPageListItem> recentFiles = null;
-
         internal readonly DynamoViewModel DynamoViewModel;
 
         internal StartPageViewModel(DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
 
-            this.sampleFiles = new ObservableCollection<StartPageListItem>();
             this.recentFiles = new ObservableCollection<StartPageListItem>();
+            sampleFiles = new ObservableCollection<SampleFileEntry>();
+
 
             #region File Operations
 
             fileOperations.Add(new StartPageListItem("New", "icon-new.png")
             {
                 ContextData = ButtonNames.NewWorkspace,
+                ClickAction = StartPageListItem.Action.RegularCommand
+            });
+
+            fileOperations.Add(new StartPageListItem("Custom Node", "icon-customnode.png")
+            {
+                ContextData = ButtonNames.NewCustomNodeWorkspace,
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
 
@@ -194,22 +198,48 @@ namespace Dynamo.UI.Controls
             RefreshRecentFileList(dvm.RecentFiles);
             dvm.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
-
-        internal void PopulateSampleFileList(IEnumerable<string> filePaths)
+        internal void WalkDirectoryTree(System.IO.DirectoryInfo root, SampleFileEntry rootProperty)
         {
-            if (filePaths == null || (filePaths.Count() <= 0))
-                return;
-
-            sampleFiles.Clear();
-            foreach (var filePath in filePaths)
+            try
             {
-                var path = Path.GetFileNameWithoutExtension(filePath);
-                sampleFiles.Add(new StartPageListItem(path)
+                // First try to get all the sub-directories before the files themselves.
+                System.IO.DirectoryInfo[] directories = root.GetDirectories();
+                if (null != directories && (directories.Length > 0))
                 {
-                    ContextData = filePath,
-                    ToolTip = filePath,
-                    ClickAction = StartPageListItem.Action.FilePath
-                });
+                    foreach (System.IO.DirectoryInfo directory in directories)
+                    {
+                        //Make sure the folder's name is not "backup" 
+                        if (!directory.Name.Equals(Configurations.BackupFolderName))
+                        {
+                            // Resursive call for each subdirectory.
+                            SampleFileEntry sampleFileEntry =
+                                new SampleFileEntry(directory.Name, directory.FullName);
+                            WalkDirectoryTree(directory, sampleFileEntry);
+                            rootProperty.AddChildSampleFile(sampleFileEntry);
+                        }
+                    }
+                }
+
+                // Secondly, process all the files directly under this folder 
+                System.IO.FileInfo[] dynamoFiles = null;
+                dynamoFiles = root.GetFiles("*.dyn", System.IO.SearchOption.TopDirectoryOnly);
+
+                if (null != dynamoFiles && (dynamoFiles.Length > 0))
+                {
+                    foreach (System.IO.FileInfo file in dynamoFiles)
+                    {
+                        if (sampleFolderPath == null)
+                        {                            
+                            sampleFolderPath = Path.GetDirectoryName(file.FullName);
+                        }
+                        // Add each file under the root directory property list.
+                        rootProperty.AddChildSampleFile(new SampleFileEntry(file.Name, file.FullName));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Perhaps some permission problems?
             }
         }
 
@@ -232,6 +262,11 @@ namespace Dynamo.UI.Controls
                         break;
                 }
             }
+        }
+
+        public string SampleFolderPath
+        {
+            get { return this.sampleFolderPath; }
         }
 
         #region Public Class Properties (Static Lists)
@@ -260,10 +295,6 @@ namespace Dynamo.UI.Controls
 
         #region Public Class Properties (Dynamic Lists)
 
-        public ObservableCollection<StartPageListItem> SampleFiles
-        {
-            get { return this.sampleFiles; }
-        }
 
         public ObservableCollection<StartPageListItem> RecentFiles
         {
@@ -271,6 +302,11 @@ namespace Dynamo.UI.Controls
         }
 
         #endregion
+
+        public ObservableCollection<SampleFileEntry> SampleFiles
+        {
+            get { return this.sampleFiles; }
+        }
 
         #region Private Class Event Handlers
 
@@ -313,6 +349,10 @@ namespace Dynamo.UI.Controls
                 case ButtonNames.OpenWorkspace:
                     dvm.ShowOpenDialogAndOpenResultCommand.Execute(null);
                     break;
+                    
+                case ButtonNames.NewCustomNodeWorkspace:
+                    dvm.ShowNewFunctionDialogCommand.Execute(null);
+                    break;
 
                 default:
                     throw new ArgumentException(
@@ -346,6 +386,7 @@ namespace Dynamo.UI.Controls
     struct ButtonNames
     {
         public const string NewWorkspace = "NewWorkspace";
+        public const string NewCustomNodeWorkspace = "NewCustomNodeWorkspace";
         public const string OpenWorkspace = "OpenWorkspace";
     }
 
@@ -365,13 +406,13 @@ namespace Dynamo.UI.Controls
         {
             var startPageViewModel = this.DataContext as StartPageViewModel;
             this.dynamoViewModel = startPageViewModel.DynamoViewModel;
-           
+
             this.filesListBox.ItemsSource = startPageViewModel.FileOperations;
             this.askListBox.ItemsSource = startPageViewModel.CommunityLinks;
             this.referenceListBox.ItemsSource = startPageViewModel.References;
             this.codeListBox.ItemsSource = startPageViewModel.ContributeLinks;
             this.recentListBox.ItemsSource = startPageViewModel.RecentFiles;
-            this.samplesListBox.ItemsSource = startPageViewModel.SampleFiles;
+            this.sampleFileTreeView.ItemsSource = startPageViewModel.SampleFiles;
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -395,5 +436,81 @@ namespace Dynamo.UI.Controls
         }
 
         #endregion
+
+        private void OnSampleFileSelected(object sender, RoutedEventArgs e)
+        {
+            var dp = e.OriginalSource as DependencyObject;
+            var treeViewItem = WPF.FindUpVisualTree<TreeViewItem>(dp) as TreeViewItem;
+            if (sampleFileTreeView.SelectedItem != null)
+                treeViewItem.IsExpanded = !treeViewItem.IsExpanded;
+
+            var filePath = (sampleFileTreeView.SelectedItem as SampleFileEntry).FilePath;
+
+            if (string.IsNullOrEmpty(filePath))
+                return;
+
+            if (!Path.GetExtension(filePath).Equals(".dyn"))
+                return;
+            
+            var dvm = this.dynamoViewModel;
+            if (dvm.OpenCommand.CanExecute(filePath))
+                dvm.OpenCommand.Execute(filePath);
+        }
+
+        private void ShowSamplesInFolder(object sender, MouseButtonEventArgs e)
+        {
+            var startPageViewModel = this.DataContext as StartPageViewModel;
+            Process.Start("explorer.exe", "/select," 
+                + startPageViewModel.SampleFolderPath);
+        }
+
+        private void StartPage_OnDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var homespace = dynamoViewModel.Model.HomeSpace;
+                if (homespace.HasUnsavedChanges && 
+                    !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(homespace))
+                {
+                    return;
+                }
+
+                var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+                if (files != null && (files.Length > 0))
+                {
+                    if (dynamoViewModel.OpenCommand.CanExecute(files[0]))
+                    {
+                        dynamoViewModel.OpenCommand.Execute(files[0]);
+                        e.Handled = true;
+                    }
+                }
+
+            }
+        }
+
     }
+
+    public class SampleFileEntry
+    {
+        List<SampleFileEntry> childSampleFiles = null;
+
+        public SampleFileEntry(string name, string path)
+        {
+            this.FileName = name;
+            this.FilePath = path;
+        }
+        public void AddChildSampleFile(SampleFileEntry childSampleFile)
+        {
+            if (null == childSampleFiles)
+                childSampleFiles = new List<SampleFileEntry>();
+
+            childSampleFiles.Add(childSampleFile);
+        }
+
+        public string FileName { get; private set; }
+        public string FilePath { get; private set; }
+        public IEnumerable<SampleFileEntry> Children { get { return childSampleFiles; } }
+    }
+
 }

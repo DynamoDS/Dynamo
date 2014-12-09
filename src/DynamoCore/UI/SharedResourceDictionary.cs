@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Markup;
 
 namespace Dynamo.UI
 {
@@ -70,7 +68,7 @@ namespace Dynamo.UI
         {
             get
             {
-                return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                return Path.Combine( Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                     @"UI\Themes\Modern\");
             }
         }

@@ -22,9 +22,9 @@ namespace Dynamo
     {
         public static string DYNAMO_TEST_PATH = null;
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
-        private DynamoLengthUnit _lengthUnit;
-        private DynamoAreaUnit _areaUnit;
-        private DynamoVolumeUnit _volumeUnit;
+        private LengthUnit _lengthUnit;
+        private AreaUnit _areaUnit;
+        private VolumeUnit _volumeUnit;
         private string _numberFormat;
         private string lastUpdateDownloadPath;
 
@@ -51,7 +51,7 @@ namespace Dynamo
             }
         }
 
-        public DynamoLengthUnit LengthUnit
+        public LengthUnit LengthUnit
         {
             get { return _lengthUnit; }
             set
@@ -74,7 +74,9 @@ namespace Dynamo
             set { _recentFiles = value; }
         }
 
-        public DynamoAreaUnit AreaUnit
+        public List<string> PackageDirectoriesToUninstall { get; set; }
+
+        public AreaUnit AreaUnit
         {
             get { return _areaUnit; }
             set
@@ -84,7 +86,7 @@ namespace Dynamo
             }
         }
 
-        public DynamoVolumeUnit VolumeUnit
+        public VolumeUnit VolumeUnit
         {
             get { return _volumeUnit; }
             set
@@ -125,13 +127,14 @@ namespace Dynamo
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;
-            ConsoleHeight = 100;
+            ConsoleHeight = 0;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             FullscreenWatchShowing = true;
-            LengthUnit = DynamoLengthUnit.Meter;
-            AreaUnit = DynamoAreaUnit.SquareMeter;
-            VolumeUnit = DynamoVolumeUnit.CubicMeter;
+            LengthUnit = LengthUnit.Meter;
+            AreaUnit = DynamoUnits.AreaUnit.SquareMeter;
+            VolumeUnit = VolumeUnit.CubicMeter;
+            PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             LastUpdateDownloadPath = "";
         }

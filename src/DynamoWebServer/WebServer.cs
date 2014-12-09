@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using System.Net;
-using System.Windows;
-using System.Windows.Threading;
 
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-
+using Dynamo.Models;
 using DynamoWebServer.Messages;
 using DynamoWebServer.Responses;
 
@@ -17,27 +13,25 @@ using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
 
 using SuperWebSocket;
-using System.Threading;
-using Dynamo.Models;
 
 namespace DynamoWebServer
 {
     public class WebServer : IWebServer
     {
-        private readonly DynamoViewModel dynamoViewModel;
+        private readonly DynamoModel dynamoModel;
         private readonly JsonSerializerSettings jsonSettings;
         private readonly IWebSocket webSocket;
-        private ManualResetEvent clearWorkspaceHandle = new ManualResetEvent(true);
 
         private readonly MessageHandler messageHandler;
+        private readonly SocketMessageQueue messageQueue;
 
-        public WebServer(DynamoViewModel dynamoViewModel, IWebSocket socket)
+        public WebServer(DynamoModel dynamoModel, IWebSocket socket)
         {
             webSocket = socket;
-            this.dynamoViewModel = dynamoViewModel;
-            messageHandler = new MessageHandler(dynamoViewModel);
+            this.dynamoModel = dynamoModel;
+            messageHandler = new MessageHandler(dynamoModel);
             messageHandler.ResultReady += SendAnswerToWebSocket;
-
+            messageQueue = new SocketMessageQueue();
             jsonSettings = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Objects,
@@ -87,7 +81,7 @@ namespace DynamoWebServer
 
         public void SendResponse(Response response, string sessionId)
         {
-            var session = webSocket.GetAppSessionByID(sessionId);
+            var session = webSocket.GetAppSessionById(sessionId);
             if (session != null)
             {
                 session.Send(JsonConvert.SerializeObject(response, jsonSettings));
@@ -99,10 +93,21 @@ namespace DynamoWebServer
             }
         }
 
-        public void ExecuteMessageFromSocket(string message, string sessionId)
+        public void ExecuteMessageFromSocket(string message, string sessionId, bool enqueue = true)
         {
             var msg = messageHandler.DeserializeMessage(message);
-            ExecuteMessageFromSocket(msg, sessionId);
+            ExecuteMessageFromSocket(msg, sessionId, enqueue);
+        }
+
+        public void ExecuteFileFromSocket(byte[] file, string sessionId, bool enqueue = true)
+        {
+            var msg = new UploadFileMessage(file);
+            ExecuteMessageFromSocket(msg, sessionId, enqueue);
+        }
+
+        public void ProcessExit(object sender, EventArgs e)
+        {
+            messageQueue.Shutdown();
         }
 
         #endregion
@@ -111,64 +116,24 @@ namespace DynamoWebServer
 
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
-            clearWorkspaceHandle.Reset();
             // Close connection if not from localhost
             if (!session.RemoteEndPoint.Address.Equals(IPAddress.Loopback))
             {
                 session.Close();
-                clearWorkspaceHandle.Set();
                 return;
             }
 
+            messageHandler.SessionId = session.SessionID;
 
-            ClearWorkspace();
-
+            ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID, true);
             LogInfo("Web socket: connected");
-        }
-
-        /// <summary>
-        /// Cleanup workspace
-        /// </summary>
-        private void ClearWorkspace()
-        {
-            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
-                .Invoke(new Action(() =>
-                {
-                    try
-                    {
-                        var dynamoModel = dynamoViewModel.Model;
-                        var customNodeManager = dynamoModel.CustomNodeManager;
-                        var searchModel = dynamoViewModel.SearchViewModel.Model;
-                        var nodeInfos = customNodeManager.NodeInfos;
-
-                        dynamoModel.Home(null);
-                        
-                        foreach (var guid in nodeInfos.Keys)
-                        {
-                            searchModel.RemoveNodeAndEmptyParentCategory(guid);
-                            customNodeManager.LoadedCustomNodes.Remove(guid);
-                        }
-
-                        // remove custom node definitions
-                        dynamoModel.Workspaces.RemoveAll(elem => elem is CustomNodeWorkspaceModel);
-
-                        nodeInfos.Clear();
-                        dynamoModel.Clear(null);
-                    }
-                    finally 
-                    {
-                        clearWorkspaceHandle.Set();
-                    }
-                }));
         }
 
         void socketServer_NewMessageReceived(WebSocketSession session, string message)
         {
             LogInfo("Web socket: received [" + message + "]");
-            SendResponse(new ContentResponse
-            {
-                Message = DateTime.Now.ToShortDateString() + " Message received"
-            }, session.SessionID);
+            SendResponse(new ContentResponse(DateTime.Now.ToShortDateString() + " Message received"), 
+                session.SessionID);
 
             try
             {
@@ -177,18 +142,31 @@ namespace DynamoWebServer
             }
             catch (Exception ex)
             {
-                SendResponse(new ContentResponse
-                {
-                    Message = "Received command was not executed, reason: " + ex.Message
-                }, session.SessionID);
+                SendResponse(new ContentResponse("Received command was not executed, reason: " + ex.Message),
+                    session.SessionID);
             }
+        }
 
+        void socketServer_NewDataReceived(WebSocketSession session, byte[] value)
+        {
+            LogInfo("Web socket: received file");
+            try
+            {
+                ExecuteFileFromSocket(value, session.SessionID);
+            }
+            catch (Exception ex)
+            {
+                SendResponse(new ContentResponse("Received file was incorrect: " + ex.Message),
+                    session.SessionID);
+            }
         }
 
         void socketServer_SessionClosed(WebSocketSession session, CloseReason reason)
         {
             if (reason == CloseReason.ServerShutdown)
+            {
                 return;
+            }
 
             LogInfo("Web socket: disconnected");
         }
@@ -203,6 +181,7 @@ namespace DynamoWebServer
             webSocket.NewSessionConnected += socketServer_NewSessionConnected;
             webSocket.NewMessageReceived += socketServer_NewMessageReceived;
             webSocket.SessionClosed += socketServer_SessionClosed;
+            webSocket.NewDataReceived += socketServer_NewDataReceived;
         }
 
         void UnBindEvents()
@@ -210,23 +189,25 @@ namespace DynamoWebServer
             webSocket.NewSessionConnected -= socketServer_NewSessionConnected;
             webSocket.NewMessageReceived -= socketServer_NewMessageReceived;
             webSocket.SessionClosed -= socketServer_SessionClosed;
+            webSocket.NewDataReceived -= socketServer_NewDataReceived;
         }
 
-        void ExecuteMessageFromSocket(Message message, string sessionId)
+        void ExecuteMessageFromSocket(Message message, string sessionId, bool enqueue)
         {
-            // getting library items is urgent and it doesn't interfere clearing workspace
-            if (!(message is GetLibraryItemsMessage))
-                // wait for end of clearing workspace
-                clearWorkspaceHandle.WaitOne();
-
-            (Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher)
-                .Invoke(new Action(() => messageHandler.Execute(dynamoViewModel, message, sessionId)));
+            if (enqueue)
+            {
+                messageQueue.EnqueueMessage(() => messageHandler.Execute(message, sessionId));
+            }
+            else
+            {
+                messageHandler.Execute(message, sessionId);
+            }
         }
 
         void LogInfo(string info)
         {
-            if (dynamoViewModel.Model.Logger != null)
-                dynamoViewModel.Model.Logger.Log(info);
+            if (dynamoModel.Logger != null)
+                dynamoModel.Logger.Log(info);
         }
 
         #endregion

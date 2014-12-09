@@ -1,4 +1,5 @@
 ﻿//#define __NO_SAMPLES_MENU
+//#define DEBUG_LIBRARY
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.PackageManager;
 
 using DynamoUtilities;
-using String = System.String;
+using System.Text;
 
 namespace Dynamo.Utilities
 {
@@ -41,7 +42,7 @@ namespace Dynamo.Utilities
         public DynamoLoader(DynamoModel model)
         {
             this.dynamoModel = model;
-            this.PackageLoader = new PackageLoader(dynamoModel);
+            this.PackageLoader = new PackageLoader(this, dynamoModel.Logger);
         }
 
         #region Methods
@@ -64,7 +65,7 @@ namespace Dynamo.Utilities
 
                 try
                 {
-                     allLoadedAssembliesByPath[assembly.Location] = assembly;
+                    allLoadedAssembliesByPath[assembly.Location] = assembly;
                     allLoadedAssemblies[assembly.FullName] = assembly;
                 }
                 catch { }
@@ -122,7 +123,12 @@ namespace Dynamo.Utilities
                 }
             }
 
-            dynamoModel.SearchModel.Add(dynamoModel.EngineController.GetFunctionGroups());
+            var functionGroups = dynamoModel.EngineController.GetFunctionGroups();
+            dynamoModel.SearchModel.Add(functionGroups);
+
+#if DEBUG_LIBRARY
+            DumpLibrarySnapshot(functionGroups);
+#endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
         }
 
@@ -139,6 +145,46 @@ namespace Dynamo.Utilities
                    t.IsSubclassOf(typeof(NodeModel));
         }
 
+        private void DumpLibrarySnapshot(IEnumerable<DSEngine.FunctionGroup> functionGroups)
+        {
+            if (null == functionGroups)
+                return;
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var functionGroup in functionGroups)
+            {
+                var functions = functionGroup.Functions.ToList();
+                if (!functions.Any())
+                    continue;
+
+                foreach (var function in functions)
+                {
+                    //Don't add the functions that are not visible in library.
+                    if (!function.IsVisibleInLibrary)
+                        continue;
+
+                    var displayString = function.UserFriendlyName;
+                
+                    // do not add GetType method names to search
+                    if (displayString.Contains("GetType"))
+                    {
+                        continue;
+                    }
+
+                    var nameSpace = string.IsNullOrEmpty(function.Namespace) ? "" : function.Namespace + ".";
+                    var description = nameSpace + function.Signature + "\n";
+
+                    sb.Append(description + "\n");
+                }
+            }
+            dynamoModel.Logger.Log(sb.ToString(), LogLevel.File);
+        }
+
+        internal bool ContainsNodeModelSubType(Assembly assem)
+        {
+            return assem.GetTypes().Any(Nodes.Utilities.IsNodeSubType);
+        }
+
         /// <summary>
         ///     Enumerate the types in an assembly and add them to DynamoController's
         ///     dictionaries and the search view model.  Internally catches exceptions and sends the error 
@@ -147,7 +193,7 @@ namespace Dynamo.Utilities
         /// <Returns>The list of node types loaded from this assembly</Returns>
         public List<Type> LoadNodesFromAssembly(Assembly assembly)
         {
-            if (assembly == null) 
+            if (assembly == null)
                 throw new ArgumentNullException("assembly");
 
             var searchViewModel = dynamoModel.SearchModel;
@@ -157,65 +203,33 @@ namespace Dynamo.Utilities
             try
             {
                 var loadedTypes = assembly.GetTypes();
- 
+
                 foreach (var t in loadedTypes)
                 {
                     try
                     {
-                        //only load types that are in the right namespace, are not abstract
-                        //and have the elementname attribute
-                        var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
-                        var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
+                        var data = Nodes.Utilities.GetDataForType(dynamoModel, t);
+
+                        if (data == null)
+                            continue;
+
+                        var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
+                        var isDeprecated = t.GetCustomAttributes(typeof(NodeDeprecatedAttribute), true).Any();
                         var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
                         var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
                         bool isHidden = false;
-                        var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
-                        if (null != attrs && attrs.Any())
+                        if (data.IsObsolete)
+                            isHidden = true;
+                        else
                         {
-                            var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
-                            if (null != isVisibleAttr && isVisibleAttr.Visible == false)
+                            var attrs = t.GetCustomAttributes(typeof(IsVisibleInDynamoLibraryAttribute), true);
+                            if (null != attrs && attrs.Any())
                             {
-                                isHidden = true;
-                            }
-                        }
-
-                        if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
-                            continue;
-
-                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
-                        //if available, to discern whether we should load this type
-                        if (!dynamoModel.Context.Equals(Context.NONE))
-                        {
-
-                            object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
-                            if (platformExclusionAttribs.Length > 0)
-                            {
-                                string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
-
-                                //if the attribute's values contain the context stored on the controller
-                                //then skip loading this type.
-
-                                if (exclusions.Reverse().Any(e => e.Contains(dynamoModel.Context)))
-                                    continue;
-
-                                //utility was late for Vasari release, but could be available with after-post RevitAPI.dll
-                                if (t.Name.Equals("dynSkinCurveLoops"))
+                                var isVisibleAttr = attrs[0] as IsVisibleInDynamoLibraryAttribute;
+                                if (null != isVisibleAttr && isVisibleAttr.Visible == false)
                                 {
-                                    MethodInfo[] specialTypeStaticMethods = t.GetMethods(BindingFlags.Static | BindingFlags.Public);
-                                    const string nameOfMethodCreate = "noSkinSolidMethod";
-                                    bool exclude = true;
-                                    foreach (MethodInfo m in specialTypeStaticMethods)
-                                    {
-                                        if (m.Name == nameOfMethodCreate)
-                                        {
-                                            var argsM = new object[0];
-                                            exclude = (bool)m.Invoke(null, argsM);
-                                            break;
-                                        }
-                                    }
-                                    if (exclude)
-                                        continue;
+                                    isHidden = true;
                                 }
                             }
                         }
@@ -231,8 +245,6 @@ namespace Dynamo.Utilities
                             typeName = t.Name;
 
                         AssemblyPathToTypesLoaded[assembly.Location].Add(t);
-
-                        var data = new TypeLoadData(assembly, t);
 
                         if (!dynamoModel.BuiltInTypesByNickname.ContainsKey(typeName))
                             dynamoModel.BuiltInTypesByNickname.Add(typeName, data);
@@ -285,8 +297,8 @@ namespace Dynamo.Utilities
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
-            loadedNodes.ForEach(x => searchModel.Add(x) );
-            
+            loadedNodes.ForEach(x => searchModel.Add(x));
+
             // update search view
             searchModel.OnRequestSync();
 
@@ -305,10 +317,9 @@ namespace Dynamo.Utilities
             var searchModel = dynamoModel.SearchModel;
 
             var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
-            customNodeLoader.AddDirectoryToSearchPath(path);
-
+            
             // add nodes to search
-            loadedNodes.ForEach( x => searchModel.Add(x) );
+            loadedNodes.ForEach(x => searchModel.Add(x));
 
             // update search view
             searchModel.OnRequestSync();
@@ -323,5 +334,6 @@ namespace Dynamo.Utilities
         }
 
         #endregion
+
     }
 }

@@ -162,9 +162,12 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =  SYNC                     (. if (!IsFullClosure()) SynErr(@"')' expected - Imcomplete Closure"); .)
                             (. node = null; .)
 (
-    
-	IF(IsFunctionCallStatement())
+	IF(IsNonAssignmentStatement())
+		Associative_NonAssignmentStatement<out node>
+	|
+    IF(IsFunctionCallStatement())
 		Associative_FunctionCallStatement<out node>
+
 	|
         Associative_FunctionalStatement<out node>
     |      
@@ -277,7 +280,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                 Associative_AttributeDeclaration<out attributes>
             ]
             
-                                               (. ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic; .)
+                                               (. ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic; .)
             [
                 Associative_AccessSpecifier<out access>
             ]
@@ -420,7 +423,7 @@ Associative_LanguageBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             (. node = langblock; .)
 .       
 
-Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.DSASM.AccessSpecifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
+Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.Compiler.AccessSpecifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
 =                           (.
                                 ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(); ;                                 
                                 string methodName;  
@@ -486,18 +489,18 @@ Associative_ExternalLibraryReference<out string libname>
 .
 
 //------------------------------------------------------------------------
-Associative_AccessSpecifier<out ProtoCore.DSASM.AccessSpecifier access>
-=                   (. access = ProtoCore.DSASM.AccessSpecifier.kPublic; .)
+Associative_AccessSpecifier<out ProtoCore.Compiler.AccessSpecifier access>
+=                   (. access = ProtoCore.Compiler.AccessSpecifier.kPublic; .)
     (
         "public"        
         |
-        "private"       (. access = ProtoCore.DSASM.AccessSpecifier.kPrivate; .)
+        "private"       (. access = ProtoCore.Compiler.AccessSpecifier.kPrivate; .)
         |
-        "protected"     (. access = ProtoCore.DSASM.AccessSpecifier.kProtected; .)
+        "protected"     (. access = ProtoCore.Compiler.AccessSpecifier.kProtected; .)
     )
 .
 
-Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic, bool isStatic = false.>
+Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic, bool isStatic = false.>
 =                           
                             (. 
                                 ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(); 
@@ -629,7 +632,7 @@ Associative_ArgumentSignatureDefinition<out ProtoCore.AST.AssociativeAST.Associa
                                                 (. argumentSign = argumentSignature; .)
 .
 
-Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
+Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -715,7 +718,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
 
 .
 
-Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic>    
+Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -772,7 +775,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
 .
 
 
-Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic>	
+Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic>	
 =
     Associative_ArgDecl<out node>    (. ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = node as ProtoCore.AST.AssociativeAST.VarDeclNode; .)
     '=' 
@@ -1094,6 +1097,47 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
     (
         Associative_IdentifierList<out node>
     )
+)
+.
+
+//------------------------------------------------------------------------
+Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+  SYNC                       (.
+								 node = null; 
+								 ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
+						     .)
+(
+	(
+		Associative_Expression<out rightNode>
+					(.
+                        //Try to make a false binary expression node.					    
+						ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
+						ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
+						leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
+
+						var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+						leftNode.datatype = unknownType;
+						leftNode.line = rightNode.line;
+						leftNode.col = rightNode.col;
+						leftNode.endLine = rightNode.endLine;
+						leftNode.endCol = rightNode.endCol;
+
+						expressionNode.LeftNode = leftNode;
+						expressionNode.RightNode = rightNode;
+						expressionNode.Optr = Operator.assign;
+						NodeUtils.UpdateBinaryExpressionLocation(expressionNode);
+						node = expressionNode;
+					.)			
+                    
+                    (. 
+                        if (la.val != ";")
+                            SynErr("';' is expected.");  
+                    .)
+		endline				
+					(. NodeUtils.SetNodeEndLocation(node, t); .)
+
+	)
 )
 .
 
@@ -1884,7 +1928,7 @@ Associative_Number<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         number  
         (.  
             Int64 value;
-            if (Int64.TryParse(t.val, out value))
+            if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
             {
                 node = new ProtoCore.AST.AssociativeAST.IntNode(value * sign);
             }
@@ -1907,7 +1951,7 @@ Associative_Number<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         float   
         (.  
             double value;
-            if (Double.TryParse(t.val, out value))
+            if (Double.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
             {
                 node = new ProtoCore.AST.AssociativeAST.DoubleNode(value * sign);
             }

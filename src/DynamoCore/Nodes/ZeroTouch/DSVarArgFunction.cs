@@ -42,6 +42,12 @@ namespace Dynamo.Nodes
             VarInputController.LoadNode(nodeElement);
         }
 
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            VarInputController.SerializeCore(element, context);
+        }
+
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context);
@@ -68,6 +74,19 @@ namespace Dynamo.Nodes
                 : base(model)
             {
                 nodeController = model.Controller;
+            }
+            /// <summary>
+            /// This method is to get the index of the adding Input when we click +
+            /// nodeController.Definition.Parameters.Count() will return 
+            /// the number of inputs the node got by default. For example, String.Join
+            /// got separator+string0. when we click +, base.GetInputIndexFromModel() return 2,
+            /// (nodeController.Definition.Parameters.Count() -1) return 1. Then the new port will 
+            /// be string1
+            /// </summary>
+            /// <returns></returns>
+            public override int GetInputIndexFromModel()
+            {
+                return base.GetInputIndexFromModel() - (nodeController.Definition.Parameters.Count() -1);
             }
 
             protected override string GetInputName(int index)
@@ -101,6 +120,9 @@ namespace Dynamo.Nodes
         {
             var typedParameters = parameters as IList<TypedParameter> ?? parameters.ToList();
             base.InitializeFunctionParameters(model, typedParameters.Take(typedParameters.Count() - 1));
+            var arg = parameters.LastOrDefault();
+            var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
+            model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
         }
 
         protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)

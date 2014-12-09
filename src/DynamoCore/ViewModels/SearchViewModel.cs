@@ -3,16 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
-using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
 using Newtonsoft.Json;
@@ -138,8 +133,6 @@ namespace Dynamo.ViewModels
         public SearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
 
-        List<LibraryItem> allLibraryItems;
-
         #endregion
 
         #region Initialization
@@ -160,18 +153,9 @@ namespace Dynamo.ViewModels
             searchText = "";
 
             topResult = this.Model.AddRootCategoryToStart("Top Result");
-            
+
             this.Model.RequestSync += ModelOnRequestSync;
             this.Model.Executed += ExecuteElement;
-        }
-
-        #endregion
-
-        #region Destruction
-
-        ~SearchViewModel()
-        {
-            this.Model.RequestSync -= this.ModelOnRequestSync;
         }
 
         #endregion
@@ -201,7 +185,15 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            var result = this.Model.Search(query);
+            //var sw = new Stopwatch();
+
+            //sw.Start();
+
+            var result = this.Model.Search(query).ToList();
+
+            //sw.Stop();
+
+            //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
             // Remove old execute handler from old top result
             if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElement)
@@ -258,7 +250,6 @@ namespace Dynamo.ViewModels
 
                 topResult.SetVisibilityToLeaves(true);
                 copy.ExpandToRoot();
-
             }
 
             // for all of the other results, show them in their category
@@ -286,6 +277,7 @@ namespace Dynamo.ViewModels
             SearchResults.Clear();
             visibleSearchResults.ToList()
                 .ForEach(x => SearchResults.Add((NodeSearchElement)x));
+
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
@@ -438,7 +430,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             this.dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -456,7 +448,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, name, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -472,7 +464,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -531,36 +523,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public IEnumerable<LibraryItem> GetAllLibraryItemsByCategory()
-        {
-            if (allLibraryItems == null || !allLibraryItems.Any())
-            {
-                allLibraryItems = new List<LibraryItem>();
-                foreach (var elem in Model.BrowserRootCategories)
-                {
-                    allLibraryItems.AddRange(GetLibraryItemsByCategory(elem));
-                }
-            }
-            return allLibraryItems;
-        }
 
-        private IEnumerable<LibraryItem> GetLibraryItemsByCategory(BrowserItem elem)
-        {
-            var dynamoModel = dynamoViewModel.Model;
-            var result = new List<LibraryItem>();
-            foreach (BrowserItem item in elem.Items)
-            {
-                if (item is SearchElementBase) 
-                {
-                    result.Add(new LibraryItem(item as SearchElementBase, dynamoModel));
-                }
-                else
-                {
-                    result.AddRange(GetLibraryItemsByCategory(item));
-                }
-            }
-            return result;
-        }
 
         #endregion
 

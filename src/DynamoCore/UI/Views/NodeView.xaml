@@ -206,8 +206,7 @@
             </TextBlock.Foreground>
         </TextBlock>
 
-        <!-- INPUT PORTS -->
-
+        <!-- INPUT PORTS -->        
         <DockPanel Name="inPortGrid"
                    Grid.Row="2"
                    Grid.Column="0"
@@ -358,6 +357,27 @@
                 </Binding>
             </Rectangle.Visibility>
         </Rectangle>
+
+        <!--DO NOT ERASE. THIS IS FOR DEBUGGING-->
+        <!--<Rectangle Name="ForceReexecBorder"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Grid.RowSpan="3"
+                   Fill="Transparent"
+                   Stroke="#7E43F041"
+                   StrokeThickness="8"
+                   StrokeLineJoin="Round"
+                   IsHitTestVisible="False"
+                   Canvas.ZIndex="20"
+                   Margin="-10">
+            <Rectangle.Visibility>
+                <Binding Path="WillForceReExecuteOfNode"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         Converter="{StaticResource BooleanToVisibilityConverter}">
+                </Binding>
+            </Rectangle.Visibility>
+        </Rectangle>-->
 
         <Canvas Name="expansionBay"
                 Grid.Row="4"

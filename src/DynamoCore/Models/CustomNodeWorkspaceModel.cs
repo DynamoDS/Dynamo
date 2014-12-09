@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
+
 using String = System.String;
 
 namespace Dynamo.Models
@@ -144,11 +144,6 @@ namespace Dynamo.Models
             }
 
             return true;
-        }
-
-        public override void OnDisplayed()
-        {
-
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)

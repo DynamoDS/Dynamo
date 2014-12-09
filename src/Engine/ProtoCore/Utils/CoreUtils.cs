@@ -1,4 +1,5 @@
-﻿using ProtoCore.DSASM;
+﻿
+using ProtoCore.DSASM;
 using System.Collections.Generic;
 using ProtoCore.AST.AssociativeAST;
 
@@ -64,7 +65,7 @@ namespace ProtoCore.Utils
     private static void InsertBinaryOperationMethod(Core core, ProtoCore.AST.Node root, Operator op, PrimitiveType r, PrimitiveType op1, PrimitiveType op2, int retRank = 0, int op1rank = 0, int op2rank = 0)
     {
         ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-        funcDefNode.access = ProtoCore.DSASM.AccessSpecifier.kPublic;
+        funcDefNode.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
         funcDefNode.IsAssocOperator = true;
         funcDefNode.IsBuiltIn = true;
         funcDefNode.Name = Op.GetOpFunction(op);
@@ -73,14 +74,14 @@ namespace ProtoCore.Utils
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.DSASM.AccessSpecifier.kPublic,
+            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, ProtoCore.DSASM.Constants.kLHS),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)op1), UID = (int)op1, rank = op1rank}
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.DSASM.AccessSpecifier.kPublic,
+            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, ProtoCore.DSASM.Constants.kRHS),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)op2), UID = (int)op2, rank = op2rank}
         });
@@ -101,7 +102,7 @@ namespace ProtoCore.Utils
 	private static void InsertUnaryOperationMethod(Core core, ProtoCore.AST.Node root, UnaryOperator op, PrimitiveType r, PrimitiveType operand)
     {
         ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-        funcDefNode.access = ProtoCore.DSASM.AccessSpecifier.kPublic;
+        funcDefNode.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
         funcDefNode.IsAssocOperator = true;
         funcDefNode.IsBuiltIn = true;
         funcDefNode.Name = Op.GetUnaryOpFunction(op);
@@ -110,7 +111,7 @@ namespace ProtoCore.Utils
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.DSASM.AccessSpecifier.kPublic,
+            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%param"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)operand), UID = (int)operand }
         });
@@ -127,28 +128,28 @@ namespace ProtoCore.Utils
 	private static void InsertInlineConditionOperationMethod(Core core, ProtoCore.AST.Node root, PrimitiveType condition, PrimitiveType r)
     {
         ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-        funcDefNode.access = ProtoCore.DSASM.AccessSpecifier.kPublic;
+        funcDefNode.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
         funcDefNode.Name = ProtoCore.DSASM.Constants.kInlineCondition; 
         funcDefNode.ReturnType = new ProtoCore.Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r };
         ProtoCore.AST.AssociativeAST.ArgumentSignatureNode args = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.DSASM.AccessSpecifier.kPublic,
+            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%condition"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)condition), UID = (int)condition }
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.DSASM.AccessSpecifier.kPublic,
+            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%trueExp"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.DSASM.AccessSpecifier.kPublic,
+            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%falseExp"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
         });
@@ -349,6 +350,12 @@ namespace ProtoCore.Utils
             return propertyName.StartsWith(ProtoCore.DSASM.Constants.kSetterPrefix);
         }
 
+        public static bool StartsWithSingleUnderscore(string name)
+        {
+            Validity.Assert(null != name);
+            return name.StartsWith(ProtoCore.DSASM.Constants.kSingleUnderscore);
+        }
+
         public static bool StartsWithDoubleUnderscores(string name)
         {
             Validity.Assert(null != name);
@@ -451,38 +458,50 @@ namespace ProtoCore.Utils
         {
             // Jun Comment: The current convention for auto generated SSA variables begin with '%'
             // This ensures that the variables is compiler generated as the '%' symbol cannot be used as an identifier and will fail compilation
-            Validity.Assert(null != ssaVar);
+            Validity.Assert(!string.IsNullOrEmpty(ssaVar));
             return ssaVar.StartsWith(ProtoCore.DSASM.Constants.kSSATempPrefix);
         }
 
         public static bool IsTempVarProperty(string varname)
         {
-            Validity.Assert(null != varname);
+            Validity.Assert(!string.IsNullOrEmpty(varname));
             return varname.StartsWith(ProtoCore.DSASM.Constants.kTempPropertyVar);
         }
 
         public static bool IsCompilerGenerated(string varname)
         {
-            Validity.Assert(null != varname);
+            Validity.Assert(!string.IsNullOrEmpty(varname));
             return varname.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix);
         }
 
         public static bool IsInternalFunction(string methodName)
         {
-            Validity.Assert(null != methodName);
+            Validity.Assert(!string.IsNullOrEmpty(methodName));
             return methodName.StartsWith(ProtoCore.DSASM.Constants.kInternalNamePrefix) || methodName.StartsWith(ProtoCore.DSDefinitions.Keyword.Dispose);
         }
 
         public static bool IsDisposeMethod(string methodName)
         {
-            Validity.Assert(null != methodName);
+            Validity.Assert(!string.IsNullOrEmpty(methodName));
             return methodName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose);
+        }
+
+        public static bool IsGetTypeMethod(string methodName)
+        {
+            Validity.Assert(!string.IsNullOrEmpty(methodName));
+            return methodName.Equals(ProtoCore.DSDefinitions.Keyword.GetType);
         }
 
         public static bool IsPropertyTemp(string varname)
         {
-            Validity.Assert(null != varname);
+            Validity.Assert(!string.IsNullOrEmpty(varname));
             return varname.StartsWith(ProtoCore.DSASM.Constants.kTempPropertyVar);
+        }
+
+        public static bool IsDefaultArgTemp(string varname)
+        {
+            Validity.Assert(null != varname);
+            return varname.StartsWith(ProtoCore.DSASM.Constants.kTempDefaultArg);
         }
 
         public static ProtoCore.AST.AssociativeAST.FunctionDotCallNode GenerateCallDotNode(ProtoCore.AST.AssociativeAST.AssociativeNode lhs, 
@@ -755,6 +774,12 @@ namespace ProtoCore.Utils
                     identList = leftNode as IdentifierListNode;
                     classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
                 }
+                if (leftNode is IdentifierNode)
+                {
+                    IdentifierNode identNode = leftNode as IdentifierNode;
+                    classNames = classTable.GetAllMatchingClasses(identNode.Name);
+                    break;
+                }
                 else
                 {
                     break;
@@ -773,7 +798,7 @@ namespace ProtoCore.Utils
         {
             Validity.Assert(null != core);
             List<AssociativeNode> astList = new List<AssociativeNode>();
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(core, code) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             astList.AddRange(cbn.Body);
             return astList;
         }

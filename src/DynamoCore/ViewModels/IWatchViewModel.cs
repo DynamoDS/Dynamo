@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using Dynamo.Interfaces;
 using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
     public interface IWatchViewModel
     {
-        DelegateCommand SelectVisualizationInViewCommand { get; set; }
         DelegateCommand GetBranchVisualizationCommand { get; set; }
         bool WatchIsResizable { get; set; }
         DelegateCommand CheckForLatestRenderCommand { get; set; }
+        DynamoViewModel ViewModel { get;}
+        IVisualizationManager VisualizationManager { get;}
     }
 }

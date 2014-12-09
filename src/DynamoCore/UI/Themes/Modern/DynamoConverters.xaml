@@ -52,6 +52,11 @@
         HeaderBorderError="{StaticResource headerBorderError}"
         OuterBorderError="{StaticResource outerBorderError}"
         BodyBackgroundError="{StaticResource bodyBackgroundError}"
+        HeaderBackgroundBroken="{StaticResource headerBackgroundBroken}"
+        HeaderForegroundBroken="{StaticResource headerForegroundBroken}"
+        HeaderBorderBroken="{StaticResource headerBorderBroken}"
+        OuterBorderBroken="{StaticResource outerBorderBroken}"
+        BodyBackgroundBroken="{StaticResource bodyBackgroundBroken}"
         OuterBorderSelection="{StaticResource outerBorderSelection}">
     </controls:StateToColorConverter>
 
@@ -101,4 +106,6 @@
     <controls:NumberFormatToBoolConverter x:Key="NumberFormatToBoolConverter"/>
     <controls:DoubleDisplay x:Key="DoubleDisplayConverter"/>
     <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>
+    <controls:StringLengthToVisibilityConverter x:Key="StringLengthToVisibilityConverter" />
+    <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter"/>
 </ResourceDictionary>

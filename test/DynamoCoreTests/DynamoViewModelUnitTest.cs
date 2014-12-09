@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using Dynamo.Interfaces;
+
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UpdateManager;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
-using DynamoUtilities;
 
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
+using DynamoUtilities;
+using System.Reflection;
+using System.IO;
 
 namespace Dynamo.Tests
 {
     public class DynamoViewModelUnitTest : UnitTestBase
     {
         protected DynamoViewModel ViewModel;
+        protected DynamoModel Model;
 
         public override void Init()
         {
@@ -32,9 +30,14 @@ namespace Dynamo.Tests
         {
             try
             {
-                ViewModel.Model.ShutDown(false, null);
-                ViewModel = null;
                 DynamoSelection.Instance.ClearSelection();
+
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
+                ViewModel.RequestUserSaveWorkflow -= RequestUserSaveWorkflow;
+                ViewModel = null;
             }
             catch (Exception ex)
             {
@@ -44,6 +47,24 @@ namespace Dynamo.Tests
             base.Cleanup();
 
             GC.Collect();
+        }
+
+        private void RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
+        {
+            // Some test cases may create nodes or modify nodes, so when Dynamo
+            // is shutting down, Dynamo will fire RequestUserSaveWorkflow event 
+            // to save the change, if there is no a corresponding event handler, 
+            // or the event handler fails to save the change, shut down process 
+            // will be aborted and a lot of resource will not be released 
+            // (details refer to DynamoViewModel.PerformShutdownSequence()).
+            //
+            // As this test fixture is UIless, DynamoView, which implements 
+            // event handler for DynamoViewModel.RequestUserSaveWorkflow event, 
+            // won't be created. To ensure resource be released properly, we 
+            // implement event handler here and simply mark the save event's 
+            // susccess status to true to notify Dynamo to continue the shut
+            // down process.
+            e.Success = true;
         }
 
         protected void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
@@ -60,7 +81,12 @@ namespace Dynamo.Tests
 
         protected void StartDynamo()
         {
-            var model = DynamoModel.Start(
+            DynamoPathManager.Instance.InitializeCore(
+               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
+            
+            this.Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true
@@ -69,8 +95,10 @@ namespace Dynamo.Tests
             this.ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
-                    DynamoModel = model
+                    DynamoModel = this.Model
                 });
+
+            this.ViewModel.RequestUserSaveWorkflow += RequestUserSaveWorkflow;
         }
 
         /// <summary>
@@ -149,7 +177,15 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return node.AstIdentifierBase;
+
+            int outportCount = node.OutPorts.Count;
+            Assert.IsTrue(outportCount > 0);
+
+            if(outportCount > 1) 
+                return node.AstIdentifierBase; 
+            else 
+                return node.GetAstIdentifierForOutputIndex(0).Value;
+
         }
 
         protected string GetVarName(string guid)
@@ -157,7 +193,15 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
-            return node.AstIdentifierBase;
+
+            int outportCount = node.OutPorts.Count;
+            Assert.IsTrue(outportCount > 0);
+
+            if (outportCount > 1) 
+                return node.AstIdentifierBase; 
+            else 
+                return node.GetAstIdentifierForOutputIndex(0).Value;
+
         }
 
         protected RuntimeMirror GetRuntimeMirror(string varName)

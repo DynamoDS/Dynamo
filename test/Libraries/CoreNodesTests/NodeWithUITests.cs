@@ -23,7 +23,8 @@ namespace DSCoreNodesTests
     class NodeWithUITests
     {
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
+        [Category("UnitTests")]
         public void SliderASTGeneration()
         {
             var sliderNode = new DoubleSlider(null) { Value = 10 };
@@ -32,6 +33,42 @@ namespace DSCoreNodesTests
             Assert.AreEqual(
                 10,
                 ((DoubleNode)((BinaryExpressionNode)buildOutput.First()).RightNode).Value);
+        }
+
+        [Test]
+        [Category("Failure")]
+        public void SliderMaxValue()
+        {
+            var sliderNode = new DoubleSlider(null) { Value = 500 };
+            sliderNode.UpdateValue("Value", "1000");
+
+            Assert.AreEqual(
+                 1000,
+                 sliderNode.Max);
+
+            sliderNode.UpdateValue("Value", "-1");
+
+            Assert.AreEqual(
+                 -1,
+                 sliderNode.Min);
+        }
+
+        [Test]
+        [Category("Failure")]
+        public void IntegerSliderMaxValue()
+        {
+            var integerSliderNode = new IntegerSlider(null) { Value = 500 };
+            integerSliderNode.UpdateValue("Value", "1000");
+
+            Assert.AreEqual(
+                 1000,
+                 integerSliderNode.Max);
+
+            integerSliderNode.UpdateValue("Value", "-1");
+
+            Assert.AreEqual(
+                 -1,
+                 integerSliderNode.Min);
         }
     }
 }

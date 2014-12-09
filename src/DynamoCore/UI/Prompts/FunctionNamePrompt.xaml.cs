@@ -14,7 +14,7 @@ namespace Dynamo.Nodes
       public FunctionNamePrompt(IEnumerable<string> categories)
       {
          InitializeComponent();
-         //this.Owner = dynSettings.Bench;
+
          this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
          this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 

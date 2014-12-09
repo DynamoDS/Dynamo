@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -71,6 +72,19 @@ namespace Dynamo
         ///     If need to rebuild ast nodes.
         /// </summary>
         public bool RequiresRecalc { get; internal set; }
+
+        #region Override functions
+
+        public override bool Equals(object obj)
+        {
+            CustomNodeDefinition otherDefinition = obj as CustomNodeDefinition;
+            if (otherDefinition == null)
+                return false;
+
+            return this.FunctionId.Equals(otherDefinition.FunctionId);
+        }
+
+        #endregion
 
         #region Dependencies
 
@@ -213,13 +227,12 @@ namespace Dynamo
 
             //Find function entry point, and then compile
             var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
-            var parameters = inputNodes.Select(x => string.IsNullOrEmpty(x.InputSymbol) ? x.AstIdentifierForPreview.Value: x.InputSymbol);
+            var parameters = inputNodes.Select(x => x.GetAstIdentifierForOutputIndex(0).Value);
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
-            var customNodeInstances = dynamoModel.AllNodes
-                        .OfType<Function>()
-                        .Where(el => el.Definition != null && el.Definition == this);
+            var customNodeInstances = 
+                dynamoModel.AllNodes.OfType<Function>().Where(x => this.Equals(x.Definition));
             
             foreach (var node in customNodeInstances)
                 node.ResyncWithDefinition();
@@ -230,10 +243,16 @@ namespace Dynamo
 
             #endregion
 
+            var outputNodes = topMost.Select((x) =>
+            {
+                var n = x.Item2.GetAstIdentifierForOutputIndex(x.Item1);
+                return n as AssociativeNode;
+            });
+
             controller.GenerateGraphSyncDataForCustomNode(
                 this,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)),
-                topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
+                outputNodes,
                 parameters);
 
             // Not update graph until Run 
@@ -295,6 +314,18 @@ namespace Dynamo
             }
 
             return true;
+        }
+
+        #endregion
+
+        #region IFunctionDescriptor Members
+
+        /// <summary>
+        /// Name to create custom node
+        /// </summary>
+        public string MangledName
+        {
+            get { return FunctionId.ToString(); }
         }
 
         #endregion

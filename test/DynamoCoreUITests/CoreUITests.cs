@@ -3,7 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Threading;
+
+using SystemTestServices;
+
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -15,12 +17,12 @@ using NUnit.Framework;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class CoreUserInterfaceTests : DynamoTestUIBase
+    public class CoreUserInterfaceTests : SystemTestBase
     {
         #region SaveImageCommand
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanSaveImage()
         {
             string path = Path.Combine(TempFolder, "output.png");
@@ -33,7 +35,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CannotSaveImageWithBadPath()
         {
             string path = "W;\aelout put.png";
@@ -52,14 +54,14 @@ namespace DynamoCoreUITests
         public void CanHideConsoleWhenShown()
         {
             ViewModel.ToggleConsoleShowingCommand.Execute(null);
-            View.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.False(View.ConsoleShowing)));
+            Assert.True(ViewModel.ConsoleHeight > 0);
         }
 
         [Test]
         [Category("DynamoUI")]
         public void ConsoleIsHiddenOnOpen()
         {
-            Assert.False(View.ConsoleShowing);
+            Assert.False(ViewModel.ConsoleHeight > 0);
         }
 
         [Test]
@@ -67,53 +69,18 @@ namespace DynamoCoreUITests
         public void CanShowConsoleWhenHidden()
         {
             ViewModel.ToggleConsoleShowingCommand.Execute(null);
-            View.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.False(View.ConsoleShowing)));
+            Assert.True(ViewModel.ConsoleHeight > 0);
 
             ViewModel.ToggleConsoleShowingCommand.Execute(null);
-            View.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() => Assert.True(View.ConsoleShowing)));
+            Assert.False(ViewModel.ConsoleHeight > 0);
         }
 
         #endregion
 
-         //THIS WILL ALWAYS FAIL 
-
-        //[Test, RequiresSTA]
-        //[Category("DynamoUI")]
-        //public void CanOpenAllSampleFilesWithoutError()
-        //{
-        //    var di = new DirectoryInfo(@"..\..\doc\Distrib\Samples\");
-        //    int failCount = 0;
-
-        //    foreach (DirectoryInfo d in di.GetDirectories())
-        //    {
-
-        //        foreach (FileInfo fi in d.GetFiles())
-        //        {
-        //            try
-        //            {
-        //                dynSettings.Bench.Dispatcher.Invoke(new Action(delegate
-        //                {
-        //                    ViewModel.CommandQueue.Enqueue(
-        //                        Tuple.Create<object, object>(_vm.OpenCommand, fi.FullName));
-        //                    ViewModel.ProcessCommandQueue();
-        //                }));
-        //            }
-        //            catch(Exception e)
-        //            {
-        //                failCount++;
-        //                Console.WriteLine(string.Format("Could not open {0}", fi.FullName));
-        //                Console.WriteLine(string.Format("Could not open {0}", e.Message));
-        //                Console.WriteLine(string.Format("Could not open {0}", e.StackTrace));
-        //            }
-        //        }
-        //    }
-        //    Assert.AreEqual(failCount, 0);
-        //}
-
         #region Zoom In and Out canvas
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanZoom()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -206,7 +173,7 @@ namespace DynamoCoreUITests
         #region Pan Left, Right, Top, Down Canvas
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanLeft()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -228,7 +195,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanRight()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -250,7 +217,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanUp()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -272,7 +239,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanPanDown()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -298,7 +265,7 @@ namespace DynamoCoreUITests
         #region Fit to View
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void FitViewWithNoNodes()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -318,7 +285,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitView()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -342,7 +309,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitViewTwiceForActualZoom()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -366,7 +333,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void FitViewStressTest()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -391,7 +358,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitViewResetByZoom()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -419,7 +386,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanFitViewResetByPan()
         {
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
@@ -464,11 +431,11 @@ namespace DynamoCoreUITests
 
         #region PreferenceSettings
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI"), Category("Failure")]
         public void PreferenceSetting()
         {
             // Test Case to ensure that the link for these persistent variable
-            // between DynamoViewModel, Controller is not broken or replaced.
+            // between DynamoViewModel, Model is not broken or replaced.
             #region FullscreenWatchShowing
             bool expectedValue = !ViewModel.Model.PreferenceSettings.FullscreenWatchShowing;
             ViewModel.ToggleFullscreenWatchShowing(null);
@@ -480,11 +447,11 @@ namespace DynamoCoreUITests
             #endregion
 
             #region ConsoleHeight
-            int expectedHeight = 0;;
+            int expectedHeight = 100; ;
             ViewModel.ToggleConsoleShowing(null);
             Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
 
-            expectedHeight = 100;
+            expectedHeight = 0;
             ViewModel.ToggleConsoleShowing(null);
             Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
             #endregion
@@ -500,18 +467,27 @@ namespace DynamoCoreUITests
             #endregion
 
             #region Collect Information Option
-            // First time run, check if dynamo did set it back to false after running
-            Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
+            {
+                // Backup the value of Dynamo.IsTestMode and restore it later. The 
+                // reason for this is 'IsUsageReportingApproved' only returns the 
+                // actual value when not running in test mode.
+                var isTestMode = DynamoModel.IsTestMode;
 
-            // CollectionInfoOption To TRUE
-            UsageReportingManager.Instance.SetUsageReportingAgreement(true);
-            RestartTestSetup();
-            Assert.AreEqual(true, UsageReportingManager.Instance.IsUsageReportingApproved);
+                // First time run, check if dynamo did set it back to false after running
+                Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
 
-            // CollectionInfoOption To FALSE
-            UsageReportingManager.Instance.SetUsageReportingAgreement(false);
-            RestartTestSetup();
-            Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
+                // CollectionInfoOption To TRUE
+                UsageReportingManager.Instance.SetUsageReportingAgreement(true);
+                RestartTestSetup(startInTestMode: false);
+                Assert.AreEqual(true, UsageReportingManager.Instance.IsUsageReportingApproved);
+
+                // CollectionInfoOption To FALSE
+                UsageReportingManager.Instance.SetUsageReportingAgreement(false);
+                RestartTestSetup(startInTestMode: false);
+                Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
+
+                DynamoModel.IsTestMode = isTestMode; // Restore the orignal value.
+            }
             #endregion
 
             #region Save And Load of PreferenceSettings
@@ -551,11 +527,11 @@ namespace DynamoCoreUITests
             #endregion
 
             #endregion
-            
+
             View.Close();
         }
 
-        private void RestartTestSetup()
+        private void RestartTestSetup(bool startInTestMode)
         {
             // Shutdown Dynamo and restart it
             View.Close();
@@ -563,7 +539,10 @@ namespace DynamoCoreUITests
 
             if (ViewModel != null)
             {
-                ViewModel.Model.ShutDown(false);
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
                 ViewModel = null;
             }
 
@@ -573,7 +552,7 @@ namespace DynamoCoreUITests
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = startInTestMode
                 });
 
             ViewModel = DynamoViewModel.Start(
@@ -593,7 +572,7 @@ namespace DynamoCoreUITests
         #region InfoBubble
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void UpdateInfoBubble_ErrorBubble()
         {
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel(this.ViewModel);
@@ -640,7 +619,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        [Category("DynamoUI"), Category("Failing")]
+        [Category("DynamoUI")]
         public void CanDeleteANote()
         {
             ViewModel.AddNoteCommand.Execute(null);

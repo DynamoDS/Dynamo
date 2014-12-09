@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class TestClass
+    class TestClass : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\Class\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_Class_In_Various_Scopes()
@@ -1834,7 +1827,7 @@ t1 = a.x1;
 
         [Test]
         [Category("Update")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T43_Defect_1461479_3()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3949
@@ -2821,17 +2814,6 @@ x2 = derivedpoint.B;
             thisTest.Verify("x2", 9);
 
         }
-        /*
-         going in infinite loop due to defect 1467097
-        
-[Test]
-        [Category("SmokeTest")]
-        public void T53_Undefined_Class_As_Parameter_1463738_5()
-        {
-            ExecutionMirror mirror = thisTest.RunScript(testPath, "T53_Undefined_Class_As_Parameter_1463738_5.ds");
-            thisTest.Verify("x1", 2);
-            thisTest.Verify("x2", 9);
-        }*/
 
         [Test]
         [Category("SmokeTest")]
@@ -3175,7 +3157,7 @@ x3 = a3.x;
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TV55_Defect_1460616_1()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3952
@@ -4335,7 +4317,7 @@ val = v[0];";
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T78_Defect_1467146_Class_Update_With_Replication_3()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1660
@@ -4358,7 +4340,7 @@ v = A.execute(arr);
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T78_Defect_1467146_Class_Update_With_Replication_4()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
@@ -4593,7 +4575,7 @@ t = a.x;
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T83_Defect_1463232_3()
         {
             String code =
@@ -4739,7 +4721,7 @@ a.y = 5;
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T85_Defect_1467247_3()
         {
             string code = @"
@@ -5061,7 +5043,7 @@ r = x.foo();
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T92_default_argument_1467384()
         {
             String code =
@@ -5977,7 +5959,7 @@ r = a.x;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T99_1467469
             ()
         {
@@ -6075,7 +6057,6 @@ r2 = b1.count;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failing")]
         public void T95_1467421_4()
         {
             String code =
@@ -6490,7 +6471,7 @@ test2 = wall[0].func(wall[1]);  // 3; expected test1=test2
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T98_Class_Static_Property_Using_Global_Variable()
         {
             String code =
@@ -6946,13 +6927,11 @@ b = MyInt.MyInt().foo().IntValue;
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.VerifyRuntimeWarningCount(2);
             thisTest.Verify("a", null);
             thisTest.Verify("b", null);
         }
 
         [Test]
-        [Category("SmokeTest")]
         public void T116_1467599_Type_Conversion()
         {
             String code =
@@ -6967,7 +6946,7 @@ x = 1;
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.VerifyRuntimeWarningCount(1);
+            thisTest.VerifyRuntimeWarningCount(0);
             thisTest.Verify("myValue", 2);
             thisTest.Verify("x", 1.5);
         }
@@ -6997,7 +6976,7 @@ c = a.x;
 ";
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
-            thisTest.VerifyRuntimeWarningCount(1);
+            thisTest.VerifyRuntimeWarningCount(0);
             thisTest.Verify("b", 2);
             thisTest.Verify("c", 1.5);
         }

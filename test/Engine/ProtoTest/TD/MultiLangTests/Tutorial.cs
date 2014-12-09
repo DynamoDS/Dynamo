@@ -4,14 +4,9 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class Tutorial
+    class Tutorial : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
 
         [Test]
         [Category("Replication")]
@@ -276,7 +271,7 @@ t2 = lines[1][2].StartPoint.X;";
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T00010_Geometry_007_specialPoint_2()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4010
@@ -353,7 +348,7 @@ a 		= a.incrementRadius(0.2); 				// [POINT does not updates]
 
         [Test]
         [Category("Replication")]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T00011_Geometry_008_trim_then_tube_4()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4010
@@ -390,7 +385,7 @@ t5 = tubes[4].EndPoint.X;";
 
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void T00012_Geometry_008a_alternative_method_invocations_1()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4010

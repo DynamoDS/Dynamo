@@ -7,14 +7,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Dynamo.DSEngine;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
-using Dynamo.Controls;
-using System.Windows.Threading;
+
 using System.Windows.Input;
 using Dynamo.Core;
 
@@ -28,12 +27,12 @@ namespace Dynamo.ViewModels
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);
-
+    
     public partial class WorkspaceViewModel : ViewModelBase
     {
         #region Properties and Fields
 
-        internal readonly DynamoViewModel DynamoViewModel;
+        public DynamoViewModel DynamoViewModel { get; private set; }
         public readonly WorkspaceModel Model;
 
         private bool _canFindNodesFromElements = false;
@@ -47,7 +46,8 @@ namespace Dynamo.ViewModels
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
-
+        public PortViewModel portViewModel { get; set; }
+        public bool IsSnapping { get; set; }
         /// <summary>
         /// For requesting registered workspace to zoom in center
         /// </summary>
@@ -142,38 +142,10 @@ namespace Dynamo.ViewModels
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
         ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
 
-        public ObservableCollection<ConnectorViewModel> Connectors
-        {
-            get { return _connectors; }
-            set
-            {
-                _connectors = value;
-                RaisePropertyChanged("Connectors");
-            }
-        }
-        public ObservableCollection<NodeViewModel> Nodes
-        {
-            get { return _nodes; }
-            set
-            {
-                _nodes = value;
-                RaisePropertyChanged("Nodes");
-            }
-        }
-        public ObservableCollection<NoteViewModel> Notes
-        {
-            get { return _notes; }
-            set
-            {
-                _notes = value;
-                RaisePropertyChanged("Notes");
-            }
-        }
-        public ObservableCollection<InfoBubbleViewModel> Errors
-        {
-            get { return _errors; }
-            set { _errors = value; RaisePropertyChanged("Errors"); }
-        }
+        public ObservableCollection<ConnectorViewModel> Connectors { get { return _connectors; } }
+        public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
+        public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
+        public ObservableCollection<InfoBubbleViewModel> Errors { get { return _errors; } }
 
         public string Name
         {
@@ -304,7 +276,7 @@ namespace Dynamo.ViewModels
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Connectors));
-            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
+            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));           
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -374,8 +346,10 @@ namespace Dynamo.ViewModels
                             var node = item as NodeModel;
 
                             var nodeViewModel = new NodeViewModel(this, node);
+                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;                          
                             _nodes.Add(nodeViewModel);
                             Errors.Add(nodeViewModel.ErrorBubble);
+                            nodeViewModel.UpdateBubbleContent();
                         }
                     }
                     break;
@@ -393,6 +367,47 @@ namespace Dynamo.ViewModels
                     }
                     break;
             }
+        }
+
+        
+        /// <summary>
+        /// Handles the port snapping on Mouse Enter.
+        /// </summary>
+        /// <param name="portViewModel">The port view model.</param>
+        /// <param name="eventType">Type of the event.</param>
+        private void nodeViewModel_SnapInputEvent(PortViewModel portViewModel)
+        {
+            switch (portViewModel.EventType)
+            {
+                case PortEventType.MouseEnter:                    
+                    IsSnapping = this.CheckActiveConnectorCompatibility(portViewModel);
+                    this.portViewModel = portViewModel;
+                    break;
+                case PortEventType.MouseLeave:
+                     IsSnapping = false;
+                    this.portViewModel = portViewModel;
+                    break;
+                case PortEventType.MouseLeftButtonDown:
+                    //If the connector is not active, then the state is changed to None. otherwise, the connector state is connection and 
+                    //is not deleted from the view.
+                    this.portViewModel = portViewModel;
+                    if (this.CheckActiveConnectorCompatibility(portViewModel))
+                    {
+                        this.HandlePortClicked(portViewModel);
+                    }
+                    else
+                    {
+                        this.CancelActiveState();
+
+                    }
+                    break;
+                default:
+                    IsSnapping = this.CheckActiveConnectorCompatibility(portViewModel);
+                    this.portViewModel = portViewModel;
+                    break;
+
+            }
+            
         }
 
         void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -453,7 +468,7 @@ namespace Dynamo.ViewModels
             }
 
             Guid nodeID = Guid.NewGuid();
-            var command = new DynamoViewModel.ConvertNodesToCodeCommand(nodeID);
+            var command = new DynamoModel.ConvertNodesToCodeCommand(nodeID);
             this.DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -949,15 +964,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Collapse a set of nodes in the current workspace.  Has the side effects of prompting the user
-        ///     first in order to obtain the name and category for the new node, 
-        ///     writes the function to a dyf file, adds it to the FunctionDict, adds it to search, and compiles and 
-        ///     places the newly created symbol (defining a lambda) in the Controller's FScheme Environment.  
+        ///     Collapse a set of nodes in this workspace
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         internal void CollapseNodes(IEnumerable<NodeModel> selectedNodes)
         {
-            NodeCollapser.Collapse(DynamoViewModel, selectedNodes, this.Model);
+            NodeCollapser.Collapse(DynamoViewModel.Model, selectedNodes, this.Model);
         }
 
         internal void Loaded()

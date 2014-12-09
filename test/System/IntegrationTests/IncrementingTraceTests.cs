@@ -1491,7 +1491,8 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
         }
 
         [Test]
-        [Category("Trace")]
+        [Category("Failure")]
+        //[Category("Trace")] // Uncommnet this after removing Failure category.
         public void ReplicatedToAllExceptionToReplicated()
         {
 
@@ -1657,7 +1658,8 @@ mtcAID = mtcA.ID;";
         //Reproductions
 
         [Test]
-        [Category("Trace")]
+        [Category("Failure")]
+        //[Category("Trace")] // Uncommnet this after removing Failure category.
         public void Repo_01()
         {
             //Test to ensure that the first time the code is executed the wasTraced attribute is marked as false
@@ -1825,8 +1827,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            CodeBlockNode commentCode;
-            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             return subtree;
         }

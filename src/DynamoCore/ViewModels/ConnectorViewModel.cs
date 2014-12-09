@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
+
 using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
@@ -152,6 +152,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool IsStartOrEndSelected
+        {
+            get
+            {
+                return IsStartSelected || IsEndSelected;
+            }
+        }
+
         private double _endDotSize = 6;
         public double EndDotSize
         {
@@ -245,6 +253,7 @@ namespace Dynamo.ViewModels
             {
                 case "IsSelected":
                     RaisePropertyChanged("IsStartSelected");
+                    RaisePropertyChanged("IsStartOrEndSelected");
                     break;
                 case "Position":
                     RaisePropertyChanged("CurvePoint0");
@@ -268,6 +277,7 @@ namespace Dynamo.ViewModels
             {
                 case "IsSelected":
                     RaisePropertyChanged("IsEndSelected");
+                    RaisePropertyChanged("IsStartOrEndSelected");
                     break;
                 case "Position":
                     RaisePropertyChanged("CurvePoint0");

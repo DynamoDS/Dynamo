@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    public class Class
+    class Class : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testCasePath = "..\\..\\..\\Scripts\\TD\\Associative\\Class\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T001_Associative_Class_Property_Int()
@@ -1341,10 +1334,6 @@ x9 = a1.w4;//{null,null}";
             thisTest.Verify("x8", arr2);
             thisTest.Verify("x9", new object[] { null, null });
         }
-        /*   
-[Test]           public void T054_Inherit_nested()           {               ExecutionMirror mirror = thisTest.RunScript(testCasePath, "T054_Inherit_nested.ds");           }           
-[Test]           public void T055_Inherit_donotchangevalue()           {               ExecutionMirror mirror = thisTest.RunScript(testCasePath, "T055_Inherit_donotchangevalue.ds");           }          
-[Test]            public void T056_Inherit_private_negative()           {               ExecutionMirror mirror = thisTest.RunScript(testCasePath, "T056_Inherit_private_negative.ds");           }         */
 
         [Test]
         [Category("SmokeTest")]
@@ -4239,6 +4228,26 @@ t = A.a;
 ";
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
+        }
+
+        [Test]
+        public void TestDefaultArgInConstructor01()
+        {
+            string code = @"
+class Test{	x : int;	constructor Test(m:int = 1)	{		x = m;	}}p = Test.Test(2); i = p.x;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 2);
+        }
+
+        [Test]
+        public void TestDefaultArgInConstructor02()
+        {
+            string code = @"
+class Test{	x : int;	y : int;	constructor Test(m:int, n:int = 2)	{		x = m;		y = n;	}}p = Test.Test(1); i = p.y;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("i", 2);
         }
 
     }

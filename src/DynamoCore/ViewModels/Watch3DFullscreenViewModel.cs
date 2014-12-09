@@ -1,7 +1,4 @@
-﻿using Dynamo.UI.Commands;
-using Dynamo.Utilities;
-
-namespace Dynamo.ViewModels
+﻿namespace Dynamo.ViewModels
 {
     public class Watch3DFullscreenViewModel : ViewModelBase
     {

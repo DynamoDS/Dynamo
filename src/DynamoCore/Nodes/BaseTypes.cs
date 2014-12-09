@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using System.Globalization;
 
 using Dynamo.ViewModels;
-
-using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
@@ -31,8 +32,7 @@ namespace Dynamo.Nodes
         public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
         public const string CORE_LISTS_CREATE = "Core.List.Create";
-        public const string CORE_LISTS_MODIFY = "Core.List.Modify";
-        public const string CORE_LISTS_EVALUATE = "Core.List.Evaluate";
+        public const string CORE_LISTS_ACTION = "Core.List.Actions";        
         public const string CORE_LISTS_QUERY = "Core.List.Query";
         public const string CORE_VIEW = "Core.View";
         public const string CORE_ANNOTATE = "Core.Annotate";
@@ -40,6 +40,7 @@ namespace Dynamo.Nodes
         public const string CORE_TIME = "Core.Time";
         public const string CORE_SCRIPTING = "Core.Scripting";
         public const string CORE_FUNCTIONS = "Core.Functions";
+        public const string CORE_IO = "Core.File";
 
         public const string LOGIC = "Core.Logic";
         public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
@@ -50,7 +51,6 @@ namespace Dynamo.Nodes
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
         public const string LOGIC_EFFECT = "Logic.Effect";
         public const string LOGIC_COMPARISON = "Logic.Comparison";
-        public const string LOGIC_CONDITIONAL = "Core.Logic.Conditional";
         public const string LOGIC_LOOP = "Logic.Loop";
 
 
@@ -197,7 +197,7 @@ namespace Dynamo.Nodes
         /// qualified name. This method performs the search with the following 
         /// order:</para>
         /// <para>1. Search among the built-in types registered with 
-        /// DynamoController.BuiltInTypesByName dictionary</para>
+        /// DynamoModel.BuiltInTypesByName dictionary</para>
         /// <para>2. Search among the available .NET runtime types</para>
         /// <para>3. Search among built-in types, taking their "also-known-as" 
         /// attributes into consideration when matching the type name</para>
@@ -246,6 +246,58 @@ namespace Dynamo.Nodes
                 "might be missing from your workflow.");
 
             return null;
+        }
+
+        public static TypeLoadData GetDataForType(DynamoModel dynamoModel, Type t)
+        {
+            //only load types that are in the right namespace, are not abstract
+            //and have the elementname attribute
+            var obsoleteMsg = "";
+
+            var obsAttrs = t.GetCustomAttributes(typeof(ObsoleteAttribute), true);
+            if (null != obsAttrs && obsAttrs.Any())
+            {
+                var attr = obsAttrs[0] as ObsoleteAttribute;
+                if (null != attr)
+                {
+                    obsoleteMsg = attr.Message;
+                    if (string.IsNullOrEmpty(obsoleteMsg))
+                        obsoleteMsg = "Obsolete";
+                }
+            }
+
+            if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes")
+                return null;
+
+            //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+            //if available, to discern whether we should load this type
+            if (!dynamoModel.Context.Equals(Context.NONE))
+            {
+                object[] platformExclusionAttribs = t.GetCustomAttributes(typeof(DoNotLoadOnPlatformsAttribute), false);
+                if (platformExclusionAttribs.Length > 0)
+                {
+                    string[] exclusions = (platformExclusionAttribs[0] as DoNotLoadOnPlatformsAttribute).Values;
+
+                    //if the attribute's values contain the context stored on the Model
+                    //then skip loading this type.
+                    if (exclusions.Reverse().Any(e => e.Contains(dynamoModel.Context)))
+                        return null;
+                }
+            }
+            return new TypeLoadData(t.Assembly, t, obsoleteMsg);
+        }
+        
+        /// <summary>
+        ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
+        ///     out what nodes to load from other libraries (.dlls).
+        /// </summary>
+        /// <parameter>The type</parameter>
+        /// <returns>True if the type is node.</returns>
+        public static bool IsNodeSubType(Type t)
+        {
+            return //t.Namespace == "Dynamo.Nodes" &&
+                   !t.IsAbstract &&
+                   t.IsSubclassOf(typeof(NodeModel));
         }
 
         /// <summary>
@@ -463,7 +515,12 @@ namespace Dynamo.Nodes
             Uri assemblyUri = new Uri(subjectPath, UriKind.Absolute);
 
             var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
-            return relativeUri.OriginalString.Replace('/', '\\');
+            var relativePath = relativeUri.OriginalString.Replace('/', '\\');
+            if (!HasPathInformation(relativePath))
+            {
+                relativePath = ".\\" + relativePath;
+            }
+            return relativePath;
         }
 
         /// <summary>
@@ -946,7 +1003,7 @@ namespace Dynamo.Nodes
                 }
 
                 RegisterInputPorts();
-                ClearError();
+                ClearRuntimeError();
             }
             catch (Exception e)
             {
@@ -1539,6 +1596,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             _convertToken = Convert;
+            Value = "0";
         }
 
         public virtual double Convert(double value)
@@ -1574,7 +1632,7 @@ namespace Dynamo.Nodes
                     }
 
                     RegisterInputPorts();
-                    ClearError();
+                    ClearRuntimeError();
 
                     ArgumentLacing = InPortData.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
                 }

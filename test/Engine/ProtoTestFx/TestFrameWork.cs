@@ -28,6 +28,7 @@ namespace ProtoTestFx.TD
         private static string mErrorMessage = "";
         bool testImport;
         bool testDebug;
+        bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
  
@@ -86,12 +87,13 @@ namespace ProtoTestFx.TD
         /// </summary>
         /// <returns></returns>
         
-        public ProtoCore.Core SetupEmptyTestCore()
+        public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
+            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
             core.IsParsingPreloadedAssembly = false;
             return core;
@@ -146,7 +148,7 @@ namespace ProtoTestFx.TD
 
         public ExecutionMirror RunScript(string pathname, string errorstring = "", string includePath = "")
         {
-            var testCore = SetupTestCore();
+            SetupTestCore();
             Console.WriteLine( errorstring);
             if (!String.IsNullOrEmpty(includePath))
             {
@@ -193,8 +195,6 @@ namespace ProtoTestFx.TD
                 
                 StackTrace trace = new StackTrace();
                 int caller = 2;
-                System.Diagnostics.StackFrame frame = trace.GetFrame(caller);
-                string callerName = frame.GetMethod().Name;
                 
                 string tempPath = System.IO.Path.GetTempPath();
                 string import = @"testImport\";
@@ -239,7 +239,7 @@ namespace ProtoTestFx.TD
             }
             else
             {
-                var testCore = SetupTestCore();
+                SetupTestCore();
                 if (!String.IsNullOrEmpty(includePath))
                 {
                     if (System.IO.Directory.Exists(includePath))
@@ -252,16 +252,22 @@ namespace ProtoTestFx.TD
                     }
                 }
                 testMirror = runner.Execute(sourceCode, testCore);
-                String fileName = TestContext.CurrentContext.Test.Name + ".ds";
-                String folderName = TestContext.CurrentContext.Test.FullName;
+                
+                if (dumpDS )
+                {
 
-                string[] substrings = folderName.Split('.');
+                    String fileName = TestContext.CurrentContext.Test.Name + ".ds";
+                    String folderName = TestContext.CurrentContext.Test.FullName;
 
-                string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
-                if (!System.IO.Directory.Exists(path))
-                    System.IO.Directory.CreateDirectory(path);
+                    string[] substrings = folderName.Split('.');
 
-                createDSFile(fileName, path, sourceCode);
+                    string path = "..\\..\\..\\test\\core\\dsevaluation\\DSFiles\\";
+                    if (!System.IO.Directory.Exists(path))
+                        System.IO.Directory.CreateDirectory(path);
+
+                    createDSFile(fileName, path, sourceCode);
+                }
+
                 SetErrorMessage(errorstring);
                 return testMirror;
             }
@@ -274,7 +280,7 @@ namespace ProtoTestFx.TD
         /// <returns></returns>
         public ExecutionMirror RunASTSource(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, string errorstring = "", string includePath = "")
         {
-            var testCore = SetupTestCore();
+            SetupTestCore();
             if (!String.IsNullOrEmpty(includePath))
             {
                 if (System.IO.Directory.Exists(includePath))
@@ -514,8 +520,7 @@ namespace ProtoTestFx.TD
                 }
                 else
                 {
-                    int ptr = (int)sv.opdata;
-                    ProtoCore.DSASM.HeapElement he = testMirror.MirrorTarget.rmem.Heap.Heaplist[ptr];
+                    ProtoCore.DSASM.HeapElement he = testMirror.MirrorTarget.rmem.Heap.GetHeapElement(sv);
 
                     if (he.Refcount != referencCount)
                     {
@@ -592,9 +597,24 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(testCore.BuildStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
+        /// <summary>
+        /// Verify the total warning count
+        /// </summary>
+        /// <param name="count"></param>
         public void VerifyBuildWarningCount(int count)
         {
             Assert.IsTrue(testCore.BuildStatus.WarningCount == count, mErrorMessage);
+        }
+
+        /// <summary>
+        /// Verify the number of times that the warning 'id' has occured
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="count"></param>
+        public void VerifyBuildWarningCount(ProtoCore.BuildData.WarningID id, int count)
+        {
+            int warningCount = testCore.BuildStatus.Warnings.Count(w => w.ID == id);
+            Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
         public static void VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID id)
@@ -692,7 +712,7 @@ namespace ProtoTestFx.TD
         {
             if (value == null)
             {
-                Assert.IsTrue(data.IsNull);
+                Assert.IsTrue(data.IsNull, "data is null");
             }
             else if (value is int)
             {
@@ -730,7 +750,7 @@ namespace ProtoTestFx.TD
         public IList<MethodMirror> GetMethods(string className, string methodName)
         {
             ClassMirror classMirror = new ClassMirror(className, testCore);
-            return classMirror.GetOverloads(methodName);
+            return classMirror.GetOverloads(methodName).ToList();
         }
 
         private static void AssertCollection(MirrorData data, IEnumerable collection)
@@ -752,7 +772,11 @@ namespace ProtoTestFx.TD
 
         public void CleanUp()
         {
-            testCore.Cleanup();
+            if (testCore != null)
+            {
+                testCore.Cleanup();
+                testCore = null;
+            }
         }
     }
 }

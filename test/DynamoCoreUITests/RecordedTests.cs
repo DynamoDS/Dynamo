@@ -4,6 +4,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
+
+using SystemTestServices;
+
 using DSIronPythonNode;
 using Dynamo;
 using Dynamo.Controls;
@@ -12,6 +15,9 @@ using Dynamo.Nodes;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using Dynamo.UI;
+using DynamoUtilities;
+using System.Reflection;
 
 namespace DynamoCoreUITests
 {
@@ -27,13 +33,20 @@ namespace DynamoCoreUITests
         private CommandCallback commandCallback = null;
 
         // For access within test cases.
+        protected DynamoView dynamoView = null;
         protected WorkspaceModel workspace = null;
         protected WorkspaceViewModel workspaceViewModel = null;
+        protected double tolerance = 1e-6;
+        protected double codeBlockPortHeight = Configurations.CodeBlockPortHeightInPixels;
 
         public override void Init()
         {
             // We do not call "base.Init()" here because we want to be able 
             // to create our own copy of Controller here with command file path.
+            DynamoPathManager.Instance.InitializeCore(
+              Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
         }
 
         [SetUp]
@@ -53,11 +66,13 @@ namespace DynamoCoreUITests
                 // There are exceptions made to certain test cases where async evaluation 
                 // needs to be permitted. IsTestMode is marked as false for these test cases
                 // to emulate the real UI async scenario. Since the UI takes care of shutting down
-                // the controller in such a case, we need to make sure it is not shut down twice
+                // the Model in such a case, we need to make sure it is not shut down twice
                 // by checking for IsTestMode here as well
                 if (DynamoModel.IsTestMode)
                 {
-                    this.ViewModel.Model.ShutDown(true);
+                    var shutdownParams = new DynamoViewModel.ShutdownParams(
+                        shutdownHost: false, allowCancellation: false);
+                    ViewModel.PerformShutdownSequence(shutdownParams);
                 }
                 this.ViewModel = null;
             }
@@ -88,7 +103,7 @@ namespace DynamoCoreUITests
         {
             int pauseDurationInMs = randomizer.Next(2000);
 
-            var cmdOne = new DynamoViewModel.PausePlaybackCommand(pauseDurationInMs);
+            var cmdOne = new DynamoModel.PausePlaybackCommand(pauseDurationInMs);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.PauseDurationInMs, cmdTwo.PauseDurationInMs);
         }
@@ -99,7 +114,7 @@ namespace DynamoCoreUITests
             bool showErrors = randomizer.Next(2) == 0;
             bool cancelRun = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.RunCancelCommand(showErrors, cancelRun);
+            var cmdOne = new DynamoModel.RunCancelCommand(showErrors, cancelRun);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.ShowErrors, cmdTwo.ShowErrors);
             Assert.AreEqual(cmdOne.CancelRun, cmdTwo.CancelRun);
@@ -119,7 +134,7 @@ namespace DynamoCoreUITests
             bool defaultPos = randomizer.Next(2) == 0;
             bool transfPos = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.CreateNodeCommand(
+            var cmdOne = new DynamoModel.CreateNodeCommand(
                 nodeId, name, x, y, defaultPos, transfPos);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
@@ -149,7 +164,7 @@ namespace DynamoCoreUITests
             double y = randomizer.NextDouble() * 1000;
             bool defaultPos = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.CreateNoteCommand(nodeId, text, x, y, defaultPos);
+            var cmdOne = new DynamoModel.CreateNoteCommand(nodeId, text, x, y, defaultPos);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
@@ -166,7 +181,7 @@ namespace DynamoCoreUITests
             ModifierKeys modifiers = ((randomizer.Next(2) == 0) ?
                 ModifierKeys.Control : ModifierKeys.Alt);
 
-            var cmdOne = new DynamoViewModel.SelectModelCommand(modelGuid, modifiers);
+            var cmdOne = new DynamoModel.SelectModelCommand(modelGuid, modifiers);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
@@ -184,7 +199,7 @@ namespace DynamoCoreUITests
 
             bool isCrossSelection = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.SelectInRegionCommand(region, isCrossSelection);
+            var cmdOne = new DynamoModel.SelectInRegionCommand(region, isCrossSelection);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.Region.X, cmdTwo.Region.X, 0.000001);
@@ -202,10 +217,10 @@ namespace DynamoCoreUITests
                 randomizer.NextDouble() * 100);
 
             var operation = ((randomizer.Next(2) == 0) ?
-                DynamoViewModel.DragSelectionCommand.Operation.BeginDrag :
-                DynamoViewModel.DragSelectionCommand.Operation.EndDrag);
+                DynamoModel.DragSelectionCommand.Operation.BeginDrag :
+                DynamoModel.DragSelectionCommand.Operation.EndDrag);
 
-            var cmdOne = new DynamoViewModel.DragSelectionCommand(point, operation);
+            var cmdOne = new DynamoModel.DragSelectionCommand(point, operation);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.MouseCursor.X, cmdTwo.MouseCursor.X, 0.000001);
@@ -219,9 +234,9 @@ namespace DynamoCoreUITests
             Guid nodeId = Guid.NewGuid();
             int portIndex = randomizer.Next();
             var portType = ((PortType)randomizer.Next(2));
-            var mode = ((DynamoViewModel.MakeConnectionCommand.Mode)randomizer.Next(3));
+            var mode = ((DynamoModel.MakeConnectionCommand.Mode)randomizer.Next(3));
 
-            var cmdOne = new DynamoViewModel.MakeConnectionCommand(
+            var cmdOne = new DynamoModel.MakeConnectionCommand(
                 nodeId, portIndex, portType, mode);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
@@ -236,7 +251,7 @@ namespace DynamoCoreUITests
         public void TestDeleteModelCommand()
         {
             Guid modelGuid = Guid.NewGuid();
-            var cmdOne = new DynamoViewModel.DeleteModelCommand(modelGuid);
+            var cmdOne = new DynamoModel.DeleteModelCommand(modelGuid);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
         }
@@ -244,8 +259,8 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void TestUndoRedoCommand()
         {
-            var operation = ((DynamoViewModel.UndoRedoCommand.Operation)randomizer.Next(2));
-            var cmdOne = new DynamoViewModel.UndoRedoCommand(operation);
+            var operation = ((DynamoModel.UndoRedoCommand.Operation)randomizer.Next(2));
+            var cmdOne = new DynamoModel.UndoRedoCommand(operation);
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.CmdOperation, cmdTwo.CmdOperation);
         }
@@ -257,7 +272,7 @@ namespace DynamoCoreUITests
             string name = randomizer.Next().ToString();
             string value = randomizer.Next().ToString();
 
-            var cmdOne = new DynamoViewModel.UpdateModelValueCommand(modelGuid, name, value);
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuid, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
@@ -274,7 +289,7 @@ namespace DynamoCoreUITests
             string description = randomizer.Next().ToString();
             bool makeCurrent = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoViewModel.CreateCustomNodeCommand(
+            var cmdOne = new DynamoModel.CreateCustomNodeCommand(
                 modelGuid, name, category, description, makeCurrent);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
@@ -364,11 +379,30 @@ namespace DynamoCoreUITests
 
             });
         }
+        [Test, RequiresSTA]
+        public void TestRunEnabledButtonCanBeDisabled()
+        {
+            RunCommandsFromFile("TestRunEnabledButtonCanBeDisabled.xml", false, (commandTag) =>
+            {
+                //This test case is to verify that when RunEnabled is changed to false from the model, 
+                //the Run button is disabled. The strategy here is to directly modify the RunEnabled value
+                //in the model. But at that time, the view has not yet had a chance to refresh its button.
+                //So the process is separated into two steps. At the second step. the button status is checked.
+                if (commandTag == "OpenFile")
+                {
+                    ViewModel.Model.RunEnabled = false;
+                }
+                else if (commandTag == "CheckButtonIsDisabled")
+                {
+                    Assert.IsFalse(dynamoView.RunButton.IsEnabled);
+                }
+            });
+        }
         [Test]
-        public void Deffect_CN_1143()
+        public void Defect_MAGN_1143_CN()
         {
             // modify the name of the input node
-            RunCommandsFromFile("Deffect_CN_1143.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_1143_CN.xml", false, (commandTag) =>
             {
                 var workspaces = ViewModel.Model.Workspaces;
 
@@ -412,9 +446,9 @@ namespace DynamoCoreUITests
             });
         }
         [Test]
-        public void TestDeffect_CN_2144()
+        public void Defect_MAGN_2144_CN()
         {
-            RunCommandsFromFile("Deffect_CN_2144.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2144_CN.xml", false, (commandTag) =>
             {
                 var workspaces = ViewModel.Model.Workspaces;
 
@@ -468,7 +502,7 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void TestSwitchTabCommand()
         {
-            var cmdOne = new DynamoViewModel.SwitchTabCommand(randomizer.Next());
+            var cmdOne = new DynamoModel.SwitchTabCommand(randomizer.Next());
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.TabIndex, cmdTwo.TabIndex);
         }
@@ -477,7 +511,7 @@ namespace DynamoCoreUITests
 
         #region General Node Operations Test Cases
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void MultiPassValidationSample()
         {
             RunCommandsFromFile("MultiPassValidationSample.xml", false, (commandTag) =>
@@ -497,7 +531,7 @@ namespace DynamoCoreUITests
             });
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestModifyPythonNodes()
         {
             RunCommandsFromFile("ModifyPythonNodes.xml");
@@ -511,7 +545,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestModifyPythonNodesUndo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndo.xml");
@@ -525,7 +559,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 2", pvarin.Script);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestModifyPythonNodesUndoRedo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
@@ -539,7 +573,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void CreateAndUseCustomNode()
         {
             RunCommandsFromFile("CreateAndUseCustomNode.xml");
@@ -617,13 +651,13 @@ namespace DynamoCoreUITests
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
             if (this.ViewModel != null)
             {
-                var message = "Multiple DynamoController detected!";
+                var message = "Multiple DynamoViewModel instances detected!";
                 throw new InvalidOperationException(message);
             }
 
@@ -633,7 +667,7 @@ namespace DynamoCoreUITests
                     StartInTestMode = true
                 });
 
-            // Create the controller to run alongside the view.
+            // Create the DynamoViewModel to control the view
             this.ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
@@ -659,7 +693,7 @@ namespace DynamoCoreUITests
             RegisterCommandCallback(commandCallback);
 
             // Create the view.
-            var dynamoView = new DynamoView(this.ViewModel);
+            dynamoView = new DynamoView(this.ViewModel);
             dynamoView.ShowDialog();
 
             Assert.IsNotNull(this.ViewModel);
@@ -700,7 +734,7 @@ namespace DynamoCoreUITests
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynamoViewModel.RecordableCommand
+            where CmdType : DynamoModel.RecordableCommand
         {
             Assert.IsNotNull(command); // Ensure we have an input command.
 
@@ -710,7 +744,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(element);
 
             // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynamoViewModel.RecordableCommand.Deserialize(element);
+            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
             Assert.IsNotNull(duplicate);
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;
@@ -724,7 +758,7 @@ namespace DynamoCoreUITests
     {
         #region Basic CodeBlockNode Test Cases
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestBasicCodeBlockNodePortCreation()
         {
             RunCommandsFromFile("TestBasicPortCreation.xml");
@@ -733,7 +767,6 @@ namespace DynamoCoreUITests
             var nodes = workspaceViewModel.Nodes;
             Assert.NotNull(nodes);
             Assert.AreEqual(2, nodes.Count);
-
             //Check the CBN
             var cbn = GetNode("107e30e9-e97c-402c-b206-d27162d1fafd") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -744,16 +777,16 @@ namespace DynamoCoreUITests
             //    > ToolTipContent stores name of variable
             //    > Margina thickness is for height.(is a multiple of 20, except for the first)
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("c", cbn.OutPorts[2].ToolTipContent);
-            Assert.AreEqual(60, cbn.OutPorts[2].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - 3*codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("d", cbn.OutPorts[3].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[3].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[3].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             //CBN Input Ports
             //   >PortName stores name of variable
@@ -770,7 +803,7 @@ namespace DynamoCoreUITests
         /// Creates a Code Block Node with a single line comment and multi line comment 
         /// checks if the ports are created properly and at the correct height
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
         public void TestCommentsInCodeBlockNode()
         {
             RunCommandsFromFile("TestCommentsInCodeBlockNode.xml");
@@ -786,14 +819,15 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, cbn.OutPorts.Count);
 
             Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(100, cbn.OutPorts[1].MarginThickness.Top);
+            //Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 6*codeBlockPortHeight) <= tolerance);
         }
 
         /// <summary>
         /// Create a code block node with some ports connected and others unconnected. Change all variable names
         /// and ensure that connectors remain to the port index.
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
         public void TestCodeBlockNodeConnectionOnCodeChange()
         {
             RunCommandsFromFile("TestCodeBlockNodeConnectionSwitching.xml");
@@ -822,9 +856,10 @@ namespace DynamoCoreUITests
         /// Creates 3 number nodes and an add (+) nodes. Connects 2 of the number
         /// nodes to the + node. Then converts all the nodes to Code.
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
         public void TestConvertAllNodesToCode()
         {
+            Assert.Inconclusive("Node To Code feature has been removed");
             RunCommandsFromFile("TestConvertAllNodesToCode.xml");
 
             //Check the nodes
@@ -882,9 +917,10 @@ namespace DynamoCoreUITests
         /// Ensures that redo works for NodeToCode by converting a set of nodes to
         /// code and then undoing and redoing it again.
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
         public void TestConvertAllNodesToCodeUndoRedo()
         {
+            Assert.Inconclusive("Node to Code has been removed");
             RunCommandsFromFile("TestConvertAllNodesToCodeUndoRedo.xml");
 
             //Check the nodes
@@ -928,7 +964,7 @@ namespace DynamoCoreUITests
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
         public void TestUndoRedoNodesAndConnections_DS()
         {
             RunCommandsFromFile("TestUndoRedoNodesAndConnection_DS.xml");
@@ -946,7 +982,7 @@ namespace DynamoCoreUITests
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
         public void TestUpdateNodeCaptions_DS()
         {
             RunCommandsFromFile("TestUpdateNodeCaptions_DS.xml");
@@ -960,7 +996,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual("CBN", cbn.NickName);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failure")]
         public void ReExecuteASTTest()
         {
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
@@ -980,13 +1016,46 @@ namespace DynamoCoreUITests
                 }
             });
         }
+        
+        [Test, RequiresSTA]
+        public void ErrorInCBN_3872()
+        {
+            // add a new line of code in a CBN in warning stage and see if the warning persists
+            // http://adsk-oss.myjetbrains.com/youtrack/issues?q=3872
 
+
+            RunCommandsFromFile("Error_CBN_3872.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                NodeModel nodeModel = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
+                Assert.AreEqual(ElementState.Warning, nodeModel.State);
+                if (commandTag == "First")
+                {
+                    NodeModel nodeModel2 = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
+                    Assert.AreEqual(ElementState.Warning, nodeModel2.State);
+                }
+            });
+        }
+        [Test, RequiresSTA]
+        public void Array_CBN_3921()
+        {
+            // No error and no output port for the code written with curly braces in CBN
+            // Create a CBN with {1,2,3} adn it must execute correctly
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3921
+
+            RunCommandsFromFile("Array_CBN_3921.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                AssertPreviewValue("36d2aca5-034c-43c7-b43c-a9774d9432a2", new int [] { 1, 2, 3 });
+            });
+        }
+        
         #endregion
 
         #region Defect Verifications Test Cases
 
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("RegressionTests")]
         public void Defect_MAGN_1956()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1956
@@ -994,7 +1063,7 @@ namespace DynamoCoreUITests
             AssertPreviewValue("bbec3d26-e220-4b55-9da6-ca1f37a55d7f", -10);
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("RegressionTests")]
         public void Defect_MAGN_159()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
@@ -1009,7 +1078,8 @@ namespace DynamoCoreUITests
             //Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_164_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
@@ -1026,11 +1096,12 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_190_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
@@ -1047,11 +1118,12 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_225_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
@@ -1063,7 +1135,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_397_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
@@ -1073,7 +1146,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_411()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-411
@@ -1089,7 +1163,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual("b", cbn.InPortData[1].ToolTipString);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_429_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
@@ -1100,7 +1175,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_478_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
@@ -1111,7 +1187,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_491_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
@@ -1137,7 +1214,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_520_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -1147,7 +1225,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_520_WithCrossSelection_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -1159,7 +1238,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_581_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
@@ -1169,7 +1249,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_590()
         {
             RunCommandsFromFile("Defect-MAGN-590.xml");
@@ -1185,7 +1266,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, connector.End.Index);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_775()
         {
             // The third undo operation should not crash.
@@ -1194,7 +1276,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_585()
         {
             // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-585
@@ -1215,7 +1298,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, cbn.InPorts.Count);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_605()
         {
             // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-605
@@ -1237,7 +1321,7 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
@@ -1247,7 +1331,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_624()
         {
             // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
@@ -1269,11 +1354,12 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(24, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[0].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_624_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
@@ -1294,19 +1380,22 @@ namespace DynamoCoreUITests
             //Check the CBN for input and output ports count
             var cbn = GetNode("c9929987-69c8-42bd-9cda-04ef90d029cb") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("b", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(64, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual("a[0]", cbn.OutPorts[0].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[0].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("a", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
+            Assert.AreEqual("a", cbn.OutPorts[2].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_590_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-590
@@ -1328,17 +1417,18 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
             Assert.AreEqual(2, connector.End.Index);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_589_1()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
@@ -1360,17 +1450,18 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("Statement Output", cbn.OutPorts[2].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[2].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[2].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_589_2()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
@@ -1392,14 +1483,15 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 2*codeBlockPortHeight) <= tolerance);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_589_3()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
@@ -1421,23 +1513,24 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("d", cbn.OutPorts[2].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[2].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("Statement Output", cbn.OutPorts[3].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[3].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[3].ToolTipContent);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[3].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("h", cbn.OutPorts[4].ToolTipContent);
-            Assert.AreEqual(20, cbn.OutPorts[4].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[4].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_828()
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-828
@@ -1458,11 +1551,12 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("Statement Output", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            //Assert.AreEqual("Statement Output", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_613()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-613
@@ -1474,16 +1568,17 @@ namespace DynamoCoreUITests
             //Check the CBN for input and output ports count
             var cbn = GetNode("3c7c3458-70be-4588-b162-b1099cf30ebc") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(4, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(64, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_904()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
@@ -1499,15 +1594,16 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("t_4", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual("t_2", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("t_1", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 3 * codeBlockPortHeight) <= tolerance);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_830()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-830
@@ -1524,14 +1620,15 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             //Assert.AreEqual("t_2", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             //Assert.AreEqual("t_1", cbn.OutPorts[1].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_803()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-803
@@ -1548,7 +1645,7 @@ namespace DynamoCoreUITests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
 
@@ -1558,9 +1655,11 @@ namespace DynamoCoreUITests
         /// Eventually the evaluation will be done at record playback side thus remove the need
         /// of having multiple files.
         /// </summary>
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void TestCBNWithNodeToCode()
         {
+            Assert.Inconclusive("Node To Code feature has been removed");
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithoutNodeToCode.xml");
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
@@ -1582,9 +1681,12 @@ namespace DynamoCoreUITests
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_902()
         {
+            Assert.Inconclusive("Node To Code feature has been removed");
+
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-902
             RunCommandsFromFile("Defect_MAGN_902.xml");
 
@@ -1603,7 +1705,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_422()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
@@ -1620,14 +1723,15 @@ namespace DynamoCoreUITests
 
             //Check the position of ports and their names
             Assert.AreEqual("x", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("y", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 2 * codeBlockPortHeight) <= tolerance);
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_422_1()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
@@ -1644,14 +1748,15 @@ namespace DynamoCoreUITests
 
             //Check the position of ports and their names
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(44, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[0].MarginThickness.Top - 2 * codeBlockPortHeight) <= tolerance);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
+            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 2 * codeBlockPortHeight) <= tolerance);
 
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void DS_FunctionRedef01()
         {
             // test for function redefinition - evalaute function
@@ -1677,6 +1782,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void DS_FunctionRedef02()
         {
             // test for function redefinition - evalaute function
@@ -1699,6 +1805,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void DS_FunctionRedef03()
         {
             // test for function redefinition - evalaute function
@@ -1721,6 +1828,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void DS_FunctionRedef04()
         {
             // test for function redefinition - evalaute function
@@ -1741,7 +1849,8 @@ namespace DynamoCoreUITests
             AssertValue("b_9b638b99d63145838b82662a60cdf6bc", 0);
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void MethodResolutionFailRedef_MAGN_2262()
         {
             RunCommandsFromFile("MethodResolutionFailRedef_MAGN_2262.xml", false, (commandTag) =>
@@ -1809,41 +1918,46 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        public void Deffect_1412CreateList()
+        [Category("RegressionTests")]
+        public void Defect_MAGN_1412_CreateList()
         {
             // This is a UI test to test for interaction crashes the application
 
-            RunCommandsFromFile("Deffect_1412CreateList.xml");
+            RunCommandsFromFile("Defect_MAGN_1412_CreateList.xml");
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
         }
         [Test, RequiresSTA]
-        public void Deffect_1344PythonEditor()
+        [Category("RegressionTests")]
+        public void Defect_MAGN_1344_PythonEditor()
         {
             // This is a UI test to test for interaction crashes the application
 
-            RunCommandsFromFile("Deffect_1344PythonEditor.xml");
+            RunCommandsFromFile("Defect_MAGN_1344_PythonEditor.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count);
         }
         [Test, RequiresSTA]
-        public void Deffect_2208Delete_CBN()
+        [Category("RegressionTests")]
+        public void Defect_MAGN_2208_DeleteCBN()
         {
             // This is a UI test to test for interaction crashes the application
 
-            RunCommandsFromFile("Defect_MAGN_2208.xml");
+            RunCommandsFromFile("Defect_MAGN_2208_DeleteCBN.xml");
             Assert.AreEqual(0, workspace.Nodes.Count);
         }
         [Test, RequiresSTA]
-        public void Deffect_2201Watch_CBN()
+        [Category("RegressionTests")]
+        public void Defect_MAGN_2201_WatchCBN()
         {
-            RunCommandsFromFile("Defect_MAGN_2201.xml");
+            RunCommandsFromFile("Defect_MAGN_2201_WatchCBN.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
         }
         [Test, RequiresSTA]
-        public void Deffect_747MultiReference()
+        [Category("RegressionTests")]
+        public void Defect_MAGN_747_MultiReference()
         {
-            RunCommandsFromFile("defect_MAGN_747.xml", true);
+            RunCommandsFromFile("Defect_MAGN_747_MultiReference.xml", true);
             Assert.AreEqual(1, workspace.Nodes.Count);
             AssertPreviewValue("a76409a1-1280-428c-9cf7-16580c48ff96", 1);
 
@@ -1899,6 +2013,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
 
         //Details for steps can be found in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2521
 
@@ -1914,25 +2029,26 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(2, workspace.Connectors.Count);
 
-                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 10);
+                    AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", 10);
                 }
-                else if (commandTag == "Point-2")
+                else if (commandTag == "Point-5")
                 {
-                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 2);
+                    AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", 5);
                 }
-                else if (commandTag == "Point-12")
+                else if (commandTag == "Point10")
                 {
                     Assert.AreEqual(1, workspace.Connectors.Count);
-                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", 12);
+                    AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", 10);
                 }
                 else if (commandTag == "Point--5")
                 {
-                    AssertPreviewValue("c0a70160-fb7e-4441-a06e-1e783d7c0d92", -5);
+                    AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", -5);
                 }
             });
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2378()
         {
             // this is using CBN. 
@@ -1948,19 +2064,20 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(1, workspace.Nodes.Count);
                     Assert.AreEqual(0, workspace.Connectors.Count);
 
-                    NodeModel nodeModel = workspace.NodeFromWorkspace("f4a9a71a-168b-4985-a575-d16faa2de9ca");
-                    Assert.AreEqual(ElementState.Warning, nodeModel.State);
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("45d600d2-3b29-4c9f-898f-d51683534557");
+                    Assert.AreEqual(ElementState.Error, nodeModel.State);
 
                 }
                 else if (commandTag == "WithoutWarning")
                 {
-                    NodeModel nodeModel = workspace.NodeFromWorkspace("f4a9a71a-168b-4985-a575-d16faa2de9ca");
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("45d600d2-3b29-4c9f-898f-d51683534557");
                     Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
                 }
             });
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2378_AnotherScenario()
         {
             // this is using Point.ByCoordinates node.
@@ -1976,7 +2093,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, workspace.Nodes.Count);
                     Assert.AreEqual(3, workspace.Connectors.Count);
 
-                    NodeModel nodeModel = workspace.NodeFromWorkspace("7fec1085-4818-41fa-adad-7b1dd71a5195");
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("3d9904f8-8a44-4eea-b629-2849b7571a89");
                     Assert.AreEqual(ElementState.Warning, nodeModel.State);
 
                 }
@@ -1985,16 +2102,17 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(4, workspace.Nodes.Count);
                     Assert.AreEqual(4, workspace.Connectors.Count);
 
-                    NodeModel nodeModel = workspace.NodeFromWorkspace("7fec1085-4818-41fa-adad-7b1dd71a5195");
+                    NodeModel nodeModel = workspace.NodeFromWorkspace("3d9904f8-8a44-4eea-b629-2849b7571a89");
                     Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
 
-                    AssertPreviewValue("5778488b-4ab2-484a-b92e-79eb016cb776", 0);
+                    AssertPreviewValue("ff465a31-efd6-425f-96d5-3b593f3324a1", 2);
 
                 }
             });
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2100()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2100
@@ -2027,6 +2145,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2102()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2102
@@ -2069,7 +2188,8 @@ namespace DynamoCoreUITests
             });
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failure")]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2272()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2272
@@ -2106,6 +2226,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2528()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2528
@@ -2123,6 +2244,7 @@ namespace DynamoCoreUITests
 
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2453()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2453
@@ -2158,6 +2280,39 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_1463()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1463
+
+            RunCommandsFromFile("Defect_MAGN_1463.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 3);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 4);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 3);
+                }
+                else if (commandTag == "LastRun")
+                {
+                    AssertPreviewValue("3888b76c-1279-477d-952f-3eb20df69c91", 3);
+                }
+
+            });
+
+
+        }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2593()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2593
@@ -2218,6 +2373,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3113()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3113
@@ -2237,6 +2393,7 @@ namespace DynamoCoreUITests
 
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2373()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2373
@@ -2248,21 +2405,21 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(10, workspace.Nodes.Count);
+                    Assert.AreEqual(7, workspace.Nodes.Count);
                     Assert.AreEqual(13, workspace.Connectors.Count);
 
-                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
-                        new int[][] { new int[] { 2, 8, 9, 3 } });
+                    AssertPreviewValue("ae25b50c-c644-440e-861b-0824c14b7632",
+                        new int[] { 2, 3, 8, 9 });
                 }
                 else if (commandTag == "SecondRun")
                 {
-                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
-                        new int[][] { new int[] { 2, 8, 3, 9 } });
+                    AssertPreviewValue("ae25b50c-c644-440e-861b-0824c14b7632",
+                        new int[] { 2, 3, 9, 8 } );
                 }
                 else if (commandTag == "LastRun")
                 {
-                    AssertPreviewValue("6e2b9ef1-7749-40ec-9319-b43832c1891f",
-                        new int[][] { new int[] { 8, 2, 3, 9 } });
+                    AssertPreviewValue("ae25b50c-c644-440e-861b-0824c14b7632",
+                        new int[] { 3, 2, 9, 8 } );
                 }
 
             });
@@ -2270,6 +2427,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2563()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2563
@@ -2287,6 +2445,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2247()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2247
@@ -2298,26 +2457,26 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(5, workspace.Nodes.Count);
-                    Assert.AreEqual(4, workspace.Connectors.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(5, workspace.Connectors.Count);
 
-                    AssertPreviewValue("3f1e91ab-8b71-4626-b632-a18df1be036c", 23);
+                    AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 15);
                 }
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(5, workspace.Nodes.Count);
-                    Assert.AreEqual(3, workspace.Connectors.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count);
 
-                    AssertPreviewValue("3f1e91ab-8b71-4626-b632-a18df1be036c", 17);
+                    AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 10);
                 }
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(5, workspace.Nodes.Count);
-                    Assert.AreEqual(4, workspace.Connectors.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(5, workspace.Connectors.Count);
 
-                    AssertPreviewValue("3f1e91ab-8b71-4626-b632-a18df1be036c", 21);
+                    AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 15);
                 }
 
             });
@@ -2325,6 +2484,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2311()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2311
@@ -2361,6 +2521,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_2279()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2279
@@ -2409,6 +2570,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3116()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3116
@@ -2443,8 +2605,13 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        [Category("Failure")]
         public void Defect_MAGN_2290()
         {
+            //LC: This test is flaky - there is a race condition on the test for the warning state.
+            //This should be re-enabled once the scheduler is in place
+
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2290
 
             RunCommandsFromFile("Defect_MAGN_2290.xml", true, (commandTag) =>
@@ -2488,12 +2655,13 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3166
 
-            RunCommandsFromFile("Defect_MAGN_3166.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_3166.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2535,6 +2703,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3599()
         {
             // Details are available in defect 
@@ -2579,6 +2748,7 @@ namespace DynamoCoreUITests
 
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3580()
         {
             // Details are available in defect 
@@ -2663,6 +2833,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_3212()
         {
             // Details are available in defect 
@@ -2706,6 +2877,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("RegressionTests"), Category("Failure")]
         public void TestCancelExecution()
         {
             RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", false, (commandTag) =>
@@ -2735,6 +2907,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("Failure")]
         public void TestCancelExecutionWhileLoop()
         {
             RunCommandsFromFile("TestCancelExecutionWhileLoop.xml", false, (commandTag) =>
@@ -2764,6 +2937,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void TestListMapUpdateForCustomNode()
         {
             // For regression http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3917
@@ -2771,11 +2945,135 @@ namespace DynamoCoreUITests
             AssertPreviewValue("91fb442c-8e17-4a2f-8b0b-cf520b543c18", new object [] { 43} );
         }
 
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_4710()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4710
+
+            RunCommandsFromFile("Defect_MAGN_4710.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                var cbn = GetNode("1ded7b84-8cba-482b-81fd-6979650bb2a1") as CodeBlockNodeModel;
+
+                if (commandTag == "WithWarning1")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and Warning should be there on CBN.
+                    Assert.AreEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(2, cbn.InPorts.Count);
+
+                }
+                else if (commandTag == "WithWarning2")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and now there should be warning.
+                    Assert.AreEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                }
+
+            });
+
+        }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Defect_MAGN_4659()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4659
+
+            RunCommandsFromFile("Defect_MAGN_4659.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                var cbn = GetNode("1d8354e5-93e0-43be-916d-28dd8bdf85d4") as CodeBlockNodeModel;
+
+                if (commandTag == "WithWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and Warning should be there on CBN.
+                    Assert.AreEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                }
+                else if (commandTag == "WithoutWarning")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count);
+
+                    //Check the CBN for input/output ports and now there should be warning.
+                    Assert.AreNotEqual(ElementState.Warning, cbn.State);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.InPorts.Count);
+
+                }
+
+            });
+
+        }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void RunAutomatically_On_5068()
+        {
+            // If Run Automatically On, third file onwards it executes to null
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5068
+
+            RunCommandsFromFile("RunAutomatically_5068.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                
+
+                if (commandTag == "File1")
+                {
+                    var pt = GetNode("3878d8ca-0f32-4971-a9a7-bfbe159fac41");
+                    Assert.IsNotNull(pt);    
+                    
+                }
+
+                else if (commandTag == "File2")
+                {
+
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    AssertPreviewValue("22318709-d001-45c0-afde-f9a7ff94ed39", 2);
+
+                }
+                else if (commandTag == "File3")
+                {
+
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    AssertPreviewValue("a383d8d7-328b-4515-9e8f-836a2b62341a", new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+
+                }
+                
+
+            });
+
+        }
         #endregion
 
         #region Tests moved from FScheme
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_159_AnotherScenario()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
@@ -2803,22 +3101,22 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_164()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-164
 
             RunCommandsFromFile("Defect_MAGN_164.xml", true);
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
 
-            AssertPreviewValue("428fc0eb-aacf-41ca-b4d9-d4152e945ad8", 10);
-
-            AssertPreviewValue("635bd033-03f6-4b98-b03d-a5c3c2969607", 10);
+            AssertPreviewValue("56e07af9-6a16-4f61-a673-54e33a8556d8", 0);
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_190()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-190
@@ -2829,7 +3127,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_225()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
@@ -2842,7 +3141,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(3, nodes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_397()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
@@ -2852,7 +3152,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_429()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
@@ -2863,7 +3164,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_478()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
@@ -2872,7 +3174,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_491()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
@@ -2897,7 +3200,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_520()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -2907,7 +3211,8 @@ namespace DynamoCoreUITests
             AssertPreviewValue("41f52d8e-1a88-4f09-a2f1-f14e61d81f2c", 4);
         }
 
-        [Test, Category("Failing")]
+        [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_520_WithCrossSelection()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
@@ -2918,6 +3223,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        [Category("RegressionTests")]
         public void Defect_MAGN_57()
         {
             //Assert.Inconclusive("Deprecated: Map");
@@ -2930,7 +3236,8 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, RequiresSTA, Category("Failing")]
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
         public void Defect_MAGN_581()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
@@ -2940,7 +3247,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void ShiftSelectAllNode()
         {
             RunCommandsFromFile("ShiftSelectAllNode.xml");
@@ -2949,14 +3256,14 @@ namespace DynamoCoreUITests
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void TestCreateConnectors()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void TestCreateNodesAndRunExpression()
         {
             RunCommandsFromFile("CreateNodesAndRunExpression.xml");
@@ -2964,14 +3271,14 @@ namespace DynamoCoreUITests
 
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void TestCreateNodes()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
             Assert.AreEqual(5, workspace.Nodes.Count);
         }
 
-        [Test, Category("Failing")]
+        [Test, Category("Failure")]
         public void TestDeleteCommands()
         {
             RunCommandsFromFile("CreateAndDeleteNodes.xml");
@@ -2993,7 +3300,7 @@ namespace DynamoCoreUITests
             VerifyModelExistence(nodeExistenceMap);
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void TestUndoRedoNodesAndConnections()
         {
             RunCommandsFromFile("UndoRedoNodesAndConnections.xml");
@@ -3060,7 +3367,7 @@ namespace DynamoCoreUITests
             //Assert.Inconclusive("Porting : DoubleInput");
         }
 
-        [Test, Category("Failing")]
+        [Test]
         public void TestVerifyRuntimeValues()
         {
             RunCommandsFromFile("VerifyRuntimeValues.xml", true);

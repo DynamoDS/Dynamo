@@ -16,23 +16,16 @@ using ProtoCore;
 
 namespace ProtoTest.LiveRunner
 {
-    public class ChangeSetComputerTests
+    class ChangeSetComputerTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core = null;
-
-        [SetUp]
-        public void Setup()
+        private ProtoScript.Runners.LiveRunner CreateLiveRunner()
         {
-            var opts = new Options();
-            opts.ExecutionMode = ExecutionMode.Serial;
-            core = thisTest.SetupEmptyTestCore();
+            return new ProtoScript.Runners.LiveRunner();
         }
 
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            CodeBlockNode commentCode;
-            var cbn = GraphToDSCompiler.GraphUtilities.Parse(code, out commentCode) as CodeBlockNode;
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             return subtree;
         }
@@ -273,7 +266,5 @@ namespace ProtoTest.LiveRunner
                 Assert.IsTrue(isEqual);
             }
         }
-
     }
-
 }

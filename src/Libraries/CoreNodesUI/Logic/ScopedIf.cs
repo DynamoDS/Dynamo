@@ -16,7 +16,7 @@ using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 
 namespace DSCoreNodesUI.Logic
 {
-    [NodeName("ScopeIf"), NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL),
+    [NodeName("ScopeIf"), NodeCategory(BuiltinNodeCategories.LOGIC),
      NodeDescription("Scoped If statement"), IsDesignScriptCompatible]
     public class ScopedIf : ScopedNodeModel
     {
@@ -75,6 +75,11 @@ namespace DSCoreNodesUI.Logic
         protected override bool IsScopedInport(int portIndex)
         {
             return portIndex == 1 || portIndex == 2;
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return AstIdentifierForPreview;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
@@ -139,6 +144,7 @@ namespace DSCoreNodesUI.Logic
                     Body = new List<ProtoCore.AST.ImperativeAST.ImperativeNode> { ifelseStatement }
                 }
             };
+
             var thisVariable = GetAstIdentifierForOutputIndex(0);
             var assignment = AstFactory.BuildAssignment(thisVariable, outerBlock);
 

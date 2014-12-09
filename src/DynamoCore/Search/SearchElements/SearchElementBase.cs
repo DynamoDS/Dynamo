@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
-using System.Windows.Input;
+using System.Runtime.Serialization;
 
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
-using Dynamo.Utilities;
-using System.Runtime.Serialization;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -20,7 +16,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         /// The name that is used during node creation
         /// </summary>
-        public virtual string CreatingName { get { return this.Name; } }
+        public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
         /// Searchable property </summary>
@@ -96,13 +92,13 @@ namespace Dynamo.Search.SearchElements
         /// Unique name that is used during node creation
         /// </summary>
         [DataMember]
-        public string CreatingName { get; private set; }
+        public string CreationName { get; private set; }
 
         /// <summary>
         /// The name that will be displayed on node itself 
         /// </summary>
         [DataMember]
-        public string DisplayedName { get; private set; }
+        public string DisplayName { get; private set; }
 
         /// <summary>
         /// A string describing what the node does
@@ -123,25 +119,35 @@ namespace Dynamo.Search.SearchElements
         [DataMember]
         public double Weight { get; private set; }
 
+        /// <summary>
+        /// This property represents the list of words used for element search.
+        /// </summary>
         [DataMember]
-        public string Keywords { get; private set; }
+        public IEnumerable<string> Keywords { get; private set; }
 
+        /// <summary>
+        /// This property represents the list of node inputs.
+        /// </summary>
         [DataMember]
-        public IEnumerable<string> Parameters { get; private set; }
+        public IEnumerable<PortInfo> Parameters { get; private set; }
 
+        /// <summary>
+        /// This property represents the list of node outputs.
+        /// </summary>
         [DataMember]
-        public IEnumerable<string> ReturnKeys { get; private set; }
-        
+        public IEnumerable<PortInfo> ReturnKeys { get; private set; }
+
+
         public LibraryItem(SearchElementBase node, DynamoModel dynamoModel)
         {
             Category = node.FullCategoryName;
             Type = node.Type;
-            DisplayedName = Name = node.Name;
-            CreatingName = node.CreatingName;
+            DisplayName = Name = node.Name;
+            CreationName = node.CreationName;
             Description = node.Description;
             Searchable = node.Searchable;
             Weight = node.Weight;
-            Keywords = node.Keywords;
+            Keywords = dynamoModel.SearchModel.SearchDictionary.GetTags(node);
 
             PopulateKeysAndParameters(dynamoModel);
         }
@@ -149,11 +155,11 @@ namespace Dynamo.Search.SearchElements
         private void PopulateKeysAndParameters(DynamoModel dynamoModel)
         {
             var controller = dynamoModel.EngineController;
-            var functionItem = (controller.GetFunctionDescriptor(CreatingName));
+            var functionItem = (controller.GetFunctionDescriptor(CreationName));
             NodeModel newElement = null;
             if (functionItem != null)
             {
-                DisplayedName = functionItem.DisplayName;
+                DisplayName = functionItem.DisplayName;
                 if (functionItem.IsVarArg)
                     newElement = new DSVarArgFunction(dynamoModel.CurrentWorkspace, functionItem);
                 else
@@ -163,13 +169,13 @@ namespace Dynamo.Search.SearchElements
             {
                 TypeLoadData tld = null;
 
-                if (dynamoModel.BuiltInTypesByName.ContainsKey(CreatingName))
+                if (dynamoModel.BuiltInTypesByName.ContainsKey(CreationName))
                 {
-                    tld = dynamoModel.BuiltInTypesByName[CreatingName];
+                    tld = dynamoModel.BuiltInTypesByName[CreationName];
                 }
-                else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(CreatingName))
+                else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(CreationName))
                 {
-                    tld = dynamoModel.BuiltInTypesByNickname[CreatingName];
+                    tld = dynamoModel.BuiltInTypesByNickname[CreationName];
                 }
 
                 if (tld != null)
@@ -178,16 +184,44 @@ namespace Dynamo.Search.SearchElements
                 }
             }
 
-            if (newElement != null)
+            if (newElement == null)
+                throw new TypeLoadException("Unable to create instance of NodeModel element by CreationName");
+
+            Parameters = newElement.InPorts.Select(elem => new PortInfo
             {
-                Parameters = newElement.InPorts.Select(elem => elem.PortName);
-                ReturnKeys = newElement.OutPorts.Select(elem => elem.PortName);
-            }
-            else
+                Name = elem.PortName,
+                Type = elem.ToolTipContent.Split('.').Last(),
+                DefaultValue = newElement.InPortData[elem.Index].DefaultValue
+            });
+            ReturnKeys = newElement.OutPorts.Select(elem => new PortInfo
             {
-                Parameters = new[] { "Input" };
-                ReturnKeys = new[] { "Output" };
-            }
+                Name = elem.PortName
+            });
+        }
+
+        public struct PortInfo
+        {
+            /// <summary>
+            /// This property represents displayed name of the port.
+            /// </summary>
+            public string Name { get; set; }
+
+            /// <summary>
+            /// This property represents the type of the port. It can contain type name such
+            /// as 'String', 'Point', 'Vertex' and other.
+            /// It doesn't care about exact type, value can be 'Autodesk.DesignScript.Geometry.Point'
+            /// or just 'Point' as well.
+            /// This property only help users to understand what kind of value does the port expects.
+            /// </summary>
+            public string Type { get; set; }
+
+            /// <summary>
+            /// This property represents the default value for each of the input parameters.
+            /// It can potentially contain primitive value types such as 'int', 'double', 'bool'
+            /// and 'string'. If no default value is given to an input parameter, then it has 
+            /// the corresponding entry in 'DefaultValues' as 'null'.
+            /// </summary>
+            public object DefaultValue { get; set; }
         }
     }
 }
