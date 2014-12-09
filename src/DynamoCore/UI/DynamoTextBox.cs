@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.UI;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -156,6 +157,11 @@ namespace Dynamo.Nodes
         new public string Text
         {
             get { return base.Text; }
+            set
+            {
+                base.Text = value;
+                UpdateDataSource(true);
+            }
         }
 
         #endregion
