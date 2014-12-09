@@ -37,11 +37,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\extern\Office\Microsoft.Office.Interop.Excel.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
@@ -53,11 +48,6 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -93,20 +83,14 @@
       <Name>DynamoCoreTests</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\DynamoMSOffice\DynamoMSOffice.csproj">
-      <Project>{798656E4-733F-4ABC-8AF4-604412FC0BC0}</Project>
-      <Name>DynamoMSOffice</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\TestServices\TestServices.csproj">
-      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
-      <Name>TestServices</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj">
+      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
+      <Name>SystemTestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

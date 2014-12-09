@@ -79,6 +79,7 @@
     <Content Include="DSOffice_DynamoCustomization.xml" />
     <Content Include="DSOffice.Migrations.xml">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="DSOffice_DynamoCustomization.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

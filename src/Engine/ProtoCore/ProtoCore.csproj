@@ -184,6 +184,7 @@
     <Compile Include="Lang\FunctionEndPoint.cs" />
     <Compile Include="Lang\FunctionGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringConstants.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="Utils\ArrayUtils.cs" />
     <Compile Include="Utils\ClassUtils.cs" />

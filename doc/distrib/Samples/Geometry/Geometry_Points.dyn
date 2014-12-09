@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.33416" X="16070.6940491134" Y="12952.5787390331" zoom="0.639060081637504" Description="" Category="" Name="Home">
+<Workspace Version="0.7.5.3267" X="16479.8050096265" Y="13259.3121116343" zoom="0.662929562414923" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="5b9ce6ea-d88f-4d2d-9eac-159ed8f3a277" nickname="Point.ByCoordinates" x="-24492.8726906649" y="-19896.652824505" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
       <PortInfo index="0" default="True" />
@@ -17,15 +17,15 @@
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="33d68931-60a6-4f90-bfed-1213d0256ac1" nickname="Number" x="-24972.5011674131" y="-19236.9837983206" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="10" />
     </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="aaa8dff2-a34b-4d7a-950c-3aeeb70e82c7" nickname="Watch" x="-24177.0903888257" y="-19897.7836083443" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="aaa8dff2-a34b-4d7a-950c-3aeeb70e82c7" nickname="Watch" x="-24160.7622888382" y="-19471.6201986717" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="0e500d65-fbc3-406a-9aef-67574bc1f2a5" nickname="Watch 3D" x="-24177.0903888257" y="-20169.9179062821" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <view width="210" height="276">
+      <view width="220" height="339">
         <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
       </view>
     </Dynamo.Nodes.Watch3D>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="227c1a9c-02d1-4a9c-91aa-ea7e67d222fb" nickname="Point.Add" x="-23433.1018389433" y="-19304.6919184607" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.Add@Autodesk.DesignScript.Geometry.Vector" />
     <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="f6a164cc-92e0-48a0-a83b-efaa476990d0" nickname="Double Slider" x="-24766.5392456255" y="-19855.652824505" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double>5.63751836340743</System.Double>
+      <System.Double>5.638</System.Double>
       <Range min="0" max="10" />
     </Dynamo.Nodes.DoubleSlider>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3c918558-fc8a-4419-9ecb-187fc5686802" nickname="Point.Z" x="-24177.0903888257" y="-19653.6670613887" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.Z" />

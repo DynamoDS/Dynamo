@@ -112,10 +112,9 @@
       <Name>DynamoCoreTests</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\TestServices\TestServices.csproj">
-      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
-      <Name>TestServices</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj">
+      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
+      <Name>SystemTestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

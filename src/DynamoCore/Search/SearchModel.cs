@@ -10,6 +10,9 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.DSEngine;
 using Microsoft.Practices.Prism.ViewModel;
+using System.IO;
+using System.Xml;
+using DynamoUtilities;
 
 namespace Dynamo.Search
 {
@@ -796,6 +799,56 @@ namespace Dynamo.Search
         }
 
         #endregion
+
+        internal void DumpLibraryToXml(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return;
+
+            var document = ComposeXmlForLibrary();
+            document.Save(fileName);
+        }
+
+        internal XmlDocument ComposeXmlForLibrary()
+        {
+            var document = XmlHelper.CreateDocument("LibraryTree");
+
+            foreach (var category in BrowserRootCategories)
+            {
+                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString());
+                XmlHelper.AddAttribute(element, "Name", category.Name);
+
+                AddChildrenToXml(element, category.Items);
+
+                document.DocumentElement.AppendChild(element);
+            }
+
+            return document;
+        }
+
+        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
+        {
+            foreach (var child in children)
+            {
+                var element = XmlHelper.AddNode(parent, child.GetType().ToString());
+
+                if (child is NodeSearchElement)
+                {
+                    var castedChild = child as NodeSearchElement;
+                    XmlHelper.AddNode(element, "FullCategoryName", castedChild.FullCategoryName);
+                    XmlHelper.AddNode(element, "FullName", castedChild.FullName);
+                    XmlHelper.AddNode(element, "Name", castedChild.Name);
+                    XmlHelper.AddNode(element, "Description", castedChild.Description);
+                }
+                else
+                {
+                    XmlHelper.AddAttribute(element, "Name", child.Name);
+                    AddChildrenToXml(element, child.Items);
+                }
+
+                parent.AppendChild(element);
+            }
+        }
     }
 }
 

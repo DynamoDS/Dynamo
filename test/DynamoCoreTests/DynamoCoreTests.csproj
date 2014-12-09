@@ -60,10 +60,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -157,13 +153,9 @@
       <Name>IronPythonUI</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Engine\FFITarget\FFITarget.csproj">
-      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
-      <Name>FFITarget</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj">
-      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
-      <Name>TestServices</Name>
+    <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
+      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
+      <Name>SystemTestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

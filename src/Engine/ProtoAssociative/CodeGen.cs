@@ -397,7 +397,7 @@ namespace ProtoAssociative
 
                 string symbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol.name;
                 string symbol2 = lastNode.updateNodeRefList[0].nodeList[0].symbol.name;
-                string message = String.Format(ProtoCore.BuildData.WarningMessage.kInvalidStaticCyclicDependency, symbol1, symbol2);
+                string message = String.Format(ProtoCore.StringConstants.kInvalidStaticCyclicDependency, symbol1, symbol2);
 
                 core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency, message, core.CurrentDSFileName);
                 firstNode.isCyclic = true;
@@ -1309,7 +1309,7 @@ namespace ProtoAssociative
                             }
                             else
                             {
-                                string message = String.Format(WarningMessage.kCallingNonStaticProperty,
+                                string message = String.Format(StringConstants.kCallingNonStaticProperty,
                                                                className,
                                                                property);
 
@@ -1342,7 +1342,7 @@ namespace ProtoAssociative
                         {
                             if (subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                             {
-                                string message = String.Format(WarningMessage.kStaticMethodNotFound,
+                                string message = String.Format(StringConstants.kStaticMethodNotFound,
                                                                className,
                                                                procName);
 
@@ -1374,7 +1374,7 @@ namespace ProtoAssociative
                         {
                             if (subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                             {
-                                string message = String.Format(WarningMessage.KCallingConstructorOnInstance,
+                                string message = String.Format(StringConstants.KCallingConstructorOnInstance,
                                                                procName);
                                 buildStatus.LogWarning(WarningID.kCallingConstructorOnInstance,
                                                        message,
@@ -1394,7 +1394,7 @@ namespace ProtoAssociative
                         {
                             if (subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                             {
-                                string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodIsInaccessible, procName);
+                                string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                             }
                         }
@@ -1520,7 +1520,7 @@ namespace ProtoAssociative
 
                         if (!isAccessible)
                         {
-                            string message = String.Format(WarningMessage.kMethodIsInaccessible, procName);
+                            string message = String.Format(StringConstants.kMethodIsInaccessible, procName);
                             buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
@@ -1561,7 +1561,7 @@ namespace ProtoAssociative
                         string.Equals(contextProcNode.name, procCallNode.name) &&
                         contextProcNode.runtimeIndex == procCallNode.runtimeIndex)
                     {
-                        string message = String.Format(WarningMessage.kCallingConstructorInConstructor, procName);
+                        string message = String.Format(StringConstants.kCallingConstructorInConstructor, procName);
                         buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
@@ -1751,7 +1751,7 @@ namespace ProtoAssociative
                     {
                         type = lefttype = realType;
                         procNode = null;
-                        string message = String.Format(WarningMessage.kMethodIsInaccessible, procName);
+                        string message = String.Format(StringConstants.kMethodIsInaccessible, procName);
                         buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
 
@@ -1825,7 +1825,7 @@ namespace ProtoAssociative
 
                         if (!isAccessible)
                         {
-                            string message = String.Format(WarningMessage.kMethodIsInaccessible, procName);
+                            string message = String.Format(StringConstants.kMethodIsInaccessible, procName);
                             buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
@@ -1852,7 +1852,7 @@ namespace ProtoAssociative
                         string.Equals(contextProcNode.name, procNode.name) &&
                         contextProcNode.runtimeIndex == procNode.runtimeIndex)
                     {
-                        string message = String.Format(WarningMessage.kCallingConstructorInConstructor, procName);
+                        string message = String.Format(StringConstants.kCallingConstructorInConstructor, procName);
                         buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
@@ -1996,12 +1996,12 @@ namespace ProtoAssociative
                     string property;
                     if (CoreUtils.TryGetPropertyName(procName, out property))
                     {
-                        string message = String.Format(ProtoCore.BuildData.WarningMessage.kPropertyNotFound, property);
+                        string message = String.Format(ProtoCore.StringConstants.kPropertyNotFound, property);
                         buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kPropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                     }
                     else
                     {
-                        string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodNotFound, procName);
+                        string message = String.Format(ProtoCore.StringConstants.kMethodNotFound, procName);
                         buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                     }
 
@@ -2224,64 +2224,50 @@ namespace ProtoAssociative
             {
                 IdentifierListNode identList = node as IdentifierListNode;
 
-                //Check if the LeftNode for given IdentifierList represents a class.
-                string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
-                if (classNames.Length > 1)
-                {
-                    // There is a namespace conflict
-
-                    // TODO Jun: Move this warning handler to after the SSA transform
-                    // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
-                    buildStatus.LogSymbolConflictWarning(identList.LeftNode.ToString(), classNames);
-                }
-                else if(classNames.Length == 1)
-                {
-                    // A matching class has been found
-                    var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
-                    SSAIdentList(leftNode, ref ssaStack, ref astlist);
-                }
-                else
-                {
-                    // There is no matching class name, continue traversing the identlist
-
-                    // Check if the lhs is an identifier and if it has any namespace conflicts
-                    // We want to handle this here because we know ident lists can potentially contain namespace resolving
-                    var ident = identList.LeftNode as IdentifierNode; 
-
-                    // Check if this is the last ident in the identlist
-                    if(ident != null)
-                    {
-                        // TODO Jun: Move this warning handler to after the SSA transform
-                        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
-                        classNames = core.ClassTable.GetAllMatchingClasses(ident.Value);
-                        if (classNames.Length > 1)
-                        {
-                            // There is a namespace conflict
-                            buildStatus.LogSymbolConflictWarning(ident.Value, classNames);
-
-                            // Continue traversing the expression even after a namespace conflict
-                            // TODO: Determine if we want to terminate traversal of this identlist
-                            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
-
-                        }
-                    }
-
-                    // Recursively traversse the left of the ident list
-                    SSAIdentList(identList.LeftNode, ref ssaStack, ref astlist);
-                }
-
                 // Build the rhs identifier list containing the temp pointer
                 IdentifierListNode rhsIdentList = new IdentifierListNode();
                 rhsIdentList.Optr = Operator.dot;
 
-                AssociativeNode lhsNode = ssaStack.Pop();
-                if (lhsNode is BinaryExpressionNode)
+                // Check if identlist matches any namesapce
+                string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
+                if (classNames.Length == 1)
                 {
-                    rhsIdentList.LeftNode = (lhsNode as BinaryExpressionNode).LeftNode;
+                    //
+                    // The identlist is a class name and should not be SSA'd
+                    // such as:
+                    //  p = Obj.Create()
+                    //
+                    var leftNode = nodeBuilder.BuildIdentfier(classNames[0]);
+                    rhsIdentList.LeftNode = leftNode;
+                    ProtoCore.Utils.CoreUtils.CopyDebugData(leftNode, node);
+                }
+                else if (classNames.Length > 0)
+                {
+                    // There is a resolution conflict
+                    // identList resolved to multiple classes 
+
+                    // TODO Jun: Move this warning handler to after the SSA transform
+                    // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5221
+                    buildStatus.LogSymbolConflictWarning(identList.LeftNode.ToString(), classNames);
+                    rhsIdentList = identList;
                 }
                 else
                 {
-                    rhsIdentList.LeftNode = lhsNode;
+                    // identList unresolved
+                    // Continue to transform this identlist into SSA
+
+                    // Recursively traversse the left of the ident list
+                    SSAIdentList(identList.LeftNode, ref ssaStack, ref astlist);
+
+                    AssociativeNode lhsNode = ssaStack.Pop();
+                    if (lhsNode is BinaryExpressionNode)
+                    {
+                        rhsIdentList.LeftNode = (lhsNode as BinaryExpressionNode).LeftNode;
+                    }
+                    else
+                    {
+                        rhsIdentList.LeftNode = lhsNode;
+                    }
                 }
 
                 ArrayNode arrayDimension = null;
@@ -2831,6 +2817,15 @@ namespace ProtoAssociative
             else if (node is IdentifierListNode)
             {
                 // TODO Handle LHS ssa for identifier lists
+
+                // For LHS idenlist, resolve them to the fully qualified name
+                IdentifierListNode identList = node as IdentifierListNode;
+                string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
+                if (classNames.Length == 1)
+                {
+                    identList.LeftNode.Name = classNames[0];
+                    (identList.LeftNode as IdentifierNode).Value = classNames[0];
+                }
             }
         }
 
@@ -3107,14 +3102,18 @@ namespace ProtoAssociative
                 Validity.Assert(firstBNode.Optr == Operator.assign);
                 firstBNode.isSSAFirstAssignment = true;
 
+
                 //
+                // Get the first pointer
                 // The first pointer is the lhs of the next dotcall
+                //
+                // Given:     
                 //      a = x.y.z
+                // SSA'd to:     
                 //      t0 = x      -> 'x' is the lhs of the first dotcall (x.y)
                 //      t1 = t0.y
                 //      t2 = t1.z
                 //      a = t2
-                //
 
                 IdentifierNode lhsIdent = null;
                 if (firstBNode.RightNode is IdentifierNode)
@@ -3137,10 +3136,6 @@ namespace ProtoAssociative
 
                 IdentifierNode firstPointer = lhsIdent;
 
-                // Get the first pointer name
-                //Validity.Assert(firstBNode.RightNode is IdentifierNode);
-                //string firstPtrName = (firstBNode.RightNode as IdentifierNode).Name;
-
                 //=========================================================
                 //
                 // 1. Backtrack and convert all identlist nodes to dot calls
@@ -3149,8 +3144,6 @@ namespace ProtoAssociative
                 // 2. Associate the first pointer with each SSA temp
                 //
                 //=========================================================
-                
-                //for (int n = lastIndex; n >= 0; --n)
                 AssociativeNode prevNode = null;
                 for (int n = 0; n <= lastIndex; n++)
                 {
@@ -3181,19 +3174,6 @@ namespace ProtoAssociative
                             bnode.RightNode = dotCall;
                             ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
 
-                            //
-                            // Set the real lhs (first pointer) of this dot call
-                            // Do this only if the lhs of the ident list was an identifier
-                            //      A.b -> prev was 'A'. It is an identifier
-                            //      {A}.b -> prev was '{A}'. It is not an identifier
-                            //      A().b -> prev was 'A()'. It is not an identifier
-                            bool wasPreviousNodeAnIdentifier = prevNode is IdentifierNode;
-                            if (wasPreviousNodeAnIdentifier)
-                            {
-                                dotCall.StaticLHSIdent = firstPointer;
-                            }
-                            firstPointer = null;
-
                             // Update the LHS of the next dotcall
                             //      a = x.y.z
                             //      t0 = x      
@@ -3216,11 +3196,6 @@ namespace ProtoAssociative
 
                             ProtoCore.Utils.CoreUtils.CopyDebugData(bnode, lhsIdent);
 
-                            // Set the real lhs (first pointer) of this dot call
-                            dotCall.StaticLHSIdent = firstPointer;
-                            firstPointer = null;
-
-
                             // Update the LHS of the next dotcall
                             //      a = x.y.z
                             //      t0 = x      
@@ -3238,9 +3213,6 @@ namespace ProtoAssociative
                     }
                     prevNode = bnode.RightNode;
                 }
-
-
-                ///////////////////////////
             }
             else if (node is ExprListNode)
             {
@@ -4244,14 +4216,14 @@ namespace ProtoAssociative
                 {
                     if (localProcedure.isStatic)
                     {
-                        string message = ProtoCore.BuildData.WarningMessage.kUsingThisInStaticFunction;
+                        string message = ProtoCore.StringConstants.kUsingThisInStaticFunction;
                         core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
                     }
                     else if (localProcedure.classScope == Constants.kGlobalScope)
                     {
-                        string message = ProtoCore.BuildData.WarningMessage.kInvalidThis;
+                        string message = ProtoCore.StringConstants.kInvalidThis;
                         core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
@@ -4264,7 +4236,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    string message = ProtoCore.BuildData.WarningMessage.kInvalidThis;
+                    string message = ProtoCore.StringConstants.kInvalidThis;
                     core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     EmitPushNull();
                     return;
@@ -4423,7 +4395,7 @@ namespace ProtoAssociative
 
                     if (isAllocated)
                     {
-                        string message = String.Format(WarningMessage.kPropertyIsInaccessible, t.Value);
+                        string message = String.Format(StringConstants.kPropertyIsInaccessible, t.Value);
                         if (localProcedure != null && localProcedure.isStatic)
                         {
                             SymbolNode tempSymbolNode;
@@ -4437,7 +4409,7 @@ namespace ProtoAssociative
 
                             if (tempSymbolNode != null && !tempSymbolNode.isStatic && isAccessible)
                             {
-                                message = String.Format(WarningMessage.kUsingNonStaticMemberInStaticContext, t.Value);
+                                message = String.Format(StringConstants.kUsingNonStaticMemberInStaticContext, t.Value);
                             }
                         }
                         buildStatus.LogWarning(
@@ -4450,7 +4422,7 @@ namespace ProtoAssociative
                     }
                     else
                     {
-                        string message = String.Format(WarningMessage.kUnboundIdentifierMsg, t.Value);
+                        string message = String.Format(StringConstants.kUnboundIdentifierMsg, t.Value);
                         buildStatus.LogUnboundVariableWarning(unboundVariable, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
                 }
@@ -4661,12 +4633,12 @@ namespace ProtoAssociative
                             if (step == 0)
                             {
                                 isStepValid = false;
-                                warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                                warningMsg = StringConstants.kRangeExpressionWithStepSizeZero;
                             }
                             else if ((end > current && step < 0) || (end < current && step > 0))
                             {
                                 isStepValid = false;
-                                warningMsg = WarningMessage.kRangeExpressionWithInvalidStepSize;
+                                warningMsg = StringConstants.kRangeExpressionWithInvalidStepSize;
                             }
                         }
 
@@ -4677,7 +4649,7 @@ namespace ProtoAssociative
                        if (hasAmountOperator)
                        {
                            isStepValid = false;
-                           warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                           warningMsg = StringConstants.kRangeExpressionWithStepSizeZero;
                        }
                        else
                        {
@@ -4685,7 +4657,7 @@ namespace ProtoAssociative
                                subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                            {
                                buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
-                                                      WarningMessage.kRangeExpressionWithNonIntegerStepNumber,
+                                                      StringConstants.kRangeExpressionWithNonIntegerStepNumber,
                                                       core.CurrentDSFileName,
                                                       stepNode.line,
                                                       stepNode.col, 
@@ -4694,7 +4666,7 @@ namespace ProtoAssociative
                            else if (step <= 0)
                            {
                                isStepValid = false;
-                               warningMsg = WarningMessage.kRangeExpressionWithNegativeStepNumber;
+                               warningMsg = StringConstants.kRangeExpressionWithNegativeStepNumber;
                            }
                        }
 
@@ -4704,12 +4676,12 @@ namespace ProtoAssociative
                         if (hasAmountOperator)
                         {
                             isStepValid = false;
-                            warningMsg = WarningMessage.kRangeExpressionConflictOperator;
+                            warningMsg = StringConstants.kRangeExpressionConflictOperator;
                         }
                         else if (step == 0)
                         {
                             isStepValid = false;
-                            warningMsg = WarningMessage.kRangeExpressionWithStepSizeZero;
+                            warningMsg = StringConstants.kRangeExpressionWithStepSizeZero;
                         }
                         break;
 
@@ -5141,7 +5113,7 @@ namespace ProtoAssociative
                         int type = core.TypeSystem.GetType(typeName);
                         if (type == (int)PrimitiveType.kInvalidType)
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kTypeUndefined, typeName);
+                            string message = String.Format(ProtoCore.StringConstants.kTypeUndefined, typeName);
                             core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, vardecl.line, vardecl.col, graphNode);
                             prop.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                         }
@@ -5626,7 +5598,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    string message = String.Format(WarningMessage.kMethodAlreadyDefined, localProcedure.name);
+                    string message = String.Format(StringConstants.kMethodAlreadyDefined, localProcedure.name);
                     buildStatus.LogWarning(WarningID.kFunctionAlreadyDefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, gNode);
                     funcDef.skipMe = true;
                 }
@@ -5887,7 +5859,7 @@ namespace ProtoAssociative
                 localProcedure.returntype = core.TypeSystem.BuildTypeObject(uid, rank); 
                 if (localProcedure.returntype.UID == (int)PrimitiveType.kInvalidType)
                 {
-                    string message = String.Format(ProtoCore.BuildData.WarningMessage.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
+                    string message = String.Format(ProtoCore.StringConstants.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
                     localProcedure.returntype.UID = (int)PrimitiveType.kTypeVar;
                 }
@@ -5990,7 +5962,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodAlreadyDefined, localProcedure.name);
+                    string message = String.Format(ProtoCore.StringConstants.kMethodAlreadyDefined, localProcedure.name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionAlreadyDefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
                     funcDef.skipMe = true;
                 }
@@ -6285,7 +6257,7 @@ namespace ProtoAssociative
                 {
                     if (!core.Options.SuppressFunctionResolutionWarning)
                     {
-                        string message = String.Format(ProtoCore.BuildData.WarningMessage.kFunctionNotReturnAtAllCodePaths, localProcedure.name);
+                        string message = String.Format(ProtoCore.StringConstants.kFunctionNotReturnAtAllCodePaths, localProcedure.name);
                         buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kMissingReturnStatement, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
                     }
                     EmitReturnNull();
@@ -6343,50 +6315,6 @@ namespace ProtoAssociative
                 {
                     Validity.Assert(null != ssaPointerList);
                     ssaPointerList.Clear();
-                }
-            }
-
-            if (node is FunctionDotCallNode)
-            {
-                FunctionDotCallNode dotcall = node as FunctionDotCallNode;
-                Validity.Assert(null != dotcall.DotCall);
-                if (null != dotcall.StaticLHSIdent)
-                {
-                    string identName = dotcall.StaticLHSIdent.Name;
-                    string fullClassName;
-                    bool isClassName = core.ClassTable.TryGetFullyQualifiedName(identName, out fullClassName);
-                    if (isClassName)
-                    {
-                        ProtoCore.DSASM.SymbolNode symbolnode = null;
-                        bool isAccessible = false;
-                        bool isLHSAllocatedVariable = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-
-                        bool isRHSConstructor = false;
-                        int classIndex = core.ClassTable.IndexOf(identName);
-                        if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
-                        {
-
-                            string functionName = dotcall.FunctionCall.Function.Name;
-                            ProcedureNode callNode = core.ClassTable.ClassNodes[classIndex].GetFirstMemberFunctionBy(functionName);
-                            if (null != callNode)
-                            {
-                                isRHSConstructor = callNode.isConstructor;
-                            }
-                        }
-
-                        bool isFunctionCallOnAllocatedClassName = isLHSAllocatedVariable && !isRHSConstructor;
-                        if (!isFunctionCallOnAllocatedClassName || isRHSConstructor)
-                        {
-                            ssaPointerList.Clear();
-
-                            dotcall.DotCall.FormalArguments[0] = dotcall.StaticLHSIdent;
-
-                            staticClass = null;
-                            resolveStatic = false;
-
-                            ssaPointerList.Clear();
-                        }
-                    }
                 }
             }
 
@@ -6505,14 +6433,6 @@ namespace ProtoAssociative
                         if (ident != null)
                         {
                             name = ident.Value;
-                        }
-                        if (core.Options.GenerateSSA)
-                        {
-                            // For SSA'd ident lists, the lhs (class name) is stored in fnode.StaticLHSIdent
-                            if (null != fnode.StaticLHSIdent)
-                            {
-                                name = fnode.StaticLHSIdent.Name;
-                            }
                         }
 
                         ci = core.ClassTable.IndexOf(name);
@@ -8166,8 +8086,16 @@ namespace ProtoAssociative
                                 }
                                 else
                                 {
-                                    // This function is a member function, store the functioncall node
-                                    ssaPointerList.Add(dotcall.FunctionCall);
+
+                                    string className = dotcall.DotCall.FormalArguments[0].Name;
+                                    string fullyQualifiedClassName = string.Empty;
+                                    bool isClassName = core.ClassTable.TryGetFullyQualifiedName(className, out fullyQualifiedClassName);
+                                    bool isConstructorCall = isClassName ? true : false;
+                                    if (!isConstructorCall)
+                                    {
+                                        // This function is a member function, store the functioncall node
+                                        ssaPointerList.Add(dotcall.FunctionCall);
+                                    }
                                 }
                             }
                             else if (bnode.RightNode is FunctionCallNode)
@@ -8181,63 +8109,6 @@ namespace ProtoAssociative
                                 Validity.Assert(false);
                             }
                         }
-
-                        /*
-                           The following functions on codegen will perform the static call backtracking:
-
-                           string staticClass = null
-                           bool resolveStatic = false
-
-                           proc EmitBinaryExpr(node)
-                               if node.right is identifier
-                                   if node.right is a class
-                                       staticClass = node.right.name
-                                       resolveStatic = true
-                                   end
-                               end	
-                           end
-
-                           proc EmitIdentifierList(node, graphnode)
-                               if resolveStatic
-                                   node.left = new IdentifierNode(staticClass)	
-                               end	
-                           end
-                        */
-
-                        if (bnode.RightNode is IdentifierNode)
-                        {
-                            // This is the first ssa statement of the transformed identifier list call
-                            // The rhs is either a pointer or a classname
-                            string identName = (bnode.RightNode as IdentifierNode).Name;
-                            string fullClassName;
-                            bool isClassName = core.ClassTable.TryGetFullyQualifiedName(identName, out fullClassName);
-                            if (isClassName)
-                            {
-                                ProtoCore.DSASM.SymbolNode symbolnode = null;
-                                bool isAccessible = false;
-                                bool isAllocatedVariable = VerifyAllocation(identName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-
-                                // If the identifier is non-allocated then it is a constructor call
-                                if (!isAllocatedVariable)
-                                {
-                                    ssaPointerList.Clear();
-                                    staticClass = identName;
-                                    resolveStatic = true;
-                                    return;
-                                }
-                            }
-                        }
-
-                        //if (bnode.RightNode is FunctionDotCallNode)
-                        //{
-                        //    string identName = (bnode.RightNode as FunctionDotCallNode).FunctionCall.Function.Name;
-                        //    if (core.ClassTable.DoesExist(identName))
-                        //    {
-                        //        ssaPointerList.Clear();
-                        //        staticClass = identName;
-                        //        resolveStatic = true;
-                        //    }
-                        //}
                     }
                     
 
@@ -8266,20 +8137,20 @@ namespace ProtoAssociative
                 {
                     if (bnode.LeftNode.Name.Equals(ProtoCore.DSDefinitions.Keyword.This))
                     {
-                        string errorMessage = ProtoCore.BuildData.WarningMessage.kInvalidThis;
+                        string errorMessage = ProtoCore.StringConstants.kInvalidThis;
                         if (localProcedure != null)
                         {
                             if (localProcedure.isStatic)
                             {
-                                errorMessage = ProtoCore.BuildData.WarningMessage.kUsingThisInStaticFunction;
+                                errorMessage = ProtoCore.StringConstants.kUsingThisInStaticFunction;
                             }
                             else if (localProcedure.classScope == Constants.kGlobalScope)
                             {
-                                errorMessage = ProtoCore.BuildData.WarningMessage.kInvalidThis;
+                                errorMessage = ProtoCore.StringConstants.kInvalidThis;
                             }
                             else
                             {
-                                errorMessage = ProtoCore.BuildData.WarningMessage.kAssingToThis;
+                                errorMessage = ProtoCore.StringConstants.kAssingToThis;
                             }
                         }
                         core.BuildStatus.LogWarning(WarningID.kInvalidThis, errorMessage, core.CurrentDSFileName, bnode.line, bnode.col, graphNode);
@@ -8517,7 +8388,7 @@ namespace ProtoAssociative
                     int runtimeIndex = (!isAllocated || !isAccessible) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
                     if (isAllocated && !isAccessible)
                     {
-                        string message = String.Format(WarningMessage.kPropertyIsInaccessible, t.Name);
+                        string message = String.Format(StringConstants.kPropertyIsInaccessible, t.Name);
                         buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
 
@@ -8980,7 +8851,7 @@ namespace ProtoAssociative
                 catchHandler.FilterTypeUID = core.TypeSystem.GetType(filterNode.type.Name);
                 if (catchHandler.FilterTypeUID == (int)PrimitiveType.kInvalidType)
                 {
-                    string message = String.Format(ProtoCore.BuildData.WarningMessage.kExceptionTypeUndefined, filterNode.type.Name);
+                    string message = String.Format(ProtoCore.StringConstants.kExceptionTypeUndefined, filterNode.type.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, filterNode.line, filterNode.col);
                     catchHandler.FilterTypeUID = (int)PrimitiveType.kTypeVar;
                 }
@@ -9336,7 +9207,7 @@ namespace ProtoAssociative
             int uid = core.TypeSystem.GetType(argNode.ArgumentType.Name);
             if (uid == (int)PrimitiveType.kInvalidType && !core.IsTempVar(argNode.NameNode.Name))
             {
-                string message = String.Format(WarningMessage.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
+                string message = String.Format(StringConstants.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
                 buildStatus.LogWarning(WarningID.kTypeUndefined, message, core.CurrentDSFileName, argNode.line, argNode.col, graphNode);
             }
 

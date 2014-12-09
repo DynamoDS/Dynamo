@@ -74,11 +74,6 @@
     <Compile Include="TestUpdateCount.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
-      <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
-      <Name>RevitServices</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\NodeServices\NodeServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>NodeServices</Name>

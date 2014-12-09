@@ -1039,6 +1039,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("e6a9eec4-a18d-437d-8779-adfd6141bf19", 9);
 
         }
+
         [Test]
         [Category("RegressionTests")]
         public void CBN_warning_5236()
@@ -1070,7 +1071,59 @@ namespace Dynamo.Tests
         }
        
 
+     
+        [Test]
+        [Category("RegressionTests")]
+        public void CBN_Variable_Type_5480()
+        {
+            // MAGN-5480 - Defect in parsing typed identifiers in CBN
 
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\CBN_Variable_Type_5480.dyn");
+            AssertPreviewValue("fabaccff-5b8a-4505-b752-7939cba90dc4", 1);
+        }
+
+        [Test]
+        public void TestDefaultValueInFunctionObject()
+        {
+            // Regression test case for
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueInFunctionObject.dyn");
+
+            RunModel(dynFilePath);
+
+            AssertPreviewValue("4218d135-a2c4-4dee-8415-8f0bf1de671c", new[] { 1, 1 });
+
+
+        }
+        [Test]
+        public void TestRunTimeWarning_3132()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3132
+            // test for run time warning is thrown or not 
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsfunction\RunTimeWarning_3132.dyn");
+
+            RunModel(dynFilePath);
+            var guid = System.Guid.Parse("88f376fa-634b-422e-b853-6afa8af8d286");
+            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+           
+            Assert.IsTrue(node.State == Models.ElementState.Warning);
+        }
+        
+        [Test]
+        public void List_Map_Default_5233()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
+            //List.map with default arguments 
+
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\list\List_Map_DefaultArg5233.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("6a0207d9-78d7-4fd3-829f-d19644acdc1b", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        }
+       
+        
     }
 
     [Category("DSCustomNode")]
@@ -1207,6 +1260,5 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
-       
     }
 }

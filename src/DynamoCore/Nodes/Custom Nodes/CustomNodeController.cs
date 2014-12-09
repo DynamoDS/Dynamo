@@ -100,6 +100,20 @@ namespace Dynamo.Nodes
                 base.AssignIdentifiersForFunctionCall(model, rhs, resultAst);
         }
 
+        protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
+        {
+            if (Definition.IsProxy)
+            {
+                var lhs = model.AstIdentifierForPreview;
+                var rhs = AstFactory.BuildNullNode();
+                resultAst.Add(AstFactory.BuildAssignment(lhs, rhs));
+            }
+            else
+            {
+                base.BuildOutputAst(model, inputAstNodes, resultAst);
+            }
+        }
+
         public override void SyncNodeWithDefinition(NodeModel model)
         {
             if (!IsInSyncWithNode(model))

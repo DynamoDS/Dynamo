@@ -46,10 +46,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\IronPython\IronPython.dll</HintPath>
     </Reference>
-    <Reference Include="IronPython.Modules, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\IronPython\IronPython.Modules.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\IronPython\Microsoft.Dynamic.dll</HintPath>
@@ -69,11 +65,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -89,11 +81,6 @@
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
-      <Project>{D8262D40-4880-41E4-91E4-AF8F480C8637}</Project>
-      <Name>CoreNodesUI</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Libraries\DSIronPython\IronPythonEval.csproj">
@@ -116,10 +103,9 @@
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\TestServices\TestServices.csproj">
-      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
-      <Name>TestServices</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj">
+      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
+      <Name>SystemTestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

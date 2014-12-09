@@ -44,8 +44,6 @@ namespace Dynamo.Models
         private string _category = "";
         private bool _hasUnsavedChanges;
         private bool _isCurrentSpace;
-        private ObservableCollection<NodeModel> _nodes;
-        private ObservableCollection<ConnectorModel> _connectors;
 
         #endregion
 
@@ -192,29 +190,11 @@ namespace Dynamo.Models
             }
         }
 
-        public ObservableCollection<NodeModel> Nodes
-        {
-            get { return _nodes; }
-            internal set
-            {
-                if (Equals(value, _nodes)) return;
-                _nodes = value;
-                RaisePropertyChanged("Nodes");
-            }
-        }
+        public ObservableCollection<NodeModel> Nodes { get; private set; }
 
-        public ObservableCollection<ConnectorModel> Connectors
-        {
-            get { return _connectors; }
-            internal set
-            {
-                if (Equals(value, _connectors)) return;
-                _connectors = value;
-                RaisePropertyChanged("Connectors");
-            }
-        }
+        public ObservableCollection<ConnectorModel> Connectors { get; private set; }
 
-        public ObservableCollection<NoteModel> Notes { get; internal set; }
+        public ObservableCollection<NoteModel> Notes { get; private set; }
 
         public string FileName
         {
@@ -502,7 +482,7 @@ namespace Dynamo.Models
                 throw new ArgumentException("Node ID must be specified", "nodeId");
 
             // find nodes with of the same type with the same GUID
-            var query = _nodes.Where(n => n.GUID.Equals(nodeId) && n.Name.Equals(nodeName));
+            var query = Nodes.Where(n => n.GUID.Equals(nodeId) && n.Name.Equals(nodeName));
 
             // safely ignore a node of the same type with the same GUID
             if (query.Any())

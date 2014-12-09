@@ -33,49 +33,6 @@ namespace ProtoCore
             kReplicationWarning
         }
 
-        public struct WarningMessage
-        {
-            public const string kArrayOverIndexed = "Variable is over indexed.";
-            public const string kIndexOutOfRange = "Index is out of range.";
-            public const string kSymbolOverIndexed = "'{0}' is over indexed.";
-            public const string kStringOverIndexed = "String is over indexed.";
-            public const string kStringIndexOutOfRange = "The index to string is out of range";
-            public const string kAssignNonCharacterToString = "Only character can be assigned to a position in a string.";
-            public const string KCallingConstructorOnInstance = "Cannot call constructor '{0}()' on instance.";
-            public const string kInvokeMethodOnInvalidObject = "Method '{0}()' is invoked on invalid object.";
-            public const string kMethodStackOverflow = "Stack overflow caused by calling method '{0}()' recursively.";
-            public const string kCyclicDependency = "Cyclic dependency detected at '{0}' and '{1}'.";
-            public const string kFFIFailedToObtainThisObject = "Failed to obtain this object for '{0}.{1}'.";
-            public const string kFFIFailedToObtainObject = "Failed to obtain object '{0}' for '{1}.{2}'.";
-            public const string kFFIInvalidCast = "'{0}' is being cast to '{1}', but the allowed range is [{2}..{3}].";
-            public const string kDeferencingNonPointer = "Dereferencing a non-pointer.";
-            public const string kFailToConverToPointer = "Converting other things to pointer is not allowed.";
-            public const string kFailToConverToNull = "Converting other things to null is not allowed.";
-            public const string kFailToConverToFunction = "Converting other things to function pointer is not allowed.";
-            public const string kConvertDoubleToInt = "Converting double to int will cause possible information loss.";
-            public const string kArrayRankReduction = "Type conversion would cause array rank reduction. This is not permitted outside of replication. {511ED65F-FB66-4709-BDDA-DCD5E053B87F}";
-            public const string kConvertArrayToNonArray = "Converting an array to {0} would cause array rank reduction and is not permitted.";
-            public const string kConvertNonConvertibleTypes = "Asked to convert non-convertible types.";
-            public const string kFunctionNotFound = "No candidate function could be found.";
-            public const string kAmbigousMethodDispatch = "Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}.";
-            public const string kInvalidArguments = "Argument is invalid.";
-            public const string kInvalidArgumentsInRangeExpression = "The value that used in range expression should be either integer or double.";
-            public const string kInvalidAmountInRangeExpression = "The amount in range expression should be an positive integer.";
-            public const string kNoStepSizeInAmountRangeExpression = "No step size is specified in amount range expression.";
-            public const string kFileNotFound = "'{0}' doesn't exist.";
-            public const string kPropertyNotFound = "Object does not have a property '{0}'.";
-            public const string kPropertyOfClassNotFound = "Class '{0}' does not have a property '{1}'.";
-            public const string kPropertyInaccessible = "Property '{0}' is inaccessible.";
-            public const string kMethodResolutionFailure = "Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B.";
-            public const string kMethodResolutionFailureWithTypes = "One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn't find a version of {0} that takes arguments of type {1}.";
-            public const string kMethodResolutionFailureForOperator = "Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'.";
-            public const string kConsoleWarningMessage = "> Runtime warning: {0}\n - \"{1}\" <line: {2}, col: {3}>";
-
-            public const string FUNCTION_GROUP_RESOLUTION_FAILURE =
-                "No function called {0} could be found. Please check the name of the function.";
-
-        }
-
         public struct WarningEntry
         {
             public RuntimeData.WarningID ID;
@@ -173,7 +130,7 @@ namespace ProtoCore
                 CodeGen.AuditCodeLocation(core, ref filename, ref line, ref col);
             }
 
-            var warningMsg = string.Format(WarningMessage.kConsoleWarningMessage, 
+            var warningMsg = string.Format(StringConstants.kConsoleWarningMessage, 
                                            message, filename, line, col);
 
             if (core.Options.Verbose)
@@ -237,7 +194,7 @@ namespace ProtoCore
         public void LogFunctionGroupNotFoundWarning(
             string methodName)
         {
-            String message = string.Format(WarningMessage.FUNCTION_GROUP_RESOLUTION_FAILURE, methodName);
+            String message = string.Format(StringConstants.FUNCTION_GROUP_RESOLUTION_FAILURE, methodName);
             LogWarning(WarningID.kMethodResolutionFailure, message);
         }
 
@@ -255,17 +212,17 @@ namespace ProtoCore
                 if (classScope != Constants.kGlobalScope)
                 {
                     string classname = core.ClassTable.ClassNodes[classScope].name;
-                    message = string.Format(WarningMessage.kPropertyOfClassNotFound, classname, propertyName);
+                    message = string.Format(StringConstants.kPropertyOfClassNotFound, classname, propertyName);
                 }
                 else
                 {
-                    message = string.Format(WarningMessage.kPropertyNotFound, propertyName);
+                    message = string.Format(StringConstants.kPropertyNotFound, propertyName);
                 }
             }
             else if (CoreUtils.TryGetOperator(methodName, out op))
             {
                 string strOp = Op.GetOpSymbol(op);
-                message = String.Format(WarningMessage.kMethodResolutionFailureForOperator,
+                message = String.Format(StringConstants.kMethodResolutionFailureForOperator,
                                         strOp,
                                         core.TypeSystem.GetType(arguments[0].metaData.type),
                                         core.TypeSystem.GetType(arguments[1].metaData.type));
@@ -284,7 +241,7 @@ namespace ProtoCore
                 typesList = typesList + ")";
 
 
-                message = string.Format(WarningMessage.kMethodResolutionFailureWithTypes, methodName, typesList);
+                message = string.Format(StringConstants.kMethodResolutionFailureWithTypes, methodName, typesList);
             }
 
             LogWarning(WarningID.kMethodResolutionFailure, message);
@@ -297,11 +254,11 @@ namespace ProtoCore
 
             if (CoreUtils.TryGetPropertyName(methodName, out propertyName))
             {
-                message = String.Format(RuntimeData.WarningMessage.kPropertyInaccessible, propertyName);
+                message = String.Format(StringConstants.kPropertyInaccessible, propertyName);
             }
             else
             {
-                message = String.Format(RuntimeData.WarningMessage.kMethodResolutionFailure, methodName);
+                message = String.Format(StringConstants.kMethodResolutionFailure, methodName);
             }
             LogWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure, message);
         }
