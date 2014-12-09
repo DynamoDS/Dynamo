@@ -78,5 +78,30 @@ namespace ProtoCore
 
         public const string FUNCTION_GROUP_RESOLUTION_FAILURE =
             "No function called {0} could be found. Please check the name of the function.";
+
+        public const string tooManyCharacters = "Too many characters in character literal";
+
+        public const string returnStatementIsNotAllowedInConstructor = "return statement is not allowed in constructor";
+        public const string unknownAttribute = "Unknown attribute {0}";
+        public const string attributeArgMustBeConstant = "An attribute argument must be a constant expression";
+        public const string noConstructorForAttribute = "No constructors for Attribute '{0}' takes {1} arguments";
+        public const string modifierBlockNotSupported = "Modifier Blocks are not supported currently.";
+        public const string importStatementNotSupported = "Import statements are not supported in CodeBlock Nodes.";
+        public const string failedToImport = "Failed to import {0}";
+
+        public const string noSuchFileOrDirectoryToImport = "Cannot import file: '{0}': No such file or directory";
+        public const string keywordCantBeUsedAsIdentifier = "\"{0}\" is a keyword, identifier expected";
+        public const string invalidLanguageBlockIdentifier = "\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?";
+        public const string keywordCannotBeUsedAsConstructorName = "\"{0}\" is a keyword, can't be used as constructor name";
+        public const string emptyCharacterLiteral = "Empty character literal.";
+        public const string functionCallCannotBeAtLeftSide = "function call is not allowed at the left hand side of an assignment";
+
+        public const string useInlineConditional = "'{0}' statement can only be used in imperative language block, consider using an inline conditional instead?";
+        public const string validForImperativeBlockOnly = "'{0}' statement can only be used in imperative language block.";
+        public const string semiColonExpected = "';' is expected.";
+        public const string closeBracketExpected = @"')' expected - Imcomplete Closure";
+        public const string invalidSymbol = "Syntax Error: invalid symbol '{0}'. (Did you mean to use Modifier Stack \" => \")";
+        public const string baseIsExpectedToCallBaseConstructor = "'base' is expected here to call base constructor.";
+        public const string invalidReturnStatement = "Return statement is invalid. Do you mean: return = {0} ?";
     }
 }
