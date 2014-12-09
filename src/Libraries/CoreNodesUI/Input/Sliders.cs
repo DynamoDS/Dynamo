@@ -181,36 +181,6 @@ namespace Dynamo.Nodes
         }
 
         protected SliderBase(WorkspaceModel workspace): base(workspace){}
-    }
-
-    [NodeName("Double Slider")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces double values.")]
-    [SupressImportIntoVM]
-    [IsDesignScriptCompatible]
-    public class DoubleSlider : SliderBase
-    {
-        public DoubleSlider(WorkspaceModel workspace) : base(workspace)
-        {
-            Min = 0;
-            Max = 100;
-            Step = 0.01;
-            Value = 0;
-        }
-
-        /// <summary>
-        /// UI is initialized and bindings are setup here.
-        /// </summary>
-        /// <param name="nodeUI">UI view that we can customize the UI of.</param>
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            var slider = new UI.Controls.DynamoSlider(this, nodeUI)
-            {
-                DataContext = new SliderViewModel(NumericFormat.Double, this)
-            };
-
-            nodeUI.inputGrid.Children.Add(slider);
-        }
 
         protected override bool UpdateValueCore(string name, string value)
         {
@@ -245,6 +215,11 @@ namespace Dynamo.Nodes
             return base.UpdateValueCore(name, value);
         }
 
+        protected override bool ShouldDisplayPreviewCore()
+        {
+            return false; // Previews are not shown for this node type.
+        }
+
         #region Load/Save
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -254,6 +229,7 @@ namespace Dynamo.Nodes
             XmlElement outEl = xmlDoc.CreateElement("Range");
             outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
             outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
@@ -268,6 +244,7 @@ namespace Dynamo.Nodes
 
                 double min = Min;
                 double max = Max;
+                double step = Step;
 
                 if (subNode.Attributes != null)
                 {
@@ -279,11 +256,14 @@ namespace Dynamo.Nodes
                             max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         else if (attr.Name.Equals("value"))
                             Value = Convert.ToDouble(subNode.InnerText, CultureInfo.InvariantCulture);
+                        else if (attr.Name.Equals("step"))
+                            step = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                     }
                 }
 
                 Min = min;
                 Max = max;
+                Step = step;
             }
         }
 
@@ -319,9 +299,9 @@ namespace Dynamo.Nodes
                     if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
                         continue;
 
-                    double min = this.Min;
-                    double max = this.Max;
-                    double step = this.Step;
+                    double min = Min;
+                    double max = Max;
+                    double step = Step;
 
                     foreach (XmlAttribute attr in subNode.Attributes)
                     {
@@ -329,13 +309,13 @@ namespace Dynamo.Nodes
                             min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         else if (attr.Name.Equals("max"))
                             max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if(attr.Name.Equals("step"))
+                        else if (attr.Name.Equals("step"))
                             step = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                     }
 
-                    this.Min = min;
-                    this.Max = max;
-                    this.Step = step;
+                    Min = min;
+                    Max = max;
+                    Step = step;
 
                     break;
                 }
@@ -343,11 +323,37 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+    }
 
-        protected override bool ShouldDisplayPreviewCore()
+    [NodeName("Double Slider")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("A slider that produces double values.")]
+    [SupressImportIntoVM]
+    [IsDesignScriptCompatible]
+    public class DoubleSlider : SliderBase
+    {
+        public DoubleSlider(WorkspaceModel workspace) : base(workspace)
         {
-            return false; // Previews are not shown for this node type.
+            Min = 0;
+            Max = 100;
+            Step = 0.01;
+            Value = 0;
         }
+
+        /// <summary>
+        /// UI is initialized and bindings are setup here.
+        /// </summary>
+        /// <param name="nodeUI">UI view that we can customize the UI of.</param>
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        {
+            var slider = new UI.Controls.DynamoSlider(this, nodeUI)
+            {
+                DataContext = new SliderViewModel(NumericFormat.Double, this)
+            };
+
+            nodeUI.inputGrid.Children.Add(slider);
+        }
+
     }
 
     [NodeName("Integer Slider")]
@@ -381,145 +387,5 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.Children.Add(slider);
         }
 
-        protected override bool UpdateValueCore(string name, string value)
-        {
-            switch (name)
-            {
-                case "Min":
-                case "MinText":
-                    Min = SliderViewModel.ConvertToDouble(NumericFormat.Double, value);
-                    return true; // UpdateValueCore handled.
-                case "Max":
-                case "MaxText":
-                    Max = SliderViewModel.ConvertToDouble(NumericFormat.Double, value);
-                    return true; // UpdateValueCore handled.
-                case "Value":
-                case "ValueText":
-                    Value = SliderViewModel.ConvertToDouble(NumericFormat.Double, value);
-                    if (Value >= Max)
-                    {
-                        this.Max = Value;
-                    }
-                    if (Value <= Min)
-                    {
-                        this.Min = Value;
-                    }
-                    return true; // UpdateValueCore handled.
-                case "Step":
-                case "StepText":
-                    Step = SliderViewModel.ConvertToDouble(NumericFormat.Double, value);
-                    return true;
-            }
-
-            return base.UpdateValueCore(name, value);
-        }
-
-        #region Load/Save
-
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            base.SaveNode(xmlDoc, nodeElement, context);
-
-            XmlElement outEl = xmlDoc.CreateElement("Range");
-            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-            outEl.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
-            nodeElement.AppendChild(outEl);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            base.LoadNode(nodeElement);
-
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (!subNode.Name.Equals("Range"))
-                    continue;
-
-                var min = (int)Min;
-                var max = (int)Max;
-                var step = (int)Step;
-
-                if (subNode.Attributes != null)
-                {
-                    foreach (XmlAttribute attr in subNode.Attributes)
-                    {
-                        if (attr.Name.Equals("min"))
-                            min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
-                            max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("value"))
-                            Value = Convert.ToInt32(subNode.InnerText, CultureInfo.InvariantCulture);
-                        else if(attr.Name.Equals("step"))
-                            step = Convert.ToInt32(subNode.InnerText, CultureInfo.InvariantCulture);
-                    }
-                }
-
-                Min = min;
-                Max = max;
-                Step = step;
-            }
-        }
-
-        #endregion
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); // Base implementation must be called.
-
-            if (context == SaveContext.Undo)
-            {
-                var xmlDocument = element.OwnerDocument;
-                XmlElement subNode = xmlDocument.CreateElement("Range");
-                subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-                subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-                subNode.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
-                element.AppendChild(subNode);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); // Base implementation must be called.
-
-            if (context == SaveContext.Undo)
-            {
-                foreach (XmlNode subNode in element.ChildNodes)
-                {
-                    if (!subNode.Name.Equals("Range"))
-                        continue;
-                    if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
-                        continue;
-
-                    var min = (int)Min;
-                    var max = (int)Max;
-                    var step = (int)Step;
-
-                    foreach (XmlAttribute attr in subNode.Attributes)
-                    {
-                        if (attr.Name.Equals("min"))
-                            min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
-                            max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("step"))
-                            step = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                    }
-
-                    Min = min;
-                    Max = max;
-                    Step = step;
-                }
-            }
-        }
-
-        #endregion
-
-        protected override bool ShouldDisplayPreviewCore()
-        {
-            return false; // Previews are not shown for this node type.
-        }
     }
 }
