@@ -25,19 +25,6 @@ namespace Dynamo.UI.Controls
         }
 
         #region Event Handlers
-        //protected void OnThumbDragStarted(System.Windows.Controls.Primitives.DragStartedEventArgs e)
-        //{
-        //    base.OnThumbDragStarted(e);
-        //    nodeModel.Workspace.RecordModelForModification(nodeModel);
-        //    (nodeModel as IBlockingModel).OnBlockingStarted(EventArgs.Empty);
-        //}
-
-        //protected override void OnThumbDragCompleted(System.Windows.Controls.Primitives.DragCompletedEventArgs e)
-        //{
-        //    base.OnThumbDragCompleted(e);
-        //    (nodeModel as IBlockingModel).OnBlockingEnded(EventArgs.Empty);
-        //    nodeModel.RequiresRecalc = true;
-        //}
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -45,6 +32,7 @@ namespace Dynamo.UI.Controls
             if (e.OriginalSource is System.Windows.Shapes.Rectangle)
                 nodeModel.Workspace.RecordModelForModification(nodeModel);
         }
+
         #endregion
     }
 }
