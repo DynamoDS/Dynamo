@@ -1449,8 +1449,8 @@ namespace Dynamo.Nodes
                             }
 
                             double identifierValue0, identifierValue1;
-                            var canBeParsed0 = System.Double.TryParse(rangeIdentifiers[0], out identifierValue0);
-                            var canBeParsed1 = System.Double.TryParse(rangeIdentifiers[1], out identifierValue1);
+                            var canBeParsed0 = System.Double.TryParse(rangeIdentifiers[0], NumberStyles.Number, CultureInfo.InvariantCulture, out identifierValue0);
+                            var canBeParsed1 = System.Double.TryParse(rangeIdentifiers[1], NumberStyles.Number, CultureInfo.InvariantCulture, out identifierValue1);
 
                             //both of the value can be parsed as double
                             if (canBeParsed0 && canBeParsed1)

@@ -33,7 +33,7 @@ namespace DSCore
 
             if (Int32.TryParse(str, out i))
                 return i;
-            if (Double.TryParse(str, out d))
+            if (Double.TryParse(str, NumberStyles.Number, CultureInfo.InvariantCulture, out d))
                 return d;
             throw new ArgumentException("Not a valid number.", "str");
         }

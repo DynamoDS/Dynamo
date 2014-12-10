@@ -78,7 +78,7 @@ namespace Dynamo.Utilities
         {
             double result = defaultValue;
             XmlAttribute attrib = internalElement.Attributes[attribName];
-            if (null == attrib || (!double.TryParse(attrib.Value, out result)))
+            if (null == attrib || (!double.TryParse(attrib.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out result)))
                 return defaultValue;
 
             return result;
