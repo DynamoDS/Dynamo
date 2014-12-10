@@ -1,0 +1,384 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="FUNCTION_GROUP_RESOLUTION_FAILURE" xml:space="preserve">
+    <value>No function called {0} could be found. Please check the name of the function.</value>
+  </data>
+  <data name="kAlreadyImported" xml:space="preserve">
+    <value>File : '{0}' is already imported</value>
+  </data>
+  <data name="kAmbigousMethodDispatch" xml:space="preserve">
+    <value>Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}.</value>
+  </data>
+  <data name="kArgumentTypeUndefined" xml:space="preserve">
+    <value>Type '{0}' of argument '{1}' is not defined.</value>
+  </data>
+  <data name="kArrayOverIndexed" xml:space="preserve">
+    <value>Variable is over indexed.</value>
+  </data>
+  <data name="kArrayRankReduction" xml:space="preserve">
+    <value>Type conversion would cause array rank reduction. This is not permitted outside of replication. {511ED65F-FB66-4709-BDDA-DCD5E053B87F}</value>
+  </data>
+  <data name="kAssignNonCharacterToString" xml:space="preserve">
+    <value>Only character can be assigned to a position in a string.</value>
+  </data>
+  <data name="kAssingToThis" xml:space="preserve">
+    <value>'this' is readonly and cannot be assigned to.</value>
+  </data>
+  <data name="kCallingConstructorInConstructor" xml:space="preserve">
+    <value>Cannot call constructor '{0}()' in itself.</value>
+  </data>
+  <data name="KCallingConstructorOnInstance" xml:space="preserve">
+    <value>Cannot call constructor '{0}()' on instance.</value>
+  </data>
+  <data name="kCallingNonStaticMethod" xml:space="preserve">
+    <value>'{0}.{1}()' is not a static method.</value>
+  </data>
+  <data name="kCallingNonStaticProperty" xml:space="preserve">
+    <value>'{0}.{1}' is not a static property.</value>
+  </data>
+  <data name="kConsoleWarningMessage" xml:space="preserve">
+    <value>&gt; Runtime warning: {0}\n - \"{1}\" &lt;line: {2}, col: {3}&gt;</value>
+  </data>
+  <data name="kConvertArrayToNonArray" xml:space="preserve">
+    <value>Converting an array to {0} would cause array rank reduction and is not permitted.</value>
+  </data>
+  <data name="kConvertDoubleToInt" xml:space="preserve">
+    <value>Converting double to int will cause possible information loss.</value>
+  </data>
+  <data name="kConvertNonConvertibleTypes" xml:space="preserve">
+    <value>Asked to convert non-convertible types.</value>
+  </data>
+  <data name="kCyclicDependency" xml:space="preserve">
+    <value>Cyclic dependency detected at '{0}' and '{1}'.</value>
+  </data>
+  <data name="kDeferencingNonPointer" xml:space="preserve">
+    <value>Dereferencing a non-pointer.</value>
+  </data>
+  <data name="kExceptionTypeUndefined" xml:space="preserve">
+    <value>Exception type '{0}' is not defined.</value>
+  </data>
+  <data name="kFailToConverToFunction" xml:space="preserve">
+    <value>Converting other things to function pointer is not allowed.</value>
+  </data>
+  <data name="kFailToConverToNull" xml:space="preserve">
+    <value>Converting other things to null is not allowed.</value>
+  </data>
+  <data name="kFailToConverToPointer" xml:space="preserve">
+    <value>Converting other things to pointer is not allowed.</value>
+  </data>
+  <data name="kFFIFailedToObtainObject" xml:space="preserve">
+    <value>Failed to obtain object '{0}' for '{1}.{2}'.</value>
+  </data>
+  <data name="kFFIFailedToObtainThisObject" xml:space="preserve">
+    <value>Failed to obtain this object for '{0}.{1}'.</value>
+  </data>
+  <data name="kFFIInvalidCast" xml:space="preserve">
+    <value>'{0}' is being cast to '{1}', but the allowed range is [{2}..{3}].</value>
+  </data>
+  <data name="kFileNotFound" xml:space="preserve">
+    <value>File : '{0}' not found</value>
+  </data>
+  <data name="kFunctionNotFound" xml:space="preserve">
+    <value>No candidate function could be found.</value>
+  </data>
+  <data name="kFunctionNotReturnAtAllCodePaths" xml:space="preserve">
+    <value>Method '{0}()' doesn't return at all code paths.</value>
+  </data>
+  <data name="kIndexOutOfRange" xml:space="preserve">
+    <value>Index is out of range.</value>
+  </data>
+  <data name="kInvalidAmountInRangeExpression" xml:space="preserve">
+    <value>The amount in range expression should be an positive integer.</value>
+  </data>
+  <data name="kInvalidArguments" xml:space="preserve">
+    <value>Argument is invalid.</value>
+  </data>
+  <data name="kInvalidArgumentsInRangeExpression" xml:space="preserve">
+    <value>The value that used in range expression should be either integer or double.</value>
+  </data>
+  <data name="kInvalidBreakForFunction" xml:space="preserve">
+    <value>Statement break causes function to abnormally return null.</value>
+  </data>
+  <data name="kInvalidContinueForFunction" xml:space="preserve">
+    <value>Statement continue cause function to abnormally return null.</value>
+  </data>
+  <data name="kInvalidStaticCyclicDependency" xml:space="preserve">
+    <value>Cyclic dependency detected at '{0}' and '{1}'.</value>
+  </data>
+  <data name="kInvalidThis" xml:space="preserve">
+    <value>'this' can only be used in member methods.</value>
+  </data>
+  <data name="kInvokeMethodOnInvalidObject" xml:space="preserve">
+    <value>Method '{0}()' is invoked on invalid object.</value>
+  </data>
+  <data name="kMethodAlreadyDefined" xml:space="preserve">
+    <value>Method '{0}()' is already defined.</value>
+  </data>
+  <data name="kMethodHasInvalidArguments" xml:space="preserve">
+    <value>'{0}()' has some invalid arguments.</value>
+  </data>
+  <data name="kMethodIsInaccessible" xml:space="preserve">
+    <value>Method '{0}()' is inaccessible.</value>
+  </data>
+  <data name="kMethodNotFound" xml:space="preserve">
+    <value>Method '{0}()' not found.</value>
+  </data>
+  <data name="kMethodResolutionFailure" xml:space="preserve">
+    <value>Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B.</value>
+  </data>
+  <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
+    <value>Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'.</value>
+  </data>
+  <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
+    <value>One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn't find a version of {0} that takes arguments of type {1}.</value>
+  </data>
+  <data name="kMethodStackOverflow" xml:space="preserve">
+    <value>Stack overflow caused by calling method '{0}()' recursively.</value>
+  </data>
+  <data name="kMultipleSymbolFound" xml:space="preserve">
+    <value>Multiple definitions for '{0}' are found as {1}</value>
+  </data>
+  <data name="kMultipleSymbolFoundFromName" xml:space="preserve">
+    <value>Multiple definitions for '{0}' are found as {1}</value>
+  </data>
+  <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
+    <value>No step size is specified in amount range expression.</value>
+  </data>
+  <data name="kPropertyInaccessible" xml:space="preserve">
+    <value>Property '{0}' is inaccessible.</value>
+  </data>
+  <data name="kPropertyIsInaccessible" xml:space="preserve">
+    <value>Property '{0}' is inaccessible.</value>
+  </data>
+  <data name="kPropertyNotFound" xml:space="preserve">
+    <value>Property '{0}' not found.</value>
+  </data>
+  <data name="kPropertyOfClassNotFound" xml:space="preserve">
+    <value>Class '{0}' does not have a property '{1}'.</value>
+  </data>
+  <data name="kRangeExpressionConflictOperator" xml:space="preserve">
+    <value>The amount operator cannot be used together with step operator.</value>
+  </data>
+  <data name="kRangeExpressionWithInvalidAmount" xml:space="preserve">
+    <value>The amount of step is invalid.</value>
+  </data>
+  <data name="kRangeExpressionWithInvalidStepSize" xml:space="preserve">
+    <value>The step size of range expression is invalid.</value>
+  </data>
+  <data name="kRangeExpressionWithNegativeStepNumber" xml:space="preserve">
+    <value>The step number of range expression should be greater than 0.</value>
+  </data>
+  <data name="kRangeExpressionWithNonIntegerStepNumber" xml:space="preserve">
+    <value>The step number of range expression should be integer.</value>
+  </data>
+  <data name="kRangeExpressionWithStepSizeZero" xml:space="preserve">
+    <value>The step size of range expression should not be 0.</value>
+  </data>
+  <data name="kReturnTypeUndefined" xml:space="preserve">
+    <value>Return type '{0}' of method '{1}()' is not defined.</value>
+  </data>
+  <data name="kStaticMethodNotFound" xml:space="preserve">
+    <value>Cannot find static method or constructor {0}.{1}().</value>
+  </data>
+  <data name="kStringIndexOutOfRange" xml:space="preserve">
+    <value>The index to string is out of range</value>
+  </data>
+  <data name="kStringOverIndexed" xml:space="preserve">
+    <value>String is over indexed.</value>
+  </data>
+  <data name="kSymbolOverIndexed" xml:space="preserve">
+    <value>'{0}' is over indexed.</value>
+  </data>
+  <data name="kTypeUndefined" xml:space="preserve">
+    <value>Type '{0}' is not defined.</value>
+  </data>
+  <data name="kUnboundIdentifierMsg" xml:space="preserve">
+    <value>Variable '{0}' hasn't been defined yet.</value>
+  </data>
+  <data name="kUsingNonStaticMemberInStaticContext" xml:space="preserve">
+    <value>'{0}' is not a static property, so cannot be assigned to static properties or used in static methods.</value>
+  </data>
+  <data name="kUsingThisInStaticFunction" xml:space="preserve">
+    <value>'this' cannot be used in static method.</value>
+  </data>
+  <data name="attributeArgMustBeConstant" xml:space="preserve">
+    <value>An attribute argument must be a constant expression</value>
+  </data>
+  <data name="failedToImport" xml:space="preserve">
+    <value>Failed to import {0}</value>
+  </data>
+  <data name="importStatementNotSupported" xml:space="preserve">
+    <value>Import statements are not supported in CodeBlock Nodes.</value>
+  </data>
+  <data name="modifierBlockNotSupported" xml:space="preserve">
+    <value>Modifier Blocks are not supported currently.</value>
+  </data>
+  <data name="noConstructorForAttribute" xml:space="preserve">
+    <value>No constructors for Attribute '{0}' takes {1} arguments</value>
+  </data>
+  <data name="returnStatementIsNotAllowedInConstructor" xml:space="preserve">
+    <value>return statement is not allowed in constructor</value>
+  </data>
+  <data name="unknownAttribute" xml:space="preserve">
+    <value>Unknown attribute {0}</value>
+  </data>
+  <data name="tooManyCharacters" xml:space="preserve">
+    <value>Too many characters in character literal</value>
+  </data>
+  <data name="keywordCannotBeUsedAsConstructorName" xml:space="preserve">
+    <value>\"{0}\" is a keyword, can't be used as constructor name</value>
+  </data>
+  <data name="emptyCharacterLiteral" xml:space="preserve">
+    <value>Empty character literal.</value>
+  </data>
+  <data name="functionCallCannotBeAtLeftSide" xml:space="preserve">
+    <value>function call is not allowed at the left hand side of an assignment</value>
+  </data>
+  <data name="keywordCantBeUsedAsIdentifier" xml:space="preserve">
+    <value>\"{0}\" is a keyword, identifier expected</value>
+  </data>
+  <data name="invalidLanguageBlockIdentifier" xml:space="preserve">
+    <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
+  </data>
+  <data name="baseIsExpectedToCallBaseConstructor" xml:space="preserve">
+    <value>'base' is expected here to call base constructor.</value>
+  </data>
+  <data name="closeBracketExpected" xml:space="preserve">
+    <value>')' expected - Imcomplete Closure</value>
+  </data>
+  <data name="invalidSymbol" xml:space="preserve">
+    <value>Syntax Error: invalid symbol '{0}'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
+  </data>
+  <data name="invalidReturnStatement" xml:space="preserve">
+    <value>Return statement is invalid. Do you mean: return = {0} ?</value>
+  </data>
+  <data name="semiColonExpected" xml:space="preserve">
+    <value>';' is expected.</value>
+  </data>
+  <data name="validForImperativeBlockOnly" xml:space="preserve">
+    <value>'{0}' statement can only be used in imperative language block.</value>
+  </data>
+  <data name="useInlineConditional" xml:space="preserve">
+    <value>'{0}' statement can only be used in imperative language block, consider using an inline conditional instead?</value>
+  </data>
+  <data name="noSuchFileOrDirectoryToImport" xml:space="preserve">
+    <value>Cannot import file: '{0}': No such file or directory</value>
+  </data>
+</root>
