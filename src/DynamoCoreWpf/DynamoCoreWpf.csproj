@@ -24,6 +24,7 @@
     <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -75,6 +76,21 @@
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.zh-CN.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.zh-CN.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\VisualCodeBlockUtils.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
@@ -279,6 +295,18 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.zh-CN.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.zh-CN.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
     <None Include="UI\Fonts\OpenSans-Bold.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -987,6 +1015,9 @@
     <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Image1.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

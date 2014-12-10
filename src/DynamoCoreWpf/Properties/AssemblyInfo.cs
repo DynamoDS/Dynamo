@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
@@ -32,7 +32,7 @@ using System.Windows;
     //(used if a resource is not found in the page, 
     // app, or any theme specific resource dictionaries)
 )]
-
+[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
