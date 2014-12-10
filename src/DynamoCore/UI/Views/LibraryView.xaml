@@ -15,6 +15,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Region Converters -->
@@ -182,7 +183,7 @@
                                Text="{Binding Name}"
                                VerticalAlignment="Top"
                                Margin="5,10,0,0"
-                               Foreground="#999999"
+                               Foreground="#989898"
                                FontSize="13" />
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
@@ -746,6 +747,32 @@
 
             <!--EndRegion-->
 
+            <Style x:Key="AddButtonContextMenu"
+                   TargetType="{x:Type ContextMenu}">
+                <Setter Property="OverridesDefaultStyle"
+                        Value="True" />
+                <Setter Property="HasDropShadow"
+                        Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ContextMenu}">
+                            <Border x:Name="Border"
+                                    Background="#414141"
+                                    Padding="1,5,1,5">
+                                <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Resources>
+                    <Style x:Key="{x:Type MenuItem}"
+                           TargetType="MenuItem"
+                           BasedOn="{StaticResource MenuItemStyle}">
+                    </Style>
+                </Style.Resources>
+            </Style>
+
             <Style x:Key="VerticalThumb"
                    TargetType="{x:Type Thumb}">
                 <Setter Property="Template">
@@ -853,6 +880,7 @@
             </Style>
 
             <!--EndRegion-->
+
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
@@ -887,13 +915,68 @@
                     </uicontrols:AddonsTreeView.Visibility>
                 </uicontrols:AddonsTreeView>
                 <Button Grid.Row="2"
-                        Width="150"
-                        Height="40"
-                        Style="{StaticResource STextButton}"
+                        Height="23"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Click="OnImportAddonButtonClick"
-                        Content="Import add-on" />
+                        PreviewMouseUp="OnAddButtonPreviewMouseDown"
+                        Content="Add">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Border x:Name="container"
+                                    Background="#282828"
+                                    BorderBrush="#555555"
+                                    BorderThickness="1">
+                                <Grid x:Name="inner">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="text"
+                                               VerticalAlignment="Center"
+                                               Margin="10, 0, 10, 0"
+                                               Foreground="#989898"
+                                               FontSize="13"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+
+                                    <TextBlock x:Name="arrow"
+                                               Grid.Column="1"
+                                               VerticalAlignment="Center"
+                                               Margin="0, 0, 10, 0"
+                                               Foreground="#787879"
+                                               FontSize="14"
+                                               Text="&#x25BE;" />
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Button.IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#2F2F2F" />
+                                    <Setter TargetName="arrow"
+                                            Property="Foreground"
+                                            Value="#AAABAB" />
+                                </Trigger>
+                                <Trigger Property="Button.IsPressed"
+                                         Value="True">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#222222" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ContextMenu>
+                        <ContextMenu Style="{StaticResource AddButtonContextMenu}">
+                            <MenuItem Focusable="False"
+                                      Header="Import Library..."
+                                      Command="{Binding Path=ImportLibraryCommand}" />
+                            <MenuItem Focusable="False"
+                                      Header="Search for a Package..."
+                                      Command="{Binding Path=ShowPackageManagerSearchCommand}" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
             </Grid>
         </ScrollViewer>
 
