@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{227B776D-8866-49E8-8C93-809CCF86AF12}</ProjectGuid>
+    <ProjectGuid>{0A4B4EEA-8FAB-4AC8-90D4-27DBC5B0CF2A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SamplesLibraryUI</RootNamespace>
@@ -40,7 +40,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="ProtoInterface">
       <HintPath>..\..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -64,6 +63,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
+      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+      <Name>DynamoCoreWpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -72,16 +75,6 @@
     <ProjectReference Include="..\..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CoreNodesUI\CoreNodesUI.csproj">
-      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>CoreNodesUI</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CoreNodes\CoreNodes.csproj">
-      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
-      <Name>CoreNodes</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

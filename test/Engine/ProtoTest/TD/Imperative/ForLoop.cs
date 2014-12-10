@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
-    public class ForLoop
+    class ForLoop : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\Imperative\\ForLoop\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_TestNegativeSyntax_Negative()

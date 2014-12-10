@@ -4,12 +4,16 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
+
+using SystemTestServices;
+
 using DSIronPythonNode;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Tests;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using Dynamo.UI;
@@ -175,8 +179,8 @@ namespace DynamoCoreUITests
         public void TestSelectModelCommand()
         {
             Guid modelGuid = Guid.NewGuid();
-            ModifierKeys modifiers = ((randomizer.Next(2) == 0) ?
-                ModifierKeys.Control : ModifierKeys.Alt);
+            Dynamo.Utilities.ModifierKeys modifiers = ((randomizer.Next(2) == 0) ?
+                Dynamo.Utilities.ModifierKeys.Control : Dynamo.Utilities.ModifierKeys.Alt);
 
             var cmdOne = new DynamoModel.SelectModelCommand(modelGuid, modifiers);
             var cmdTwo = DuplicateAndCompare(cmdOne);
@@ -188,7 +192,7 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void TestSelectInRegionCommand()
         {
-            Rect region = new Rect(
+            var region = new Rect2D(
                 randomizer.NextDouble() * 100,
                 randomizer.NextDouble() * 100,
                 randomizer.NextDouble() * 100,
@@ -209,7 +213,7 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void TestDragSelectionCommand()
         {
-            Point point = new Point(
+            var point = new Point2D(
                 randomizer.NextDouble() * 100,
                 randomizer.NextDouble() * 100);
 
@@ -648,7 +652,7 @@ namespace DynamoCoreUITests
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
-            string commandFilePath = DynamoTestUIBase.GetTestDirectory(ExecutingDirectory);
+            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
@@ -1013,7 +1017,40 @@ namespace DynamoCoreUITests
                 }
             });
         }
+        
+        [Test, RequiresSTA]
+        public void ErrorInCBN_3872()
+        {
+            // add a new line of code in a CBN in warning stage and see if the warning persists
+            // http://adsk-oss.myjetbrains.com/youtrack/issues?q=3872
 
+
+            RunCommandsFromFile("Error_CBN_3872.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                NodeModel nodeModel = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
+                Assert.AreEqual(ElementState.Warning, nodeModel.State);
+                if (commandTag == "First")
+                {
+                    NodeModel nodeModel2 = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
+                    Assert.AreEqual(ElementState.Warning, nodeModel2.State);
+                }
+            });
+        }
+        [Test, RequiresSTA]
+        public void Array_CBN_3921()
+        {
+            // No error and no output port for the code written with curly braces in CBN
+            // Create a CBN with {1,2,3} adn it must execute correctly
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3921
+
+            RunCommandsFromFile("Array_CBN_3921.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                AssertPreviewValue("36d2aca5-034c-43c7-b43c-a9774d9432a2", new int [] { 1, 2, 3 });
+            });
+        }
+        
         #endregion
 
         #region Defect Verifications Test Cases
@@ -1169,8 +1206,8 @@ namespace DynamoCoreUITests
             ConnectorViewModel secondConnector = connectors[1];
 
             // Find out the corresponding ports they connect to.
-            Point firstPoint = firstConnector.ConnectorModel.End.Center;
-            Point secondPoint = secondConnector.ConnectorModel.End.Center;
+            Point2D firstPoint = firstConnector.ConnectorModel.End.Center;
+            Point2D secondPoint = secondConnector.ConnectorModel.End.Center;
 
             Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
             Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
@@ -3155,8 +3192,8 @@ namespace DynamoCoreUITests
             ConnectorViewModel secondConnector = connectors[1];
 
             // Find out the corresponding ports they connect to.
-            Point firstPoint = firstConnector.ConnectorModel.End.Center;
-            Point secondPoint = secondConnector.ConnectorModel.End.Center;
+            Point2D firstPoint = firstConnector.ConnectorModel.End.Center;
+            Point2D secondPoint = secondConnector.ConnectorModel.End.Center;
 
             Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
             Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);

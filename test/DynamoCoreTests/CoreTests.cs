@@ -5,14 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows;
+using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoUtilities;
 using NUnit.Framework;
-using System.Windows;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -584,10 +586,6 @@ namespace Dynamo.Tests
             models.Add(null);
             workspace.RecordAndDeleteModels(models);
             Assert.AreEqual(false, workspace.CanUndo);
-
-            NodeModel node = ViewModel.Model.Nodes[0];
-            
-
         }
 
         [Test]
@@ -670,7 +668,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.AddNode(16, 32, "Add");
             NodeModel locatable = ViewModel.Model.Nodes[0];
 
-            Point startPoint = new Point(8, 64);
+            var startPoint = new Point2D(8, 64);
             var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);
 
             // Initial node position.
@@ -678,7 +676,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(32, locatable.Y);
 
             // Move the mouse cursor to move node.
-            dn.Update(new Point(-16, 72));
+            dn.Update(new Point2D(-16, 72));
             Assert.AreEqual(-8, locatable.X);
             Assert.AreEqual(40, locatable.Y);
         }

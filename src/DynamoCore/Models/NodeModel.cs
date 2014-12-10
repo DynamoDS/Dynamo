@@ -4,13 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Windows;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
-
-using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Controls;
+
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -18,7 +14,6 @@ using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -44,7 +39,6 @@ namespace Dynamo.Models
         private bool saveResult;
         private string description;
         private const string FailureString = "Node evaluation failed";
-        protected IdentifierNode identifier;
 
         // Data caching related class members. There are multiple parties at
         // play when it comes to caching MirrorData for a NodeModel, this value
@@ -420,9 +414,9 @@ namespace Dynamo.Models
         ///     ProtoAST Identifier for result of the node before any output unpacking has taken place.
         ///     If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
         /// </summary>
-        internal IdentifierNode AstIdentifierForPreview
+        public IdentifierNode AstIdentifierForPreview
         {
-            get { return identifier ?? (identifier = AstFactory.BuildIdentifier(AstIdentifierBase)); }
+            get { return AstFactory.BuildIdentifier(AstIdentifierBase); }
         }
 
         /// <summary>
@@ -815,11 +809,6 @@ namespace Dynamo.Models
 
         #region Input and Output Connections
 
-        public IEnumerable<int> GetConnectedInputs()
-        {
-            return Enumerable.Range(0, InPortData.Count).Where(HasConnectedInput);
-        }
-
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
@@ -903,50 +892,6 @@ namespace Dynamo.Models
 
         #region UI Framework
 
-        /// <summary>
-        ///     Called back from the view to enable users to setup their own view elements
-        /// </summary>
-        /// <param name="view"></param>
-        internal void InitializeUI(dynamic view)
-        {
-            //Runtime dispatch
-            (this as dynamic).SetupCustomUIElements(view);
-        }
-
-        /// <summary>
-        /// Used as a catch-all if runtime dispatch for UI initialization is unimplemented.
-        /// </summary>
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
-        private void SetupCustomUIElements(object view) { }
-
-        /// <summary>
-        /// As hacky as the name sounds, this method is used to retrieve the 
-        /// "DynamoViewModel" from a given "MenuItem" object. The reason it is
-        /// needed boils down to the fact that we still do "SetupCustomUIElements"
-        /// at the "NodeModel" level. This method will be removed when we 
-        /// eventually refactor "SetupCustomUIElements" out into view layer.
-        /// </summary>
-        /// <param name="menuItem">The MenuItem from which DynamoViewModel is to 
-        /// be retrieved.</param>
-        /// <returns>Returns the corresponding DynamoViewModel retrieved from the 
-        /// given MenuItem.</returns>
-        /// 
-        protected DynamoViewModel GetDynamoViewModelFromMenuItem(MenuItem menuItem)
-        {
-            if (menuItem == null || (menuItem.Tag == null))
-                throw new ArgumentNullException("menuItem");
-
-            var dynamoViewModel = menuItem.Tag as DynamoViewModel;
-            if (dynamoViewModel == null)
-            {
-                const string message = "MenuItem.Tag is not DynamoViewModel";
-                throw new ArgumentException(message);
-            }
-
-            return dynamoViewModel;
-        }
-
         private void ClearTooltipText()
         {
             ToolTipText = "";
@@ -996,11 +941,6 @@ namespace Dynamo.Models
 
         #region Interaction
 
-        internal void DisableInteraction()
-        {
-            State = ElementState.Dead;
-            InteractionEnabled = false;
-        }
 
         internal void EnableInteraction()
         {
@@ -1154,12 +1094,12 @@ namespace Dynamo.Models
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.INPUT, pd, count);
-
+                
                 //MVVM: AddPort now returns a port model. You can't set the data context here.
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
+                count++;            
             }
 
             if (inPorts.Count > count)
@@ -1173,6 +1113,9 @@ namespace Dynamo.Models
                 for (int i = inPorts.Count - 1; i >= count; i--)
                     inPorts.RemoveAt(i);
             }
+
+            //Configure Snap Edges
+            ConfigureSnapEdges(inPorts);
         }
 
         /// <summary>
@@ -1194,7 +1137,7 @@ namespace Dynamo.Models
                 //port.DataContext = this;
 
                 portDataDict[port] = pd;
-                count++;
+                count++;              
             }
 
             if (outPorts.Count > count)
@@ -1207,6 +1150,35 @@ namespace Dynamo.Models
 
                 //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
+
+            //configure snap edges
+            ConfigureSnapEdges(outPorts);
+        }
+
+        /// <summary>
+        /// Configures the snap edges.
+        /// </summary>
+        /// <param name="ports">The ports.</param>
+        private void ConfigureSnapEdges(ObservableCollection<PortModel> ports)
+        {
+            if (ports.Count == 1) //only one port
+                ports[0].extensionEdges = SnapExtensionEdges.Top | SnapExtensionEdges.Bottom;
+            else if (ports.Count == 2) //has two ports
+            {
+                ports[0].extensionEdges = SnapExtensionEdges.Top;
+                ports[1].extensionEdges = SnapExtensionEdges.Bottom;
+            }
+            else if (ports.Count > 1)
+            {
+                ports[0].extensionEdges = SnapExtensionEdges.Top;
+                ports[ports.Count - 1].extensionEdges = SnapExtensionEdges.Bottom;
+                foreach (PortModel port in ports)
+                {
+                    if (!port.extensionEdges.HasFlag(SnapExtensionEdges.Top)
+                        && !port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
+                        port.extensionEdges = SnapExtensionEdges.None;
+                }
+            } 
         }
 
         /// <summary>
@@ -1266,7 +1238,8 @@ namespace Dynamo.Models
                     //register listeners on the port
                     p.PortConnected += p_PortConnected;
                     p.PortDisconnected += p_PortDisconnected;
-
+                    
+                   
                     return p;
 
                 case PortType.OUTPUT:
@@ -1296,6 +1269,7 @@ namespace Dynamo.Models
             return null;
         }
 
+      
         private void p_PortConnected(object sender, EventArgs e)
         {
             ValidateConnections();
@@ -1955,19 +1929,26 @@ namespace Dynamo.Models
             }
         }
 
-        public bool ShouldDisplayPreview()
+        public bool ShouldDisplayPreview
         {
-            // Previews are only shown in Home Workspace.
-            if (!(this.Workspace is HomeWorkspaceModel))
-                return false;
+            get
+            {
+                // Previews are only shown in Home Workspace.
+                if (!(this.Workspace is HomeWorkspaceModel))
+                    return false;
 
-            return this.ShouldDisplayPreviewCore();
+                return this.ShouldDisplayPreviewCore;
+            }
         }
 
-        protected virtual bool ShouldDisplayPreviewCore()
+        protected virtual bool ShouldDisplayPreviewCore
         {
-            return true; // Default implementation: always show preview.
+            get
+            {
+                return true; // Default implementation: always show preview.
+            } 
         }
+      
     }
 
     public enum ElementState
@@ -1988,6 +1969,28 @@ namespace Dynamo.Models
         Longest,
         CrossProduct
     };
+
+    public enum PortEventType
+    {
+        MouseEnter,
+        MouseLeave,
+        MouseLeftButtonDown
+    };
+
+    public enum PortPosition
+    {
+        First,
+        Top,
+        Middle,
+        Last
+    }
+    [Flags]
+    public enum SnapExtensionEdges
+    {
+        None,
+        Top = 0x1,
+        Bottom = 0x2
+    }
 
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);

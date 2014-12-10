@@ -8,20 +8,8 @@ using ProtoFFI;
 namespace ProtoTest.UtilsTests
 {
     [TestFixture]
-    public class ArrayUtilsTest
+    class ArrayUtilsTest : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        [SetUp]
-        public void Setup()
-        {
-            Console.WriteLine("Setup");
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-            //DLLFFIHandler.Env = ProtoFFI.CPPModuleHelper.GetEnv(); 
-            //DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
-        }
-
         [Test]
         public void StackValueDiffTestDefect()
         {
