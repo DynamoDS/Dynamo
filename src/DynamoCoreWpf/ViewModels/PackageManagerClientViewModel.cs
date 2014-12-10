@@ -5,12 +5,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Dynamo.Core.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
-
 using Greg.Requests;
 
 namespace Dynamo.ViewModels
@@ -226,7 +224,7 @@ namespace Dynamo.ViewModels
                                 var loader = dynamoViewModel.Model.Loader;
                                 var logger = dynamoViewModel.Model.Logger;
                                 var libraryServices = dynamoViewModel.Model.EngineController.LibraryServices;
-                                downloadPkg.LoadIntoDynamo(loader, logger, libraryServices);
+                                downloadPkg.LoadIntoDynamo(loader, logger, libraryServices, TODO, TODO, TODO);
 
                                 dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;

@@ -10,7 +10,23 @@ namespace Dynamo.Models
 {
     public class CustomNodeWorkspaceModel : WorkspaceModel
     {
-        public Guid CustomNodeId { get; private set; }
+        public Guid CustomNodeId
+        {
+            get { return customNodeId; }
+            private set
+            {
+                if (value != customNodeId)
+                {
+                    var oldId = customNodeId;
+                    customNodeId = value;
+                    OnFunctionIdChanged(oldId);
+                    OnDefinitionUpdated();
+                    OnInfoChanged();
+                    RaisePropertyChanged("CustomNodeId");
+                }
+            }
+        }
+        private Guid customNodeId;
 
         #region Contructors
 
@@ -165,70 +181,18 @@ namespace Dynamo.Models
         public override bool SaveAs(string newPath, ProtoCore.Core core)
         {
             var originalPath = FileName;
-            var originalGuid = CustomNodeDefinition.FunctionId;
-            var newGuid = Guid.NewGuid();
-            var doRefactor = originalPath != newPath && originalPath != null;
 
-            Name = Path.GetFileNameWithoutExtension(newPath);
-
-            // need to do change the function id temporarily so saved file is correct
-            if (doRefactor)
-            {
-                CustomNodeDefinition.FunctionId = newGuid;
-            }
-
-            if (!base.SaveAs(newPath))
-            {
+            if (!base.SaveAs(newPath, core))
                 return false;
-            }
-
-            if (doRefactor)
-            {
-                CustomNodeDefinition.FunctionId = originalGuid;
-            }
-
-            if (originalPath == null)
-            {
-                CustomNodeDefinition.AddToSearch(dynamoModel.SearchModel);
-                dynamoModel.SearchModel.OnRequestSync();
-                CustomNodeDefinition.UpdateCustomNodeManager(dynamoModel.CustomNodeManager);
-            }
 
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
-            if ( doRefactor )
-            {
-                // if the original path does not exist
-                if ( !File.Exists(originalPath) )
-                {
-                    CustomNodeDefinition.FunctionId = newGuid;
-                    CustomNodeDefinition.SyncWithWorkspace(dynamoModel, true, true);
-                    return false;
-                }
+            if (originalPath != newPath)
+                CustomNodeId = Guid.NewGuid();
 
-                var newDef = CustomNodeDefinition;
-
-                // reload the original funcdef from its path
-                dynamoModel.CustomNodeManager.Remove(originalGuid);
-                dynamoModel.CustomNodeManager.AddFileToPath(originalPath);
-                var origDef = dynamoModel.CustomNodeManager.GetFunctionDefinition(originalGuid);
-                if (origDef == null)
-                {
-                    return false;
-                }
-
-                // reassign existing nodes to point to newly deserialized function def
-                var instances = dynamoModel.AllNodes
-                        .OfType<Function>()
-                        .Where(el => el.Definition.FunctionId == originalGuid);
-
-                foreach (var node in instances)
-                    node.ResyncWithDefinition(origDef);
-
-                // update this workspace with its new id
-                newDef.FunctionId = newGuid;
-                newDef.SyncWithWorkspace(dynamoModel, true, true);
-            }
+            // This comes after updating the Id, as if to associate the new name
+            // with the new Id.
+            Name = Path.GetFileNameWithoutExtension(newPath);
 
             return true;
         }

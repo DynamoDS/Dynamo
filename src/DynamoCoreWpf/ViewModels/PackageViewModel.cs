@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-
+using Dynamo.Models;
 using Dynamo.PackageManager;
 
 using Microsoft.Practices.Prism.Commands;
@@ -59,8 +59,8 @@ namespace Dynamo.ViewModels
 
             ToggleTypesVisibleInManagerCommand = new DelegateCommand(ToggleTypesVisibleInManager, CanToggleTypesVisibleInManager);
             GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
-            PublishNewPackageVersionCommand = new DelegateCommand(PublishNewPackageVersion, CanPublishNewPackageVersion);
-            PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
+            PublishNewPackageVersionCommand = new DelegateCommand(() => PublishNewPackageVersion(DynamoModel.IsTestMode), CanPublishNewPackageVersion);
+            PublishNewPackageCommand = new DelegateCommand(() => PublishNewPackage(DynamoModel.IsTestMode), CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
@@ -170,9 +170,9 @@ namespace Dynamo.ViewModels
             return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
-        private void PublishNewPackageVersion()
+        private void PublishNewPackageVersion(bool isTestMode)
         {
-            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager);
+            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager, isTestMode);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, this.Model);
             vm.IsNewVersion = true;
 
@@ -184,9 +184,9 @@ namespace Dynamo.ViewModels
             return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
-        private void PublishNewPackage()
+        private void PublishNewPackage(bool isTestMode)
         {
-            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager);
+            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager, isTestMode);
             var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, this.Model);
             vm.IsNewVersion = false;
 

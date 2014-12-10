@@ -629,11 +629,8 @@ namespace Dynamo.Models
                 //write the root element
                 root.AppendChild(elementList);
 
-                foreach (var el in Nodes)
-                {
-                    var dynEl = el.Serialize(xmlDoc, SaveContext.File);
+                foreach (var dynEl in Nodes.Select(el => el.Serialize(xmlDoc, SaveContext.File)))
                     elementList.AppendChild(dynEl);
-                }
 
                 //write only the output connectors
                 var connectorList = xmlDoc.CreateElement("Connectors");
@@ -996,7 +993,7 @@ namespace Dynamo.Models
 
             using (undoRecorder.BeginActionGroup()) // Start a new action group.
             {
-                foreach (ModelBase model in models)
+                foreach (var model in models)
                 {
                     if (model is NoteModel)
                     {
@@ -1026,7 +1023,7 @@ namespace Dynamo.Models
                         }
 
                         // Take a snapshot of the node before it goes away.
-                        undoRecorder.RecordDeletionForUndo(model);
+                        undoRecorder.RecordDeletionForUndo(node);
 
                         RemoveNode(node);
                     }

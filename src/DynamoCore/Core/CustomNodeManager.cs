@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Data.Odbc;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using System.IO;
 using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Utilities
@@ -120,19 +119,66 @@ namespace Dynamo.Utilities
             }
             else
             {
-                
+                info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
+                def = null;
+                workspace = null;
             }
 
             var node = new Function(def, info.Description, info.Category);
-            Action<CustomNodeDefinition> defUpdatedHandler = definition =>
-            {
-                if (definition.FunctionId == id)
-                    node.ResyncWithDefinition(definition);
-            };
-            DefinitionUpdated += defUpdatedHandler;
-            node.Disposed += () => { DefinitionUpdated -= defUpdatedHandler; };
+            if (workspace != null)
+                RegisterCustomNodeInstanceForUpdates(node, workspace);
+            else
+                RegisterCustomNodeInstanceForLateInitialization(node, id, nickname, isTestMode);
 
             return node;
+        }
+
+        private void RegisterCustomNodeInstanceForLateInitialization(Function node, Guid id, string nickname, bool isTestMode)
+        {
+            var disposed = false;
+            Action<CustomNodeInfo> infoUpdatedHandler = null;
+            infoUpdatedHandler = newInfo =>
+            {
+                if (newInfo.FunctionId == id || newInfo.Name == nickname)
+                {
+                    CustomNodeWorkspaceModel foundWorkspace;
+                    if (TryGetFunctionWorkspace(newInfo.FunctionId, isTestMode, out foundWorkspace))
+                    {
+                        node.ResyncWithDefinition(foundWorkspace.CustomNodeDefinition);
+                        RegisterCustomNodeInstanceForUpdates(node, foundWorkspace);
+                        InfoUpdated -= infoUpdatedHandler;
+                        disposed = true;
+                    }
+                }
+            };
+            InfoUpdated += infoUpdatedHandler;
+            node.Disposed += () =>
+            {
+                if (!disposed)
+                    InfoUpdated -= infoUpdatedHandler;
+            };
+        }
+
+        private static void RegisterCustomNodeInstanceForUpdates(Function node, CustomNodeWorkspaceModel workspace)
+        {
+            Action defUpdatedHandler = () =>
+            {
+                node.ResyncWithDefinition(workspace.CustomNodeDefinition);
+            };
+            workspace.DefinitionUpdated += defUpdatedHandler;
+
+            Action infoChangedHandler = () =>
+            {
+                var info = workspace.CustomNodeInfo;
+                node.Description = info.Description;
+                node.Category = info.Category;
+            };
+            workspace.InfoChanged += infoChangedHandler;
+            node.Disposed += () =>
+            {
+                workspace.DefinitionUpdated -= defUpdatedHandler;
+                workspace.InfoChanged -= infoChangedHandler;
+            };
         }
 
         /// <summary> 
@@ -154,38 +200,45 @@ namespace Dynamo.Utilities
         {
             var id = def.FunctionId;
             if (loadedCustomNodes.Contains(id))
-            {
                 loadedCustomNodes[id] = def;
-            }
             else
-            {
                 loadedCustomNodes.Add(id, def);
-            }
         }
 
         /// <summary>
         ///     Import a dyf file for eventual initialization.  
         /// </summary>
         /// <returns>null if we failed to get data from the path, otherwise the CustomNodeInfo object for the </returns>
-        public void AddUninitializedCustomNode(string file, bool isTestMode)
+        public bool AddUninitializedCustomNode(string file, bool isTestMode, out CustomNodeInfo info)
         {
-            CustomNodeInfo info;
             if (TryGetInfoFromPath(file, isTestMode, out info))
+            {
                 SetNodeInfo(info);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
         ///     Attempts to remove all traces of a particular custom node from Dynamo, assuming the node is not in a loaded workspace.
         /// </summary>
+        /// <param name="guid"></param>
         public void Remove(Guid guid)
+        {
+            Uninitialize(guid);
+            NodeInfos.Remove(guid);
+            OnCustomNodeRemoved(guid);
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="guid"></param>
+        public void Uninitialize(Guid guid)
         {
             if (loadedCustomNodes.Contains(guid))
                 loadedCustomNodes.Remove(guid);
-
-            NodeInfos.Remove(guid);
             loadedWorkspaceModels.Remove(guid);
-
-            OnCustomNodeRemoved(guid);
         }
 
         /// <summary>
@@ -194,10 +247,15 @@ namespace Dynamo.Utilities
         /// <param name="path"></param>
         /// <param name="isTestMode"></param>
         /// <returns></returns>
-        public void AddUninitializedCustomNodesInPath(string path, bool isTestMode)
+        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode)
         {
+            var result = new List<CustomNodeInfo>();
             foreach (var info in ScanNodeHeadersInDirectory(path, isTestMode))
+            {
                 SetNodeInfo(info);
+                result.Add(info);
+            }
+            return result;
         }
 
         /// <summary>
@@ -420,7 +478,7 @@ namespace Dynamo.Utilities
             // TODO(Steve): Refactor to remove dialogs. Results of various dialogs should be passed to this method.
             #region Migration
 
-            Version fileVersion = MigrationManager.VersionFromString(workspaceInfo.Version);
+            var fileVersion = MigrationManager.VersionFromString(workspaceInfo.Version);
 
             var currentVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false);
 
@@ -492,6 +550,8 @@ namespace Dynamo.Utilities
         private void RegisterCustomNodeWorkspace(
             CustomNodeWorkspaceModel newWorkspace, CustomNodeInfo info, CustomNodeDefinition definition)
         {
+            loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
+
             SetFunctionDefinition(definition);
             OnDefinitionUpdated(definition);
             newWorkspace.DefinitionUpdated += () =>
@@ -502,7 +562,18 @@ namespace Dynamo.Utilities
             };
 
             SetNodeInfo(info);
-            newWorkspace.InfoChanged += () => OnInfoUpdated(newWorkspace.CustomNodeInfo);
+            newWorkspace.InfoChanged += () =>
+            {
+                var newInfo = newWorkspace.CustomNodeInfo;
+                SetNodeInfo(newInfo);
+                OnInfoUpdated(newInfo);
+            };
+
+            newWorkspace.FunctionIdChanged += oldGuid =>
+            {
+                Uninitialize(oldGuid);
+                loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
+            };
         }
 
         /// <summary>
@@ -818,7 +889,7 @@ namespace Dynamo.Utilities
                 var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
 
                 //Step 3: insert variables (reference step 1)
-                foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
+                foreach (var input in Enumerable.Range(0, inputs.Count).Zip<int, Tuple<NodeModel, int, Tuple<int, NodeModel>>, Tuple<int, Tuple<NodeModel, int, Tuple<int, NodeModel>>>>(inputs, Tuple.Create))
                 {
                     int inputIndex = input.Item1;
 

@@ -37,7 +37,7 @@ namespace Dynamo.Core.Threading
         /// method returns true, in which case the task needs to be scheduled.
         /// Otherwise, the method returns false.</returns>
         /// 
-        internal bool Initialize(EngineController controller, WorkspaceModel workspace)
+        internal bool Initialize(EngineController controller, HomeWorkspaceModel workspace)
         {
             if (controller == null || (controller.LiveRunnerCore == null))
                 return false;

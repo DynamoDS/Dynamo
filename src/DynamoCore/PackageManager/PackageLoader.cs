@@ -32,16 +32,24 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackagesIntoDynamo(IPreferences preferences, LibraryServices libraryServices, DynamoLoader loader)
+        public void LoadPackagesIntoDynamo(
+            IPreferences preferences, LibraryServices libraryServices, DynamoLoader loader, string context,
+            bool isTestMode, CustomNodeManager customNodeManager)
         {
-            ScanAllPackageDirectories( preferences );
+            ScanAllPackageDirectories(preferences);
 
             foreach (var pkg in LocalPackages)
                 DynamoPathManager.Instance.AddResolutionPath(pkg.BinaryDirectory);
 
             foreach (var pkg in LocalPackages)
             {
-                pkg.LoadIntoDynamo(loader, AsLogger(), libraryServices);
+                pkg.LoadIntoDynamo(
+                    loader,
+                    AsLogger(),
+                    libraryServices,
+                    context,
+                    isTestMode,
+                    customNodeManager);
             }
         }
 

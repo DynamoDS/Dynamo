@@ -362,7 +362,7 @@ namespace Dynamo.Models
 
             cachedMirrorData = null;
 
-            var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value, foo);
+            var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
 
             if (runtimeMirror != null)
                 cachedMirrorData = runtimeMirror.GetData();
@@ -2005,15 +2005,15 @@ namespace Dynamo.Models
         public List<string> Tags { get; set; }
     }
 
-    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class NotSearchableInHomeWorkspace : Attribute
     { }
 
-    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class NotSearchableInCustomNodeWorkspace : Attribute
     { }
 
-    [AttributeUsage(AttributeTargets.All, Inherited = true)]
+    [AttributeUsage(AttributeTargets.All)]
     public class IsInteractiveAttribute : Attribute
     {
         public IsInteractiveAttribute(bool isInteractive)
@@ -2081,7 +2081,7 @@ namespace Dynamo.Models
     /// <summary>
     ///     Flag to hide deprecated nodes in search, but allow in workflows
     /// </summary>
-    [AttributeUsage(AttributeTargets.All, Inherited = true)]
+    [AttributeUsage(AttributeTargets.All)]
     public class NodeDeprecatedAttribute : Attribute { }
 
     /// <summary>

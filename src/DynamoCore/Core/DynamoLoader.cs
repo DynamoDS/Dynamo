@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-
+using System.Reflection;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using System.Reflection;
-using System.IO;
-
 using DynamoUtilities;
-using System.Text;
 
 namespace Dynamo.Utilities
 {
     /// <summary>
-    /// The DynamoLoader is responsible for loading custom nodes and
-    /// types which derive from NodeModel. For information
-    /// about package loading see the PackageLoader. For information
-    /// about loading other libraries, see LibraryServices.
+    /// The DynamoLoader is responsible for loading types which derive
+    /// from NodeModel. For information about package loading see the
+    /// PackageLoader. For information about loading other libraries, 
+    /// see LibraryServices.
     /// </summary>
     public class DynamoLoader : LogSourceBase
     {

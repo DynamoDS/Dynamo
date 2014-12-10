@@ -578,8 +578,13 @@ namespace Dynamo.Models
 
             // Load Packages
             PackageLoader.DoCachedPackageUninstalls(preferences);
-            //TODO(Steve): This will need refactoring
-            PackageLoader.LoadPackagesIntoDynamo(preferences, LibraryServices, Loader);
+            PackageLoader.LoadPackagesIntoDynamo(
+                preferences,
+                LibraryServices,
+                Loader,
+                Context,
+                IsTestMode,
+                CustomNodeManager);
 
             // Load local custom nodes
             CustomNodeManager.AddUninitializedCustomNodesInPath(DynamoPathManager.Instance.UserDefinitions, IsTestMode);
