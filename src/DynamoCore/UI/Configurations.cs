@@ -231,6 +231,12 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region StandardPanel
+
+        public const string MoreButtonTextFormat = "SHOW MORE ({0})";
+
+        #endregion
+
 #if DEBUG
         public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";
         public const string UpdateSignatureLocation = "http://dyn-builds-dev-sig.s3.amazonaws.com/";

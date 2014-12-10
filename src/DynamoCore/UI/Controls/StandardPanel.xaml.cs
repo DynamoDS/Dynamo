@@ -132,7 +132,7 @@ namespace Dynamo.UI.Controls
 
             castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.None;
 
-            castedDataContext.IsMoreButtonVisible = false;
+            castedDataContext.HiddenSecondaryMembersCount = 0;
 
             // Case when CreateMembers list is not empty.
             // We should present CreateMembers in primaryMembers.            
@@ -209,7 +209,7 @@ namespace Dynamo.UI.Controls
 
             secondaryMembers.ItemsSource = collection;
 
-            castedDataContext.IsMoreButtonVisible = false;
+            castedDataContext.HiddenSecondaryMembersCount = 0;
         }
 
         private void TruncateSecondaryMembers()
@@ -223,7 +223,7 @@ namespace Dynamo.UI.Controls
 
             secondaryMembers.ItemsSource = collection.Take(TruncatedMembersCount);
 
-            castedDataContext.IsMoreButtonVisible = collection.Count() > TruncatedMembersCount;
+            castedDataContext.HiddenSecondaryMembersCount = collection.Count() - TruncatedMembersCount;
         }
 
         // This method will work only, when user presses Shift.

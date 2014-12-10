@@ -1906,6 +1906,20 @@ namespace Dynamo.Controls
         }
     }
 
+    public class BrowserInternalElementToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is BrowserInternalElement);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
     public class HasParentRootElement : IValueConverter
     {
@@ -1963,7 +1977,7 @@ namespace Dynamo.Controls
         }
     }
 
-    //Converter that will be used, if number of found classes equals 0. Then classes will be collapsed.
+    // Converter that will be used, if number of items equals 0. Then control should be collapsed.
     public class IntToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1972,6 +1986,24 @@ namespace Dynamo.Controls
                 return Visibility.Visible;
 
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Converter is used in LibraryView.xaml. Do not show LibraryTreeView TreviewItem ItemsHost
+    // for only one item, item should be of type BrowserInternalElementForClasses.
+    public class LibraryTreeItemsHostVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BrowserInternalElementForClasses)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
