@@ -384,7 +384,7 @@ namespace Dynamo.Models
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n,
-            double x, double y)
+            double x, double y, NodeFactory factory)
         {
             Name = name;
 
@@ -399,7 +399,11 @@ namespace Dynamo.Models
 
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
+
+            NodeFactory = factory;
         }
+
+        public readonly NodeFactory NodeFactory;
 
         public event Action Disposed;
         public virtual void Dispose()
@@ -723,7 +727,7 @@ namespace Dynamo.Models
             if (null != model)
             {
                 RecordModelForModification(model, UndoRecorder);
-                if (!model.HandleModelEvent(eventName))
+                if (!model.HandleModelEvent(eventName, undoRecorder))
                 {
                     string type = model.GetType().FullName;
                     string message = string.Format(
@@ -749,7 +753,7 @@ namespace Dynamo.Models
             if (null != model)
             {
                 RecordModelForModification(model, UndoRecorder);
-                if (!model.UpdateValue(propertyName, value))
+                if (!model.UpdateValue(propertyName, value, undoRecorder))
                 {
                     string type = model.GetType().FullName;
                     string message = string.Format(
@@ -936,27 +940,27 @@ namespace Dynamo.Models
             }
         }
 
-        public void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        public static void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models, UndoRedoRecorder recorder)
         {
-            if (null == undoRecorder)
+            if (null == recorder)
                 return;
             if (!ShouldProceedWithRecording(models))
                 return;
 
-            using (undoRecorder.BeginActionGroup())
+            using (recorder.BeginActionGroup())
             {
                 foreach (var modelPair in models)
                 {
                     switch (modelPair.Value)
                     {
                         case UndoRedoRecorder.UserAction.Creation:
-                            undoRecorder.RecordCreationForUndo(modelPair.Key);
+                            recorder.RecordCreationForUndo(modelPair.Key);
                             break;
                         case UndoRedoRecorder.UserAction.Deletion:
-                            undoRecorder.RecordDeletionForUndo(modelPair.Key);
+                            recorder.RecordDeletionForUndo(modelPair.Key);
                             break;
                         case UndoRedoRecorder.UserAction.Modification:
-                            undoRecorder.RecordModificationForUndo(modelPair.Key);
+                            recorder.RecordModificationForUndo(modelPair.Key);
                             break;
                     }
                 }
@@ -965,12 +969,11 @@ namespace Dynamo.Models
 
         internal void RecordCreatedModel(ModelBase model)
         {
-            if (null != model)
+            if (null == model) return;
+
+            using (undoRecorder.BeginActionGroup())
             {
-                using (undoRecorder.BeginActionGroup())
-                {
-                    undoRecorder.RecordCreationForUndo(model);
-                }
+                undoRecorder.RecordCreationForUndo(model);
             }
         }
 
@@ -1089,7 +1092,7 @@ namespace Dynamo.Models
             model.Deserialize(modelData, SaveContext.Undo);
         }
 
-        public void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager)
+        public void CreateModel(XmlElement modelData)
         {
             var helper = new XmlElementHelper(modelData);
             string typeName = helper.ReadString("type", String.Empty);
@@ -1137,7 +1140,7 @@ namespace Dynamo.Models
             }
             else // Other node types.
             {
-                NodeModel nodeModel = factory.CreateNodeFromXml(modelData, SaveContext.Undo);
+                NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
             }
         }

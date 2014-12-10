@@ -73,11 +73,13 @@ namespace Dynamo.Nodes
         protected virtual void RemoveInput()
         {
             VariableInputController.RemoveInputBase();
+            OnModified();
         }
 
         protected virtual void AddInput()
         {
             VariableInputController.AddInputBase();
+            OnModified();
         }
 
         protected virtual int GetInputIndex()
@@ -102,10 +104,10 @@ namespace Dynamo.Nodes
             VariableInputController.DeserializeCore(nodeElement, context);
         }
 
-        protected override bool HandleModelEventCore(string eventName)
+        protected override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
-            return VariableInputController.HandleModelEventCore(eventName)
-                || base.HandleModelEventCore(eventName);
+            return VariableInputController.HandleModelEventCore(eventName, recorder)
+                || base.HandleModelEventCore(eventName, recorder);
         }
     }
 
@@ -140,7 +142,6 @@ namespace Dynamo.Nodes
             var count = model.InPortData.Count;
             if (count > 0)
                 model.InPortData.RemoveAt(count - 1);
-            UpdateRecalcState();
         }
 
         /// <summary>
@@ -150,17 +151,6 @@ namespace Dynamo.Nodes
         {
             var idx = GetInputIndexFromModel();
             model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
-            UpdateRecalcState();
-        }
-
-        private void UpdateRecalcState()
-        {
-            var dirty = model.InPortData.Count != inputAmtLastBuild
-                || Enumerable.Range(0, model.InPortData.Count)
-                    .Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
-
-            if (dirty)
-                model.OnModified();
         }
 
         /// <summary>
@@ -204,7 +194,7 @@ namespace Dynamo.Nodes
 
         #region Undo/Redo
 
-        private void RecordModels()
+        private void RecordModels(UndoRedoRecorder recorder)
         {
             if (model.InPorts.Count == 0)
                 return;
@@ -222,13 +212,13 @@ namespace Dynamo.Nodes
                     { connectors[0], UndoRedoRecorder.UserAction.Deletion },
                     { model, UndoRedoRecorder.UserAction.Modification }
                 };
-                model.Workspace.RecordModelsForUndo(models);
+                WorkspaceModel.RecordModelsForUndo(models, recorder);
             }
             else
-                model.Workspace.RecordModelForModification(model, TODO);
+                WorkspaceModel.RecordModelForModification(model, recorder);
         }
 
-        public bool HandleModelEventCore(string eventName)
+        public bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
             if (eventName == "AddInPort")
             {
@@ -247,9 +237,9 @@ namespace Dynamo.Nodes
                 // For that reason, that entry on the undo-stack needs to be 
                 // popped (the node modification will be recorded here instead).
                 // 
-                model.Workspace.UndoRecorder.PopFromUndoGroup();
+                recorder.PopFromUndoGroup();
 
-                RecordModels();
+                RecordModels(recorder);
                 RemoveInputFromModel();
                 model.RegisterAllPorts();
                 return true; // Handled here.

@@ -16,7 +16,6 @@ namespace Dynamo.Services
     /// </summary>
     public class InstrumentationLogger
     {
-
         private const bool IS_VERBOSE_DIAGNOSTICS = false;
 
         private static readonly string userID = GetUserID();
@@ -38,23 +37,20 @@ namespace Dynamo.Services
         //Service start
         public static void Start(DynamoModel dynamoModel)
         {
-
             string appVersion = dynamoModel.AppVersion;
 
-            CSharpAnalytics.MeasurementConfiguration mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
+            var mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
                 "Dynamo", appVersion);
 
             sessionID = Guid.NewGuid().ToString();
             loggerImpl = new Log("Dynamo", userID, sessionID);
 
             
-            CSharpAnalytics.AutoMeasurement.Start(mc);
+            AutoMeasurement.Start(mc);
             client = AutoMeasurement.Client;
 
             if (IS_VERBOSE_DIAGNOSTICS)
-            {
                 AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
-            }
 
             started = true;
 
@@ -95,6 +91,8 @@ namespace Dynamo.Services
             }
         }
 
+        public static bool IsTestMode { get; set; }
+
         public static String GetUserID()
         {
             // The name of the key must include a valid root.
@@ -108,30 +106,27 @@ namespace Dynamo.Services
             // the int is stored in the default name/value
             // pair.
 
-            String tryGetValue = Registry.GetValue(keyName, "InstrumentationGUID", null) as String;
+            var tryGetValue = Registry.GetValue(keyName, "InstrumentationGUID", null) as string;
 
             if (tryGetValue != null)
             {
-                System.Diagnostics.Debug.WriteLine("User id found: " + tryGetValue);
+                Debug.WriteLine("User id found: " + tryGetValue);
                 return tryGetValue;
             }
-            else
-            {
-                String newGUID = Guid.NewGuid().ToString();
-                Registry.SetValue(keyName, "InstrumentationGUID", newGUID);
-                System.Diagnostics.Debug.WriteLine("New User id: " + newGUID);
-                return newGUID;
-            }
+            
+            String newGUID = Guid.NewGuid().ToString();
+            Registry.SetValue(keyName, "InstrumentationGUID", newGUID);
+            Debug.WriteLine("New User id: " + newGUID);
+            return newGUID;
         }
 
 
 
         #region Analytics only methods
-
-
+        
         public static void LogAnonymousTimedEvent(string category, string variable, TimeSpan time, string label = null)
         {
-            if (DynamoModel.IsTestMode)
+            if (IsTestMode)
                 return;
 
             if (!started)
@@ -142,7 +137,7 @@ namespace Dynamo.Services
 
         public static void LogAnonymousEvent(string action, string category, string label = null)
         {
-            if (DynamoModel.IsTestMode)
+            if (IsTestMode)
                 return;
 
             if (!started)
@@ -153,7 +148,7 @@ namespace Dynamo.Services
 
         public static void LogAnonymousScreen(string screenName)
         {
-            if (DynamoModel.IsTestMode)
+            if (IsTestMode)
                 return;
 
             if (!started)
@@ -166,7 +161,7 @@ namespace Dynamo.Services
 
         public static void LogException(Exception e)
         {
-            if (DynamoModel.IsTestMode)
+            if (IsTestMode)
                 return;
 
             if (!started)
@@ -185,7 +180,7 @@ namespace Dynamo.Services
 
         public static void FORCE_LogInfo(string tag, string data)
         {
-            if (DynamoModel.IsTestMode)
+            if (IsTestMode)
                 return;
 
             if (!started)
@@ -196,7 +191,7 @@ namespace Dynamo.Services
 
         public static void LogPiiInfo(string tag, string data)
         {
-            if (DynamoModel.IsTestMode)
+            if (IsTestMode)
                 return;
 
             if (!started)

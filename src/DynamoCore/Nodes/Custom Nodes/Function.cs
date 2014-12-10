@@ -36,18 +36,29 @@ namespace Dynamo.Nodes
         }
 
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
-
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            Controller.SaveNode(xmlDoc, nodeElement, context);
-            
+            return Controller.BuildAst(this, inputAstNodes);
+        }
+
+        #region Serialization/Deserialization methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+
+            Controller.SerializeCore(element, context);
+
+            var xmlDoc = element.OwnerDocument;
+
             var outEl = xmlDoc.CreateElement("Name");
             outEl.SetAttribute("value", NickName);
-            nodeElement.AppendChild(outEl);
+            element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Description");
             outEl.SetAttribute("value", Description);
-            nodeElement.AppendChild(outEl);
+            element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Inputs");
             foreach (string input in InPortData.Select(x => x.NickName))
@@ -56,7 +67,7 @@ namespace Dynamo.Nodes
                 inputEl.SetAttribute("value", input);
                 outEl.AppendChild(inputEl);
             }
-            nodeElement.AppendChild(outEl);
+            element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Outputs");
             foreach (string output in OutPortData.Select(x => x.NickName))
@@ -65,11 +76,13 @@ namespace Dynamo.Nodes
                 outputEl.SetAttribute("value", output);
                 outEl.AppendChild(outputEl);
             }
-            nodeElement.AppendChild(outEl);
+            element.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlElement nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context); //Base implementation must be called
+
             List<XmlNode> childNodes = nodeElement.ChildNodes.Cast<XmlNode>().ToList();
 
             XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
@@ -148,113 +161,8 @@ namespace Dynamo.Nodes
             //by default in the constructor, but for any workflow saved
             //before this was the case, we need to ensure it here.
             ArgumentLacing = LacingStrategy.Disabled;
-        }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
-        {
-            return Controller.BuildAst(this, inputAstNodes);
-        }
-
-        #region Serialization/Deserialization methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            
-            if (context != SaveContext.Undo) return;
-
-            var helper = new XmlElementHelper(element);
-            helper.SetAttribute("functionId", Definition.FunctionId.ToString());
-            helper.SetAttribute("functionName", NickName);
-            helper.SetAttribute("functionDesc", Description);
-
-            XmlDocument xmlDoc = element.OwnerDocument;
-            foreach (string input in InPortData.Select(x => x.NickName))
-            {
-                XmlElement inputEl = xmlDoc.CreateElement("functionInput");
-                inputEl.SetAttribute("inputValue", input);
-                element.AppendChild(inputEl);
-            }
-
-            foreach (string input in OutPortData.Select(x => x.NickName))
-            {
-                XmlElement outputEl = xmlDoc.CreateElement("functionOutput");
-                outputEl.SetAttribute("outputValue", input);
-                element.AppendChild(outputEl);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
-        {
-            base.DeserializeCore(nodeElement, context); //Base implementation must be called
-
-            if (context != SaveContext.Undo) return;
-
-            var helper = new XmlElementHelper(nodeElement);
-            NickName = helper.ReadString("functionName");
-
-            Controller.DeserializeCore(nodeElement, context);
-
-            XmlNodeList inNodes = nodeElement.SelectNodes("functionInput");
-            XmlNodeList outNodes = nodeElement.SelectNodes("functionOutput");
-
-            var inData =
-                inNodes.Cast<XmlNode>()
-                    .Select(
-                        (inputNode, i) =>
-                            new
-                            {
-                                data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1)),
-                                idx = i
-                            });
-
-            foreach (var dataAndIdx in inData)
-            {
-                if (InPortData.Count > dataAndIdx.idx)
-                    InPortData[dataAndIdx.idx] = dataAndIdx.data;
-                else
-                    InPortData.Add(dataAndIdx.data);
-            }
-
-            var outData =
-                outNodes.Cast<XmlNode>()
-                    .Select(
-                        (outputNode, i) =>
-                            new
-                            {
-                                data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1)),
-                                idx = i
-                            });
-
-            foreach (var dataAndIdx in outData)
-            {
-                if (OutPortData.Count > dataAndIdx.idx)
-                    OutPortData[dataAndIdx.idx] = dataAndIdx.data;
-                else
-                    OutPortData.Add(dataAndIdx.data);
-            }
-
-            //Added it the same way as LoadNode. But unsure of when 'Output' ChildNodes will
-            //be added to element. As of now I dont think it is added during serialize
-
-            #region Legacy output support
-
-            foreach (var portData in 
-                from XmlNode subNode in nodeElement.ChildNodes
-                where subNode.Name.Equals("Output")
-                select new PortData(subNode.Attributes[0].Value, "function output"))
-            {
-                if (OutPortData.Any())
-                    OutPortData[0] = portData;
-                else
-                    OutPortData.Add(portData);
-            }
-
-            #endregion
-
-            RegisterAllPorts();
-
-            Description = helper.ReadString("functionDesc");
+            Description = new XmlElementHelper(nodeElement).ReadString("functionDesc");
         }
 
         #endregion
@@ -305,15 +213,15 @@ namespace Dynamo.Nodes
                     InputSymbol == null ? AstIdentifierBase : InputSymbol + "__" + AstIdentifierBase);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement("Symbol");
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
             outEl.SetAttribute("value", InputSymbol);
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlElement nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             foreach (var subNode in
                 nodeElement.ChildNodes.Cast<XmlNode>()
@@ -375,15 +283,15 @@ namespace Dynamo.Nodes
             return new[] { assignment };
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement("Symbol");
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
             outEl.SetAttribute("value", Symbol);
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlElement nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             foreach (var subNode in 
                 nodeElement.ChildNodes.Cast<XmlNode>()

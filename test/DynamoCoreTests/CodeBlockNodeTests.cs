@@ -369,7 +369,7 @@ b = c[w][x][y][z];";
 
             // Create the watch node.
             var nodeGuid = Guid.NewGuid();
-            var command = new DynCmd.CreateNodeCommand(
+            var command = new DynCmd.AddNodeCommand(
                 nodeGuid, "Watch", 0, 0, true, false);
 
             ViewModel.ExecuteCommand(command);
@@ -429,7 +429,7 @@ b = c[w][x][y][z];";
 
             // Create the Point.Origin node.
             var nodeGuid = Guid.NewGuid();
-            var command = new DynCmd.CreateNodeCommand(
+            var command = new DynCmd.AddNodeCommand(
                 nodeGuid, "Point.Origin", 0, 0, true, false);
 
             ViewModel.ExecuteCommand(command);
@@ -860,7 +860,7 @@ b = c[w][x][y][z];";
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
             var nodeGuid = Guid.NewGuid();
-            var command = new DynCmd.CreateNodeCommand(
+            var command = new DynCmd.AddNodeCommand(
                 nodeGuid, "Code Block", 0, 0, true, false);
 
             ViewModel.ExecuteCommand(command);

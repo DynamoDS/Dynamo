@@ -143,12 +143,12 @@ namespace Dynamo.TestInfrastructure
                     DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
                         //make node
-                        DynamoModel.CreateNodeCommand createNodeNumber1 =
-                            new DynamoModel.CreateNodeCommand(guidNumber, "Number", 
+                        DynamoModel.AddNodeCommand addNodeNumber1 =
+                            new DynamoModel.AddNodeCommand(guidNumber, "Number", 
                                 coordinatesX, coordinatesYNumber1, false, true);
 
                         //create node
-                        DynamoViewModel.ExecuteCommand(createNodeNumber1);
+                        DynamoViewModel.ExecuteCommand(addNodeNumber1);
 
                         int outPortIndex = connector.Start.Index;
                         int inPortIndex = connector.End.Index;

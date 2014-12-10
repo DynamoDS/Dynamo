@@ -87,13 +87,20 @@ namespace Dynamo.Models
         #endregion
         
         #region static properties
-
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        protected static bool IsTestMode { get; set; }
+        protected static bool IsTestMode
+        {
+            get { return isTestMode; }
+            set
+            {
+                isTestMode = value;
+                InstrumentationLogger.IsTestMode = value;
+            }
+        }
 
         /// <summary>
         /// Setting this flag enables creation of an XML in following format that records 
@@ -107,6 +114,7 @@ namespace Dynamo.Models
         //TODO(Steve): Attempt to make the majority of these readonly fields
         
         public readonly LibraryServices LibraryServices;
+        private static bool isTestMode;
 
         /// <summary>
         /// TODO
@@ -415,7 +423,7 @@ namespace Dynamo.Models
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
-            Scheduler = new DynamoScheduler(thread);
+            Scheduler = new DynamoScheduler(thread, IsTestMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
             
             //TODO(Steve): This is ugly
@@ -430,7 +438,7 @@ namespace Dynamo.Models
 
             //TODO(Steve): Need a way to hide input/output nodes in home workspaces...
             SearchModel = new NodeSearchModel();
-            SearchModel.ItemProduced += AddNodeToCurrentWorkspace;
+            //SearchModel.ItemProduced += node => AddNodeToCurrentWorkspace(node, true);
 
             InitializeCurrentWorkspace();
 
@@ -943,14 +951,16 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         /// <param name="node"></param>
-        public void AddNodeToCurrentWorkspace(NodeModel node)
+        /// <param name="centered"></param>
+        public void AddNodeToCurrentWorkspace(NodeModel node, bool centered)
         {
-            CurrentWorkspace.AddNode(node, centered: true);
-            OnNodeAdded(node);
+            CurrentWorkspace.AddNode(node, centered);
             
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection.
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(node);
+
+            //TODO(Steve): Make sure we're not missing something with TransformCoordinates...
         }
         
         /// <summary>

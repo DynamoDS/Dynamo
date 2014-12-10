@@ -828,7 +828,7 @@ namespace Dynamo.ViewModels
                 // create node
                 var guid = Guid.NewGuid();
 
-                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(guid,
+                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.AddNodeCommand(guid,
                     "Code Block", cursor.X, cursor.Y, false, true));
 
                 // select node

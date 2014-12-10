@@ -175,9 +175,9 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        public bool UpdateValue(string name, string value)
+        public bool UpdateValue(string name, string value, UndoRedoRecorder recorder)
         {
-            return UpdateValueCore(name, value);
+            return UpdateValueCore(name, value, recorder);
         }
 
         /// <summary>
@@ -186,12 +186,12 @@ namespace Dynamo.Models
         /// sends this event when clicked.
         /// </summary>
         /// <param name="eventName">The name of the event.</param>
+        /// <param name="recorder"></param>
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
-        /// 
-        public bool HandleModelEvent(string eventName)
+        public bool HandleModelEvent(string eventName, UndoRedoRecorder recorder)
         {
-            return HandleModelEventCore(eventName);
+            return HandleModelEventCore(eventName, recorder);
         }
 
         /// <summary>
@@ -208,16 +208,17 @@ namespace Dynamo.Models
         /// from DynamoTextBox after user commits it. Overridden methods then use 
         /// a specific IValueConverter to turn this string into another data type 
         /// that it expects.</param>
+        /// <param name="recorder"></param>
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
-        /// 
         //TODO(Steve): Should we accept an UndoRedoRecorder as an argument?
-        protected virtual bool UpdateValueCore(string name, string value)
+        protected virtual bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             return false; // Base class does not handle this.
         }
 
-        protected virtual bool HandleModelEventCore(string eventName)
+        //TODO(Steve): Should we accept an UndoRedoRecorder as an argument?
+        protected virtual bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
             return false; // Base class does not handle this.
         }

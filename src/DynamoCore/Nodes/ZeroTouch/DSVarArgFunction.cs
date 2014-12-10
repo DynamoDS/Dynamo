@@ -3,6 +3,8 @@ using System.Linq;
 using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
+
+using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Library;
 using Dynamo.Models;
@@ -36,10 +38,10 @@ namespace Dynamo.Nodes
             VarInputController.DeserializeCore(nodeElement, context);
         }
 
-        protected override bool HandleModelEventCore(string eventName)
+        protected override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
-            return VarInputController.HandleModelEventCore(eventName)
-                || base.HandleModelEventCore(eventName);
+            return VarInputController.HandleModelEventCore(eventName, recorder)
+                || base.HandleModelEventCore(eventName, recorder);
         }
 
         /// <summary>

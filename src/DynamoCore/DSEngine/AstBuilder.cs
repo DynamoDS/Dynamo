@@ -142,7 +142,7 @@ namespace Dynamo.DSEngine
                     ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging)
                     : node.BuildAst(inputAstNodes);
             
-            if (verboseLogging) //TODO(Steve)
+            if (verboseLogging)
             {
                 foreach (var n in astNodes)
                 {

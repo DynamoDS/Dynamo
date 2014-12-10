@@ -21,10 +21,11 @@ namespace Dynamo.Models
 
         public readonly bool VerboseLogging;
 
-        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler, bool verboseLogging)
+        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler, NodeFactory factory, bool verboseLogging)
             : this(
                 libraryServices,
                 scheduler,
+                factory,
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<ConnectorModel>(),
@@ -33,10 +34,10 @@ namespace Dynamo.Models
                 0, verboseLogging) { }
 
         public HomeWorkspaceModel(
-            LibraryServices libraryServices, DynamoScheduler scheduler,
+            LibraryServices libraryServices, DynamoScheduler scheduler, NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e,
             IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y, bool verboseLogging)
-            : base("Home", e, c, n, x, y)
+            : base("Home", e, c, n, x, y, factory)
         {
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
@@ -84,7 +85,6 @@ namespace Dynamo.Models
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check that shutdown has not been requested.
-            //TODO(Steve): Move ShutdownRequested management to scheduler
             if (DynamicRunEnabled && !dynamoModel.ShutdownRequested)
             {
                 // This dispatch timer is to avoid updating graph too frequently.
@@ -213,9 +213,10 @@ namespace Dynamo.Models
 
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
-            {
                 modifiedNode.RequestValueUpdateAsync(scheduler, engineController);
-            }
+
+            foreach (var n in Nodes)
+                n.ForceReExecuteOfNode = false;
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.

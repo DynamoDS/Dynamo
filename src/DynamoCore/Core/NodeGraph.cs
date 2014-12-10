@@ -135,16 +135,6 @@ namespace Dynamo.Core
             var notes = LoadNotesFromXml(xmlDoc).ToList();
 
             return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes };
-
-            //====CUSTOM====
-
-            def.IsBeingLoaded = false;
-            def.Compile(this.dynamoModel.EngineController);
-            SetFunctionDefinition(def.FunctionId, def);
-            ws.WatchChanges = true;
-            OnGetDefinitionFromPath(def);
-
-            //==============
         }
     }
 }

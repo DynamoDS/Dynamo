@@ -94,11 +94,11 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="element">The XmlElement from which the RecordableCommand
             /// can be reconstructed.</param>
+            /// <param name="factory"></param>
             /// <returns>Returns the reconstructed RecordableCommand object. If a 
             /// RecordableCommand cannot be reconstructed, this method throws a 
             /// relevant exception.</returns>
-            /// 
-            internal static RecordableCommand Deserialize(XmlElement element)
+            internal static RecordableCommand Deserialize(XmlElement element, NodeFactory factory)
             {
                 if (string.IsNullOrEmpty(element.Name))
                     throw new ArgumentException("XmlElement without name");
@@ -117,7 +117,7 @@ namespace Dynamo.Models
                         command = RunCancelCommand.DeserializeCore(element);
                         break;
                     case "CreateNodeCommand":
-                        command = CreateNodeCommand.DeserializeCore(element);
+                        command = AddNodeCommand.DeserializeCore(element, factory);
                         break;
                     case "SelectModelCommand":
                         command = SelectModelCommand.DeserializeCore(element);
@@ -245,7 +245,7 @@ namespace Dynamo.Models
 
             internal static PausePlaybackCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 var pauseDurationInMs = helper.ReadInteger("PauseDurationInMs");
                 return new PausePlaybackCommand(pauseDurationInMs);
             }
@@ -268,7 +268,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("Tag", Tag);
                 helper.SetAttribute("PauseDurationInMs", PauseDurationInMs);
             }
@@ -304,28 +304,26 @@ namespace Dynamo.Models
 
             internal static OpenFileCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 string xmlFilePath = helper.ReadString("XmlFilePath");
+                if (File.Exists(xmlFilePath)) 
+                    return new OpenFileCommand(xmlFilePath);
+
+                // Try to find the file right next to the command XML file.
+                string xmlFileName = Path.GetFileName(xmlFilePath);
+                var uri = new Uri(element.OwnerDocument.BaseURI);
+                string directory = Path.GetDirectoryName(uri.AbsolutePath);
+                xmlFilePath = Path.Combine(directory, xmlFileName);
+
+                // If it still cannot be resolved, fall back to system search.
                 if (File.Exists(xmlFilePath) == false)
-                {
-                    // Try to find the file right next to the command XML file.
-                    string xmlFileName = Path.GetFileName(xmlFilePath);
-                    Uri uri = new Uri(element.OwnerDocument.BaseURI);
-                    string directory = Path.GetDirectoryName(uri.AbsolutePath);
-                    xmlFilePath = Path.Combine(directory, xmlFileName);
+                    xmlFilePath = Path.GetFullPath(xmlFileName);
 
-                    // If it still cannot be resolved, fall back to system search.
-                    if (File.Exists(xmlFilePath) == false)
-                        xmlFilePath = Path.GetFullPath(xmlFileName);
+                if (File.Exists(xmlFilePath)) 
+                    return new OpenFileCommand(xmlFilePath);
 
-                    if (File.Exists(xmlFilePath) == false) // When all else fail.
-                    {
-                        var message = "Target file cannot be found!";
-                        throw new FileNotFoundException(message, xmlFileName);
-                    }
-                }
-
-                return new OpenFileCommand(xmlFilePath);
+                const string message = "Target file cannot be found!";
+                throw new FileNotFoundException(message, xmlFileName);
             }
 
             #endregion
@@ -345,7 +343,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("XmlFilePath", XmlFilePath);
             }
 
@@ -388,7 +386,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("ShowErrors", ShowErrors);
                 helper.SetAttribute("CancelRun", CancelRun);
             }
@@ -424,36 +422,34 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
             }
 
         }
-
-
-        public class CreateNodeCommand : RecordableCommand
+        
+        public class AddNodeCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            public CreateNodeCommand(Guid nodeId, string nodeName,
+            public AddNodeCommand(NodeModel node,
                 double x, double y, bool defaultPosition, bool transformCoordinates)
             {
-                NodeId = nodeId;
-                NodeName = nodeName;
+                Node = node;
                 X = x;
                 Y = y;
                 DefaultPosition = defaultPosition;
                 TransformCoordinates = transformCoordinates;
             }
 
-            internal static CreateNodeCommand DeserializeCore(XmlElement element)
+            internal static AddNodeCommand DeserializeCore(XmlElement element, NodeFactory factory)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                Guid nodeId = helper.ReadGuid("NodeId");
-                string nodeName = helper.ReadString("NodeName");
+                var helper = new XmlElementHelper(element);
                 double x = helper.ReadDouble("X");
                 double y = helper.ReadDouble("Y");
 
-                return new CreateNodeCommand(nodeId, nodeName, x, y,
+                var node = factory.CreateNodeFromXml(element, SaveContext.File);
+
+                return new AddNodeCommand(node, x, y,
                     helper.ReadBoolean("DefaultPosition"),
                     helper.ReadBoolean("TransformCoordinates"));
             }
@@ -462,8 +458,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal Guid NodeId { get; private set; }
-            internal string NodeName { get; private set; }
+            internal NodeModel Node { get; private set; }
             internal double X { get; private set; }
             internal double Y { get; private set; }
             internal bool DefaultPosition { get; private set; }
@@ -480,13 +475,14 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("NodeId", NodeId);
-                helper.SetAttribute("NodeName", NodeName);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("X", X);
                 helper.SetAttribute("Y", Y);
                 helper.SetAttribute("DefaultPosition", DefaultPosition);
                 helper.SetAttribute("TransformCoordinates", TransformCoordinates);
+
+                var nodeElement = Node.Serialize(element.OwnerDocument, SaveContext.File);
+                element.AppendChild(nodeElement);
             }
 
             #endregion
@@ -511,7 +507,7 @@ namespace Dynamo.Models
 
             internal static CreateNoteCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 Guid nodeId = helper.ReadGuid("NodeId");
                 string noteText = helper.ReadString("NoteText");
                 double x = helper.ReadDouble("X");
@@ -542,7 +538,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("NodeId", NodeId);
                 helper.SetAttribute("NoteText", NoteText);
                 helper.SetAttribute("X", X);
@@ -565,9 +561,9 @@ namespace Dynamo.Models
 
             internal static SelectModelCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 Guid modelGuid = helper.ReadGuid("ModelGuid");
-                ModifierKeys modifiers = ((ModifierKeys)helper.ReadInteger("Modifiers"));
+                var modifiers = ((ModifierKeys)helper.ReadInteger("Modifiers"));
                 return new SelectModelCommand(modelGuid, modifiers);
             }
 
@@ -589,7 +585,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("ModelGuid", ModelGuid);
                 helper.SetAttribute("Modifiers", ((int)Modifiers));
             }
@@ -611,14 +607,14 @@ namespace Dynamo.Models
 
             internal static SelectInRegionCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
 
                 double x = helper.ReadDouble("X");
                 double y = helper.ReadDouble("Y");
                 double width = helper.ReadDouble("Width");
                 double height = helper.ReadDouble("Height");
 
-                Rect region = new Rect(x, y, width, height);
+                var region = new Rect(x, y, width, height);
                 bool isCrossSelection = helper.ReadBoolean("IsCrossSelection");
                 return new SelectInRegionCommand(region, isCrossSelection);
             }
@@ -638,7 +634,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("X", Region.X);
                 helper.SetAttribute("Y", Region.Y);
                 helper.SetAttribute("Width", Region.Width);
@@ -663,7 +659,7 @@ namespace Dynamo.Models
 
             internal static DragSelectionCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 double x = helper.ReadDouble("X");
                 double y = helper.ReadDouble("Y");
                 int op = helper.ReadInteger("DragOperation");
@@ -685,7 +681,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("X", MouseCursor.X);
                 helper.SetAttribute("Y", MouseCursor.Y);
                 helper.SetAttribute("DragOperation", ((int)DragOperation));
@@ -710,11 +706,11 @@ namespace Dynamo.Models
 
             internal static MakeConnectionCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 Guid nodeId = helper.ReadGuid("NodeId");
                 int portIndex = helper.ReadInteger("PortIndex");
-                PortType portType = ((PortType)helper.ReadInteger("Type"));
-                Mode mode = ((Mode)helper.ReadInteger("ConnectionMode"));
+                var portType = ((PortType)helper.ReadInteger("Type"));
+                var mode = ((Mode)helper.ReadInteger("ConnectionMode"));
                 return new MakeConnectionCommand(nodeId, portIndex, portType, mode);
             }
 
@@ -738,7 +734,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("NodeId", NodeId);
                 helper.SetAttribute("PortIndex", PortIndex);
                 helper.SetAttribute("Type", ((int)Type));
@@ -759,7 +755,7 @@ namespace Dynamo.Models
 
             internal static DeleteModelCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 Guid modelGuid = helper.ReadGuid("ModelGuid");
                 return new DeleteModelCommand(modelGuid);
             }
@@ -781,7 +777,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("ModelGuid", ModelGuid);
             }
 
@@ -801,7 +797,7 @@ namespace Dynamo.Models
 
             internal static UndoRedoCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 int operation = helper.ReadInteger("CmdOperation");
                 return new UndoRedoCommand((Operation)operation);
             }
@@ -823,7 +819,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("CmdOperation", ((int)CmdOperation));
             }
 
@@ -842,7 +838,7 @@ namespace Dynamo.Models
 
             internal static ModelEventCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 Guid modelGuid = helper.ReadGuid("ModelGuid");
                 string eventName = helper.ReadString("EventName");
                 return new ModelEventCommand(modelGuid, eventName);
@@ -866,7 +862,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("ModelGuid", ModelGuid);
                 helper.SetAttribute("EventName", EventName);
             }
@@ -887,7 +883,7 @@ namespace Dynamo.Models
 
             internal static UpdateModelValueCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 Guid modelGuid = helper.ReadGuid("ModelGuid");
                 string name = helper.ReadString("Name");
                 string value = helper.ReadString("Value");
@@ -913,7 +909,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("ModelGuid", ModelGuid);
                 helper.SetAttribute("Name", Name);
                 helper.SetAttribute("Value", Value);
@@ -939,7 +935,7 @@ namespace Dynamo.Models
 
             internal static ConvertNodesToCodeCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 Guid nodeId = helper.ReadGuid("NodeId");
                 return new ConvertNodesToCodeCommand(nodeId);
             }
@@ -961,7 +957,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("NodeId", NodeId);
             }
 
@@ -984,7 +980,7 @@ namespace Dynamo.Models
 
             internal static CreateCustomNodeCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
 
                 return new CreateCustomNodeCommand(
                     helper.ReadGuid("NodeId"),
@@ -1015,7 +1011,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("NodeId", NodeId);
                 helper.SetAttribute("Name", Name);
                 helper.SetAttribute("Category", Category);
@@ -1037,7 +1033,7 @@ namespace Dynamo.Models
 
             internal static SwitchTabCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 return new SwitchTabCommand(helper.ReadInteger("TabIndex"));
             }
 
@@ -1058,7 +1054,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("TabIndex", TabIndex);
             }
 

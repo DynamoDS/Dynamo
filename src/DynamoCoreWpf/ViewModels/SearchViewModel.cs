@@ -13,6 +13,9 @@ using Dynamo.Wpf.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
 
+using CustomNodeSearchElement = Dynamo.Search.SearchElements.CustomNodeSearchElement;
+using NodeModelSearchElement = Dynamo.Search.SearchElements.NodeModelSearchElement;
+
 namespace Dynamo.ViewModels
 {
     public partial class SearchViewModel : NotificationObject
@@ -140,9 +143,9 @@ namespace Dynamo.ViewModels
 
         #region Initialization
 
-        internal SearchViewModel(DynamoViewModel dynamoViewModel, SearchModel Model)
+        internal SearchViewModel(DynamoViewModel dynamoViewModel, SearchModel model)
         {
-            this.Model = Model;
+            Model = model;
             this.dynamoViewModel = dynamoViewModel;
 
             InitializeCore();
@@ -157,22 +160,21 @@ namespace Dynamo.ViewModels
             searchText = "";
 
             topResult =
-                BrowserItemViewModel.Wrap(this.Model.AddRootCategoryToStart("Top Result")) as
+                BrowserItemViewModel.Wrap(Model.AddRootCategoryToStart("Top Result")) as
                     BrowserRootElementViewModel;
             
-            this.Model.LibraryUpdated += ModelOnRequestSync;
-            this.Model.Executed += ExecuteElement;
+            Model.LibraryUpdated += ModelOnRequestSync;
 
-            this.Model.RemoveEmptyCategories();
+            Model.RemoveEmptyCategories();
 
-            foreach (BrowserRootElement item in this.Model.BrowserRootCategories)
+            foreach (BrowserRootElement item in Model.BrowserRootCategories)
             {
                 BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
             }
 
-            this.Model.BrowserRootCategories.CollectionChanged += BrowserRootCategoriesOnCollectionChanged;
+            Model.BrowserRootCategories.CollectionChanged += BrowserRootCategoriesOnCollectionChanged;
 
-            this.SortCategoryChildren();
+            SortCategoryChildren();
         }
 
         /// <summary>
@@ -194,9 +196,11 @@ namespace Dynamo.ViewModels
                     BrowserRootCategories.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
+                    foreach (
+                        var vm in
+                            from object item in e.OldItems
+                            select BrowserRootCategories.First(x => x.Model == item))
                     {
-                        var vm = BrowserRootCategories.First(x => x.Model == item);
                         BrowserRootCategories.Remove(vm);
                     }
                     break;
@@ -209,7 +213,7 @@ namespace Dynamo.ViewModels
 
         internal void SortCategoryChildren()
         {
-            foreach (var item in this.BrowserRootCategories)
+            foreach (var item in BrowserRootCategories)
             {
                 item.RecursivelySort();
             }
@@ -217,7 +221,7 @@ namespace Dynamo.ViewModels
 
         private void ModelOnRequestSync(object sender, EventArgs eventArgs)
         {
-            this.SearchAndUpdateResults();
+            SearchAndUpdateResults();
         }
 
         /// <summary>
@@ -226,7 +230,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SearchAndUpdateResults()
         {
-            this.SearchAndUpdateResults(SearchText);
+            SearchAndUpdateResults(SearchText);
         }
 
         /// <summary>
@@ -238,20 +242,19 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            var result = this.Model.Search(query).ToList();
+            List<SearchElementBase> result = Model.Search(query).ToList();
 
             // Remove old execute handler from old top result
-            if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElementViewModel)
+            if (topResult.Items.Any())
             {
                 var oldTopResult = topResult.Items.First() as NodeSearchElementViewModel;
-                oldTopResult.Model.Executed -= this.ExecuteElement;
+                if (oldTopResult != null)
+                    oldTopResult.Model.Executed -= ExecuteElement;
             }
 
             // deselect the last selected item
             if (visibleSearchResults.Count > SelectedIndex)
-            {
                 visibleSearchResults[SelectedIndex].Model.IsSelected = false;
-            }
 
             // clear visible results list
             visibleSearchResults.Clear();
@@ -259,7 +262,7 @@ namespace Dynamo.ViewModels
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
             {
-                foreach (var ele in this.Model.BrowserRootCategories)
+                foreach (var ele in Model.BrowserRootCategories)
                 {
                     ele.CollapseToLeaves();
                     ele.SetVisibilityToLeaves(true);
@@ -271,30 +274,32 @@ namespace Dynamo.ViewModels
             }
 
             // otherwise, first collapse all
-            foreach (var root in this.Model.BrowserRootCategories)
+            foreach (var root in Model.BrowserRootCategories)
             {
                 root.CollapseToLeaves();
                 root.SetVisibilityToLeaves(false);
             }
 
             // if there are any results, add the top result 
-            if (result.Any() && result.ElementAt(0) is NodeSearchElement)
+            if (result.Any())
             {
-                topResult.Model.Items.Clear();
+                var firstRes = (result.First() as NodeModelSearchElement);
+                if (firstRes != null)
+                {
+                    topResult.Model.Items.Clear();
 
-                var firstRes = (result.ElementAt(0) as NodeSearchElement);
+                    var copy = firstRes.Copy();
+                    copy.Executed += ExecuteElement;
 
-                var copy = firstRes.Copy();
-                copy.Executed += this.ExecuteElement;
+                    var catName = MakeShortCategoryString(firstRes.FullCategoryName);
 
-                var catName = MakeShortCategoryString(firstRes.FullCategoryName);
+                    var breadCrumb = new BrowserInternalElement(catName, topResult.Model);
+                    breadCrumb.AddChild(copy);
+                    topResult.Model.AddChild(breadCrumb);
 
-                var breadCrumb = new BrowserInternalElement(catName, topResult.Model);
-                breadCrumb.AddChild(copy);
-                topResult.Model.AddChild(breadCrumb);
-
-                topResult.Model.SetVisibilityToLeaves(true);
-                copy.ExpandToRoot();
+                    topResult.Model.SetVisibilityToLeaves(true);
+                    copy.ExpandToRoot();
+                }
             }
 
             // for all of the other results, show them in their category
@@ -314,11 +319,11 @@ namespace Dynamo.ViewModels
             var vl = new List<BrowserItem>();
             baseBrowserItem.GetVisibleLeaves(ref vl);
 
-            this.visibleSearchResults = vl.Select(BrowserItemViewModel.Wrap).ToList();
+            visibleSearchResults = vl.Select(BrowserItemViewModel.Wrap).ToList();
 
             if (visibleSearchResults.Any())
             {
-                this.SelectedIndex = 0;
+                SelectedIndex = 0;
                 visibleSearchResults[0].Model.IsSelected = true;
             }
 
@@ -334,23 +339,23 @@ namespace Dynamo.ViewModels
         {
             var catName = fullCategoryName.Replace(".", " > ");
 
+            if (catName.Length <= 50) 
+                return catName;
+
             // if the category name is too long, we strip off the interior categories
-            if (catName.Length > 50)
+            var s = catName.Split('>').Select(x => x.Trim()).ToList();
+            if (s.Count() <= 4) 
+                return catName;
+            
+            s = new List<string>
             {
-                var s = catName.Split('>').Select(x => x.Trim()).ToList();
-                if (s.Count() > 4)
-                {
-                    s = new List<string>()
-                                        {
-                                            s[0],
-                                            "...",
-                                            s[s.Count - 3],
-                                            s[s.Count - 2],
-                                            s[s.Count - 1]
-                                        };
-                    catName = String.Join(" > ", s);
-                }
-            }
+                s[0],
+                "...",
+                s[s.Count - 3],
+                s[s.Count - 2],
+                s[s.Count - 1]
+            };
+            catName = string.Join(" > ", s);
 
             return catName;
         }
@@ -404,27 +409,26 @@ namespace Dynamo.ViewModels
         ///     return the empty string.
         /// </summary>
         /// <returns>The string cleaved of everything </returns>
+        // TODO(Steve): This looks really inefficient
         public static string RemoveLastPartOfText(string text)
         {
-            if (string.IsNullOrEmpty(text))
-                return text;
-
-            var matches = Regex.Matches(text, Regex.Escape("."));
-
-            // no period
-            if (matches.Count == 0)
+            while (true)
             {
-                return "";
-            }
+                if (string.IsNullOrEmpty(text))
+                    return text;
 
-            // if period is in last position, remove that period and recurse
-            if (matches[matches.Count - 1].Index + 1 == text.Length)
-            {
-                return RemoveLastPartOfText(text.Substring(0, text.Length - 1));
-            }
+                var matches = Regex.Matches(text, Regex.Escape("."));
 
-            // remove to the last period
-            return text.Substring(0, matches[matches.Count - 1].Index + 2);
+                // no period
+                if (matches.Count == 0)
+                    return "";
+
+                if (matches[matches.Count - 1].Index + 1 != text.Length)
+                    return text.Substring(0, matches[matches.Count - 1].Index + 2);
+                
+                // if period is in last position, remove that period and recurse
+                text = text.Substring(0, text.Length - 1);
+            }
         }
 
         /// <summary>
@@ -472,18 +476,18 @@ namespace Dynamo.ViewModels
 
         private void ExecuteElementDynamically(CategorySearchElement searchElement)
         {
-            this.SearchText = searchElement.Name + ".";
+            SearchText = searchElement.Name + ".";
         }
 
         private void ExecuteElementDynamically(DSFunctionNodeSearchElement element)
         {
             // create node
             var guid = Guid.NewGuid();
-            this.dynamoViewModel.ExecuteCommand(
-                new DynamoModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
+            dynamoViewModel.ExecuteCommand(
+                new DynamoModel.AddNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
 
             // select node
-            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            var placedNode = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(node => node.GUID == guid);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -498,10 +502,10 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoModel.CreateNodeCommand(guid, name, 0, 0, true, true));
+                new DynamoModel.AddNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
-            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            var placedNode = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(node => node.GUID == guid);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -509,15 +513,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void ExecuteElementDynamically(NodeSearchElement element)
+        private void ExecuteElementDynamically(NodeModelSearchElement element)
         {
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
+                new DynamoModel.AddNodeCommand(guid, element.FullName, 0, 0, true, true));
 
             // select node
-            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            var placedNode = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(node => node.GUID == guid);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -531,7 +535,7 @@ namespace Dynamo.ViewModels
 
         public void Search(object parameter)
         {
-            this.SearchAndUpdateResults();
+            SearchAndUpdateResults();
         }
 
         internal bool CanSearch(object parameter)
@@ -541,31 +545,27 @@ namespace Dynamo.ViewModels
 
         internal void HideSearch(object parameter)
         {
-            this.Visible = false;
+            Visible = false;
         }
 
         internal bool CanHideSearch(object parameter)
         {
-            if (this.Visible == true)
-                return true;
-            return false;
+            return Visible;
         }
 
         public void ShowSearch(object parameter)
         {
-            this.Visible = true;
+            Visible = true;
         }
 
         internal bool CanShowSearch(object parameter)
         {
-            if (this.Visible == false)
-                return true;
-            return false;
+            return !Visible;
         }
 
         public void FocusSearch(object parameter)
         {
-            this.OnRequestFocusSearch(this.dynamoViewModel, EventArgs.Empty);
+            OnRequestFocusSearch(dynamoViewModel, EventArgs.Empty);
         }
 
         internal bool CanFocusSearch(object parameter)

@@ -52,11 +52,11 @@ namespace Dynamo.TestInfrastructure
                     {
                         Guid guidNumber = Guid.NewGuid();
 
-                        DynamoModel.CreateNodeCommand createCommand =
-                            new DynamoModel.CreateNodeCommand(guidNumber, nodeName,
+                        DynamoModel.AddNodeCommand addCommand =
+                            new DynamoModel.AddNodeCommand(guidNumber, nodeName,
                                 coordinatesX, coordinatesY, false, false);
 
-                        DynamoViewModel.ExecuteCommand(createCommand);
+                        DynamoViewModel.ExecuteCommand(addCommand);
                     }));
 
                     var valueMap = new Dictionary<Guid, String>();

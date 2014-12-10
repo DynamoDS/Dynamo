@@ -13,23 +13,26 @@ namespace Dynamo.Models
         public Guid CustomNodeId { get; private set; }
 
         #region Contructors
-        
+
         public CustomNodeWorkspaceModel(
-            string name, string category, string description, double x, double y, Guid customNodeId)
+            string name, string category, string description, double x, double y, Guid customNodeId,
+            NodeFactory factory)
             : this(
                 name,
                 category,
                 description,
+                factory,
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<ConnectorModel>(),
                 Enumerable.Empty<NoteModel>(),
                 x,
-                y, customNodeId) { }
+                y,
+                customNodeId) { }
 
         public CustomNodeWorkspaceModel(
-            string name, string category, string description, IEnumerable<NodeModel> e,
+            string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e,
             IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y, Guid customNodeId) 
-            : base(name, e, c, n, x, y)
+            : base(name, e, c, n, x, y, factory)
         {
             CustomNodeId = customNodeId;
             //WatchChanges = true;
@@ -145,6 +148,13 @@ namespace Dynamo.Models
         {
             var handler = DefinitionUpdated;
             if (handler != null) handler();
+        }
+
+        public event Action<Guid> FunctionIdChanged;
+        protected virtual void OnFunctionIdChanged(Guid oldId)
+        {
+            var handler = FunctionIdChanged;
+            if (handler != null) handler(oldId);
         }
 
         public override bool SaveAs(string newPath, ProtoCore.Core core)

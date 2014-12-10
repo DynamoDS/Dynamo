@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
 using Dynamo.Models;
-using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -17,38 +15,7 @@ namespace Dynamo.Nodes
         where T : CustomNodeDefinition
     {
         public CustomNodeController(T def) : base(def) { }
-
-        //private bool watchingDefForChanges;
-
-        ///// <summary>
-        /////     Definition of a custom node.
-        ///// </summary>
-        //public new CustomNodeDefinition Definition
-        //{
-        //    get { return base.Definition; }
-        //    internal set { base.Definition = value; }
-        //}
-
-        //protected override void OnDefinitionChanging()
-        //{
-        //    if (watchingDefForChanges)
-        //    {
-        //        Definition.Updated -= OnDefinitionChanged;
-        //        watchingDefForChanges = false;
-        //    }
-        //    base.OnDefinitionChanging();
-        //}
-
-        //protected override void OnDefinitionChanged()
-        //{
-        //    if (!watchingDefForChanges)
-        //    {
-        //        Definition.Updated += OnDefinitionChanged;
-        //        watchingDefForChanges = true;
-        //    }
-        //    base.OnDefinitionChanged();
-        //}
-
+        
         protected override void InitializeInputs(NodeModel model)
         {
             model.InPortData.Clear();
@@ -120,7 +87,7 @@ namespace Dynamo.Nodes
 
         protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
         {
-            if (Definition.IsProxy)
+            if (Definition == null)
             {
                 var lhs = model.AstIdentifierForPreview;
                 var rhs = AstFactory.BuildNullNode();
@@ -150,26 +117,6 @@ namespace Dynamo.Nodes
             nodeElement.SetAttribute("nickname", NickName);
         }
 
-        public override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context);
-
-            var helper = new XmlElementHelper(element);
-            var nickname = helper.ReadString("functionName");
-
-            Guid funcId;
-            if (!Guid.TryParse(helper.ReadString("functionId"), out funcId))
-                funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nickname);
-
-            if (!VerifyFuncId(ref funcId, nickname))
-            {
-                LoadProxyCustomNode(funcId, nickname);
-                return;
-            }
-
-            Definition = customNodeManager.GetFunctionDefinition(funcId);
-        }
-
         /// <summary>
         ///   Return if the custom node instance is in sync with its definition.
         ///   It may be out of sync if .dyf file is opened and updated and then
@@ -186,38 +133,6 @@ namespace Dynamo.Nodes
                         || Definition.ReturnKeys.Count() == model.OutPortData.Count()
                             && Definition.ReturnKeys.SequenceEqual(
                                 model.OutPortData.Select(p => p.NickName))));
-        }
-
-        private bool VerifyFuncId(ref Guid funcId, string nickname)
-        {
-            if (funcId == null) return false;
-
-            // if the dyf does not exist on the search path...
-            if (customNodeManager.Contains(funcId))
-                return true;
-
-            // if there is a node with this name, use it instead
-            if (!customNodeManager.Contains(nickname)) return false;
-
-            funcId = customNodeManager.GetGuidFromName(nickname);
-            return true;
-        }
-
-        private void LoadProxyCustomNode(Guid funcId, string nickname)
-        {
-            var proxyDef = new CustomNodeDefinition(funcId)
-            {
-                //WorkspaceModel =
-                //    new CustomNodeWorkspaceModel(nickname, "Custom Nodes") { FileName = null },
-                IsProxy = true
-            };
-
-            string userMsg = "Failed to load custom node: " + nickname + ".  Replacing with proxy custom node.";
-
-            Log(userMsg);
-
-            // tell custom node loader, but don't provide path, forcing user to resave explicitly
-            customNodeManager.SetFunctionDefinition(funcId, proxyDef);
         }
     }
 }

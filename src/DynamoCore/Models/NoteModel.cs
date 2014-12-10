@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Xml;
+
+using Dynamo.Core;
 using Dynamo.Utilities;
 namespace Dynamo.Models
 {
@@ -26,15 +28,13 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name == "Text")
-            {
-                Text = value;
-                return true;
-            }
-
-            return base.UpdateValueCore(name, value);
+            if (name != "Text") 
+                return base.UpdateValueCore(name, value, recorder);
+            
+            Text = value;
+            return true;
         }
 
         #endregion

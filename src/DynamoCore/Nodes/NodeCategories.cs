@@ -466,9 +466,9 @@ namespace Dynamo.Nodes
         /// runner throws an exception that is not handled anywhere else. This 
         /// message instructs user to save their work and restart Dynamo.
         /// </summary>
-        /// <param name="dynamoModel"></param>
         /// <param name="exception">The exception to display.</param>
-        internal static void DisplayEngineFailureMessage(DynamoModel dynamoModel, Exception exception)
+        [Obsolete("Fire event for this kind thing, handle events on the ViewModel layer.", true)]
+        internal static void DisplayEngineFailureMessage(Exception exception)
         {
             StabilityTracking.GetInstance().NotifyCrash();
             InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");

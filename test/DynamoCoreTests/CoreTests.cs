@@ -352,13 +352,13 @@ namespace Dynamo.Tests
                     description,
                     true));
 
-            ViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
+            ViewModel.ExecuteCommand(new DynamoModel.AddNodeCommand(
                 Guid.NewGuid(),
                 typeof(Symbol).ToString(),
                 0, 0,
                 true, true));
 
-            ViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
+            ViewModel.ExecuteCommand(new DynamoModel.AddNodeCommand(
                 Guid.NewGuid(),
                 typeof(Output).ToString(),
                 0, 0, true, true));
@@ -772,7 +772,7 @@ namespace Dynamo.Tests
             // Create the node with given information.
             var nodeGuid = Guid.NewGuid();
             var vm = this.ViewModel;
-            vm.ExecuteCommand(new DynCmd.CreateNodeCommand(nodeGuid,
+            vm.ExecuteCommand(new DynCmd.AddNodeCommand(nodeGuid,
                 "DSCore.List.Join@var[]..[]", 0, 0, true, false));
 
             // The node sound be found, and it should be a DSVarArgFunction.

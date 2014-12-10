@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-using Dynamo.DSEngine;
 using Dynamo.Models;
-using Dynamo.Utilities;
 
 namespace Dynamo.Core
 {
@@ -41,10 +39,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="modelData">The xml data from which the corresponding 
         ///     model can be re-created from.</param>
-        /// <param name="engine"></param>
-        /// <param name="factory"></param>
-        /// <param name="manager"></param>
-        void CreateModel(XmlElement modelData, EngineController engine, NodeFactory factory, CustomNodeManager manager);
+        void CreateModel(XmlElement modelData);
 
         /// <summary>
         /// UndoRedoRecorder calls this method to retrieve the up-to-date 
@@ -401,7 +396,7 @@ namespace Dynamo.Core
 
                     case UserAction.Deletion:
                         newGroup.AppendChild(element);
-                        undoClient.CreateModel(element, TODO, TODO, TODO, TODO);
+                        undoClient.CreateModel(element);
                         break;
                 }
             }
@@ -427,7 +422,7 @@ namespace Dynamo.Core
                 {
                     case UserAction.Creation:
                         newGroup.AppendChild(element);
-                        undoClient.CreateModel(element, TODO, TODO, TODO, TODO);
+                        undoClient.CreateModel(element);
                         break;
 
                     case UserAction.Modification:

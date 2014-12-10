@@ -154,7 +154,7 @@ namespace Dynamo.Search
         {
             return string.IsNullOrEmpty(search)
                 ? SearchElements
-                : SearchDictionary.Search(search, MaxNumSearchResults);
+                : SearchDictionary.Search(search); //, MaxNumSearchResults);
         }
 
         #endregion

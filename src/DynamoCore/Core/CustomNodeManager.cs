@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Data.Odbc;
 using System.Linq;
 using System.Xml;
 using Dynamo.Core;
@@ -21,7 +22,7 @@ namespace Dynamo.Utilities
     {
         public CustomNodeManager(NodeFactory nodeFactory)
         {
-            NodeFactory = nodeFactory;
+            this.nodeFactory = nodeFactory;
         }
 
         #region Fields and properties
@@ -54,7 +55,7 @@ namespace Dynamo.Utilities
             get { return loadedWorkspaceModels.Values; }
         }
 
-        public readonly NodeFactory NodeFactory;
+        private readonly NodeFactory nodeFactory;
 
         #endregion
 
@@ -87,24 +88,6 @@ namespace Dynamo.Utilities
             var handler = CustomNodeRemoved;
             if (handler != null) handler(functionId);
         }
-        
-        /// <summary>
-        ///     Attempts to get the CustomNodeWorkspaceModel for a given Custom Node ID.
-        /// </summary>
-        /// <param name="guid">Unique identifier for the custom node.</param>
-        /// <param name="workspace"></param>
-        /// <returns></returns>
-        public bool TryGetCustomNodeWorkspace(Guid guid, out WorkspaceModel workspace)
-        {
-            CustomNodeWorkspaceModel customNodeWorkspace;
-            if (!loadedWorkspaceModels.TryGetValue(guid, out customNodeWorkspace))
-            {
-                workspace = null;
-                return false;
-            }
-            workspace = customNodeWorkspace;
-            return true;
-        }
 
         /// <summary>
         ///     Creates a new Custom Node Instance.
@@ -112,28 +95,32 @@ namespace Dynamo.Utilities
         /// <param name="id">Identifier referring to a custom node definition.</param>
         /// <param name="nickname"></param>
         /// <param name="isTestMode"></param>
-        public Function CreateCustomNodeInstance(Guid id, string nickname=null, bool isTestMode=false)
+        public Function CreateCustomNodeInstance(
+            Guid id, string nickname = null, bool isTestMode = false)
         {
+            CustomNodeWorkspaceModel workspace;
             CustomNodeDefinition def;
             CustomNodeInfo info;
-            if (!TryGetFunctionDefinition(id, isTestMode, out def))
+            if (!TryGetFunctionWorkspace(id, isTestMode, out workspace))
             {
                 if (nickname == null || !TryGetNodeInfo(nickname, out info))
                 {
                     Log(
                         "Unable to create instance of custom node with id: \"" + id + "\"",
-                        WarningLevel.Error);
-                    return null;
+                        WarningLevel.Moderate);
+                    info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
+                    def = null;
                 }
-                id = info.FunctionId;
-                def = loadedCustomNodes[id] as CustomNodeDefinition;
+                else
+                {
+                    id = info.FunctionId;
+                    def = loadedCustomNodes[id] as CustomNodeDefinition;
+                    workspace = loadedWorkspaceModels[id];
+                }
             }
-            else if (!TryGetNodeInfo(id, out info))
+            else
             {
-                Log(
-                    "Unable to create instance of custom node with id: \"" + id + "\"",
-                    WarningLevel.Error);
-                return null;
+                
             }
 
             var node = new Function(def, info.Description, info.Category);
@@ -279,20 +266,21 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
         /// <param name="isTestMode"></param>
-        /// <param name="definition"></param>
+        /// <param name="ws"></param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
-        public bool TryGetFunctionDefinition(Guid id, bool isTestMode, out CustomNodeDefinition definition)
+        public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out CustomNodeWorkspaceModel ws)
         {
             if (Contains(id))
             {
-                CustomNodeWorkspaceModel ws;
-                if (IsInitialized(id) || InitializeCustomNode(id, isTestMode, out ws))
+                if (IsInitialized(id))
                 {
-                    definition = loadedCustomNodes[id] as CustomNodeDefinition;
+                    ws = loadedWorkspaceModels[id];
                     return true;
                 }
+                if (InitializeCustomNode(id, isTestMode, out ws))
+                    return true;
             }
-            definition = null;
+            ws = null;
             return false;
         }
         
@@ -451,12 +439,13 @@ namespace Dynamo.Utilities
             // custom node won't recursively load itself.
             SetFunctionDefinition(new CustomNodeDefinition(functionId));
 
-            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
+            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
 
             var newWorkspace = new CustomNodeWorkspaceModel(
                 workspaceInfo.Name,
                 workspaceInfo.Category,
                 workspaceInfo.Description,
+                nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Connectors,
                 nodeGraph.Notes,
@@ -545,11 +534,12 @@ namespace Dynamo.Utilities
         /// <param name="name"></param>
         /// <param name="category"></param>
         /// <param name="description"></param>
+        /// <param name="functionId"></param>
         /// <returns></returns>
-        public WorkspaceModel CreateCustomNode(string name, string category, string description)
+        public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
-            var newId = Guid.NewGuid();
-            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId);
+            var newId = functionId ?? Guid.NewGuid();
+            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory);
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
@@ -952,6 +942,7 @@ namespace Dynamo.Utilities
                     args.Name,
                     args.Category,
                     args.Description,
+                    nodeFactory,
                     newNodes,
                     newConnectors,
                     Enumerable.Empty<NoteModel>(),

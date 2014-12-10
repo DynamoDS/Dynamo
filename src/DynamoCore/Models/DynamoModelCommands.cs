@@ -45,24 +45,19 @@ namespace Dynamo.Models
 
         void ForceRunCancelImpl(ForceRunCancelCommand command)
         {
-            //TODO(Steve): This currently does nothing as of the Scheduler PR
+            var model = CurrentWorkspace as HomeWorkspaceModel;
+            if (model != null)
+                model.ForceRun(CustomNodeManager.LoadedDefinitions, DebugSettings.VerboseLogging);
         }
 
-        void CreateNodeImpl(CreateNodeCommand command)
+        void CreateNodeImpl(AddNodeCommand command)
         {
-            NodeModel nodeModel = CurrentWorkspace.AddNode(
-                command.NodeId,
-                command.NodeName,
-                command.X,
-                command.Y,
-                command.DefaultPosition,
-                command.TransformCoordinates,
-                NodeFactory,
-                Logger,
-                EngineController,
-                CustomNodeManager);
+            var node = command.Node;
+            node.X = command.X;
+            node.Y = command.Y;
+            AddNodeToCurrentWorkspace(command.Node, centered: command.DefaultPosition);
 
-            CurrentWorkspace.RecordCreatedModel(nodeModel);
+            CurrentWorkspace.RecordCreatedModel(node);
         }
 
         void CreateNoteImpl(CreateNoteCommand command)
@@ -190,15 +185,20 @@ namespace Dynamo.Models
                 second = portModel;
             }
 
-            ConnectorModel newConnectorModel = CurrentWorkspace.AddConnection(firstPort.Owner,
-                second.Owner, firstPort.Index, second.Index, Logger);
+            ConnectorModel newConnectorModel = ConnectorModel.Make(
+                firstPort.Owner,
+                second.Owner,
+                firstPort.Index,
+                second.Index);
+
+            CurrentWorkspace.AddConnection(newConnectorModel);
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
             if (connectorToRemove != null)
                 models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
             models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
-            CurrentWorkspace.RecordModelsForUndo(models);
+            WorkspaceModel.RecordModelsForUndo(models, CurrentWorkspace.UndoRecorder);
             activeStartPort = null;
         }
 
@@ -248,15 +248,21 @@ namespace Dynamo.Models
             CurrentWorkspace.ConvertNodesToCodeInternal(
                 command.NodeId,
                 EngineController,
-                LibraryServices.LibraryManagementCore, );
+                LibraryServices.LibraryManagementCore,
+                DebugSettings.VerboseLogging);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }
 
         void CreateCustomNodeImpl(CreateCustomNodeCommand command)
         {
-            NewCustomNodeWorkspace(command.NodeId,
-                command.Name, command.Category, command.Description, true);
+            var workspace = CustomNodeManager.CreateCustomNode(
+                command.Name,
+                command.Category,
+                command.Description, 
+                functionId: command.NodeId);
+
+            AddWorkspace(workspace);
         }
 
         void SwitchTabImpl(SwitchTabCommand command)

@@ -92,9 +92,10 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal DynamoScheduler(ISchedulerThread schedulerThread)
+        internal DynamoScheduler(ISchedulerThread schedulerThread, bool isTestMode)
         {
             this.schedulerThread = schedulerThread;
+            IsTestMode = isTestMode;
 
             // The host implementation of ISchedulerThread can begin access the 
             // scheduler as soon as this method is invoked. It is important for 
@@ -140,7 +141,7 @@ namespace Dynamo.Core.Threading
             // case (in a regular headless test case this is the unit test 
             // background thread; in a recorded test this is the main ui thread).
             // 
-            if (DynamoModel.IsTestMode)
+            if (IsTestMode)
             {
                 asyncTask.MarkTaskAsScheduled();
                 NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);
@@ -162,6 +163,11 @@ namespace Dynamo.Core.Threading
                 waitHandles[(int)EventIndex.TaskAvailable].Set();
             }
         }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public bool IsTestMode { get; private set; }
 
         /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 

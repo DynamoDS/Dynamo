@@ -50,7 +50,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, workspace.CanRedo);
             Assert.AreEqual(0, workspace.Nodes.Count); // An empty workspace
 
-            var createNodeCommand = new DynamoModel.CreateNodeCommand(
+            var createNodeCommand = new DynamoModel.AddNodeCommand(
                 Guid.NewGuid(), "Add", 0, 0, false, false);
 
             // Create a new node in the empty workspace.

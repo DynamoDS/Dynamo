@@ -245,10 +245,10 @@ namespace Dynamo.TestInfrastructure
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                DynamoModel.CreateNodeCommand createCommand =
-                    new DynamoModel.CreateNodeCommand(numberGuid, "Number", 
+                DynamoModel.AddNodeCommand addCommand =
+                    new DynamoModel.AddNodeCommand(numberGuid, "Number", 
                         coordinatesX, coordinatesY, false, false);
-                DynamoViewModel.ExecuteCommand(createCommand);
+                DynamoViewModel.ExecuteCommand(addCommand);
             }));
 
             foreach (NodeModel output in outputsInCustomNode)

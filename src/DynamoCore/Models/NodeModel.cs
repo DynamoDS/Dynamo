@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 
+using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -158,7 +159,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     The Node's state, which determines the coloring of the Node in the canvas.
         /// </summary>
-        [Obsolete("Warning: This can be set from various threads, handle on UI thread at VM level")]
         public ElementState State
         {
             get { return state; }
@@ -168,7 +168,6 @@ namespace Dynamo.Models
                     ClearTooltipText();
 
                 state = value;
-
                 RaisePropertyChanged("State");
             }
         }
@@ -1531,7 +1530,7 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             if (name == "NickName")
             {
@@ -1548,7 +1547,7 @@ namespace Dynamo.Models
                 return true;
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
 
         #endregion
