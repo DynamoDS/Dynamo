@@ -30,7 +30,7 @@ namespace Dynamo.Nodes.Search
                 this.Items.Insert(0, classes);
             }
 
-            this.Items.ToList().ForEach(x=>x.RecursivelySort());
+            this.Items.ToList().ForEach(x => x.RecursivelySort());
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Dynamo.Nodes.Search
         /// </summary>
         /// <param name="elem">The element in question</param>
         internal void AddChild(BrowserInternalElement elem)
-        {            
+        {
             elem.OldParent = elem.Parent;
             if (elem.Parent != null)
                 elem.Parent.Items.Remove(elem);
@@ -146,7 +146,7 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        public ToggleIsExpandedCommand _toggleIsExpanded;
+        private ToggleIsExpandedCommand _toggleIsExpanded;
         public ToggleIsExpandedCommand ToggleIsExpanded
         {
             get
@@ -180,9 +180,17 @@ namespace Dynamo.Nodes.Search
                     return;
                 }
                 var endState = !item.IsExpanded;
-                if (item is BrowserInternalElement)
+                if (item is BrowserInternalElement || item is BrowserRootElement)
                 {
-                    BrowserInternalElement element = (BrowserInternalElement) item;
+                    dynamic element = item;
+
+                    // Collapse all expanded items on next level.
+                    if (endState)
+                    {
+                        foreach (var ele in element.Items)
+                            ele.IsExpanded = false;
+                    }
+
                     foreach (var ele in element.Siblings)
                         ele.IsExpanded = false;
 
@@ -191,7 +199,6 @@ namespace Dynamo.Nodes.Search
                     if (element.Items.Count == 1)
                     {
                         BrowserItem subElement = element.Items[0];
-                        
                         while (subElement.Items.Count == 1)
                         {
                             subElement.IsExpanded = true;
@@ -202,30 +209,6 @@ namespace Dynamo.Nodes.Search
                     }
                 }
 
-                if (item is BrowserRootElement)
-                {
-                    BrowserRootElement element = (BrowserRootElement)item;
-                    foreach (var ele in element.Siblings)
-                        ele.IsExpanded = false;
-
-
-                    //Walk down the tree expanding anything nested one layer deep
-                    //this can be removed when we have the hierachy implemented properly
-                    if (element.Items.Count == 1)
-                    {
-                        BrowserItem subElement = element.Items[0];
-
-                        while (subElement.Items.Count == 1)
-                        {
-                            subElement.IsExpanded = true;
-                            subElement = subElement.Items[0];
-                        }
-
-                        subElement.IsExpanded = true;
-
-                    }
-
-                }
                 item.IsExpanded = endState;
             }
 
