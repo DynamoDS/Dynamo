@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-
-using Dynamo.Controls;
+using System.Web;
 using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
@@ -20,8 +19,7 @@ namespace DSCoreNodesUI
         {
             if (name == "Value")
             {
-                var converter = new StringDisplay();
-                Value = converter.ConvertBack(value, typeof(string), null, null) as string;
+                Value = HttpUtility.HtmlEncode(value);
                 return true;
             }
 

@@ -14,7 +14,7 @@ namespace DSCoreNodesUI
             if (model.NodeNature == DummyNode.Nature.Unresolved)
                 fileName = "MissingNode.png";
 
-            var src = @"/DSCoreNodesUI;component/Resources/" + fileName;
+            var src = @"/DSCoreNodesWpf;component/Resources/" + fileName;
 
             Image dummyNodeImage = new Image()
             {

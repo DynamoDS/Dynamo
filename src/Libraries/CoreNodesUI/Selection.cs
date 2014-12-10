@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Windows.Data;
 using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.UI.Commands;
 
 namespace Dynamo.Nodes
 {
     public delegate List<string> ElementsSelectionDelegate(string message,
     SelectionType selectionType, SelectionObjectType objectType, ILogger logger);
-
 
     /// <summary>
     /// The base class for all selection nodes.
@@ -270,39 +266,5 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-    }
-
-    public class SelectionButtonContentConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is IEnumerable<object>)
-            {
-                if (!(value as IEnumerable<object>).Any())
-                        return "Select";
-            }
-
-            return "Change";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class SelectionToTextConverter : IValueConverter
-    {
-        // parameter is the data context
-        // value is the selection
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value.ToString();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
     }
 }

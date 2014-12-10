@@ -152,6 +152,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBridgeTests", "..\test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpf", "DynamoCoreWpf\DynamoCoreWpf.csproj", "{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodesWpf", "Libraries\CoreNodesWpf\CoreNodesWpf.csproj", "{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitsWpf", "Libraries\UnitsWpf\UnitsWpf.csproj", "{27D52CC6-F05D-4931-8783-0827CEE3DDF0}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitUtility", "Tools\NUnitUtility\NUnitUtility.csproj", "{D0DC5724-DE00-4201-A659-A9A6CF81290D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}

@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
-using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.UI;
-
 using ProtoCore.AST.AssociativeAST;
-using Image = System.Windows.Controls.Image;
 
 namespace Dynamo.Nodes
 {
-
     [NodeName("Watch Image")]
     [NodeDescription("Previews an image")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
@@ -21,7 +13,7 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class WatchImageCore : NodeModel
     {
-        private Image image;
+        private System.Windows.Controls.Image image;
 
         public WatchImageCore(WorkspaceModel ws)
             : base(ws)

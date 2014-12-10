@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.ViewModels;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -52,7 +50,7 @@ namespace Dynamo.Nodes
         /// rapid regeneration of Watch content.
         /// </summary>
         public event EventHandler RequestBindingUnhook;
-        
+
         /// <summary>
         /// After the Watch content has been regenerated, this 
         /// event is triggered to reestablish the bindings.
@@ -129,7 +127,7 @@ namespace Dynamo.Nodes
                 }
             }
         }
-        
+
         internal virtual void OnRequestBindingUnhook(EventArgs e)
         {
             if (RequestBindingUnhook != null)
