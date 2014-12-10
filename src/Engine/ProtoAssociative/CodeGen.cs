@@ -12,6 +12,7 @@ using System.Text;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.BuildData;
 using System.Linq;
+using ProtoCore.Properties;
 
 namespace ProtoAssociative
 {
@@ -397,7 +398,7 @@ namespace ProtoAssociative
 
                 string symbol1 = firstNode.updateNodeRefList[0].nodeList[0].symbol.name;
                 string symbol2 = lastNode.updateNodeRefList[0].nodeList[0].symbol.name;
-                string message = String.Format(ProtoCore.StringConstants.kInvalidStaticCyclicDependency, symbol1, symbol2);
+                string message = String.Format(Resources.kInvalidStaticCyclicDependency, symbol1, symbol2);
 
                 core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency, message, core.CurrentDSFileName);
                 firstNode.isCyclic = true;
@@ -1309,7 +1310,7 @@ namespace ProtoAssociative
                             }
                             else
                             {
-                                string message = String.Format(ProtoCore.StringConstants.kCallingNonStaticProperty,
+                                string message = String.Format(Resources.kCallingNonStaticProperty,
                                                                className,
                                                                property);
 
@@ -1342,7 +1343,7 @@ namespace ProtoAssociative
                         {
                             if (subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                             {
-                                string message = String.Format(ProtoCore.StringConstants.kStaticMethodNotFound,
+                                string message = String.Format(Resources.kStaticMethodNotFound,
                                                                className,
                                                                procName);
 
@@ -1374,7 +1375,7 @@ namespace ProtoAssociative
                         {
                             if (subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                             {
-                                string message = String.Format(ProtoCore.StringConstants.KCallingConstructorOnInstance,
+                                string message = String.Format(Resources.KCallingConstructorOnInstance,
                                                                procName);
                                 buildStatus.LogWarning(WarningID.kCallingConstructorOnInstance,
                                                        message,
@@ -1394,7 +1395,7 @@ namespace ProtoAssociative
                         {
                             if (subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                             {
-                                string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
+                                string message = String.Format(Resources.kMethodIsInaccessible, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                             }
                         }
@@ -1520,7 +1521,7 @@ namespace ProtoAssociative
 
                         if (!isAccessible)
                         {
-                            string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
+                            string message = String.Format(Resources.kMethodIsInaccessible, procName);
                             buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
@@ -1561,7 +1562,7 @@ namespace ProtoAssociative
                         string.Equals(contextProcNode.name, procCallNode.name) &&
                         contextProcNode.runtimeIndex == procCallNode.runtimeIndex)
                     {
-                        string message = String.Format(ProtoCore.StringConstants.kCallingConstructorInConstructor, procName);
+                        string message = String.Format(Resources.kCallingConstructorInConstructor, procName);
                         buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
@@ -1751,7 +1752,7 @@ namespace ProtoAssociative
                     {
                         type = lefttype = realType;
                         procNode = null;
-                        string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
+                        string message = String.Format(Resources.kMethodIsInaccessible, procName);
                         buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
 
@@ -1825,7 +1826,7 @@ namespace ProtoAssociative
 
                         if (!isAccessible)
                         {
-                            string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
+                            string message = String.Format(Resources.kMethodIsInaccessible, procName);
                             buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
@@ -1852,7 +1853,7 @@ namespace ProtoAssociative
                         string.Equals(contextProcNode.name, procNode.name) &&
                         contextProcNode.runtimeIndex == procNode.runtimeIndex)
                     {
-                        string message = String.Format(ProtoCore.StringConstants.kCallingConstructorInConstructor, procName);
+                        string message = String.Format(Resources.kCallingConstructorInConstructor, procName);
                         buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
@@ -1996,12 +1997,12 @@ namespace ProtoAssociative
                     string property;
                     if (CoreUtils.TryGetPropertyName(procName, out property))
                     {
-                        string message = String.Format(ProtoCore.StringConstants.kPropertyNotFound, property);
+                        string message = String.Format(Resources.kPropertyNotFound, property);
                         buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kPropertyNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                     }
                     else
                     {
-                        string message = String.Format(ProtoCore.StringConstants.kMethodNotFound, procName);
+                        string message = String.Format(Resources.kMethodNotFound, procName);
                         buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                     }
 
@@ -4216,14 +4217,14 @@ namespace ProtoAssociative
                 {
                     if (localProcedure.isStatic)
                     {
-                        string message = ProtoCore.StringConstants.kUsingThisInStaticFunction;
+                        string message = Resources.kUsingThisInStaticFunction;
                         core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
                     }
                     else if (localProcedure.classScope == Constants.kGlobalScope)
                     {
-                        string message = ProtoCore.StringConstants.kInvalidThis;
+                        string message = Resources.kInvalidThis;
                         core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
@@ -4236,7 +4237,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    string message = ProtoCore.StringConstants.kInvalidThis;
+                    string message = Resources.kInvalidThis;
                     core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     EmitPushNull();
                     return;
@@ -4395,7 +4396,7 @@ namespace ProtoAssociative
 
                     if (isAllocated)
                     {
-                        string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, t.Value);
+                        string message = String.Format(Resources.kPropertyIsInaccessible, t.Value);
                         if (localProcedure != null && localProcedure.isStatic)
                         {
                             SymbolNode tempSymbolNode;
@@ -4409,7 +4410,7 @@ namespace ProtoAssociative
 
                             if (tempSymbolNode != null && !tempSymbolNode.isStatic && isAccessible)
                             {
-                                message = String.Format(ProtoCore.StringConstants.kUsingNonStaticMemberInStaticContext, t.Value);
+                                message = String.Format(Resources.kUsingNonStaticMemberInStaticContext, t.Value);
                             }
                         }
                         buildStatus.LogWarning(
@@ -4422,7 +4423,7 @@ namespace ProtoAssociative
                     }
                     else
                     {
-                        string message = String.Format(ProtoCore.StringConstants.kUnboundIdentifierMsg, t.Value);
+                        string message = String.Format(Resources.kUnboundIdentifierMsg, t.Value);
                         buildStatus.LogUnboundVariableWarning(unboundVariable, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
                 }
@@ -4633,12 +4634,12 @@ namespace ProtoAssociative
                             if (step == 0)
                             {
                                 isStepValid = false;
-                                warningMsg = ProtoCore.StringConstants.kRangeExpressionWithStepSizeZero;
+                                warningMsg = Resources.kRangeExpressionWithStepSizeZero;
                             }
                             else if ((end > current && step < 0) || (end < current && step > 0))
                             {
                                 isStepValid = false;
-                                warningMsg = ProtoCore.StringConstants.kRangeExpressionWithInvalidStepSize;
+                                warningMsg = Resources.kRangeExpressionWithInvalidStepSize;
                             }
                         }
 
@@ -4649,7 +4650,7 @@ namespace ProtoAssociative
                        if (hasAmountOperator)
                        {
                            isStepValid = false;
-                           warningMsg = ProtoCore.StringConstants.kRangeExpressionWithStepSizeZero;
+                           warningMsg = Resources.kRangeExpressionWithStepSizeZero;
                        }
                        else
                        {
@@ -4657,7 +4658,7 @@ namespace ProtoAssociative
                                subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                            {
                                buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
-                                                      ProtoCore.StringConstants.kRangeExpressionWithNonIntegerStepNumber,
+                                                      Resources.kRangeExpressionWithNonIntegerStepNumber,
                                                       core.CurrentDSFileName,
                                                       stepNode.line,
                                                       stepNode.col, 
@@ -4666,7 +4667,7 @@ namespace ProtoAssociative
                            else if (step <= 0)
                            {
                                isStepValid = false;
-                               warningMsg = ProtoCore.StringConstants.kRangeExpressionWithNegativeStepNumber;
+                               warningMsg = Resources.kRangeExpressionWithNegativeStepNumber;
                            }
                        }
 
@@ -4676,12 +4677,12 @@ namespace ProtoAssociative
                         if (hasAmountOperator)
                         {
                             isStepValid = false;
-                            warningMsg = ProtoCore.StringConstants.kRangeExpressionConflictOperator;
+                            warningMsg = Resources.kRangeExpressionConflictOperator;
                         }
                         else if (step == 0)
                         {
                             isStepValid = false;
-                            warningMsg = ProtoCore.StringConstants.kRangeExpressionWithStepSizeZero;
+                            warningMsg = Resources.kRangeExpressionWithStepSizeZero;
                         }
                         break;
 
@@ -5113,7 +5114,7 @@ namespace ProtoAssociative
                         int type = core.TypeSystem.GetType(typeName);
                         if (type == (int)PrimitiveType.kInvalidType)
                         {
-                            string message = String.Format(ProtoCore.StringConstants.kTypeUndefined, typeName);
+                            string message = String.Format(Resources.kTypeUndefined, typeName);
                             core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, vardecl.line, vardecl.col, graphNode);
                             prop.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                         }
@@ -5598,7 +5599,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    string message = String.Format(ProtoCore.StringConstants.kMethodAlreadyDefined, localProcedure.name);
+                    string message = String.Format(Resources.kMethodAlreadyDefined, localProcedure.name);
                     buildStatus.LogWarning(WarningID.kFunctionAlreadyDefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, gNode);
                     funcDef.skipMe = true;
                 }
@@ -5859,7 +5860,7 @@ namespace ProtoAssociative
                 localProcedure.returntype = core.TypeSystem.BuildTypeObject(uid, rank); 
                 if (localProcedure.returntype.UID == (int)PrimitiveType.kInvalidType)
                 {
-                    string message = String.Format(ProtoCore.StringConstants.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
+                    string message = String.Format(Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
                     localProcedure.returntype.UID = (int)PrimitiveType.kTypeVar;
                 }
@@ -5962,7 +5963,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    string message = String.Format(ProtoCore.StringConstants.kMethodAlreadyDefined, localProcedure.name);
+                    string message = String.Format(Resources.kMethodAlreadyDefined, localProcedure.name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kFunctionAlreadyDefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
                     funcDef.skipMe = true;
                 }
@@ -6257,7 +6258,7 @@ namespace ProtoAssociative
                 {
                     if (!core.Options.SuppressFunctionResolutionWarning)
                     {
-                        string message = String.Format(ProtoCore.StringConstants.kFunctionNotReturnAtAllCodePaths, localProcedure.name);
+                        string message = String.Format(Resources.kFunctionNotReturnAtAllCodePaths, localProcedure.name);
                         buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kMissingReturnStatement, message, core.CurrentDSFileName, funcDef.line, funcDef.col, graphNode);
                     }
                     EmitReturnNull();
@@ -8137,20 +8138,20 @@ namespace ProtoAssociative
                 {
                     if (bnode.LeftNode.Name.Equals(ProtoCore.DSDefinitions.Keyword.This))
                     {
-                        string errorMessage = ProtoCore.StringConstants.kInvalidThis;
+                        string errorMessage = Resources.kInvalidThis;
                         if (localProcedure != null)
                         {
                             if (localProcedure.isStatic)
                             {
-                                errorMessage = ProtoCore.StringConstants.kUsingThisInStaticFunction;
+                                errorMessage = Resources.kUsingThisInStaticFunction;
                             }
                             else if (localProcedure.classScope == Constants.kGlobalScope)
                             {
-                                errorMessage = ProtoCore.StringConstants.kInvalidThis;
+                                errorMessage = Resources.kInvalidThis;
                             }
                             else
                             {
-                                errorMessage = ProtoCore.StringConstants.kAssingToThis;
+                                errorMessage = Resources.kAssingToThis;
                             }
                         }
                         core.BuildStatus.LogWarning(WarningID.kInvalidThis, errorMessage, core.CurrentDSFileName, bnode.line, bnode.col, graphNode);
@@ -8366,7 +8367,7 @@ namespace ProtoAssociative
                         {
                             if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
                             {
-                                buildStatus.LogSemanticError(String.Format(StringConstants.functionAsVariableError,t.Name), core.CurrentDSFileName, t.line, t.col);
+                                buildStatus.LogSemanticError(String.Format(StringConstants.functionAsVariableError, t.Name), core.CurrentDSFileName, t.line, t.col);
                             }
                         }
                     }
@@ -8388,7 +8389,7 @@ namespace ProtoAssociative
                     int runtimeIndex = (!isAllocated || !isAccessible) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
                     if (isAllocated && !isAccessible)
                     {
-                        string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, t.Name);
+                        string message = String.Format(Resources.kPropertyIsInaccessible, t.Name);
                         buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
 
@@ -8851,7 +8852,7 @@ namespace ProtoAssociative
                 catchHandler.FilterTypeUID = core.TypeSystem.GetType(filterNode.type.Name);
                 if (catchHandler.FilterTypeUID == (int)PrimitiveType.kInvalidType)
                 {
-                    string message = String.Format(ProtoCore.StringConstants.kExceptionTypeUndefined, filterNode.type.Name);
+                    string message = String.Format(Resources.kExceptionTypeUndefined, filterNode.type.Name);
                     buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, core.CurrentDSFileName, filterNode.line, filterNode.col);
                     catchHandler.FilterTypeUID = (int)PrimitiveType.kTypeVar;
                 }
@@ -9207,7 +9208,7 @@ namespace ProtoAssociative
             int uid = core.TypeSystem.GetType(argNode.ArgumentType.Name);
             if (uid == (int)PrimitiveType.kInvalidType && !core.IsTempVar(argNode.NameNode.Name))
             {
-                string message = String.Format(ProtoCore.StringConstants.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
+                string message = String.Format(Resources.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
                 buildStatus.LogWarning(WarningID.kTypeUndefined, message, core.CurrentDSFileName, argNode.line, argNode.col, graphNode);
             }
 

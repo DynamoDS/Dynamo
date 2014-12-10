@@ -15,6 +15,7 @@ using ProtoCore.Lang.Replication;
 using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
 using System.Xml;
+using ProtoCore.Properties;
 
 namespace ProtoCore
 {
@@ -1094,7 +1095,7 @@ namespace ProtoCore
                 if (candidateFunctions.Count == 0)
                 {
                     core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAmbiguousMethodDispatch,
-                                                  StringConstants.kAmbigousMethodDispatch);
+                                                  Resources.kAmbigousMethodDispatch);
                     return null;
                 }
 
@@ -1925,7 +1926,7 @@ namespace ProtoCore
                 //@TODO(Luke): log no-type coercion possible warning
 
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible,
-                                              ProtoCore.StringConstants.kConvertNonConvertibleTypes);
+                                              Resources.kConvertNonConvertibleTypes);
 
                 return StackValue.Null;
             }

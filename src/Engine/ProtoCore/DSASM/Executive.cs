@@ -6,6 +6,7 @@ using ProtoCore.Exceptions;
 using ProtoCore.Utils;
 using ProtoCore.RuntimeData;
 using System.Diagnostics;
+using ProtoCore.Properties;
 
 namespace ProtoCore.DSASM
 {
@@ -571,7 +572,7 @@ namespace ProtoCore.DSASM
 
                 if (depth > 0 && fNode.isConstructor)
                 {
-                    string message = String.Format(StringConstants.KCallingConstructorOnInstance, fNode.name);
+                    string message = String.Format(Resources.KCallingConstructorOnInstance, fNode.name);
                     core.RuntimeStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message);
                     return StackValue.Null;
                 }
@@ -699,7 +700,7 @@ namespace ProtoCore.DSASM
                 // 
                 if (!svThisPtr.IsPointer)
                 {
-                    string message = String.Format(StringConstants.kInvokeMethodOnInvalidObject, fNode.name);
+                    string message = String.Format(Resources.kInvokeMethodOnInvalidObject, fNode.name);
                     core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, message);
                     return StackValue.Null;
                 }
@@ -810,7 +811,7 @@ namespace ProtoCore.DSASM
                 else
                 {
                     FindRecursivePoints();
-                    string message = String.Format(StringConstants.kMethodStackOverflow, core.recursivePoint[0].name);
+                    string message = String.Format(Resources.kMethodStackOverflow, core.recursivePoint[0].name);
                     core.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
 
                     core.recursivePoint = new List<FunctionCounter>();
@@ -1005,7 +1006,7 @@ namespace ProtoCore.DSASM
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
                 core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
-                                              StringConstants.kDeferencingNonPointer);
+                                              Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
 
@@ -1496,7 +1497,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            string message = String.Format(StringConstants.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
+            string message = String.Format(Resources.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
             core.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, message);
             //BreakDependency(NodeExecutedSameTimes);
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
@@ -3144,7 +3145,7 @@ namespace ProtoCore.DSASM
 
                         if (t.rank < 0)
                         {
-                            string message = String.Format(StringConstants.kSymbolOverIndexed, symbolnode.name);
+                            string message = String.Format(Resources.kSymbolOverIndexed, symbolnode.name);
                             core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                         }
                     }
@@ -3464,7 +3465,7 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -3484,7 +3485,7 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -3497,14 +3498,14 @@ namespace ProtoCore.DSASM
                     StackValue array = core.Heap.GetHeapElement(svPtr).GetValue(dimList[n], core);
                     if (!array.IsArray)
                     {
-                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                         return StackValue.Null;
                     }
                     svPtr = array;
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
@@ -3515,12 +3516,12 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 sv = StackValue.Null;
             }
             catch (IndexOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kIndexOutOfRange, StringConstants.kIndexOutOfRange);
+                core.RuntimeStatus.LogWarning(WarningID.kIndexOutOfRange, Resources.kIndexOutOfRange);
                 return StackValue.Null;
             }
             return sv;
@@ -3571,7 +3572,7 @@ namespace ProtoCore.DSASM
                     return thisArray;
                 }
 
-                string message = String.Format(StringConstants.kSymbolOverIndexed, varname);
+                string message = String.Format(Resources.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
@@ -3583,7 +3584,7 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                string message = String.Format(StringConstants.kSymbolOverIndexed, varname);
+                string message = String.Format(Resources.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
@@ -3616,7 +3617,7 @@ namespace ProtoCore.DSASM
                     return thisArray;
                 }
 
-                string message = String.Format(StringConstants.kSymbolOverIndexed, varname);
+                string message = String.Format(Resources.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
@@ -3635,7 +3636,7 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                string message = String.Format(StringConstants.kSymbolOverIndexed, varname);
+                string message = String.Format(Resources.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
@@ -3917,12 +3918,12 @@ namespace ProtoCore.DSASM
                         if (CoreUtils.TryGetPropertyName(procName, out property))
                         {
                             string classname = core.ClassTable.ClassNodes[type].name;
-                            string message = String.Format(StringConstants.kPropertyOfClassNotFound, classname, property);
+                            string message = String.Format(Resources.kPropertyOfClassNotFound, classname, property);
                             core.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
                         else
                         {
-                            string message = String.Format(StringConstants.kMethodResolutionFailure, procName);
+                            string message = String.Format(Resources.kMethodResolutionFailure, procName);
                             core.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
                     }
@@ -5120,7 +5121,7 @@ namespace ProtoCore.DSASM
 
                                 if (targetType.rank < 0)
                                 {
-                                    string message = String.Format(StringConstants.kSymbolOverIndexed, symbolnode.name);
+                                    string message = String.Format(Resources.kSymbolOverIndexed, symbolnode.name);
                                     core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                                 }
                             }
