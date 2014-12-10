@@ -398,15 +398,24 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        private bool isMoreButtonVisible;
-        public bool IsMoreButtonVisible
+        private int hiddenSecondaryMembersCount;
+        public int HiddenSecondaryMembersCount
         {
-            get
-            { return isMoreButtonVisible; }
+            get { return hiddenSecondaryMembersCount; }
             set
             {
-                isMoreButtonVisible = value;
-                RaisePropertyChanged("IsMoreButtonVisible");
+                hiddenSecondaryMembersCount = value;
+                RaisePropertyChanged("HiddenSecondaryMembersCount");
+                RaisePropertyChanged("MoreButtonText");
+            }
+        }
+
+        public string MoreButtonText
+        {
+            get
+            {
+                var count = HiddenSecondaryMembersCount;
+                return string.Format(Configurations.MoreButtonTextFormat, count);
             }
         }
 

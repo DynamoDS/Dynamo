@@ -10,10 +10,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.GraphCompiler
 {
     [TestFixture]
-    public class NewFrontEndTests
+    class NewFrontEndTests : ProtoTestBase
     {
-        private TestFrameWork thisTest = new TestFrameWork();
-
         [Test]
         public void ReproMAGN3603()
         {

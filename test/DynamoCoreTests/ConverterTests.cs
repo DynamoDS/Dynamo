@@ -12,6 +12,7 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
 using NUnit.Framework;
 
 namespace Dynamo.Tests

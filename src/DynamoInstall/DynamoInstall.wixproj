@@ -9,7 +9,7 @@
     <ProductVersion>3.8</ProductVersion>
     <ProjectGuid>c7495640-0d0c-46ab-a5f3-d5be78f89a0d</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>DynamoInstall</OutputName>
+    <OutputName>DynamoCore</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>

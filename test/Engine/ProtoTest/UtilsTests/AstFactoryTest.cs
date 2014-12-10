@@ -9,15 +9,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.UtilsTests
 {
     [TestFixture]
-    class AstFactoryTest
+    class AstFactoryTest : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-
-        [SetUp]
-        public void SetUp()
-        {
-        }
-
         [Test]
         public void Test_AddReplicationGuide()
         {

@@ -4,14 +4,9 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class Tutorial
+    class Tutorial : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
 
         [Test]
         [Category("Replication")]

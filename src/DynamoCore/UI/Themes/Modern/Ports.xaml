@@ -30,12 +30,13 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
+      
         <Grid Name="mainGrid"
               Background="Transparent"
               IsHitTestVisible="True"
               Margin="{Binding Path=MarginThickness}"
               Height="{Binding Path=Height}"
-              MinWidth="26">
+             >
 
             <interactivity:Interaction.Triggers>
                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
@@ -67,34 +68,67 @@
             </Grid.ToolTip>
 
             <!--
-                We could have changed the Grid opacity directly here but didn't.
+                We could have changed the Grid opacity directly here but didn't
                 The reason is that if the opacity of the Grid is modified, the 
                 internal text box will also appear semi-transparent. This is why an 
                 intermediary Border is required just for mouse-over highlighting.
             -->
-
+            
+            <!--
+               Port is contained in another rectangle to ensure that hit area is extended outside the grid.
+               Minimum Width is specified on the rectangle, rather than the grid. Otherwise, if the port's width is less than
+               the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case 
+               as no mouse events are generated.This happens only for codeblock node. 
+            -->
+            <Rectangle Fill="Transparent"                                      
+                       SnapsToDevicePixels="True"
+                       MinWidth="26"                       
+                       IsHitTestVisible="True"                      
+                       Margin ="{Binding Path=PortModel, Converter={StaticResource SnapRegionMarginConverter}}">              
+                <interactivity:Interaction.Triggers>
+                    <views:HandlingEventTrigger EventName="MouseEnter">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeave">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                </interactivity:Interaction.Triggers>               
+            </Rectangle>
             <Rectangle Name="highlightOverlay"
                        Fill="White"
+                       MinWidth="26"
                        Margin="0,0,0,1"
                        IsHitTestVisible="True">
+                <interactivity:Interaction.Triggers>
+                    <views:HandlingEventTrigger EventName="MouseEnter">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeave">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>                   
+                </interactivity:Interaction.Triggers>
                 <Rectangle.Style>
                     <Style TargetType="{x:Type Rectangle}">
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter Property="Opacity"
-                                        Value="1.0"></Setter>
+                                        Value="1.0"></Setter>                               
                             </Trigger>
                             <Trigger Property="IsMouseOver"
                                      Value="False">
                                 <Setter Property="Opacity"
                                         Value="0.5"></Setter>
+                               
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </Rectangle.Style>
             </Rectangle>
-
+            
             <TextBlock Name="portNameTb"
                        Width="Auto"
                        Style="{StaticResource SZoomFadeText}"
@@ -109,6 +143,7 @@
             </TextBlock>
 
         </Grid>
+    
     </DataTemplate>
 
 </ResourceDictionary>

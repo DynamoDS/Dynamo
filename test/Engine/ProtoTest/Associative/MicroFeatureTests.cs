@@ -8,14 +8,9 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class MicroFeatureTests
+    class MicroFeatureTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
         readonly string testCasePath = Path.GetFullPath(@"..\..\..\Scripts\Associative\MicroFeatureTests\");
-        [SetUp]
-        public void Setup()
-        {
-        }
 
         [Test]
         public void TestAssignment01()

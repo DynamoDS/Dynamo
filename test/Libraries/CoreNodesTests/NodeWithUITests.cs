@@ -52,5 +52,23 @@ namespace DSCoreNodesTests
                  -1,
                  sliderNode.Min);
         }
+
+        [Test]
+        [Category("Failure")]
+        public void IntegerSliderMaxValue()
+        {
+            var integerSliderNode = new IntegerSlider(null) { Value = 500 };
+            integerSliderNode.UpdateValue("Value", "1000");
+
+            Assert.AreEqual(
+                 1000,
+                 integerSliderNode.Max);
+
+            integerSliderNode.UpdateValue("Value", "-1");
+
+            Assert.AreEqual(
+                 -1,
+                 integerSliderNode.Min);
+        }
     }
 }

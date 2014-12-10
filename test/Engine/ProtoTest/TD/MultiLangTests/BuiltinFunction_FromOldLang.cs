@@ -9,23 +9,14 @@ using ProtoCore.Lang.Replication;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class BuiltinFunction_FromOldLang
+    class BuiltinFunction_FromOldLang : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\BuiltinFunctionFromOldLang\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void T80580_BuiltinFunc_1()
         {
             string code = @"
-import(""DSCoreNodes.dll"");
 class TestClass
 {
-	
 	constructor TestClass()
 	{
 	}
@@ -82,34 +73,6 @@ class TestClass
 		b = Transpose(a);
 		return = b;
 	}
-	def testFloor()
-	{
-		a = 3.5;
-		b = Math.Floor(a);
-		return = b;
-	}
-	def testCeil()
-	{
-		a = 3.5;
-		b = Math.Ceiling(a);
-		return = b;
-	}
-	def testLog()
-	{
-		b = Math.Log(10);
-		return = b;
-	}
-	def testSqrt()
-	{
-		b = Math.Sqrt(25);
-		return = b;
-	}
-	def testTan()
-	{
-		a = 45;
-		b = Math.Tan(a);
-		return = b;
-	}
 	def testNormalizeDepth()
 	{
 		index = NormalizeDepth({{1.1},{{2.3,3}},""5"",{{{{true}}}}},2);
@@ -126,11 +89,6 @@ t6 = test.testSomeFalse();
 t7 = test.testSomeTrue();
 t8 = test.testToString();
 t9 = test.testTranspose();
-t10 = test.testFloor();
-t11 = test.testCeil();
-t12 = test.testLog();
-t13 = test.testSqrt();
-t14 = test.testTan();
 t15 = test.testNormalizeDepth();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -152,11 +110,6 @@ t15 = test.testNormalizeDepth();
             thisTest.Verify("t7", true);
             thisTest.Verify("t8", "{true,{false,false},true}");
             thisTest.Verify("t9", v4);
-            thisTest.Verify("t10", 3);
-            thisTest.Verify("t11", 4);
-            thisTest.Verify("t12", 2.3025850929940459);
-            thisTest.Verify("t13", 5.0);
-            thisTest.Verify("t14", 1.0);
             thisTest.Verify("t15", v9);
         }
 
@@ -164,7 +117,6 @@ t15 = test.testNormalizeDepth();
         public void T80581_BuiltinFunc_2()
         {
             string code = @"
-import(""DSCoreNodes.dll"");
 class TestClass
 {
 	b;
@@ -207,15 +159,6 @@ class TestClass
 		
 		a2 = 3.5;
 		
-		b9 = Math.Floor(a2);
-		
-		b10 = Math.Ceiling(a2);
-		
-		a3 = 10;
-		b11 = Math.Log(a3);
-		b12 = Math.Sqrt(25);
-		b13 = Math.Tan(45);
-		
 		b14 = NormalizeDepth({{1.1},{{2.3,3}},""5"",{{{{true}}}}},2);
 		
 	}
@@ -230,11 +173,6 @@ t5 = test.b5;
 t6 = test.b6;
 t7 = test.b7;
 t8 = test.b8;
-t9 = test.b9;
-t10 = test.b10;
-t11 = test.b11;
-t12 = test.b12;
-t13 = test.b13;
 t14 = test.b14;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -256,64 +194,16 @@ t14 = test.b14;
             thisTest.Verify("t6", true);
             thisTest.Verify("t7", "{true,{false,false},true}");
             thisTest.Verify("t8", v4);
-            thisTest.Verify("t9", 3);
-            thisTest.Verify("t10", 4);
-            thisTest.Verify("t11", 2.3025850929940459);
-            thisTest.Verify("t12", 5.0);
-            thisTest.Verify("t13", 1.0);
             thisTest.Verify("t14", v9);
         }
 
         [Test]
-        public void T80582_Ceil()
-        {
-            string code = @"
-//testing ceiling()
-import(""DSCoreNodes.dll"");
-x = 1.5 ; 
-y = 0.01 ; 
-z = -0.1 ; 
-a = Math.Ceiling(x) ;//2
-b = Math.Ceiling(y) ;//1 
-c = Math.Ceiling(z) ; //0
-d = Math.Ceiling(-1.5) ;//-1
-e = Math.Ceiling(-2);//-2
-g = Math.Ceiling(2.1);//3
-h = Math.Ceiling({0.2*0.2 , 1.2 , -1.2 , 3.4 , 3.6 , -3.6,0}); //{1,2,-1,4,4,-3,0}
-//w = {{1.2,-2.1},{0.3,(-4*2.3)}};
-//k = Math.Ceiling(y<2><1>); //
-//negative testing
-a1 = ""s"";
-b1 = Math.Ceiling(a1); //null
-a2 = Point.ByCartesianCoordinates(CoordinateSystem(),0,0,0);
-b2 = Math.Ceiling(a2); //null
-b3 = Math.Ceiling(null); //null
-a4 = {};
-b4 = Math.Ceiling(a4); //null
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 1, 2, -1, 4, 4, -3, 0 };
-            Object[] v2 = new Object[] { };
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 1);
-            thisTest.Verify("c", 0);
-            thisTest.Verify("d", -1);
-            thisTest.Verify("e", -2);
-            thisTest.Verify("g", 3);
-            thisTest.Verify("h", v1);
-            thisTest.Verify("b1", null);
-            thisTest.Verify("b2", null);
-            thisTest.Verify("b3", null);
-            thisTest.Verify("b4", v2);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void T80585_Count()
         {
             string code = @"
 // testing Count()
-import(""ProtoGeometry.dll"");
+import(""FFITarget.dll"");
 def ret_count(ee : int[]) 
 {
 return =  Count(ee[1..Count(ee)]);
@@ -331,7 +221,7 @@ j = Count({{{{1,3},2},{1}},{2,3}}); //2
 //negative testing
 a1 = ""s"";
 b1 = Count(a1); //0
-a2 = Point.ByCartesianCoordinates(CoordinateSystem(),0,0,0);
+a2 = DummyPoint.ByCartesianCoordinates(CoordinateSystem(),0,0,0);
 b2 = Count(a2); //0
 b3 = Count(null); //null
 a4 = {};
@@ -347,12 +237,11 @@ b4 = Count(a4); //0";
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void language_functions_test_1()
         {
             string code = @"
-import(""ProtoGeometry.dll"");
-import(""DSCoreNodes.dll"");
+import(""FFITarget.dll"");
 raggedCollection = { 1, { 2, 3 } };
 isUniformDepthRagged = IsUniformDepth(raggedCollection);//false
 average = Average(raggedCollection);
@@ -383,7 +272,7 @@ reordedCollection = Reorder(flattenedCollection, { 2, 0, 1 }); // (={3,1,2}
 indexByValue = SortIndexByValue(reordedCollection, true); // (={1,2,0}) not sure thsis is correct
 def sorterFunction(a:double, b:double)
 {
-    return = a < b ? 1 : 0;
+    return = a < b ? 1 : (a == b ? 0 : -1);
 }
 sort = Sort(sorterFunction, reordedCollection);  // (=null) something wrong here
 newArray = noramlisedDepthCollection;
@@ -443,17 +332,13 @@ newArray[2] = { 7, 8, 9 }; // and good
             thisTest.Verify("indexByValue", v10);
             thisTest.Verify("sort", v8);
             thisTest.Verify("newArray", v13);
-
-
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void set_operation_functions_test_1()
         {
             string code = @"
-import(""ProtoGeometry.dll"");
-import(""DSCoreNodes.dll"");
 set = { true, { false, true } };
 allFalseSet = AllFalse(set);
 someFalseSet = SomeFalse(set);
@@ -521,17 +406,5 @@ setUnion = SetUnion(other1Dcollection, one1Dcollection); ";
             thisTest.Verify("setIntersection", v9);
             thisTest.Verify("setUnion", v10);
         }
-        /* 
-[Test]
-         public void TestFrameWork_IntDouble()
-         {
-             String code =
- @"
-     a = 1.0;
- ";
-             thisTest.RunScriptSource(code);
-             thisTest.Verify("a", 1);
-            
-         }*/
     }
 }
