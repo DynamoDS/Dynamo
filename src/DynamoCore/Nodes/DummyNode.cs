@@ -26,7 +26,9 @@ namespace DSCoreNodesUI
             LegacyNodeName = "DSCoreNodesUI.DummyNode";
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
-            Description = GetDescription();
+            Description = GetDescription(); 
+            
+            ShouldDisplayPreviewCore = false;
         }
 
         private void LoadNode(XmlNode nodeElement)
@@ -157,14 +159,6 @@ namespace DSCoreNodesUI
         }
 
         #endregion
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
-        }
 
         public string GetDescription()
         {

@@ -91,14 +91,19 @@ namespace Dynamo.Models
             }
         }
 
-        public void SetInfo(string newName, string newCategory, string newDescription)
+        public void SetInfo(string newName = null, string newCategory = null, string newDescription = null, string newFilename = null)
         {
             PropertyChanged -= OnPropertyChanged;
-            Name = newName;
-            Category = newCategory;
-            Description = newDescription;
+            
+            Name = newName??Name;
+            Category = newCategory??Category;
+            Description = newDescription??Description;
+            FileName = newFilename??FileName;
+            
             PropertyChanged += OnPropertyChanged;
-            OnInfoChanged();
+            
+            if (newName != null || newCategory != null || newDescription != null || newFilename != null)
+                OnInfoChanged();
         }
 
         /// <summary>

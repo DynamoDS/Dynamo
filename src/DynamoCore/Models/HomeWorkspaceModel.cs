@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Threading;
-using DSNodeServices;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
-using Dynamo.Services;
-using Dynamo.Utilities;
+using Dynamo.Nodes;
 using DynamoUtilities;
 
 namespace Dynamo.Models
@@ -21,7 +19,7 @@ namespace Dynamo.Models
 
         public readonly bool VerboseLogging;
 
-        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler, NodeFactory factory, bool verboseLogging)
+        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler, NodeFactory factory, bool verboseLogging, bool isTestMode)
             : this(
                 libraryServices,
                 scheduler,
@@ -31,13 +29,13 @@ namespace Dynamo.Models
                 Enumerable.Empty<ConnectorModel>(),
                 Enumerable.Empty<NoteModel>(),
                 0,
-                0, verboseLogging) { }
+                0, verboseLogging, isTestMode) { }
 
         public HomeWorkspaceModel(
             LibraryServices libraryServices, DynamoScheduler scheduler, NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e,
-            IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y, bool verboseLogging)
-            : base("Home", e, c, n, x, y, factory)
+            IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y, bool verboseLogging,
+            bool isTestMode) : base("Home", e, c, n, x, y, factory)
         {
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
@@ -45,11 +43,15 @@ namespace Dynamo.Models
 
             engineController = new EngineController(
                 libraryServices,
-                DynamoPathManager.Instance.GeometryFactory);
+                DynamoPathManager.Instance.GeometryFactory,
+                verboseLogging);
             engineController.MessageLogged += Log;
+            engineController.LibraryServices.LibraryLoaded += LibraryLoaded;
 
             runExpressionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             runExpressionTimer.Tick += OnRunExpression;
+
+            IsTestMode = isTestMode;
         }
 
         public override void Dispose()
@@ -59,7 +61,42 @@ namespace Dynamo.Models
             engineController.Dispose();
             runExpressionTimer.Stop();
             runExpressionTimer.Tick -= OnRunExpression;
+            engineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
         }
+        /// <summary>
+        /// This does not belong here, period. It is here simply because there is 
+        /// currently no better place to put it. A DYN file is loaded by DynamoModel,
+        /// subsequently populating WorkspaceModel, along the way, the trace data 
+        /// gets preloaded with the file. The best place for this cached data is in 
+        /// the EngineController (or even LiveRunner), but the engine gets reset in 
+        /// a rather nondeterministic way (for example, when Revit idle thread 
+        /// decides it is time to execute a pre-scheduled engine reset). And it gets 
+        /// done more than once during file open. So that's out. The second best 
+        /// place to store this information is then the WorkspaceModel, where file 
+        /// loading is SUPPOSED TO BE done. As of now we let DynamoModel sets the 
+        /// loaded data (since it deals with loading DYN file), but in near future,
+        /// the file loading mechanism will be completely moved into WorkspaceModel,
+        /// that's the time we removed this property setter below.
+        /// </summary>
+        internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
+        {
+            get
+            {
+                return preloadedTraceData;
+            }
+
+            set
+            {
+                if (value != null && (preloadedTraceData != null))
+                {
+                    const string message = "PreloadedTraceData cannot be set twice";
+                    throw new InvalidOperationException(message);
+                }
+
+                preloadedTraceData = value;
+            }
+        }
+        private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
         private readonly DispatcherTimer runExpressionTimer;
 
@@ -77,7 +114,35 @@ namespace Dynamo.Models
             (sender as DispatcherTimer).Stop();
             Run();
         }
-        
+
+        protected override void OnNodeDeleted(NodeModel node)
+        {
+            base.OnNodeDeleted(node);
+            engineController.NodeDeleted(node);
+        }
+
+        private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
+        {
+            // Mark all nodes as dirty so that AST for the whole graph will be
+            // regenerated.
+            foreach (var node in Nodes)
+            {
+                // All CBN's need to be pre-compiled again after a new library is loaded
+                // to warn for any new namespace conflicts that may arise.
+                var codeBlockNode = node as CodeBlockNodeModel;
+                if (codeBlockNode != null)
+                {
+                    codeBlockNode.ProcessCodeDirect();
+                }
+
+                // Mark all nodes as dirty so that AST for the whole graph will be
+                // regenerated.
+                node.ForceReExecuteOfNode = true;
+            }
+
+            OnModified();
+        }
+
         protected override void OnModified()
         {
             base.OnModified();
@@ -85,7 +150,7 @@ namespace Dynamo.Models
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check that shutdown has not been requested.
-            if (DynamicRunEnabled && !dynamoModel.ShutdownRequested)
+            if (DynamicRunEnabled && engineController != null)
             {
                 // This dispatch timer is to avoid updating graph too frequently.
                 // It happens when we are modifying a bunch of connections in 
@@ -109,6 +174,15 @@ namespace Dynamo.Models
         {
             runExpressionTimer.Stop();
             base.ResetWorkspaceCore();
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public override void Clear()
+        {
+            base.Clear();
+            PreloadedTraceData = null;
         }
 
         #region evaluation
@@ -147,6 +221,8 @@ namespace Dynamo.Models
         {
             var libServices = engineController.LibraryServices;
 
+            var oldVerbose = engineController.VerboseLogging;
+
             if (engineController != null)
             {
                 engineController.Dispose();
@@ -154,7 +230,7 @@ namespace Dynamo.Models
             }
 
             var geomFactory = DynamoPathManager.Instance.GeometryFactory;
-            engineController = new EngineController(libServices, geomFactory);
+            engineController = new EngineController(libServices, geomFactory, oldVerbose);
             
             foreach (var def in customNodeDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
@@ -167,7 +243,7 @@ namespace Dynamo.Models
         /// <param name="task">The original UpdateGraphAsyncTask instance.</param>
         private void OnUpdateGraphCompleted(AsyncTask task)
         {
-            var updateTask = task as UpdateGraphAsyncTask;
+            var updateTask = (UpdateGraphAsyncTask)task;
             var messages = new Dictionary<Guid, string>();
 
             // Runtime warnings take precedence over build warnings.
@@ -203,7 +279,7 @@ namespace Dynamo.Models
             // ISchedulerThread (for Revit's case, it is the idle thread).
             // Dispatch the failure message display for execution on UI thread.
             // 
-            if (task.Exception != null && (dynamoModel.IsTestMode == false))
+            if (task.Exception != null && (IsTestMode == false))
             {
                 Action showFailureMessage = () =>
                     Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(dynamoModel, task.Exception);
@@ -223,7 +299,21 @@ namespace Dynamo.Models
 
             // Notify handlers that evaluation took place.
             var e = new EvaluationCompletedEventArgs(true);
-            OnEvaluationCompleted(this, e);
+            OnEvaluationCompleted(e);
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public bool IsTestMode { get; set; }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public void Shutdown()
+        {
+            engineController.Dispose();
+            engineController = null;
         }
 
         /// <summary>
@@ -261,8 +351,15 @@ namespace Dynamo.Models
             {
                 // Notify handlers that evaluation did not take place.
                 var e = new EvaluationCompletedEventArgs(false);
-                OnEvaluationCompleted(this, e);
+                OnEvaluationCompleted(e);
             }
+        }
+
+        public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
+        protected virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
+        {
+            var handler = EvaluationCompleted;
+            if (handler != null) handler(this, e);
         }
 
         /// <summary>

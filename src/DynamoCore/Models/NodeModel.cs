@@ -362,7 +362,7 @@ namespace Dynamo.Models
 
             cachedMirrorData = null;
 
-            var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
+            var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value, foo);
 
             if (runtimeMirror != null)
                 cachedMirrorData = runtimeMirror.GetData();

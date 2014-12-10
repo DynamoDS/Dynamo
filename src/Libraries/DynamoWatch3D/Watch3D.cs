@@ -190,8 +190,7 @@ namespace Dynamo.Nodes
 
         #region constructors
 
-        public Watch3D(WorkspaceModel workspace)
-            : base(workspace)
+        public Watch3D()
         {
             InPortData.Add(new PortData("", "Incoming geometry objects."));
             OutPortData.Add(new PortData("", "Watch contents, passed through"));
@@ -208,6 +207,8 @@ namespace Dynamo.Nodes
             WatchHeight = 200;
             CameraPosition = new Point3D(10, 10, 10);
             LookDirection = new Vector3D(-1, -1, -1);
+
+            ShouldDisplayPreviewCore = false;
         }
 
         #endregion
@@ -321,30 +322,11 @@ namespace Dynamo.Nodes
 
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
         protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
             return; // No visualization update is required for this node type.
         }
 
-#else
-
-        public override void UpdateRenderPackage(int maxTessDivisions)
-        {
-            //do nothing
-            //a watch should not draw its outputs
-        }
-
-#endif
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
-        }
 
         #region IWatchViewModel interface
 

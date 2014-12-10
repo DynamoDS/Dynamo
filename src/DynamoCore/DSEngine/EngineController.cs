@@ -37,16 +37,13 @@ namespace Dynamo.DSEngine
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
 
-        [Obsolete("No longer supported.", true)]
-        private readonly DynamoModel dynamoModel = null;
-
+        public bool VerboseLogging;
+        
         private readonly Object macroMutex = new Object();
 
-        public EngineController(LibraryServices libraryServices, string geometryFactoryFileName)
+        public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
         {
-            this.libraryServices = libraryServices;
-            libraryServices.LibraryLoading += LibraryLoading;
-            libraryServices.LibraryLoadFailed += LibraryLoadFailed;
+            this.libraryServices = libraryServices; 
             libraryServices.LibraryLoaded += LibraryLoaded;
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
@@ -57,31 +54,14 @@ namespace Dynamo.DSEngine
             astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
 
-            dynamoModel.NodeDeleted += NodeDeleted; //TODO(Steve): Call from DynamoModel
+            VerboseLogging = verboseLogging;
         }
 
         public void Dispose()
         {
-            dynamoModel.NodeDeleted -= NodeDeleted;
-
-            liveRunnerServices.Dispose();
-
-            libraryServices.LibraryLoading -= LibraryLoading;
-            libraryServices.LibraryLoadFailed -= LibraryLoadFailed;
             libraryServices.LibraryLoaded -= LibraryLoaded;
 
-            // TODO: Find a better way to save loaded libraries. 
-            if (!dynamoModel.IsTestMode)
-            {
-                foreach (var library in libraryServices.ImportedLibraries)
-                {
-                    DynamoPathManager.Instance.AddPreloadLibrary(library);
-                }
-            }
-            
-            libraryServices.Dispose();
-            libraryServices.LibraryManagementCore.Cleanup();
-
+            liveRunnerServices.Dispose();
             codeCompletionServices = null;
         }
 
@@ -137,6 +117,7 @@ namespace Dynamo.DSEngine
         /// Get runtime mirror for variable.
         /// </summary>
         /// <param name="variableName"></param>
+        /// <param name="verboseLogging"></param>
         /// <returns></returns>
         public RuntimeMirror GetMirror(string variableName)
         {
@@ -145,7 +126,7 @@ namespace Dynamo.DSEngine
                 RuntimeMirror mirror = null;
                 try
                 {
-                    mirror = liveRunnerServices.GetMirror(variableName);
+                    mirror = liveRunnerServices.GetMirror(variableName, VerboseLogging);
                 }
                 catch (SymbolNotFoundException)
                 {
@@ -374,7 +355,7 @@ namespace Dynamo.DSEngine
             // within the execution. Such exception, if any, will be caught by
             // DynamoScheduler.ProcessTaskInternal.
 
-            liveRunnerServices.UpdateGraph(graphSyncData);
+            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging);
         }
 
         internal IDictionary<Guid, List<BuildWarning>> GetBuildWarnings()
@@ -414,7 +395,7 @@ namespace Dynamo.DSEngine
                         try
                         {
                             var data = graphSyncDataQueue.Dequeue();
-                            liveRunnerServices.UpdateGraph(data);
+                            liveRunnerServices.UpdateGraph(data, VerboseLogging);
                             updated = true;
                         }
                         catch (Exception e)
@@ -489,6 +470,18 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
+        ///     LibraryLoaded event handler.
+        /// </summary>
+        private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
+        {
+            liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
+
+            // The LiveRunner core is newly instantiated whenever a new library is imported
+            // due to which a new instance of CodeCompletionServices needs to be created with the new Core
+            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
+        }
+
+        /// <summary>
         ///     Get function descriptor from managed function name.
         /// </summary>
         /// <param name="library"></param>
@@ -508,62 +501,6 @@ namespace Dynamo.DSEngine
         public FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             return LibraryServices.GetFunctionDescriptor(managledName);
-        }
-
-        /// <summary>
-        /// LibraryLoading event handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LibraryLoading(object sender, LibraryServices.LibraryLoadingEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// LibraryLoadFailed event handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LibraryLoadFailed(object sender, LibraryServices.LibraryLoadFailedEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// LibraryLoaded event handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
-        {
-            string newLibrary = e.LibraryPath;
-
-            // Load all functions defined in that library.
-            dynamoModel.SearchModel.Add(LibraryServices.GetFunctionGroups(newLibrary)); //TODO(Steve)
-
-            // Reset the VM
-            liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
-
-            // The LiveRunner core is newly instantiated whenever a new library is imported
-            // due to which a new instance of CodeCompletionServices needs to be created with the new Core
-            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
-
-            // Mark all nodes as dirty so that AST for the whole graph will be
-            // regenerated.
-            //TODO(Steve)
-            foreach (var node in dynamoModel.HomeSpace.Nodes)
-            {
-                // All CBN's need to be pre-compiled again after a new library is loaded
-                // to warn for any new namespace conflicts that may arise.
-                var codeBlockNode = node as CodeBlockNodeModel;
-                if (codeBlockNode != null)
-                {
-                    codeBlockNode.ProcessCodeDirect();
-                }
-
-                // Mark all nodes as dirty so that AST for the whole graph will be
-                // regenerated.
-                node.RequiresRecalc = true;
-            }
         }
 
         #region Implement IAstNodeContainer interface
@@ -604,7 +541,7 @@ namespace Dynamo.DSEngine
             if (!nodes.Any())
                 return string.Empty;
 
-            string code = NodeToCodeUtils.ConvertNodesToCode(dynamoModel, nodes, verboseLogging);
+            string code = NodeToCodeUtils.ConvertNodesToCode(astBuilder, nodes, verboseLogging);
             if (string.IsNullOrEmpty(code))
                 return code;
 

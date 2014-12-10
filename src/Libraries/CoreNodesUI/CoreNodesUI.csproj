@@ -75,13 +75,10 @@
     <Compile Include="UI\ColorRangeNodeViewCustomization.cs" />
     <Compile Include="CreateList.cs" />
     <Compile Include="DropDown.cs" />
-    <Compile Include="DropDownNodeViewCustomization.cs" />
-    <Compile Include="DummyNodeNodeViewCustomization.cs" />
     <Compile Include="UI\ElementSelectionControl.xaml.cs">
       <DependentUpon>ElementSelectionControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\DropDownNodeViewCustomization.cs" />
-    <Compile Include="DummyNode.cs" />
     <Compile Include="UI\DummyNodeNodeViewCustomization.cs" />
     <Compile Include="UI\ElementSelectionControl.xaml.cs">
       <DependentUpon>ElementSelectionControl.xaml</DependentUpon>

@@ -224,7 +224,7 @@ namespace Dynamo.Nodes
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             if (name != "Code") 
-                return base.UpdateValueCore(name, value);
+                return base.UpdateValueCore(name, value, recorder);
 
             //Remove the UpdateValue's recording
             recorder.PopFromUndoGroup();
@@ -662,8 +662,11 @@ namespace Dynamo.Nodes
                         {
                             PortType p;
                             NodeModel startNode = startPortModel.Owner;
-                            ConnectorModel connector = this.Workspace.AddConnection(startNode, this,
-                                startNode.GetPortIndexAndType(startPortModel, out p), i);
+                            ConnectorModel connector = this.Workspace.AddConnection(
+                                startNode,
+                                this,
+                                startNode.GetPortIndexAndType(startPortModel, out p),
+                                i);
                             recorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;

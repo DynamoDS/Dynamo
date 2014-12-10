@@ -262,7 +262,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Get the function definition from a guid
+        ///     Get the function workspace from a guid
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
         /// <param name="isTestMode"></param>
@@ -281,6 +281,28 @@ namespace Dynamo.Utilities
                     return true;
             }
             ws = null;
+            return false;
+        }
+
+        /// <summary>
+        ///     Get the function definition from a guid.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="isTestMode"></param>
+        /// <param name="definition"></param>
+        /// <returns></returns>
+        public bool TryGetFunctionDefinition(Guid id, bool isTestMode, out CustomNodeDefinition definition)
+        {
+            if (Contains(id))
+            {
+                CustomNodeWorkspaceModel ws;
+                if (IsInitialized(id) || InitializeCustomNode(id, isTestMode, out ws))
+                {
+                    definition = loadedCustomNodes[id] as CustomNodeDefinition;
+                    return true;
+                }
+            }
+            definition = null;
             return false;
         }
         

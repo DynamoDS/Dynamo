@@ -61,8 +61,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public Watch(WorkspaceModel ws)
-            : base()
+        public Watch()
         {
             InPortData.Add(new PortData("", "Node to evaluate."));
             OutPortData.Add(new PortData("", "Watch contents."));
@@ -74,7 +73,9 @@ namespace Dynamo.Nodes
             foreach (PortModel p in InPorts)
             {
                 p.PortConnected += InputPortConnected;
-            }
+            } 
+
+            ShouldDisplayPreviewCore = false;
         }
 
         private void EvaluationCompleted(object o)
@@ -99,14 +100,6 @@ namespace Dynamo.Nodes
         {
             base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
-        }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
         }
 
         /// <summary>

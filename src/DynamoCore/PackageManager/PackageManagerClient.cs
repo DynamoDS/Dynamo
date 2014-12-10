@@ -227,7 +227,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public PackageUploadHandle Publish(Package l, List<string> files, bool isNewVersion)
+        public PackageUploadHandle Publish(Package l, List<string> files, bool isNewVersion, bool isTestMode)
         {
             this.OnRequestAuthentication();
 
@@ -241,14 +241,11 @@ namespace Dynamo.PackageManager
             }
 
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(l));
-            return PublishPackage(isNewVersion, l, files, packageUploadHandle);
+            return PublishPackage(isNewVersion, l, files, packageUploadHandle, isTestMode);
 
         }
 
-        private PackageUploadHandle PublishPackage( bool isNewVersion, 
-                                                    Package l, 
-                                                    List<string> files,
-                                                    PackageUploadHandle packageUploadHandle )
+        private PackageUploadHandle PublishPackage(bool isNewVersion, Package l, List<string> files, PackageUploadHandle packageUploadHandle, bool isTestMode)
         {
             Task.Factory.StartNew(() =>
             {
@@ -257,13 +254,13 @@ namespace Dynamo.PackageManager
                     ResponseBody ret = null;
                     if (isNewVersion)
                     {
-                        var pkg = PackageUploadBuilder.NewPackageVersion(rootPkgDir, customNodeManager, l, files, packageUploadHandle);
+                        var pkg = PackageUploadBuilder.NewPackageVersion(rootPkgDir, customNodeManager, l, files, packageUploadHandle, isTestMode);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
-                        var pkg = PackageUploadBuilder.NewPackage(rootPkgDir, customNodeManager, l, files, packageUploadHandle);
+                        var pkg = PackageUploadBuilder.NewPackage(rootPkgDir, customNodeManager, l, files, packageUploadHandle, isTestMode);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }

@@ -93,7 +93,7 @@ namespace Dynamo.Models
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        protected static bool IsTestMode
+        public static bool IsTestMode
         {
             get { return isTestMode; }
             set
@@ -335,10 +335,8 @@ namespace Dynamo.Models
 
         protected virtual void ShutDownCore(bool shutdownHost)
         {
-            CleanWorkbench();
-
-            EngineController.Dispose();
-            EngineController = null;
+            foreach (var hws in Workspaces.OfType<HomeWorkspaceModel>())
+                hws.Shutdown();
 
             PreferenceSettings.Save();
 
@@ -493,6 +491,7 @@ namespace Dynamo.Models
 
             LibraryServices = new LibraryServices(libraryCore);
             LibraryServices.MessageLogged += LogMessage;
+            LibraryServices.LibraryLoaded += LibraryLoaded;
             
             //TODO(Steve): Ensure this is safe when EngineController is re-created
             NodeFactory.AddLoader(new ZeroTouchNodeLoader(LibraryServices));
@@ -506,6 +505,19 @@ namespace Dynamo.Models
             PackageManagerClient = new PackageManagerClient(PackageLoader.RootPackagesDirectory, CustomNodeManager);
 
             InitializeNodeLibrary(preferences);
+        }
+        
+        /// <summary>
+        /// LibraryLoaded event handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
+        {
+            string newLibrary = e.LibraryPath;
+
+            // Load all functions defined in that library.
+            AddZeroTouchNodesToSearch(LibraryServices.GetFunctionGroups(newLibrary));
         }
 
         /// <summary>
@@ -559,8 +571,7 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-            foreach (var funcGroup in functionGroups)
-                AddZeroTouchNodeToSearch(funcGroup);
+            AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
@@ -611,6 +622,12 @@ namespace Dynamo.Models
             SearchModel.Add(new NodeModelSearchElement(typeLoadData));
         }
 
+        private void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
+        {
+            foreach (var funcGroup in functionGroups)
+                AddZeroTouchNodeToSearch(funcGroup);
+        }
+
         private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup)
         {
             foreach (var functionDescriptor in funcGroup.Functions)
@@ -633,7 +650,11 @@ namespace Dynamo.Models
             CustomNodeManager.MessageLogged -= LogMessage;
             Loader.MessageLogged -= LogMessage;
             PackageLoader.MessageLogged -= LogMessage;
+
             LibraryServices.MessageLogged -= LogMessage;
+            LibraryServices.LibraryLoaded -= LibraryLoaded;
+            LibraryServices.Dispose();
+            LibraryServices.LibraryManagementCore.Cleanup();
 
             //SearchModel.ItemProduced -= AddNodeToCurrentWorkspace;
 
@@ -655,7 +676,9 @@ namespace Dynamo.Models
                 LibraryServices,
                 Scheduler,
                 NodeFactory,
-                DebugSettings.VerboseLogging);
+                DebugSettings.VerboseLogging,
+                IsTestMode
+            );
 
             Workspaces.Add(defaultWorkspace);
             CurrentWorkspace = defaultWorkspace;
@@ -793,7 +816,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                DebugSettings.VerboseLogging);
+                DebugSettings.VerboseLogging, IsTestMode);
 
             RegisterHomeWorkspace(newWorkspace);
             
@@ -806,10 +829,13 @@ namespace Dynamo.Models
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 newWorkspace.RegisterCustomNodeDefinitionWithEngine(def);
 
+            newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
             CustomNodeManager.DefinitionUpdated += newWorkspace.RegisterCustomNodeDefinitionWithEngine;
-            newWorkspace.Disposed +=
-                () =>
-                    CustomNodeManager.DefinitionUpdated -= newWorkspace.RegisterCustomNodeDefinitionWithEngine;
+            newWorkspace.Disposed += () =>
+            {
+                newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
+                CustomNodeManager.DefinitionUpdated -= newWorkspace.RegisterCustomNodeDefinitionWithEngine;
+            };
         }
 
         #endregion
@@ -827,44 +853,7 @@ namespace Dynamo.Models
         {
             return true;
         }
-
-        [Obsolete("Use CurrentWorkspace.Clear() instead", true)]
-        internal void CleanWorkbench()
-        {
-            Logger.Log("Clearing workflow...");
-            
-            foreach (NodeModel el in CurrentWorkspace.Nodes)
-            {
-                el.DisableReporting();
-                el.Dispose();
-
-                foreach (PortModel p in el.InPorts)
-                {
-                    for (int i = p.Connectors.Count - 1; i >= 0; i--)
-                        p.Connectors[i].NotifyConnectedPortsOfDeletion();
-                }
-                foreach (PortModel port in el.OutPorts)
-                {
-                    for (int i = port.Connectors.Count - 1; i >= 0; i--)
-                        port.Connectors[i].NotifyConnectedPortsOfDeletion();
-                }
-            }
-
-            CurrentWorkspace.Connectors.Clear();
-            CurrentWorkspace.Nodes.Clear();
-            CurrentWorkspace.Notes.Clear();
-
-            CurrentWorkspace.ClearUndoRecorder();
-            CurrentWorkspace.ResetWorkspace();
-
-            // Don't bother resetting the engine during shutdown (especially 
-            // since ResetEngine destroys and recreates a new EngineController).
-            if (!ShutdownRequested)
-                ResetEngine();
-
-            CurrentWorkspace.PreloadedTraceData = null;
-        }
-
+        
         /// <summary>
         ///     Change the currently visible workspace to the home workspace
         /// </summary>
@@ -1114,10 +1103,9 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Add an ISelectable object to the selection.
+        ///     Add an ISelectable object to the selection.
         /// </summary>
         /// <param name="parameters">The object to add to the selection.</param>
-        [Obsolete("Each workspace handles their own selection.", true)]
         public void AddToSelection(object parameters)
         {
             var node = parameters as NodeModel;
@@ -1134,14 +1122,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Clear the workspace. Removes all nodes, notes, and connectors from the current workspace.
+        ///     Clear the workspace. Removes all nodes, notes, and connectors from the current workspace.
         /// </summary>
         /// <param name="parameter"></param>
         public void Clear(object parameter)
         {
             OnWorkspaceClearing(this, EventArgs.Empty);
 
-            CleanWorkbench();
+            CurrentWorkspace.Clear();
 
             //don't save the file path
             CurrentWorkspace.FileName = "";

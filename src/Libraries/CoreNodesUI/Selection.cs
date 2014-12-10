@@ -98,12 +98,11 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected SelectionBase(WorkspaceModel workspaceModel,
+        protected SelectionBase(
             SelectionType selectionType,
             SelectionObjectType selectionObjectType,
             string message,
             string prefix)
-            : base(workspaceModel)
         {
             selectionMessage = message;
 
@@ -116,7 +115,9 @@ namespace Dynamo.Nodes
             SelectCommand = new DelegateCommand(Select, CanBeginSelect);
             Prefix = prefix;
 
-            State = ElementState.Warning;
+            State = ElementState.Warning; 
+            
+            ShouldDisplayPreviewCore = false;
         }
 
         #endregion
@@ -235,14 +236,6 @@ namespace Dynamo.Nodes
 
             RequiresRecalc = true;
             RaisePropertyChanged("SelectionResults");
-        }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
         }
 
         /// <summary>

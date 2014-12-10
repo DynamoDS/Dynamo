@@ -22,13 +22,15 @@ namespace Dynamo.Nodes
     {
         private Image image;
 
-        public WatchImageCore(WorkspaceModel ws)
-            : base(ws)
+        public WatchImageCore()
+            : base()
         {
             InPortData.Add(new PortData("image", "image"));
             OutPortData.Add(new PortData("image", "image"));
 
-            RegisterAllPorts();
+            RegisterAllPorts(); 
+            
+            ShouldDisplayPreviewCore = false;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -45,14 +47,6 @@ namespace Dynamo.Nodes
         {
             //do nothing
             //a watch should not draw its outputs
-        }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
         }
     }
 

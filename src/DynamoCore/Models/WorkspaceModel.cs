@@ -42,7 +42,6 @@ namespace Dynamo.Models
         private readonly ObservableCollection<ConnectorModel> connectors;
         private readonly ObservableCollection<NoteModel> notes;
         private readonly UndoRedoRecorder undoRecorder;
-        private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
         #endregion
 
@@ -347,40 +346,6 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
-        /// <summary>
-        /// This does not belong here, period. It is here simply because there is 
-        /// currently no better place to put it. A DYN file is loaded by DynamoModel,
-        /// subsequently populating WorkspaceModel, along the way, the trace data 
-        /// gets preloaded with the file. The best place for this cached data is in 
-        /// the EngineController (or even LiveRunner), but the engine gets reset in 
-        /// a rather nondeterministic way (for example, when Revit idle thread 
-        /// decides it is time to execute a pre-scheduled engine reset). And it gets 
-        /// done more than once during file open. So that's out. The second best 
-        /// place to store this information is then the WorkspaceModel, where file 
-        /// loading is SUPPOSED TO BE done. As of now we let DynamoModel sets the 
-        /// loaded data (since it deals with loading DYN file), but in near future,
-        /// the file loading mechanism will be completely moved into WorkspaceModel,
-        /// that's the time we removed this property setter below.
-        /// </summary>
-        internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
-        {
-            get
-            {
-                return preloadedTraceData;
-            }
-
-            set
-            {
-                if (value != null && (preloadedTraceData != null))
-                {
-                    const string message = "PreloadedTraceData cannot be set twice";
-                    throw new InvalidOperationException(message);
-                }
-
-                preloadedTraceData = value;
-            }
-        }
-
         #endregion
 
         #region constructors
@@ -420,6 +385,34 @@ namespace Dynamo.Models
         #endregion
 
         #region public methods
+
+        public virtual void Clear()
+        {
+            Log("Clearing workspace...");
+
+            foreach (NodeModel el in Nodes)
+            {
+                el.Dispose();
+
+                foreach (PortModel p in el.InPorts)
+                {
+                    for (int i = p.Connectors.Count - 1; i >= 0; i--)
+                        p.Connectors[i].NotifyConnectedPortsOfDeletion();
+                }
+                foreach (PortModel port in el.OutPorts)
+                {
+                    for (int i = port.Connectors.Count - 1; i >= 0; i--)
+                        port.Connectors[i].NotifyConnectedPortsOfDeletion();
+                }
+            }
+
+            Connectors.Clear();
+            Nodes.Clear();
+            Notes.Clear();
+
+            ClearUndoRecorder();
+            ResetWorkspace();
+        }
 
         /// <summary>
         ///     Save to a specific file path, if the path is null or empty, does nothing.
@@ -493,10 +486,10 @@ namespace Dynamo.Models
 
         public event Action<NodeModel> NodeDeleted;
 
-        protected virtual void OnNodeDeleted(NodeModel obj)
+        protected virtual void OnNodeDeleted(NodeModel node)
         {
             var handler = NodeDeleted;
-            if (handler != null) handler(obj);
+            if (handler != null) handler(node);
         }
 
         public void AddConnection(ConnectorModel connector)
