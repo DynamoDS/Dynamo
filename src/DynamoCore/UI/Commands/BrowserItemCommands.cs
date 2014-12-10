@@ -186,8 +186,10 @@ namespace Dynamo.Nodes.Search
 
                     // Collapse all expanded items on next level.
                     if (endState)
+                    {
                         foreach (var ele in element.Items)
                             ele.IsExpanded = false;
+                    }
 
                     foreach (var ele in element.Siblings)
                         ele.IsExpanded = false;
