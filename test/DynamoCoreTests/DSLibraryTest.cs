@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dynamo.DSEngine;
-using Dynamo.Search;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
