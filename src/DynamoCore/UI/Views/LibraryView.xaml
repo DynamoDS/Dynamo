@@ -15,6 +15,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Region Converters -->
@@ -27,11 +28,9 @@
             <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
             <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
             <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
-            <controls:BrowserInternalElementToBoolConverter x:Key="BrowserInternalElementToBoolConverter" />
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
             <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
-            <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
 
             <!--EndRegion-->
 
@@ -181,10 +180,10 @@
                            Name="SmallIcon" />
                     <TextBlock Name="memberName"
                                HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
                                Text="{Binding Name}"
-                               Margin="5,0,0,0"
-                               Foreground="#999999"
+                               VerticalAlignment="Top"
+                               Margin="5,10,0,0"
+                               Foreground="#989898"
                                FontSize="13" />
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
@@ -310,8 +309,7 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <Border Margin="0"
-                                                Background="{TemplateBinding Background}"
+                                        <Border Background="{TemplateBinding Background}"
                                                 BorderBrush="Transparent"
                                                 BorderThickness="0">
                                             <ContentPresenter />
@@ -440,7 +438,7 @@
                 <Setter Property="Width"
                         Value="24" />
                 <Setter Property="Height"
-                        Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Grid}}" />
+                        Value="Auto" />
                 <Setter Property="Padding"
                         Value="0" />
                 <Setter Property="Margin"
@@ -451,7 +449,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                             <Border x:Name="ExpanderButtonBorder">
-                                <Grid MinHeight="24"
+                                <Grid MinHeight="27"
                                       MinWidth="66">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -509,10 +507,10 @@
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                     Path=IsMouseOver}"
+                                                                         Path=IsMouseOver}"
                                                    Value="False" />
                                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                     Path=IsChecked}"
+                                                                         Path=IsChecked}"
                                                    Value="True" />
                                     </MultiDataTrigger.Conditions>
                                     <MultiDataTrigger.Setters>
@@ -558,7 +556,8 @@
                                         </Grid.RowDefinitions>
 
                                         <Border BorderBrush="#353535">
-                                            <Grid Background="Transparent">
+                                            <Grid Background="Transparent"
+                                                  Grid.Row="0">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
@@ -570,7 +569,8 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <ToggleButton x:Name="Expander"
+                                                <ToggleButton Grid.Row="0"
+                                                              x:Name="Expander"
                                                               Background="Transparent"
                                                               IsHitTestVisible="False"
                                                               Style="{StaticResource LibraryExpandCollapseToggleStyle}"
@@ -582,9 +582,9 @@
                                                     </ToggleButton.Margin>
                                                 </ToggleButton>
 
-                                                <ContentPresenter Grid.Column="1"
+                                                <ContentPresenter Grid.Row="0"
+                                                                  Grid.Column="1"
                                                                   Grid.ColumnSpan="2"
-                                                                  VerticalAlignment="Center"
                                                                   ContentSource="Header" />
 
                                                 <Grid.Style>
@@ -613,11 +613,11 @@
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=IsMouseOver}"
-                                                                           Value="True" />
+                                                                           Value="true" />
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=DataContext,
                                                                                      Converter={StaticResource RootElementToBoolConverter}}"
-                                                                           Value="True" />
+                                                                           Value="true" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Background"
@@ -629,11 +629,11 @@
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=IsMouseOver}"
-                                                                           Value="True" />
+                                                                           Value="true" />
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=DataContext,
                                                                                      Converter={StaticResource RootElementToBoolConverter}}"
-                                                                           Value="False" />
+                                                                           Value="false" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Background"
@@ -641,7 +641,7 @@
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
 
-                                                        <DataTrigger Value="True">
+                                                        <DataTrigger Value="true">
                                                             <DataTrigger.Binding>
                                                                 <Binding RelativeSource="{RelativeSource Self}"
                                                                          Path="DataContext"
@@ -650,29 +650,16 @@
                                                             <Setter Property="BorderThickness"
                                                                     Value="0,0,0,1" />
                                                         </DataTrigger>
-
-                                                        <DataTrigger Value="True">
-                                                            <DataTrigger.Binding>
-                                                                <Binding RelativeSource="{RelativeSource Self}"
-                                                                         Path="DataContext"
-                                                                         Converter="{StaticResource BrowserInternalElementToBoolConverter}" />
-                                                            </DataTrigger.Binding>
-                                                            <Setter Property="Height"
-                                                                    Value="32" />
-                                                        </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
                                         </Border>
 
-                                        <Border Grid.Row="1"
+                                        <Border Grid.Column="0"
+                                                Grid.Row="1"
                                                 Background="#2F2F2F">
                                             <ItemsPresenter x:Name="ItemsHost"
-                                                            Margin="0,3,0,3">
-                                                <ItemsPresenter.Visibility>
-                                                    <Binding Converter="{StaticResource LibraryTreeItemsHostVisibilityConverter}" />
-                                                </ItemsPresenter.Visibility>
-                                            </ItemsPresenter>
+                                                            Margin="0,10,0,0" />
                                         </Border>
                                     </Grid>
                                     <Border.Style>
@@ -691,7 +678,7 @@
                                                     <Setter Property="Background"
                                                             Value="#2F2F2F" />
                                                     <Setter Property="Padding"
-                                                            Value="0,0,0,0" />
+                                                            Value="0,0,0,10" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -725,7 +712,7 @@
                                     <Setter Property="Background"
                                             Value="#2F2F2F" />
                                     <Setter Property="Padding"
-                                            Value="0,0,0,3" />
+                                            Value="0,0,0,10" />
                                 </DataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -759,6 +746,32 @@
             </Style>
 
             <!--EndRegion-->
+
+            <Style x:Key="AddButtonContextMenu"
+                   TargetType="{x:Type ContextMenu}">
+                <Setter Property="OverridesDefaultStyle"
+                        Value="True" />
+                <Setter Property="HasDropShadow"
+                        Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ContextMenu}">
+                            <Border x:Name="Border"
+                                    Background="#414141"
+                                    Padding="1,5,1,5">
+                                <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Resources>
+                    <Style x:Key="{x:Type MenuItem}"
+                           TargetType="MenuItem"
+                           BasedOn="{StaticResource MenuItemStyle}">
+                    </Style>
+                </Style.Resources>
+            </Style>
 
             <Style x:Key="VerticalThumb"
                    TargetType="{x:Type Thumb}">
@@ -867,6 +880,7 @@
             </Style>
 
             <!--EndRegion-->
+
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Name="LibraryGrid">
@@ -901,13 +915,68 @@
                     </uicontrols:AddonsTreeView.Visibility>
                 </uicontrols:AddonsTreeView>
                 <Button Grid.Row="2"
-                        Width="150"
-                        Height="40"
-                        Style="{StaticResource STextButton}"
+                        Height="23"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Click="OnImportAddonButtonClick"
-                        Content="Import add-on" />
+                        PreviewMouseUp="OnAddButtonPreviewMouseDown"
+                        Content="Add">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Border x:Name="container"
+                                    Background="#282828"
+                                    BorderBrush="#555555"
+                                    BorderThickness="1">
+                                <Grid x:Name="inner">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="text"
+                                               VerticalAlignment="Center"
+                                               Margin="10, 0, 10, 0"
+                                               Foreground="#989898"
+                                               FontSize="13"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+
+                                    <TextBlock x:Name="arrow"
+                                               Grid.Column="1"
+                                               VerticalAlignment="Center"
+                                               Margin="0, 0, 10, 0"
+                                               Foreground="#787879"
+                                               FontSize="14"
+                                               Text="&#x25BE;" />
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Button.IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#2F2F2F" />
+                                    <Setter TargetName="arrow"
+                                            Property="Foreground"
+                                            Value="#AAABAB" />
+                                </Trigger>
+                                <Trigger Property="Button.IsPressed"
+                                         Value="True">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#222222" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ContextMenu>
+                        <ContextMenu Style="{StaticResource AddButtonContextMenu}">
+                            <MenuItem Focusable="False"
+                                      Header="Import Library..."
+                                      Command="{Binding Path=ImportLibraryCommand}" />
+                            <MenuItem Focusable="False"
+                                      Header="Search for a Package..."
+                                      Command="{Binding Path=ShowPackageManagerSearchCommand}" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
             </Grid>
         </ScrollViewer>
 

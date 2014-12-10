@@ -982,10 +982,8 @@ namespace ProtoCore.AST.ImperativeAST
 
             return IfExprNode.Equals(otherNode.IfExprNode)
                     && otherNode != null && IfBody.SequenceEqual(otherNode.IfBody)
-                    && IfBodyPosition.Equals(otherNode.IfBodyPosition)
-                    && ElseIfList != null && IfBody.SequenceEqual(otherNode.ElseIfList)
-                    && ElseBody != null && IfBody.SequenceEqual(otherNode.ElseBody)
-                    && ElseBodyPosition.Equals(otherNode.ElseBodyPosition);
+                    && ElseIfList != null && ElseIfList.SequenceEqual(otherNode.ElseIfList)
+                    && ElseBody != null && ElseBody.SequenceEqual(otherNode.ElseBody);
         }
 
         public override string ToString()

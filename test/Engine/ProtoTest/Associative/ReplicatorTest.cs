@@ -10,29 +10,20 @@ using ProtoCore.Lang.Replication;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class ReplicatorTest
+    class ReplicatorTest : ProtoTestBase
     {
-        ProtoCore.Core core;
         DebugRunner fsr;
         ProtoScript.Config.RunConfiguration runnerConfig;
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
+
+        public override void Setup()
         {
             // Specify some of the requirements of IDE.
-            var options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
             fsr = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
-
 
         [Test]
         [Category("Failure")]

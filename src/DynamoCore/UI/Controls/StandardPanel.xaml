@@ -12,6 +12,7 @@
              MinWidth="100">
     <UserControl.Resources>
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+        <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
         <controls:DisplayModeToBackgroundConverter x:Key="DisplayModeToBackgroundConverter"
                                                    NormalColor="Transparent"
@@ -70,18 +71,19 @@
             <EventSetter Event="MouseLeave"
                          Handler="OnPopupMouseLeave" />
         </Style>
-        <Style x:Key="STextButton"
+        <Style x:Key="MoreButtonStyle"
                TargetType="{x:Type Button}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <Grid x:Name="container">
                             <TextBlock x:Name="text"
-                                       HorizontalAlignment="Stretch"
+                                       HorizontalAlignment="Left"
                                        VerticalAlignment="Center"
                                        TextAlignment="Center"
-                                       Foreground="#DDD"
-                                       FontSize="20px">
+                                       Foreground="#4691CE"
+                                       FontSize="12"
+                                       Margin="71,0,0,0">
                                 <TextBlock.Text>
                                     <Binding Path="Content"
                                              RelativeSource="{RelativeSource TemplatedParent}" />
@@ -289,13 +291,15 @@
             <Button Grid.Row="4"
                     Grid.ColumnSpan="2"
                     Height="32"
-                    Style="{StaticResource STextButton}"
-                    Click="OnMoreButtonClick"
-                    Content="...">
+                    Style="{StaticResource MoreButtonStyle}"
+                    Click="OnMoreButtonClick">
                 <Button.Visibility>
-                    <Binding Path="IsMoreButtonVisible"
-                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                    <Binding Path="HiddenSecondaryMembersCount"
+                             Converter="{StaticResource IntToVisibilityConverter}" />
                 </Button.Visibility>
+                <Button.Content>
+                    <Binding Path="MoreButtonText" />
+                </Button.Content>
             </Button>
             <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                             StaysOpen="True"
