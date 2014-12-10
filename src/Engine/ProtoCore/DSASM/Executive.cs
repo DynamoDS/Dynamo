@@ -21,8 +21,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private bool isGlobScope = true;
-
         public Executable exe { get; set; }
         private Language executingLanguage;
 
@@ -113,6 +111,16 @@ namespace ProtoCore.DSASM
             //debugFlags = (int)DebugFlags.ENABLE_LOG | (int)DebugFlags.SPAWN_DEBUGGER;
         }
 
+        /// <summary>
+        /// Determines if the runtime is not inside a function 
+        /// Will also return true if within a nested language block
+        /// </summary>
+        /// <returns></returns>
+        private bool IsGlobalScope()
+        {
+            return rmem.CurrentStackFrame == null || 
+                (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
+        }
 
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame, List<Instruction> breakpoints)
         {
@@ -208,13 +216,11 @@ namespace ProtoCore.DSASM
             istream = exe.instrStreamList[executingBlock];
 
             fepRun = false;
-            isGlobScope = true;
 
             StackFrameType callerType = (StackFrameType)rmem.GetAtRelative(StackFrame.kFrameIndexCallerStackFrameType).opdata;
             if (callerType == StackFrameType.kTypeFunction)
             {
                 fepRun = true;
-                isGlobScope = false;
             }
         }
 
@@ -249,13 +255,10 @@ namespace ProtoCore.DSASM
             if (rmem.FramePointer >= StackFrame.kStackFrameSize)
             {
                 fepRun = false;
-                isGlobScope = true;
-
                 StackFrameType callerType = (StackFrameType)rmem.GetAtRelative(StackFrame.kFrameIndexCallerStackFrameType).opdata;
                 if (callerType == StackFrameType.kTypeFunction)
                 {
                     fepRun = true;
-                    isGlobScope = false;
                 }
             }
 
@@ -274,6 +277,42 @@ namespace ProtoCore.DSASM
         private InterpreterProperties PopInterpreterProps()
         {
             return core.InterpreterProps.Pop();
+        }
+
+        private void SetupEntryPoint()
+        {
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kInvalidIndex;
+            if (!IsGlobalScope())
+            {
+                ci = rmem.CurrentStackFrame.ClassScope;
+                fi = rmem.CurrentStackFrame.FunctionScope;
+            }
+
+            if (fepRun)
+            {
+                UpdateMethodDependencyGraph(pc, fi, ci);
+            }
+            else
+            {
+                if (!core.Options.IsDeltaExecution)
+                {
+                    pc = SetupGraphNodesForEntry(pc);
+                    SetupGraphEntryPoint(pc, IsGlobalScope());
+                }
+                else
+                {
+                    // See if we need to repond to property changed event.
+                    if (UpdatePropertyChangedGraphNode())
+                    {
+                        SetupNextExecutableGraph(-1, -1);
+                    }
+                    else
+                    {
+                        SetupGraphEntryPoint(pc, IsGlobalScope());
+                    }
+                }
+            }
         }
 
         private void SetupExecutive(int exeblock, int entry)
@@ -312,50 +351,13 @@ namespace ProtoCore.DSASM
             else
             {
                 pc = entry;
-                isGlobScope = false;
             }
 
             executingLanguage = exe.instrStreamList[exeblock].language;
 
             if (Language.kAssociative == executingLanguage)
             {
-                int ci = Constants.kInvalidIndex;
-                int fi = Constants.kInvalidIndex;
-
-                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
-                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
-                bool isGlobalScope = rmem.CurrentStackFrame == null || 
-                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
-                if (!isGlobalScope)
-                {
-                    ci = rmem.CurrentStackFrame.ClassScope;
-                    fi = rmem.CurrentStackFrame.FunctionScope;
-                }
-
-                if (fepRun)
-                {
-                    UpdateMethodDependencyGraph(pc, fi, ci);
-                }
-                else
-                {
-                    if (!core.Options.IsDeltaExecution)
-                    {
-                        UpdateLanguageBlockDependencyGraph(pc);
-                        SetupGraphEntryPoint(pc, isGlobalScope);
-                    }
-                    else
-                    {
-                        // See if we need to repond to property changed event.
-                        if (UpdatePropertyChangedGraphNode())
-                        {
-                            SetupNextExecutableGraph(-1, -1);
-                        }
-                        else
-                        {
-                            SetupGraphEntryPoint(pc, isGlobalScope);
-                        }
-                    }
-                }
+                SetupEntryPoint();
             }
 
             if (core.ExecMode == InterpreterMode.kExpressionInterpreter)
@@ -385,8 +387,6 @@ namespace ProtoCore.DSASM
             }
 
             fepRun = true;
-            isGlobScope = false;
-
             executingBlock = exeblock;
 
 
@@ -552,7 +552,6 @@ namespace ProtoCore.DSASM
                 runtimeVerify(svType.IsStaticType);
             }
 
-            isGlobScope = false;
             ProcedureNode fNode = null;
 
             // Pop off number of dimensions indexed into this function call
@@ -572,9 +571,8 @@ namespace ProtoCore.DSASM
 
                 if (depth > 0 && fNode.isConstructor)
                 {
-                    string message = String.Format(WarningMessage.KCallingConstructorOnInstance, fNode.name);
+                    string message = String.Format(StringConstants.KCallingConstructorOnInstance, fNode.name);
                     core.RuntimeStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message);
-                    isGlobScope = true;
                     return StackValue.Null;
                 }
             }
@@ -701,9 +699,8 @@ namespace ProtoCore.DSASM
                 // 
                 if (!svThisPtr.IsPointer)
                 {
-                    string message = String.Format(WarningMessage.kInvokeMethodOnInvalidObject, fNode.name);
+                    string message = String.Format(StringConstants.kInvokeMethodOnInvalidObject, fNode.name);
                     core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, message);
-                    isGlobScope = true;
                     return StackValue.Null;
                 }
             }
@@ -813,7 +810,7 @@ namespace ProtoCore.DSASM
                 else
                 {
                     FindRecursivePoints();
-                    string message = String.Format(WarningMessage.kMethodStackOverflow, core.recursivePoint[0].name);
+                    string message = String.Format(StringConstants.kMethodStackOverflow, core.recursivePoint[0].name);
                     core.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
 
                     core.recursivePoint = new List<FunctionCounter>();
@@ -965,7 +962,6 @@ namespace ProtoCore.DSASM
                     // GCReleasePool.Add(sv);
                 }
 
-                isGlobScope = true;
                 if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_')
                 {
                     core.calledInFunction = false;
@@ -1009,7 +1005,7 @@ namespace ProtoCore.DSASM
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
                 core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
-                                              WarningMessage.kDeferencingNonPointer);
+                                              StringConstants.kDeferencingNonPointer);
                 return StackValue.Null;
             }
 
@@ -1430,6 +1426,11 @@ namespace ProtoCore.DSASM
             }
         }
 
+        /// <summary>
+        /// Sets up the first graph to be executed
+        /// </summary>
+        /// <param name="entrypoint"></param>
+        /// <param name="isGlobalScope"></param>
         private void SetupGraphEntryPoint(int entrypoint, bool isGlobalScope)
         { 
             List<AssociativeGraph.GraphNode> graphNodeList = null;
@@ -1487,12 +1488,15 @@ namespace ProtoCore.DSASM
             List<AssociativeGraph.GraphNode> nodeIterations = Properties.nodeIterations;
             var CycleStartNodeAndEndNode = FindCycleStartNodeAndEndNode(nodeIterations);
 
-            foreach (AssociativeGraph.GraphNode node in nodeIterations)
+            if (enableLogging)
             {
-                Console.WriteLine("nodes " + node.updateNodeRefList[0].nodeList[0].symbol.name);
+                foreach (AssociativeGraph.GraphNode node in nodeIterations)
+                {
+                    Console.WriteLine("nodes " + node.updateNodeRefList[0].nodeList[0].symbol.name);
+                }
             }
 
-            string message = String.Format(WarningMessage.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
+            string message = String.Format(StringConstants.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
             core.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, message);
             //BreakDependency(NodeExecutedSameTimes);
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
@@ -1851,7 +1855,13 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void UpdateLanguageBlockDependencyGraph(int entry)
+        /// <summary>
+        /// Sets graphnodes dirty flag to true
+        /// Returns the entry point
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        private int SetupGraphNodesForEntry(int entry)
         {
             int setentry = entry;
             bool isFirstGraphSet = false;
@@ -1872,7 +1882,7 @@ namespace ProtoCore.DSASM
                     graphNode.isDirty = false;
                 }
             }
-            pc = setentry;
+            return setentry;
         }
 
         private void UpdateMethodDependencyGraph(int entry, int procIndex, int classIndex)
@@ -2204,9 +2214,7 @@ namespace ProtoCore.DSASM
                     GCDotMethods(procNode.name, ref sv, DotCallDimensions, Arguments);
                     RX = sv;
                     DecRefCounter(RX);
-                    isGlobScope = true;
                 }
-
             }
         }
 
@@ -2583,37 +2591,12 @@ namespace ProtoCore.DSASM
             else
             {
                 pc = entry;
-                isGlobScope = false;
             }
             executingLanguage = exe.instrStreamList[exeblock].language;
 
             if (Language.kAssociative == executingLanguage && !core.DebugProps.isResume)
             {
-                int ci = Constants.kInvalidIndex;
-                int fi = Constants.kInvalidIndex;
-
-                // TODO: Refactor task, implement a utility method to determine if the runtime is at the global scope
-                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5412
-                bool isGlobalScope = rmem.CurrentStackFrame == null ||
-                    (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex); 
-                if (!isGlobalScope)
-                {
-                    ci = rmem.CurrentStackFrame.ClassScope;
-                    fi = rmem.CurrentStackFrame.FunctionScope;
-                }
-
-                if (fepRun)
-                {
-                    UpdateMethodDependencyGraph(pc, fi, ci);
-                }
-                else
-                {
-                    if (!core.Options.IsDeltaExecution)
-                    {
-                        UpdateLanguageBlockDependencyGraph(pc);
-                    }
-                    SetupGraphEntryPoint(pc, isGlobalScope);
-                }
+                SetupEntryPoint();
             }
 
             Validity.Assert(null != rmem);
@@ -3051,7 +3034,7 @@ namespace ProtoCore.DSASM
                         System.Console.ReadLine();
                     }
 
-                    if (isGlobScope && Constants.kGlobalScope == op2.opdata)
+                    if (Constants.kGlobalScope == op2.opdata)
                     {
                         logWatchWindow(blockId, (int)op1.opdata);
                     }
@@ -3161,7 +3144,7 @@ namespace ProtoCore.DSASM
 
                         if (t.rank < 0)
                         {
-                            string message = String.Format(WarningMessage.kSymbolOverIndexed, symbolnode.name);
+                            string message = String.Format(StringConstants.kSymbolOverIndexed, symbolnode.name);
                             core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                         }
                     }
@@ -3201,7 +3184,7 @@ namespace ProtoCore.DSASM
                 System.Console.ReadLine();
             }
 
-            if (isGlobScope)
+            if (IsGlobalScope())
             {
                 logWatchWindow(blockId, symbolnode.symbolTableIndex);
             }
@@ -3230,7 +3213,7 @@ namespace ProtoCore.DSASM
                         System.Console.ReadLine();
                     }
 
-                    if (isGlobScope)
+                    if (IsGlobalScope())
                     {
                         logWatchWindow(Constants.kInvalidIndex, (int)opdest.opdata);
                     }
@@ -3245,7 +3228,7 @@ namespace ProtoCore.DSASM
                         System.Console.ReadLine();
                     }
 
-                    if (isGlobScope)
+                    if (IsGlobalScope())
                     {
                         logWatchWindow(0, (int)opdest.opdata);
                     }
@@ -3481,7 +3464,7 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -3501,7 +3484,7 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -3514,14 +3497,14 @@ namespace ProtoCore.DSASM
                     StackValue array = core.Heap.GetHeapElement(svPtr).GetValue(dimList[n], core);
                     if (!array.IsArray)
                     {
-                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
+                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
                         return StackValue.Null;
                     }
                     svPtr = array;
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
+                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
@@ -3532,12 +3515,12 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, WarningMessage.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
                 sv = StackValue.Null;
             }
             catch (IndexOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kIndexOutOfRange, WarningMessage.kIndexOutOfRange);
+                core.RuntimeStatus.LogWarning(WarningID.kIndexOutOfRange, StringConstants.kIndexOutOfRange);
                 return StackValue.Null;
             }
             return sv;
@@ -3588,7 +3571,7 @@ namespace ProtoCore.DSASM
                     return thisArray;
                 }
 
-                string message = String.Format(WarningMessage.kSymbolOverIndexed, varname);
+                string message = String.Format(StringConstants.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
@@ -3600,7 +3583,7 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                string message = String.Format(WarningMessage.kSymbolOverIndexed, varname);
+                string message = String.Format(StringConstants.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
@@ -3633,7 +3616,7 @@ namespace ProtoCore.DSASM
                     return thisArray;
                 }
 
-                string message = String.Format(WarningMessage.kSymbolOverIndexed, varname);
+                string message = String.Format(StringConstants.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
@@ -3652,7 +3635,7 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                string message = String.Format(WarningMessage.kSymbolOverIndexed, varname);
+                string message = String.Format(StringConstants.kSymbolOverIndexed, varname);
                 core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
@@ -3934,12 +3917,12 @@ namespace ProtoCore.DSASM
                         if (CoreUtils.TryGetPropertyName(procName, out property))
                         {
                             string classname = core.ClassTable.ClassNodes[type].name;
-                            string message = String.Format(WarningMessage.kPropertyOfClassNotFound, classname, property);
+                            string message = String.Format(StringConstants.kPropertyOfClassNotFound, classname, property);
                             core.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
                         else
                         {
-                            string message = String.Format(WarningMessage.kMethodResolutionFailure, procName);
+                            string message = String.Format(StringConstants.kMethodResolutionFailure, procName);
                             core.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
                     }
@@ -5137,7 +5120,7 @@ namespace ProtoCore.DSASM
 
                                 if (targetType.rank < 0)
                                 {
-                                    string message = String.Format(WarningMessage.kSymbolOverIndexed, symbolnode.name);
+                                    string message = String.Format(StringConstants.kSymbolOverIndexed, symbolnode.name);
                                     core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                                 }
                             }
@@ -5954,8 +5937,6 @@ namespace ProtoCore.DSASM
         {
             PushInterpreterProps(Properties);
 
-            isGlobScope = false;
-
             runtimeVerify(instruction.op1.IsFunctionIndex);
             int fi = (int)instruction.op1.opdata;
 
@@ -6492,8 +6473,6 @@ namespace ProtoCore.DSASM
 
         private void RETURN_Handler()
         {
-            isGlobScope = true;
-
             runtimeVerify(rmem.ValidateStackFrame());
 
             int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;

@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 
 using System.Collections.ObjectModel;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.DSEngine;
-using Microsoft.Practices.Prism.ViewModel;
+
+using System.Xml;
+using DynamoUtilities;
+
 
 namespace Dynamo.Search
 {
@@ -208,10 +211,6 @@ namespace Dynamo.Search
             this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
         }
 
-        internal void SortCategoryChildren()
-        {
-            this.BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
-        }
 
         internal void RemoveEmptyRootCategory(string categoryName)
         {
@@ -763,6 +762,56 @@ namespace Dynamo.Search
         }
 
         #endregion
+
+        internal void DumpLibraryToXml(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return;
+
+            var document = ComposeXmlForLibrary();
+            document.Save(fileName);
+        }
+
+        internal XmlDocument ComposeXmlForLibrary()
+        {
+            var document = XmlHelper.CreateDocument("LibraryTree");
+
+            foreach (var category in BrowserRootCategories)
+            {
+                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString());
+                XmlHelper.AddAttribute(element, "Name", category.Name);
+
+                AddChildrenToXml(element, category.Items);
+
+                document.DocumentElement.AppendChild(element);
+            }
+
+            return document;
+        }
+
+        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
+        {
+            foreach (var child in children)
+            {
+                var element = XmlHelper.AddNode(parent, child.GetType().ToString());
+
+                if (child is NodeSearchElement)
+                {
+                    var castedChild = child as NodeSearchElement;
+                    XmlHelper.AddNode(element, "FullCategoryName", castedChild.FullCategoryName);
+                    XmlHelper.AddNode(element, "FullName", castedChild.FullName);
+                    XmlHelper.AddNode(element, "Name", castedChild.Name);
+                    XmlHelper.AddNode(element, "Description", castedChild.Description);
+                }
+                else
+                {
+                    XmlHelper.AddAttribute(element, "Name", child.Name);
+                    AddChildrenToXml(element, child.Items);
+                }
+
+                parent.AppendChild(element);
+            }
+        }
     }
 }
 

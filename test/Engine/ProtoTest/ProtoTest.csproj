@@ -144,6 +144,7 @@
     </Compile>
     <Compile Include="NameSpaceTests.cs" />
     <Compile Include="ProtoAST\ASTCompilerUtilsTests.cs" />
+    <Compile Include="ProtoAST\AstFactoryTest.cs" />
     <Compile Include="ProtoAST\ProtoASTExecutionTests.cs" />
     <Compile Include="ProtoAST\RoundTripTests.cs" />
     <Compile Include="ProtoTestBase.cs" />
