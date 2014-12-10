@@ -26,12 +26,8 @@ namespace Dynamo.UI.Views
 
         private void OnLibrarySearchViewLoaded(object sender, RoutedEventArgs e)
         {
-            (DataContext as SearchViewModel).SearchChanged += OnLibrarySearchViewSearchChanged;
-        }
-
-        private void OnLibrarySearchViewSearchChanged(object sender, System.EventArgs e)
-        {
-            topResultPanel.BringIntoView();
+            (DataContext as SearchViewModel).SearchTextChanged +=
+                (s, eInner) => topResultPanel.BringIntoView();
         }
 
         #region MethodButton

@@ -496,11 +496,11 @@ namespace Dynamo.UI.Controls
             };
         }
 
-        public void SetDataContext(object dataContext, bool force = false)
+        public void SetDataContext(object dataContext, bool closeImmediately = false)
         {
             if (dataContext == null)
             {
-                if (force)
+                if (closeImmediately)
                 {
                     CloseLibraryToolTipPopup(null, null);
                     return;

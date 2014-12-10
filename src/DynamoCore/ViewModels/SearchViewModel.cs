@@ -33,11 +33,11 @@ namespace Dynamo.ViewModels
                 RequestReturnFocusToSearch(this, e);
         }
 
-        public event EventHandler SearchChanged;
-        public void OnSearchChanged(object sender, EventArgs e)
+        public event EventHandler SearchTextChanged;
+        public void OnSearchTextChanged(object sender, EventArgs e)
         {
-            if (SearchChanged != null)
-                SearchChanged(this, e);
+            if (SearchTextChanged != null)
+                SearchTextChanged(this, e);
         }
 
         #endregion
@@ -67,7 +67,7 @@ namespace Dynamo.ViewModels
             set
             {
                 searchText = value;
-                OnSearchChanged(this, new EventArgs());
+                OnSearchTextChanged(this, EventArgs.Empty);
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("CurrentMode");
             }
@@ -120,7 +120,7 @@ namespace Dynamo.ViewModels
 
         public bool SearchAddonsVisibility
         {
-            get 
+            get
             {
                 return Model.AddonRootCategories.Any(cat => cat.Visibility);
             }
@@ -173,7 +173,7 @@ namespace Dynamo.ViewModels
         }
 
         private void InitializeCore()
-        {   
+        {
             SearchResults = new ObservableCollection<SearchElementBase>();
             Visible = false;
             searchText = "";
@@ -277,7 +277,7 @@ namespace Dynamo.ViewModels
 
             TopResult = topMemberGroup;
         }
-        
+
         #endregion
 
         #region Search field manipulation

@@ -14,10 +14,8 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibraryView : UserControl
     {
-        // Right after click on member OnMemberMouseEnter executed.
-        // But ToolTip shouldn't be shown untel mouse moved to another member. 
-        // For this pusposes flag is used.
-        private bool doNotShowToolTip;
+        // See OnExpanderButtonMouseLeftButtonUp for details.
+        private bool ignoreMouseEnter;
 
         // This property is used to prevent a bug.
         // When user clicks on category it scrolls instead of category content expanding.
@@ -97,9 +95,9 @@ namespace Dynamo.UI.Views
 
         private void OnMemberMouseEnter(object sender, MouseEventArgs e)
         {
-            if (doNotShowToolTip)
+            if (ignoreMouseEnter)
             {
-                doNotShowToolTip = false;
+                ignoreMouseEnter = false;
                 return;
             }
 
@@ -157,12 +155,16 @@ namespace Dynamo.UI.Views
             e.Handled = BringIntoViewCount < 2;
         }
 
+        // Clicking on a member node results in a node being placed on the canvas.
+        // Another mouse-enter event will be sent right after this left-button-up, 
+        // which brings up the tool-tip. This isn't desirable, so setting a flag 
+        // here to ignore the immediate mouse-enter event.
         private void OnExpanderButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if ((sender as Button).DataContext is NodeSearchElement)
             {
                 libraryToolTipPopup.SetDataContext(null, true);
-                doNotShowToolTip = true;
+                ignoreMouseEnter = true;
             }
         }
     }
