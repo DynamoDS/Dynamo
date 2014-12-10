@@ -2000,8 +2000,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var elementClasses = value as BrowserInternalElementForClasses;
-            if (elementClasses != null && elementClasses.Parent.Items.Count <= 1)
+            if (value is BrowserInternalElementForClasses)
                 return Visibility.Collapsed;
 
             return Visibility.Visible;
