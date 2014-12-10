@@ -5,18 +5,14 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Xml;
 using System.Globalization;
 using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
-using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -58,7 +54,9 @@ namespace Dynamo.Models
                 RequestNodeCentered(this, e);
         }
 
+        public delegate void ZoomEventHandler(object sender, EventArgs e);
         public event ZoomEventHandler ZoomChanged;
+
         /// <summary>
         /// Used during open and workspace changes to set the zoom of the workspace
         /// </summary>
@@ -69,11 +67,13 @@ namespace Dynamo.Models
             if (ZoomChanged != null)
             {
                 //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
-                ZoomChanged(this, e);
+                ZoomChanged(this, e); 
             }
         }
 
+        public delegate void PointEventHandler(object sender, EventArgs e);
         public event PointEventHandler CurrentOffsetChanged;
+
         /// <summary>
         /// Used during open and workspace changes to set the location of the workspace
         /// </summary>
@@ -281,9 +281,9 @@ namespace Dynamo.Models
         /// <summary>
         ///     Get the bounds of the workspace.
         /// </summary>
-        public Rect Rect
+        public Rect2D Rect
         {
-            get { return new Rect(_x, _y, _width, _height); }
+            get { return new Rect2D(_x, _y, _width, _height); }
         }
 
         /// <summary>
@@ -544,8 +544,6 @@ namespace Dynamo.Models
             }
 
             OnRequestNodeCentered(this, args);
-
-            node.EnableInteraction();
 
             if (DynamoModel.CurrentWorkspace == DynamoModel.HomeSpace)
                 node.SaveResult = true;
@@ -815,9 +813,8 @@ namespace Dynamo.Models
                 // a DSVarArgFunction or a CodeBlockNodeModel into a list.
                 var nodeGuids = Nodes.Where((n) =>
                 {
-                    return (n is DSFunction
-                        || (n is DSVarArgFunction)
-                        || (n is CodeBlockNodeModel));
+                    return (n is DSFunctionBase)
+                        || (n is CodeBlockNodeModel);
 
                 }).Select((n) => n.GUID);
 
@@ -1259,7 +1256,6 @@ namespace Dynamo.Models
                 }
             }
 
-#if USE_DSENGINE
             if (typeName.Equals("Dynamo.Nodes.DSFunction") ||
                 typeName.Equals("Dynamo.Nodes.DSVarArgFunction"))
             {
@@ -1269,7 +1265,6 @@ namespace Dynamo.Models
                 // 
                 typeName = modelData.Attributes["name"].Value;
             }
-#endif
 
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {

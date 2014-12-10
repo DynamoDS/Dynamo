@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
+
 using System.Text.RegularExpressions;
 using System.Xml;
-using Autodesk.DesignScript.Runtime;
+
 using Dynamo.Core;
+using Dynamo.UI;
+
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using System.Globalization;
 
-using Dynamo.ViewModels;
-
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
-using Dynamo.UI;
 using System.Web;
 
 namespace Dynamo.Nodes
@@ -571,8 +571,8 @@ namespace Dynamo.Nodes
             var description = string.Format("Your file '{0}' of version '{1}' cannot " +
                 "be opened by this version of Dynamo ({2})", fullFilePath, fileVersion, currVersion);
 
-            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_obsolete_file.png";
-            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
+            var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File", summary, description);
 
@@ -612,8 +612,8 @@ namespace Dynamo.Nodes
                 description = exception.Message;
             }
 
-            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_crash.png";
-            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
+            var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
 
@@ -622,8 +622,11 @@ namespace Dynamo.Nodes
             args.Exception = exception;
 
             dynamoModel.OnRequestTaskDialog(null, args);
-            if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit)
-                DynamoViewModel.ReportABug(null);
+
+            if (args.ClickedButtonId == (int) Utilities.ButtonId.Submit)
+            {
+                dynamoModel.OnRequestBugReport();
+            }
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
@@ -656,8 +659,8 @@ namespace Dynamo.Nodes
             var description = string.Format("Your file '{0}' was created in future version '{1}' and may not " +
                 "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
 
-            var imageUri = "/DynamoCore;component/UI/Images/task_dialog_future_file.png";
-            var args = new Dynamo.UI.Prompts.TaskDialogEventArgs(
+            var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);
             args.ClickedButtonId = (int)Utilities.ButtonId.Cancel;
@@ -669,266 +672,12 @@ namespace Dynamo.Nodes
             dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
-                // this should be an event on DynamoModel
-                DynamoViewModel.DownloadDynamo();
+                dynamoModel.OnRequestDownloadDynamo();
                 return false;
             }
 
             return args.ClickedButtonId == (int)Utilities.ButtonId.Proceed;
         }
-    }
-
-    public abstract partial class VariableInput : NodeModel
-    {
-        public VariableInput(WorkspaceModel ws)
-            : base(ws)
-        {
-        }
-
-        protected abstract string GetInputRootName();
-        protected abstract string GetTooltipRootName();
-
-        protected virtual int GetInputNameIndex()
-        {
-            return InPortData.Count;
-        }
-
-        protected internal virtual void RemoveInput()
-        {
-            var count = InPortData.Count;
-            if (count > 0)
-            {
-                InPortData.RemoveAt(count - 1);
-            }
-        }
-
-        protected internal virtual void AddInput()
-        {
-            var idx = GetInputNameIndex();
-            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx));
-        }
-
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            foreach (var inport in InPortData)
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-
-                input.SetAttribute("name", inport.NickName);
-
-                nodeElement.AppendChild(input);
-            }
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            int i = InPortData.Count;
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (i > 0)
-                {
-                    i--;
-                    continue;
-                }
-
-                if (subNode.Name == "Input")
-                {
-                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
-                }
-            }
-            RegisterAllPorts();
-        }
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            XmlDocument xmlDoc = element.OwnerDocument;
-            foreach (var inport in InPortData)
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-                input.SetAttribute("name", inport.NickName);
-                element.AppendChild(input);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-
-            if (context == SaveContext.Undo)
-            {
-                //Reads in the new number of ports required from the data stored in the Xml Element
-                //during Serialize (nextLength). Changes the current In Port Data to match the
-                //required size by adding or removing port data.
-                int currLength = InPortData.Count;
-                XmlNodeList inNodes = element.SelectNodes("Input");
-                int nextLength = inNodes.Count;
-                if (nextLength > currLength)
-                {
-                    for (; currLength < nextLength; currLength++)
-                    {
-                        XmlNode subNode = inNodes.Item(currLength);
-                        string nickName = subNode.Attributes["name"].Value;
-                        InPortData.Add(new PortData(nickName, ""));
-                    }
-                }
-                else if (nextLength < currLength)
-                    InPortData.RemoveRange(nextLength, currLength - nextLength);
-
-                RegisterAllPorts();
-            }
-        }
-
-        #endregion
-    }
-
-    public abstract partial class VariableInputAndOutput : NodeModel
-    {
-        protected VariableInputAndOutput(WorkspaceModel ws) : base(ws)
-        {
-        }
-
-        protected abstract string GetInputRootName();
-        protected abstract string GetOutputRootName();
-        protected abstract string GetTooltipRootName();
-
-        protected virtual int GetInputNameIndex()
-        {
-            return InPortData.Count;
-        }
-
-        protected virtual void RemoveInput()
-        {
-            var count = InPortData.Count;
-            if (count > 0)
-            {
-                InPortData.RemoveAt(count - 1);
-                OutPortData.RemoveAt(count - 1);
-            }
-        }
-
-        protected internal virtual void AddInput()
-        {
-            var idx = GetInputNameIndex();
-            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx));
-            OutPortData.Add(new PortData(GetOutputRootName() + idx, GetTooltipRootName() + idx));
-        }
-
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            foreach (var inport in InPortData)
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-
-                input.SetAttribute("name", inport.NickName);
-
-                nodeElement.AppendChild(input);
-            }
-
-            foreach (var outport in OutPortData)
-            {
-                XmlElement output = xmlDoc.CreateElement("Output");
-
-                output.SetAttribute("name", outport.NickName);
-
-                nodeElement.AppendChild(output);
-            }
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            int i = InPortData.Count;
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (i > 0)
-                {
-                    i--;
-                    continue;
-                }
-
-                if (subNode.Name == "Input")
-                {
-                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
-                }
-                else if (subNode.Name == "Output")
-                {
-                    OutPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
-                }
-            }
-            RegisterAllPorts();
-        }
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            XmlDocument xmlDoc = element.OwnerDocument;
-            foreach (var inport in InPortData)
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-                input.SetAttribute("name", inport.NickName);
-                element.AppendChild(input);
-            }
-            foreach (var outport in OutPortData)
-            {
-                XmlElement output = xmlDoc.CreateElement("Output");
-                output.SetAttribute("name", outport.NickName);
-                element.AppendChild(output);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-
-            if (context == SaveContext.Undo)
-            {
-                //Reads in the new number of ports required from the data stored in the Xml Element
-                //during Serialize (nextLength). Changes the current In Port Data to match the
-                //required size by adding or removing port data.
-
-                // INPUTS
-                int currLength = InPortData.Count;
-                XmlNodeList inNodes = element.SelectNodes("Input");
-                int nextLength = inNodes.Count;
-                if (nextLength > currLength)
-                {
-                    for (; currLength < nextLength; currLength++)
-                    {
-                        XmlNode subNode = inNodes.Item(currLength);
-                        string nickName = subNode.Attributes["name"].Value;
-                        InPortData.Add(new PortData(nickName, ""));
-                    }
-                }
-                else if (nextLength < currLength)
-                    InPortData.RemoveRange(nextLength, currLength - nextLength);
-
-                // OUTPUTS
-                currLength = OutPortData.Count;
-                XmlNodeList outNodes = element.SelectNodes("Output");
-                nextLength = outNodes.Count;
-                if (nextLength > currLength)
-                {
-                    for (; currLength < nextLength; currLength++)
-                    {
-                        XmlNode subNode = outNodes.Item(currLength);
-                        string nickName = subNode.Attributes["name"].Value;
-                        OutPortData.Add(new PortData(nickName, ""));
-                    }
-                }
-                else if (nextLength < currLength)
-                    OutPortData.RemoveRange(nextLength, currLength - nextLength);
-
-                RegisterAllPorts();
-            }
-        }
-
-        #endregion
     }
 
     /// <summary>
@@ -939,7 +688,7 @@ namespace Dynamo.Nodes
     [NodeName("Build Sublists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
-    public partial class Sublists : BasicInteractive<string>
+    public class Sublists : BasicInteractive<string>
     {
         public Sublists(WorkspaceModel ws): base(ws)
         {
@@ -958,7 +707,18 @@ namespace Dynamo.Nodes
         protected override void LoadNode(XmlNode nodeElement)
         {
             base.LoadNode(nodeElement);
-            processTextForNewInputs();
+            ProcessTextForNewInputs();
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
         }
 
         #region Serialization/Deserialization Methods
@@ -976,7 +736,7 @@ namespace Dynamo.Nodes
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called
-            processTextForNewInputs();
+            ProcessTextForNewInputs();
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
@@ -986,7 +746,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        private void processTextForNewInputs()
+        internal void ProcessTextForNewInputs()
         {
             var parameters = new List<string>();
 
@@ -1097,50 +857,6 @@ namespace Dynamo.Nodes
             return ranges;
         }
 
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    var list = ((Value.List)args[0]).Item;
-        //    var len = list.Length;
-        //    var offset = Convert.ToInt32(((Value.Number)args[1]).Item);
-
-        //    if (offset <= 0)
-        //        throw new Exception("\"" + InPortData[1].NickName + "\" argument must be greater than zero.");
-
-        //    //sublist creation semantics are as follows:
-        //    //EX. 1..2,5..8
-        //    //This expression says give me elements 1-2 then jump 3 and give me elements 5-8
-        //    //For a list 1,2,3,4,5,6,7,8,9,10, this will give us
-        //    //1,2,5,8,2,3,6,9
-
-        //    var paramLookup = args.Skip(2)
-        //                          .Select(
-        //                              (x, i) => new { Name = InPortData[i + 2].NickName, Argument = x })
-        //                          .ToDictionary(x => x.Name, x => ((Value.Number)x.Argument).Item);
-
-        //    var ranges = _parsed
-        //        .Select(x => x.GetValue(paramLookup).Select(Convert.ToInt32).ToList())
-        //        .ToList();
-
-        //    //move through the list, creating sublists
-        //    var finalList = new List<Value>();
-
-        //    for (int j = 0; j < len; j += offset)
-        //    {
-        //        var currList = new List<Value>();
-
-        //        var query = ranges.Where(r => r[0] + j <= len - 1 && r.Last() + j <= len - 1);
-        //        foreach (var range in query)
-        //        {
-        //            currList.AddRange(range.Select(i => list.ElementAt(j + i)));
-        //        }
-
-        //        if (currList.Any())
-        //            finalList.Add(FScheme.Value.NewList(currList.ToFSharpList()));
-        //    }
-
-        //    return FScheme.Value.NewList(finalList.ToFSharpList());
-        //}
-
         protected override string SerializeValue(string val)
         {
             return val;
@@ -1243,93 +959,8 @@ namespace Dynamo.Nodes
     }
 
     #endregion
-
-    //TODO: Setup proper IsDirty smart execution management
-    [NodeName("Apply Function")]
-    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Applies a function to arguments.")]
-    public class Apply1 : VariableInput
-    {
-        public Apply1(WorkspaceModel ws) : base(ws)
-        { 
-            InPortData.Add(new PortData("func", "Function"));
-            OutPortData.Add(new PortData("result", "Result of function application."));
-
-            RegisterAllPorts();
-        }
-
-        protected override string GetInputRootName()
-        {
-            return "arg";
-        }
-
-        protected override string GetTooltipRootName()
-        {
-            return "Argument #";
-        }
-
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    var f = ((Value.Function)args[0]).Item;
-        //    var fArgs = args.Tail;
-
-        //    return f.Invoke(fArgs);
-        //}
-
-        protected internal override void RemoveInput()
-        {
-            if (InPortData.Count > 1)
-                base.RemoveInput();
-        }
-
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            foreach (var inport in InPortData.Skip(1))
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-
-                input.SetAttribute("name", inport.NickName);
-
-                nodeElement.AppendChild(input);
-            }
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (subNode.Name == "Input")
-                {
-                    var attr = subNode.Attributes["name"].Value;
-
-                    if (!attr.Equals("func"))
-                        InPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
-                }
-            }
-            RegisterAllPorts();
-        }
-
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
-            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
-
-            XmlElement applyNode = MigrationManager.CloneAndChangeName(oldNode,
-                "DSCoreNodesUI.HigherOrder.ApplyFunction", "Apply Function");
-
-            int numberOfArgs = oldNode.ChildNodes.Count + 1;
-            string numberOfArgsString = numberOfArgs.ToString();
-            applyNode.SetAttribute("inputcount", numberOfArgsString);
-            migratedData.AppendNode(applyNode);
-
-            return migratedData;
-        }
-    }
     
-    public abstract partial class BasicInteractive<T> : NodeModel
+    public abstract class BasicInteractive<T> : NodeModel
     {
         private T _value;
         public virtual T Value
@@ -1358,6 +989,14 @@ namespace Dynamo.Nodes
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name));
+        }
+
+        protected override bool ShouldDisplayPreviewCore
+        {
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -1459,13 +1098,24 @@ namespace Dynamo.Nodes
         public Bool(WorkspaceModel ws) : base(ws) { }
     }
 
-    public abstract partial class AbstractString : BasicInteractive<string>
+    public abstract class AbstractString : BasicInteractive<string>
     {
         public AbstractString(WorkspaceModel ws) : base(ws) { }
 
         public override string PrintExpression()
         {
             return "\"" + base.PrintExpression() + "\"";
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = HttpUtility.HtmlEncode(value);
+                return true;
+            }
+
+            return base.UpdateValueCore(name, value);
         }
 
         #region Serialization/Deserialization Methods
@@ -1497,7 +1147,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Creates a string.")]
     [IsDesignScriptCompatible]
-    public partial class StringInput : AbstractString
+    public class StringInput : AbstractString
     {
         public override string Value
         {
@@ -1515,6 +1165,21 @@ namespace Dynamo.Nodes
         {
             RegisterAllPorts();
             Value = "";
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = HttpUtility.HtmlEncode(value);
+                return true; // UpdateValueCore handled.
+            }
+
+            // There's another 'UpdateValueCore' method in 'String' base class,
+            // since they are both bound to the same property, 'StringInput' 
+            // should be given a chance to handle the property value change first
+            // before the base class 'String'.
+            return base.UpdateValueCore(name, value);
         }
 
         protected override string SerializeValue(string val)
@@ -1587,7 +1252,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Creates a number.")]
     [IsDesignScriptCompatible]
-    public partial class DoubleInput : NodeModel
+    public class DoubleInput : NodeModel
     {
         public DoubleInput(WorkspaceModel ws)
             : base(ws)
@@ -1597,11 +1262,23 @@ namespace Dynamo.Nodes
 
             _convertToken = Convert;
             Value = "0";
+
+            ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
         public virtual double Convert(double value)
         {
             return value;
+        }
+
+        void Preferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "NumberFormat":
+                    RaisePropertyChanged("Value");
+                    break;
+            }
         }
 
         private List<IDoubleSequence> _parsed;
@@ -1645,6 +1322,26 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("Value");
             }
         }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                Value = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
+        protected override bool ShouldDisplayPreviewCore
+        {
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
+        }
+
 
         public override bool IsConvertible
         {
@@ -1693,56 +1390,6 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        /* disable the migration path from number node to CBN.
-
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
-        {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-            XmlElement original = data.MigratedNodes.ElementAt(0);
-
-            // Escape special characters for display in code block node.
-            string content = ExtensionMethods.GetChildNodeDoubleValue(original);
-
-            bool isValidContent = false;
-
-            try
-            {
-                var identifiers = new List<string>();
-                var doubleSequences = DoubleInput.ParseValue(content,
-                    new[] { '\n' }, identifiers, (x) => { return x; });
-
-                if (doubleSequences != null && (doubleSequences.Count == 1))
-                {
-                    IDoubleSequence sequence = doubleSequences[0];
-                    if (sequence is DoubleInput.Range) // A range expression.
-                        isValidContent = true;
-                    else if (sequence is DoubleInput.Sequence) // A sequence.
-                        isValidContent = true;
-                    else if (sequence is DoubleInput.OneNumber) // A number.
-                        isValidContent = true;
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            if (isValidContent == false)
-            {
-                // TODO(Ben): Convert into a dummy node here?
-            }
-            else
-            {
-                XmlElement newNode = MigrationManager.CreateCodeBlockNodeFrom(original);
-                newNode.SetAttribute("CodeText", content);
-                migrationData.AppendNode(newNode);
-            }
-
-            return migrationData;
-        }
-
-        */
-        
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
@@ -1845,17 +1492,6 @@ namespace Dynamo.Nodes
 
             throw new Exception("Bad identifier syntax: \"" + id + "\"");
         }
-
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    var paramDict = InPortData.Select(x => x.NickName)
-        //        .Zip(args, Tuple.Create)
-        //        .ToDictionary(x => x.Item1, x => ((Value.Number)x.Item2).Item);
-
-        //    return _parsed.Count == 1
-        //        ? _parsed[0].GetFSchemeValue(paramDict)
-        //        : FScheme.Value.NewList(_parsed.Select(x => x.GetFSchemeValue(paramDict)).ToFSharpList());
-        //}
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
@@ -2242,7 +1878,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Base class for all nodes using a drop down
     /// </summary>
-    public abstract partial class DropDrownBase : NodeModel
+    public abstract class DropDrownBase : NodeModel
     {
         protected ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items

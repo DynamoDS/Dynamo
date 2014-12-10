@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
+
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using DynamoWebServer.Responses;
 
 namespace DynamoWebServer.Messages
 {
@@ -63,7 +57,7 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        internal void AddCreationData(Dynamo.Models.NodeModel node, string data)
+        internal void AddCreationData(NodeModel node, string data)
         {
             var nodeToCreate = new NodeToCreate(node, data);
             nodesToCreate.Add(nodeToCreate);

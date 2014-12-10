@@ -82,13 +82,20 @@
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUITests.cs" />
     <Compile Include="DropDownTests.cs" />
+    <Compile Include="DynamoTestUIBase.cs" />
+    <Compile Include="NodeViewCustomizationTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordedTests.cs" />
+    <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
     <Compile Include="VisualizationManagerUITests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
+      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+      <Name>DynamoCoreWpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
       <Project>{7318d5e5-9d15-4abe-8a51-92f58d4f0b85}</Project>
       <Name>ProtoAssociative</Name>
@@ -115,6 +122,11 @@
     <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
       <Name>IronPythonUI</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
+      <Project>{c67a7e80-73e6-4bbf-9d3f-dcd86ce306be}</Project>
+      <Name>UnitsUI</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
