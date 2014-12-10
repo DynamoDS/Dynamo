@@ -36,7 +36,7 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
         }
 
-        private void OnHeaderMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnHeaderButtonClick(object sender, RoutedEventArgs e)
         {
             // In this cases at addCetgoryList will be situated not more one
             // list. We don't need switch between lists.
@@ -129,7 +129,7 @@ namespace Dynamo.UI.Controls
 
             castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.None;
 
-            castedDataContext.IsMoreButtonVisible = false;
+            castedDataContext.HiddenSecondaryMembersCount = 0;
 
             // Case when CreateMembers list is not empty.
             // We should present CreateMembers in primaryMembers.            
@@ -206,7 +206,7 @@ namespace Dynamo.UI.Controls
 
             secondaryMembers.ItemsSource = collection;
 
-            castedDataContext.IsMoreButtonVisible = false;
+            castedDataContext.HiddenSecondaryMembersCount = 0;
         }
 
         private void TruncateSecondaryMembers()
@@ -220,7 +220,7 @@ namespace Dynamo.UI.Controls
 
             secondaryMembers.ItemsSource = collection.Take(TruncatedMembersCount);
 
-            castedDataContext.IsMoreButtonVisible = collection.Count() > TruncatedMembersCount;
+            castedDataContext.HiddenSecondaryMembersCount = collection.Count() - TruncatedMembersCount;
         }
 
         // This method will work only, when user presses Shift.
@@ -281,8 +281,6 @@ namespace Dynamo.UI.Controls
                 (generator.ContainerFromIndex(primaryMembers.Items.Count - 1) as ListBoxItem).Focus();
                 e.Handled = true;
             }
-
-
         }
     }
 }

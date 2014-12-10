@@ -10,8 +10,10 @@ using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
-using Dynamo.DSEngine;
 using Microsoft.Practices.Prism.ViewModel;
+using System.IO;
+using System.Xml;
+using DynamoUtilities;
 
 namespace Dynamo.Search
 {
@@ -230,9 +232,6 @@ namespace Dynamo.Search
         {
             foreach (NodeSearchElement node in nodes)
             {
-                if (node.ElementType != SearchModel.ElementType.Regular)
-                    continue;
-
                 var rootCategoryName = SplitCategoryName(node.FullCategoryName).FirstOrDefault();
 
                 var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
@@ -272,11 +271,7 @@ namespace Dynamo.Search
             // When create category, give not only category name, 
             // but also assembly, where icon for category could be found.
 
-            BrowserItem cat;
-            if (nodeType == ElementType.Regular)
-                cat = browserCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
-            else
-                cat = addonCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
+            BrowserItem cat = browserCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
 
             cat.AddChild(item);
 
@@ -385,8 +380,6 @@ namespace Dynamo.Search
 
                     // Rename category (except for custom nodes, imported libraries).
                     string category = ProcessNodeCategory(function.Category, ref group);
-                    if (functionGroup.ElementType != ElementType.Regular)
-                        category = function.Category;
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -441,10 +434,7 @@ namespace Dynamo.Search
             if (attribs.Length > 0)
             {
                 var catCandidate = (attribs[0] as NodeCategoryAttribute).ElementCategory;
-                // Rename category (except for custom nodes, imported libraries).
                 cat = ProcessNodeCategory(catCandidate, ref group);
-                if (nodeType != ElementType.Regular)
-                    cat = catCandidate;
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
@@ -516,7 +506,7 @@ namespace Dynamo.Search
         public bool Add(CustomNodeInfo nodeInfo)
         {
             var group = SearchElementGroup.None;
-            ProcessNodeCategory(nodeInfo.Category, ref group);
+            nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
 
             var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             if (SearchDictionary.Contains(nodeEle))
@@ -629,6 +619,56 @@ namespace Dynamo.Search
         }
 
         #endregion
+
+        internal void DumpLibraryToXml(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return;
+
+            var document = ComposeXmlForLibrary();
+            document.Save(fileName);
+        }
+
+        internal XmlDocument ComposeXmlForLibrary()
+        {
+            var document = XmlHelper.CreateDocument("LibraryTree");
+
+            foreach (var category in BrowserRootCategories)
+            {
+                var element = XmlHelper.AddNode(document.DocumentElement, category.GetType().ToString());
+                XmlHelper.AddAttribute(element, "Name", category.Name);
+
+                AddChildrenToXml(element, category.Items);
+
+                document.DocumentElement.AppendChild(element);
+            }
+
+            return document;
+        }
+
+        private void AddChildrenToXml(XmlNode parent, ObservableCollection<BrowserItem> children)
+        {
+            foreach (var child in children)
+            {
+                var element = XmlHelper.AddNode(parent, child.GetType().ToString());
+
+                if (child is NodeSearchElement)
+                {
+                    var castedChild = child as NodeSearchElement;
+                    XmlHelper.AddNode(element, "FullCategoryName", castedChild.FullCategoryName);
+                    XmlHelper.AddNode(element, "FullName", castedChild.FullName);
+                    XmlHelper.AddNode(element, "Name", castedChild.Name);
+                    XmlHelper.AddNode(element, "Description", castedChild.Description);
+                }
+                else
+                {
+                    XmlHelper.AddAttribute(element, "Name", child.Name);
+                    AddChildrenToXml(element, child.Items);
+                }
+
+                parent.AppendChild(element);
+            }
+        }
 
         internal void ChangeCategoryExpandState(string categoryName, bool isExpanded)
         {

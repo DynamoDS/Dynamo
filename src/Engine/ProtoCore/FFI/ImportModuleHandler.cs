@@ -61,7 +61,7 @@ namespace ProtoFFI
                 if (!FFIExecutionManager.Instance.IsInternalGacAssembly(moduleName))
                 {
                     System.Diagnostics.Debug.Write(@"Cannot import file: '" + modulePathFileName);
-                    _coreObj.LogWarning(ProtoCore.BuildData.WarningID.kFileNotFound, string.Format(ProtoCore.BuildData.WarningMessage.kFileNotFound, modulePathFileName));
+                    _coreObj.LogWarning(ProtoCore.BuildData.WarningID.kFileNotFound, string.Format(ProtoCore.StringConstants.kFileNotFound, modulePathFileName));
                     return null;
                 }
             }

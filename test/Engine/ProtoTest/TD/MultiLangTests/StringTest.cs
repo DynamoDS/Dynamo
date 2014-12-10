@@ -11,26 +11,23 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class StringTest
+    class StringTest : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\StringTest\\";
         ProtoScript.Config.RunConfiguration runnerConfig;
         ProtoScript.Runners.DebugRunner fsr;
-        [SetUp]
-        public void Setup()
+
+        public override void Setup()
         {
-            // Specify some of the requirements of IDE.
-            ProtoCore.Options options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            base.Setup();
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+            fsr = null;
         }
 
         [Test]
@@ -544,7 +541,7 @@ m = m+n;
         public void TV_ADD_StringInt()
         {
             String code =
-                @"                a = ""["" + ToString(1)+""]"";                    ";
+                @"                a = ""["" + __ToStringFromObject(1)+""]"";                    ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", "[1]");
         }
@@ -625,7 +622,7 @@ m = m+n;
         public void TV_ADD_StringArr()
         {
             String code =
-                @"                class A {                    fx:int = 1;                }                a  = A.A();                arr1 = {1,2};                arr2 = {1,a};                b1 = ""a"" + ToString(arr1);                b2 = ""a"" + ToString(arr2);                ";
+                @"                class A {                    fx:int = 1;                }                a  = A.A();                arr1 = {1,2};                arr2 = {1,a};                b1 = ""a"" + __ToStringFromArray(arr1);                b2 = ""a"" + __ToStringFromArray(arr2);                ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467263 - Concatenating a string with an integer throws method resolution error");
             thisTest.Verify("b1", "a{1,2}");

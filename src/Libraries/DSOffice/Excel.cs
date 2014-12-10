@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -347,10 +348,30 @@ namespace DSOffice
             {
                 for (int j = 0; j < cols; j++)
                 {
+                    var item = input[i][j];
+
                     if (j > input[i].GetUpperBound(0))
                         output[i, j] = "";
                     else
-                        output[i, j] = input[i][j].ToString();
+                    {
+                        if (item is double)
+                        {
+                            output[i, j] = ((double)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else if (item is float)
+                        {
+                            output[i, j] = ((float)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else if (item is DateTime)
+                        {
+                            output[i, j] = ((DateTime)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            output[i, j] = item.ToString();
+                        }
+                    }
+                        
                 }
             }
 

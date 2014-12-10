@@ -1,26 +1,22 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Search;
 using Dynamo.UI;
+using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Search;
-
 using DynCmd = Dynamo.Models.DynamoModel;
-using System.Windows.Controls.Primitives;
-using System.Windows.Threading;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using System.Xml;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Rendering;
-using ICSharpCode.AvalonEdit.Editing;
 
 namespace Dynamo.Nodes
 {
@@ -467,9 +463,10 @@ namespace Dynamo.UI.Controls
 
     public class LibraryToolTipPopup : Popup
     {
-        private Dynamo.UI.Views.ToolTipWindow tooltip = new Dynamo.UI.Views.ToolTipWindow();
+        private ToolTipWindow tooltip = new ToolTipWindow();
         private DispatcherTimer dispatcherTimer = new DispatcherTimer();
-
+        private DispatcherTimer showTimer = new DispatcherTimer();
+        private object nextDataContext;
 
         public LibraryToolTipPopup()
         {
@@ -479,6 +476,8 @@ namespace Dynamo.UI.Controls
             this.Child = tooltip;
             this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
+            this.showTimer.Interval = new TimeSpan(0, 0, 0, 0, 60);
+            this.showTimer.Tick += OpenLibraryToolTipPopup;
             this.Loaded += LoadMainDynamoWindow;
         }
 
@@ -501,19 +500,28 @@ namespace Dynamo.UI.Controls
         {
             if (dataContext == null)
             {
+                showTimer.Stop();
                 dispatcherTimer.Start();
                 return;
             }
             dispatcherTimer.Stop();
-            this.DataContext = dataContext;
+            nextDataContext = dataContext;
+            showTimer.Start();
+        }
+
+        private void OpenLibraryToolTipPopup(object sender, EventArgs e)
+        {
+            this.DataContext = nextDataContext;
 
             // This line is needed to change position of Popup.
             // As position changed PlacementCallback is called and
             // Popup placed correctly.            
-            this.HorizontalOffset++;
+            HorizontalOffset++;
 
             // Moving tooltip back.
-            this.HorizontalOffset--;
+            HorizontalOffset--;
+
+            showTimer.Stop();
         }
 
         private void CloseLibraryToolTipPopup(object sender, EventArgs e)
@@ -534,7 +542,7 @@ namespace Dynamo.UI.Controls
             // Count width.
             double x = 0;
             x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
-                + gap*2 + targetLocation.X * (-1);
+                + gap * 2 + targetLocation.X * (-1);
 
             // Count height.
             var availableHeight = dynamoWindow.ActualHeight - popup.Height

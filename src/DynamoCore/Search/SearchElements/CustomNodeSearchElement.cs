@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.Linq;
-
-using Dynamo.UI.Commands;
+using System.Windows.Media.Imaging;
+using System.Xml;
+using Dynamo.UI;
 using Dynamo.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -136,5 +135,12 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        protected override BitmapSource LoadDefaultIcon(ResourceType resourceType)
+        {   
+            string postfix = resourceType == ResourceType.SmallIcon ?
+                Configurations.SmallIconPostfix : Configurations.LargeIconPostfix;
+
+            return GetIcon(Configurations.DefaultCustomNodeIcon + postfix);
+        }
     }
 }

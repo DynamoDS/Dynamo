@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.DSEngine;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.UI;
 
 namespace Dynamo.Nodes.Search
 {
@@ -120,17 +121,17 @@ namespace Dynamo.Nodes.Search
             get
             {
                 var name = GetResourceName(ResourceType.SmallIcon, false);
-                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+                BitmapSource icon = GetIcon(name + Configurations.SmallIconPostfix);
 
                 if (icon == null)
                 {
                     // Get dis-ambiguous resource name and try again.
                     name = GetResourceName(ResourceType.SmallIcon, true);
-                    icon = GetIcon(name + Dynamo.UI.Configurations.SmallIconPostfix);
+                    icon = GetIcon(name + Configurations.SmallIconPostfix);
 
                     // If there is no icon, use default.
                     if (icon == null)
-                        icon = LoadDefaultIcon();
+                        icon = LoadDefaultIcon(ResourceType.SmallIcon);
                 }
                 return icon;
             }
@@ -144,13 +145,17 @@ namespace Dynamo.Nodes.Search
             get
             {
                 var name = GetResourceName(ResourceType.LargeIcon, false);
-                BitmapSource icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+                BitmapSource icon = GetIcon(name + Configurations.LargeIconPostfix);
 
                 if (icon == null)
                 {
                     // Get dis-ambiguous resource name and try again.
                     name = GetResourceName(ResourceType.LargeIcon, true);
-                    icon = GetIcon(name + Dynamo.UI.Configurations.LargeIconPostfix);
+                    icon = GetIcon(name + Configurations.LargeIconPostfix);
+
+                    // If there is no icon, use default.
+                    if (icon == null)
+                        icon = LoadDefaultIcon(ResourceType.LargeIcon);
                 }
                 return icon;
             }
@@ -234,7 +239,7 @@ namespace Dynamo.Nodes.Search
             return string.Empty;
         }
 
-        private BitmapSource GetIcon(string fullNameOfIcon)
+        protected BitmapSource GetIcon(string fullNameOfIcon)
         {
             if (string.IsNullOrEmpty(this.Assembly))
                 return null;
@@ -246,10 +251,13 @@ namespace Dynamo.Nodes.Search
             return icon;
         }
 
-        private BitmapSource LoadDefaultIcon()
+        protected virtual BitmapSource LoadDefaultIcon(ResourceType resourceType)
         {
-            var cust = LibraryCustomizationServices.GetForAssembly(Dynamo.UI.Configurations.DefaultAssembly);
-            return cust.LoadIconInternal(Dynamo.UI.Configurations.DefaultIcon);
+            if (resourceType == ResourceType.LargeIcon)
+                return null;
+
+            var cust = LibraryCustomizationServices.GetForAssembly(Configurations.DefaultAssembly);
+            return cust.LoadIconInternal(Configurations.DefaultIcon);
         }
     }
 
@@ -265,10 +273,10 @@ namespace Dynamo.Nodes.Search
         ///     The classes inside of the browser item
         /// </summary>
         private ObservableCollection<BrowserItem> classesItems = new ObservableCollection<BrowserItem>();
-        public override ObservableCollection<BrowserItem> Items 
+        public override ObservableCollection<BrowserItem> Items
         {
             get { return classesItems; }
-            set { classesItems = value; } 
+            set { classesItems = value; }
         }
 
         public BrowserItem Parent { get; set; }
@@ -390,15 +398,24 @@ namespace Dynamo.Nodes.Search
             }
         }
 
-        private bool isMoreButtonVisible;
-        public bool IsMoreButtonVisible
+        private int hiddenSecondaryMembersCount;
+        public int HiddenSecondaryMembersCount
         {
-            get
-            { return isMoreButtonVisible; }
+            get { return hiddenSecondaryMembersCount; }
             set
             {
-                isMoreButtonVisible = value;
-                RaisePropertyChanged("IsMoreButtonVisible");
+                hiddenSecondaryMembersCount = value;
+                RaisePropertyChanged("HiddenSecondaryMembersCount");
+                RaisePropertyChanged("MoreButtonText");
+            }
+        }
+
+        public string MoreButtonText
+        {
+            get
+            {
+                var count = HiddenSecondaryMembersCount;
+                return string.Format(Configurations.MoreButtonTextFormat, count);
             }
         }
 

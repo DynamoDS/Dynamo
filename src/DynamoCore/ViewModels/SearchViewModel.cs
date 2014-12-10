@@ -212,38 +212,9 @@ namespace Dynamo.ViewModels
             var foundNodes = this.Model.Search(query);
             this.UpdateTopResult();
 
-
             //sw.Stop();
 
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
-
-            // if the search query is empty, go back to the default treeview
-            if (string.IsNullOrEmpty(query))
-            {
-                foreach (var ele in this.Model.AddonRootCategories)
-                {
-                    ele.CollapseToLeaves();
-                    ele.SetVisibilityToLeaves(true);
-                }
-
-                return;
-            }
-
-            // otherwise, first collapse all
-            foreach (var root in this.Model.AddonRootCategories)
-            {
-                root.CollapseToLeaves();
-                root.SetVisibilityToLeaves(false);
-            }
-
-            foreach (NodeSearchElement ele in foundNodes)
-            {
-                if (ele.ElementType == SearchModel.ElementType.Regular)
-                    continue;
-
-                ele.ExpandToRoot();
-                ele.Visibility = true;
-            }
 
             RaisePropertyChanged("SearchAddonsVisibility");
             RaisePropertyChanged("Model");

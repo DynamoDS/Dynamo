@@ -136,15 +136,14 @@
                     <TextBlock Name="SearchTextBlock"
                                FontSize="14"
                                IsHitTestVisible="False"
-                               Foreground="#878787"
+                               Foreground="#AAAAAA"
                                VerticalAlignment="Center"
                                Visibility="{Binding Path=SearchText, 
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                HorizontalAlignment="Center"
                                Height="18"
-                               Width="52"
                                Margin="3,0,0,0">
-                        SEARCH
+                        SEARCH LIBRARY
                     </TextBlock>
                 </StackPanel>
 

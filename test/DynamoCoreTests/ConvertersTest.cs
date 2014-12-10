@@ -1,18 +1,20 @@
-﻿using Dynamo.Controls;
-using Dynamo.Nodes.Search;
-using Dynamo.Search.SearchElements;
-using Dynamo.Search;
-using Dynamo.ViewModels;
-using Dynamo.Utilities;
-using Dynamo.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
+using Dynamo.Controls;
 using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Nodes.Search;
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
+using Dynamo.UI;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 using NUnit.Framework;
-using System.Windows;
-using System;
-using System.Collections.Generic;
-using System.Windows.Media;
-using System.Windows.Controls;
 
 namespace Dynamo
 {
@@ -243,9 +245,9 @@ namespace Dynamo
         }
 
         [Test]
-        public void DisplayModeToTextDecorationsConverterTest()
+        public void DisplayModeToBackgroundConverterTest()
         {
-            DisplayModeToTextDecorationsConverter converter = new DisplayModeToTextDecorationsConverter();
+            DisplayModeToBackgroundConverter converter = new DisplayModeToBackgroundConverter();
             bool isSecondaryHeaderRightVisible = false;
             Dynamo.Nodes.Search.ClassInformation.DisplayMode displayMode = ClassInformation.DisplayMode.None;
             string parameter = "";
@@ -265,33 +267,33 @@ namespace Dynamo
 
             // 2 case
             result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 3 case
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 4 case
             array[0] = ClassInformation.DisplayMode.Query;
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 5 case
             array[0] = ClassInformation.DisplayMode.Action;
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 6 case
             parameter = "Action";
             isSecondaryHeaderRightVisible = true;
             array[1] = isSecondaryHeaderRightVisible;
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(converter.ActiveColor, result);
 
             // 7 case
             parameter = "None";
             result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(0, result);
+            Assert.AreEqual(converter.NormalColor, result);
         }
 
         [Test]
@@ -438,38 +440,6 @@ namespace Dynamo
             BRE.AddChild(BIE);
             result = converter.Convert(BIE, null, null, null);
             Assert.AreEqual(true, result);
-        }
-
-        [Test]
-        public void MultiBoolToVisibilityConverterTest()
-        {
-            MultiBoolToVisibilityConverter converter = new MultiBoolToVisibilityConverter();
-            object[] array = { false, false, false };
-            object result;
-
-            //1. Incoming array is null.
-            //2. All are false.
-            //3. One is true.
-            //4. All are true.
-
-            // 1 case
-            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, null, null); });
-
-            // 2 case
-            result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(Visibility.Collapsed, result);
-
-            // 3 case
-            array[0] = true;
-            result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(Visibility.Collapsed, result);
-
-            // 4 case
-            array[0] = true;
-            array[1] = true;
-            array[2] = true;
-            result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(Visibility.Visible, result);
         }
 
         [Test]
