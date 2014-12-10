@@ -2066,11 +2066,6 @@ namespace Dynamo.Models
 
         public NodeDescriptionAttribute(string description, Type resourceType)
         {
-            ResourceManager resMan = Properties.Resources.ResourceManager;
-
-            // then, you could go on working with that
-            ResourceSet resourceSet = resMan.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
             if (resourceType == null)
                 throw new ArgumentNullException("resourceType");
 
