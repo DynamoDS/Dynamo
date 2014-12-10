@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProtoAssociative
 {
-    public struct StringConstants
+    public struct StringConstantsOLD
     {
         public const string invalidNestedAssociativeBlock = "An associative language block is declared within an associative language block.";
 
