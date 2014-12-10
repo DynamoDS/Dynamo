@@ -572,7 +572,7 @@ namespace Dynamo.Nodes
                 "be opened by this version of Dynamo ({2})", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File", summary, description);
 
@@ -613,7 +613,7 @@ namespace Dynamo.Nodes
             }
 
             var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
 
@@ -623,9 +623,10 @@ namespace Dynamo.Nodes
 
             dynamoModel.OnRequestTaskDialog(null, args);
 
-            //SEPARATECORE
-            //if (args.ClickedButtonId == (int)Utilities.ButtonId.Submit){}
-            //    DynamoViewModel.ReportABug(null);
+            if (args.ClickedButtonId == (int) Utilities.ButtonId.Submit)
+            {
+                dynamoModel.OnRequestBugReport();
+            }
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
@@ -659,7 +660,7 @@ namespace Dynamo.Nodes
                 "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);
             args.ClickedButtonId = (int)Utilities.ButtonId.Cancel;
@@ -671,9 +672,7 @@ namespace Dynamo.Nodes
             dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)
             {
-                // this should be an event on DynamoModel
-                // SEPARATECORE
-                //DynamoViewModel.DownloadDynamo();
+                dynamoModel.OnRequestDownloadDynamo();
                 return false;
             }
 
@@ -992,9 +991,12 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", type.Name));
         }
 
-        protected override bool ShouldDisplayPreviewCore()
+        protected override bool ShouldDisplayPreviewCore
         {
-            return false; // Previews are not shown for this node type.
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -1331,9 +1333,12 @@ namespace Dynamo.Nodes
             return base.UpdateValueCore(name, value);
         }
 
-        protected override bool ShouldDisplayPreviewCore()
+        protected override bool ShouldDisplayPreviewCore
         {
-            return false; // Previews are not shown for this node type.
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
 
 

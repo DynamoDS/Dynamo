@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 
-namespace Dynamo.Nodes
+namespace DSCoreNodesUI
 {
     [NodeName("Legacy Node")]
     [NodeDescription("This is an obsolete node")]
@@ -13,7 +14,6 @@ namespace Dynamo.Nodes
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCoreNodesUI.DummyNode")]
     public class DummyNode : NodeModel
     {
         public enum Nature
@@ -29,89 +29,8 @@ namespace Dynamo.Nodes
             Description = GetDescription();
         }
 
-        #region SerializeCore/DeserializeCore
-
-        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
+        private void LoadNode(XmlNode nodeElement)
         {
-            base.SerializeCore(nodeElement, context);
-            if (context == SaveContext.Copy || context == SaveContext.Undo)
-            {
-                //Dump all the information into memory
-
-                nodeElement.SetAttribute("inputCount", InputCount.ToString());
-                nodeElement.SetAttribute("outputCount", OutputCount.ToString());
-                nodeElement.SetAttribute("legacyNodeName", LegacyNodeName);
-                nodeElement.SetAttribute("legacyAssembly", LegacyAssembly);
-                nodeElement.SetAttribute("nodeNature", NodeNature.ToString());
-
-                if (OriginalNodeContent != null && nodeElement.OwnerDocument != null)
-                {
-                    XmlElement originalNode = nodeElement.OwnerDocument.CreateElement("OriginalNodeContent");
-                    XmlElement nodeContent = nodeElement.OwnerDocument.CreateElement(OriginalNodeContent.Name);
-
-                    var attributes = OriginalNodeContent.Attributes as IEnumerable
-                        ?? Enumerable.Empty<object>();
-
-                    foreach (XmlAttribute attribute in attributes)
-                        nodeContent.SetAttribute(attribute.Name, attribute.Value);
-
-                    foreach (XmlNode child in
-                        from XmlNode childNode in OriginalNodeContent.ChildNodes
-                        select nodeContent.OwnerDocument.ImportNode(childNode, true))
-                    {
-                        nodeContent.AppendChild(child.CloneNode(true));
-                    }
-
-                    originalNode.AppendChild(nodeContent);
-                    nodeElement.AppendChild(originalNode);
-                }
-            }
-
-            if (context == SaveContext.File)
-            {
-                //When save files, only save the original node's content, 
-                //instead of saving the dummy node.
-                if (OriginalNodeContent != null)
-                {
-                    XmlElement originalNode =
-                        nodeElement.OwnerDocument.CreateElement(OriginalNodeContent.Name);
-                    foreach (XmlAttribute attribute in OriginalNodeContent.Attributes)
-                        originalNode.SetAttribute(attribute.Name, attribute.Value);
-
-                    //overwrite the guid/x/y value of the original node.
-                    originalNode.SetAttribute("guid", nodeElement.GetAttribute("guid"));
-                    originalNode.SetAttribute("x", nodeElement.GetAttribute("x"));
-                    originalNode.SetAttribute("y", nodeElement.GetAttribute("y"));
-
-                    for (int i = 0; i < OriginalNodeContent.ChildNodes.Count; i++)
-                    {
-                        XmlNode child =
-                            originalNode.OwnerDocument.ImportNode(
-                                OriginalNodeContent.ChildNodes[i],
-                                true);
-                        originalNode.AppendChild(child.CloneNode(true));
-                    }
-
-                    nodeElement.ParentNode.ReplaceChild(originalNode, nodeElement);
-                }
-                else
-                {
-                    nodeElement.SetAttribute("inputCount", InputCount.ToString());
-                    nodeElement.SetAttribute("outputCount", OutputCount.ToString());
-                    nodeElement.SetAttribute("legacyNodeName", LegacyNodeName);
-                    nodeElement.SetAttribute("legacyAssembly", LegacyAssembly);
-                    nodeElement.SetAttribute("nodeNature", NodeNature.ToString());
-                }
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
-        {
-            InPortData.Clear();  // In/out ports are going to be recreated in 
-            OutPortData.Clear(); // LoadNode, clear them so they don't accumulate.
-
-            base.DeserializeCore(nodeElement, context);
-
             var inputCount = nodeElement.Attributes["inputCount"];
             var outputCount = nodeElement.Attributes["outputCount"];
             var legacyName = nodeElement.Attributes["legacyNodeName"];
@@ -120,10 +39,12 @@ namespace Dynamo.Nodes
             OutputCount = Int32.Parse(outputCount.Value);
             LegacyNodeName = legacyName.Value;
 
-            OriginalNodeContent =
-                nodeElement.ChildNodes.Cast<XmlNode>()
-                    .First(childNode => childNode.Name.Equals("OriginalNodeContent"))
-                    .FirstChild;
+            if (nodeElement.ChildNodes != null)
+            {
+                foreach (XmlNode childNode in nodeElement.ChildNodes)
+                    if (childNode.Name.Equals("OriginalNodeContent"))
+                        OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
+            }
 
             var legacyAsm = nodeElement.Attributes["legacyAssembly"];
             if (legacyAsm != null)
@@ -151,11 +72,98 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        private void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            if (context == SaveContext.Copy || context == SaveContext.Undo)
+            {
+                //Dump all the information into memory
+
+                nodeElement.SetAttribute("inputCount", InputCount.ToString());
+                nodeElement.SetAttribute("outputCount", OutputCount.ToString());
+                nodeElement.SetAttribute("legacyNodeName", LegacyNodeName);
+                nodeElement.SetAttribute("legacyAssembly", LegacyAssembly);
+                nodeElement.SetAttribute("nodeNature", NodeNature.ToString());
+
+                if (OriginalNodeContent != null)
+                {
+                    XmlElement originalNode = xmlDoc.CreateElement("OriginalNodeContent");
+                    XmlElement nodeContent = nodeElement.OwnerDocument.CreateElement(OriginalNodeContent.Name);
+
+                    foreach (XmlAttribute attribute in OriginalNodeContent.Attributes)
+                        nodeContent.SetAttribute(attribute.Name, attribute.Value);
+
+                    for (int i = 0; i < OriginalNodeContent.ChildNodes.Count; i++)
+                    {
+                        XmlNode child =
+                            nodeContent.OwnerDocument.ImportNode(OriginalNodeContent.ChildNodes[i], true);
+                        nodeContent.AppendChild(child.CloneNode(true));
+                    }
+
+                    originalNode.AppendChild(nodeContent);
+                    nodeElement.AppendChild(originalNode);
+                }
+            }
+
+            if (context == SaveContext.File)
+            {
+                //When save files, only save the original node's content, 
+                //instead of saving the dummy node.
+                if (OriginalNodeContent != null)
+                {
+                    XmlElement originalNode = nodeElement.OwnerDocument.CreateElement(OriginalNodeContent.Name);
+                    foreach (XmlAttribute attribute in OriginalNodeContent.Attributes)
+                        originalNode.SetAttribute(attribute.Name, attribute.Value);
+
+                    //overwrite the guid/x/y value of the original node.
+                    originalNode.SetAttribute("guid", nodeElement.GetAttribute("guid"));
+                    originalNode.SetAttribute("x", nodeElement.GetAttribute("x"));
+                    originalNode.SetAttribute("y", nodeElement.GetAttribute("y"));
+
+                    for (int i = 0; i < OriginalNodeContent.ChildNodes.Count; i++)
+                    {
+                        XmlNode child =
+                            originalNode.OwnerDocument.ImportNode(OriginalNodeContent.ChildNodes[i], true);
+                        originalNode.AppendChild(child.CloneNode(true));
+                    }
+
+                    nodeElement.ParentNode.ReplaceChild(originalNode, nodeElement);
+                }
+                else
+                {
+                    nodeElement.SetAttribute("inputCount", InputCount.ToString());
+                    nodeElement.SetAttribute("outputCount", OutputCount.ToString());
+                    nodeElement.SetAttribute("legacyNodeName", LegacyNodeName);
+                    nodeElement.SetAttribute("legacyAssembly", LegacyAssembly);
+                    nodeElement.SetAttribute("nodeNature", NodeNature.ToString());
+                }
+            }
+        }
+
+        #region SerializeCore/DeserializeCore
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            SaveNode(element.OwnerDocument, element, context);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            InPortData.Clear();  // In/out ports are going to be recreated in 
+            OutPortData.Clear(); // LoadNode, clear them so they don't accumulate.
+
+            base.DeserializeCore(element, context);
+            LoadNode(element);
+        }
+
         #endregion
 
-        protected override bool ShouldDisplayPreviewCore()
+        protected override bool ShouldDisplayPreviewCore
         {
-            return false; // Previews are not shown for this node type.
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
 
         public string GetDescription()
@@ -173,7 +181,7 @@ namespace Dynamo.Nodes
                     return string.Format(format, LegacyNodeName, LegacyAssembly);
                 }
             }
-            
+
             if (NodeNature == Nature.Unresolved)
             {
                 if (string.IsNullOrEmpty(LegacyAssembly))
@@ -191,12 +199,12 @@ namespace Dynamo.Nodes
             const string message = "Unhandled 'DummyNode.NodeNature' value: {0}";
             throw new InvalidOperationException(string.Format(message, NodeNature));
         }
-
+        
         public int InputCount { get; private set; }
         public int OutputCount { get; private set; }
         public string LegacyNodeName { get; private set; }
         public string LegacyAssembly { get; private set; }
         public Nature NodeNature { get; private set; }
-        public XmlNode OriginalNodeContent { get; private set; }
+        public XmlElement OriginalNodeContent { get; private set; }
     }
 }

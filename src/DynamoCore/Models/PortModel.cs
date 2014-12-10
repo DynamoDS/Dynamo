@@ -127,7 +127,7 @@ namespace Dynamo.Models
         /// offsets from the node origin based on the port's index in the 
         /// ports collection.
         /// </summary>
-        public Point Center
+        public Point2D Center
         {
             get
             {
@@ -140,12 +140,12 @@ namespace Dynamo.Models
                 switch (portType)
                 {
                     case PortType.Input:
-                        return new Point(owner.X, y);
+                        return new Point2D(owner.X, y);
                     case PortType.Output:
-                        return new Point(owner.X + owner.Width, y);
+                        return new Point2D(owner.X + owner.Width, y);
                 }
 
-                return new Point();
+                return new Point2D();
             }
         }
 

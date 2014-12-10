@@ -21,6 +21,7 @@ namespace Dynamo.Nodes
             Value = 0;
             Min = 0;
             Max = 100;
+            ShouldDisplayPreviewCore = false;
         }
 
         private double _max;
@@ -167,11 +168,6 @@ namespace Dynamo.Nodes
             }
 
             return base.UpdateValueCore(name, value);
-        }
-
-        protected override bool ShouldDisplayPreviewCore()
-        {
-            return false; // Previews are not shown for this node type.
         }
     }
 }

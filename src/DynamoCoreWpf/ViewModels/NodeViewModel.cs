@@ -32,7 +32,6 @@ namespace Dynamo.ViewModels
         public event SnapInputEventHandler SnapInputEvent;        
         #endregion
 
-
         #region private members
 
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
@@ -167,7 +166,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsInteractionEnabled
         {
-            get { return nodeLogic.InteractionEnabled; }
+            get { return true; }
         }
 
         public bool IsVisible
@@ -203,7 +202,7 @@ namespace Dynamo.ViewModels
 
         public bool IsPreviewInsetVisible
         {
-            get { return nodeLogic.ShouldDisplayPreview(); }
+            get { return WorkspaceViewModel.Model is HomeWorkspaceModel && nodeLogic.ShouldDisplayPreview; }
         }
 
         public bool ShouldShowGlyphBar
@@ -756,17 +755,6 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanValidateConnections(object parameter)
-        {
-            return true;
-        }
-
-        private void SetupCustomUIElements(object nodeUI)
-        {
-            // SEPARATECORE
-            //nodeLogic.InitializeUI(nodeUI);
-        }
-
-        private bool CanSetupCustomUIElements(object NodeUI)
         {
             return true;
         }

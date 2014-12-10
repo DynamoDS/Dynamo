@@ -139,7 +139,6 @@ namespace Dynamo.Services
             ToggleIsAnalyticsReportingApprovedCommand = new DelegateCommand(ToggleIsAnalyticsReportingApproved, CanToggleIsAnalyticsReportingApproved);
         }
 
-        // KILLDYNSETTINGS - This is abominable - passing a window?
         public void CheckIsFirstRun(Window ownerWindow)
         {
             // First run of Dynamo

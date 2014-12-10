@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Dynamo.Models;
-
+using Dynamo.Utilities;
 using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
@@ -66,9 +66,9 @@ namespace Dynamo.ViewModels
             get
             {
                 if (_model == null)
-                    return _activeStartPort.Center;
+                    return _activeStartPort.Center.AsWindowsType();
                 else if (_model.Start != null)
-                    return _model.Start.Center;
+                    return _model.Start.Center.AsWindowsType();
                 else
                     return new Point();
             }
@@ -341,7 +341,15 @@ namespace Dynamo.ViewModels
         /// <param name="p2">The position of the end point</param>
         public void Redraw(object parameter)
         {
-            Point p2 = (Point)parameter;
+            var p2 = new Point();
+
+            if (parameter is Point)
+            {
+                p2 = (Point) parameter;
+            } else if (parameter is Point2D)
+            {
+                p2 = ((Point2D)parameter).AsWindowsType();
+            }
 
             CurvePoint3 = p2;
 

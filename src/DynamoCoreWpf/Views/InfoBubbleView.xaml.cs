@@ -7,7 +7,8 @@ using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 
 using Dynamo.UI;
-
+using Dynamo.Wpf.UI;
+using Dynamo.Wpf.Utilities;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
@@ -289,13 +290,13 @@ namespace Dynamo.Controls
             ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
             ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
 
-            ContentMargin = Configurations.ErrorContentMargin.AsWindowsThickness();
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
             ContentMaxWidth = Configurations.ErrorContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
             ContentForeground = FrozenResources.WarningTextForeground;
-            ContentFontWeight = Configurations.ErrorTextFontWeight;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_WarningCondensed()
@@ -309,13 +310,13 @@ namespace Dynamo.Controls
             ContentContainer.MaxHeight = Configurations.ErrorCondensedMaxHeight;
             ContentContainer.MinHeight = Configurations.ErrorCondensedMinHeight;
 
-            ContentMargin = Configurations.ErrorContentMargin.AsWindowsThickness();
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
             ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
             ContentForeground = FrozenResources.WarningTextForeground;
-            ContentFontWeight = Configurations.ErrorTextFontWeight;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_Error()
@@ -327,13 +328,13 @@ namespace Dynamo.Controls
             ContentContainer.MaxWidth = Configurations.ErrorMaxWidth;
             ContentContainer.MaxHeight = Configurations.ErrorMaxHeight;
 
-            ContentMargin = Configurations.ErrorContentMargin.AsWindowsThickness();
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
             ContentMaxWidth = Configurations.ErrorContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
             ContentForeground = FrozenResources.ErrorTextForeground;
-            ContentFontWeight = Configurations.ErrorTextFontWeight;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
         }
 
         private void SetStyle_ErrorCondensed()
@@ -347,13 +348,13 @@ namespace Dynamo.Controls
             ContentContainer.MaxHeight = Configurations.ErrorCondensedMaxHeight;
             ContentContainer.MinHeight = Configurations.ErrorCondensedMinHeight;
 
-            ContentMargin = Configurations.ErrorContentMargin.AsWindowsThickness();
+            ContentMargin = Configurations.ErrorContentMargin.AsWindowsType();
             ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
 
             ContentFontSize = Configurations.ErrorTextFontSize;
             ContentForeground = FrozenResources.ErrorTextForeground;
-            ContentFontWeight = Configurations.ErrorTextFontWeight;
+            ContentFontWeight = VisualConfigurations.ErrorTextFontWeight;
         }
 
         #endregion
@@ -521,7 +522,7 @@ namespace Dynamo.Controls
             else if (ViewModel.TargetBotRight.X + estimatedWidth <= this.ViewModel.DynamoViewModel.WorkspaceActualWidth)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Top;
-                contentMargin = Configurations.NodeTooltipContentMarginLeft.AsWindowsThickness();
+                contentMargin = Configurations.NodeTooltipContentMarginLeft.AsWindowsType();
                 //UpdateContent(Content);
 
                 pointCollection.Add(new Point(estimatedWidth, 0));
@@ -533,7 +534,7 @@ namespace Dynamo.Controls
             else
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.TopRight;
-                contentMargin = Configurations.NodeTooltipContentMarginRight.AsWindowsThickness();
+                contentMargin = Configurations.NodeTooltipContentMarginRight.AsWindowsType();
                 //UpdateContent(Content);
 
                 pointCollection.Add(new Point(estimatedWidth, 0));
@@ -551,7 +552,7 @@ namespace Dynamo.Controls
             if (ViewModel.TargetBotRight.X + estimatedWidth > this.ViewModel.DynamoViewModel.WorkspaceActualWidth)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Right;
-                contentMargin = Configurations.NodeTooltipContentMarginRight.AsWindowsThickness();
+                contentMargin = Configurations.NodeTooltipContentMarginRight.AsWindowsType();
 
                 return GeneratePointCollection_TooltipConnectRight(estimatedHeight, estimatedWidth);
             }
@@ -564,7 +565,7 @@ namespace Dynamo.Controls
             if (ViewModel.TargetTopLeft.X - estimatedWidth < 0)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Left;
-                contentMargin = Configurations.NodeTooltipContentMarginLeft.AsWindowsThickness();
+                contentMargin = Configurations.NodeTooltipContentMarginLeft.AsWindowsType();
 
                 return GeneratePointCollection_TooltipConnectLeft(estimatedHeight, estimatedWidth);
             }

@@ -121,8 +121,10 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void CanCollapseWith1NodeHoleInSelection()
         {
+        //   http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
             var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 

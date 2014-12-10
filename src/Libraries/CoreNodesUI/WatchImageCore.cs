@@ -13,7 +13,6 @@ using Image = System.Windows.Controls.Image;
 
 namespace Dynamo.Nodes
 {
-
     [NodeName("Watch Image")]
     [NodeDescription("Previews an image")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
@@ -41,10 +40,19 @@ namespace Dynamo.Nodes
         {
             return; // No visualization update is required for this node type.
         }
-
-        protected override bool ShouldDisplayPreviewCore()
+        
+        public override void UpdateRenderPackage(int maxTessDivisions)
         {
-            return false; // Previews are not shown for this node type.
+            //do nothing
+            //a watch should not draw its outputs
+        }
+
+        protected override bool ShouldDisplayPreviewCore
+        {
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
     }
 

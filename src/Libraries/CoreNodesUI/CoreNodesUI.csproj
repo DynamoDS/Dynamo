@@ -40,7 +40,7 @@
     </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

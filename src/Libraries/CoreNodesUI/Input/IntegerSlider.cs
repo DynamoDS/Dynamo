@@ -22,6 +22,8 @@ namespace Dynamo.Nodes
             Min = 0;
             Max = 100;
             Value = 0;
+
+            ShouldDisplayPreviewCore = false;
         }
 
         private int _max;
@@ -173,10 +175,5 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
-        protected override bool ShouldDisplayPreviewCore()
-        {
-            return false; // Previews are not shown for this node type.
-        }
     }
 }

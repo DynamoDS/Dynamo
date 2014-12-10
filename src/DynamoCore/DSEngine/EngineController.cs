@@ -78,11 +78,11 @@ namespace Dynamo.DSEngine
                     DynamoPathManager.Instance.AddPreloadLibrary(library);
                 }
             }
-
+            
             libraryServices.Dispose();
-            codeCompletionServices = null;
-
             libraryServices.LibraryManagementCore.Cleanup();
+
+            codeCompletionServices = null;
         }
 
         #region Function Groups

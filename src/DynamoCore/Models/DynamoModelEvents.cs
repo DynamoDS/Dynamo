@@ -8,137 +8,7 @@ namespace Dynamo.Models
 {
     partial class DynamoModel
     {
-
-        #region CORESEP : These are temporarily here
-
-        public delegate void PointEventHandler(object sender, EventArgs e);
-
-        public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
-
-        public class ZoomEventArgs : EventArgs
-        {
-            internal enum ZoomModes
-            {
-                ByPoint = 0x00000001,
-                ByFactor = 0x00000002,
-                ByFitView = 0x00000004
-            }
-
-            internal Point Point { get; set; }
-            internal double Zoom { get; set; }
-            internal ZoomModes Modes { get; private set; }
-
-            internal Point Offset { get; set; }
-            internal double FocusWidth { get; set; }
-            internal double FocusHeight { get; set; }
-
-            internal ZoomEventArgs(double zoom)
-            {
-                Zoom = zoom;
-                this.Modes = ZoomModes.ByFactor;
-            }
-
-            internal ZoomEventArgs(Point point)
-            {
-                this.Point = point;
-                this.Modes = ZoomModes.ByPoint;
-            }
-
-            internal ZoomEventArgs(double zoom, Point point)
-            {
-                this.Point = point;
-                this.Zoom = zoom;
-                this.Modes = ZoomModes.ByPoint | ZoomModes.ByFactor;
-            }
-
-            internal ZoomEventArgs(Point offset, double focusWidth, double focusHeight)
-            {
-                this.Offset = offset;
-                this.FocusWidth = focusWidth;
-                this.FocusHeight = focusHeight;
-                this.Modes = ZoomModes.ByFitView;
-            }
-
-            internal ZoomEventArgs(Point offset, double focusWidth, double focusHeight, double zoom)
-            {
-                this.Offset = offset;
-                this.FocusWidth = focusWidth;
-                this.FocusHeight = focusHeight;
-                this.Zoom = zoom;
-                this.Modes = ZoomModes.ByFitView | ZoomModes.ByFactor;
-            }
-
-            internal bool hasPoint()
-            {
-                return this.Modes.HasFlag(ZoomModes.ByPoint);
-            }
-
-            internal bool hasZoom()
-            {
-                return this.Modes.HasFlag(ZoomModes.ByFactor);
-            }
-        }
-
-        internal class TaskDialogEventArgs : EventArgs
-        {
-            List<Tuple<int, string, bool>> buttons = null;
-
-            #region Public Operational Methods
-
-            internal TaskDialogEventArgs(Uri imageUri, string dialogTitle,
-                string summary, string description)
-            {
-                this.ImageUri = imageUri;
-                this.DialogTitle = dialogTitle;
-                this.Summary = summary;
-                this.Description = description;
-            }
-
-            internal void AddLeftAlignedButton(int id, string content)
-            {
-                if (buttons == null)
-                    buttons = new List<Tuple<int, string, bool>>();
-
-                buttons.Add(new Tuple<int, string, bool>(id, content, true));
-            }
-
-            internal void AddRightAlignedButton(int id, string content)
-            {
-                if (buttons == null)
-                    buttons = new List<Tuple<int, string, bool>>();
-
-                buttons.Add(new Tuple<int, string, bool>(id, content, false));
-            }
-
-            #endregion
-
-            #region Public Class Properties
-
-            // Settable properties.
-            internal int ClickedButtonId { get; set; }
-            internal Exception Exception { get; set; }
-
-            // Read-only properties.
-            internal Uri ImageUri { get; private set; }
-            internal string DialogTitle { get; private set; }
-            internal string Summary { get; private set; }
-            internal string Description { get; private set; }
-
-            internal IEnumerable<Tuple<int, string, bool>> Buttons
-            {
-                get { return buttons; }
-            }
-
-            #endregion
-        }
-
-        public delegate void NodeEventHandler(object sender, EventArgs e);
-        public delegate void ZoomEventHandler(object sender, EventArgs e);
-
-        #endregion
-
         #region events
-
 
         public event ActionHandler RequestDispatcherInvoke;
         public virtual void OnRequestDispatcherInvoke(Action action)
@@ -343,6 +213,21 @@ namespace Dynamo.Models
                 RequestTaskDialog(sender, args);
         }
 
+        internal delegate void VoidHandler();
+        internal event VoidHandler RequestDownloadDynamo;
+        internal void OnRequestDownloadDynamo()
+        {
+            if (RequestDownloadDynamo != null)
+                RequestDownloadDynamo();
+        }
+
+        internal event VoidHandler RequestBugReport;
+        internal void OnRequestBugReport()
+        {
+            if (RequestBugReport != null)
+                RequestBugReport();
+        }
+
         /// <summary>
         /// An event triggered when a single graph evaluation completes.
         /// </summary>
@@ -356,13 +241,4 @@ namespace Dynamo.Models
         #endregion
     }
 
-    public class EvaluationCompletedEventArgs : EventArgs
-    {
-        public EvaluationCompletedEventArgs(bool evaluationTookPlace)
-        {
-            EvaluationTookPlace = evaluationTookPlace;
-        }
-
-        public bool EvaluationTookPlace { get; private set; }
-    }
 }

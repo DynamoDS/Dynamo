@@ -1,17 +1,16 @@
-﻿using System.Text.RegularExpressions;
-
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.UI;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Rendering;
+using Dynamo.UI;
+
+using Dynamo.Models;
+using Dynamo.Nodes;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Dynamo.Utilities
 {
@@ -135,6 +134,18 @@ namespace Dynamo.Utilities
             return true;
         }
 
+        public delegate IEnumerable<int> LogicalToVisualLineIndexMapDelegate(string text);
+        public static event LogicalToVisualLineIndexMapDelegate RequestLogicalToVisualLineIndexMap;
+        private static IEnumerable<int> OnRequestLogicalToVisualLineIndexMap(string text)
+        {
+            if (RequestLogicalToVisualLineIndexMap != null)
+            {
+                return RequestLogicalToVisualLineIndexMap(text);
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Call this method to map logical lines in the given text input to their
         /// corresponding visual line index. Due to wrapping behavior, a long line
@@ -173,45 +184,13 @@ namespace Dynamo.Utilities
                 return logicalToVisualLines;
 
             text = NormalizeLineBreaks(text);
-            var lines = text.Split(new char[] { '\n' }, StringSplitOptions.None);
 
-            // We could have hard-coded "pack" instead of "UriSchemePack" here, 
-            // but in NUnit scenario there is no "Application" created. When there 
-            // is no Application instance, the Uri format "pack://" will fail Uri 
-            // object creation. Adding a reference to "UriSchemePack" resolves 
-            // this issue to avoid a "UriFormatException".
-            // 
-            string pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
-            var uri = new Uri(pack + "://application:,,,/DynamoCore;component/");
-            var textFontFamily = new FontFamily(uri, ResourceNames.FontResourceUri);
-
-            var typeface = new Typeface(textFontFamily, FontStyles.Normal,
-                FontWeights.Normal, FontStretches.Normal);
-
-            int totalVisualLinesSoFar = 0;
-            foreach (var line in lines)
+            if (RequestLogicalToVisualLineIndexMap == null)
             {
-                FormattedText ft = new FormattedText(
-                    line, CultureInfo.CurrentCulture,
-                    System.Windows.FlowDirection.LeftToRight, typeface,
-                    Configurations.CBNFontSize, Brushes.Black)
-                {
-                    MaxTextWidth = Configurations.CBNMaxTextBoxWidth,
-                    Trimming = TextTrimming.None
-                };
-
-                logicalToVisualLines.Add(totalVisualLinesSoFar);
-
-                // Empty lines (i.e. those with just a "\n" character) will result 
-                // in "ft.Extent" to be 0.0, but the line still occupies one line
-                // visually. This is why we need to make sure "lineCount" cannot be 
-                // zero.
-                // 
-                var lineCount = Math.Floor(ft.Extent / Configurations.CBNFontSize);
-                totalVisualLinesSoFar += (lineCount < 1.0 ? 1 : ((int)lineCount));
+                throw new InvalidOperationException("MapLogicalToVisualLineIndices requires a registered LogicalToVisualLineIndexMapDelegate!");
             }
 
-            return logicalToVisualLines;
+            return OnRequestLogicalToVisualLineIndexMap(text);
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
@@ -80,7 +81,7 @@ namespace Dynamo.Controls
             return new Point(tt.X, tt.Y);
         }
 
-        public void SetTranslateTransformOrigin(Point p)
+        public void SetTranslateTransformOrigin(Point2D p)
         {
             var tt = GetTranslateTransform(child);
             tt.X = p.X;
@@ -104,7 +105,7 @@ namespace Dynamo.Controls
                 double zoom = e.Delta > 0 ? 1 : -1;
                 Point mousePosition = e.GetPosition(child);
                 WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
-                vm.OnRequestZoomToViewportPoint(this, new DynamoModel.ZoomEventArgs(zoom, mousePosition));
+                vm.OnRequestZoomToViewportPoint(this, new ZoomEventArgs(zoom, mousePosition.AsDynamoType()));
 
                 // Update WorkspaceModel without triggering property changed
                 vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());

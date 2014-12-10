@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -232,6 +232,17 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
+
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        {
+            if (name == "InputSymbol")
+            {
+                InputSymbol = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value, recorder);
+        }
     }
 
     [NodeName("Output")]
@@ -301,6 +312,17 @@ namespace Dynamo.Nodes
             }
 
             ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        {
+            if (name == "Symbol")
+            {
+                Symbol = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value, recorder);
         }
     }
 }

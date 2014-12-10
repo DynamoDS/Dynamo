@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -97,7 +99,7 @@ namespace Dynamo.TestInfrastructure
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoModel.SelectModelCommand selectNodeCommand =
-                    new DynamoModel.SelectModelCommand(node.GUID, ModifierKeys.None);
+                    new DynamoModel.SelectModelCommand(node.GUID, ModifierKeys.None.AsDynamoType());
 
                 DynamoViewModel.ExecuteCommand(selectNodeCommand);
 

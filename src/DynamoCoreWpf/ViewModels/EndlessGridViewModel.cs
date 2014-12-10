@@ -7,6 +7,7 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 using System.Windows;
+using Dynamo.Wpf.UI;
 
 namespace Dynamo.ViewModels
 {
@@ -113,14 +114,13 @@ namespace Dynamo.ViewModels
 
         public Color gridLineColor
         {
-            get { return Configurations.GridLineColor; }
+            get { return VisualConfigurations.GridLineColor; }
         }
 
         public bool FullscreenWatchShowing
         {
             get { return workspaceVM.DynamoViewModel.FullscreenWatchShowing; }
         }
-
 
         #region Private
         private WorkspaceViewModel workspaceVM;

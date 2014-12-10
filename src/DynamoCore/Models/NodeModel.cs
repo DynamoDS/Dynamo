@@ -93,7 +93,24 @@ namespace Dynamo.Models
 
         #region events
 
-        [Obsolete("Model should not have to worry about UI thread synchronization")]
+        //TODO(Steve): Model should not have to worry about UI thread synchronization
+
+        /// <summary>
+        ///     Called by nodes for behavior that they want to dispatch on the UI thread
+        ///     Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
+        /// </summary>
+        /// <param name="a"></param>
+        public void DispatchOnUIThread(Action a)
+        {
+            OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
+        }
+
+        private void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
+        {
+            if (DispatchedToUI != null)
+                DispatchedToUI(sender, e);
+        }
+
         public event DispatchedToUIThreadHandler DispatchedToUI;
 
         #endregion
@@ -1067,29 +1084,7 @@ namespace Dynamo.Models
             foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
         }
-
-        #region Thread Dispatch
-
-        /// <summary>
-        ///     Called by nodes for behavior that they want to dispatch on the UI thread
-        ///     Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
-        /// </summary>
-        /// <param name="a"></param>
-        [Obsolete("Model should not have to worry about UI thread synchronization", true)]
-        public void DispatchOnUIThread(Action a)
-        {
-            OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
-        }
-
-        [Obsolete("Model should not have to worry about UI thread synchronization", true)]
-        public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
-        {
-            if (DispatchedToUI != null)
-                DispatchedToUI(this, e);
-        }
-
-        #endregion
-
+        
         #region Interaction
 
         [Obsolete("No longer supported", true)]
@@ -1212,7 +1207,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="portModel"> The portModel whose height is to be found</param>
         /// <returns> Returns the offset of the given port from the top of the ports </returns>
-        [Obsolete("This kind of UI calculation should probably live on the VM...")]
+        //TODO(Steve): This kind of UI calculation should probably live on the VM...
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;
@@ -1915,26 +1910,16 @@ namespace Dynamo.Models
                 BlockingEnded(this, e);
             }
         }
-        
-        //TODO(Steve): This should probably be on the VM anyway
-        [Obsolete("Use Display Preview setter instead.", true)]
-        public bool ShouldDisplayPreview()
-        {
-            // Previews are only shown in Home Workspace.
-            //if (!(this.Workspace is HomeWorkspaceModel))
-            //    return false;
-            //
-            return ShouldDisplayPreviewCore();
 
-            //return true;
+        public bool ShouldDisplayPreview
+        {
+            get
+            {
+                return ShouldDisplayPreviewCore;
+            }
         }
 
-        [Obsolete("Use Display Preview setter instead.", true)]
-        protected virtual bool ShouldDisplayPreviewCore()
-        {
-            return true; // Default implementation: always show preview.
-        }
-      
+        protected bool ShouldDisplayPreviewCore { get; set; }
     }
 
     public enum ElementState

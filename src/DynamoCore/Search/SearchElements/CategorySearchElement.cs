@@ -59,7 +59,7 @@
             {
                 return _numElements;
             }
-            set 
+            set
             {
                 this._description = value + " nodes";
                 _numElements = value;

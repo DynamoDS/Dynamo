@@ -116,9 +116,9 @@ namespace Dynamo.Core.Threading
 
             var data = from varName in drawableIds
                        select engineController.GetMirror(varName)
-                       into mirror
-                       where mirror != null
-                       select mirror.GetData();
+                           into mirror
+                           where mirror != null
+                           select mirror.GetData();
 
             var labelMap = new List<string>();
             foreach (var mirrorData in data)

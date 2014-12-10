@@ -45,6 +45,11 @@ namespace DSCoreNodesUI
     /// </summary>
     public abstract class DSDropDownBase : NodeModel
     {
+        protected DSDropDownBase()
+        {
+            ShouldDisplayPreviewCore = false;
+        }
+
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items
         {
@@ -159,10 +164,5 @@ namespace DSCoreNodesUI
         }
 
         public abstract void PopulateItems();
-
-        protected override bool ShouldDisplayPreviewCore()
-        {
-            return false; // Previews are not shown for this node type.
-        }
     }
 }

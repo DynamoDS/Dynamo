@@ -35,6 +35,7 @@ namespace Dynamo.Models
 
         #region events
 
+        public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
         public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
         {
@@ -634,7 +635,7 @@ namespace Dynamo.Models
             PackageLoader.MessageLogged -= LogMessage;
             LibraryServices.MessageLogged -= LogMessage;
 
-            SearchModel.ItemProduced -= AddNodeToCurrentWorkspace;
+            //SearchModel.ItemProduced -= AddNodeToCurrentWorkspace;
 
             if (PreferenceSettings != null)
             {
@@ -642,7 +643,6 @@ namespace Dynamo.Models
             }
         }
 
-        //SEPARATECORE: causes mono crash
         private void InitializeInstrumentationLogger()
         {
             if (IsTestMode == false)
@@ -651,7 +651,12 @@ namespace Dynamo.Models
 
         private void InitializeCurrentWorkspace()
         {
-            var defaultWorkspace = new HomeWorkspaceModel(LibraryServices, Scheduler, DebugSettings.VerboseLogging);
+            var defaultWorkspace = new HomeWorkspaceModel(
+                LibraryServices,
+                Scheduler,
+                NodeFactory,
+                DebugSettings.VerboseLogging);
+
             Workspaces.Add(defaultWorkspace);
             CurrentWorkspace = defaultWorkspace;
             //AddHomeWorkspace();
@@ -708,7 +713,7 @@ namespace Dynamo.Models
             }
         }
 
-        private bool OpenFile(string xmlPath, out WorkspaceModel model)
+        private bool OpenFile(string xmlPath, out WorkspaceModel workspace)
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlPath);
@@ -716,15 +721,21 @@ namespace Dynamo.Models
             WorkspaceHeader workspaceInfo;
             if (!WorkspaceHeader.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, Logger, out workspaceInfo))
             {
-                model = null;
+                workspace = null;
                 return false;
             }
 
             CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(xmlPath), IsTestMode);
 
-            return workspaceInfo.IsCustomNodeWorkspace
-                ? CustomNodeManager.OpenCustomNodeWorkspace(xmlDoc, workspaceInfo, IsTestMode, out model)
-                : OpenHomeWorkspace(xmlDoc, workspaceInfo, out model);
+            var result = workspaceInfo.IsCustomNodeWorkspace
+                ? CustomNodeManager.OpenCustomNodeWorkspace(xmlDoc, workspaceInfo, IsTestMode, out workspace)
+                : OpenHomeWorkspace(xmlDoc, workspaceInfo, out workspace);
+
+            workspace.OnCurrentOffsetChanged(
+                this,
+                new PointEventArgs(new Point2D(workspaceInfo.X, workspaceInfo.Y)));
+
+            return result;
         }
 
         private bool OpenHomeWorkspace(
@@ -775,6 +786,7 @@ namespace Dynamo.Models
             var newWorkspace = new HomeWorkspaceModel(
                 LibraryServices,
                 Scheduler,
+                NodeFactory,
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Connectors,

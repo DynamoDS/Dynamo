@@ -65,7 +65,7 @@ namespace DSCore
         /// <param name="b">The blue value.</param>
         /// <returns name="color">Color.</returns>
         /// <search>color</search>
-        public static Color ByARGB(int a=255, int r=0, int g=0, int b=0)
+        public static Color ByARGB(int a = 255, int r = 0, int g = 0, int b = 0)
         {
             return new Color(a, r, g, b);
         }

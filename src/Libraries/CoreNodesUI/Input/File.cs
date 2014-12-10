@@ -38,11 +38,9 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
     {
-        public Filename(WorkspaceModel workspace) : base(workspace, "Filename") { }
-
-        protected override bool ShouldDisplayPreviewCore()
+        public Filename(WorkspaceModel workspace) : base(workspace, "Filename")
         {
-            return false; // Previews are not shown for this node type.
+            ShouldDisplayPreviewCore = false;
         }
     }
 
@@ -53,11 +51,9 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
     {
-        public Directory(WorkspaceModel workspace) : base(workspace, "Directory") { }
-
-        protected override bool ShouldDisplayPreviewCore()
+        public Directory(WorkspaceModel workspace) : base(workspace, "Directory")
         {
-            return false; // Previews are not shown for this node type.
+            ShouldDisplayPreviewCore = false;
         }
     }
 
@@ -74,7 +70,8 @@ namespace DSCore.File
         private IEnumerable<IDisposable> registrations = Enumerable.Empty<IDisposable>();
         private readonly Func<string, T> func;
 
-        protected FileSystemObject(WorkspaceModel workspaceModel, Func<string, T> func) : base(workspaceModel)
+        protected FileSystemObject(WorkspaceModel workspaceModel, Func<string, T> func)
+            : base(workspaceModel)
         {
             this.func = func;
         }
@@ -109,7 +106,7 @@ namespace DSCore.File
             base.OnBuilt();
             DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
         }
-        
+
         private void DataBridgeCallback(object data)
         {
             StopWatching();
@@ -165,7 +162,7 @@ namespace DSCore.File
             // Data does not match expected type, skip
             return Enumerable.Empty<IDisposable>();
         }
-        
+
         private static IEnumerable<TItem> Singleton<TItem>(TItem x)
         {
             yield return x;
@@ -179,7 +176,8 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
     {
-        public FileObject(WorkspaceModel workspaceModel) : base(workspaceModel, IO.File.FromPath)
+        public FileObject(WorkspaceModel workspaceModel)
+            : base(workspaceModel, IO.File.FromPath)
         {
             InPortData.Add(new PortData("path", "Path to the file."));
             OutPortData.Add(new PortData("file", "File object"));
@@ -188,7 +186,7 @@ namespace DSCore.File
 
         protected override IDisposable WatchFileSystemObject(FileInfo path)
         {
-            var dir = 
+            var dir =
                 path.Directory ?? new DirectoryInfo(System.IO.Directory.GetCurrentDirectory());
 
             var watcher = new FileSystemWatcher(dir.FullName, path.Name) { EnableRaisingEvents = true };
@@ -200,7 +198,8 @@ namespace DSCore.File
         {
             private readonly FileSystemWatcher watcher;
 
-            public FileObjectDisposable(FileSystemWatcher watcher, NodeModel node) : base(node)
+            public FileObjectDisposable(FileSystemWatcher watcher, NodeModel node)
+                : base(node)
             {
                 this.watcher = watcher;
 
@@ -231,7 +230,8 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
     {
-        public DirectoryObject(WorkspaceModel workspaceModel) : base(workspaceModel, IO.Directory.FromPath)
+        public DirectoryObject(WorkspaceModel workspaceModel)
+            : base(workspaceModel, IO.Directory.FromPath)
         {
             InPortData.Add(new PortData("path", "Path to the directory."));
             OutPortData.Add(new PortData("directory", "Directory object."));
@@ -248,7 +248,8 @@ namespace DSCore.File
         {
             private readonly FileSystemWatcher watcher;
 
-            public DirectoryObjectDisposable(FileSystemWatcher watcher, NodeModel node) : base(node)
+            public DirectoryObjectDisposable(FileSystemWatcher watcher, NodeModel node)
+                : base(node)
             {
                 this.watcher = watcher;
 

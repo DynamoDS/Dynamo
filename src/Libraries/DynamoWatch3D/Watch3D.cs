@@ -11,9 +11,14 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Controls;
 using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -145,9 +150,9 @@ namespace Dynamo.Nodes
         #region public properties
 
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
-        
+
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
-        
+
         public DelegateCommand ToggleCanNavigateBackgroundCommand
         {
             get
@@ -155,9 +160,9 @@ namespace Dynamo.Nodes
                 return this.ViewModel.ToggleCanNavigateBackgroundCommand;
             }
         }
-        
+
         public bool WatchIsResizable { get; set; }
-        
+
         public bool IsBackgroundPreview { get { return false; } }
 
         public bool CanNavigateBackground
@@ -178,14 +183,15 @@ namespace Dynamo.Nodes
         public IVisualizationManager VisualizationManager
         {
             get { return ViewModel.VisualizationManager; }
-            
+
         }
 
         #endregion
 
         #region constructors
 
-        public Watch3D(WorkspaceModel workspace) : base(workspace)
+        public Watch3D(WorkspaceModel workspace)
+            : base(workspace)
         {
             InPortData.Add(new PortData("", "Incoming geometry objects."));
             OutPortData.Add(new PortData("", "Watch contents, passed through"));
@@ -208,12 +214,12 @@ namespace Dynamo.Nodes
 
         #region public methods
 
-        public override void Dispose()
+        public override void Destroy()
         {
-            base.Dispose();
+            base.Destroy();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
-        
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             if (IsPartiallyApplied)
@@ -315,14 +321,29 @@ namespace Dynamo.Nodes
 
         }
 
-        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions, EngineController engine)
+#if ENABLE_DYNAMO_SCHEDULER
+
+        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
         {
             return; // No visualization update is required for this node type.
         }
 
-        protected override bool ShouldDisplayPreviewCore()
+#else
+
+        public override void UpdateRenderPackage(int maxTessDivisions)
         {
-            return false; // Previews are not shown for this node type.
+            //do nothing
+            //a watch should not draw its outputs
+        }
+
+#endif
+
+        protected override bool ShouldDisplayPreviewCore
+        {
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
 
         #region IWatchViewModel interface

@@ -424,7 +424,7 @@ namespace Dynamo.UI.Controls
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
 
-            if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
+            if (e.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift))
             {
                 if (e.Key == Key.Enter || e.Key == Key.Return)
                 {

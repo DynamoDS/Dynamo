@@ -292,7 +292,7 @@ namespace Dynamo.Utilities
         {
             return IsInitialized(guid) || NodeInfos.ContainsKey(guid);
         }
-        
+
         /// <summary>
         ///     Tells whether the custom node's name is inside of the manager (initialized or not)
         /// </summary>
@@ -644,8 +644,8 @@ namespace Dynamo.Utilities
                 #region Detect 1-node holes (higher-order function extraction)
 
                 logger.LogWarning("Could not repair 1-node holes", WarningLevel.Mild);
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
 
-                // PB: This was already broken - Apply1 is a dummy node
                 //var curriedNodeArgs =
                 //    new HashSet<NodeModel>(
                 //        inputs.Select(x => x.Item3.Item2)

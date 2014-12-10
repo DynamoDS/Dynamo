@@ -21,6 +21,7 @@ namespace Dynamo.Services
         private static readonly string userID = GetUserID();
         private static string sessionID = Guid.NewGuid().ToString();
         private static Log loggerImpl;
+        private static DynamoModel dynamoModel;
 
         //Analytics components
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
@@ -37,6 +38,8 @@ namespace Dynamo.Services
         //Service start
         public static void Start(DynamoModel dynamoModel)
         {
+            InstrumentationLogger.dynamoModel = dynamoModel;
+
             string appVersion = dynamoModel.AppVersion;
 
             var mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
@@ -85,9 +88,13 @@ namespace Dynamo.Services
         {
             get
             {
-                //SEPARATECORE
+                if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
+                    return false;
+
+                if (dynamoModel != null)
+                    return dynamoModel.PreferenceSettings.IsUsageReportingApproved;
+
                 return false;
-                //return UsageReportingManager.Instance.IsUsageReportingApproved;
             }
         }
 

@@ -84,7 +84,6 @@ limitations under the License.
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
@@ -141,6 +140,7 @@ limitations under the License.
     <Compile Include="Search\SearchModel2.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Disposable.cs" />
+    <Compile Include="Utilities\ModifierKeys.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
     <Compile Include="Core\Threading\NotifyRenderPackagesReadyAsyncTask.cs" />
@@ -226,7 +226,9 @@ limitations under the License.
     <Compile Include="Utilities\MigrationReport.cs" />
     <Compile Include="Utilities\ObservableExtensions.cs" />
     <Compile Include="Utilities\Option.cs" />
-    <Compile Include="Utilities\ProxyTypes.cs" />
+    <Compile Include="Utilities\Point2D.cs" />
+    <Compile Include="Utilities\Rect2D.cs" />
+    <Compile Include="Utilities\Thickness.cs" />
     <Compile Include="Utilities\ThreadSafeList.cs" />
     <Compile Include="Utilities\TypeExtensions.cs" />
     <Compile Include="Utilities\VersionUtilities.cs" />

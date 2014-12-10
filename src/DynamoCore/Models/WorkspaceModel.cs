@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Xml;
 using System.Globalization;
 using Dynamo.Core;
@@ -51,35 +50,39 @@ namespace Dynamo.Models
 
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
 
-        public event DynamoModel.NodeEventHandler RequestNodeCentered;
-        protected virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
+        public event NodeEventHandler RequestNodeCentered;
+        public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
         {
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
 
-        public event DynamoModel.ZoomEventHandler ZoomChanged;
+        public delegate void ZoomEventHandler(object sender, EventArgs e);
+        public event ZoomEventHandler ZoomChanged;
+
         /// <summary>
         /// Used during open and workspace changes to set the zoom of the workspace
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void OnZoomChanged(object sender, DynamoModel.ZoomEventArgs e)
+        public virtual void OnZoomChanged(object sender, ZoomEventArgs e)
         {
             if (ZoomChanged != null)
             {
                 //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
-                ZoomChanged(this, e);
+                ZoomChanged(this, e); 
             }
         }
 
-        public event DynamoModel.PointEventHandler CurrentOffsetChanged;
+        public delegate void PointEventHandler(object sender, EventArgs e);
+        public event PointEventHandler CurrentOffsetChanged;
+
         /// <summary>
         /// Used during open and workspace changes to set the location of the workspace
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
+        public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
         {
             if (CurrentOffsetChanged != null)
             {
@@ -295,9 +298,9 @@ namespace Dynamo.Models
         /// <summary>
         ///     Get the bounds of the workspace.
         /// </summary>
-        public Rect Rect
+        public Rect2D Rect
         {
-            get { return new Rect(x, y, width, height); }
+            get { return new Rect2D(x, y, width, height); }
         }
 
         /// <summary>
