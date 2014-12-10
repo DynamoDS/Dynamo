@@ -113,6 +113,16 @@ limitations under the License.
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
+    <Compile Include="Resources\Resources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Resources.zh-CN.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.zh-CN.resx</DependentUpon>
+    </Compile>
     <Compile Include="Search\BrowserRootElement.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
@@ -242,9 +252,17 @@ limitations under the License.
     <Compile Include="Search\SearchDictionary.cs" />
     <Compile Include="DSEngine\RenderPackage.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Resources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Resources.zh-CN.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.zh-CN.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

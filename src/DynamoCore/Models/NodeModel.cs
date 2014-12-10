@@ -20,6 +20,8 @@ using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
+using System.Reflection;
+using System.Resources;
 
 namespace Dynamo.Models
 {
@@ -2060,6 +2062,27 @@ namespace Dynamo.Models
         public NodeDescriptionAttribute(string description)
         {
             ElementDescription = description;
+        }
+
+        public NodeDescriptionAttribute(string description, Type resourceType)
+        {
+            ResourceManager resMan = Properties.Resources.ResourceManager;
+
+            // then, you could go on working with that
+            ResourceSet resourceSet = resMan.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            var prop = resourceType.GetProperty(description, BindingFlags.Public | BindingFlags.Static);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                ElementDescription = (string)prop.GetValue(null, null);
+            }
+            else
+            {
+                ElementDescription = description;
+            }
         }
 
         public string ElementDescription { get; set; }
