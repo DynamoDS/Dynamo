@@ -4,6 +4,7 @@ using System.Diagnostics;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoCore
 {
@@ -392,7 +393,7 @@ namespace ProtoCore
                 (core.ClassTable.ClassNodes[sv.metaData.type].ConvertibleTo(targetType.UID))
                 || sv.IsArray))
             {
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, ProtoCore.StringConstants.kConvertNonConvertibleTypes);
+                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, Resources.kConvertNonConvertibleTypes);
                 return StackValue.Null;
             }
 
@@ -401,7 +402,7 @@ namespace ProtoCore
             {
                 //This is an array rank reduction
                 //this may only be performed in recursion and is illegal here
-                string errorMessage = String.Format(ProtoCore.StringConstants.kConvertArrayToNonArray, core.TypeSystem.GetType(targetType.UID));
+                string errorMessage = String.Format(Resources.kConvertArrayToNonArray, core.TypeSystem.GetType(targetType.UID));
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, errorMessage);
                 return StackValue.Null;
             }
@@ -516,7 +517,7 @@ namespace ProtoCore
                 case (int)PrimitiveType.kTypeFunctionPointer:
                     if (sv.metaData.type != (int)PrimitiveType.kTypeFunctionPointer)
                     {
-                        core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ProtoCore.StringConstants.kFailToConverToFunction);
+                        core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, Resources.kFailToConverToFunction);
                         return StackValue.Null;
                     }
                     return sv;
@@ -534,7 +535,7 @@ namespace ProtoCore
                         {
                             //TODO(lukechurch): Once the API is improved (MAGN-5174)
                             //Replace this with a log entry notification
-                            //core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, ProtoCore.StringConstants.kConvertDoubleToInt);
+                            //core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, Resources.kConvertDoubleToInt);
                         }
                         return sv.ToInteger();
                     }
@@ -543,7 +544,7 @@ namespace ProtoCore
                     {
                         if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
                         {
-                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ProtoCore.StringConstants.kFailToConverToNull);
+                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, Resources.kFailToConverToNull);
                             return StackValue.Null;
                         }
                         return sv;
@@ -553,7 +554,7 @@ namespace ProtoCore
                     {
                         if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
                         {
-                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ProtoCore.StringConstants.kFailToConverToPointer);
+                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, Resources.kFailToConverToPointer);
                             return StackValue.Null;
                         }
                         return sv;
