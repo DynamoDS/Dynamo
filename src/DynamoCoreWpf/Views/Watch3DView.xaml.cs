@@ -191,7 +191,7 @@ namespace Dynamo.Controls
         {
             this.ShadowMapResolution = new Vector2(2048, 2048);
             this.ShowShadows = false;
-
+            
             // setup lighting            
             this.AmbientLightColor = new Color4(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -201,7 +201,7 @@ namespace Dynamo.Controls
             this.FillLightColor = new Color4(0.3f, 0.3f, 0.3f, 1.0f);
             this.FillLightDirection = new Vector3(0.5f, -1, 0);
 
-            this.RenderTechnique = Techniques.RenderPhong;
+            this.RenderTechnique = Techniques.RenderColors;
             this.WhiteMaterial = PhongMaterials.White;
 
             this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);

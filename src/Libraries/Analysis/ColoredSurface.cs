@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
@@ -7,18 +7,142 @@ using Autodesk.DesignScript.Interfaces;
 
 using DSCore;
 
-using Math = System.Math;
+using MIConvexHull;
+
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace Analysis
 {
+    // This is a duplication of the Vertex2 class in the Tesselation
+    // library. We need to re-implement here in order to avoid marking 
+    // that class as public.
+    internal class Vertex2 : IVertex, IGraphicItem
+    {
+        public object Tag { get; set; }
+
+        public static Vertex2 FromUV(UV uv)
+        {
+            return new Vertex2(uv.U, uv.V);
+        }
+
+        public Vector AsVector()
+        {
+            return Vector.ByCoordinates(Position[0], Position[1], 0);
+        }
+
+        public Point AsPoint()
+        {
+            return Point.ByCoordinates(Position[0], Position[1]);
+        }
+
+        public Vertex2(double x, double y)
+        {
+            Position = new[] { x, y };
+        }
+
+        public double[] Position { get; set; }
+
+        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        {
+            AsVector().Tessellate(package, tol, maxGridLines);
+        }
+    }
+
+    internal class Vertex2EqualityComparer : IEqualityComparer<Vertex2>
+    {
+        public bool Equals(Vertex2 x, Vertex2 y)
+        {
+            var v1 = x.AsVector();
+            var v2 = y.AsVector();
+
+            return v1.IsAlmostEqualTo(v2);
+        }
+
+        public int GetHashCode(Vertex2 obj)
+        {
+            int hCode = obj.Position[0].GetHashCode() ^ obj.Position[1].GetHashCode();
+            return hCode.GetHashCode();
+        }
+    }
+
+    // This is a duplication of the Cell2 class in the Tesselation.
+    // library. We need to re-implement here in order to avoid marking 
+    // that class as public.
+    internal class Cell2 : TriangulationCell<Vertex2, Cell2>
+    {
+        Point GetCircumcenter()
+        {
+            // From MathWorld: http://mathworld.wolfram.com/Circumcircle.html
+
+            var points = Vertices;
+
+            var m = new double[3, 3];
+
+            // x, y, 1
+            for (int i = 0; i < 3; i++)
+            {
+                m[i, 0] = points[i].Position[0];
+                m[i, 1] = points[i].Position[1];
+                m[i, 2] = 1;
+            }
+            var a = StarMath.determinant(m);
+
+            // size, y, 1
+            for (int i = 0; i < 3; i++)
+            {
+                m[i, 0] = StarMath.norm2(points[i].Position, 2, true);
+            }
+            var dx = -StarMath.determinant(m);
+
+            // size, x, 1
+            for (int i = 0; i < 3; i++)
+            {
+                m[i, 1] = points[i].Position[0];
+            }
+            var dy = StarMath.determinant(m);
+
+            // size, x, y
+            for (int i = 0; i < 3; i++)
+            {
+                m[i, 2] = points[i].Position[1];
+            }
+
+            var s = -1.0 / (2.0 * a);
+            return Point.ByCoordinates(s * dx, s * dy);
+        }
+
+        Point GetCentroid()
+        {
+            return Point.ByCoordinates(Vertices.Select(v => v.Position[0]).Average(), Vertices.Select(v => v.Position[1]).Average());
+        }
+
+        Point circumCenter;
+        public Point Circumcenter
+        {
+            get
+            {
+                return circumCenter = circumCenter ?? GetCircumcenter();
+            }
+        }
+
+        Point centroid;
+        public Point Centroid
+        {
+            get
+            {
+                return centroid = centroid ?? GetCentroid();
+            }
+        }
+    }
+
     public class ColoredSurface : IGraphicItem
     {
         private Surface surface;
         private DSCore.Color[] colors;
         private UV[] uvs;
 
-        private ColoredSurface(Surface surface, DSCore.Color[] colors, UV[] uvs)
+        private ColoredSurface(Surface surface, 
+            DSCore.Color[] colors, UV[] uvs)
         {
             this.surface = surface;
             this.colors = colors;
@@ -62,12 +186,13 @@ namespace Analysis
 
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
-            // As we write the vertex locations to the render package,
-            // calculate the UV location for the vertex and 
-            surface.Tessellate(package);
+            // Use ASM's tesselation routine to tesselate
+            // the surface. Tesselate with a high degree 
+            // of precision to ensure that UVs can be matched 
+            // to vertices.
+            surface.Tessellate(package, 0.01);
 
-            var colorCount = 0;
-
+            int colorCount = 0;
             for (int i = 0; i < package.TriangleVertices.Count; i += 3)
             {
                 var vx = package.TriangleVertices[i];
@@ -76,64 +201,99 @@ namespace Analysis
 
                 // Get the triangle vertex
                 var v = Point.ByCoordinates(vx, vy, vz);
+                var uv = surface.UVParameterAtPoint(v);
+                var avgColor = CalculateColorDistance(uv);
 
-                var an = package.TriangleNormals[i];
-                var bn = package.TriangleNormals[i + 1];
-                var cn = package.TriangleNormals[i + 2];
-
-                var norm = Vector.ByCoordinates(an, bn, cn);
-                var xsects = surface.ProjectInputOnto(v, norm);
-
-                if (!xsects.Any()) continue;
-
-                // The parameter at the triangle vertex
-                var vUV = surface.UVParameterAtPoint(xsects.First() as Point);
-
-                // The distances from this to each of the calculation points
-                var distances = new double[uvs.Count()];
-                for (int k=0; k<uvs.Count(); k++)
-                {
-                    var uv = uvs[k];
-                    var d = Math.Sqrt(Math.Pow(uv.U - vUV.U, 2) + Math.Pow(uv.V - vUV.V, 2));
-                    distances[k] = d;
-                }
-
-                // Calculate the averages of all 
-                // color components
-                var a = 0.0;
-                var r = 0.0;
-                var g = 0.0;
-                var b = 0.0;
-
-                var totalWeight = 0.0;
-
-                for (int j = 0; j < colors.Count(); j++)
-                {
-                    var c = colors[j];
-                    var d = distances[j];
-
-                    a += c.Alpha * d;
-                    r += c.Red * d;
-                    g += c.Green * d;
-                    b += c.Blue * d;
-
-                    totalWeight += d;
-                }
-
-                var totalR = (byte)(r/totalWeight);
-                var totalG = (byte)(g/totalWeight);
-                var totalB = (byte)(b/totalWeight);
-                var totalA = (byte)(a/totalWeight);
-
-                package.TriangleVertexColors[colorCount] = totalR;
-                package.TriangleVertexColors[colorCount + 1] = totalG;
-                package.TriangleVertexColors[colorCount + 2] = totalB;
-                package.TriangleVertexColors[colorCount + 3] = totalA;
-
-                Debug.WriteLine(string.Format("v:{0}, uv:{1}, c:{2}", v, vUV, Color.ByARGB(totalA, totalR, totalG, totalB)));
+                package.TriangleVertexColors[colorCount] = avgColor.Red;
+                package.TriangleVertexColors[colorCount + 1] = avgColor.Green;
+                package.TriangleVertexColors[colorCount + 2] = avgColor.Blue;
+                package.TriangleVertexColors[colorCount + 3] = avgColor.Alpha;
 
                 colorCount += 4;
             }
+        }
+
+        private static bool VertExists(IEnumerable<Vertex2> verts, UV comp, out Vertex2 vert)
+        {
+            vert = null;
+
+            foreach (var v in verts)
+            {
+                var found = v.AsVector().IsAlmostEqualTo(Vector.ByCoordinates(comp.U, comp.V, 0));
+                if (!found) continue;
+
+                vert = v;
+                return true;
+            }
+
+            return false;
+        }
+
+        private Color CalculateColorDistance(UV uv)
+        {
+            // The distances from this to each of the calculation points
+            var distances = new double[uvs.Count()];
+            var maxDistance = 0.0;
+            for (int k = 0; k < uvs.Count(); k++)
+            {
+                var uvTest = uvs[k];
+                var d =
+                    System.Math.Sqrt(
+                        System.Math.Pow(uvTest.U - uv.U, 2) + System.Math.Pow(uvTest.V - uv.V, 2));
+                distances[k] = d;
+
+                if (d > maxDistance)
+                    maxDistance = d;
+            }
+
+            var colorContributions = new List<DSCore.Color>();
+
+            for (int j = 0; j < colors.Count(); j++)
+            {
+                var c = colors[j];
+
+                var color = colors[j].Divide(System.Math.Pow(distances[j] + 1,2));
+                colorContributions.Add(color);
+            }
+
+            var a = 255;
+            var r = 255;
+            var g = 255;
+            var b = 255;
+
+            foreach (var c in colorContributions)
+            {
+                a += c.Alpha;
+                r += c.Red;
+                g += c.Green;
+                b += c.Blue;
+            }
+
+            var size = colors.Count() + 1;
+            return DSCore.Color.ByARGB(255, r/size, g/size, b/size);
+        }
+    }
+
+    // Extension methods for the color class to allow the 
+    // averaging of colors
+    internal static class ColorExtensions
+    {
+        internal static Color Add(this DSCore.Color c1, DSCore.Color c2)
+        {
+            return Color.ByARGB(
+                c1.Alpha + c2.Alpha,
+                c1.Red + c2.Red,
+                c1.Green + c2.Green,
+                c1.Blue + c2.Blue);
+        }
+
+        internal static Color Divide(this DSCore.Color c1, double div)
+        {
+            return Color.ByARGB(
+                (int)(c1.Alpha / div),
+                (int)(c1.Red / div),
+                (int)(c1.Green / div),
+                (int)(c1.Blue / div));
         }
     }
 }
