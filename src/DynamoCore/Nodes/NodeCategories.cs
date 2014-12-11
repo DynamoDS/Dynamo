@@ -450,7 +450,7 @@ namespace Dynamo.Nodes
                     currVersion);
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Obsolete File",
                 summary,
@@ -468,7 +468,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="exception">The exception to display.</param>
         [Obsolete("Fire event for this kind thing, handle events on the ViewModel layer.", true)]
-        internal static void DisplayEngineFailureMessage(Exception exception)
+        internal static TaskDialogEventArgs DisplayEngineFailureMessage(Exception exception)
         {
             StabilityTracking.GetInstance().NotifyCrash();
             InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
@@ -487,7 +487,7 @@ namespace Dynamo.Nodes
 If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.";
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception",
                 summary,
@@ -497,9 +497,12 @@ If you don't mind, it would be helpful for you to send us your file. That will m
             args.AddRightAlignedButton((int)ButtonId.Ok, "Arrrrg, ok");
             args.Exception = exception;
 
+            //TODO(Steve): Fire event that returns these event args, perform below in handler on DynamoModel
             dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)ButtonId.Submit)
                 DynamoViewModel.ReportABug(null);
+
+            return args;
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
@@ -532,7 +535,7 @@ If you don't mind, it would be helpful for you to send us your file. That will m
                 "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
-            var args = new DynamoModel.TaskDialogEventArgs(
+            var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
 

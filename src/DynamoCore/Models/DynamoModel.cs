@@ -731,29 +731,72 @@ namespace Dynamo.Models
 
         #region save/load
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="xmlPath"></param>
         public void OpenFileFromPath(string xmlPath)
-        {
-            WorkspaceModel ws;
-            if (OpenFile(xmlPath, out ws))
-            {
-                AddWorkspace(ws);
-                CurrentWorkspace = ws;
-            }
-        }
-
-        private bool OpenFile(string xmlPath, out WorkspaceModel workspace)
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlPath);
 
             WorkspaceHeader workspaceInfo;
-            if (!WorkspaceHeader.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, Logger, out workspaceInfo))
+            if (WorkspaceHeader.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, Logger, out workspaceInfo))
             {
-                workspace = null;
+                if (HandleMigrations(workspaceInfo, xmlDoc))
+                {
+                    WorkspaceModel ws;
+                    if (OpenFile(workspaceInfo, xmlDoc, out ws))
+                    {
+                        AddWorkspace(ws);
+                        CurrentWorkspace = ws;
+                        return;
+                    }
+                }
+            }
+            Logger.LogError("Could not open workspace at: " + xmlPath);
+        }
+
+        private bool HandleMigrations(WorkspaceHeader workspaceInfo, XmlDocument xmlDoc)
+        {
+            Version fileVersion = MigrationManager.VersionFromString(workspaceInfo.Version);
+
+            var currentVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false);
+
+            if (fileVersion > currentVersion)
+            {
+                bool resume = Utils.DisplayFutureFileMessage(
+                    this,
+                    workspaceInfo.FileName,
+                    fileVersion,
+                    currentVersion);
+
+                if (!resume)
+                    return false;
+            }
+
+            var decision = MigrationManager.ProcessWorkspace(
+                xmlDoc,
+                fileVersion,
+                currentVersion,
+                workspaceInfo.FileName,
+                IsTestMode,
+                Logger);
+
+            if (decision == MigrationManager.Decision.Abort)
+            {
+                Utils.DisplayObsoleteFileMessage(this, workspaceInfo.FileName, fileVersion, currentVersion);
                 return false;
             }
 
-            CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(xmlPath), IsTestMode);
+            return true;
+        }
+
+        private bool OpenFile(WorkspaceHeader workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
+        {
+            CustomNodeManager.AddUninitializedCustomNodesInPath(
+                Path.GetDirectoryName(workspaceInfo.FileName),
+                IsTestMode);
 
             var result = workspaceInfo.IsCustomNodeWorkspace
                 ? CustomNodeManager.OpenCustomNodeWorkspace(xmlDoc, workspaceInfo, IsTestMode, out workspace)
@@ -769,46 +812,6 @@ namespace Dynamo.Models
         private bool OpenHomeWorkspace(
             XmlDocument xmlDoc, WorkspaceHeader workspaceInfo, out WorkspaceModel workspace)
         {
-            // TODO(Steve): Refactor to remove dialogs. Results of various dialogs should be passed to this method.
-            #region Migration
-
-            Version fileVersion = MigrationManager.VersionFromString(workspaceInfo.Version);
-
-            var currentVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false);
-
-            if (fileVersion > currentVersion)
-            {
-                bool resume = Utils.DisplayFutureFileMessage(
-                    this,
-                    workspaceInfo.FileName,
-                    fileVersion,
-                    currentVersion);
-
-                if (!resume)
-                {
-                    workspace = null;
-                    return false;
-                }
-            }
-
-            var decision = MigrationManager.ProcessWorkspace(
-                xmlDoc,
-                fileVersion,
-                currentVersion,
-                workspaceInfo.FileName,
-                IsTestMode,
-                Logger);
-
-            if (decision == MigrationManager.Decision.Abort)
-            {
-                Utils.DisplayObsoleteFileMessage(this, workspaceInfo.FileName, fileVersion, currentVersion);
-
-                workspace = null;
-                return false;
-            }
-
-            #endregion
-
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
             var newWorkspace = new HomeWorkspaceModel(

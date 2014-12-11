@@ -15,15 +15,15 @@ namespace Dynamo.Models
             get { return customNodeId; }
             private set
             {
-                if (value != customNodeId)
-                {
-                    var oldId = customNodeId;
-                    customNodeId = value;
-                    OnFunctionIdChanged(oldId);
-                    OnDefinitionUpdated();
-                    OnInfoChanged();
-                    RaisePropertyChanged("CustomNodeId");
-                }
+                if (value == customNodeId) 
+                    return;
+
+                var oldId = customNodeId;
+                customNodeId = value;
+                OnFunctionIdChanged(oldId);
+                OnDefinitionUpdated();
+                OnInfoChanged();
+                RaisePropertyChanged("CustomNodeId");
             }
         }
         private Guid customNodeId;

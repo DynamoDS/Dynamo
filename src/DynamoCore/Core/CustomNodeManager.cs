@@ -161,10 +161,7 @@ namespace Dynamo.Utilities
 
         private static void RegisterCustomNodeInstanceForUpdates(Function node, CustomNodeWorkspaceModel workspace)
         {
-            Action defUpdatedHandler = () =>
-            {
-                node.ResyncWithDefinition(workspace.CustomNodeDefinition);
-            };
+            Action defUpdatedHandler = () => node.ResyncWithDefinition(workspace.CustomNodeDefinition);
             workspace.DefinitionUpdated += defUpdatedHandler;
 
             Action infoChangedHandler = () =>
@@ -459,7 +456,6 @@ namespace Dynamo.Utilities
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (InitializeCustomNode(
                 Guid.Parse(workspaceInfo.ID),
-                isTestMode,
                 workspaceInfo,
                 xmlDoc,
                 out customNodeWorkspace))
@@ -472,49 +468,9 @@ namespace Dynamo.Utilities
         }
 
         private bool InitializeCustomNode(
-            Guid functionId, bool isTestMode, WorkspaceHeader workspaceInfo,
+            Guid functionId, WorkspaceHeader workspaceInfo,
             XmlDocument xmlDoc, out CustomNodeWorkspaceModel workspace)
         {
-            // TODO(Steve): Refactor to remove dialogs. Results of various dialogs should be passed to this method.
-            #region Migration
-
-            var fileVersion = MigrationManager.VersionFromString(workspaceInfo.Version);
-
-            var currentVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false);
-
-            if (fileVersion > currentVersion)
-            {
-                bool resume = Utils.DisplayFutureFileMessage(
-                    this.dynamoModel,
-                    workspaceInfo.FileName,
-                    fileVersion,
-                    currentVersion);
-
-                if (!resume)
-                {
-                    workspace = null;
-                    return false;
-                }
-            }
-
-            var decision = MigrationManager.ProcessWorkspace(
-                xmlDoc,
-                fileVersion,
-                currentVersion,
-                workspaceInfo.FileName,
-                isTestMode,
-                AsLogger());
-
-            if (decision == MigrationManager.Decision.Abort)
-            {
-                Utils.DisplayObsoleteFileMessage(this.dynamoModel, workspaceInfo.FileName, fileVersion, currentVersion);
-
-                workspace = null;
-                return false;
-            }
-
-            #endregion
-
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
             SetFunctionDefinition(new CustomNodeDefinition(functionId));
@@ -606,7 +562,7 @@ namespace Dynamo.Utilities
                     return false;
                 }
 
-                return InitializeCustomNode(functionId, isTestMode, header, xmlDoc, out workspace);
+                return InitializeCustomNode(functionId, header, xmlDoc, out workspace);
             }
             catch (Exception ex)
             {
