@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.Windows.Media.Imaging;
+=======
+>>>>>>> remotes/upstream/master
 using Dynamo.DSEngine;
 using Dynamo.Library;
 using Utils = Dynamo.Nodes.Utilities;

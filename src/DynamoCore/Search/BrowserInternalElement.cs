@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,9 +8,13 @@ using Dynamo.DSEngine;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
+=======
+﻿using System.Collections.ObjectModel;
+>>>>>>> remotes/upstream/master
 
-namespace Dynamo.Nodes.Search
+namespace Dynamo.Search
 {
+<<<<<<< HEAD
     public class BrowserRootElement : BrowserItem
     {
 
@@ -94,9 +99,10 @@ namespace Dynamo.Nodes.Search
         }
     }
 
+=======
+>>>>>>> remotes/upstream/master
     public class BrowserInternalElement : BrowserItem
     {
-
         /// <summary>
         ///     The items inside of the browser item
         /// </summary>
@@ -230,6 +236,7 @@ namespace Dynamo.Nodes.Search
 
         public string FullCategoryName { get; set; }
 
+<<<<<<< HEAD
         protected virtual string GetResourceName(
             ResourceType resourceType, bool disambiguate = false)
         {
@@ -258,6 +265,31 @@ namespace Dynamo.Nodes.Search
 
             var cust = LibraryCustomizationServices.GetForAssembly(Configurations.DefaultAssembly);
             return cust.LoadIconInternal(Configurations.DefaultIcon);
+=======
+        public override void Execute()
+        {
+            var endState = !this.IsExpanded;
+
+            foreach (var ele in this.Siblings)
+                ele.IsExpanded = false;
+
+            //Walk down the tree expanding anything nested one layer deep
+            //this can be removed when we have the hierachy implemented properly
+            if (this.Items.Count == 1)
+            {
+                BrowserItem subElement = this.Items[0];
+
+                while (subElement.Items.Count == 1)
+                {
+                    subElement.IsExpanded = true;
+                    subElement = subElement.Items[0];
+                }
+
+                subElement.IsExpanded = true;
+            }
+
+            this.IsExpanded = endState;
+>>>>>>> remotes/upstream/master
         }
     }
 

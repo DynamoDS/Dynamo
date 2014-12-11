@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.Linq;
+=======
+>>>>>>> remotes/upstream/master
 using Dynamo.Models;
 using String = System.String;
 
@@ -166,18 +169,6 @@ namespace Dynamo.Search.SearchElements
             f.FullCategoryName = this.FullCategoryName;
             f.ElementType = this.ElementType;
             return f;
-        }
-
-        private void ToggleIsVisible(object parameter)
-        {
-            if (this.DescriptionVisibility != true)
-            {
-                this.DescriptionVisibility = true;
-            }
-            else
-            {
-                this.DescriptionVisibility = false;
-            }
         }
 
         public override bool Equals(object obj)

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.Linq;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using Dynamo.UI;
+=======
+>>>>>>> remotes/upstream/master
 using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements
@@ -16,14 +19,16 @@ namespace Dynamo.Search.SearchElements
         public string Path
         {
             get { return _path; }
-            set { 
-                _path = value; 
-                RaisePropertyChanged("Path"); 
+            set
+            {
+                _path = value;
+                RaisePropertyChanged("Path");
             }
         }
 
         public override string Type { get { return "Custom Node"; } }
 
+<<<<<<< HEAD
         List<Tuple<string, string>> inputParameters;
         List<string> outputParameters;
 
@@ -49,6 +54,10 @@ namespace Dynamo.Search.SearchElements
 
         public CustomNodeSearchElement(CustomNodeInfo info, SearchElementGroup group)
             : base(info.Name, info.Description, new List<string>(), group)
+=======
+        public CustomNodeSearchElement(CustomNodeInfo info)
+            : base(info.Name, info.Description, new List<string>())
+>>>>>>> remotes/upstream/master
         {
             this.Node = null;
             this.FullCategoryName = info.Category;

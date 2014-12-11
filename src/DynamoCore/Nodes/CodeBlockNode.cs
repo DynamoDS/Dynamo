@@ -20,15 +20,21 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows for DesignScript code to be authored directly")]
     [IsDesignScriptCompatible]
-    public partial class CodeBlockNodeModel : NodeModel
+    public class CodeBlockNodeModel : NodeModel
     {
         private readonly List<Statement> codeStatements = new List<Statement>();
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> tempVariables = new List<string>();
         private string previewVariable = null;
+
         private bool shouldFocus = true;
-        public bool ShouldFocus { get { return shouldFocus; } }
+        public bool ShouldFocus
+        {
+            get { return shouldFocus;  }
+            internal set { shouldFocus = value; }
+        }
+
         private readonly DynamoLogger logger;
 
         private struct Formatting
@@ -45,28 +51,28 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public CodeBlockNodeModel(WorkspaceModel workspace, string userCode) 
+        public CodeBlockNodeModel(WorkspaceModel workspace, string userCode)
             : this(workspace)
         {
             code = userCode;
             ProcessCodeDirect();
         }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workspace, double xPos, double yPos) : base(workspace)
+        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workspace, double xPos, double yPos)
+            : base(workspace)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             this.X = xPos;
             this.Y = yPos;
             this.code = userCode;
             this.GUID = guid;
-            this.shouldFocus = false;
+            this.ShouldFocus = false;
             ProcessCodeDirect();
         }
 
         /// <summary>
         ///     It removes all the in ports and out ports so that the user knows there is an error.
         /// </summary>
-        /// <param name="errorMessage"> Error message to be displayed </param>
         private void ProcessError()
         {
             previewVariable = null;
@@ -164,7 +170,7 @@ namespace Dynamo.Nodes
                         DisableReporting();
 
                         using (Workspace.UndoRecorder.BeginActionGroup())
-                        {
+                        {                            
                             var inportConnections = new OrderedDictionary();
                             var outportConnections = new OrderedDictionary();
                             //Save the connectors so that we can recreate them at the correct positions
@@ -242,37 +248,17 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
+            //Empty code blocks are deleted only on Esc key press. The values are stored all the other times.
+            //This is helpful to Undo the deleted values from code block.
             if (name == "Code")
             {
                 //Remove the UpdateValue's recording
-                this.Workspace.UndoRecorder.PopFromUndoGroup();
-
-                //Since an empty Code Block Node should not exist, this checks for such instances.
-                // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
-                // an empty Code Block Node should not be recorded, this method also checks and removes
-                // any unwanted recordings
+                this.Workspace.UndoRecorder.PopFromUndoGroup();              
                 value = CodeBlockUtils.FormatUserText(value);
-                if (value == "")
-                {
-                    if (this.Code == "")
-                    {
-                        this.Workspace.UndoRecorder.PopFromUndoGroup();
-                        Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
-                        this.Workspace.Nodes.Remove(this);
-                    }
-                    else
-                    {
-                        this.Workspace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
-                    }
-                }
-                else
-                {
-                    if (!value.Equals(this.Code))
-                        Code = value;
-                }
+                if (!value.Equals(this.Code))
+                    Code = value;                               
                 return true;
-            }
-
+            }            
             return base.UpdateValueCore(name, value);
         }
 
@@ -307,8 +293,8 @@ namespace Dynamo.Nodes
             var resultNodes = new List<AssociativeNode>();
 
             // Define unbound variables if necessary
-            if (inputIdentifiers != null && 
-                inputAstNodes != null && 
+            if (inputIdentifiers != null &&
+                inputAstNodes != null &&
                 inputIdentifiers.Count == inputAstNodes.Count)
             {
                 var initStatments = inputIdentifiers.Zip(inputAstNodes,
@@ -478,7 +464,7 @@ namespace Dynamo.Nodes
                 return;
 
             IdentifierNode identifierNode = null;
-            foreach(var parsedNode in parsedNodes.Reverse())
+            foreach (var parsedNode in parsedNodes.Reverse())
             {
                 var statement = parsedNode as BinaryExpressionNode;
                 if (null == statement)
@@ -589,7 +575,7 @@ namespace Dynamo.Nodes
 
                 double portCoordsY = Formatting.InitialMargin;
                 portCoordsY += visualIndex * Configurations.CodeBlockPortHeightInPixels;
-                
+
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
                     VerticalMargin = portCoordsY - prevPortBottom,
@@ -802,7 +788,7 @@ namespace Dynamo.Nodes
             {
                 var identNode = astNode as IdentifierNode;
                 var ident = identNode.Value;
-                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident)) 
+                if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident))
                     && !tempVariables.Contains(ident)
                     && !identNode.Equals(this.AstIdentifierForPreview))
                 {
