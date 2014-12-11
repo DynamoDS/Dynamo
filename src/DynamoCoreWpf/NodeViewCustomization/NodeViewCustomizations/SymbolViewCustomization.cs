@@ -23,8 +23,8 @@ namespace Dynamo.Wpf
             input.SetBinding(ParameterEditor.ParameterProperty,
                 new Binding("InputSymbol")
                 {
-                    Mode = BindingMode.TwoWay,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                    Mode = BindingMode.OneWay,
+                    Source = symbol
                 });
         }
 

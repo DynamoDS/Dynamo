@@ -152,16 +152,19 @@ namespace Dynamo.UI.Controls
 
         private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
         {
-            if (InnerTextEditor.Text.Contains(':'))
-            {
-                string type = InnerTextEditor.Text.Split(':').Last().Trim();
-                var types = this.GetMatchedTypes(type);
+            if (!InnerTextEditor.Text.Contains(':'))
+                return;
 
-                if (types != null && types.Any())
-                {
-                    ShowCompletionWindow(types, type.Length);
-                }
-            }
+            string type = InnerTextEditor.Text.Split(':').Last().Trim();
+            var types = this.GetMatchedTypes(type);
+            if (types == null || !types.Any())
+                return;
+
+            int index = InnerTextEditor.Text.IndexOf(':');
+            if (index < 0 || InnerTextEditor.CaretOffset <= index)
+                return;
+
+            ShowCompletionWindow(types, InnerTextEditor.Text.Length - type.Length);
         }
 
         /// <summary>
@@ -214,7 +217,7 @@ namespace Dynamo.UI.Controls
         }
         #endregion
 
-        private void ShowCompletionWindow(IEnumerable<ICompletionData> completions, int replaceLength)
+        private void ShowCompletionWindow(IEnumerable<ICompletionData> completions, int offset)
         {
             // This implementation has been referenced from
             // http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
@@ -226,7 +229,7 @@ namespace Dynamo.UI.Controls
             completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
             completionWindow.AllowsTransparency = true;
             completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
-            completionWindow.StartOffset -= replaceLength;
+            completionWindow.StartOffset = offset; 
             completionWindow.CloseWhenCaretAtBeginning = true;
 
             var data = completionWindow.CompletionList.CompletionData;
