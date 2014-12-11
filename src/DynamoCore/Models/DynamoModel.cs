@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
+﻿using DSCoreNodesUI;
 using DSNodeServices;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
@@ -22,6 +14,15 @@ using Dynamo.Utilities;
 using DynamoUnits;
 using DynamoUtilities;
 using ProtoCore;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Utils = Dynamo.Nodes.Utilities;
@@ -102,6 +103,7 @@ namespace Dynamo.Models
                 InstrumentationLogger.IsTestMode = value;
             }
         }
+        private static bool isTestMode;
 
         /// <summary>
         /// Setting this flag enables creation of an XML in following format that records 
@@ -115,7 +117,6 @@ namespace Dynamo.Models
         //TODO(Steve): Attempt to make the majority of these readonly fields
         
         public readonly LibraryServices LibraryServices;
-        private static bool isTestMode;
 
         /// <summary>
         /// TODO
@@ -404,6 +405,81 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
+        private void InitializeCustomNodeManager()
+        {
+            CustomNodeManager = new CustomNodeManager(NodeFactory);
+            CustomNodeManager.MessageLogged += LogMessage;
+
+            var customNodeSearchRegistry = new HashSet<Guid>();
+            CustomNodeManager.InfoUpdated += info =>
+            {
+                if (customNodeSearchRegistry.Contains(info.FunctionId))
+                    return;
+
+                customNodeSearchRegistry.Add(info.FunctionId);
+                var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
+                SearchModel.Add(searchElement);
+                CustomNodeManager.InfoUpdated += newInfo =>
+                {
+                    if (info.FunctionId == newInfo.FunctionId)
+                        searchElement.SyncWithCustomNodeInfo(newInfo);
+                };
+                CustomNodeManager.CustomNodeRemoved += id =>
+                {
+                    if (info.FunctionId == id)
+                    {
+                        customNodeSearchRegistry.Remove(info.FunctionId);
+                        SearchModel.Remove(searchElement);
+                    }
+                };
+            };
+        }
+
+        private void InitializeBuiltinNodeLibrary()
+        {
+            NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
+
+            var dsFuncData = new TypeLoadData(typeof(DSFunction));
+            var dsVarArgFuncData = new TypeLoadData(typeof(DSVarArgFunction));
+            var cbnData = new TypeLoadData(typeof(CodeBlockNodeModel));
+            var dummyData = new TypeLoadData(typeof(DummyNode));
+            var symbolData = new TypeLoadData(typeof(Symbol));
+            var outputData = new TypeLoadData(typeof(Output));
+
+            var ztLoader = new ZeroTouchNodeLoader(LibraryServices);
+            NodeFactory.AddLoader(dsFuncData.Type, ztLoader, dsFuncData.AlsoKnownAs);
+            NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader, dsVarArgFuncData.AlsoKnownAs);
+
+            NodeFactory.AddLoader(cbnData.Type, cbnData.AlsoKnownAs);
+            NodeFactory.AddLoader(dummyData.Type, dummyData.AlsoKnownAs);
+
+            NodeFactory.AddLoader(symbolData.Type, symbolData.AlsoKnownAs);
+            NodeFactory.AddLoader(outputData.Type, outputData.AlsoKnownAs);
+
+            SearchModel.Add(new NodeModelSearchElement(dsFuncData));
+            SearchModel.Add(new NodeModelSearchElement(dsVarArgFuncData));
+            SearchModel.Add(new NodeModelSearchElement(cbnData));
+
+            var symbolSearchElement = new NodeModelSearchElement(symbolData)
+            {
+                IsVisibleInSearch = CurrentWorkspace is CustomNodeWorkspaceModel
+            };
+            var outputSearchElement = new NodeModelSearchElement(outputData)
+            {
+                IsVisibleInSearch = CurrentWorkspace is CustomNodeWorkspaceModel
+            };
+
+            CurrentWorkspaceChanged += workspace =>
+            {
+                var isVisible = workspace is CustomNodeWorkspaceModel;
+                symbolSearchElement.IsVisibleInSearch = isVisible;
+                outputSearchElement.IsVisibleInSearch = isVisible;
+            };
+
+            SearchModel.Add(symbolSearchElement);
+            SearchModel.Add(outputSearchElement);
+        }
+
         protected DynamoModel(StartConfiguration configuration)
         {
             MaxTesselationDivisions = 128;
@@ -435,7 +511,6 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            //TODO(Steve): Need a way to hide input/output nodes in home workspaces...
             SearchModel = new NodeSearchModel();
             //SearchModel.ItemProduced += node => AddNodeToCurrentWorkspace(node, true);
 
@@ -444,32 +519,7 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            CustomNodeManager = new CustomNodeManager(NodeFactory);
-            CustomNodeManager.MessageLogged += LogMessage;
-
-            var customNodeSearchRegistry = new HashSet<Guid>();
-            CustomNodeManager.InfoUpdated += info =>
-            {
-                if (customNodeSearchRegistry.Contains(info.FunctionId))
-                    return;
-
-                customNodeSearchRegistry.Add(info.FunctionId);
-                var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
-                SearchModel.Add(searchElement);
-                CustomNodeManager.InfoUpdated += newInfo =>
-                {
-                    if (info.FunctionId == newInfo.FunctionId)
-                        searchElement.SyncWithCustomNodeInfo(newInfo);
-                };
-                CustomNodeManager.CustomNodeRemoved += id =>
-                {
-                    if (info.FunctionId == id)
-                    {
-                        customNodeSearchRegistry.Remove(info.FunctionId);
-                        SearchModel.Remove(searchElement);
-                    }
-                };
-            };
+            InitializeCustomNodeManager();
             
             Loader = new DynamoLoader();
             Loader.MessageLogged += LogMessage;
@@ -492,10 +542,6 @@ namespace Dynamo.Models
             LibraryServices = new LibraryServices(libraryCore);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
-            
-            //TODO(Steve): Ensure this is safe when EngineController is re-created
-            NodeFactory.AddLoader(new ZeroTouchNodeLoader(LibraryServices));
-            NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
 
             UpdateManager.UpdateManager.CheckForProductUpdate();
 
@@ -503,7 +549,7 @@ namespace Dynamo.Models
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
             PackageManagerClient = new PackageManagerClient(PackageLoader.RootPackagesDirectory, CustomNodeManager);
-
+            
             InitializeNodeLibrary(preferences);
         }
         
@@ -559,8 +605,7 @@ namespace Dynamo.Models
 
         private void InitializeNodeLibrary(IPreferences preferences)
         {
-            //CustomNodeManager.RecompileAllNodes(EngineController);
-            //Loader.ClearCachedAssemblies();
+            InitializeBuiltinNodeLibrary();
 
             // Load NodeModels
             foreach (var type in Loader.LoadNodeModels(Context))

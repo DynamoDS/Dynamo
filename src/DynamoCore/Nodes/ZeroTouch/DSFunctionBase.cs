@@ -21,6 +21,9 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Shortest;
             Description = Controller.Description;
             Category = Controller.Category;
+
+            if (controller.Definition.IsObsolete)
+                Warning(controller.Definition.ObsoleteMessage);
         }
         
         public override bool IsConvertible

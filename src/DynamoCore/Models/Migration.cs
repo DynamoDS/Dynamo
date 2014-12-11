@@ -172,7 +172,7 @@ namespace Dynamo.Models
             }
         }
 
-        public void ProcessNodesInWorkspace(XmlDocument xmlDoc, Version workspaceVersion, Version currentVersion)
+        public void ProcessNodesInWorkspace(XmlDocument xmlDoc, Version workspaceVersion, Version currentVersion, NodeFactory factory)
         {
             if (DynamoModel.EnableMigrationLogging)
             {
@@ -194,7 +194,7 @@ namespace Dynamo.Models
                 typeName = Nodes.Utilities.PreprocessTypeName(typeName);
 
                 Type type;
-                if (!NodeFactory.ResolveType(typeName, out type))
+                if (!factory.ResolveType(typeName, out type))
                 {
                     // If we are not able to resolve the type given its name, 
                     // turn it into a deprecated node so that user is aware.
@@ -860,62 +860,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Call this method to convert a DSFunction/DSVarArgFunction element into 
-        /// an equivalent dummy node to indicate that a function node cannot be 
-        /// resolved during load time. This method retains the number of input 
-        /// ports based on the function signature that comes with the XmlElement 
-        /// that represent the function node.
-        /// </summary>
-        /// <param name="element">XmlElement representing the original DSFunction
-        /// node which has failed function resolution. This XmlElement must be of 
-        /// type "DSFunction" or "DSVarArgFunction" otherwise an exception will be 
-        /// thrown.</param>
-        /// <returns>Returns a new XmlElement representing the dummy node.</returns>
-        /// 
-        public static XmlElement CreateUnresolvedFunctionNode(XmlElement element)
-        {
-            if (element == null)
-                throw new ArgumentNullException("element");
-            if (element.Name.Equals("Dynamo.Nodes.DSFunction") == false)
-            {
-                if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
-                {
-                    var message = "Only DSFunction/DSVarArgFunction should be here.";
-                    throw new ArgumentException(message);
-                }
-            }
-
-            var type = element.Attributes["type"].Value;
-            if (type.Equals("Dynamo.Nodes.DSFunction") == false)
-            {
-                if (type.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
-                {
-                    var message = "Only DSFunction/DSVarArgFunction should be here.";
-                    throw new ArgumentException(message);
-                }
-            }
-
-            var nicknameAttrib = element.Attributes["nickname"];
-            if (nicknameAttrib == null)
-                throw new ArgumentException("'nickname' attribute missing.");
-
-            var nickname = nicknameAttrib.Value;
-            if (string.IsNullOrEmpty(nickname))
-                throw new ArgumentException("'nickname' attribute missing.");
-
-            // Determine the number of input and output count (always 1).
-            int inportCount = DetermineFunctionInputCount(element);
-            var assembly = DetermineAssemblyName(element);
-
-            // Create an XmlElement representation of the new dummy node.
-            var dummy = CreateDummyNode(element, inportCount, 1);
-            dummy.SetAttribute("legacyNodeName", nickname);
-            dummy.SetAttribute("legacyAssembly", assembly);
-            dummy.SetAttribute("nodeNature", "Unresolved");
-            return dummy;
-        }
-
-        /// <summary>
         /// Call this method to create a dummy node, should a node failed to be 
         /// migrated. This results in a dummy node with a description of what the 
         /// original node type was, and also retain the number of input and output
@@ -937,88 +881,6 @@ namespace Dynamo.Models
             var dummy = CreateDummyNode(element, inportCount, outportCount);
             dummy.SetAttribute("nodeNature", "Unresolved");
             return dummy;
-        }
-
-        private static int DetermineFunctionInputCount(XmlElement element)
-        {
-            int additionalPort = 0;
-
-            // "DSVarArgFunction" is a "VariableInputNode", therefore it will 
-            // have "inputcount" as one of the attributes. If such attribute 
-            // does not exist, throw an ArgumentException.
-            if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction"))
-            {
-                var inputCountAttrib = element.Attributes["inputcount"];
-
-                if (inputCountAttrib == null)
-                {
-                    throw new ArgumentException(string.Format(
-                        "Function inputs cannot be determined ({0}).",
-                        element.GetAttribute("nickname")));
-                }
-
-                return Convert.ToInt32(inputCountAttrib.Value);
-            }
-
-            var signature = string.Empty;
-            var signatureAttrib = element.Attributes["function"];
-            if (signatureAttrib != null)
-                signature = signatureAttrib.Value;
-            else if (element.ChildNodes.Count > 0)
-            {
-                // We have an old file format with "FunctionItem" child element.
-                var childElement = element.ChildNodes[0] as XmlElement;
-                signature = string.Format("{0}@{1}",
-                    childElement.GetAttribute("DisplayName"),
-                    childElement.GetAttribute("Parameters").Replace(';', ','));
-
-                // We need one more port for instance methods/properties.
-                switch (childElement.GetAttribute("Type"))
-                {
-                    case "InstanceMethod":
-                    case "InstanceProperty":
-                        additionalPort = 1; // For taking the instance itself.
-                        break;
-                }
-            }
-
-            if (string.IsNullOrEmpty(signature))
-            {
-                var message = "Function signature cannot be determined.";
-                throw new ArgumentException(message);
-            }
-
-            int atSignIndex = signature.IndexOf('@');
-            if (atSignIndex >= 0) // An '@' sign found, there's param information.
-            {
-                signature = signature.Substring(atSignIndex + 1); // Skip past '@'.
-                var parts = signature.Split(new char[] { ',' });
-                return ((parts != null) ? parts.Length : 1) + additionalPort;
-            }
-
-            return additionalPort + 1; // At least one.
-        }
-
-        private static string DetermineAssemblyName(XmlElement element)
-        {
-            var assemblyName = string.Empty;
-            var assemblyAttrib = element.Attributes["assembly"];
-            if (assemblyAttrib != null)
-                assemblyName = assemblyAttrib.Value;
-            else if (element.ChildNodes.Count > 0)
-            {
-                // We have an old file format with "FunctionItem" child element.
-                var childElement = element.ChildNodes[0] as XmlElement;
-                var funcItemAsmAttrib = childElement.Attributes["Assembly"];
-                if (funcItemAsmAttrib != null)
-                    assemblyName = funcItemAsmAttrib.Value;
-            }
-
-            if (string.IsNullOrEmpty(assemblyName))
-                return string.Empty;
-
-            try { return Path.GetFileName(assemblyName); }
-            catch (Exception) { return string.Empty; }
         }
 
         public static void SetFunctionSignature(XmlElement element,

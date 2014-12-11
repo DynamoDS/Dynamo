@@ -199,6 +199,18 @@ namespace Dynamo.Search
         private string fullCategoryName;
         private string description;
         private string name;
+        private bool isVisibleInSearch = true;
+
+        public bool IsVisibleInSearch
+        {
+            get { return isVisibleInSearch; }
+            set
+            {
+                if (value.Equals(isVisibleInSearch)) return;
+                isVisibleInSearch = value;
+                OnPropertyChanged("IsVisibleInSearch");
+            }
+        }
 
         public ICollection<string> Categories
         {

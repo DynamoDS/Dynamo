@@ -161,7 +161,10 @@ namespace Dynamo.Utilities
 
         private static void RegisterCustomNodeInstanceForUpdates(Function node, CustomNodeWorkspaceModel workspace)
         {
-            Action defUpdatedHandler = () => node.ResyncWithDefinition(workspace.CustomNodeDefinition);
+            Action defUpdatedHandler = () =>
+            {
+                node.ResyncWithDefinition(workspace.CustomNodeDefinition);
+            };
             workspace.DefinitionUpdated += defUpdatedHandler;
 
             Action infoChangedHandler = () =>

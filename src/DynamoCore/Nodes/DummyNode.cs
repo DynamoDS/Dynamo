@@ -31,6 +31,21 @@ namespace DSCoreNodesUI
             ShouldDisplayPreviewCore = false;
         }
 
+        public DummyNode(int inputCount, int outputCount, string legacyName, XmlElement originalElement, string legacyAssembly, Nature nodeNature)
+        {
+            InputCount = inputCount;
+            OutputCount = outputCount;
+            LegacyNodeName = legacyName;
+            OriginalNodeContent = originalElement;
+            LegacyAssembly = legacyAssembly;
+            NodeNature = nodeNature;
+
+            Description = GetDescription();
+            ShouldDisplayPreviewCore = false;
+
+            UpdatePorts();
+        }
+
         private void LoadNode(XmlNode nodeElement)
         {
             var inputCount = nodeElement.Attributes["inputCount"];
@@ -59,12 +74,19 @@ namespace DSCoreNodesUI
                 NodeNature = ((Nature)nature);
             }
 
+            UpdatePorts();
+        }
+
+        private void UpdatePorts()
+        {
+            InPortData.Clear();
             for (int input = 0; input < InputCount; input++)
             {
                 var name = string.Format("Port {0}", input + 1);
                 InPortData.Add(new PortData(name, ""));
             }
 
+            OutPortData.Clear();
             for (int output = 0; output < OutputCount; output++)
             {
                 var name = string.Format("Port {0}", output + 1);
@@ -151,9 +173,6 @@ namespace DSCoreNodesUI
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            InPortData.Clear();  // In/out ports are going to be recreated in 
-            OutPortData.Clear(); // LoadNode, clear them so they don't accumulate.
-
             base.DeserializeCore(element, context);
             LoadNode(element);
         }
