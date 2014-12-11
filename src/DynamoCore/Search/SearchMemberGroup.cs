@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Nodes.Search;
+using Dynamo.Core;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Search
 {

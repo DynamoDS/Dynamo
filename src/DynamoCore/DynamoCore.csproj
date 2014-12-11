@@ -113,7 +113,10 @@ limitations under the License.
     <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
+    <Compile Include="Search\BrowserInternalElementForClasses.cs" />
     <Compile Include="Search\BrowserRootElement.cs" />
+    <Compile Include="Search\ClassInformation.cs" />
+    <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />

@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
-using Dynamo.ViewModels;
 using System.Collections.ObjectModel;
 
 namespace Dynamo.Search
@@ -36,7 +34,7 @@ namespace Dynamo.Search
         {
             string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
                 memberNode.Group);
-            string shortenedCategory = SearchViewModel.ShortenCategoryName(categoryWithGroup);
+            string shortenedCategory = SearchModel.ShortenCategoryName(categoryWithGroup);
 
             var group = memberGroups.FirstOrDefault(mg => mg.FullyQualifiedName == shortenedCategory);
             if (group == null)
@@ -81,11 +79,11 @@ namespace Dynamo.Search
             switch (group)
             {
                 case SearchElementGroup.Action:
-                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupAction;
+                    return category + SearchModel.CATEGORY_DELIMITER + Configurations.CategoryGroupAction;
                 case SearchElementGroup.Create:
-                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupCreate;
+                    return category + SearchModel.CATEGORY_DELIMITER + Configurations.CategoryGroupCreate;
                 case SearchElementGroup.Query:
-                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupQuery;
+                    return category + SearchModel.CATEGORY_DELIMITER + Configurations.CategoryGroupQuery;
                 default:
                     return category;
             }

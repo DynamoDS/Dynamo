@@ -60,7 +60,7 @@ namespace Dynamo.Search
         /// <value>
         ///     A set of categories
         /// </value>
-        private Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
+        internal Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
 
         /// <summary>
         /// The root elements for the browser
@@ -185,7 +185,8 @@ namespace Dynamo.Search
 
         #region Categories
 
-        private const char CATEGORY_DELIMITER = '.';
+        public const char CATEGORY_DELIMITER = '.';
+        public const char SHORTENED_CATEGORY_DELIMITER = '>';
 
         /// <summary>
         ///     Attempt to add a new category to the browser and an item as one of its children
@@ -490,6 +491,34 @@ namespace Dynamo.Search
             return category.Items.FirstOrDefault(x => x.Name == catName);
         }
 
+        internal static string ShortenCategoryName(string fullCategoryName)
+        {
+            if (string.IsNullOrEmpty(fullCategoryName))
+                return string.Empty;
+
+            var catName = fullCategoryName.Replace(SHORTENED_CATEGORY_DELIMITER.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
+
+            // if the category name is too long, we strip off the interior categories
+            if (catName.Length > 50)
+            {
+                var s = catName.Split(SHORTENED_CATEGORY_DELIMITER).Select(x => x.Trim()).ToList();
+                if (s.Count() > 4)
+                {
+                    s = new List<string>()
+                                        {
+                                            s[0],
+                                            "...",
+                                            s[s.Count - 3],
+                                            s[s.Count - 2],
+                                            s[s.Count - 1]
+                                        };
+                    catName = String.Join(" " + SHORTENED_CATEGORY_DELIMITER + " ", s);
+                }
+            }
+
+            return catName;
+        }
+
         #endregion
 
         #region Add
@@ -675,7 +704,7 @@ namespace Dynamo.Search
         #region Execution
 
         internal event SearchElementBase.SearchElementHandler Executed;
-        protected void OnExecuted(SearchElementBase element)
+        internal void OnExecuted(SearchElementBase element)
         {
             if (Executed != null)
             {
