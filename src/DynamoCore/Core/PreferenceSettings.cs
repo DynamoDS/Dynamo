@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using DynamoUnits;
 
 using DynamoUtilities;
 
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {

@@ -176,11 +176,11 @@ namespace ProtoImperative
                 }
                 catch (OverflowException)
                 {
-                    buildStatus.LogSemanticError("Array size overflow", core.CurrentDSFileName, t.line, t.col);
+                    buildStatus.LogSemanticError(StringConstants.arraySizeOverflow, core.CurrentDSFileName, t.line, t.col);
                 }
                 catch (FormatException)
                 {
-                    buildStatus.LogSemanticError("Array declaration expected constant expression", core.CurrentDSFileName, t.line, t.col);
+                    buildStatus.LogSemanticError(StringConstants.constantExpectedInArrayDeclaration, core.CurrentDSFileName, t.line, t.col);
                 } 
             }
             else if (node is BinaryExpressionNode)
@@ -382,7 +382,7 @@ namespace ProtoImperative
             ProtoCore.DSASM.MemoryRegion region = ProtoCore.DSASM.MemoryRegion.kMemStack)
         {
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
-                buildStatus.LogSemanticError(ident + " is a class name, can't be used as a variable.");
+                buildStatus.LogSemanticError(String.Format(StringConstants.classNameAsVariableError,ident));
 
             ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode(
                 ident, 
@@ -489,7 +489,7 @@ namespace ProtoImperative
             int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
             if (ProtoCore.DSASM.Constants.kInvalidIndex != codeBlock.symbolTable.IndexOf(symbolnode))
             {
-                buildStatus.LogSemanticError("redefinition of identifier '" + ident + "'");
+                buildStatus.LogSemanticError(String.Format(StringConstants.identifierRedefinition,ident));
             }
             else
             {
@@ -643,7 +643,7 @@ namespace ProtoImperative
                     // To support unamed constructor, x = A();
                     else if (refClassIndex != Constants.kInvalidIndex)
                     {
-                        string message = String.Format(StringConstants.kCallingNonStaticMethod, core.ClassTable.ClassNodes[refClassIndex].name, procName);
+                        string message = String.Format(ProtoCore.StringConstants.kCallingNonStaticMethod, core.ClassTable.ClassNodes[refClassIndex].name, procName);
                         buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
@@ -1015,14 +1015,14 @@ namespace ProtoImperative
                 {
                     if (localProcedure.isStatic)
                     {
-                        string message = StringConstants.kUsingThisInStaticFunction;
+                        string message = ProtoCore.StringConstants.kUsingThisInStaticFunction;
                         core.BuildStatus.LogWarning(WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
                     }
                     else if (localProcedure.classScope == Constants.kGlobalScope)
                     {
-                        string message = StringConstants.kInvalidThis;
+                        string message = ProtoCore.StringConstants.kInvalidThis;
                         core.BuildStatus.LogWarning(WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                         EmitPushNull();
                         return;
@@ -1035,7 +1035,7 @@ namespace ProtoImperative
                 }
                 else
                 {
-                    string message = StringConstants.kInvalidThis;
+                    string message = ProtoCore.StringConstants.kInvalidThis;
                     core.BuildStatus.LogWarning(WarningID.kInvalidThis, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     EmitPushNull();
                     return;
@@ -1089,13 +1089,13 @@ namespace ProtoImperative
                 {
                     if (!isAccessible)
                     {
-                        string message = String.Format(StringConstants.kPropertyIsInaccessible, t.Value);
+                        string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, t.Value);
                         buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
                 }
                 else
                 {
-                    string message = String.Format(StringConstants.kUnboundIdentifierMsg, t.Value);
+                    string message = String.Format(ProtoCore.StringConstants.kUnboundIdentifierMsg, t.Value);
                     buildStatus.LogWarning(WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                 }
 
@@ -1217,7 +1217,7 @@ namespace ProtoImperative
                 if (ProtoCore.Language.kImperative == langblock.codeblock.language)
                 {
                     // TODO Jun: Move the associative and all common string into some table
-                    buildStatus.LogSyntaxError("An imperative language block is declared within an imperative language block.", core.CurrentDSFileName, langblock.line, langblock.col);
+                    buildStatus.LogSyntaxError(StringConstants.invalidNestedImperativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
                 }
 
                 if (globalProcIndex != ProtoCore.DSASM.Constants.kInvalidIndex && core.ProcNode == null)
@@ -1996,7 +1996,7 @@ namespace ProtoImperative
                     }
                     else
                     {
-                        buildStatus.LogSemanticError("array initializer must be an expression list", core.CurrentDSFileName, bNode.RightNode.line, bNode.RightNode.col);
+                        buildStatus.LogSemanticError(StringConstants.invalidArrayInitializer, core.CurrentDSFileName, bNode.RightNode.line, bNode.RightNode.col);
                     }
                 }
                 else
@@ -2052,7 +2052,7 @@ namespace ProtoImperative
 
                 if (inferedType.UID == (int)PrimitiveType.kTypeFunctionPointer && emitDebugInfo)
                 {
-                    buildStatus.LogSemanticError("Function pointer is not allowed at binary expression other than assignment!", core.CurrentDSFileName, b.LeftNode.line, b.LeftNode.col);
+                    buildStatus.LogSemanticError(StringConstants.functionPointerNotAllowedAtBinaryExpression, core.CurrentDSFileName, b.LeftNode.line, b.LeftNode.col);
                 }
 
                 leftType.UID = inferedType.UID;
@@ -2155,7 +2155,7 @@ namespace ProtoImperative
             {
                 if (inferedType.UID == (int)PrimitiveType.kTypeFunctionPointer && emitDebugInfo)
                 {
-                    buildStatus.LogSemanticError("Function pointer is not allowed at binary expression other than assignment!", core.CurrentDSFileName, b.RightNode.line, b.RightNode.col);
+                    buildStatus.LogSemanticError(StringConstants.functionPointerNotAllowedAtBinaryExpression, core.CurrentDSFileName, b.RightNode.line, b.RightNode.col);
                 }
                 EmitBinaryOperation(leftType, rightType, b.Optr);
                 isBooleanOp = false;
@@ -2198,7 +2198,7 @@ namespace ProtoImperative
                         {
                             if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
                             {
-                                buildStatus.LogSemanticError("\"" + t.Name + "\"" + "is a function and not allowed as a variable name", core.CurrentDSFileName, t.line, t.col);
+                                buildStatus.LogSemanticError(String.Format(StringConstants.functionAsVaribleError,t.Name), core.CurrentDSFileName, t.line, t.col);
                             }
                         }
                     }
@@ -2775,11 +2775,11 @@ namespace ProtoImperative
 
                         if (step == 0)
                         {
-                            warningMsg = StringConstants.kRangeExpressionWithStepSizeZero;
+                            warningMsg = ProtoCore.StringConstants.kRangeExpressionWithStepSizeZero;
                         }
                         else if ((end > current && step < 0) || (end < current && step > 0))
                         {
-                            warningMsg = StringConstants.kRangeExpressionWithInvalidStepSize;
+                            warningMsg = ProtoCore.StringConstants.kRangeExpressionWithInvalidStepSize;
                         }
                     }
                 }
@@ -2787,26 +2787,26 @@ namespace ProtoImperative
                 {
                     if (hasAmountOp)
                     {
-                        warningMsg = StringConstants.kRangeExpressionConflictOperator;
+                        warningMsg = ProtoCore.StringConstants.kRangeExpressionConflictOperator;
                     }
                     else if (range.StepNode != null && !(range.StepNode is IntNode))
                     {
-                        warningMsg = StringConstants.kRangeExpressionWithNonIntegerStepNumber;
+                        warningMsg = ProtoCore.StringConstants.kRangeExpressionWithNonIntegerStepNumber;
                     }
                     else if (step <= 0)
                     {
-                        warningMsg = StringConstants.kRangeExpressionWithNegativeStepNumber;
+                        warningMsg = ProtoCore.StringConstants.kRangeExpressionWithNegativeStepNumber;
                     }
                 }
                 else if (stepoperator == ProtoCore.DSASM.RangeStepOperator.approxsize)
                 {
                     if (hasAmountOp)
                     {
-                        warningMsg = StringConstants.kRangeExpressionConflictOperator;
+                        warningMsg = ProtoCore.StringConstants.kRangeExpressionConflictOperator;
                     }
                     else if (step == 0)
                     {
-                        warningMsg = StringConstants.kRangeExpressionWithStepSizeZero;
+                        warningMsg = ProtoCore.StringConstants.kRangeExpressionWithStepSizeZero;
                     }
                 }
 
@@ -3221,7 +3221,7 @@ namespace ProtoImperative
                 }
                 else
                 {
-                    core.BuildStatus.LogSyntaxError("Only identifier or identifier list can appear on the left hand side of assignment.", core.CurrentDSFileName, inode.RightNode.line, inode.RightNode.col);
+                    core.BuildStatus.LogSyntaxError(StringConstants.onlyIdentifierOrIdentifierListCanBeOnLeftSide, core.CurrentDSFileName, inode.RightNode.line, inode.RightNode.col);
                 }
             }
             else
@@ -3381,7 +3381,7 @@ namespace ProtoImperative
             int uid = core.TypeSystem.GetType(argNode.ArgumentType.Name);
             if (uid == (int)PrimitiveType.kInvalidType && !core.IsTempVar(argNode.NameNode.Name))
             {
-                string message = String.Format(StringConstants.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
+                string message = String.Format(ProtoCore.StringConstants.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
                 buildStatus.LogWarning(WarningID.kTypeUndefined, message, null, argNode.line, argNode.col, graphNode);
             }
 

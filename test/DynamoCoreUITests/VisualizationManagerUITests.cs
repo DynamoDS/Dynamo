@@ -8,8 +8,9 @@ using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Tests;
 
+using Dynamo.Utilities;
+using DynamoCoreUITests.Utility;
 using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -141,7 +142,6 @@ namespace DynamoCoreUITests
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;
-            var viz = ViewModel.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -167,10 +167,13 @@ namespace DynamoCoreUITests
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
             //nodes, but watch 3D will not be showing them
-            var watch3D = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch3D>();
-            Assert.NotNull(watch3D);
-            var watchView = watch3D.View;
-            Assert.NotNull(watchView);
+            var nodeViews = View.NodeViewsInFirstWorkspace().OfNodeModelType<Watch3D>().ToList();
+            
+            Assert.AreEqual(1, nodeViews.Count());
+
+            var watch3DNodeView = nodeViews.First();
+            var watchView = watch3DNodeView.ChildrenOfType<Watch3DView>().First();
+
             Assert.AreEqual(0, watchView.Points.Count);
         }
 

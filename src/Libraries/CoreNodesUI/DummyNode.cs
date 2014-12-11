@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
@@ -29,24 +27,6 @@ namespace DSCoreNodesUI
             this.LegacyNodeName = "DSCoreNodesUI.DummyNode";
             this.LegacyAssembly = string.Empty;
             this.NodeNature = Nature.Unresolved;
-        }
-
-        public void SetupCustomUIElements(Dynamo.Controls.dynNodeView nodeUI)
-        {
-            var fileName = "DeprecatedNode.png";
-            if (this.NodeNature == Nature.Unresolved)
-                fileName = "MissingNode.png";
-
-            var src = @"/DSCoreNodesUI;component/Resources/" + fileName;
-
-            Image dummyNodeImage = new Image()
-            {
-                Stretch = System.Windows.Media.Stretch.None,
-                Source = new BitmapImage(new Uri(src, UriKind.Relative))
-            };
-
-            nodeUI.inputGrid.Children.Add(dummyNodeImage);
-            this.Warning(GetDescription());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -178,12 +158,15 @@ namespace DSCoreNodesUI
 
         #endregion
 
-        protected override bool ShouldDisplayPreviewCore()
+        protected override bool ShouldDisplayPreviewCore
         {
-            return false; // Previews are not shown for this node type.
+            get
+            {
+                return false; // Previews are not shown for this node type.
+            }
         }
 
-        private string GetDescription()
+        public string GetDescription()
         {
             if (this.NodeNature == Nature.Deprecated)
             {
