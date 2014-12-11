@@ -1,7 +1,8 @@
 using System.Collections.ObjectModel;
+using Dynamo.UI;
 
 namespace Dynamo.Search
-{   
+{
     public class BrowserInternalElement : BrowserItem
     {
         /// <summary>

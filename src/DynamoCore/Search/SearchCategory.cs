@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
-using System.Collections.ObjectModel;
 
 namespace Dynamo.Search
 {
@@ -79,11 +79,11 @@ namespace Dynamo.Search
             switch (group)
             {
                 case SearchElementGroup.Action:
-                    return category + SearchModel.CATEGORY_DELIMITER + Configurations.CategoryGroupAction;
+                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupAction;
                 case SearchElementGroup.Create:
-                    return category + SearchModel.CATEGORY_DELIMITER + Configurations.CategoryGroupCreate;
+                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupCreate;
                 case SearchElementGroup.Query:
-                    return category + SearchModel.CATEGORY_DELIMITER + Configurations.CategoryGroupQuery;
+                    return category + Configurations.CategoryDelimiter + Configurations.CategoryGroupQuery;
                 default:
                     return category;
             }
@@ -91,8 +91,8 @@ namespace Dynamo.Search
 
         public void SortChildren()
         {
-            Classes.ToList().ForEach(x=>x.RecursivelySort());
-            MemberGroups.ToList().ForEach(x=>x.Sort());
+            Classes.ToList().ForEach(x => x.RecursivelySort());
+            MemberGroups.ToList().ForEach(x => x.Sort());
         }
     }
 }

@@ -42,6 +42,7 @@ namespace Dynamo.UI
         // Grid Settings
         public static readonly int GridSpacing = 100;
         public static readonly int GridThickness = 2;
+        public static readonly Color GridLineColor = Color.FromRgb(232, 232, 232);
 
         // Canvas Control
         public static readonly double ZoomIncrement = 0.05;
@@ -70,6 +71,8 @@ namespace Dynamo.UI
         public static double PreviewFrameStrokeThickness = 1;
 
         public static double PreviewTextFontSize = 10;
+        public static FontWeight PreviewTextFontWeight = FontWeights.Light;
+        public static Thickness PreviewContentMargin = new Thickness(5, 12, 5, 5);
 
         public static double PreviewMaxWidth = 500;
         public static double PreviewMinWidth = 40;
@@ -106,6 +109,7 @@ namespace Dynamo.UI
         public static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
 
         public static double ErrorTextFontSize = 13;
+        public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
 
         public static double ErrorArrowWidth = 12;
@@ -121,6 +125,7 @@ namespace Dynamo.UI
         public static double NodeTooltipContentMaxHeight = NodeTooltipMaxHeight - 16;
 
         public static double NodeTooltipTextFontSize = 11;
+        public static FontWeight NodeTooltipTextFontWeight = FontWeights.Light;
 
         public static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
         public static Thickness NodeTooltipContentMarginRight = new Thickness(5, 5, 11, 5);
@@ -149,6 +154,7 @@ namespace Dynamo.UI
         public static double LibraryTooltipContentMaxHeight = LibraryTooltipMaxHeight - 17;
 
         public static double LibraryTooltipTextFontSize = 11;
+        public static FontWeight LibraryTooltipTextFontWeight = FontWeights.Normal;
         public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
 
         public static double LibraryTooltipArrowHeight = 12;

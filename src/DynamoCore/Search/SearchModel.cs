@@ -12,13 +12,13 @@ using Dynamo.DSEngine;
 
 using System.Xml;
 using DynamoUtilities;
-
+using Dynamo.UI;
 
 namespace Dynamo.Search
 {
     public class SearchModel : NotificationObject
     {
-        #region Events 
+        #region Events
 
         /// <summary>
         /// Can be invoked in order to signify that the UI should be updated after
@@ -36,6 +36,12 @@ namespace Dynamo.Search
         #endregion
 
         #region Properties/Fields
+
+        private CategoryBuilder browserCategoriesBuilder;
+        internal CategoryBuilder BrowserCategoriesBuilder { get { return browserCategoriesBuilder; } }
+
+        private CategoryBuilder addonCategoriesBuilder;
+        internal CategoryBuilder AddonCategoriesBuilder { get { return addonCategoriesBuilder; } }
 
         /// <summary>
         /// Leaves of the browser - used for navigation
@@ -63,13 +69,41 @@ namespace Dynamo.Search
         internal Dictionary<string, CategorySearchElement> NodeCategories { get; set; }
 
         /// <summary>
-        /// The root elements for the browser
+        /// Enum represents loading type of element.
         /// </summary>
-        private ObservableCollection<BrowserRootElement> _browserRootCategories = new ObservableCollection<BrowserRootElement>();
+        public enum ElementType
+        {
+            // Element is part of core libraries.
+            Regular,
+            // Element is part of package.
+            Package,
+            // Element is custom node created by user but not part of package.
+            CustomNode,
+            // Element is part of custom DLL. 
+            CustomDll
+        };
+
+        /// <summary>
+        /// The root elements for the browser
+        /// </summary>        
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
-            get { return _browserRootCategories; } 
-            set { _browserRootCategories = value; }
+            get { return browserCategoriesBuilder.RootCategories; }
+        }
+
+        /// <summary>
+        /// The root elements for custom nodes tree.
+        /// </summary>        
+        public ObservableCollection<BrowserRootElement> AddonRootCategories
+        {
+            get { return addonCategoriesBuilder.RootCategories; }
+        }
+
+        private ObservableCollection<SearchCategory> _searchRootCategories = new ObservableCollection<SearchCategory>();
+        public ObservableCollection<SearchCategory> SearchRootCategories
+        {
+            get { return _searchRootCategories; }
+            set { _searchRootCategories = value; }
         }
 
         /// <summary>
@@ -113,20 +147,23 @@ namespace Dynamo.Search
 
         private void InitializeCore()
         {
+            browserCategoriesBuilder = new CategoryBuilder(this, false);
+            addonCategoriesBuilder = new CategoryBuilder(this, true);
+
             NodeCategories = new Dictionary<string, CategorySearchElement>();
             SearchDictionary = new SearchDictionary<SearchElementBase>();
             MaxNumSearchResults = 15;
 
             // pre-populate the search categories
-            this.AddRootCategory(BuiltinNodeCategories.CORE);
-            this.AddRootCategory(LibraryServices.Categories.BuiltIns);
-            this.AddRootCategory(LibraryServices.Categories.Operators);
-            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
-            this.AddRootCategory(BuiltinNodeCategories.REVIT);
-            this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
-            this.AddRootCategory("Units");
-            this.AddRootCategory("Office");
-            this.AddRootCategory("Migration");
+            browserCategoriesBuilder.AddRootCategory(BuiltinNodeCategories.CORE);
+            browserCategoriesBuilder.AddRootCategory(LibraryServices.Categories.BuiltIns);
+            browserCategoriesBuilder.AddRootCategory(LibraryServices.Categories.Operators);
+            browserCategoriesBuilder.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
+            browserCategoriesBuilder.AddRootCategory(BuiltinNodeCategories.REVIT);
+            browserCategoriesBuilder.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            browserCategoriesBuilder.AddRootCategory("Units");
+            browserCategoriesBuilder.AddRootCategory("Office");
+            browserCategoriesBuilder.AddRootCategory("Migration");
         }
 
         #endregion
@@ -166,8 +203,7 @@ namespace Dynamo.Search
         #region Search
 
         /// <summary>
-        ///     Performs a search using the given string as query, but does not update
-        ///     the SearchResults object.
+        ///     Performs a search using the given string as query.
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
@@ -178,15 +214,49 @@ namespace Dynamo.Search
                 return _searchElements;
             }
 
-            return SearchDictionary.Search(search, MaxNumSearchResults);
+            return Search(search, MaxNumSearchResults);
+        }
+
+        private IEnumerable<SearchElementBase> Search(string search, int maxNumSearchResults)
+        {
+            var foundNodes = SearchDictionary.Search(search, maxNumSearchResults);
+
+            ClearSearchCategories();
+            PopulateSearchCategories(foundNodes);
+
+            return foundNodes;
+        }
+
+        private void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
+        {
+            foreach (NodeSearchElement node in nodes)
+            {
+                var rootCategoryName = SplitCategoryName(node.FullCategoryName).FirstOrDefault();
+
+                var category = _searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
+                if (category == null)
+                {
+                    category = new SearchCategory(rootCategoryName);
+                    _searchRootCategories.Add(category);
+                }
+
+                category.AddMemberToGroup(node);
+                category.AddClassToGroup(node);
+            }
+
+            // Order found categories by name.
+            _searchRootCategories = new ObservableCollection<SearchCategory>(_searchRootCategories.OrderBy(x => x.Name));
+            SortSearchCategoriesChildren();
+        }
+
+        private void ClearSearchCategories()
+        {
+            _searchRootCategories.Clear();
         }
 
         #endregion
 
         #region Categories
-
-        public const char CATEGORY_DELIMITER = '.';
-        public const char SHORTENED_CATEGORY_DELIMITER = '>';
 
         /// <summary>
         ///     Attempt to add a new category to the browser and an item as one of its children
@@ -195,8 +265,13 @@ namespace Dynamo.Search
         /// <param name="item">The item to add as a child of that category</param>
         internal void TryAddCategoryAndItem(string category, BrowserInternalElement item)
         {
+            ElementType nodeType = GetElementType(item);
 
-            var cat = this.AddCategory(category);
+            // When create category, give not only category name, 
+            // but also assembly, where icon for category could be found.
+
+            BrowserItem cat = browserCategoriesBuilder.AddCategory(category, (item as NodeSearchElement).Assembly);
+
             cat.AddChild(item);
 
             item.FullCategoryName = category;
@@ -204,116 +279,14 @@ namespace Dynamo.Search
             var searchEleItem = item as SearchElementBase;
             if (searchEleItem != null)
                 _searchElements.Add(searchEleItem);
-
         }
 
-        internal void RemoveEmptyCategories()
+        internal ElementType GetElementType(BrowserInternalElement item)
         {
-            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
-        }
+            if (item is NodeSearchElement)
+                return (item as NodeSearchElement).ElementType;
 
-
-        internal void RemoveEmptyRootCategory(string categoryName)
-        {
-            if (categoryName.Contains(CATEGORY_DELIMITER))
-            {
-                RemoveEmptyCategory(categoryName);
-                return;
-            }
-
-            var cat = GetCategoryByName(categoryName);
-            if (cat == null)
-            {
-                return;
-            }
-
-            RemoveEmptyRootCategory((BrowserRootElement)cat);
-        }
-
-        internal void RemoveEmptyRootCategory(BrowserRootElement rootEle)
-        {
-            if (!ContainsCategory(rootEle.Name))
-                return;
-
-            BrowserRootCategories.Remove(rootEle);
-        }
-
-        /// <summary>
-        /// Remove and empty category from browser and search by name. Useful when a single item is removed.
-        /// </summary>
-        /// <param name="categoryName">The category name, including delimiters</param>
-        internal void RemoveEmptyCategory(string categoryName)
-        {
-            var currentCat = GetCategoryByName(categoryName);
-            if (currentCat == null)
-            {
-                return;
-            }
-
-            RemoveEmptyCategory(currentCat);
-        }
-
-        /// <summary>
-        /// Remove an empty category from browser and search.  Useful when a single item is removed.
-        /// </summary>
-        /// <param name="ele"></param>
-        internal void RemoveEmptyCategory(BrowserItem ele)
-        {
-            if (ele is BrowserRootElement && ele.Items.Count == 0)
-            {
-                RemoveEmptyRootCategory(ele as BrowserRootElement);
-                return;
-            }
-
-            if (ele is BrowserInternalElement && ele.Items.Count == 0)
-            {
-                var internalEle = ele as BrowserInternalElement;
-
-                internalEle.Parent.Items.Remove(internalEle);
-                RemoveEmptyCategory(internalEle.Parent);
-            }
-        }
-
-        /// <summary>
-        /// Remove a category and all its children from the browser and search.  The category does not
-        /// have to be empty.
-        /// </summary>
-        /// <param name="categoryName"></param>
-        internal void RemoveCategory(string categoryName)
-        {
-            var currentCat = GetCategoryByName(categoryName);
-            if (currentCat == null) return;
-
-            RemoveCategory(currentCat);
-
-        }
-
-        /// <summary>
-        /// Remove a category and all its children from the browser and search.  The category does
-        /// not have to be empty.
-        /// </summary>
-        /// <param name="ele"></param>
-        internal void RemoveCategory(BrowserItem ele)
-        {
-            var nodes = ele.Items.Where(x => x is NodeSearchElement)
-                           .Cast<NodeSearchElement>().ToList();
-
-            var cats = ele.Items.Where(x => x is BrowserInternalElement)
-                           .Cast<BrowserInternalElement>().ToList();
-
-            nodes.Select(x => x.Name).ToList().ForEach(RemoveNode);
-            cats.ToList().ForEach(RemoveCategory);
-
-            ele.Items.Clear();
-
-            if (ele is BrowserRootElement)
-            {
-                BrowserRootCategories.Remove(ele as BrowserRootElement);
-            }
-            else if (ele is BrowserInternalElement)
-            {
-                (ele as BrowserInternalElement).Parent.Items.Remove(ele);
-            }
+            return ElementType.Regular;
         }
 
         /// <summary>
@@ -327,11 +300,11 @@ namespace Dynamo.Search
                 return new List<string>();
 
             var splitCat = new List<string>();
-            if (categoryName.Contains(CATEGORY_DELIMITER))
+            if (categoryName.Contains(Configurations.CategoryDelimiter))
             {
                 splitCat =
-                    categoryName.Split(CATEGORY_DELIMITER)
-                                .Where(x => x != CATEGORY_DELIMITER.ToString() && !System.String.IsNullOrEmpty(x))
+                    categoryName.Split(Configurations.CategoryDelimiter)
+                                .Where(x => x != Configurations.CategoryDelimiter.ToString() && !string.IsNullOrEmpty(x))
                                 .ToList();
             }
             else
@@ -342,153 +315,27 @@ namespace Dynamo.Search
             return splitCat;
         }
 
-        /// <summary>
-        ///     Add a category, given a delimited name
-        /// </summary>
-        /// <param name="categoryName">The comma delimited name </param>
-        /// <returns>The newly created item</returns>
-        internal BrowserItem AddCategory(string categoryName)
+        internal void RemoveEmptyCategories()
         {
-            if (string.IsNullOrEmpty(categoryName))
-            {
-                return this.TryAddRootCategory("Uncategorized");
-            }
-
-            if (ContainsCategory(categoryName))
-            {
-                return GetCategoryByName(categoryName);
-            }
-
-            if (!NodeCategories.ContainsKey(categoryName))
-            {
-                var cat = new CategorySearchElement(categoryName);
-                cat.Executed += this.OnExecuted;
-
-                NodeCategories.Add(categoryName, cat);
-            }
-
-            // otherwise split the category name
-            var splitCat = SplitCategoryName(categoryName);
-
-            // attempt to add root element
-            if (splitCat.Count == 1)
-            {
-                return this.TryAddRootCategory(categoryName);
-            }
-
-            if (splitCat.Count == 0)
-            {
-                return null;
-            }
-
-            // attempt to add root category
-            var currentCat = TryAddRootCategory(splitCat[0]);
-
-            for (var i = 1; i < splitCat.Count; i++)
-            {
-                currentCat = TryAddChildCategory(currentCat, splitCat[i]);
-            }
-
-            return currentCat;
-
+            browserCategoriesBuilder.RemoveEmptyCategories();
+            addonCategoriesBuilder.RemoveEmptyCategories();
         }
 
-        /// <summary>
-        /// Add a single category as a child of a category.  If the category already exists, just return that one.
-        /// </summary>
-        /// <param name="parent">The parent category </param>
-        /// <param name="childCategoryName">The name of the child category (can't be nested)</param>
-        /// <returns>The newly created category</returns>
-        internal BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName)
+        internal void SortRootCategories()
         {
-            var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
-
-            // support long nested categories like Math.Math.StaticMembers.Abs
-            var parentItem = parent as BrowserInternalElement;
-            while (parentItem != null)
-            {
-                var grandParent = parentItem.Parent;
-                if (null == grandParent)
-                    break;
-
-                newCategoryName = grandParent.Name + CATEGORY_DELIMITER + newCategoryName;
-                parentItem = grandParent as BrowserInternalElement;
-            }
-
-            if (ContainsCategory(newCategoryName))
-            {
-                return GetCategoryByName(newCategoryName);
-            }
-
-            var tempCat = new BrowserInternalElement(childCategoryName, parent);
-            parent.AddChild(tempCat);
-
-            return tempCat;
+            browserCategoriesBuilder.SortCategoryItems();
+            addonCategoriesBuilder.SortCategoryItems();
         }
 
-        /// <summary>
-        ///     
-        /// </summary>
-        /// <returns>The newly added category or the existing one.</returns>
-        internal BrowserItem TryAddRootCategory(string categoryName)
+        internal void SortCategoryChildren()
         {
-            return ContainsCategory(categoryName) ? GetCategoryByName(categoryName) : AddRootCategory(categoryName);
+            browserCategoriesBuilder.SortCategoryChildren();
+            addonCategoriesBuilder.SortCategoryChildren();
         }
 
-        /// <summary>
-        /// Add a root category, assuming it doesn't already exist
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        internal BrowserRootElement AddRootCategory(string name)
+        internal void SortSearchCategoriesChildren()
         {
-            var ele = new BrowserRootElement(name, BrowserRootCategories);
-            BrowserRootCategories.Add(ele);
-            return ele;
-        }
-
-        /// <summary>
-        /// Add a root category, assuming it doesn't already exist
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        internal BrowserRootElement AddRootCategoryToStart(string name)
-        {
-            var ele = new BrowserRootElement(name, BrowserRootCategories);
-            BrowserRootCategories.Insert(0, ele);
-            return ele;
-        }
-
-        /// <summary>
-        /// Determine whether a category exists in search
-        /// </summary>
-        /// <param name="categoryName"></param>
-        /// <returns></returns>
-        internal bool ContainsCategory(string categoryName)
-        {
-            return GetCategoryByName(categoryName) != null;
-        }
-
-        internal BrowserItem GetCategoryByName(string categoryName)
-        {
-            var split = SplitCategoryName(categoryName);
-            if (!split.Any())
-                return null;
-
-            var cat = (BrowserItem)BrowserRootCategories.FirstOrDefault(x => x.Name == split[0]);
-
-            foreach (var splitName in split.GetRange(1, split.Count - 1))
-            {
-                if (cat == null)
-                    return cat;
-                cat = TryGetSubCategory(cat, splitName);
-            }
-            return cat;
-        }
-
-        internal BrowserItem TryGetSubCategory(BrowserItem category, string catName)
-        {
-            return category.Items.FirstOrDefault(x => x.Name == catName);
+            _searchRootCategories.ToList().ForEach(x => x.SortChildren());
         }
 
         internal static string ShortenCategoryName(string fullCategoryName)
@@ -496,12 +343,12 @@ namespace Dynamo.Search
             if (string.IsNullOrEmpty(fullCategoryName))
                 return string.Empty;
 
-            var catName = fullCategoryName.Replace(SHORTENED_CATEGORY_DELIMITER.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
+            var catName = fullCategoryName.Replace(Configurations.ShortenedCategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
 
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)
             {
-                var s = catName.Split(SHORTENED_CATEGORY_DELIMITER).Select(x => x.Trim()).ToList();
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
                 if (s.Count() > 4)
                 {
                     s = new List<string>()
@@ -512,7 +359,7 @@ namespace Dynamo.Search
                                             s[s.Count - 2],
                                             s[s.Count - 1]
                                         };
-                    catName = String.Join(" " + SHORTENED_CATEGORY_DELIMITER + " ", s);
+                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
                 }
             }
 
@@ -556,7 +403,10 @@ namespace Dynamo.Search
                     //      | nValue: int    |
                     //      +----------------+
                     var displayString = function.UserFriendlyName;
-                    var category = function.Category;
+                    var group = SearchElementGroup.None;
+
+                    // Rename category (except for custom nodes, imported libraries).
+                    string category = ProcessNodeCategory(function.Category, ref group);
 
                     // do not add GetType method names to search
                     if (displayString.Contains("GetType"))
@@ -572,10 +422,11 @@ namespace Dynamo.Search
                             displayString = displayString + "(" + args + ")";
                     }
 
-                    var searchElement = new DSFunctionNodeSearchElement(displayString, function);
+                    var searchElement = new DSFunctionNodeSearchElement(displayString, function, group);
                     searchElement.SetSearchable(true);
                     searchElement.FullCategoryName = category;
                     searchElement.Executed += this.OnExecuted;
+                    searchElement.ElementType = functionGroup.ElementType;
 
                     // Add this search eleemnt to the search view
                     TryAddCategoryAndItem(category, searchElement);
@@ -586,18 +437,15 @@ namespace Dynamo.Search
 
                     // add all search tags
                     function.GetSearchTags().ToList().ForEach(x => SearchDictionary.Add(searchElement, x));
-
-                    
                 }
             }
-
         }
 
         /// <summary>
         ///     Adds a local DynNode to search
         /// </summary>
         /// <param name="dynNode">A Dynamo node object</param>
-        public void Add(Type t)
+        public void Add(Type t, ElementType nodeType = ElementType.Regular)
         {
             // get name, category, attributes (this is terribly ugly...)
             var attribs = t.GetCustomAttributes(typeof(NodeNameAttribute), false);
@@ -608,10 +456,12 @@ namespace Dynamo.Search
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+            var group = SearchElementGroup.None;
             var cat = "";
             if (attribs.Length > 0)
             {
-                cat = (attribs[0] as NodeCategoryAttribute).ElementCategory;
+                var catCandidate = (attribs[0] as NodeCategoryAttribute).ElementCategory;
+                cat = ProcessNodeCategory(catCandidate, ref group);
             }
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchTagsAttribute), false);
@@ -630,6 +480,7 @@ namespace Dynamo.Search
 
             var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
             searchEle.Executed += this.OnExecuted;
+            searchEle.ElementType = nodeType;
 
             attribs = t.GetCustomAttributes(typeof(NodeSearchableAttribute), false);
             bool searchable = true;
@@ -681,7 +532,10 @@ namespace Dynamo.Search
 
         public bool Add(CustomNodeInfo nodeInfo)
         {
-            var nodeEle = new CustomNodeSearchElement(nodeInfo);
+            var group = SearchElementGroup.None;
+            nodeInfo.Category = ProcessNodeCategory(nodeInfo.Category, ref group);
+
+            var nodeEle = new CustomNodeSearchElement(nodeInfo, group);
             if (SearchDictionary.Contains(nodeEle))
             {
                 // Second node with the same GUID should rewrite the original node. 
@@ -689,6 +543,7 @@ namespace Dynamo.Search
                 return this.Refactor(nodeInfo);
             }
 
+            nodeEle.ElementType = nodeInfo.ElementType;
             nodeEle.Executed += this.OnExecuted;
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
@@ -750,9 +605,9 @@ namespace Dynamo.Search
             foreach (var node in nodes)
             {
                 RemoveNode(nodeName);
-                RemoveEmptyCategory(node);
+                browserCategoriesBuilder.RemoveEmptyCategory(node);
+                addonCategoriesBuilder.RemoveEmptyCategory(node);
             }
-
         }
 
         /// <summary>
@@ -775,9 +630,9 @@ namespace Dynamo.Search
             foreach (var node in nodes)
             {
                 RemoveNode(node.Guid);
-                RemoveEmptyCategory(node);
+                browserCategoriesBuilder.RemoveEmptyCategory(node);
+                addonCategoriesBuilder.RemoveEmptyCategory(node);
             }
-
         }
 
         #endregion
@@ -841,6 +696,54 @@ namespace Dynamo.Search
                 parent.AppendChild(element);
             }
         }
+
+        internal void ChangeCategoryExpandState(string categoryName, bool isExpanded)
+        {
+            BrowserItem category = BrowserCategoriesBuilder.GetCategoryByName(categoryName);
+            if (category == null)
+                category = AddonCategoriesBuilder.GetCategoryByName(categoryName);
+
+            if (category != null && category.IsExpanded != isExpanded)
+                category.IsExpanded = isExpanded;
+        }
+
+        /// <summary>
+        /// Call this method to assign a default grouping information if a given category 
+        /// does not have any. A node category's group can either be "Create", "Query" or
+        /// "Actions". If none of the group names above is assigned to the category, it 
+        /// will be assigned a default one that is "Actions".
+        /// 
+        /// For examples:
+        /// 
+        ///     "Core.Evaluate" will be renamed as "Core.Evaluate.Actions"
+        ///     "Core.List.Create" will remain as "Core.List.Create"
+        /// 
+        /// </summary>
+        public string ProcessNodeCategory(string category, ref SearchElementGroup group)
+        {
+            if (string.IsNullOrEmpty(category))
+                return category;
+
+            int index = category.LastIndexOf(Configurations.CategoryDelimiter);
+
+            // If "index" is "-1", then the whole "category" will be used as-is.            
+            switch (category.Substring(index + 1))
+            {
+                case Configurations.CategoryGroupAction:
+                    group = SearchElementGroup.Action;
+                    break;
+                case Configurations.CategoryGroupCreate:
+                    group = SearchElementGroup.Create;
+                    break;
+                case Configurations.CategoryGroupQuery:
+                    group = SearchElementGroup.Query;
+                    break;
+                default:
+                    group = SearchElementGroup.Action;
+                    return category;
+            }
+
+            return category.Substring(0, index);
+        }
     }
 }
-
