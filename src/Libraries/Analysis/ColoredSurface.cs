@@ -252,7 +252,7 @@ namespace Analysis
             {
                 var c = colors[j];
 
-                var color = colors[j].Divide(System.Math.Pow(distances[j] + 1,2));
+                var color = Color.Divide(colors[j],System.Math.Pow(distances[j] + 1,2));
                 colorContributions.Add(color);
             }
 
@@ -271,29 +271,6 @@ namespace Analysis
 
             var size = colors.Count() + 1;
             return DSCore.Color.ByARGB(255, r/size, g/size, b/size);
-        }
-    }
-
-    // Extension methods for the color class to allow the 
-    // averaging of colors
-    internal static class ColorExtensions
-    {
-        internal static Color Add(this DSCore.Color c1, DSCore.Color c2)
-        {
-            return Color.ByARGB(
-                c1.Alpha + c2.Alpha,
-                c1.Red + c2.Red,
-                c1.Green + c2.Green,
-                c1.Blue + c2.Blue);
-        }
-
-        internal static Color Divide(this DSCore.Color c1, double div)
-        {
-            return Color.ByARGB(
-                (int)(c1.Alpha / div),
-                (int)(c1.Red / div),
-                (int)(c1.Green / div),
-                (int)(c1.Blue / div));
         }
     }
 }

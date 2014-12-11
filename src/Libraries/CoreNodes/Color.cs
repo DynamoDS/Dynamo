@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Authentication;
+
 using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
@@ -138,13 +142,30 @@ namespace DSCore
         /// <returns name="color">Color in the given range.</returns>
         /// <search>color,range,gradient</search>
         [IsVisibleInDynamoLibrary(false)]
-        public static Color BuildColorFromRange(Color start, Color end, double value)
+        public static Color BuildColorFromRange(IEnumerable<Color> colors, IEnumerable<double> indices, double value)
         {
-            var selRed = (int)(start.Red + (end.Red - start.Red) * value);
-            var selGreen = (int)(start.Green + (end.Green - start.Green) * value);
-            var selBlue = (int)(start.Blue + (end.Blue - start.Blue) * value);
+            var indexedColors = colors.Zip(indices, (c, i) => new IndexedColor(c, i)).ToList();
+            indexedColors.Sort();
 
-            return ByARGB(255, selRed, selGreen, selBlue);
+            // Calculate the weighted average
+            var num = new double[4];
+            var den = 0.0;
+
+            foreach (var ci  in indexedColors)
+            {
+                var d = Math.Sqrt(Math.Pow(value - ci.Index, 2));
+                num[0] += ci.Color.Alpha;
+                num[1] += ci.Color.Red;
+                num[2] += ci.Color.Green;
+                num[3] += ci.Color.Blue;
+
+                den += d;
+            }
+
+            return ByARGB(255, 
+                (int)(num[1] / den), 
+                (int)(num[2] / den), 
+                (int)(num[3] / den));
         }
 
         public override string ToString()
@@ -166,10 +187,83 @@ namespace DSCore
             return Equals((Color)obj);
         }
 
+        public static Color Add(DSCore.Color c1, DSCore.Color c2)
+        {
+            return Color.ByARGB(
+                c1.Alpha + c2.Alpha,
+                c1.Red + c2.Red,
+                c1.Green + c2.Green,
+                c1.Blue + c2.Blue);
+        }
+
+        public static Color Multiply(DSCore.Color c1, double div)
+        {
+            return Color.ByARGB(
+                (int)(c1.Alpha * div),
+                (int)(c1.Red * div),
+                (int)(c1.Green * div),
+                (int)(c1.Blue * div));
+        }
+
+        public static Color Divide(DSCore.Color c1, double div)
+        {
+            return Color.ByARGB(
+                (int)(c1.Alpha / div),
+                (int)(c1.Red / div),
+                (int)(c1.Green / div),
+                (int)(c1.Blue / div));
+        }
+
         public override int GetHashCode()
         {
             return color.GetHashCode();
         }
+
+        internal class IndexedColor: IComparable
+        {
+            public double Index { get; set; }
+            public Color Color { get; set; }
+
+            internal IndexedColor(Color color, double index)
+            {
+                Color = color;
+                Index = index;
+            }
+
+            public int CompareTo(object obj)
+            {
+                var ic = obj as IndexedColor;
+
+                if (ic == null)
+                {
+                    return -1;
+                }
+
+                if (ic.Index > Index)
+                {
+                    return -1;
+                }
+
+                if (ic.Index < Index)
+                {
+                    return 1;
+                }
+
+                if (ic.Index.Equals(Index))
+                {
+                    return 0;
+                }
+
+                return -1;
+            }
+        }
+    }
+
+    // Extension methods for the color class to allow the 
+    // averaging of colors
+    public static class ColorExtensions
+    {
+        
     }
 
 }

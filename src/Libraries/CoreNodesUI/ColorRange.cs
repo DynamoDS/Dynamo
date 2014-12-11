@@ -25,14 +25,16 @@ namespace DSCoreNodesUI
         public ColorRange(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("start", "The start color."));
-            InPortData.Add(new PortData("end", "The end color."));
-            InPortData.Add(new PortData("value", "The value between 0 and 1 of the selected color."));
+            InPortData.Add(new PortData("colors", "A list of colors to include in the range."));
+            InPortData.Add(new PortData("indices", "A list of values between 0.0 and 1.0 which position the colors along the range."));
+            InPortData.Add(new PortData("value", "A list of values between 0 and 1. These values are used to look up the color within the range."));
             OutPortData.Add(new PortData("color", "The selected color."));
 
             RegisterAllPorts();
 
             this.PropertyChanged += ColorRange_PropertyChanged;
+
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         void ColorRange_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -48,24 +50,14 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            //var functionCall = AstFactory.BuildFunctionCall("Color", "BuildColorFromRange", inputAstNodes);
             var functionCall =
                 AstFactory.BuildFunctionCall(
-                    new Func<Color, Color, double, Color>(Color.BuildColorFromRange),
+                    new Func<IEnumerable<Color>, IEnumerable<double>, double, Color>(Color.BuildColorFromRange),
                     inputAstNodes);
             return new[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)
             };
         }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
-        }
-
     }
 }
