@@ -2090,4 +2090,25 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    // This converter is used to style left secondary header of StandardPanel control.
+    // value specifies is visible right secondary header.
+    public class LeftSecondaryHeaderStyleConverter : IValueConverter
+    {
+        public Style PrimaryHeaderStyle { get; set; }
+        public Style SecondaryHeaderStyle { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+                return SecondaryHeaderStyle;
+            else
+                return PrimaryHeaderStyle;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -112,48 +112,65 @@
                     Value="9" />
         </Style>
 
-        <ControlTemplate x:Key="PrimaryHeaderButtonTemplate"
-                         TargetType="{x:Type Button}">
-            <Border x:Name="container"
-                    Padding="8,3,8,3"
-                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
-                <TextBlock x:Name="text"
-                           Style="{StaticResource SecondaryMembersTextBlock}"
-                           Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
-                </TextBlock>
-            </Border>
-        </ControlTemplate>
-        <ControlTemplate x:Key="SecondaryHeaderButtonTemplate"
-                         TargetType="{x:Type Button}">
-            <Border x:Name="container"
-                    Padding="8,3,8,3"
-                    BorderThickness="1"
-                    BorderBrush="#444444"
-                    CornerRadius="2"
-                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
-                <TextBlock x:Name="text"
-                           Style="{StaticResource SecondaryMembersTextBlock}"
-                           Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
-                </TextBlock>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Button.IsMouseOver"
-                         Value="True">
-                    <Setter TargetName="container"
-                            Property="Background"
-                            Value="#393939" />
-                    <Setter TargetName="text"
-                            Property="Foreground"
-                            Value="#AAAAAA" />
-                </Trigger>
-                <Trigger Property="Button.IsPressed"
-                         Value="True">
-                    <Setter TargetName="container"
-                            Property="Background"
-                            Value="#222222" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
+        <Style x:Key="PrimaryHeaderButtonStyle"
+               TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border x:Name="container"
+                                Padding="8,3,8,3"
+                                Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
+                            <TextBlock x:Name="text"
+                                       Style="{StaticResource SecondaryMembersTextBlock}"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
+                            </TextBlock>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SecondaryHeaderButtonStyle"
+               TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border x:Name="container"
+                                Padding="8,3,8,3"
+                                BorderThickness="1"
+                                BorderBrush="#444444"
+                                CornerRadius="2"
+                                Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
+                            <TextBlock x:Name="text"
+                                       Style="{StaticResource SecondaryMembersTextBlock}"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
+                            </TextBlock>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Button.IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="container"
+                                        Property="Background"
+                                        Value="#393939" />
+                                <Setter TargetName="text"
+                                        Property="Foreground"
+                                        Value="#AAAAAA" />
+                            </Trigger>
+                            <Trigger Property="Button.IsPressed"
+                                     Value="True">
+                                <Setter TargetName="container"
+                                        Property="Background"
+                                        Value="#222222" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <controls:LeftSecondaryHeaderStyleConverter x:Key="LeftSecondaryHeaderStyleConverter"
+                                                    PrimaryHeaderStyle="{StaticResource PrimaryHeaderButtonStyle}"
+                                                    SecondaryHeaderStyle="{StaticResource SecondaryHeaderButtonStyle}" />
+
     </UserControl.Resources>
     <UserControl.Visibility>
         <Binding Path="ClassDetailsVisibility"
@@ -180,8 +197,8 @@
 
             <Button Margin="16,0,0,10"
                     Background="#393939"
-                    Content="{Binding PrimaryHeaderText}"
-                    Template="{StaticResource PrimaryHeaderButtonTemplate}">
+                    Style="{StaticResource PrimaryHeaderButtonStyle}"
+                    Content="{Binding PrimaryHeaderText}">
                 <Button.Visibility>
                     <Binding Path="IsPrimaryHeaderVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
@@ -224,7 +241,6 @@
                     <Button Tag="Action"
                             Margin="0,0,16,0"
                             Content="{Binding SecondaryHeaderLeftText}"
-                            Template="{StaticResource SecondaryHeaderButtonTemplate}"
                             Click="OnHeaderButtonClick">
                         <Button.Visibility>
                             <Binding Path="IsSecondaryHeaderLeftVisible"
@@ -237,11 +253,15 @@
                                 <Binding Path="IsSecondaryHeaderRightVisible" />
                             </MultiBinding>
                         </Button.Background>
+                        <Button.Style>
+                            <Binding Path="IsSecondaryHeaderRightVisible"
+                                     Converter="{StaticResource LeftSecondaryHeaderStyleConverter}" />
+                        </Button.Style>
                     </Button>
 
                     <Button Tag="Query"
+                            Style="{StaticResource SecondaryHeaderButtonStyle}"
                             Content="{Binding SecondaryHeaderRightText}"
-                            Template="{StaticResource SecondaryHeaderButtonTemplate}"
                             Click="OnHeaderButtonClick">
                         <Button.Visibility>
                             <Binding Path="IsSecondaryHeaderRightVisible"

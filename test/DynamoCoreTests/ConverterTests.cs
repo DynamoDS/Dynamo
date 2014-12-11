@@ -12,6 +12,7 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -605,6 +606,24 @@ namespace Dynamo.Tests
             thickness = new Thickness(0, 0, -6.6733333333333338, 0);
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(thickness, result);
+        }
+
+        [Test]
+        public void LeftSecondaryHeaderStyleConverterTest()
+        {
+            var converter = new LeftSecondaryHeaderStyleConverter();
+
+            var styleA = new Style();
+            styleA.Setters.Add(new Setter(Button.BorderThicknessProperty, new Thickness(1)));
+
+            var styleB = new Style();
+            styleB.Setters.Add(new Setter(Button.BackgroundProperty, new SolidColorBrush(Color.FromRgb(255, 0, 0))));
+
+            converter.PrimaryHeaderStyle = styleA;
+            converter.SecondaryHeaderStyle = styleB;
+
+            Assert.AreEqual(styleB, converter.Convert(true, null, null, null));
+            Assert.AreEqual(styleA, converter.Convert(false, null, null, null));
         }
     }
 }
