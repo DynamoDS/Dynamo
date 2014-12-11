@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
+using System.Windows.Forms;
+using System.Windows.Media;
 
 using Autodesk.DesignScript.Runtime;
 
@@ -138,34 +141,102 @@ namespace DSCore
         /// </summary>
         /// <param name="start">The starting color of the range.</param>
         /// <param name="end">The end color of the range.</param>
-        /// <param name="value">The value between 0 and 1 along the range for which you would like to sample the color.</param>
+        /// <param name="index">The value between 0 and 1 along the range for which you would like to sample the color.</param>
         /// <returns name="color">Color in the given range.</returns>
         /// <search>color,range,gradient</search>
         [IsVisibleInDynamoLibrary(false)]
-        public static Color BuildColorFromRange(IEnumerable<Color> colors, IEnumerable<double> indices, double value)
+        public static Color BuildColorFromRange(IList<Color> colors, IList<double> indices, double index)
         {
-            var indexedColors = colors.Zip(indices, (c, i) => new IndexedColor(c, i)).ToList();
-            indexedColors.Sort();
+            // This method is called from AST. We cannot throw an exception.
+            // If any of the bounding conditions are not met,
+            // just return white.
+
+            if (!colors.Any() || 
+                !indices.Any() ||
+                colors.Count != indices.Count ||
+                index < 0.0 || 
+                index > 1.0)
+            {
+                return Color.ByARGB(255, 255, 255, 255);
+            }
+
+            var indexedColors = colors.Zip(indices, (c, i) => new IndexedColor(c, i, Math.Sqrt(Math.Pow(index - i, 2)))).ToList();
+            var colorsByIndex = indexedColors.OrderBy(ci => ci.Index);
+
+            // If the supplied index matches one of the indexed colors' indices,
+            // then just return that color.
+            var found = colorsByIndex.FirstOrDefault(ci => ci.Index == index);
+            if (found != null)
+            {
+                return found.Color;
+            }
+
+            // If values are not supplied for the 0.0 and 1.0
+            // positions, then use the bottom and top colors
+            if (!indices.Any(i => i == 0.0))
+            {
+                indexedColors.Insert(0,new IndexedColor(colors.First(), 0.0, index));
+            }
+
+            if (!indices.Any(i => i == 1.0))
+            {
+                indexedColors.Add(new IndexedColor(colors.Last(), 1.0, 1.0 - index));
+            }
+
+            IndexedColor c1, c2;
+
+            c1 = colorsByIndex.First();
+            c2 = colorsByIndex.Last();
+
+            // Find the leading and trailing indexed color
+            // between which we will linearly interpolate.
+            foreach (var ci in colorsByIndex)
+            {
+                if (ci.Index > c1.Index && ci.Index < index)
+                {
+                    c1 = ci;
+                }
+
+                if (ci.Index > index && ci.Index < c2.Index)
+                {
+                    c2 = ci;
+                }
+            }
+
+            return Lerp(c1.Color, c2.Color, (index - c1.Index)/(c2.Index - c1.Index));
+        }
+
+        /// <summary>
+        /// Linearly interpolate between two colors.
+        /// </summary>
+        /// <param name="start">The start color.</param>
+        /// <param name="end">The end color.</param>
+        /// <param name="t">A parameter between 0.0 and 1.0.</param>
+        /// <returns></returns>
+        private static Color Lerp(Color start, Color end, double t)
+        {
+            if (start == null || 
+                end == null || 
+                t < 0.0 || t > 1.0)
+            {
+                return Color.ByARGB(255, 255, 255, 255);
+            }
 
             // Calculate the weighted average
             var num = new double[4];
-            var den = 0.0;
 
-            foreach (var ci  in indexedColors)
-            {
-                var d = Math.Sqrt(Math.Pow(value - ci.Index, 2));
-                num[0] += ci.Color.Alpha;
-                num[1] += ci.Color.Red;
-                num[2] += ci.Color.Green;
-                num[3] += ci.Color.Blue;
+            var d1 = 1 - Math.Sqrt(Math.Pow(t - 0.0, 2));
+            var d2 = 1 - Math.Sqrt(Math.Pow(t - 1.0, 2));
 
-                den += d;
-            }
+            num[0] += (start.Alpha * d1)    + (end.Alpha * d2);
+            num[1] += (start.Red * d1)      + (end.Red * d2);
+            num[2] += (start.Green * d1)    + (end.Green * d2);
+            num[3] += (start.Blue * d1)     + (end.Blue * d2);
 
-            return ByARGB(255, 
-                (int)(num[1] / den), 
-                (int)(num[2] / den), 
-                (int)(num[3] / den));
+            return ByARGB(255,
+                (int)(num[1] / (d1 + d2)),
+                (int)(num[2] / (d1 + d2)),
+                (int)(num[3] / (d1 + d2)));
         }
 
         public override string ToString()
@@ -223,11 +294,13 @@ namespace DSCore
         {
             public double Index { get; set; }
             public Color Color { get; set; }
+            public double Distance { get; set; }
 
-            internal IndexedColor(Color color, double index)
+            internal IndexedColor(Color color, double index, double distance)
             {
                 Color = color;
                 Index = index;
+                Distance = distance;
             }
 
             public int CompareTo(object obj)
