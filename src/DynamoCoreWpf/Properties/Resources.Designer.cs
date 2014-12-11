@@ -59,5 +59,167 @@ namespace Dynamo.Wpf.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ASK.
+        /// </summary>
+        public static string StartPageAsk {
+            get {
+                return ResourceManager.GetString("StartPageAsk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CODE.
+        /// </summary>
+        public static string StartPageCode {
+            get {
+                return ResourceManager.GetString("StartPageCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discussion forum.
+        /// </summary>
+        public static string StartPageDiscussionForum {
+            get {
+                return ResourceManager.GetString("StartPageDiscussionForum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FILES.
+        /// </summary>
+        public static string StartPageFiles {
+            get {
+                return ResourceManager.GetString("StartPageFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Github repository.
+        /// </summary>
+        public static string StartPageGithubRepository {
+            get {
+                return ResourceManager.GetString("StartPageGithubRepository", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More Samples.
+        /// </summary>
+        public static string StartPageMoreSamples {
+            get {
+                return ResourceManager.GetString("StartPageMoreSamples", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Node.
+        /// </summary>
+        public static string StartPageNewCustomNode {
+            get {
+                return ResourceManager.GetString("StartPageNewCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string StartPageNewFile {
+            get {
+                return ResourceManager.GetString("StartPageNewFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string StartPageOpenFile {
+            get {
+                return ResourceManager.GetString("StartPageOpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RECENT.
+        /// </summary>
+        public static string StartPageRecent {
+            get {
+                return ResourceManager.GetString("StartPageRecent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to REFERENCE.
+        /// </summary>
+        public static string StartPageReference {
+            get {
+                return ResourceManager.GetString("StartPageReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SAMPLES.
+        /// </summary>
+        public static string StartPageSamples {
+            get {
+                return ResourceManager.GetString("StartPageSamples", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send issues.
+        /// </summary>
+        public static string StartPageSendIssues {
+            get {
+                return ResourceManager.GetString("StartPageSendIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Samples In Folder.
+        /// </summary>
+        public static string StartPageShowSamples {
+            get {
+                return ResourceManager.GetString("StartPageShowSamples", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string StartPageStart {
+            get {
+                return ResourceManager.GetString("StartPageStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video Tutorials.
+        /// </summary>
+        public static string StartPageVideoTutorials {
+            get {
+                return ResourceManager.GetString("StartPageVideoTutorials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visit www.dynamobim.org.
+        /// </summary>
+        public static string StartPageVisitDynamoBim {
+            get {
+                return ResourceManager.GetString("StartPageVisitDynamoBim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Written Tutorials.
+        /// </summary>
+        public static string StartPageWrittenTutorials {
+            get {
+                return ResourceManager.GetString("StartPageWrittenTutorials", resourceCulture);
+            }
+        }
     }
 }

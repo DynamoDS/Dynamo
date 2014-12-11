@@ -117,4 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="StartPageAsk" xml:space="preserve">
+    <value>ASK</value>
+  </data>
+  <data name="StartPageCode" xml:space="preserve">
+    <value>CODE</value>
+  </data>
+  <data name="StartPageDiscussionForum" xml:space="preserve">
+    <value>Discussion forum</value>
+  </data>
+  <data name="StartPageFiles" xml:space="preserve">
+    <value>FILES</value>
+  </data>
+  <data name="StartPageGithubRepository" xml:space="preserve">
+    <value>Github repository</value>
+  </data>
+  <data name="StartPageMoreSamples" xml:space="preserve">
+    <value>More Samples</value>
+  </data>
+  <data name="StartPageNewCustomNode" xml:space="preserve">
+    <value>Custom Node</value>
+  </data>
+  <data name="StartPageNewFile" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="StartPageOpenFile" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="StartPageRecent" xml:space="preserve">
+    <value>RECENT</value>
+  </data>
+  <data name="StartPageReference" xml:space="preserve">
+    <value>REFERENCE</value>
+  </data>
+  <data name="StartPageSamples" xml:space="preserve">
+    <value>SAMPLES</value>
+  </data>
+  <data name="StartPageSendIssues" xml:space="preserve">
+    <value>Send issues</value>
+  </data>
+  <data name="StartPageShowSamples" xml:space="preserve">
+    <value>Show Samples In Folder</value>
+  </data>
+  <data name="StartPageStart" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StartPageVideoTutorials" xml:space="preserve">
+    <value>Video Tutorials</value>
+  </data>
+  <data name="StartPageVisitDynamoBim" xml:space="preserve">
+    <value>Visit www.dynamobim.org</value>
+  </data>
+  <data name="StartPageWrittenTutorials" xml:space="preserve">
+    <value>Written Tutorials</value>
+  </data>
 </root>
