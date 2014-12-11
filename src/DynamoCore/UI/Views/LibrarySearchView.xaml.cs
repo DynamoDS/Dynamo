@@ -20,6 +20,14 @@ namespace Dynamo.UI.Views
         public LibrarySearchView()
         {
             InitializeComponent();
+
+            Loaded += OnLibrarySearchViewLoaded;
+        }
+
+        private void OnLibrarySearchViewLoaded(object sender, RoutedEventArgs e)
+        {
+            (DataContext as SearchViewModel).SearchTextChanged +=
+                (s, eInner) => topResultPanel.BringIntoView();
         }
 
         #region MethodButton
@@ -53,7 +61,10 @@ namespace Dynamo.UI.Views
         {
             var searchElement = listBoxItem.DataContext as SearchElementBase;
             if (searchElement != null)
+            {
                 searchElement.Execute();
+                libraryToolTipPopup.SetDataContext(null, true);
+            }
         }
 
         #endregion

@@ -15,6 +15,9 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibraryView : UserControl
     {
+        // See OnExpanderButtonMouseLeftButtonUp for details.
+        private bool ignoreMouseEnter;
+
         // This property is used to prevent a bug.
         // When user clicks on category it scrolls instead of category content expanding.
         // The reason is "CategoryTreeView" does not show full content because it is too
@@ -93,6 +96,12 @@ namespace Dynamo.UI.Views
 
         private void OnMemberMouseEnter(object sender, MouseEventArgs e)
         {
+            if (ignoreMouseEnter)
+            {
+                ignoreMouseEnter = false;
+                return;
+            }
+
             FrameworkElement fromSender = sender as FrameworkElement;
             libraryToolTipPopup.PlacementTarget = fromSender;
             libraryToolTipPopup.SetDataContext(fromSender.DataContext);
@@ -140,6 +149,19 @@ namespace Dynamo.UI.Views
             // until count of our requests less than 1. First request is done for
             // opened top category when dynamo starts.
             e.Handled = BringIntoViewCount < 2;
+        }
+
+        // Clicking on a member node results in a node being placed on the canvas.
+        // Another mouse-enter event will be sent right after this left-button-up, 
+        // which brings up the tool-tip. This isn't desirable, so setting a flag 
+        // here to ignore the immediate mouse-enter event.
+        private void OnExpanderButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if ((sender as Button).DataContext is NodeSearchElement)
+            {
+                libraryToolTipPopup.SetDataContext(null, true);
+                ignoreMouseEnter = true;
+            }
         }
 
         private void OnAddButtonPreviewMouseDown(object sender, MouseButtonEventArgs e)
