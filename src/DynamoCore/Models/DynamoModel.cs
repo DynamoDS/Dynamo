@@ -768,7 +768,6 @@ namespace Dynamo.Models
         {
             Loader.LoadCustomNodes();
 
-<<<<<<< HEAD
             this.SearchModel.RemoveEmptyCategories();
             this.SearchModel.SortRootCategories();
             this.SearchModel.SortCategoryChildren();
@@ -776,8 +775,6 @@ namespace Dynamo.Models
             // Expand "Geometry" by default.
             this.SearchModel.ChangeCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
 
-=======
->>>>>>> remotes/upstream/master
             Logger.Log("Welcome to Dynamo!");
         }
 

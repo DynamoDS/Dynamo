@@ -14,7 +14,6 @@ namespace Dynamo.Search
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
 
         /// <summary>
-<<<<<<< HEAD:src/DynamoCore/UI/Commands/BrowserItemCommands.cs
         /// Sort this items children and then tell its children and recurse on children
         /// </summary>
         public void RecursivelySort()
@@ -34,8 +33,6 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-=======
->>>>>>> remotes/upstream/master:src/DynamoCore/Search/BrowserItem.cs
         ///     If this is a leaf and visible, add to items, otherwise, recurse on children
         /// </summary>
         /// <param name="items">The accumulator</param>
@@ -148,7 +145,7 @@ namespace Dynamo.Search
             }
         }
 
-<<<<<<< HEAD:src/DynamoCore/UI/Commands/BrowserItemCommands.cs
+        // TODO (Vladimir): ToggleIsExpandedCommand removed in new sources
         private ToggleIsExpandedCommand _toggleIsExpanded;
         public ToggleIsExpandedCommand ToggleIsExpanded
         {
@@ -159,76 +156,85 @@ namespace Dynamo.Search
                 return _toggleIsExpanded;
             }
         }
-=======
+
         public abstract void Execute();
->>>>>>> remotes/upstream/master:src/DynamoCore/Search/BrowserItem.cs
 
         public delegate void BrowserItemHandler(BrowserItem ele);
         public event BrowserItemHandler Executed;
         protected void OnExecuted()
         {
-<<<<<<< HEAD:src/DynamoCore/UI/Commands/BrowserItemCommands.cs
-            private BrowserItem item;
-
-            public ToggleIsExpandedCommand(BrowserItem i)
-            {
-                this.item = i;
-            }
-
-            public void Execute(object parameters)
-            {
-                if (item is PackageManagerSearchElement)
-                {
-                    item.IsExpanded = !item.IsExpanded;
-                    return;
-                }
-
-                if (item is SearchElementBase)
-                {
-                    ((SearchElementBase)item).Execute();
-                    return;
-                }
-                var endState = !item.IsExpanded;
-                if (item is BrowserInternalElement || item is BrowserRootElement)
-                {
-                    dynamic element = item;
-
-                    // Collapse all expanded items on next level.
-                    if (endState)
-                    {
-                        foreach (var ele in element.Items)
-                            ele.IsExpanded = false;
-                    }
-
-                    foreach (var ele in element.Siblings)
-                        ele.IsExpanded = false;
-
-                    //Walk down the tree expanding anything nested one layer deep
-                    //this can be removed when we have the hierachy implemented properly
-                    if (element.Items.Count == 1)
-                    {
-                        BrowserItem subElement = element.Items[0];
-                        while (subElement.Items.Count == 1)
-                        {
-                            subElement.IsExpanded = true;
-                            subElement = subElement.Items[0];
-                        }
-
-                        subElement.IsExpanded = true;
-                    }
-                }
-
-                item.IsExpanded = endState;
-            }
-
-            public event EventHandler CanExecuteChanged
-=======
             if (Executed != null)
->>>>>>> remotes/upstream/master:src/DynamoCore/Search/BrowserItem.cs
             {
                 Executed(this);
             }
         }
+    }
 
+    // TODO (Vladimir): remove it
+    public class ToggleIsExpandedCommand : ICommand
+    {
+        private BrowserItem item;
+
+        public ToggleIsExpandedCommand(BrowserItem i)
+        {
+            this.item = i;
+        }
+
+        public void Execute(object parameters)
+        {
+            if (item is PackageManagerSearchElement)
+            {
+                item.IsExpanded = !item.IsExpanded;
+                return;
+            }
+
+            if (item is SearchElementBase)
+            {
+                ((SearchElementBase)item).Execute();
+                return;
+            }
+            var endState = !item.IsExpanded;
+            if (item is BrowserInternalElement || item is BrowserRootElement)
+            {
+                dynamic element = item;
+
+                // Collapse all expanded items on next level.
+                if (endState)
+                {
+                    foreach (var ele in element.Items)
+                        ele.IsExpanded = false;
+                }
+
+                foreach (var ele in element.Siblings)
+                    ele.IsExpanded = false;
+
+                //Walk down the tree expanding anything nested one layer deep
+                //this can be removed when we have the hierachy implemented properly
+                if (element.Items.Count == 1)
+                {
+                    BrowserItem subElement = element.Items[0];
+                    while (subElement.Items.Count == 1)
+                    {
+                        subElement.IsExpanded = true;
+                        subElement = subElement.Items[0];
+                    }
+
+                    subElement.IsExpanded = true;
+                }
+            }
+
+            item.IsExpanded = endState;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return true;
+        }
     }
 }

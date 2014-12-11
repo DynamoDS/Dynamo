@@ -6,11 +6,6 @@ using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
-<<<<<<< HEAD
-using Dynamo.Models;
-using Dynamo.Search;
-=======
->>>>>>> remotes/upstream/master
 using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;

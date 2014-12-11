@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
-using System.Linq;
-=======
->>>>>>> remotes/upstream/master
 using Dynamo.Models;
 using String = System.String;
 

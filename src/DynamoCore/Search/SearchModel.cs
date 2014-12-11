@@ -3,27 +3,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-<<<<<<< HEAD
-using Dynamo.DSEngine;
-=======
 using System.Collections.ObjectModel;
 using Dynamo.Core;
->>>>>>> remotes/upstream/master
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
-<<<<<<< HEAD
-using Microsoft.Practices.Prism.ViewModel;
-using System.IO;
-=======
 using Dynamo.DSEngine;
 
->>>>>>> remotes/upstream/master
 using System.Xml;
 using DynamoUtilities;
-
 
 namespace Dynamo.Search
 {
@@ -238,17 +228,7 @@ namespace Dynamo.Search
             return foundNodes;
         }
 
-<<<<<<< HEAD
         private void PopulateSearchCategories(IEnumerable<SearchElementBase> nodes)
-=======
-        internal void RemoveEmptyCategories()
-        {
-            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
-        }
-
-
-        internal void RemoveEmptyRootCategory(string categoryName)
->>>>>>> remotes/upstream/master
         {
             foreach (NodeSearchElement node in nodes)
             {
