@@ -451,7 +451,8 @@ namespace Dynamo.Nodes
             }
             else
             {
-                parseString += "=dummy;";
+                String dummyExpression = "{0}=dummy;";
+                parseString = string.Format(dummyExpression, parseString);
             }
 
             ParseParam parseParam = new ParseParam(this.GUID, parseString);
@@ -461,6 +462,8 @@ namespace Dynamo.Nodes
                 parseParam.ParsedNodes.Any())
             {
                 var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
+                Validity.Assert(node != null);
+
                 if (node != null)
                 {
                     identifier = node.LeftNode as IdentifierNode;

@@ -20,7 +20,8 @@ namespace Dynamo.Library
             FunctionDescriptor function, string name, string type, object defaultValue = null)
         {
             if (name == null) 
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("name");
+
             Name = name;
 
             if (null == type)

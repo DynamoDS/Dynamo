@@ -71,13 +71,17 @@ namespace Dynamo.UI.Controls
         #endregion
 
         #region Dependency Property
-        public static readonly DependencyProperty ParameterProperty = DependencyProperty.Register("Parameter", typeof(string),
-            typeof(ParameterEditor), new PropertyMetadata((obj, args) =>
-            {
-                var target = (ParameterEditor)obj;
-                target.Parameter = (string)args.NewValue;
-            })
-        );
+        public static readonly DependencyProperty ParameterProperty = 
+            DependencyProperty.Register(
+                "Parameter", 
+                typeof(string),
+                typeof(ParameterEditor), 
+                new PropertyMetadata((obj, args) =>
+                {
+                    var target = (ParameterEditor)obj;
+                    target.Parameter = (string)args.NewValue;
+                })
+            );
         #endregion
 
         #region Syntax highlighting helper methods

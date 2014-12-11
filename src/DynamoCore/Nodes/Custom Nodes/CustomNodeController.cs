@@ -36,14 +36,10 @@ namespace Dynamo.Nodes
             model.InPortData.Clear();
 
             if (Definition.Parameters == null)
-            {
                 return;
-            }
 
             foreach (var p in Definition.Parameters)
-            {
                 model.InPortData.Add(new PortData(p.Name, p.Type.ToShortString(), p.DefaultValue));
-            }
         }
 
         protected override void InitializeOutputs(NodeModel model)
@@ -194,17 +190,30 @@ namespace Dynamo.Nodes
         /// </summary>
         public bool IsInSyncWithNode(NodeModel model)
         {
-            return Definition != null
-                    && ((Definition.Parameters == null
-                        || (Definition.Parameters.Count() == model.InPortData.Count()
-                            && Definition.Parameters.Select(p => p.Name).SequenceEqual(
-                                model.InPortData.Select(p => p.NickName)))
-                            && Definition.Parameters.Select(p => p.Type.ToShortString()).SequenceEqual(
-                                model.InPortData.Select(p => p.ToolTipString))))
-                    && (Definition.ReturnKeys == null
-                        || Definition.ReturnKeys.Count() == model.OutPortData.Count()
-                            && Definition.ReturnKeys.SequenceEqual(
-                                model.OutPortData.Select(p => p.NickName)));
+            if (Definition == null)
+                return false;
+
+            if (Definition.Parameters != null)
+            {
+                var defParamNames = Definition.Parameters.Select(p => p.Name);
+                var paramNames = model.InPortData.Select(p => p.NickName);
+                if (!defParamNames.SequenceEqual(paramNames))
+                    return false;
+
+                var defParamTypes = Definition.Parameters.Select(p => p.Type.ToShortString());
+                var paramTypes = model.InPortData.Select(p => p.ToolTipString);
+                if (!defParamTypes.SequenceEqual(paramTypes))
+                    return false;
+            }
+
+            if (Definition.ReturnKeys != null)
+            {
+                var returnKeys = model.OutPortData.Select(p => p.NickName);
+                if (!Definition.ReturnKeys.SequenceEqual(returnKeys))
+                    return false;
+            }
+
+            return true;
         }
 
         private bool VerifyFuncId(ref Guid funcId, string nickname)
