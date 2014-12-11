@@ -26,7 +26,7 @@ namespace Dynamo.DSEngine
     ///     LibraryServices is a singleton class which manages builtin libraries
     ///     as well as imported libraries. It is across different sessions.
     /// </summary>
-    public class LibraryServices: IDisposable
+    public class LibraryServices : IDisposable
     {
         private readonly Dictionary<string, FunctionGroup> builtinFunctionGroups =
             new Dictionary<string, FunctionGroup>();
@@ -34,7 +34,7 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-        private readonly Dictionary<string, SearchModel.ElementType> importedLibraries = 
+        private readonly Dictionary<string, SearchModel.ElementType> importedLibraries =
             new Dictionary<string, SearchModel.ElementType>();
 
         private readonly ProtoCore.Core libraryManagementCore;
@@ -93,7 +93,7 @@ namespace Dynamo.DSEngine
             foreach (var library in DynamoPathManager.Instance.PreloadLibraries)
             {
                 importedLibraries.Add(library, SearchModel.ElementType.Regular);
-                CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library); 
+                CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library);
             }
         }
 
@@ -255,7 +255,8 @@ namespace Dynamo.DSEngine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library"></param>
-        public void ImportLibrary(string library, ILogger logger)
+        public void ImportLibrary(string library, ILogger logger,
+            SearchModel.ElementType elementType = SearchModel.ElementType.CustomDll)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -328,7 +329,7 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            OnLibraryLoaded(new LibraryLoadedEventArgs(library, SearchModel.ElementType.CustomDll));
+            OnLibraryLoaded(new LibraryLoadedEventArgs(library, elementType));
         }
 
         private void ParseLibraryMigrations(string library)

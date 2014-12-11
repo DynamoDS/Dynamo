@@ -284,11 +284,7 @@ namespace Dynamo.Search
 
         internal ElementType GetElementType(BrowserInternalElement item)
         {
-            //TODO: Add check if item is loaded as part of package
-            if (item is CustomNodeSearchElement)
-                return ElementType.CustomNode;
-
-            if (item is DSFunctionNodeSearchElement || item is NodeSearchElement)
+            if (item is NodeSearchElement)
                 return (item as NodeSearchElement).ElementType;
 
             return ElementType.Regular;
@@ -520,6 +516,7 @@ namespace Dynamo.Search
                 return this.Refactor(nodeInfo);
             }
 
+            nodeEle.ElementType = nodeInfo.ElementType;
             nodeEle.Executed += this.OnExecuted;
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
