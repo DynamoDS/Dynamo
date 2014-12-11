@@ -34,7 +34,6 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
-
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
@@ -86,7 +85,7 @@ namespace Dynamo.UI.Controls
         private void InitializeSyntaxHighlighter()
         {
             var stream = GetType().Assembly.GetManifestResourceStream(
-                "Dynamo.UI.Resources." + Configurations.HighlightingFile);
+                "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
 
             InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(stream), HighlightingManager.Instance);
@@ -103,7 +102,7 @@ namespace Dynamo.UI.Controls
             var classHighlightRule = new HighlightingRule();
             classHighlightRule.Color = new HighlightingColor()
             {
-                Foreground = new CustomizedBrush(color)
+                Foreground = new Dynamo.Wpf.Views.CodeBlockEditorUtils.CustomizedBrush(color)
             };
 
             var engineController = dynamoViewModel.Model.EngineController;
@@ -182,7 +181,7 @@ namespace Dynamo.UI.Controls
         /// </summary>        
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
-            if (e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
+            if (e.KeyboardDevice.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift))
             {
                 if (e.Key == Key.Enter || e.Key == Key.Return)
                 {
