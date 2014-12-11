@@ -165,7 +165,6 @@ limitations under the License.
     <Compile Include="Search\CategoryBuilder.cs" />
     <Compile Include="Search\SearchCategory.cs" />
     <Compile Include="Search\SearchElementGroup.cs" />
-    <Compile Include="PackageManager\PackageViewModel.cs" />
     <Compile Include="Search\SearchMemberGroup.cs" />
     <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
