@@ -135,7 +135,7 @@ namespace DynamoCoreUITests
             bool defaultPos = randomizer.Next(2) == 0;
             bool transfPos = randomizer.Next(2) == 0;
 
-            var cmdOne = new DynamoModel.AddNodeCommand(
+            var cmdOne = new DynamoModel.CreateNodeCommand(
                 nodeId, name, x, y, defaultPos, transfPos);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);

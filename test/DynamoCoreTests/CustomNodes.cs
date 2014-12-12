@@ -441,7 +441,7 @@ namespace Dynamo.Tests
             ViewModel.HomeCommand.Execute(null);
 
             ViewModel.ExecuteCommand(
-                new DynamoModel.AddNodeCommand(
+                new DynamoModel.CreateNodeCommand(
                     Guid.NewGuid(),
                     customNodeDef.FunctionId.ToString(),
                     0,
@@ -494,7 +494,7 @@ namespace Dynamo.Tests
                 var guid = Guid.NewGuid();
 
                 ViewModel.ExecuteCommand(
-                    new DynamoModel.AddNodeCommand(
+                    new DynamoModel.CreateNodeCommand(
                         guid,
                         inputName,
                         0,
@@ -516,7 +516,7 @@ namespace Dynamo.Tests
                 var guid = Guid.NewGuid();
 
                 ViewModel.ExecuteCommand(
-                    new DynamoModel.AddNodeCommand(
+                    new DynamoModel.CreateNodeCommand(
                         guid,
                         outputName,
                         0,

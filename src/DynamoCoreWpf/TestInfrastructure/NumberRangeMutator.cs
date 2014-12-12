@@ -129,11 +129,11 @@ namespace Dynamo.TestInfrastructure
                 double coordinatesX = 120;
                 double coordinatesY = 180;
 
-                DynamoModel.AddNodeCommand addNodeCmd1 = null;
+                DynamoModel.CreateNodeCommand createNodeCmd1 = null;
                     //new DynamoModel.AddNodeCommand(guidNumber, "Number", coordinatesX,
                     //    coordinatesY, false, true);
 
-                DynamoViewModel.ExecuteCommand(addNodeCmd1);
+                DynamoViewModel.ExecuteCommand(createNodeCmd1);
 
                 DynamoModel.MakeConnectionCommand connToStart1 =
                     new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.Output,

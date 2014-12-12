@@ -54,11 +54,11 @@ namespace Dynamo.TestInfrastructure
                     {
                         var newNode = type.GetDefaultConstructor<NodeModel>()();
 
-                        DynamoModel.AddNodeCommand addCommand =
-                            new DynamoModel.AddNodeCommand(
+                        DynamoModel.CreateNodeCommand createCommand =
+                            new DynamoModel.CreateNodeCommand(
                                 newNode, coordinatesX, coordinatesY, false, false);
 
-                        DynamoViewModel.ExecuteCommand(addCommand);
+                        DynamoViewModel.ExecuteCommand(createCommand);
                     }));
 
                     var valueMap = new Dictionary<Guid, String>();

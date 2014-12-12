@@ -51,7 +51,7 @@ namespace Dynamo.Models
                 model.ForceRun(CustomNodeManager.LoadedDefinitions, DebugSettings.VerboseLogging);
         }
 
-        void CreateNodeImpl(AddNodeCommand command)
+        void CreateNodeImpl(CreateNodeCommand command)
         {
             var node = command.Node;
             node.X = command.X;

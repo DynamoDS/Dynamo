@@ -472,7 +472,10 @@ namespace Dynamo.Models
             InitializeInstrumentationLogger();
 
             SearchModel = new NodeSearchModel();
-            //SearchModel.ItemProduced += node => AddNodeToCurrentWorkspace(node, true);
+            SearchModel.ItemProduced += node =>
+            {
+                ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+            };
 
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;

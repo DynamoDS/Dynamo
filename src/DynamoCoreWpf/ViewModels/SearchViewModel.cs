@@ -133,9 +133,8 @@ namespace Dynamo.ViewModels
             get { return searchScrollBarVisibility; }
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
-        
-        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;
-            private set; }
+
+        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get; private set; }
         public NodeSearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
 
@@ -159,21 +158,27 @@ namespace Dynamo.ViewModels
             Visible = false;
             searchText = "";
 
+            // Here, we add a root category: "Top Result"
             topResult =
                 BrowserItemViewModel.Wrap(Model.AddRootCategoryToStart("Top Result")) as
                     BrowserRootElementViewModel;
             
+            // When LibraryUpdated fires, sync up
             Model.LibraryUpdated += ModelOnRequestSync;
 
+            // Delete all empty categories.
             Model.RemoveEmptyCategories();
 
+            // Mirror BrowserRootCategories from the Model to the ViewModel
             foreach (BrowserRootElement item in Model.BrowserRootCategories)
             {
                 BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
             }
 
+            // Respond to collection changes in BrowserRootCategories
             Model.BrowserRootCategories.CollectionChanged += BrowserRootCategoriesOnCollectionChanged;
 
+            //Sort all categories alphabetically, recursively
             SortCategoryChildren();
         }
 
@@ -484,7 +489,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoModel.AddNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(node => node.GUID == guid);
@@ -502,7 +507,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoModel.AddNodeCommand(guid, name, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(node => node.GUID == guid);
@@ -518,7 +523,7 @@ namespace Dynamo.ViewModels
             // create node
             var guid = Guid.NewGuid();
             dynamoViewModel.ExecuteCommand(
-                new DynamoModel.AddNodeCommand(guid, element.FullName, 0, 0, true, true));
+                new DynamoModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
 
             // select node
             var placedNode = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(node => node.GUID == guid);

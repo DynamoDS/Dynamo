@@ -57,7 +57,7 @@ namespace Dynamo.Tests
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
             var nodeGuid = Guid.NewGuid();
-            var command = new DynCmd.AddNodeCommand(
+            var command = new DynCmd.CreateNodeCommand(
                 nodeGuid, "Code Block", 0, 0, true, false);
 
             ViewModel.ExecuteCommand(command);

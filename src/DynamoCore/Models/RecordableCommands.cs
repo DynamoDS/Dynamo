@@ -117,7 +117,7 @@ namespace Dynamo.Models
                         command = RunCancelCommand.DeserializeCore(element);
                         break;
                     case "CreateNodeCommand":
-                        command = AddNodeCommand.DeserializeCore(element, factory);
+                        command = CreateNodeCommand.DeserializeCore(element, factory);
                         break;
                     case "SelectModelCommand":
                         command = SelectModelCommand.DeserializeCore(element);
@@ -427,11 +427,11 @@ namespace Dynamo.Models
 
         }
         
-        public class AddNodeCommand : RecordableCommand
+        public class CreateNodeCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            public AddNodeCommand(NodeModel node,
+            public CreateNodeCommand(NodeModel node,
                 double x, double y, bool defaultPosition, bool transformCoordinates)
             {
                 Node = node;
@@ -441,7 +441,7 @@ namespace Dynamo.Models
                 TransformCoordinates = transformCoordinates;
             }
 
-            internal static AddNodeCommand DeserializeCore(XmlElement element, NodeFactory factory)
+            internal static CreateNodeCommand DeserializeCore(XmlElement element, NodeFactory factory)
             {
                 var helper = new XmlElementHelper(element);
                 double x = helper.ReadDouble("X");
@@ -449,7 +449,7 @@ namespace Dynamo.Models
 
                 var node = factory.CreateNodeFromXml(element, SaveContext.File);
 
-                return new AddNodeCommand(node, x, y,
+                return new CreateNodeCommand(node, x, y,
                     helper.ReadBoolean("DefaultPosition"),
                     helper.ReadBoolean("TransformCoordinates"));
             }
