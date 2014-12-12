@@ -28,19 +28,19 @@ namespace DynamoWebServer.Messages
         public string CreationName { get; private set; }
 
         /// <summary>
-        /// CreationName of the specified node
+        /// DisplayName of the specified node
         /// </summary>
         [DataMember]
         public string DisplayName { get; private set; }
 
         /// <summary>
-        /// X and Y coordinate of the specified node
+        /// X and Y coordinates of the specified node
         /// </summary>
         [DataMember]
         public IEnumerable<double> Position { get; private set; }
 
         /// <summary>
-        /// Value of the specified node if it's number node, code block node or custom node
+        /// Value of the specified node if it's some input node, code block or custom node
         /// </summary>
         [DataMember]
         public object Value { get; private set; }
@@ -55,27 +55,35 @@ namespace DynamoWebServer.Messages
         /// Call this method when this node should be created on a client.
         /// </summary>
         /// <param name="node">The specified node</param>
+        /// <param name="data">Represents a value of the node. 
+        /// Also can contain node's ports information for code block or custom node</param>
         public NodeToCreate(NodeModel node, string data)
         {
             this._id = node.GUID.ToString();
             this.CreationName = GetCreationName(node);
-            if (CreationName == "Number")
+            switch (this.CreationName)
             {
-                double number;
-                Value = double.TryParse(data, out number) ? number : 0;
+                case "Number":
+                    double number;
+                    Value = double.TryParse(data, out number) ? number : 0;
+                    break;
+                case "Boolean":
+                    bool boolValue;
+                    Value = bool.TryParse(data, out boolValue) ? boolValue : false;
+                    break;
+                case "String":
+                case "Code Block":
+                    Value = data;
+                    break;
+                default:
+                    if (node is Function)
+                    {
+                        Value = data;
+                        IsCustomNode = true;
+                    }
+                    break;
             }
-            else if (CreationName == "Boolean")
-            {
-                bool boolValue;
-                bool.TryParse(data, out boolValue);
-                Value = boolValue;
-            }
-            else if (node is CodeBlockNodeModel || node is Function)
-            {
-                Value = data;
-                IsCustomNode = node is Function;
-            }
-                    
+
             this.DisplayName = node.NickName;
             this.Position = new List<double> { node.X, node.Y };
         }

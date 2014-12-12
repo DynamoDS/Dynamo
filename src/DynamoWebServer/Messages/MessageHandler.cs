@@ -90,9 +90,8 @@ namespace DynamoWebServer.Messages
         }
 
         /// <summary>
-        /// Execute Message on selected ViewModel and session
+        /// Execute Message on current dynamoModel and session
         /// </summary>
-        /// <param name="dynamo">DynamoViewModel</param>
         /// <param name="message">Message</param>
         /// <param name="sessionId">The identifier string that represents the current session</param>
         internal void Execute(Message message, string sessionId)
@@ -187,10 +186,9 @@ namespace DynamoWebServer.Messages
         }
 
         /// <summary>
-        /// This method sends ComputationResponse on render complete
+        /// This method sends ComputationResponse when running is completed
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="e">Event args</param>
+        /// <param name="sessionId">The identifier string that represents the current session</param>
         internal void NodesDataModified(string sessionId)
         {
             if (!evaluationTookPlace)
@@ -453,6 +451,10 @@ namespace DynamoWebServer.Messages
             {
                 data = (node as DoubleInput).Value;
             }
+            else if (node is StringInput)
+            {
+                data = (node as StringInput).Value;
+            }
 
             return data;
         }
@@ -529,10 +531,12 @@ namespace DynamoWebServer.Messages
                     new GeometryDataResponse(new GeometryData(nodeId, model.RenderPackages)), sessionId));
             }
         }
-
+        
         /// <summary>
-        /// Cleanup workspace
+        /// Cleanup Home workspace and remove all custom nodes
         /// </summary>
+        /// <param name="clearOnlyHome">if clearOnlyHome is true
+        /// custom nodes won't be removed</param>
         private void ClearWorkspace(bool clearOnlyHome)
         {
             dynamoModel.Home(null);
