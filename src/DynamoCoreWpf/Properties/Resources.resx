@@ -117,6 +117,38 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DynamoViewDebugMenu" xml:space="preserve">
+    <value>Debug</value>
+    <comment>Debug menu</comment>
+  </data>
+  <data name="DynamoViewDebugMenuCheckDailyBuild" xml:space="preserve">
+    <value>Check Daily Builds</value>
+    <comment>Debug menu | Check the latest daily build</comment>
+  </data>
+  <data name="DynamoViewDebugMenuDumpLibrary" xml:space="preserve">
+    <value>Force Update</value>
+    <comment>Debug menu | Dump all imported libraries</comment>
+  </data>
+  <data name="DynamoViewDebugMenuForceReExecute" xml:space="preserve">
+    <value>Force Re-execute</value>
+    <comment>Debug menu | Force to re-execute the whole graph</comment>
+  </data>
+  <data name="DynamoViewDebugMenuForceUpdate" xml:space="preserve">
+    <value>Force Update</value>
+    <comment>Debug menu | Force to update Dynamo</comment>
+  </data>
+  <data name="DynamoViewDebugMenuRunMutationTest" xml:space="preserve">
+    <value>Run mutation test</value>
+    <comment>Debug menu | Run mutation test</comment>
+  </data>
+  <data name="DynamoViewDebugMenuShowDebugAST" xml:space="preserve">
+    <value>Show Debug ASTs</value>
+    <comment>Debug menu | Show debug abstract syntax tree</comment>
+  </data>
+  <data name="DynamoViewDebugMenuVerboseLogging" xml:space="preserve">
+    <value>Verbose Logging</value>
+    <comment>Debug menu | Verbose logging</comment>
+  </data>
   <data name="DynamoViewEditMenu" xml:space="preserve">
     <value>_Edit</value>
     <comment>Edit menu</comment>
@@ -240,6 +272,194 @@
   <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
     <value>_Save As...</value>
     <comment>File menu | Save as</comment>
+  </data>
+  <data name="DynamoViewHelpMenu" xml:space="preserve">
+    <value>Help</value>
+    <comment>Help menu</comment>
+  </data>
+  <data name="DynamoViewHelpMenuAbout" xml:space="preserve">
+    <value>_About...</value>
+    <comment>Help menu | Display About dialog</comment>
+  </data>
+  <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
+    <value>_Display Start Page</value>
+    <comment>Help menu | Display start page</comment>
+  </data>
+  <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
+    <value>Go To Project _Wiki</value>
+    <comment>Help menu | Go go Dynamo website</comment>
+  </data>
+  <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
+    <value>_Display Start Page</value>
+    <comment>Help menu | Go to wiki</comment>
+  </data>
+  <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
+    <value>_Report A Bug</value>
+    <comment>Help menu | Report a bug</comment>
+  </data>
+  <data name="DynamoViewHepMenuSamples" xml:space="preserve">
+    <value>Samples</value>
+    <comment>Help menu | Samples</comment>
+  </data>
+  <data name="DynamoViewPackageMenu" xml:space="preserve">
+    <value>_Packages</value>
+    <comment>Package menu</comment>
+  </data>
+  <data name="DynamoViewPackageMenuManagePackage" xml:space="preserve">
+    <value>_Manage Packages...</value>
+    <comment>Package menu | Manage packages...</comment>
+  </data>
+  <data name="DynamoViewPackageMenuPublishNodes" xml:space="preserve">
+    <value>_Publish Selected Nodes...</value>
+    <comment>Package menu | Publish selected nodes as a package</comment>
+  </data>
+  <data name="DynamoViewPackageMenuPublishPackage" xml:space="preserve">
+    <value>_Publish New Package...</value>
+    <comment>Package menu | Publish new package</comment>
+  </data>
+  <data name="DynamoViewPackageMenuPublishWorkspace" xml:space="preserve">
+    <value>_Publish Current Workspace...</value>
+    <comment>Package menu | Publish current workspace as a package</comment>
+  </data>
+  <data name="DynamoViewPackageMenuSearchPackage" xml:space="preserve">
+    <value>_Search for a Package...</value>
+    <comment>Package menu | Search for a package</comment>
+  </data>
+  <data name="DynamoViewSettingMenu" xml:space="preserve">
+    <value>_Settings</value>
+    <comment>Setting menu</comment>
+  </data>
+  <data name="DynamoViewSettingMenuAreaUnits" xml:space="preserve">
+    <value>Area Display Units</value>
+    <comment>Setting menu | Area unit display</comment>
+  </data>
+  <data name="DynamoViewSettingMenuCentimeter" xml:space="preserve">
+    <value>Centimeter</value>
+    <comment>Setting menu | Centimeter</comment>
+  </data>
+  <data name="DynamoViewSettingMenuCubicCentimeter" xml:space="preserve">
+    <value>Cubic Centimeter</value>
+    <comment>Setting menu | Cubic centimeter</comment>
+  </data>
+  <data name="DynamoViewSettingMenuCubicFoot" xml:space="preserve">
+    <value>Cubic Foot</value>
+    <comment>Setting menu | Cubic foot</comment>
+  </data>
+  <data name="DynamoViewSettingMenuCubicInch" xml:space="preserve">
+    <value>Cubic Inch</value>
+    <comment>Setting menu | Cubic inch</comment>
+  </data>
+  <data name="DynamoViewSettingMenuCubicMeter" xml:space="preserve">
+    <value>Cubic Meter</value>
+    <comment>Setting menu | Cubic meter</comment>
+  </data>
+  <data name="DynamoViewSettingMenuCubicMillimeter" xml:space="preserve">
+    <value>Cubic Millimeter</value>
+    <comment>Setting menu | Cubic millimeter</comment>
+  </data>
+  <data name="DynamoViewSettingMenuDecimalFoot" xml:space="preserve">
+    <value>Decimal Foot</value>
+    <comment>Setting menu | Decimal foot</comment>
+  </data>
+  <data name="DynamoViewSettingMenuDecimalInch" xml:space="preserve">
+    <value>Decimal Inch</value>
+    <comment>Setting menu | Decimal inch</comment>
+  </data>
+  <data name="DynamoViewSettingMenuEnableDataReporting" xml:space="preserve">
+    <value>_Enable detailed usability data reporting</value>
+    <comment>Setting menu | Enable data reporting during usage</comment>
+  </data>
+  <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
+    <value>Detailed reporting sends behaviour data that we use for improving Dynamo.&amp;#x0a;It includes the graph being created as well as errors and warnings</value>
+    <comment>Setting menu | Tooltip for enable data reporting during usage menu item</comment>
+  </data>
+  <data name="DynamoViewSettingMenuEnableSummaryReporting" xml:space="preserve">
+    <value>Enable anonymous summary reporting</value>
+    <comment>Setting menu | Eanble summary reporting</comment>
+  </data>
+  <data name="DynamoViewSettingMenuEnableSummaryReportingTooltip" xml:space="preserve">
+    <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&amp;#x0a;It does not contain your graph or any personal data</value>
+    <comment>Setting menu | Tooltip for enable summary reporting during usage menu item</comment>
+  </data>
+  <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
+    <value>Fractional Foot</value>
+    <comment>Setting menu | Fractional foot</comment>
+  </data>
+  <data name="DynamoViewSettingMenuFractionalInch" xml:space="preserve">
+    <value>Fractional Inch</value>
+    <comment>Setting menu | Fractional inch</comment>
+  </data>
+  <data name="DynamoViewSettingMenuHighRenderPrecision" xml:space="preserve">
+    <value>High</value>
+    <comment>Setting menu | Slider for render precision</comment>
+  </data>
+  <data name="DynamoViewSettingMenuLengthUnits" xml:space="preserve">
+    <value>Length Display Units</value>
+    <comment>Setting menu | Length unit display</comment>
+  </data>
+  <data name="DynamoViewSettingMenuLowRenderPrecision" xml:space="preserve">
+    <value>Low</value>
+    <comment>Setting menu | Slider for render precision</comment>
+  </data>
+  <data name="DynamoViewSettingMenuMeter" xml:space="preserve">
+    <value>Meter</value>
+    <comment>Setting menu | Meter</comment>
+  </data>
+  <data name="DynamoViewSettingMenuMillimeter" xml:space="preserve">
+    <value>Millimeter</value>
+    <comment>Setting menu | Millimeter</comment>
+  </data>
+  <data name="DynamoViewSettingMenuNumber0" xml:space="preserve">
+    <value>0</value>
+    <comment>Locale dependent number format 0</comment>
+  </data>
+  <data name="DynamoViewSettingMenuNumber00" xml:space="preserve">
+    <value>0.0</value>
+    <comment>Locale dependent number format 0.0</comment>
+  </data>
+  <data name="DynamoViewSettingMenuNumber000" xml:space="preserve">
+    <value>0.00</value>
+    <comment>Locale dependent number format 0.00</comment>
+  </data>
+  <data name="DynamoViewSettingMenuNumber0000" xml:space="preserve">
+    <value>0.000</value>
+    <comment>Locale dependent number format 0.000</comment>
+  </data>
+  <data name="DynamoViewSettingMenuNumber00000" xml:space="preserve">
+    <value>0.0000</value>
+    <comment>Locale dependent number format 0.0000</comment>
+  </data>
+  <data name="DynamoViewSettingMenuNumberFormat" xml:space="preserve">
+    <value>Number Format</value>
+    <comment>Setting menu | Number format</comment>
+  </data>
+  <data name="DynamoViewSettingMenuRenderPrecision" xml:space="preserve">
+    <value>Render Precision</value>
+    <comment>Setting menu | Render precision</comment>
+  </data>
+  <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
+    <value>Square Centimeter</value>
+    <comment>Setting menu | Square centimeter</comment>
+  </data>
+  <data name="DynamoViewSettingMenuSquareFoot" xml:space="preserve">
+    <value>Square Foot</value>
+    <comment>Setting menu | Square foot</comment>
+  </data>
+  <data name="DynamoViewSettingMenuSquareInch" xml:space="preserve">
+    <value>Square Inch</value>
+    <comment>Setting menu | Square inch</comment>
+  </data>
+  <data name="DynamoViewSettingMenuSquareMeter" xml:space="preserve">
+    <value>Square Meter</value>
+    <comment>Setting menu | Square meter</comment>
+  </data>
+  <data name="DynamoViewSettingMenuSquareMillimeter" xml:space="preserve">
+    <value>Square Millimeter</value>
+    <comment>Setting menu | Square millimeter</comment>
+  </data>
+  <data name="DynamoViewSettingMenuVolumeUnits" xml:space="preserve">
+    <value>Volume Display Units</value>
+    <comment>Setting menu | Volume unit display</comment>
   </data>
   <data name="DynamoViewViewMenu" xml:space="preserve">
     <value>_View</value>

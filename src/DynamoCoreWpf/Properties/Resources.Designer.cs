@@ -61,6 +61,78 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Debug.
+        /// </summary>
+        public static string DynamoViewDebugMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check Daily Builds.
+        /// </summary>
+        public static string DynamoViewDebugMenuCheckDailyBuild {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuCheckDailyBuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force Update.
+        /// </summary>
+        public static string DynamoViewDebugMenuDumpLibrary {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDumpLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force Re-execute.
+        /// </summary>
+        public static string DynamoViewDebugMenuForceReExecute {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuForceReExecute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force Update.
+        /// </summary>
+        public static string DynamoViewDebugMenuForceUpdate {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuForceUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run mutation test.
+        /// </summary>
+        public static string DynamoViewDebugMenuRunMutationTest {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuRunMutationTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Debug ASTs.
+        /// </summary>
+        public static string DynamoViewDebugMenuShowDebugAST {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuShowDebugAST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verbose Logging.
+        /// </summary>
+        public static string DynamoViewDebugMenuVerboseLogging {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuVerboseLogging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Edit.
         /// </summary>
         public static string DynamoViewEditMenu {
@@ -336,6 +408,429 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewFileMenuSaveAs {
             get {
                 return ResourceManager.GetString("DynamoViewFileMenuSaveAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        public static string DynamoViewHelpMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _About....
+        /// </summary>
+        public static string DynamoViewHelpMenuAbout {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpMenuAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Display Start Page.
+        /// </summary>
+        public static string DynamoViewHelpMenuDisplayStartPage {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpMenuDisplayStartPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go To Project _Wiki.
+        /// </summary>
+        public static string DynamoViewHelpMenuGotoWebsite {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpMenuGotoWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Display Start Page.
+        /// </summary>
+        public static string DynamoViewHelpMenuGotoWiki {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpMenuGotoWiki", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Report A Bug.
+        /// </summary>
+        public static string DynamoViewHelpMenuReportBug {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpMenuReportBug", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Samples.
+        /// </summary>
+        public static string DynamoViewHepMenuSamples {
+            get {
+                return ResourceManager.GetString("DynamoViewHepMenuSamples", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Packages.
+        /// </summary>
+        public static string DynamoViewPackageMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewPackageMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Manage Packages....
+        /// </summary>
+        public static string DynamoViewPackageMenuManagePackage {
+            get {
+                return ResourceManager.GetString("DynamoViewPackageMenuManagePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Publish Selected Nodes....
+        /// </summary>
+        public static string DynamoViewPackageMenuPublishNodes {
+            get {
+                return ResourceManager.GetString("DynamoViewPackageMenuPublishNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Publish New Package....
+        /// </summary>
+        public static string DynamoViewPackageMenuPublishPackage {
+            get {
+                return ResourceManager.GetString("DynamoViewPackageMenuPublishPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Publish Current Workspace....
+        /// </summary>
+        public static string DynamoViewPackageMenuPublishWorkspace {
+            get {
+                return ResourceManager.GetString("DynamoViewPackageMenuPublishWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Search for a Package....
+        /// </summary>
+        public static string DynamoViewPackageMenuSearchPackage {
+            get {
+                return ResourceManager.GetString("DynamoViewPackageMenuSearchPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Settings.
+        /// </summary>
+        public static string DynamoViewSettingMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Area Display Units.
+        /// </summary>
+        public static string DynamoViewSettingMenuAreaUnits {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuAreaUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Centimeter.
+        /// </summary>
+        public static string DynamoViewSettingMenuCentimeter {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuCentimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cubic Centimeter.
+        /// </summary>
+        public static string DynamoViewSettingMenuCubicCentimeter {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuCubicCentimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cubic Foot.
+        /// </summary>
+        public static string DynamoViewSettingMenuCubicFoot {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuCubicFoot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cubic Inch.
+        /// </summary>
+        public static string DynamoViewSettingMenuCubicInch {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuCubicInch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cubic Meter.
+        /// </summary>
+        public static string DynamoViewSettingMenuCubicMeter {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuCubicMeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cubic Millimeter.
+        /// </summary>
+        public static string DynamoViewSettingMenuCubicMillimeter {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuCubicMillimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decimal Foot.
+        /// </summary>
+        public static string DynamoViewSettingMenuDecimalFoot {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuDecimalFoot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decimal Inch.
+        /// </summary>
+        public static string DynamoViewSettingMenuDecimalInch {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuDecimalInch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Enable detailed usability data reporting.
+        /// </summary>
+        public static string DynamoViewSettingMenuEnableDataReporting {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuEnableDataReporting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detailed reporting sends behaviour data that we use for improving Dynamo.&amp;#x0a;It includes the graph being created as well as errors and warnings.
+        /// </summary>
+        public static string DynamoViewSettingMenuEnableDataReportingTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuEnableDataReportingTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable anonymous summary reporting.
+        /// </summary>
+        public static string DynamoViewSettingMenuEnableSummaryReporting {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuEnableSummaryReporting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&amp;#x0a;It does not contain your graph or any personal data.
+        /// </summary>
+        public static string DynamoViewSettingMenuEnableSummaryReportingTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuEnableSummaryReportingTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fractional Foot.
+        /// </summary>
+        public static string DynamoViewSettingMenuFractionalFoot {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuFractionalFoot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fractional Inch.
+        /// </summary>
+        public static string DynamoViewSettingMenuFractionalInch {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuFractionalInch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High.
+        /// </summary>
+        public static string DynamoViewSettingMenuHighRenderPrecision {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuHighRenderPrecision", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Length Display Units.
+        /// </summary>
+        public static string DynamoViewSettingMenuLengthUnits {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuLengthUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low.
+        /// </summary>
+        public static string DynamoViewSettingMenuLowRenderPrecision {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuLowRenderPrecision", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meter.
+        /// </summary>
+        public static string DynamoViewSettingMenuMeter {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuMeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Millimeter.
+        /// </summary>
+        public static string DynamoViewSettingMenuMillimeter {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuMillimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.
+        /// </summary>
+        public static string DynamoViewSettingMenuNumber0 {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuNumber0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.0.
+        /// </summary>
+        public static string DynamoViewSettingMenuNumber00 {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuNumber00", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.00.
+        /// </summary>
+        public static string DynamoViewSettingMenuNumber000 {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuNumber000", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.000.
+        /// </summary>
+        public static string DynamoViewSettingMenuNumber0000 {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuNumber0000", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.0000.
+        /// </summary>
+        public static string DynamoViewSettingMenuNumber00000 {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuNumber00000", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number Format.
+        /// </summary>
+        public static string DynamoViewSettingMenuNumberFormat {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuNumberFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Render Precision.
+        /// </summary>
+        public static string DynamoViewSettingMenuRenderPrecision {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuRenderPrecision", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Square Centimeter.
+        /// </summary>
+        public static string DynamoViewSettingMenuSquareCentimeter {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuSquareCentimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Square Foot.
+        /// </summary>
+        public static string DynamoViewSettingMenuSquareFoot {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuSquareFoot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Square Inch.
+        /// </summary>
+        public static string DynamoViewSettingMenuSquareInch {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuSquareInch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Square Meter.
+        /// </summary>
+        public static string DynamoViewSettingMenuSquareMeter {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuSquareMeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Square Millimeter.
+        /// </summary>
+        public static string DynamoViewSettingMenuSquareMillimeter {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuSquareMillimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume Display Units.
+        /// </summary>
+        public static string DynamoViewSettingMenuVolumeUnits {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuVolumeUnits", resourceCulture);
             }
         }
         
