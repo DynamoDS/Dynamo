@@ -186,7 +186,7 @@
     <comment>Debug menu | Check the latest daily build</comment>
   </data>
   <data name="DynamoViewDebugMenuDumpLibrary" xml:space="preserve">
-    <value>Force Update</value>
+    <value>Dump Library</value>
     <comment>Debug menu | Dump all imported libraries</comment>
   </data>
   <data name="DynamoViewDebugMenuForceReExecute" xml:space="preserve">

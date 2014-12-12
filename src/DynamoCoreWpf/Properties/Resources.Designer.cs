@@ -214,7 +214,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force Update.
+        ///   Looks up a localized string similar to Dump Library.
         /// </summary>
         public static string DynamoViewDebugMenuDumpLibrary {
             get {
