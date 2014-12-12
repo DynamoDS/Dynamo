@@ -294,11 +294,11 @@
     <comment>Help menu | Display start page</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
-    <value>Go To Project _Wiki</value>
+    <value>_Go To Project Website</value>
     <comment>Help menu | Go go Dynamo website</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
-    <value>_Display Start Page</value>
+    <value>Go To Project _Wiki</value>
     <comment>Help menu | Go to wiki</comment>
   </data>
   <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">

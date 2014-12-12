@@ -457,7 +457,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go To Project _Wiki.
+        ///   Looks up a localized string similar to _Go To Project Website.
         /// </summary>
         public static string DynamoViewHelpMenuGotoWebsite {
             get {
@@ -466,7 +466,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Display Start Page.
+        ///   Looks up a localized string similar to Go To Project _Wiki.
         /// </summary>
         public static string DynamoViewHelpMenuGotoWiki {
             get {
