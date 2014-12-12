@@ -7,10 +7,8 @@ using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using NUnit.Framework;
@@ -248,7 +246,7 @@ namespace Dynamo.Tests
         {
             DisplayModeToBackgroundConverter converter = new DisplayModeToBackgroundConverter();
             bool isSecondaryHeaderRightVisible = false;
-            Dynamo.Nodes.Search.ClassInformation.DisplayMode displayMode = ClassInformation.DisplayMode.None;
+            ClassInformation.DisplayMode displayMode = ClassInformation.DisplayMode.None;
             string parameter = "";
             object[] array = { displayMode, isSecondaryHeaderRightVisible };
             object result;
@@ -386,7 +384,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(falseBrush, result);
 
             // 2 case
-            CustomNodeSearchElement CNE = new CustomNodeSearchElement(new CustomNodeInfo(new Guid(), "name", "cat", "desc", "path"), SearchElementGroup.Action);
+            CustomNodeSearchElement CNE = new CustomNodeSearchElement(new Dynamo.Utilities.CustomNodeInfo(new Guid(), "name", "cat", "desc", "path"), SearchElementGroup.Action);
             result = converter.Convert(CNE, null, null, null);
             Assert.AreEqual(trueBrush, result);
         }

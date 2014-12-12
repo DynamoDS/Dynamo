@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-
 using Dynamo.Interfaces;
 using Dynamo.Library;
+using Dynamo.Search;
 using DynamoUtilities;
-
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoFFI;
-
 using Operator = ProtoCore.DSASM.Operator;
 
 namespace Dynamo.DSEngine

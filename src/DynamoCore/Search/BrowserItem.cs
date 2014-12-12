@@ -146,16 +146,16 @@ namespace Dynamo.Search
         }
 
         // TODO (Vladimir): ToggleIsExpandedCommand removed in new sources
-        private ToggleIsExpandedCommand _toggleIsExpanded;
-        public ToggleIsExpandedCommand ToggleIsExpanded
-        {
-            get
-            {
-                if (_toggleIsExpanded == null)
-                    _toggleIsExpanded = new ToggleIsExpandedCommand(this);
-                return _toggleIsExpanded;
-            }
-        }
+        //private ToggleIsExpandedCommand _toggleIsExpanded;
+        //public ToggleIsExpandedCommand ToggleIsExpanded
+        //{
+        //    get
+        //    {
+        //        if (_toggleIsExpanded == null)
+        //            _toggleIsExpanded = new ToggleIsExpandedCommand(this);
+        //        return _toggleIsExpanded;
+        //    }
+        //}
 
         public abstract void Execute();
 
@@ -171,70 +171,70 @@ namespace Dynamo.Search
     }
 
     // TODO (Vladimir): remove it
-    public class ToggleIsExpandedCommand : ICommand
-    {
-        private BrowserItem item;
+    //public class ToggleIsExpandedCommand : ICommand
+    //{
+    //    private BrowserItem item;
 
-        public ToggleIsExpandedCommand(BrowserItem i)
-        {
-            this.item = i;
-        }
+    //    public ToggleIsExpandedCommand(BrowserItem i)
+    //    {
+    //        this.item = i;
+    //    }
 
-        public void Execute(object parameters)
-        {
-            if (item is PackageManagerSearchElement)
-            {
-                item.IsExpanded = !item.IsExpanded;
-                return;
-            }
+    //    public void Execute(object parameters)
+    //    {
+    //        if (item is PackageManagerSearchElement)
+    //        {
+    //            item.IsExpanded = !item.IsExpanded;
+    //            return;
+    //        }
 
-            if (item is SearchElementBase)
-            {
-                ((SearchElementBase)item).Execute();
-                return;
-            }
-            var endState = !item.IsExpanded;
-            if (item is BrowserInternalElement || item is BrowserRootElement)
-            {
-                dynamic element = item;
+    //        if (item is SearchElementBase)
+    //        {
+    //            ((SearchElementBase)item).Execute();
+    //            return;
+    //        }
+    //        var endState = !item.IsExpanded;
+    //        if (item is BrowserInternalElement || item is BrowserRootElement)
+    //        {
+    //            dynamic element = item;
 
-                // Collapse all expanded items on next level.
-                if (endState)
-                {
-                    foreach (var ele in element.Items)
-                        ele.IsExpanded = false;
-                }
+    //            // Collapse all expanded items on next level.
+    //            if (endState)
+    //            {
+    //                foreach (var ele in element.Items)
+    //                    ele.IsExpanded = false;
+    //            }
 
-                foreach (var ele in element.Siblings)
-                    ele.IsExpanded = false;
+    //            foreach (var ele in element.Siblings)
+    //                ele.IsExpanded = false;
 
-                //Walk down the tree expanding anything nested one layer deep
-                //this can be removed when we have the hierachy implemented properly
-                if (element.Items.Count == 1)
-                {
-                    BrowserItem subElement = element.Items[0];
-                    while (subElement.Items.Count == 1)
-                    {
-                        subElement.IsExpanded = true;
-                        subElement = subElement.Items[0];
-                    }
+    //            //Walk down the tree expanding anything nested one layer deep
+    //            //this can be removed when we have the hierachy implemented properly
+    //            if (element.Items.Count == 1)
+    //            {
+    //                BrowserItem subElement = element.Items[0];
+    //                while (subElement.Items.Count == 1)
+    //                {
+    //                    subElement.IsExpanded = true;
+    //                    subElement = subElement.Items[0];
+    //                }
 
-                    subElement.IsExpanded = true;
-                }
-            }
+    //                subElement.IsExpanded = true;
+    //            }
+    //        }
 
-            item.IsExpanded = endState;
-        }
+    //        item.IsExpanded = endState;
+    //    }
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
+    //    public event EventHandler CanExecuteChanged
+    //    {
+    //        add { CommandManager.RequerySuggested += value; }
+    //        remove { CommandManager.RequerySuggested -= value; }
+    //    }
 
-        public bool CanExecute(object parameters)
-        {
-            return true;
-        }
-    }
+    //    public bool CanExecute(object parameters)
+    //    {
+    //        return true;
+    //    }
+    //}
 }

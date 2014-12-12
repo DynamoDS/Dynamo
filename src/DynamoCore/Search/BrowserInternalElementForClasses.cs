@@ -56,5 +56,10 @@ namespace Dynamo.Search
             Items.Add(tempClass);
             return tempClass;
         }
+
+        public override void Execute()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

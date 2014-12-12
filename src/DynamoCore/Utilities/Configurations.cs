@@ -1,4 +1,6 @@
-﻿using Dynamo.Utilities;
+﻿using System.Windows;
+using System.Windows.Media;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI
 {

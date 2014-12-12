@@ -282,7 +282,7 @@ namespace Dynamo.ViewModels
 
             // SearchResults doesn't used everywhere.
             // It is populated for making connected tests as successful.
-            SearchResults = new ObservableCollection<SearchElementBase>(foundNodes);
+            SearchResults = new ObservableCollection<SearchElementBaseViewModel>(foundNodes.Select(node => new NodeSearchElementViewModel(node as NodeSearchElement)));
         }
 
         private void UpdateTopResult()

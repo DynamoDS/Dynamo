@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Dynamo.Controls;
-using Dynamo.Nodes.Search;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 
@@ -82,7 +82,7 @@ namespace Dynamo.UI.Views
             var expanderContent = (sender as FrameworkElement);
             expanderContent.BringIntoView(new Rect(0.0, 0.0, 100.0, 20.0));
 
-            var buttons = Dynamo.Utilities.WPF.FindChild<ListView>(expanderContent, "");
+            var buttons = WpfUtilities.ChildOfType<ListView>(expanderContent);
             if (buttons != null)
                 buttons.UnselectAll();
 
@@ -119,7 +119,7 @@ namespace Dynamo.UI.Views
                 return;
 
             var wrapPanels = new List<LibraryWrapPanel>();
-            WPF.FindChildren<LibraryWrapPanel>(categoryButton, string.Empty, wrapPanels);
+            WpfUtilities.FindChildren<LibraryWrapPanel>(categoryButton, string.Empty, wrapPanels);
             if (wrapPanels.Count == 0)
                 return;
 

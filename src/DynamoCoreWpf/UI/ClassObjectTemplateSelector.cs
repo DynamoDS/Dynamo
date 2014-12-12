@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using Dynamo.Nodes.Search;
+using Dynamo.Search;
 
 namespace Dynamo.Controls
 {

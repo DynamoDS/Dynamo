@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -310,7 +309,7 @@ namespace Dynamo.UI.Views
                 return;
 
             var item = GetListItemByIndex(memberGroupListBox, nextSelectedMemberGroupIndex);
-            var nextSelectedMembers = WPF.FindChild<ListBox>(item, "MembersListBox");
+            var nextSelectedMembers = WpfUtilities.ChildOfType<ListBox>(item, "MembersListBox");
 
             // When moving on to the next member group list below (by pressing down arrow),
             // the focus should moved on to the first member in the member group list. Likewise,
@@ -379,7 +378,7 @@ namespace Dynamo.UI.Views
                     return;
 
                 // Otherwise user pressed down, we have to move to first member button.
-                var memberGroupsListBox = WPF.FindChild<ListBox>(searchCategoryElement, "MemberGroupsListBox");
+                var memberGroupsListBox = WpfUtilities.ChildOfType<ListBox>(searchCategoryElement, "MemberGroupsListBox");
                 var listItem = FindFirstChildListItem(memberGroupsListBox, "MembersListBox");
                 if (listItem != null)
                 {
@@ -393,7 +392,7 @@ namespace Dynamo.UI.Views
 
         private ListBoxItem FindFirstChildListItem(FrameworkElement parent, string listName)
         {
-            var list = WPF.FindChild<ListBox>(parent, listName);
+            var list = WpfUtilities.ChildOfType<ListBox>(parent, listName);
             var generator = list.ItemContainerGenerator;
             return generator.ContainerFromIndex(0) as ListBoxItem;
         }
@@ -451,9 +450,9 @@ namespace Dynamo.UI.Views
 
             if (e.Key == Key.Up)
             {
-                var memberGroupsList = WPF.FindChild<ListBox>(nextSelectedCategory, "MemberGroupsListBox");
+                var memberGroupsList = WpfUtilities.ChildOfType<ListBox>(nextSelectedCategory, "MemberGroupsListBox");
                 var lastMemberGroup = GetListItemByIndex(memberGroupsList, memberGroupsList.Items.Count - 1);
-                var membersList = WPF.FindChild<ListBox>(lastMemberGroup, "MembersListBox");
+                var membersList = WpfUtilities.ChildOfType<ListBox>(lastMemberGroup, "MembersListBox");
 
                 // If key is up, then we have to select the last method button.
                 UpdateHighlightedItem(GetListItemByIndex(membersList, membersList.Items.Count - 1));

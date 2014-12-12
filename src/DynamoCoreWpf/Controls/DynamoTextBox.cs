@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -17,7 +15,6 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
-using System.Windows.Controls.Primitives;
 
 namespace Dynamo.Nodes
 {
@@ -486,7 +483,7 @@ namespace Dynamo.UI.Controls
         // If we try to load it before, we will get null.
         private void LoadMainDynamoWindow(object sender, RoutedEventArgs e)
         {
-            var mainDynamoWindow = WPF.FindUpVisualTree<DynamoView>(this);
+            var mainDynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this);
 
             // When Dynamo window goes behind another app, the tool-tip should be hidden right 
             // away. We cannot use CloseLibraryToolTipPopup because it only hides the tool-tip 
@@ -539,15 +536,14 @@ namespace Dynamo.UI.Controls
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
         {
             double gap = Configurations.ToolTipTargetGapInPixels;
-            PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
-            var dynamoWindow = WPF.FindUpVisualTree<DynamoView>(this.PlacementTarget);
+            var dynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this.PlacementTarget);
             Point targetLocation = this.PlacementTarget
                 .TransformToAncestor(dynamoWindow)
                 .Transform(new Point(0, 0));
 
             // Count width.
             double x = 0;
-            x = WPF.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
+            x = WpfUtilities.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
                 + gap * 2 + targetLocation.X * (-1);
 
             // Count height.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Dynamo.Nodes.Search;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
@@ -58,7 +58,7 @@ namespace Dynamo.Controls
         protected override void OnInitialized(EventArgs e)
         {
             // ListView should never be null.
-            classListView = WPF.FindUpVisualTree<ListView>(this);
+            classListView = WpfUtilities.FindUpVisualTree<ListView>(this);
             collection = classListView.ItemsSource as ObservableCollection<BrowserItem>;
             collection.Add(new ClassInformation());
             classListView.SelectionChanged += OnClassViewSelectionChanged;
@@ -106,7 +106,7 @@ namespace Dynamo.Controls
                 {
                     int classInfoIndex = GetClassInformationIndex();
                     var standardPanel = listButtons[classInfoIndex];
-                    var firstMemberList = WPF.FindChild<ListBox>(standardPanel, "primaryMembers");
+                    var firstMemberList = WpfUtilities.ChildOfType<ListBox>(standardPanel, "primaryMembers");
                     var generator = firstMemberList.ItemContainerGenerator;
                     (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
 

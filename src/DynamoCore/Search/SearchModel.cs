@@ -478,7 +478,8 @@ namespace Dynamo.Search
                 description = (attribs[0] as NodeDescriptionAttribute).ElementDescription;
             }
 
-            var searchEle = new NodeSearchElement(name, description, tags, t.FullName);
+            var searchEle = new NodeSearchElement(name, description, tags, group, t.FullName,
+                                                  t.Assembly.GetName().Name + ".dll");
             searchEle.Executed += this.OnExecuted;
             searchEle.ElementType = nodeType;
 
@@ -515,7 +516,7 @@ namespace Dynamo.Search
 
             if (!string.IsNullOrEmpty(cat))
             {
-                SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
+                SearchDictionary.Add(searchEle, cat + Configurations.CategoryDelimiter + searchEle.Name);
             }
 
             TryAddCategoryAndItem(cat, searchEle);
@@ -527,7 +528,6 @@ namespace Dynamo.Search
                 tags.ForEach(x => SearchDictionary.Add(searchEle, x + "++++++++"));
             }
             SearchDictionary.Add(searchEle, description);
-
         }
 
         public bool Add(CustomNodeInfo nodeInfo)

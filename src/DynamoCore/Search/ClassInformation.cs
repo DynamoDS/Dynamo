@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Dynamo.Search.SearchElements;
+using Dynamo.UI;
 
 namespace Dynamo.Search
 {
@@ -166,6 +168,11 @@ namespace Dynamo.Search
                         break;
                 }
             }
+        }
+
+        public override void Execute()
+        {
+            throw new NotImplementedException();
         }
     }
 }

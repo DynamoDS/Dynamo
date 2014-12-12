@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media.Imaging;
+using System.Xml;
+using Dynamo.UI;
 using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements

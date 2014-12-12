@@ -3,27 +3,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Media;
 using System.Linq;
-
-
-using Dynamo.Nodes.Search;
-using Dynamo.UI;
-using Dynamo.Models;
-using System.Web;
-
-using Dynamo.ViewModels;
-using Dynamo.PackageManager;
+using System.Windows;
 using System.Windows.Controls;
-
-using DynamoUnits;
-
-using Dynamo.UI.Controls;
-using Dynamo.Search.SearchElements;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
+
+using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
+using Dynamo.UI;
+using Dynamo.UI.Controls;
+using Dynamo.ViewModels;
+using DynamoUnits;
 
 using RestSharp.Contrib;
 

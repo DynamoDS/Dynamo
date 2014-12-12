@@ -71,11 +71,20 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AddonsTreeView.xaml.cs">
+      <DependentUpon>AddonsTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StandardPanel.xaml.cs">
+      <DependentUpon>StandardPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
+    <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
+    <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\VisualCodeBlockUtils.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
@@ -188,6 +197,12 @@
     <Compile Include="Views\LibraryContainerView.xaml.cs">
       <DependentUpon>LibraryContainerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\LibrarySearchView.xaml.cs">
+      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LibraryView.xaml.cs">
+      <DependentUpon>LibraryView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
     </Compile>
@@ -202,6 +217,9 @@
     </Compile>
     <Compile Include="Views\PublishPackageView.xaml.cs">
       <DependentUpon>PublishPackageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TooltipWindow.xaml.cs">
+      <DependentUpon>TooltipWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Watch3DView.xaml.cs">
       <DependentUpon>Watch3DView.xaml</DependentUpon>
@@ -261,6 +279,10 @@
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\AddonsTreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -273,6 +295,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\StandardPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\StartPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -903,6 +929,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\LibrarySearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\LibraryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\NodeView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -927,6 +961,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\PublishPackageView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\TooltipWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

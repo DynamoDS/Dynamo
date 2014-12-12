@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -109,11 +108,13 @@ namespace Dynamo.DSEngine
         }
     }
 
+    // TODO (Vladimir): Class should not have references on types of PresentationCore.dll
+    //                  Should be reworked. Task: MAGN-5656.
     public class LibraryCustomization
     {
         private readonly XDocument xmlDocument;
 
-        private Dictionary<string, BitmapSource> cachedIcons = 
+        private Dictionary<string, BitmapSource> cachedIcons =
             new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
 
         private readonly string assemblyName;

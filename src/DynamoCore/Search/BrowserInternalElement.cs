@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Windows.Media.Imaging;
+using Dynamo.DSEngine;
 using Dynamo.UI;
 
 namespace Dynamo.Search
@@ -167,7 +169,7 @@ namespace Dynamo.Search
             ResourceType resourceType, bool disambiguate = false)
         {
             if (resourceType == ResourceType.SmallIcon)
-                return disambiguate ? String.Empty : this.Name;
+                return disambiguate ? string.Empty : this.Name;
 
             return string.Empty;
         }
