@@ -63,9 +63,9 @@ namespace Dynamo.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Build sublists from a list using DesignScript range syntax..
         /// </summary>
-        public static string BuildSublistsFromList {
+        public static string BuildSublistsDescription {
             get {
-                return ResourceManager.GetString("BuildSublistsFromList", resourceCulture);
+                return ResourceManager.GetString("BuildSublistsDescription", resourceCulture);
             }
         }
         
@@ -79,65 +79,65 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a number..
+        ///   Looks up a localized string similar to Composes two single parameter functions into one function..
         /// </summary>
-        public static string CreateNumber {
+        public static string ComposeFunctionNodeDescription {
             get {
-                return ResourceManager.GetString("CreateNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creates a string..
-        /// </summary>
-        public static string CreateString {
-            get {
-                return ResourceManager.GetString("CreateString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to DesignScript Builtin Functions.
-        /// </summary>
-        public static string DesignScriptBuiltinFunctions {
-            get {
-                return ResourceManager.GetString("DesignScriptBuiltinFunctions", resourceCulture);
+                return ResourceManager.GetString("ComposeFunctionNodeDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
-        public static string InstanceOfCustomNode {
+        public static string CustomNodeDesciption {
             get {
-                return ResourceManager.GetString("InstanceOfCustomNode", resourceCulture);
+                return ResourceManager.GetString("CustomNodeDesciption", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Composes two single parameter functions into one function..
+        ///   Looks up a localized string similar to DesignScript Builtin Functions.
         /// </summary>
-        public static string TwoFunctionsToOneFunction {
+        public static string FunctionNodeDescription {
             get {
-                return ResourceManager.GetString("TwoFunctionsToOneFunction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A function output, use with custom nodes.
-        /// </summary>
-        public static string UsingCustomeNodesWithFunctionOutput {
-            get {
-                return ResourceManager.GetString("UsingCustomeNodesWithFunctionOutput", resourceCulture);
+                return ResourceManager.GetString("FunctionNodeDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to A function parameter, use with custom nodes.
         /// </summary>
-        public static string UsingCustomNodesWithFunctionParam {
+        public static string InputNodeDescription {
             get {
-                return ResourceManager.GetString("UsingCustomNodesWithFunctionParam", resourceCulture);
+                return ResourceManager.GetString("InputNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a number..
+        /// </summary>
+        public static string NumberNodeDescription {
+            get {
+                return ResourceManager.GetString("NumberNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A function output, use with custom nodes.
+        /// </summary>
+        public static string OutputNodeDescription {
+            get {
+                return ResourceManager.GetString("OutputNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a string..
+        /// </summary>
+        public static string StringNodeDescription {
+            get {
+                return ResourceManager.GetString("StringNodeDescription", resourceCulture);
             }
         }
     }
