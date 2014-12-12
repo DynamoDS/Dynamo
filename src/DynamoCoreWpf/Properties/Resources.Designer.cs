@@ -1231,6 +1231,105 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string NodeContextMenuDelete {
+            get {
+                return ResourceManager.GetString("NodeContextMenuDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help....
+        /// </summary>
+        public static string NodeContextMenuHelp {
+            get {
+                return ResourceManager.GetString("NodeContextMenuHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lacing.
+        /// </summary>
+        public static string NodeContextMenuLacing {
+            get {
+                return ResourceManager.GetString("NodeContextMenuLacing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cross Product.
+        /// </summary>
+        public static string NodeContextMenuLacingCrossProduct {
+            get {
+                return ResourceManager.GetString("NodeContextMenuLacingCrossProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First.
+        /// </summary>
+        public static string NodeContextMenuLacingFirst {
+            get {
+                return ResourceManager.GetString("NodeContextMenuLacingFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longest.
+        /// </summary>
+        public static string NodeContextMenuLacingLongest {
+            get {
+                return ResourceManager.GetString("NodeContextMenuLacingLongest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shortest.
+        /// </summary>
+        public static string NodeContextMenuLacingShortest {
+            get {
+                return ResourceManager.GetString("NodeContextMenuLacingShortest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview.
+        /// </summary>
+        public static string NodeContextMenuPreview {
+            get {
+                return ResourceManager.GetString("NodeContextMenuPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview Upstream.
+        /// </summary>
+        public static string NodeContextMenuPreviewUpstream {
+            get {
+                return ResourceManager.GetString("NodeContextMenuPreviewUpstream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename Node....
+        /// </summary>
+        public static string NodeContextMenuRenameNode {
+            get {
+                return ResourceManager.GetString("NodeContextMenuRenameNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Labels.
+        /// </summary>
+        public static string NodeContextMenuShowLabels {
+            get {
+                return ResourceManager.GetString("NodeContextMenuShowLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASK.
         /// </summary>
         public static string StartPageAsk {

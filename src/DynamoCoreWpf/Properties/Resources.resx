@@ -637,6 +637,50 @@
     <value>Zoom Out (Mouse wheel up)</value>
     <comment>View menu | Zoom out</comment>
   </data>
+  <data name="NodeContextMenuDelete" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Context menu for selected node - delete selected node</comment>
+  </data>
+  <data name="NodeContextMenuHelp" xml:space="preserve">
+    <value>Help...</value>
+    <comment>Display help message for this node</comment>
+  </data>
+  <data name="NodeContextMenuLacing" xml:space="preserve">
+    <value>Lacing</value>
+    <comment>Context menu for selected node</comment>
+  </data>
+  <data name="NodeContextMenuLacingCrossProduct" xml:space="preserve">
+    <value>Cross Product</value>
+    <comment>Lacing strategy: use cross product for two lists</comment>
+  </data>
+  <data name="NodeContextMenuLacingFirst" xml:space="preserve">
+    <value>First</value>
+    <comment>Lacing strategy: use the first list</comment>
+  </data>
+  <data name="NodeContextMenuLacingLongest" xml:space="preserve">
+    <value>Longest</value>
+    <comment>Lacing strategy: use the longest list</comment>
+  </data>
+  <data name="NodeContextMenuLacingShortest" xml:space="preserve">
+    <value>Shortest</value>
+    <comment>Lacing strategy: use the shortest list</comment>
+  </data>
+  <data name="NodeContextMenuPreview" xml:space="preserve">
+    <value>Preview</value>
+    <comment>Context menu item - preview geometry</comment>
+  </data>
+  <data name="NodeContextMenuPreviewUpstream" xml:space="preserve">
+    <value>Preview Upstream</value>
+    <comment>Context menu item - preview geometry of upstream nodes</comment>
+  </data>
+  <data name="NodeContextMenuRenameNode" xml:space="preserve">
+    <value>Rename Node...</value>
+    <comment>Context menu item - rename this node</comment>
+  </data>
+  <data name="NodeContextMenuShowLabels" xml:space="preserve">
+    <value>Show Labels</value>
+    <comment>Context menu item - show labels</comment>
+  </data>
   <data name="StartPageAsk" xml:space="preserve">
     <value>ASK</value>
   </data>
