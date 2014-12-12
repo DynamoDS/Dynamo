@@ -138,7 +138,7 @@ namespace Analysis
     public class ColoredSurface : IGraphicItem
     {
         private Surface surface;
-        private DSCore.Color[] colors;
+        private Color[] colors;
         private UV[] uvs;
 
         private ColoredSurface(Surface surface, 
@@ -202,7 +202,7 @@ namespace Analysis
                 // Get the triangle vertex
                 var v = Point.ByCoordinates(vx, vy, vz);
                 var uv = surface.UVParameterAtPoint(v);
-                var avgColor = CalculateColorDistance(uv);
+                var avgColor = Color.BuildColorFrom2DRange(colors, uvs, uv);
 
                 package.TriangleVertexColors[colorCount] = avgColor.Red;
                 package.TriangleVertexColors[colorCount + 1] = avgColor.Green;
@@ -211,22 +211,6 @@ namespace Analysis
 
                 colorCount += 4;
             }
-        }
-
-        private static bool VertExists(IEnumerable<Vertex2> verts, UV comp, out Vertex2 vert)
-        {
-            vert = null;
-
-            foreach (var v in verts)
-            {
-                var found = v.AsVector().IsAlmostEqualTo(Vector.ByCoordinates(comp.U, comp.V, 0));
-                if (!found) continue;
-
-                vert = v;
-                return true;
-            }
-
-            return false;
         }
 
         private Color CalculateColorDistance(UV uv)

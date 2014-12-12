@@ -88,7 +88,7 @@ namespace DSCoreNodesUI
             for (int i = 0; i < size; i++)
             {
                 double t = (double)i/size;
-                var newColor = Color.BuildColorFromRange(colors, values, t);
+                var newColor = Color.BuildColorFrom1DRange(colors, values, t);
 
                 pixels[i] = (uint)((255 << 24) + (newColor.Red << 16) + (newColor.Green << 8) + newColor.Blue);
 
