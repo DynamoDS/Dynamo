@@ -681,6 +681,26 @@
     <value>Show Labels</value>
     <comment>Context menu item - show labels</comment>
   </data>
+  <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
+    <value>CATEGORY</value>
+    <comment>Category label</comment>
+  </data>
+  <data name="NodeHelpWindowNodeDescription" xml:space="preserve">
+    <value>DESCRIPTION</value>
+    <comment>Description label</comment>
+  </data>
+  <data name="NodeHelpWindowNodeInput" xml:space="preserve">
+    <value>INPUTS</value>
+    <comment>Input label</comment>
+  </data>
+  <data name="NodeHelpWindowNodeOutput" xml:space="preserve">
+    <value>OUTPUTS</value>
+    <comment>Output label</comment>
+  </data>
+  <data name="NodeHelpWindowNodeType" xml:space="preserve">
+    <value>NODE TYPE</value>
+    <comment>Title label</comment>
+  </data>
   <data name="StartPageAsk" xml:space="preserve">
     <value>ASK</value>
   </data>

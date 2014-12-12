@@ -1330,6 +1330,51 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CATEGORY.
+        /// </summary>
+        public static string NodeHelpWindowNodeCategory {
+            get {
+                return ResourceManager.GetString("NodeHelpWindowNodeCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DESCRIPTION.
+        /// </summary>
+        public static string NodeHelpWindowNodeDescription {
+            get {
+                return ResourceManager.GetString("NodeHelpWindowNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INPUTS.
+        /// </summary>
+        public static string NodeHelpWindowNodeInput {
+            get {
+                return ResourceManager.GetString("NodeHelpWindowNodeInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OUTPUTS.
+        /// </summary>
+        public static string NodeHelpWindowNodeOutput {
+            get {
+                return ResourceManager.GetString("NodeHelpWindowNodeOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NODE TYPE.
+        /// </summary>
+        public static string NodeHelpWindowNodeType {
+            get {
+                return ResourceManager.GetString("NodeHelpWindowNodeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASK.
         /// </summary>
         public static string StartPageAsk {
