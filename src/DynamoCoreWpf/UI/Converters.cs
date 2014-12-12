@@ -1625,11 +1625,11 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool) value != true) return "(Up-to-date)";
+            if ((bool) value != true) return Resources.AboutWindowUpToDate;
 
             var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
 
-            return latest != null? latest.ToString() : "Could not get version.";
+            return latest != null? latest.ToString() : Resources.AboutWindowCannotGetVersion;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

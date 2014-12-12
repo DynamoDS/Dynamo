@@ -61,6 +61,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not get version..
+        /// </summary>
+        public static string AboutWindowCannotGetVersion {
+            get {
+                return ResourceManager.GetString("AboutWindowCannotGetVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Website.
+        /// </summary>
+        public static string AboutWIndowDynamoWebsiteButton {
+            get {
+                return ResourceManager.GetString("AboutWIndowDynamoWebsiteButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About Dynamo.
+        /// </summary>
+        public static string AboutWindowTitle {
+            get {
+                return ResourceManager.GetString("AboutWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Up-to-date).
+        /// </summary>
+        public static string AboutWindowUpToDate {
+            get {
+                return ResourceManager.GetString("AboutWindowUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string DynamoViewCancelButton {

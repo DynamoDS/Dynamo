@@ -117,6 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutWindowCannotGetVersion" xml:space="preserve">
+    <value>Could not get version.</value>
+    <comment>To indicate not abe to get Dynamo version</comment>
+  </data>
+  <data name="AboutWIndowDynamoWebsiteButton" xml:space="preserve">
+    <value>Dynamo Website</value>
+    <comment>Click button to go to Dynamo website</comment>
+  </data>
+  <data name="AboutWindowTitle" xml:space="preserve">
+    <value>About Dynamo</value>
+    <comment>About window title</comment>
+  </data>
+  <data name="AboutWindowUpToDate" xml:space="preserve">
+    <value>(Up-to-date)</value>
+    <comment>To indicate Dynamo is up to date</comment>
+  </data>
   <data name="DynamoViewCancelButton" xml:space="preserve">
     <value>Cancel</value>
     <comment>Cancel button</comment>
