@@ -18,31 +18,17 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid>
-        <Expander IsExpanded="false">
-            
-            <Expander.Header>
-                <Grid Height="{x:Static ui2:Configurations.PortHeightInPixels}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition MinWidth="150" Width="150"/>
-                    </Grid.ColumnDefinitions>
-                    <nodes1:DynamoTextBox x:Name="ValTb" Text="{Binding ValueText, Mode=OneWay}" 
-                             Grid.Column="0" Margin="2"/>
-                    <Slider Name="slider" 
-                            Maximum="{Binding Max}" 
-                            Minimum="{Binding Min}" 
-                            TickFrequency="{Binding Step}" 
-                            Value="{Binding Value}" TickPlacement="BottomRight" IsSnapToTickEnabled="true" 
-                            Grid.Column="1"/>
-                </Grid>
-            </Expander.Header>
-            
-            <Grid>
+    <Grid VerticalAlignment="Stretch">
+ 
+        <Expander IsExpanded="False" Margin="5,0,0,0" IsHitTestVisible="True">
+
+            <Grid Margin="0,7,0,0">
+                
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
@@ -66,5 +52,32 @@
             
         </Expander>
 
+        <Grid Height="{x:Static ui2:Configurations.PortHeightInPixels}" 
+              VerticalAlignment="Top">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition MinWidth="150" Width="150"/>
+            </Grid.ColumnDefinitions>
+
+            <nodes1:DynamoTextBox x:Name="ValTb" 
+                                          Text="{Binding ValueText, Mode=OneWay}" 
+                                          Grid.Column="1"
+                                          Margin="2,0,2,0" 
+                                          VerticalAlignment="Stretch"/>
+
+            <Slider Name="slider" 
+                            VerticalAlignment="Center"
+                            Maximum="{Binding Max}" 
+                            Minimum="{Binding Min}" 
+                            TickFrequency="{Binding Step}" 
+                            Value="{Binding Value}" 
+                            TickPlacement="None" 
+                            IsSnapToTickEnabled="true" 
+                            Grid.Column="2" />
+
+        </Grid>
+        
     </Grid>
 </UserControl>
