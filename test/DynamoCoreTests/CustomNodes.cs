@@ -121,8 +121,10 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void CanCollapseWith1NodeHoleInSelection()
         {
+        //   http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
             var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
 
@@ -702,20 +704,20 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(originalIdentifier, collapsedNode.AstIdentifierForPreview);
         }
 
-        //[Test]
-        //public void CanGetDependenciesFromFunctionDefinition()
-        //{
+        [Test]
+        public void EvaluateProxyCustomNodeInstances()
+        {
+            // Defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5555
+            // Dyn file contains a proxy custom node. Evaluating the whole graph
+            // should evaluate all nodes except those proxy custom node instance. 
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\missing_custom_node.dyn");
 
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            ViewModel.Model.RunExpression();
 
-
-        //    if (CustomNodeDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
-        //        || CustomNodeDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
-        //    {
-        //        return new FunctionWithRevit(inputs, outputs, CustomNodeDefinition);
-        //    }
-        //    return base.CreateFunction(inputs, outputs, CustomNodeDefinition);
-        //}
-
-
+            AssertPreviewValue("1b8b309b-ee2e-44fe-ac98-2123b2711bea", 1);
+            AssertPreviewValue("08db7d60-845c-439c-b7ca-c2a06664a948", 2);
+        }
     }
 }

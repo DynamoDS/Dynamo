@@ -6,13 +6,12 @@ using System.Linq;
 using System.Net;
 using System.ComponentModel;
 using System.Reflection;
-using System.Windows;
-using System.Xml.Serialization;
 
-using Dynamo.UI;
+using System.Xml.Serialization;
 using System.Xml.Linq;
 
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Core;
+
 
 namespace Dynamo.UpdateManager
 {
@@ -648,20 +647,10 @@ namespace Dynamo.UpdateManager
 
         public void QuitAndInstallUpdate()
         {
-            OnLog(new LogEventArgs("UpdateNotificationControl-OnInstallButtonClicked", LogLevel.File));
+            OnLog(new LogEventArgs("UpdateManager.QuitAndInstallUpdate-Invoked", LogLevel.File));
 
-            string message = string.Format("An update is available for {0}.\n\n" +
-                "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
-
-            MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
-            bool installUpdate = result == MessageBoxResult.OK;
-
-            if (installUpdate)
-            {
-                if (ShutdownRequested != null)
-                    ShutdownRequested(this);
-            }
-            
+            if (ShutdownRequested != null)
+                ShutdownRequested(this);
         }
 
         public void HostApplicationBeginQuit()

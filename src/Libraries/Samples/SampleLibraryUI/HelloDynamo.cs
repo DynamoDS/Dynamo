@@ -7,7 +7,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
-
+using Dynamo.Wpf;
 using ProtoCore.AST.AssociativeAST;
 
 namespace SamplesLibraryUI
@@ -47,7 +47,7 @@ namespace SamplesLibraryUI
     [NodeDescription("A sample UI node which displays custom UI.")]
 
     [IsDesignScriptCompatible]
-    public class HelloDynamo : NodeModel, IWpfNode
+    public class HelloDynamo : NodeModel
     {
         #region private members
 
@@ -190,34 +190,6 @@ namespace SamplesLibraryUI
             };
         }
 
-        /// <summary>
-        /// SetupCustomUIElements is part of the IWpfNode interface.
-        /// At run-time, this method is called during the node 
-        /// creation. Here you can create custom UI elements and
-        /// add them to the node view, but we recommend designing
-        /// your UI declaratively using xaml, and binding it to
-        /// properties on this node as the DataContext.
-        /// </summary>
-        /// <param name="view">The view representing the node in the graph.</param>
-        [IsVisibleInDynamoLibrary(false)]
-        public void SetupCustomUIElements(dynNodeView view)
-        {
-            // The view variable is a reference to the node's view.
-            // In the middle of the node is a grid called the InputGrid.
-            // We reccommend putting your custom UI in this grid, as it has
-            // been designed for this purpose.
-
-            // Create an instance of our custom UI class (defined in xaml),
-            // and put it into the input grid.
-            var helloDynamoControl = new HelloDynamoControl();
-            view.inputGrid.Children.Add(helloDynamoControl);
-
-            // Set the data context for our control to be this class.
-            // Properties in this class which are data bound will raise 
-            // property change notifications which will update the UI.
-            helloDynamoControl.DataContext = this;
-        }
-
         #endregion
 
         #region command methods
@@ -236,4 +208,42 @@ namespace SamplesLibraryUI
 
         #endregion
     }
+
+    public class HelloDynamoNodeViewCustomization : INodeViewCustomization<HelloDynamo>
+    {
+        /// <summary>
+        /// At run-time, this method is called during the node 
+        /// creation. Here you can create custom UI elements and
+        /// add them to the node view, but we recommend designing
+        /// your UI declaratively using xaml, and binding it to
+        /// properties on this node as the DataContext.
+        /// </summary>
+        /// <param name="model">The NodeModel representing the node's core logic.</param>
+        /// <param name="view">The NodeView representing the node in the graph.</param>
+        public void CustomizeView(HelloDynamo model, NodeView nodeView)
+        {
+            // The view variable is a reference to the node's view.
+            // In the middle of the node is a grid called the InputGrid.
+            // We reccommend putting your custom UI in this grid, as it has
+            // been designed for this purpose.
+
+            // Create an instance of our custom UI class (defined in xaml),
+            // and put it into the input grid.
+            var helloDynamoControl = new HelloDynamoControl();
+            nodeView.inputGrid.Children.Add(helloDynamoControl);
+
+            // Set the data context for our control to be this class.
+            // Properties in this class which are data bound will raise 
+            // property change notifications which will update the UI.
+            helloDynamoControl.DataContext = model;
+        }
+
+        /// <summary>
+        /// Here you can do any cleanup you require if you've assigned callbacks for particular 
+        /// UI events on your node.
+        /// </summary>
+        public void Dispose()
+        {}
+    }
+
 }

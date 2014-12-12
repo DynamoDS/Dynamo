@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
-    public partial class Function : FunctionCallBase
+    public class Function : FunctionCallBase
     {
         public Function(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
 
@@ -306,6 +306,7 @@ namespace Dynamo.Nodes
         {
             Controller.Definition = def;
             ResyncWithDefinition();
+            RequiresRecalc = true;
         }
     }
 
@@ -316,7 +317,7 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
-    public partial class Symbol : NodeModel
+    public class Symbol : NodeModel
     {
         private string inputSymbol = "";
 
@@ -366,6 +367,17 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "InputSymbol")
+            {
+                InputSymbol = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
     }
 
     [NodeName("Output")]
@@ -374,7 +386,7 @@ namespace Dynamo.Nodes
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
-    public partial class Output : NodeModel
+    public class Output : NodeModel
     {
         private string symbol = "";
 
@@ -435,6 +447,17 @@ namespace Dynamo.Nodes
             }
 
             ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Symbol")
+            {
+                Symbol = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
         }
     }
 }
