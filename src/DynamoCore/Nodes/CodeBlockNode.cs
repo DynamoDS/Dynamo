@@ -181,15 +181,7 @@ namespace Dynamo.Nodes
                     var outportConnections = new OrderedDictionary();
                     //Save the connectors so that we can recreate them at the correct positions
                     SaveAndDeleteConnectors(inportConnections, outportConnections, recorder);
-
-                    if (string.IsNullOrEmpty(code))
-                    {
-                        recorder.PopFromUndoGroup();
-                        recorder.RecordCreationForUndo(this);
-                    }
-                    else
-                        recorder.RecordModificationForUndo(this);
-
+                    
                     code = newCode;
                     ProcessCode(ref errorMessage, ref warningMessage);
 

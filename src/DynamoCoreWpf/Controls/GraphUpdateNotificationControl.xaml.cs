@@ -20,7 +20,15 @@ namespace DynamoCore.UI.Controls
         {
             if (DataContext is UpdateManager)
             {
-                UpdateManager.Instance.QuitAndInstallUpdate();
+                var message = string.Format("An update is available for {0}.\n\n" +
+                    "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
+
+                var result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    UpdateManager.Instance.QuitAndInstallUpdate();
+                }
             }
         }
     }

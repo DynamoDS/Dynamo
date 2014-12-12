@@ -481,26 +481,26 @@ namespace Dynamo.Models
                 OnRequestNodeCentered(this, args);
             }
 
-            var cbn = node as CodeBlockNodeModel;
-            if (cbn != null)
-            {
-                var firstChange = true;
-                PropertyChangedEventHandler codeChangedHandler = (sender, args) =>
-                {
-                    if (args.PropertyName != "Code") return;
+            //var cbn = node as CodeBlockNodeModel;
+            //if (cbn != null)
+            //{
+            //    var firstChange = true;
+            //    PropertyChangedEventHandler codeChangedHandler = (sender, args) =>
+            //    {
+            //        if (args.PropertyName != "Code") return;
                     
-                    if (string.IsNullOrWhiteSpace(cbn.Code))
-                    {
-                        if (firstChange)
-                            RemoveNode(cbn);
-                        else
-                            RecordAndDeleteModels(new List<ModelBase> { cbn });
-                    }
-                    firstChange = false;
-                };
-                cbn.PropertyChanged += codeChangedHandler;
-                cbn.Disposed += () => { cbn.PropertyChanged -= codeChangedHandler; };
-            }
+            //        if (string.IsNullOrWhiteSpace(cbn.Code))
+            //        {
+            //            if (firstChange)
+            //                RemoveNode(cbn);
+            //            else
+            //                RecordAndDeleteModels(new List<ModelBase> { cbn });
+            //        }
+            //        firstChange = false;
+            //    };
+            //    cbn.PropertyChanged += codeChangedHandler;
+            //    cbn.Disposed += () => { cbn.PropertyChanged -= codeChangedHandler; };
+            //}
 
             nodes.Add(node);
             OnNodeAdded(node);
