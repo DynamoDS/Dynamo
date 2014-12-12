@@ -451,6 +451,10 @@ namespace DynamoWebServer.Messages
             {
                 data = (node as DoubleInput).Value;
             }
+            else if (node is StringInput)
+            {
+                data = (node as StringInput).Value;
+            }
 
             return data;
         }
