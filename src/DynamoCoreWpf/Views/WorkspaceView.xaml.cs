@@ -208,13 +208,15 @@ namespace Dynamo.Views
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
         {
+            var customNodeWs = workspace as CustomNodeWorkspaceModel;
+            if (customNodeWs != null)
+            {
+                // copy these strings
+                var newName = customNodeWs.Name.Substring(0);
+                var newCategory = customNodeWs.Category.Substring(0);
+                var newDescription = customNodeWs.Description.Substring(0);
 
-            // copy these strings
-            var newName = workspace.Name.Substring(0);
-            var newCategory = workspace.Category.Substring(0);
-            var newDescription = workspace.Description.Substring(0);
-
-            var args = new FunctionNamePromptEventArgs
+                var args = new FunctionNamePromptEventArgs
                 {
                     Name = newName,
                     Description = newDescription,
@@ -222,23 +224,15 @@ namespace Dynamo.Views
                     CanEditName = false
                 };
 
-            this.ViewModel.DynamoViewModel.Model.OnRequestsFunctionNamePrompt(this, args);
+                this.ViewModel.DynamoViewModel.Model.OnRequestsFunctionNamePrompt(this, args);
 
-            if (args.Success)
-            {
-                if (workspace is CustomNodeWorkspaceModel)
+                if (args.Success)
                 {
-                    var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
-                    this.ViewModel.DynamoViewModel.Model.UpdateCustomNode(
-                        def.FunctionId,
+                    customNodeWs.SetInfo(
                         args.CanEditName ? args.Name : workspace.Name,
                         args.Category,
                         args.Description);
                 }
-
-                if (args.CanEditName) workspace.Name = args.Name;
-                workspace.Description = args.Description;
-                workspace.Category = args.Category;
             }
         }
 

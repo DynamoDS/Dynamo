@@ -120,7 +120,7 @@ namespace Dynamo.ViewModels
             try
             {
                 var dynModel = this.dynamoViewModel.Model;
-                Model.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.PreferenceSettings, dynModel.Logger);
+                Model.UninstallCore(dynModel.CustomNodeManager, dynModel.PackageLoader, dynModel.PreferenceSettings);
             }
             catch (Exception)
             {

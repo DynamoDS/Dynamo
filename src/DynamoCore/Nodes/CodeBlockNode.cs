@@ -198,7 +198,7 @@ namespace Dynamo.Nodes
                 }
 
                 RaisePropertyChanged("Code");
-                OnModified();
+                OnAstUpdated();
                 ReportPosition();
 
                 ClearRuntimeError();
@@ -351,7 +351,7 @@ namespace Dynamo.Nodes
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
-            OnModified();
+            OnAstUpdated();
             
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))

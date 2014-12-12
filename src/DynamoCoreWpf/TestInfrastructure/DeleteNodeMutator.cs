@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Threading;
+using Dynamo.DSEngine;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -19,11 +20,11 @@ namespace Dynamo.TestInfrastructure
         {
         }
 
-        public override bool RunTest(NodeModel node, StreamWriter writer)
+        public override bool RunTest(NodeModel node, EngineController engine, StreamWriter writer)
         {
             bool pass = false;
 
-            var nodes = DynamoViewModel.Model.Nodes.ToList();
+            var nodes = DynamoViewModel.Model.CurrentWorkspace.Nodes;
             if (nodes.Count == 0)
                 return pass;
 
@@ -57,7 +58,7 @@ namespace Dynamo.TestInfrastructure
 
             writer.WriteLine("### - Beginning undo");
 
-            int nodesCountAfterDelete = DynamoViewModel.Model.Nodes.Count;
+            int nodesCountAfterDelete = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count;
 
             if (nodesCountBeforeDelete > nodesCountAfterDelete)
             {
@@ -86,14 +87,14 @@ namespace Dynamo.TestInfrastructure
                     DynamoViewModel.ExecuteCommand(runCancel);
                 }));
                 Thread.Sleep(10);
-                while (DynamoViewModel.Model.Runner.Running)
+                while (!DynamoViewModel.HomeSpace.RunEnabled)
                 {
                     Thread.Sleep(10);
                 }
                 writer.WriteLine("### - re-exec complete");
                 writer.Flush();
 
-                int nodesCountAfterUbdo = DynamoViewModel.Model.Nodes.Count;
+                int nodesCountAfterUbdo = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count;
                 if (nodesCountBeforeDelete == nodesCountAfterUbdo)
                     writer.WriteLine("### - Node was restored");
                 else

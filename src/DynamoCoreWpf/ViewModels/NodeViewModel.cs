@@ -320,7 +320,7 @@ namespace Dynamo.ViewModels
 
             if (IsDebugBuild)
             {
-                DynamoViewModel.Model.EngineController.AstBuilt += EngineController_AstBuilt;
+                DynamoViewModel.HomeSpace.EngineController.AstBuilt += EngineController_AstBuilt;
             }
         }
 
@@ -564,7 +564,7 @@ namespace Dynamo.ViewModels
         {
             var f = (nodeLogic as Function);
             if(f!= null)
-                DynamoViewModel.FocusCustomNodeWorkspace(f.Definition);
+                DynamoViewModel.FocusCustomNodeWorkspace(f.Definition.FunctionId);
         }
 
         private bool CanViewCustomNodeWorkspace(object parameter)
@@ -717,7 +717,7 @@ namespace Dynamo.ViewModels
         {
             // Record the state of this node before changes.
             DynamoModel dynamo = DynamoViewModel.Model;
-            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+            WorkspaceModel.RecordModelForModification(nodeLogic, dynamo.CurrentWorkspace.UndoRecorder);
 
             nodeLogic.IsVisible = !nodeLogic.IsVisible;
 
@@ -730,7 +730,7 @@ namespace Dynamo.ViewModels
         {
             // Record the state of this node before changes.
             DynamoModel dynamo = DynamoViewModel.Model;
-            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+            WorkspaceModel.RecordModelForModification(nodeLogic, dynamo.CurrentWorkspace.UndoRecorder);
 
             nodeLogic.IsUpstreamVisible = !nodeLogic.IsUpstreamVisible;
 
@@ -751,7 +751,7 @@ namespace Dynamo.ViewModels
 
         private void ValidateConnections(object parameter)
         {
-            nodeLogic.ValidateConnectionsSync();
+            DynamoViewModel.Model.OnRequestDispatcherBeginInvoke(nodeLogic.ValidateConnections);
         }
 
         private bool CanValidateConnections(object parameter)

@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Core;
+using Dynamo.Nodes;
 using Dynamo.UI;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 using Point = System.Windows.Point;
@@ -234,7 +235,7 @@ namespace Dynamo.ViewModels
             List<ModelBase> models = DynamoSelection.Instance.Selection.
                 Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
 
-            this.Model.RecordModelsForModification(models);
+            WorkspaceModel.RecordModelsForModification(models, Model.UndoRecorder);
 
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
@@ -829,25 +830,19 @@ namespace Dynamo.ViewModels
             private void CreateCodeBlockNode(Point cursor)
             {
                 // create node
-                var guid = Guid.NewGuid();
+                var node =
+                    new CodeBlockNodeModel(
+                        owningWorkspace.DynamoViewModel.HomeSpace.EngineController.LiveRunnerCore);
 
-                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.AddNodeCommand(guid,
-                    "Code Block", cursor.X, cursor.Y, false, true));
+                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.AddNodeCommand(node, cursor.X, cursor.Y, false, true));
 
                 // select node
-                var placedNode = owningWorkspace.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-                if (placedNode != null)
-                {
-                    DynamoSelection.Instance.ClearSelection();
-                    DynamoSelection.Instance.Selection.Add(placedNode);
-                }
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
 
                 //correct node position
-                if (placedNode != null)
-                {
-                    placedNode.X = (int)mouseDownPos.X - 92;
-                    placedNode.Y = (int)mouseDownPos.Y - 31;
-                }
+                node.X = (int)mouseDownPos.X - 92;
+                node.Y = (int)mouseDownPos.Y - 31;
             }
 
             #endregion

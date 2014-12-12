@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.ComponentModel;
+using Dynamo.Annotations;
 using Dynamo.Core;
 
 namespace Dynamo.Models
@@ -7,6 +8,15 @@ namespace Dynamo.Models
     partial class DynamoModel
     {
         #region events
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public event ActionHandler RequestDispatcherInvoke;
         public virtual void OnRequestDispatcherInvoke(Action action)

@@ -370,7 +370,7 @@ namespace Dynamo.ViewModels
             CurvePoint2 = new Point(p2.X - offset, p2.Y);
 
             //if connector is dragged from an input port
-            if (ActiveStartPort != null && ActiveStartPort.PortType == PortType.INPUT)
+            if (ActiveStartPort != null && ActiveStartPort.PortType == PortType.Input)
             {
                 CurvePoint1 = new Point(CurvePoint0.X - offset, CurvePoint1.Y); ;
                 CurvePoint2 = new Point(p2.X + offset, p2.Y);

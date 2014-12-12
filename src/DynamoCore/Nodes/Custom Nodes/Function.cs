@@ -150,7 +150,7 @@ namespace Dynamo.Nodes
             if (!Controller.IsInSyncWithNode(this))
             {
                 Controller.SyncNodeWithDefinition(this);
-                OnModified();
+                OnAstUpdated();
             }
             else
             {
@@ -171,7 +171,7 @@ namespace Dynamo.Nodes
         {
             Controller.Definition = def;
             Controller.SyncNodeWithDefinition(this);
-            OnModified();
+            OnAstUpdated();
         }
     }
 
@@ -201,7 +201,7 @@ namespace Dynamo.Nodes
             set
             {
                 inputSymbol = value;
-                OnModified();
+                OnAstUpdated();
                 RaisePropertyChanged("InputSymbol");
             }
         }
@@ -270,7 +270,7 @@ namespace Dynamo.Nodes
             set
             {
                 symbol = value;
-                OnModified();
+                OnAstUpdated();
                 RaisePropertyChanged("Symbol");
             }
         }

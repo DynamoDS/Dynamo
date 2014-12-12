@@ -11,10 +11,20 @@ namespace Dynamo.Models
 {
     public class HomeWorkspaceModel : WorkspaceModel
     {
-        private EngineController engineController;
+        public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
-        
-        public bool RunEnabled;
+
+        public bool RunEnabled
+        {
+            get { return runEnabled; }
+            set
+            {
+                if (Equals(value, runEnabled)) return;
+                runEnabled = value;
+                RaisePropertyChanged("RunEnabled");
+            }
+        }
+
         public bool DynamicRunEnabled;
 
         public readonly bool VerboseLogging;
@@ -41,12 +51,12 @@ namespace Dynamo.Models
             this.scheduler = scheduler;
             VerboseLogging = verboseLogging;
 
-            engineController = new EngineController(
+            EngineController = new EngineController(
                 libraryServices,
                 DynamoPathManager.Instance.GeometryFactory,
                 verboseLogging);
-            engineController.MessageLogged += Log;
-            engineController.LibraryServices.LibraryLoaded += LibraryLoaded;
+            EngineController.MessageLogged += Log;
+            EngineController.LibraryServices.LibraryLoaded += LibraryLoaded;
 
             runExpressionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             runExpressionTimer.Tick += OnRunExpression;
@@ -57,11 +67,11 @@ namespace Dynamo.Models
         public override void Dispose()
         {
             base.Dispose();
-            engineController.MessageLogged -= Log;
-            engineController.Dispose();
+            EngineController.MessageLogged -= Log;
+            EngineController.Dispose();
             runExpressionTimer.Stop();
             runExpressionTimer.Tick -= OnRunExpression;
-            engineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+            EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
         }
         /// <summary>
         /// This does not belong here, period. It is here simply because there is 
@@ -99,6 +109,7 @@ namespace Dynamo.Models
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
         private readonly DispatcherTimer runExpressionTimer;
+        private bool runEnabled;
 
         internal bool IsEvaluationPending
         {
@@ -118,7 +129,7 @@ namespace Dynamo.Models
         protected override void OnNodeDeleted(NodeModel node)
         {
             base.OnNodeDeleted(node);
-            engineController.NodeDeleted(node);
+            EngineController.NodeDeleted(node);
         }
 
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
@@ -140,17 +151,17 @@ namespace Dynamo.Models
                 node.ForceReExecuteOfNode = true;
             }
 
-            OnModified();
+            OnAstUpdated();
         }
 
-        protected override void OnModified()
+        protected override void OnAstUpdated()
         {
-            base.OnModified();
+            base.OnAstUpdated();
 
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check that shutdown has not been requested.
-            if (DynamicRunEnabled && engineController != null)
+            if (DynamicRunEnabled && EngineController != null)
             {
                 // This dispatch timer is to avoid updating graph too frequently.
                 // It happens when we are modifying a bunch of connections in 
@@ -193,7 +204,7 @@ namespace Dynamo.Models
         /// <param name="definition"></param>
         public void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
         {
-            engineController.GenerateGraphSyncDataForCustomNode(Nodes, definition, VerboseLogging);
+            EngineController.GenerateGraphSyncDataForCustomNode(Nodes, definition, VerboseLogging);
         }
 
         /// <summary>
@@ -213,24 +224,24 @@ namespace Dynamo.Models
             {
                 foreach (var node in Nodes)
                     node.ForceReExecuteOfNode = true;
-                OnModified();
+                OnAstUpdated();
             }
         }
 
         private void ResetEngineInternal(IEnumerable<CustomNodeDefinition> customNodeDefinitions)
         {
-            var libServices = engineController.LibraryServices;
+            var libServices = EngineController.LibraryServices;
 
-            var oldVerbose = engineController.VerboseLogging;
+            var oldVerbose = EngineController.VerboseLogging;
 
-            if (engineController != null)
+            if (EngineController != null)
             {
-                engineController.Dispose();
-                engineController = null;
+                EngineController.Dispose();
+                EngineController = null;
             }
 
             var geomFactory = DynamoPathManager.Instance.GeometryFactory;
-            engineController = new EngineController(libServices, geomFactory, oldVerbose);
+            EngineController = new EngineController(libServices, geomFactory, oldVerbose);
             
             foreach (var def in customNodeDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
@@ -277,7 +288,7 @@ namespace Dynamo.Models
 
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
-                modifiedNode.RequestValueUpdateAsync(scheduler, engineController);
+                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
 
             foreach (var n in Nodes)
                 n.ForceReExecuteOfNode = false;
@@ -306,8 +317,8 @@ namespace Dynamo.Models
         /// </summary>
         public void Shutdown()
         {
-            engineController.Dispose();
-            engineController = null;
+            EngineController.Dispose();
+            EngineController = null;
         }
 
         /// <summary>
@@ -325,17 +336,17 @@ namespace Dynamo.Models
             {
                 // If we do have preloaded trace data, set it here first.
                 var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
-                if (setTraceDataTask.Initialize(engineController, this))
+                if (setTraceDataTask.Initialize(EngineController, this))
                     scheduler.ScheduleForExecution(setTraceDataTask);
             }
 
             // If one or more custom node have been updated, make sure they
             // are compiled first before the home workspace gets evaluated.
             // 
-            engineController.ProcessPendingCustomNodeSyncData(scheduler);
+            EngineController.ProcessPendingCustomNodeSyncData(scheduler);
 
             var task = new UpdateGraphAsyncTask(scheduler, VerboseLogging);
-            if (task.Initialize(engineController, this))
+            if (task.Initialize(EngineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunEnabled = false; // Disable 'Run' button.

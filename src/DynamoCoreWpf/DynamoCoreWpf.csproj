@@ -131,9 +131,7 @@
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Converters.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\DoubleInputCustomization.cs" />
     <Compile Include="Controls\DragCanvas.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\DropDrownBaseNodeViewCustomization.cs" />
     <Compile Include="Controls\DynamoNodeButton.cs" />
     <Compile Include="Controls\DynamoTextBox.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\FunctionNodeViewCustomization.cs" />
@@ -164,7 +162,6 @@
     <Compile Include="ViewModels\BrowserRootElementViewModel.cs" />
     <Compile Include="ViewModels\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\StateMachine.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\SublistsViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">

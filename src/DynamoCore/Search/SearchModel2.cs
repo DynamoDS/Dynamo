@@ -72,7 +72,7 @@ namespace Dynamo.Search
 
         //TODO(Steve): Search() method
 
-        protected override ICollection<string> GetCategories(NodeSearchElement entry)
+        protected override ICollection<string> GetCategoriesForEntry(NodeSearchElement entry)
         {
             return entry.Categories;
         }
@@ -133,6 +133,19 @@ namespace Dynamo.Search
         IEnumerable<TEntry> Entries { get; }
         IEnumerable<ISearchCategory<TEntry>> SubCategories { get; }
     }
+
+    public static class SearchCategory
+    {
+        public static IEnumerable<string> GetAllCategoryNames<TEntry>(this ISearchCategory<TEntry> category)
+        {
+            return
+                category.SubCategories.SelectMany(
+                    sub =>
+                        sub.GetAllCategoryNames()
+                        .Select(name => sub.Name + "." + name)
+                        .Concat(sub.Name.AsSingleton()));
+        }
+    }
     
     /// <summary>
     /// TODO
@@ -168,13 +181,18 @@ namespace Dynamo.Search
             get
             {
                 return Library.SearchEntries.GroupByRecursive<TEntry, string, SearchCategory>(
-                    GetCategories,
+                    GetCategoriesForEntry,
                     SearchCategory.Create,
                     "Root");
             }
         }
 
-        protected abstract ICollection<string> GetCategories(TEntry entry);
+        public IEnumerable<string> AllCategoryNames
+        {
+            get { return Root.SubCategories.SelectMany(sub => sub.GetAllCategoryNames()); }
+        }
+
+        protected abstract ICollection<string> GetCategoriesForEntry(TEntry entry);
 
         protected CategorizedSearchModel()
         {
@@ -357,6 +375,8 @@ namespace Dynamo.Search
         private readonly CustomNodeManager customNodeManager;
         private Guid id;
 
+        public string Path { get; private set; }
+
         public CustomNodeSearchElement(CustomNodeManager customNodeManager, CustomNodeInfo info)
         {
             this.customNodeManager = customNodeManager;
@@ -369,6 +389,7 @@ namespace Dynamo.Search
             Name = info.Name;
             FullCategoryName = info.Category;
             Description = info.Description;
+            Path = info.Path;
         }
 
         protected override NodeModel ConstructNewNodeModel()

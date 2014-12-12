@@ -23,15 +23,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using Dynamo.Annotations;
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
 {
-    public partial class DynamoModel : IDisposable // : ModelBase
+    public partial class DynamoModel : INotifyPropertyChanged, IDisposable // : ModelBase
     {
         #region private members
+        private WorkspaceModel currentWorkspace;
         #endregion
 
         #region events
@@ -205,8 +207,18 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
-        public WorkspaceModel CurrentWorkspace { get; set; }
-        
+        public WorkspaceModel CurrentWorkspace
+        {
+            get { return currentWorkspace; }
+            set
+            {
+                if (Equals(value, currentWorkspace)) return;
+                OnWorkspaceHidden(currentWorkspace);
+                currentWorkspace = value;
+                OnPropertyChanged("CurrentWorkspace");
+            }
+        }
+
         /// <summary>
         /// TODO
         /// </summary>
@@ -245,22 +257,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     The collection of visible workspaces in Dynamo
         /// </summary>
-        public readonly ObservableCollection<WorkspaceModel> Workspaces;
-
-        /// <summary>
-        /// Returns a shallow copy of the collection of Nodes in the model.
-        /// </summary>
-        [Obsolete("Access CurrentWorkspace.Nodes directly", true)]
-        public List<NodeModel> Nodes
-        {
-            get { return CurrentWorkspace.Nodes.ToList(); }
-        }
-
-        /// <summary>
-        /// TODO
-        /// </summary>
-        [Obsolete("Running now handled on HomeWorkspaceModel", true)]
-        public bool RunEnabled { get; set; }
+        public readonly ObservableCollection<WorkspaceModel> Workspaces =
+            new ObservableCollection<WorkspaceModel>();
         
         #endregion
 
@@ -476,8 +474,6 @@ namespace Dynamo.Models
             SearchModel = new NodeSearchModel();
             //SearchModel.ItemProduced += node => AddNodeToCurrentWorkspace(node, true);
 
-            InitializeCurrentWorkspace();
-
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
@@ -505,6 +501,8 @@ namespace Dynamo.Models
             LibraryServices = new LibraryServices(libraryCore);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
+
+            InitializeCurrentWorkspace();
 
             UpdateManager.UpdateManager.CheckForProductUpdate();
 
@@ -693,8 +691,10 @@ namespace Dynamo.Models
                 IsTestMode
             );
 
-            Workspaces.Add(defaultWorkspace);
+            RegisterHomeWorkspace(defaultWorkspace);
+            AddWorkspace(defaultWorkspace);
             CurrentWorkspace = defaultWorkspace;
+
             //AddHomeWorkspace();
             //CurrentWorkspace = HomeSpace;
             //CurrentWorkspace.X = 0;
@@ -919,7 +919,29 @@ namespace Dynamo.Models
         public void RemoveWorkspace(WorkspaceModel workspace)
         {
             if (Workspaces.Remove(workspace))
-                workspace.Dispose();
+            {
+                workspace.Dispose(); 
+                //TODO(Steve): May not be safe for CustomNodeWorkspaceModels
+                //Technically it's safe for now, since we only hook the Disposed
+                //event for this situation.
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public bool OpenCustomNodeWorkspace(Guid guid)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
+            {
+                if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
+                    AddWorkspace(customNodeWorkspace);
+                CurrentWorkspace = customNodeWorkspace;
+            }
+            return false;
         }
 
         /// <summary>

@@ -471,9 +471,9 @@ namespace Dynamo.Models
         /// <param name="centered"></param>
         public void AddNode(NodeModel node, bool centered)
         {
-            node.Modified += OnModified;
+            node.AstUpdated += OnAstUpdated;
             node.ConnectorAdded += OnConnectorAdded;
-            node.Disposed += () => { node.Modified -= OnModified; };
+            node.Disposed += () => { node.AstUpdated -= OnAstUpdated; };
 
             if (centered)
             {
@@ -509,7 +509,7 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
-        protected virtual void OnModified()
+        protected virtual void OnAstUpdated()
         {
 
         }
@@ -522,7 +522,7 @@ namespace Dynamo.Models
         {
             if (nodes.Remove(model))
             {
-                model.Modified -= OnModified;
+                model.AstUpdated -= OnAstUpdated;
                 model.Dispose();
                 OnNodeDeleted(model);
             }
@@ -896,7 +896,7 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
-            OnModified();
+            OnAstUpdated();
         }
         
         private void MarkUnsaved(
@@ -909,7 +909,7 @@ namespace Dynamo.Models
             object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             HasUnsavedChanges = true;
-            OnModified();
+            OnAstUpdated();
         }
 
         #endregion

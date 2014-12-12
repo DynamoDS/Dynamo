@@ -417,7 +417,7 @@ namespace Dynamo.PackageManager
             set
             {
                 customNodeDefinitions = value;
-                Name = CustomNodeDefinitions[0].Workspace.Name;
+                Name = CustomNodeDefinitions[0].DisplayName;
                 UpdateDependencies();
             }
         }
@@ -504,15 +504,26 @@ namespace Dynamo.PackageManager
 
         public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package l)
         {
+            var defs = new List<CustomNodeDefinition>();
+
+            foreach (var x in l.LoadedCustomNodes)
+            {
+                CustomNodeDefinition def;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(
+                    x.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out def))
+                {
+                    defs.Add(def);
+                }
+            }
+
             var vm = new PublishPackageViewModel(dynamoViewModel)
             {
                 Group = l.Group,
                 Description = l.Description,
                 Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
-                CustomNodeDefinitions =
-                    l.LoadedCustomNodes.Select(
-                        x => dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(x.FunctionId, TODO))
-                        .ToList(),
+                CustomNodeDefinitions = defs,
                 Assemblies = l.LoadedAssemblies.ToList(),
                 Name = l.Name,
                 RepositoryUrl = l.RepositoryUrl ?? "",
@@ -609,8 +620,19 @@ namespace Dynamo.PackageManager
             var allFuncs = AllFuncDefs().ToList();
 
             // all workspaces
-            var workspaces = allFuncs.Select(def => def.Workspace).ToList();
-
+            var workspaces = new List<CustomNodeWorkspaceModel>();
+            foreach (var def in allFuncs)
+            {
+                CustomNodeWorkspaceModel ws;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                    def.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out ws))
+                {
+                    workspaces.Add(ws);
+                }
+            }
+            
             // make sure workspaces are saved
             var unsavedWorkspaceNames =
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select(ws => ws.Name).ToList();
@@ -622,11 +644,12 @@ namespace Dynamo.PackageManager
 
             // omit files currently already under package control
             var files =
-                allFuncs.Select(f => f.Workspace.FileName)
-                        .Where(p =>
-                                (dynamoViewModel.Model.Loader.PackageLoader.IsUnderPackageControl(p) &&
-                                (dynamoViewModel.Model.Loader.PackageLoader.GetOwnerPackage(p).Name == Name) ||
-                                !dynamoViewModel.Model.Loader.PackageLoader.IsUnderPackageControl(p)));
+                workspaces.Select(f => f.FileName)
+                    .Where(
+                        p =>
+                            (dynamoViewModel.Model.PackageLoader.IsUnderPackageControl(p)
+                                && (dynamoViewModel.Model.PackageLoader.GetOwnerPackage(p).Name == Name)
+                                || !dynamoViewModel.Model.PackageLoader.IsUnderPackageControl(p)));
 
             // union with additional files
             files = files.Union(AdditionalFiles);
@@ -643,12 +666,26 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<PackageDependency> GetAllDependencies()
         {
-            var pkgLoader = dynamoViewModel.Model.Loader.PackageLoader;
+            var pkgLoader = dynamoViewModel.Model.PackageLoader;
+
+            // all workspaces
+            var workspaces = new List<CustomNodeWorkspaceModel>();
+            foreach (var def in AllDependentFuncDefs())
+            {
+                CustomNodeWorkspaceModel ws;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                    def.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out ws))
+                {
+                    workspaces.Add(ws);
+                }
+            }
 
             // get all of dependencies from custom nodes and additional files
             var allFilePackages =
-                AllDependentFuncDefs()
-                    .Select(x => x.Workspace.FileName)
+                workspaces
+                    .Select(x => x.FileName)
                     .Union(AdditionalFiles)
                     .Where(pkgLoader.IsUnderPackageControl)
                     .Select(pkgLoader.GetOwnerPackage)
@@ -657,10 +694,22 @@ namespace Dynamo.PackageManager
                     .Distinct()
                     .Select(x => new PackageDependency(x.Name, x.VersionName));
 
+            workspaces = new List<CustomNodeWorkspaceModel>();
+            foreach (var def in AllFuncDefs())
+            {
+                CustomNodeWorkspaceModel ws;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                    def.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out ws))
+                {
+                    workspaces.Add(ws);
+                }
+            }
+
             // get all of the dependencies from types
-            var allTypePackages = AllFuncDefs()
-                .Select(x => x.Workspace.Nodes)
-                .SelectMany(x => x)
+            var allTypePackages = workspaces
+                .SelectMany(x => x.Nodes)
                 .Select(x => x.GetType())
                 .Where(pkgLoader.IsUnderPackageControl)
                 .Select(pkgLoader.GetOwnerPackage)
@@ -669,9 +718,8 @@ namespace Dynamo.PackageManager
                 .Distinct()
                 .Select(x => new PackageDependency(x.Name, x.VersionName));
 
-            var dsFunctionPackages = AllFuncDefs()
-                .Select(x => x.Workspace.Nodes)
-                .SelectMany(x => x)
+            var dsFunctionPackages = workspaces
+                .SelectMany(x => x.Nodes)
                 .OfType<DSFunctionBase>()
                 .Select(x => x.Controller.Definition.Assembly)
                 .Where(pkgLoader.IsUnderPackageControl)
@@ -687,15 +735,35 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<Tuple<string, string>> GetAllNodeNameDescriptionPairs()
         {
-            var pkgLoader = dynamoViewModel.Model.Loader.PackageLoader;
+            var pkgLoader = dynamoViewModel.Model.PackageLoader;
+
+            var workspaces = new List<CustomNodeWorkspaceModel>();
+            foreach (var def in AllFuncDefs())
+            {
+                CustomNodeWorkspaceModel ws;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                    def.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out ws))
+                {
+                    workspaces.Add(ws);
+                }
+            }
 
             // collect the name-description pairs for every custom node
             return
-                AllFuncDefs()
-                    .Where(p =>
-                                (pkgLoader.IsUnderPackageControl(p) &&
-                                pkgLoader.GetOwnerPackage(p).Name == Name) || !dynamoViewModel.Model.Loader.PackageLoader.IsUnderPackageControl(p))
-                        .Select(x => new Tuple<string, string>(x.Workspace.Name, !String.IsNullOrEmpty(x.Workspace.Description) ? x.Workspace.Description : "No description provided"));
+                workspaces
+                    .Where(
+                        p =>
+                            (pkgLoader.IsUnderPackageControl(p.FileName) && pkgLoader.GetOwnerPackage(p.FileName).Name == Name)
+                                || !dynamoViewModel.Model.PackageLoader.IsUnderPackageControl(p.FileName))
+                    .Select(
+                        x =>
+                            new Tuple<string, string>(
+                            x.Name,
+                            !String.IsNullOrEmpty(x.Description)
+                                ? x.Description
+                                : "No description provided"));
         }
 
         private string _errorString = "";
@@ -769,16 +837,15 @@ namespace Dynamo.PackageManager
 
         private void AddCustomNodeFile(string filename)
         {
-            var nodeInfo = dynamoViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(filename);
-            if (nodeInfo != null)
+            CustomNodeInfo nodeInfo;
+            if (dynamoViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(filename, DynamoModel.IsTestMode, out nodeInfo))
             {
                 // add the new packages folder to path
-                dynamoViewModel.Model.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(filename));
-                dynamoViewModel.Model.CustomNodeManager.ScanSearchPaths();
+                dynamoViewModel.Model.CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filename), DynamoModel.IsTestMode);
 
-                var funcDef = dynamoViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.FunctionId, TODO);
-
-                if (funcDef != null && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
+                CustomNodeDefinition funcDef;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out funcDef)
+                    && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                 {
                     CustomNodeDefinitions.Add(funcDef);
                     RaisePropertyChanged("PackageContents");
@@ -852,8 +919,10 @@ namespace Dynamo.PackageManager
                 Package.Dependencies.Clear();
                 GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
 
-                if (newpkg)
-                    dynamoViewModel.Model.Loader.PackageLoader.LocalPackages.Add(Package);
+                var files = GetAllFiles().ToList();
+
+                if (isNewPackage)
+                    dynamoViewModel.Model.PackageLoader.LocalPackages.Add(Package);
 
                 Package.AddAssemblies(Assemblies);
 

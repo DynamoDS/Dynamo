@@ -136,14 +136,14 @@ namespace Dynamo.ViewModels
         
         public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;
             private set; }
-        public SearchModel Model { get; private set; }
+        public NodeSearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
 
         #endregion
 
         #region Initialization
 
-        internal SearchViewModel(DynamoViewModel dynamoViewModel, SearchModel model)
+        internal SearchViewModel(DynamoViewModel dynamoViewModel, NodeSearchModel model)
         {
             Model = model;
             this.dynamoViewModel = dynamoViewModel;

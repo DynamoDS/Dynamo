@@ -83,12 +83,12 @@ namespace Dynamo.Wpf.ViewModels
             return new BrowserInternalElementViewModel(elem);
         }
 
-        internal static CustomNodeSearchElementViewModel WrapExplicit(CustomNodeSearchElement elem)
+        internal static CustomNodeSearchElementViewModel WrapExplicit(Search.SearchElements.CustomNodeSearchElement elem)
         {
             return new CustomNodeSearchElementViewModel(elem);
         }
 
-        internal static NodeSearchElementViewModel WrapExplicit(NodeSearchElement elem)
+        internal static NodeSearchElementViewModel WrapExplicit(Search.SearchElements.NodeModelSearchElement elem)
         {
             return new NodeSearchElementViewModel(elem);
         }

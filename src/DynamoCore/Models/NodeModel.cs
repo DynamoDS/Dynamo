@@ -277,7 +277,7 @@ namespace Dynamo.Models
                 {
                     argumentLacing = value;
                     RaisePropertyChanged("ArgumentLacing");
-                    OnModified();
+                    OnAstUpdated();
                 }
             }
         }
@@ -605,13 +605,13 @@ namespace Dynamo.Models
         /// <summary>
         ///     Is this Node reporting state modifications?
         /// </summary>
-        [Obsolete("Use OnModified Event", true)]
+        [Obsolete("Use OnAstUpdated Event", true)]
         protected internal bool IsReportingModifications { get; set; }
 
         /// <summary>
         ///     Disable reporting of state modifications.
         /// </summary>
-        [Obsolete("Use OnModified Event", true)]
+        [Obsolete("Use OnAstUpdated Event", true)]
         protected internal void DisableReporting()
         {
             IsReportingModifications = false;
@@ -620,7 +620,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Enable reporting of state modifications.
         /// </summary>
-        [Obsolete("Use OnModified Event", true)]
+        [Obsolete("Use OnAstUpdated Event", true)]
         protected internal void EnableReporting()
         {
             IsReportingModifications = true;
@@ -630,19 +630,25 @@ namespace Dynamo.Models
         /// <summary>
         ///     Report to Dynamo that this node's state has been modified.
         /// </summary>
-        [Obsolete("Use OnModified Event", true)]
+        [Obsolete("Use OnAstUpdated Event", true)]
         protected internal void ReportModification(WorkspaceModel workspace)
         {
             //if (IsReportingModifications && workspace != null)
-            //    workspace.OnModified();
+            //    workspace.OnAstUpdated();
         }
 
-        public event Action Modified;
-        protected virtual void OnModified()
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public event Action AstUpdated;
+        
+        //TODO(Steve): This should be protected!
+        public virtual void OnAstUpdated()
         {
-            var handler = Modified;
+            var handler = AstUpdated;
             if (handler != null) handler();
         }
+
         #endregion
 
         #region Load/Save
@@ -988,7 +994,7 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
-            OnModified();
+            OnAstUpdated();
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -1001,7 +1007,7 @@ namespace Dynamo.Models
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
-            OnModified();
+            OnAstUpdated();
         }
 
         /// <summary>
@@ -1401,7 +1407,7 @@ namespace Dynamo.Models
                     p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                     {
                         if (args.PropertyName == "UsingDefaultValue")
-                            OnModified();
+                            OnAstUpdated();
                     };
 
                     InPorts.Add(p);
@@ -1667,7 +1673,7 @@ namespace Dynamo.Models
 
         #region Dirty Management
         
-        [Obsolete("Call OnModified() instead", true)]
+        [Obsolete("Call OnAstUpdated() instead", true)]
         private bool dirty = true;
 
         /// <summary>
@@ -1675,7 +1681,7 @@ namespace Dynamo.Models
         ///     for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
         ///     trigger an evaluation.
         /// </summary>
-        [Obsolete("Call OnModified() instead", true)]
+        [Obsolete("Call OnAstUpdated() instead", true)]
         public bool RequiresRecalc 
         {
             get { return dirty; }

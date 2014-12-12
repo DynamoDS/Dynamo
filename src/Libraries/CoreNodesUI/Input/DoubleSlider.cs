@@ -16,7 +16,7 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class DoubleSlider : DSCoreNodesUI.Double
     {
-        public DoubleSlider(WorkspaceModel workspace) : base(workspace)
+        public DoubleSlider()
         {
             Value = 0;
             Min = 0;

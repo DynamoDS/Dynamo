@@ -42,7 +42,7 @@ namespace Dynamo
         private bool drawToAlternateContext = true;
         //private Octree.OctreeSearch.Octree octree;
         private bool updatingPaused;
-        [Obsolete("No Longer Supported.", true)] protected readonly DynamoModel dynamoModel;
+        protected readonly DynamoModel dynamoModel;
         private readonly List<RenderPackage> currentTaggedPackages = new List<RenderPackage>();
         private bool alternateDrawingContextAvailable;
         private long taskId = -1;
@@ -224,8 +224,10 @@ namespace Dynamo
 
         #region constructors
 
-        public VisualizationManager()
+        public VisualizationManager(DynamoModel model)
         {
+            dynamoModel = model;
+
             dynamoModel.WorkspaceClearing += Pause;
             dynamoModel.WorkspaceCleared += UnPauseAndUpdate;
 
@@ -277,16 +279,16 @@ namespace Dynamo
             var packages = new List<RenderPackage>();
 
             //This also isn't thread safe
-            foreach (var node in dynamoModel.Nodes)
+            foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
             {
                 lock (node.RenderPackagesMutex)
                 {
                     //Note(Luke): this seems really inefficent, it's doing an O(n) search for a tag
                     //This is also a target for memory optimisation
 
-                    packages
-                        .AddRange(node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
-                        .Cast<RenderPackage>());
+                    packages.AddRange(
+                        node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
+                            .Cast<RenderPackage>());
                 }
             }
 
@@ -305,17 +307,19 @@ namespace Dynamo
 
                 var allPackages = new List<RenderPackage>();
 
-                foreach (var node in dynamoModel.Nodes)
+                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
                 {
                     lock (node.RenderPackagesMutex)
                     {
-                        allPackages.AddRange(node.RenderPackages.Where(x => ((RenderPackage)x).IsNotEmpty()).Cast<RenderPackage>());
+                        allPackages.AddRange(
+                            node.RenderPackages.Where(x => ((RenderPackage)x).IsNotEmpty())
+                                .Cast<RenderPackage>());
                     }
                 }
 
-                OnResultsReadyToVisualize(this,
-                        new VisualizationEventArgs(
-                            allPackages, Guid.Empty, CurrentTaskId));
+                OnResultsReadyToVisualize(
+                    this,
+                    new VisualizationEventArgs(allPackages, Guid.Empty, CurrentTaskId));
             }
         }
 
@@ -336,7 +340,7 @@ namespace Dynamo
             if (tag.Node == null)
             {
                 //send back everything
-                List<NodeModel> copyOfNodesList = dynamoModel.Nodes;
+                IList<NodeModel> copyOfNodesList = dynamoModel.CurrentWorkspace.Nodes;
                 foreach (var modelNode in copyOfNodesList)
                 {
                     lock (modelNode.RenderPackagesMutex)
@@ -551,7 +555,8 @@ namespace Dynamo
             dynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
-            dynamoModel.Nodes.ForEach(n => n.PropertyChanged += NodePropertyChanged);
+            foreach (var n in dynamoModel.CurrentWorkspace.Nodes)
+                n.PropertyChanged += NodePropertyChanged;
         }
 
         private void UnregisterEventListeners()
@@ -561,7 +566,8 @@ namespace Dynamo
             dynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
-            dynamoModel.Nodes.ForEach(n => n.PropertyChanged -= NodePropertyChanged);
+            foreach (var n in dynamoModel.CurrentWorkspace.Nodes)
+                n.PropertyChanged -= NodePropertyChanged;
         }
 
         /// <summary>
@@ -590,13 +596,22 @@ namespace Dynamo
             if (nodeModel != null)
             {
                 // Visualization update for a given node is desired.
-                nodeModel.RequestVisualUpdateAsync(MaxTesselationDivisions);
+                nodeModel.RequestVisualUpdateAsync(
+                    dynamoModel.Scheduler,
+                    dynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController,
+                    MaxTesselationDivisions);
             }
             else
             {
                 // Get each node in workspace to update their visuals.
                 foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
-                    node.RequestVisualUpdateAsync(MaxTesselationDivisions);
+                {
+                    // Visualization update for a given node is desired.
+                    node.RequestVisualUpdateAsync(
+                        dynamoModel.Scheduler,
+                        dynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController,
+                        MaxTesselationDivisions);
+                }
             }
 
             // Schedule a NotifyRenderPackagesReadyAsyncTask here so that when 

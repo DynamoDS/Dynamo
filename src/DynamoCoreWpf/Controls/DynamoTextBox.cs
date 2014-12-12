@@ -14,6 +14,7 @@ using Dynamo.ViewModels;
 
 using DynCmd = Dynamo.Models.DynamoModel;
 using System.Windows.Controls.Primitives;
+using Dynamo.Core;
 using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Nodes
@@ -264,17 +265,19 @@ namespace Dynamo.Nodes
     public class DynamoSlider : Slider
     {
         readonly NodeModel nodeModel;
+        private readonly UndoRedoRecorder recorder;
 
-        public DynamoSlider(NodeModel model)
+        public DynamoSlider(NodeModel model, UndoRedoRecorder undoRecorder)
         {
             nodeModel = model;
+            recorder = undoRecorder;
         }
 
         #region Event Handlers
         protected override void OnThumbDragStarted(DragStartedEventArgs e)
         {
             base.OnThumbDragStarted(e);
-            nodeModel.Workspace.RecordModelForModification(nodeModel);
+            WorkspaceModel.RecordModelForModification(nodeModel, recorder);
             (nodeModel as IBlockingModel).OnBlockingStarted(EventArgs.Empty);
         }
 
@@ -282,14 +285,14 @@ namespace Dynamo.Nodes
         {
             base.OnThumbDragCompleted(e);
             (nodeModel as IBlockingModel).OnBlockingEnded(EventArgs.Empty);
-            nodeModel.RequiresRecalc = true;
+            nodeModel.OnAstUpdated();
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseLeftButtonDown(e);
             if (e.OriginalSource is Rectangle)
-                nodeModel.Workspace.RecordModelForModification(nodeModel);
+                WorkspaceModel.RecordModelForModification(nodeModel, recorder);
         }
         #endregion
     }

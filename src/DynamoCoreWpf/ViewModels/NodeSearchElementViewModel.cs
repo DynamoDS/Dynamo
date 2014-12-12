@@ -14,21 +14,21 @@ namespace Dynamo.Wpf.ViewModels
 
     public class NodeSearchElementViewModel : SearchElementBaseViewModel
     {
-        public NodeSearchElementViewModel(NodeModelSearchElement element) : base(element){}
+        public NodeSearchElementViewModel(Search.SearchElements.NodeModelSearchElement element) : base(element) { }
     }
 
     public class CustomNodeSearchElementViewModel : SearchElementBaseViewModel
     {
-        public CustomNodeSearchElementViewModel(CustomNodeSearchElement element) : base(element) { }
+        public CustomNodeSearchElementViewModel(Search.SearchElements.CustomNodeSearchElement element) : base(element) { }
     }
 
     public class CategorySearchElementViewModel : SearchElementBaseViewModel
     {
-        public CategorySearchElementViewModel(CategorySearchElement element) : base(element) { }
+        public CategorySearchElementViewModel(Search.SearchElements.CategorySearchElement element) : base(element) { }
     }
 
     public class DSFunctionNodeSearchElementViewModel : NodeSearchElementViewModel
     {
-        public DSFunctionNodeSearchElementViewModel(DSFunctionNodeSearchElement element) : base(element) { }
+        public DSFunctionNodeSearchElementViewModel(Search.SearchElements.DSFunctionNodeSearchElement element) : base(element) { }
     }
 }

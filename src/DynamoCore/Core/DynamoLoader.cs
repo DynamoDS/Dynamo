@@ -23,6 +23,14 @@ namespace Dynamo.Utilities
         public readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
         private readonly HashSet<Assembly> loadedAssemblies = new HashSet<Assembly>();
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public IEnumerable<Assembly> LoadedAssemblies
+        {
+            get { return loadedAssemblies; }
+        }
+
         #endregion
 
         #region Events
@@ -146,7 +154,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <parameter>The type</parameter>
         /// <returns>True if the type is node.</returns>
-        public bool IsNodeSubType(Type t)
+        public static bool IsNodeSubType(Type t)
         {
             return //t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&

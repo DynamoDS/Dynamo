@@ -259,7 +259,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             PortType portType = ((PortType)value);
-            if (((PortType)value) == PortType.INPUT)
+            if (((PortType)value) == PortType.Input)
                 return DynamoToolTip.Side.Left;
 
             return DynamoToolTip.Side.Right;
@@ -307,7 +307,7 @@ namespace Dynamo.Controls
                 double bottom = port.MarginThickness.Bottom;
                 switch (type)
                 {
-                    case PortType.INPUT:
+                    case PortType.Input:
                         thickness = new Thickness(left - 25, top + 3, right + 0, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
                             thickness = new Thickness(left - 25, top - 10, right + 0, bottom - 10);
@@ -317,7 +317,7 @@ namespace Dynamo.Controls
                             thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
                         break;
 
-                    case PortType.OUTPUT:
+                    case PortType.Output:
                         thickness = new Thickness(left + 0, top + 3, right - 25, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
                             thickness = new Thickness(left + 0, top - 10, right - 25, bottom - 10);
@@ -649,7 +649,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             ObservableCollection<PortViewModel> ports = (ObservableCollection<PortViewModel>)value;
-            return Math.Max(30, ports.Count * 20 + 10); //spacing for inputs + title space + bottom space
+            return Math.Max(30, ports.Count * 20 + 10); //spacing for Inputs + title space + bottom space
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -761,7 +761,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             List<object> list = (List<object>)value;
-            return list.Count > 0; //spacing for inputs + title space + bottom space
+            return list.Count > 0; //spacing for Inputs + title space + bottom space
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -980,7 +980,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             //PortType p = (PortType)value;
-            //if (p == PortType.INPUT)
+            //if (p == PortType.Input)
             //{
             //    return new Thickness(20, 0, 0, 0);
             //}
@@ -1003,7 +1003,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             PortType p = (PortType)value;
-            if (p == PortType.INPUT)
+            if (p == PortType.Input)
             {
                 return HorizontalAlignment.Left;
             }
@@ -1024,7 +1024,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             PortType p = (PortType)value;
-            if (p == PortType.INPUT)
+            if (p == PortType.Input)
             {
                 return 2;
             }
@@ -1045,7 +1045,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             PortType p = (PortType)value;
-            if (p == PortType.INPUT)
+            if (p == PortType.Input)
             {
                 return new Rect(0,0,10,20);
             }

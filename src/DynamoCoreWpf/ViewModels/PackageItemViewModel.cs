@@ -137,7 +137,7 @@ namespace Dynamo.PackageManager.UI
             {
                 if (DependencyType == DependencyType.CustomNode)
                 {
-                    return Definition.Workspace.Name;
+                    return Definition.DisplayName;
                 }
                 else if (DependencyType == DependencyType.Assembly)
                 {
@@ -173,7 +173,7 @@ namespace Dynamo.PackageManager.UI
                         discoveredDeps.Add(dep);
                         packDep.BuildDependencies(discoveredDeps);
                     }
-                    this.Items.Add(packDep);
+                    Items.Add(packDep);
                 }
             }
         }

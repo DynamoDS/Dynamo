@@ -9,7 +9,7 @@ namespace Dynamo
     {
         public static void ExportToSTL(DynamoModel dynamoModel, string path, string modelName)
         {
-            var packages = dynamoModel.Nodes
+            var packages = dynamoModel.CurrentWorkspace.Nodes
                 .Where(node => node.HasRenderPackages)
                 .SelectMany(rp=>rp.RenderPackages)
                 .Cast<RenderPackage>()

@@ -1,16 +1,11 @@
 ﻿using System.Collections.Generic;
-
 using Dynamo.Controls;
-using Dynamo.Models;
-
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
     public abstract class String : BasicInteractive<string>
     {
-        protected String(WorkspaceModel workspace) : base(workspace) { }
-
         public override string PrintExpression()
         {
             return "\"" + base.PrintExpression() + "\"";

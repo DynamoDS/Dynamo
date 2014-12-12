@@ -16,8 +16,8 @@ namespace Dynamo.ViewModels
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
 
-            WriteToLogCmd = new DelegateCommand(model.WriteToLog, CanWriteToLog);
-            PostUiActivationCommand = new DelegateCommand(model.PostUIActivation, model.CanDoPostUIActivation);
+            WriteToLogCmd = new DelegateCommand(o => model.Logger.Log(o.ToString()), CanWriteToLog);
+            PostUiActivationCommand = new DelegateCommand(model.PostUIActivation);
             AddNoteCommand = new DelegateCommand(AddNote, CanAddNote);
             AddToSelectionCommand = new DelegateCommand(model.AddToSelection, CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
@@ -26,7 +26,7 @@ namespace Dynamo.ViewModels
             GraphAutoLayoutCommand = new DelegateCommand(DoGraphAutoLayout, CanDoGraphAutoLayout);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
-            HomeCommand = new DelegateCommand(model.Home, model.CanGoHome);
+            HomeCommand = GoHomeCommand;
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
@@ -38,7 +38,7 @@ namespace Dynamo.ViewModels
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(model.Copy, CanCopy);
-            PasteCommand = new DelegateCommand(model.Paste, CanPaste);
+            PasteCommand = new DelegateCommand(_ => model.Paste(), CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             CancelRunCommand = new DelegateCommand(CancelRunCmd, CanCancelRunCmd);
             RunExpressionCommand = new DelegateCommand(RunExprCmd, CanRunExprCmd);
