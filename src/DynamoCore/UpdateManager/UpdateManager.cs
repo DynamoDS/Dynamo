@@ -647,23 +647,10 @@ namespace Dynamo.UpdateManager
 
         public void QuitAndInstallUpdate()
         {
-            OnLog(new LogEventArgs("UpdateNotificationControl-OnInstallButtonClicked", LogLevel.File));
+            OnLog(new LogEventArgs("UpdateManager.QuitAndInstallUpdate-Invoked", LogLevel.File));
 
-            string message = string.Format("An update is available for {0}.\n\n" +
-                "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
-
-            //SEPARATECORE - fix this
-            //string message = string.Format("An update is available for {0}.\n\n" +
-            //    "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
-
-            //MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
-            //bool installUpdate = result == MessageBoxResult.OK;
-
-            //if (installUpdate)
-            //{
-            //    if (ShutdownRequested != null)
-            //        ShutdownRequested(this);
-            //}
+            if (ShutdownRequested != null)
+                ShutdownRequested(this);
         }
 
         public void HostApplicationBeginQuit()
