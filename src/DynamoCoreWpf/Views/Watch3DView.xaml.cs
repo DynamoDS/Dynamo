@@ -619,23 +619,23 @@ namespace Dynamo.Controls
         private void ConvertLines(RenderPackage p, LineGeometry3D geom, BillboardText3D text)
         {
             int color_idx = 0;
-            var idx = geom.Indices.Count;
-            var vertCount = 0;
+            var idx = 0;
+            int outerCount = 0;
 
-            foreach (var vertexCount in p.LineStripVertexCounts)
+            foreach (var count in p.LineStripVertexCounts)
             {
-                for (int i = 0; i < vertexCount * 3; i += 3)
+                for (int i = 0; i < count; ++i)
                 {
-                    var x1 = (float)p.LineStripVertices[vertCount + i];
-                    var y1 = (float)p.LineStripVertices[vertCount + i + 1];
-                    var z1 = (float)p.LineStripVertices[vertCount + i + 2];
+                    var x1 = (float)p.LineStripVertices[idx];
+                    var y1 = (float)p.LineStripVertices[idx + 1];
+                    var z1 = (float)p.LineStripVertices[idx + 2];
 
                     // DirectX convention - Y Up
-                    var ptA = new Vector3(x1, z1, y1);
+                    var point = new Vector3(x1, z1, y1);
 
-                    if (i == 0 && p.DisplayLabels)
+                    if (i == 0 && outerCount == 0 && p.DisplayLabels)
                     {
-                        text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), ptA));
+                        text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), point));
                     }
 
                     SharpDX.Color4 startColor = SharpDX.Color.Black;
@@ -654,15 +654,26 @@ namespace Dynamo.Controls
                         startColor = SharpDX.Color.Black;
                     }
 
-                    geom.Indices.Add(idx);
-                    geom.Positions.Add(ptA);
+                    // Line segments are represented as a 
+                    // start point and an end point. Except
+                    // where we are starting the curve or ending it,
+                    // we duplicate the point.
+                    if (i != 0 && i != count - 1)
+                    {
+                        geom.Indices.Add(geom.Indices.Count);
+                        geom.Positions.Add(point);
+                        geom.Colors.Add(p.Selected ? selectionColor : startColor);
+                    }
+
+                    geom.Indices.Add(geom.Indices.Count);
+                    geom.Positions.Add(point);
                     geom.Colors.Add(p.Selected ? selectionColor : startColor);
 
+                    idx += 3;
                     color_idx += 4;
-                    idx += 1;
                 }
 
-                vertCount += vertexCount * 3;
+                outerCount++;
             }
         }
 
