@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
     /// DesignScript function node. All functions from DesignScript share the
     /// same function node but internally have different procedure.
     /// </summary>
-    [NodeName(Resources.FunctionNode), NodeDescription(Resources.DesignScriptBuiltinFunctions),
+    [NodeName("Function Node"), NodeDescription("DesignScriptBuiltinFunctions", typeof(Properties.Resources)),
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSFunction : DSFunctionBase
     {

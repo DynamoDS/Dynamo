@@ -17,9 +17,9 @@ using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
-    [NodeName(Resources.CodeBlock)]
+    [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(Resources.CodeBlockNodeDes, typeof(Properties.Resources))]
+    [NodeDescription("CodeBlockNodeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class CodeBlockNodeModel : NodeModel
     {

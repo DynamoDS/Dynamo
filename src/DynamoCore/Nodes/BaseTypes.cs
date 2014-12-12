@@ -686,9 +686,9 @@ namespace Dynamo.Nodes
     /// Builds sublists from a list. Inputs are a list and an offset to indicate the number of items to skip before
     /// the start of each subsequent sublist. Enter a range of values using series syntax to indicate the first sublist.
     /// </summary>
-    [NodeName(Resources.BuildSublists)]
+    [NodeName("Build Sublists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription(Resources.BuildSublistsFromList)]
+    [NodeDescription("BuildSublistsFromList", typeof(Properties.Resources))]
     public class Sublists : BasicInteractive<string>
     {
         public Sublists(WorkspaceModel ws): base(ws)
@@ -922,9 +922,9 @@ namespace Dynamo.Nodes
 
     #region Functions
 
-    [NodeName(Resources.ComposeFunctions)]
+    [NodeName("Compose Functions")]
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
-    [NodeDescription(Resources.TwoFunctionsToOneFunction)]
+    [NodeDescription("TwoFunctionsToOneFunction", typeof(Properties.Resources))]
     public class ComposeFunctions : NodeModel
     { 
         public ComposeFunctions(WorkspaceModel ws) : base(ws)
@@ -1144,9 +1144,9 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName(Resources.String)]
+    [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(Resources.CreateString)]
+    [NodeDescription("CreateString", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class StringInput : AbstractString
     {
@@ -1249,9 +1249,9 @@ namespace Dynamo.Nodes
 
     public delegate double ConversionDelegate(double value);
 
-    [NodeName(Resources.Number)]
+    [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(Resources.CreateNumber)]
+    [NodeDescription("CreateNumber", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class DoubleInput : NodeModel
     {

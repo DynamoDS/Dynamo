@@ -117,28 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BuildSublists" xml:space="preserve">
-    <value>Build Sublists</value>
-    <comment>Name of code block node</comment>
-  </data>
   <data name="BuildSublistsFromList" xml:space="preserve">
     <value>Build sublists from a list using DesignScript range syntax.</value>
     <comment>Description for code block node</comment>
   </data>
-  <data name="CodeBlock" xml:space="preserve">
-    <value>Code Block</value>
-    <comment>Name of code block node</comment>
-  </data>
-  <data name="CodeBlockNodeDes" xml:space="preserve">
-    <value>CodeBlockNodeDescription</value>
-    <comment>Description for code block node</comment>
-  </data>
   <data name="CodeBlockNodeDescription" xml:space="preserve">
     <value>Allows for DesignScript code to be authored directly</value>
-  </data>
-  <data name="ComposeFunctions" xml:space="preserve">
-    <value>Compose Functions</value>
-    <comment>Name of compose function node</comment>
   </data>
   <data name="CreateNumber" xml:space="preserve">
     <value>Creates a number.</value>
@@ -148,41 +132,13 @@
     <value>Creates a string.</value>
     <comment>Description for string node</comment>
   </data>
-  <data name="CustomNode" xml:space="preserve">
-    <value>Custom Node</value>
-    <comment>Name of custom node</comment>
-  </data>
   <data name="DesignScriptBuiltinFunctions" xml:space="preserve">
     <value>DesignScript Builtin Functions</value>
     <comment>Description for function node</comment>
   </data>
-  <data name="FunctionNode" xml:space="preserve">
-    <value>Function Node</value>
-    <comment>Name of function node</comment>
-  </data>
-  <data name="FunctionNodeWVarArgs" xml:space="preserve">
-    <value>Function Node w/ VarArgs</value>
-    <comment>Name of function with varArg node</comment>
-  </data>
-  <data name="Input" xml:space="preserve">
-    <value>Input</value>
-    <comment>Name of input node</comment>
-  </data>
   <data name="InstanceOfCustomNode" xml:space="preserve">
     <value>Instance of a Custom Node</value>
-    <comment>Description for custom node node</comment>
-  </data>
-  <data name="Number" xml:space="preserve">
-    <value>Number</value>
-    <comment>Name of number node</comment>
-  </data>
-  <data name="Output" xml:space="preserve">
-    <value>Output</value>
-    <comment>Name of output node</comment>
-  </data>
-  <data name="String" xml:space="preserve">
-    <value>String</value>
-    <comment>Name of string node</comment>
+    <comment>Description for custom node</comment>
   </data>
   <data name="TwoFunctionsToOneFunction" xml:space="preserve">
     <value>Composes two single parameter functions into one function.</value>

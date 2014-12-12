@@ -61,15 +61,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Build Sublists.
-        /// </summary>
-        public static string BuildSublists {
-            get {
-                return ResourceManager.GetString("BuildSublists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Build sublists from a list using DesignScript range syntax..
         /// </summary>
         public static string BuildSublistsFromList {
@@ -79,38 +70,11 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Block.
-        /// </summary>
-        public static string CodeBlock {
-            get {
-                return ResourceManager.GetString("CodeBlock", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CodeBlockNodeDescription.
-        /// </summary>
-        public static string CodeBlockNodeDes {
-            get {
-                return ResourceManager.GetString("CodeBlockNodeDes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Allows for DesignScript code to be authored directly.
         /// </summary>
         public static string CodeBlockNodeDescription {
             get {
                 return ResourceManager.GetString("CodeBlockNodeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Compose Functions.
-        /// </summary>
-        public static string ComposeFunctions {
-            get {
-                return ResourceManager.GetString("ComposeFunctions", resourceCulture);
             }
         }
         
@@ -133,15 +97,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom Node.
-        /// </summary>
-        public static string CustomNode {
-            get {
-                return ResourceManager.GetString("CustomNode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to DesignScript Builtin Functions.
         /// </summary>
         public static string DesignScriptBuiltinFunctions {
@@ -151,65 +106,11 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function Node.
-        /// </summary>
-        public static string FunctionNode {
-            get {
-                return ResourceManager.GetString("FunctionNode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Function Node w/ VarArgs.
-        /// </summary>
-        public static string FunctionNodeWVarArgs {
-            get {
-                return ResourceManager.GetString("FunctionNodeWVarArgs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Input.
-        /// </summary>
-        public static string Input {
-            get {
-                return ResourceManager.GetString("Input", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
         public static string InstanceOfCustomNode {
             get {
                 return ResourceManager.GetString("InstanceOfCustomNode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Number.
-        /// </summary>
-        public static string Number {
-            get {
-                return ResourceManager.GetString("Number", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Output.
-        /// </summary>
-        public static string Output {
-            get {
-                return ResourceManager.GetString("Output", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to String.
-        /// </summary>
-        public static string String {
-            get {
-                return ResourceManager.GetString("String", resourceCulture);
             }
         }
         
