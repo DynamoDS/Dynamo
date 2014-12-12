@@ -4,6 +4,7 @@ using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 
 using DSCore;
 
@@ -184,6 +185,7 @@ namespace Analysis
             return new ColoredSurface(surface, colors, uvs);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
             // Use ASM's tesselation routine to tesselate
