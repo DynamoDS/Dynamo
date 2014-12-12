@@ -97,11 +97,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add File to Package....
+        /// </summary>
+        public static string AddFileToPackageDialogTitle {
+            get {
+                return ResourceManager.GetString("AddFileToPackageDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string CancelButton {
             get {
                 return ResourceManager.GetString("CancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot Download Package.
+        /// </summary>
+        public static string CannotDownloadPackageMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("CannotDownloadPackageMessageBoxTitle", resourceCulture);
             }
         }
         
@@ -187,6 +205,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Node Property Error.
+        /// </summary>
+        public static string CustomNodePropertyErrorMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("CustomNodePropertyErrorMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Category.
         /// </summary>
         public static string CustomNodePropertyWindowCategory {
@@ -237,6 +264,24 @@ namespace Dynamo.Wpf.Properties {
         public static string CustomNodePropertyWindowTitle {
             get {
                 return ResourceManager.GetString("CustomNodePropertyWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deprecating Package.
+        /// </summary>
+        public static string DeprecatingPackageMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("DeprecatingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string DownloadWarniingMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("DownloadWarniingMessageBoxTitle", resourceCulture);
             }
         }
         
@@ -1303,6 +1348,251 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import Library.
+        /// </summary>
+        public static string ImportLibraryDialogTitle {
+            get {
+                return ResourceManager.GetString("ImportLibraryDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo has already installed {0}.
+        ///
+        ///Dynamo will attempt to uninstall this package before installing..
+        /// </summary>
+        public static string MessageAlreadyInstallDynamo {
+            get {
+                return ResourceManager.GetString("MessageAlreadyInstallDynamo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to install {0} {1} ?.
+        /// </summary>
+        public static string MessageConfirmToInstallPackage {
+            get {
+                return ResourceManager.GetString("MessageConfirmToInstallPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have unsaved changes to custom node workspace: &quot;{0}&quot;.
+        ///
+        ///Would you like to save your changes?.
+        /// </summary>
+        public static string MessageConfirmToSaveCustomNode {
+            get {
+                return ResourceManager.GetString("MessageConfirmToSaveCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have unsaved changes to the Home workspace.
+        ///
+        ///Would you like to save your changes?.
+        /// </summary>
+        public static string MessageConfirmToSaveHomeWorkSpace {
+            get {
+                return ResourceManager.GetString("MessageConfirmToSaveHomeWorkSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have unsaved changes to {0}.
+        ///
+        ///Would you like to save your changes?.
+        /// </summary>
+        public static string MessageConfirmToSaveNamedHomeWorkSpace {
+            get {
+                return ResourceManager.GetString("MessageConfirmToSaveNamedHomeWorkSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
+        ///
+        ///You can always redownload the package..
+        /// </summary>
+        public static string MessageConfirmToUninstallPackage {
+            get {
+                return ResourceManager.GetString("MessageConfirmToUninstallPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A built-in node with the given name already exists..
+        /// </summary>
+        public static string MessageCustomNodeNameExist {
+            get {
+                return ResourceManager.GetString("MessageCustomNodeNameExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must enter a new category or choose one from the existing categories..
+        /// </summary>
+        public static string MessageCustomNodeNeedNewCategory {
+            get {
+                return ResourceManager.GetString("MessageCustomNodeNeedNewCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must supply a name..
+        /// </summary>
+        public static string MessageCustomNodeNoName {
+            get {
+                return ResourceManager.GetString("MessageCustomNodeNoName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems..
+        /// </summary>
+        public static string MessageFailedToDownloadPackage {
+            get {
+                return ResourceManager.GetString("MessageFailedToDownloadPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo failed to uninstall the package.  You may need to delete the package&apos;s root directory manually..
+        /// </summary>
+        public static string MessageFailedToUninstall {
+            get {
+                return ResourceManager.GetString("MessageFailedToUninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo failed to uninstall the package: {0}.  The package may need to be reinstalled manually..
+        /// </summary>
+        public static string MessageFailToUninstallPackage {
+            get {
+                return ResourceManager.GetString("MessageFailToUninstallPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File not found: {0}.
+        /// </summary>
+        public static string MessageFileNotFound {
+            get {
+                return ResourceManager.GetString("MessageFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was a problem getting the node from the workspace..
+        /// </summary>
+        public static string MessageGettingNodeError {
+            get {
+                return ResourceManager.GetString("MessageGettingNodeError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo and its host application must restart before uninstall takes effect..
+        /// </summary>
+        public static string MessageNeedToRestart {
+            get {
+                return ResourceManager.GetString("MessageNeedToRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?.
+        /// </summary>
+        public static string MessagePackageContainPythonScript {
+            get {
+                return ResourceManager.GetString("MessagePackageContainPythonScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following packages use a newer version of Dynamo than you are currently using:
+        ///
+        ///{0}
+        ///
+        ///Do you want to continue?.
+        /// </summary>
+        public static string MessagePackageNewerDynamo {
+            get {
+                return ResourceManager.GetString("MessagePackageNewerDynamo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must select at least one custom node..
+        /// </summary>
+        public static string MessageSelectAtLeastOneNode {
+            get {
+                return ResourceManager.GetString("MessageSelectAtLeastOneNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected symbol was not found in the workspace.
+        /// </summary>
+        public static string MessageSelectSymbolNotFound {
+            get {
+                return ResourceManager.GetString("MessageSelectSymbolNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The node is part of the dynamo package called &quot;{0}&quot; - do you want to submit a new version of this package?
+        ///
+        ///If not, this node will be moved to the new package you are creating.&quot;.
+        /// </summary>
+        public static string MessageSubmitSameNamePackage {
+            get {
+                return ResourceManager.GetString("MessageSubmitSameNamePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to deprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for. 
+        ///
+        ///You can always undeprecate the package..
+        /// </summary>
+        public static string MessageToDeprecatePackage {
+            get {
+                return ResourceManager.GetString("MessageToDeprecatePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to undeprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.
+        ///
+        ///You can always re-deprecate the package..
+        /// </summary>
+        public static string MessageToUndeprecatePackage {
+            get {
+                return ResourceManager.GetString("MessageToUndeprecatePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo needs to uninstall {0} to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo..
+        /// </summary>
+        public static string MessageUninstallToContinue {
+            get {
+                return ResourceManager.GetString("MessageUninstallToContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo needs to uninstall {0} to continue but it contains binaries already loaded into Dynamo.  It&apos;s now marked for removal, but you&apos;ll need to first restart Dynamo..
+        /// </summary>
+        public static string MessageUnintallToContinue2 {
+            get {
+                return ResourceManager.GetString("MessageUnintallToContinue2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string NodeContextMenuDelete {
@@ -1452,6 +1742,96 @@ namespace Dynamo.Wpf.Properties {
         public static string OKButton {
             get {
                 return ResourceManager.GetString("OKButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Dynamo Definition....
+        /// </summary>
+        public static string OpenDynamoDefinitionDialogTitle {
+            get {
+                return ResourceManager.GetString("OpenDynamoDefinitionDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Download Confirmation.
+        /// </summary>
+        public static string PackageDownloadConfirmMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("PackageDownloadConfirmMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Download Error.
+        /// </summary>
+        public static string PackageDownloadErrorMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("PackageDownloadErrorMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Download.
+        /// </summary>
+        public static string PackageDownloadMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("PackageDownloadMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Uses Newer Version of Dynamo!.
+        /// </summary>
+        public static string PackageUseNewerDynamoMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("PackageUseNewerDynamoMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Warning.
+        /// </summary>
+        public static string PackageWarningMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("PackageWarningMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmation.
+        /// </summary>
+        public static string SaveConfirmationMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("SaveConfirmationMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save your model to STL..
+        /// </summary>
+        public static string SaveModelToSTLDialogTitle {
+            get {
+                return ResourceManager.GetString("SaveModelToSTLDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save your Workbench to an Image.
+        /// </summary>
+        public static string SaveWorkbenToImageDialogTitle {
+            get {
+                return ResourceManager.GetString("SaveWorkbenToImageDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selection Error.
+        /// </summary>
+        public static string SelectionErrorMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("SelectionErrorMessageBoxTitle", resourceCulture);
             }
         }
         
@@ -1614,6 +1994,42 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageWrittenTutorials {
             get {
                 return ResourceManager.GetString("StartPageWrittenTutorials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing Package Deprecation.
+        /// </summary>
+        public static string UndeprecatingPackageMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("UndeprecatingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall Failure.
+        /// </summary>
+        public static string UninstallFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("UninstallFailureMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstalling Package.
+        /// </summary>
+        public static string UninstallingPackageMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("UninstallingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall Failure.
+        /// </summary>
+        public static string UninstallPackageMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("UninstallPackageMessageBoxTitle", resourceCulture);
             }
         }
     }

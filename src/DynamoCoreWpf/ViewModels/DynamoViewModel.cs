@@ -967,7 +967,7 @@ namespace Dynamo.ViewModels
             FileDialog _fileDialog = new OpenFileDialog()
             {
                 Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*",
-                Title = "Open Dynamo Definition..."
+                Title = Resources.OpenDynamoDefinitionDialogTitle
             };
 
             // if you've got the current space path, use it as the inital dir
@@ -1514,7 +1514,7 @@ namespace Dynamo.ViewModels
                     DefaultExt = ".png",
                     FileName = "Capture.png",
                     Filter = "PNG Image|*.png",
-                    Title = "Save your Workbench to an Image",
+                    Title = Resources.SaveWorkbenToImageDialogTitle
                 };
             }
 
@@ -1752,7 +1752,7 @@ namespace Dynamo.ViewModels
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = fileFilter;
-            openFileDialog.Title = "Import Library";
+            openFileDialog.Title = Resources.ImportLibraryDialogTitle;
             openFileDialog.Multiselect = true;
             openFileDialog.RestoreDirectory = true;
 
@@ -1836,7 +1836,7 @@ namespace Dynamo.ViewModels
                     DefaultExt = ".stl",
                     FileName = "model.stl",
                     Filter = "STL Models|*.stl",
-                    Title = "Save your model to STL.",
+                    Title = Resources.SaveModelToSTLDialogTitle,
                 };
             }
 

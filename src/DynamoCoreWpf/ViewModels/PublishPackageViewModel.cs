@@ -20,6 +20,7 @@ using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Double = System.Double;
 using String = System.String;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.PackageManager
 {
@@ -719,7 +720,7 @@ namespace Dynamo.PackageManager
             // show file open dialog
             var fDialog = new OpenFileDialog()
             {
-                Title = "Add File to Package...",
+                Title = Resources.AddFileToPackageDialogTitle,
                 RestoreDirectory = true,
                 Multiselect = true,
                 CheckFileExists = true

@@ -761,8 +761,17 @@
     <value>Written Tutorials</value>
     <comment>Start page | Link to tutorials</comment>
   </data>
+  <data name="AddFileToPackageDialogTitle" xml:space="preserve">
+    <value>Add File to Package...</value>
+  </data>
   <data name="CancelButton" xml:space="preserve">
     <value>Cancel</value>
+  </data>
+  <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
+    <value>Cannot Download Package</value>
+  </data>
+  <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
+    <value>Custom Node Property Error</value>
   </data>
   <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
     <value>Category</value>
@@ -788,11 +797,167 @@
     <value>Custom Node Properties</value>
     <comment>Dialog name</comment>
   </data>
+  <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Deprecating Package</value>
+  </data>
+  <data name="DownloadWarniingMessageBoxTitle" xml:space="preserve">
+    <value />
+  </data>
   <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
     <value>Show In Folder</value>
     <comment>Help menu | Show in Folder</comment>
   </data>
+  <data name="ImportLibraryDialogTitle" xml:space="preserve">
+    <value>Import Library</value>
+  </data>
+  <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
+    <value>Dynamo has already installed {0}.
+
+Dynamo will attempt to uninstall this package before installing.</value>
+  </data>
+  <data name="MessageConfirmToInstallPackage" xml:space="preserve">
+    <value>Are you sure you want to install {0} {1} ?</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
+    <value>You have unsaved changes to custom node workspace: "{0}".
+
+Would you like to save your changes?</value>
+  </data>
+  <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
+    <value>You have unsaved changes to the Home workspace.
+
+Would you like to save your changes?</value>
+  </data>
+  <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
+    <value>You have unsaved changes to {0}.
+
+Would you like to save your changes?</value>
+  </data>
+  <data name="MessageConfirmToUninstallPackage" xml:space="preserve">
+    <value>Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
+
+You can always redownload the package.</value>
+  </data>
+  <data name="MessageCustomNodeNameExist" xml:space="preserve">
+    <value>A built-in node with the given name already exists.</value>
+  </data>
+  <data name="MessageCustomNodeNeedNewCategory" xml:space="preserve">
+    <value>You must enter a new category or choose one from the existing categories.</value>
+  </data>
+  <data name="MessageCustomNodeNoName" xml:space="preserve">
+    <value>You must supply a name.</value>
+  </data>
+  <data name="MessageFailedToDownloadPackage" xml:space="preserve">
+    <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageFailedToUninstall" xml:space="preserve">
+    <value>Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
+  </data>
+  <data name="MessageFailToUninstallPackage" xml:space="preserve">
+    <value>Dynamo failed to uninstall the package: {0}.  The package may need to be reinstalled manually.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageFileNotFound" xml:space="preserve">
+    <value>File not found: {0}</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageGettingNodeError" xml:space="preserve">
+    <value>There was a problem getting the node from the workspace.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageNeedToRestart" xml:space="preserve">
+    <value>Dynamo and its host application must restart before uninstall takes effect.</value>
+  </data>
+  <data name="MessagePackageContainPythonScript" xml:space="preserve">
+    <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
+  </data>
+  <data name="MessagePackageNewerDynamo" xml:space="preserve">
+    <value>The following packages use a newer version of Dynamo than you are currently using:
+
+{0}
+
+Do you want to continue?</value>
+  </data>
+  <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
+    <value>You must select at least one custom node.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageSelectSymbolNotFound" xml:space="preserve">
+    <value>The selected symbol was not found in the workspace</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageSubmitSameNamePackage" xml:space="preserve">
+    <value>The node is part of the dynamo package called "{0}" - do you want to submit a new version of this package?
+
+If not, this node will be moved to the new package you are creating."</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageToDeprecatePackage" xml:space="preserve">
+    <value>Are you sure you want to deprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for. 
+
+You can always undeprecate the package.</value>
+  </data>
+  <data name="MessageToUndeprecatePackage" xml:space="preserve">
+    <value>Are you sure you want to undeprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.
+
+You can always re-deprecate the package.</value>
+  </data>
+  <data name="MessageUninstallToContinue" xml:space="preserve">
+    <value>Dynamo needs to uninstall {0} to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.</value>
+  </data>
+  <data name="MessageUnintallToContinue2" xml:space="preserve">
+    <value>Dynamo needs to uninstall {0} to continue but it contains binaries already loaded into Dynamo.  It's now marked for removal, but you'll need to first restart Dynamo.</value>
+  </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
+    <value>Open Dynamo Definition...</value>
+  </data>
+  <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
+    <value>Package Download Confirmation</value>
+    <comment>Message box title</comment>
+  </data>
+  <data name="PackageDownloadErrorMessageBoxTitle" xml:space="preserve">
+    <value>Package Download Error</value>
+    <comment>Message box title</comment>
+  </data>
+  <data name="PackageDownloadMessageBoxTitle" xml:space="preserve">
+    <value>Package Download</value>
+  </data>
+  <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
+    <value>Package Uses Newer Version of Dynamo!</value>
+  </data>
+  <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
+    <value>Package Warning</value>
+    <comment>Message box title</comment>
+  </data>
+  <data name="SaveConfirmationMessageBoxTitle" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
+    <value>Save your model to STL.</value>
+  </data>
+  <data name="SaveWorkbenToImageDialogTitle" xml:space="preserve">
+    <value>Save your Workbench to an Image</value>
+  </data>
+  <data name="SelectionErrorMessageBoxTitle" xml:space="preserve">
+    <value>Selection Error</value>
+    <comment>Message box title</comment>
+  </data>
+  <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Removing Package Deprecation</value>
+  </data>
+  <data name="UninstallFailureMessageBoxTitle" xml:space="preserve">
+    <value>Uninstall Failure</value>
+  </data>
+  <data name="UninstallingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Uninstalling Package</value>
+  </data>
+  <data name="UninstallPackageMessageBoxTitle" xml:space="preserve">
+    <value>Uninstall Failure</value>
+    <comment>Message box title</comment>
   </data>
 </root>

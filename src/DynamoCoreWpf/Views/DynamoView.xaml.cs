@@ -479,28 +479,27 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
-            var dialogText = "";
+            var dialogText = string.Empty; 
             if (e.Workspace is CustomNodeWorkspaceModel)
             {
-                dialogText = "You have unsaved changes to custom node workspace: \"" + e.Workspace.Name +
-                             "\"\n\n Would you like to save your changes?";
+                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
             }
             else // homeworkspace
             {
                 if (string.IsNullOrEmpty(e.Workspace.FileName))
                 {
-                    dialogText = "You have unsaved changes to the Home workspace." +
-                                 "\n\n Would you like to save your changes?";
+                    dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
                 }
                 else
                 {
-                    dialogText = "You have unsaved changes to " + Path.GetFileName(e.Workspace.FileName) +
-                    "\n\n Would you like to save your changes?";
+                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
                 }
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
+            var result = System.Windows.MessageBox.Show(dialogText, 
+                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle, 
+                buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -647,21 +646,22 @@ namespace Dynamo.Controls
 
                 if (String.IsNullOrEmpty(dialog.Text))
                 {
-                    error = "You must supply a name.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName, 
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
                 {
-                    error = "A built-in node with the given name already exists.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameExist, 
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
+                        MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
                 else if (dialog.Category.Equals(""))
                 {
-                    error = "You must enter a new category or choose one from the existing categories.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory, 
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {

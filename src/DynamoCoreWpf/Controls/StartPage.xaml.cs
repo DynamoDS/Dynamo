@@ -366,7 +366,7 @@ namespace Dynamo.UI.Controls
             var path = item.ContextData;
             if (string.IsNullOrEmpty(path) || (File.Exists(path) == false))
             {
-                MessageBox.Show(string.Format("File not found: {0}", path));
+                MessageBox.Show(string.Format(Resources.MessageFileNotFound, path));
                 return;
             }
 
