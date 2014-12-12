@@ -245,7 +245,7 @@ namespace Dynamo.Models
         {
             CurrentWorkspace.ConvertNodesToCodeInternal(
                 command.NodeId,
-                EngineController,
+                null,
                 LibraryServices.LibraryManagementCore,
                 DebugSettings.VerboseLogging);
 

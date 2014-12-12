@@ -1021,9 +1021,6 @@ namespace Dynamo.Models
 
             foreach (var node in nodes)
             {
-                //create a new guid for us to use
-                Guid newGuid = Guid.NewGuid();
-
                 NodeModel newNode;
 
                 if (CurrentWorkspace is HomeWorkspaceModel && (node is Symbol || node is Output))
