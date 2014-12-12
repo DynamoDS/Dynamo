@@ -61,6 +61,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string DynamoViewCancelButton {
+            get {
+                return ResourceManager.GetString("DynamoViewCancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Run (Shift+F5).
+        /// </summary>
+        public static string DynamoViewCancelButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewCancelButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Debug.
         /// </summary>
         public static string DynamoViewDebugMenu {
@@ -529,6 +547,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run Automatically.
+        /// </summary>
+        public static string DynamoViewRunAutomaticallyOption {
+            get {
+                return ResourceManager.GetString("DynamoViewRunAutomaticallyOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run.
+        /// </summary>
+        public static string DynamoViewRunButton {
+            get {
+                return ResourceManager.GetString("DynamoViewRunButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run Workflow (F5).
+        /// </summary>
+        public static string DynamoViewRunButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewRunButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Settings.
         /// </summary>
         public static string DynamoViewSettingMenu {
@@ -831,6 +876,60 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingMenuVolumeUnits {
             get {
                 return ResourceManager.GetString("DynamoViewSettingMenuVolumeUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Workspace As Image.
+        /// </summary>
+        public static string DynamoViewToolbarExportButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewToolbarExportButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New [Ctrl + N].
+        /// </summary>
+        public static string DynamoViewToolbarNewButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewToolbarNewButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open [Ctrl + O].
+        /// </summary>
+        public static string DynamoViewToolbarOpenButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewToolbarOpenButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redo [Ctrl + Y].
+        /// </summary>
+        public static string DynamoViewToolbarRedoButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewToolbarRedoButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save [Ctrl + S].
+        /// </summary>
+        public static string DynamoViewToolbarSaveButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewToolbarSaveButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo [Ctrl + Z].
+        /// </summary>
+        public static string DynamoViewToolbarUndoButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewToolbarUndoButtonTooltip", resourceCulture);
             }
         }
         

@@ -117,6 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DynamoViewCancelButton" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>Cancel button</comment>
+  </data>
+  <data name="DynamoViewCancelButtonTooltip" xml:space="preserve">
+    <value>Cancel Run (Shift+F5)</value>
+    <comment>Cancel button tooltip</comment>
+  </data>
   <data name="DynamoViewDebugMenu" xml:space="preserve">
     <value>Debug</value>
     <comment>Debug menu</comment>
@@ -325,6 +333,18 @@
     <value>_Search for a Package...</value>
     <comment>Package menu | Search for a package</comment>
   </data>
+  <data name="DynamoViewRunAutomaticallyOption" xml:space="preserve">
+    <value>Run Automatically</value>
+    <comment>Run automatically option</comment>
+  </data>
+  <data name="DynamoViewRunButton" xml:space="preserve">
+    <value>Run</value>
+    <comment>Run button</comment>
+  </data>
+  <data name="DynamoViewRunButtonTooltip" xml:space="preserve">
+    <value>Run Workflow (F5)</value>
+    <comment>Run button tooltip</comment>
+  </data>
   <data name="DynamoViewSettingMenu" xml:space="preserve">
     <value>_Settings</value>
     <comment>Setting menu</comment>
@@ -460,6 +480,30 @@
   <data name="DynamoViewSettingMenuVolumeUnits" xml:space="preserve">
     <value>Volume Display Units</value>
     <comment>Setting menu | Volume unit display</comment>
+  </data>
+  <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
+    <value>Export Workspace As Image</value>
+    <comment>Toolbar export button tooltip</comment>
+  </data>
+  <data name="DynamoViewToolbarNewButtonTooltip" xml:space="preserve">
+    <value>New [Ctrl + N]</value>
+    <comment>Toolbar new button tooltip</comment>
+  </data>
+  <data name="DynamoViewToolbarOpenButtonTooltip" xml:space="preserve">
+    <value>Open [Ctrl + O]</value>
+    <comment>Toolbar open button tooltip</comment>
+  </data>
+  <data name="DynamoViewToolbarRedoButtonTooltip" xml:space="preserve">
+    <value>Redo [Ctrl + Y]</value>
+    <comment>Toolbar redo button tooltip</comment>
+  </data>
+  <data name="DynamoViewToolbarSaveButtonTooltip" xml:space="preserve">
+    <value>Save [Ctrl + S]</value>
+    <comment>Toolbar save button tooltip</comment>
+  </data>
+  <data name="DynamoViewToolbarUndoButtonTooltip" xml:space="preserve">
+    <value>Undo [Ctrl + Z]</value>
+    <comment>Toolbar undo button tooltip</comment>
   </data>
   <data name="DynamoViewViewMenu" xml:space="preserve">
     <value>_View</value>

@@ -556,7 +556,7 @@
                                       IsChecked="{Binding Model.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Centimeter, Mode=TwoWay}"
                                       Command="{Binding SetLengthUnitCommand}"
                                       CommandParameter="Centimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCentimeter}"
+                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCentimeter}" />
                             <MenuItem Focusable="False"
                                       Name="units_m"
                                       IsCheckable="True"
@@ -627,7 +627,7 @@
                                       IsChecked="{Binding Model.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMillimeter, Mode=TwoWay}"
                                       Command="{Binding SetVolumeUnitCommand}"
                                       CommandParameter="CubicMillimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicMillimeter}"
+                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicMillimeter}" />
                             <MenuItem Focusable="False"
                                       Name="units_volume_centimeter"
                                       IsCheckable="True"
@@ -1563,22 +1563,22 @@
                     <StackPanel Orientation="Horizontal">
                         <Button Name="RunButton"
                                 Width="100"
-                                Content="Run"
+                                Content="{x:Static p:Resources.DynamoViewRunButton}"
                                 Margin="5"
                                 Style="{DynamicResource ResourceKey=STextButton}"
                                 Click="RunButton_OnClick"
                                 Command="{Binding RunExpressionCommand}"
                                 CommandParameter="{Binding Path=RunInDebug}"
-                                ToolTip="Run Workflow (F5)"
+                                ToolTip="{x:Static p:Resources.DynamoViewRunButtonTooltip}"
                                 IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"
                                 Focusable="False" />
 
                         <Button Name="cancelButton"
                                 Width="100"
-                                Content="Cancel"
+                                Content="{x:Static p:Resources.DynamoViewCancelButton}"
                                 Focusable="False"
                                 Style="{DynamicResource ResourceKey=STextButton}"
-                                ToolTip="Cancel Run (Shift+F5)"
+                                ToolTip="{x:Static p:Resources.DynamoViewCancelButtonTooltip}"
                                 Command="{Binding CancelRunCommand}"
                                 Margin="5" />
 
@@ -1587,7 +1587,7 @@
                                   x:FieldModifier="public"
                                   Focusable="False"
                                   Foreground="Gray"
-                                  Content="Run Automatically"
+                                  Content="{x:Static p:Resources.DynamoViewRunAutomaticallyOption}"
                                   FontSize="11"
                                   IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
                                   IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"

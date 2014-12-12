@@ -184,7 +184,7 @@ namespace Dynamo.Controls
             shortcutBar.Name = "ShortcutToolbar";
 
             ShortcutBarItem newScriptButton = new ShortcutBarItem();
-            newScriptButton.ShortcutToolTip = "New [Ctrl + N]";
+            newScriptButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarNewButtonTooltip;
             newScriptButton.ShortcutCommand = dynamoViewModel.NewHomeWorkspaceCommand;
             newScriptButton.ShortcutCommandParameter = null;
             newScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png";
@@ -192,7 +192,7 @@ namespace Dynamo.Controls
             newScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_hover.png";
 
             ShortcutBarItem openScriptButton = new ShortcutBarItem();
-            openScriptButton.ShortcutToolTip = "Open [Ctrl + O]";
+            openScriptButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarOpenButtonTooltip;
             openScriptButton.ShortcutCommand = dynamoViewModel.ShowOpenDialogAndOpenResultCommand;
             openScriptButton.ShortcutCommandParameter = null;
             openScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png";
@@ -200,7 +200,7 @@ namespace Dynamo.Controls
             openScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_hover.png";
 
             ShortcutBarItem saveButton = new ShortcutBarItem();
-            saveButton.ShortcutToolTip = "Save [Ctrl + S]";
+            saveButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarSaveButtonTooltip;
             saveButton.ShortcutCommand = dynamoViewModel.ShowSaveDialogIfNeededAndSaveResultCommand;
             saveButton.ShortcutCommandParameter = null;
             saveButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png";
@@ -208,7 +208,7 @@ namespace Dynamo.Controls
             saveButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_hover.png";
 
             ShortcutBarItem screenShotButton = new ShortcutBarItem();
-            screenShotButton.ShortcutToolTip = "Export Workspace As Image";
+            screenShotButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarExportButtonTooltip;
             screenShotButton.ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand;
             screenShotButton.ShortcutCommandParameter = null;
             screenShotButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png";
@@ -216,7 +216,7 @@ namespace Dynamo.Controls
             screenShotButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png";
 
             ShortcutBarItem undoButton = new ShortcutBarItem();
-            undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
+            undoButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarUndoButtonTooltip;
             undoButton.ShortcutCommand = dynamoViewModel.UndoCommand;
             undoButton.ShortcutCommandParameter = null;
             undoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png";
@@ -224,7 +224,7 @@ namespace Dynamo.Controls
             undoButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_hover.png";
 
             ShortcutBarItem redoButton = new ShortcutBarItem();
-            redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
+            redoButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarRedoButtonTooltip;
             redoButton.ShortcutCommand = dynamoViewModel.RedoCommand;
             redoButton.ShortcutCommandParameter = null;
             redoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png";
