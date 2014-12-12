@@ -97,6 +97,87 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Custom Node....
+        /// </summary>
+        public static string ContextMenuEditCustomNode {
+            get {
+                return ResourceManager.GetString("ContextMenuEditCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Custom Node Properties....
+        /// </summary>
+        public static string ContextMenuEditCustomNodeProperty {
+            get {
+                return ResourceManager.GetString("ContextMenuEditCustomNodeProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Fit to Screen.
+        /// </summary>
+        public static string ContextMenuFitToScreen {
+            get {
+                return ResourceManager.GetString("ContextMenuFitToScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to Geometry _View.
+        /// </summary>
+        public static string ContextMenuGeometryView {
+            get {
+                return ResourceManager.GetString("ContextMenuGeometryView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nodes From _Selected Geometry.
+        /// </summary>
+        public static string ContextMenuNodesFromGeometry {
+            get {
+                return ResourceManager.GetString("ContextMenuNodesFromGeometry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Node F_rom Selection.
+        /// </summary>
+        public static string ContextMenuNodesFromSelection {
+            get {
+                return ResourceManager.GetString("ContextMenuNodesFromSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node to _Code.
+        /// </summary>
+        public static string ContextMenuNodeToCode {
+            get {
+                return ResourceManager.GetString("ContextMenuNodeToCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pa_n.
+        /// </summary>
+        public static string ContextMenuPan {
+            get {
+                return ResourceManager.GetString("ContextMenuPan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish This Custom Node....
+        /// </summary>
+        public static string ContextMenuPublishCustomNode {
+            get {
+                return ResourceManager.GetString("ContextMenuPublishCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string DynamoViewCancelButton {

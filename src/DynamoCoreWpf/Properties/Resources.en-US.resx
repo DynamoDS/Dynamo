@@ -133,6 +133,42 @@
     <value>(Up-to-date)</value>
     <comment>To indicate Dynamo is up to date</comment>
   </data>
+  <data name="ContextMenuEditCustomNode" xml:space="preserve">
+    <value>Edit Custom Node...</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextMenuEditCustomNodeProperty" xml:space="preserve">
+    <value>Edit Custom Node Properties...</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextMenuFitToScreen" xml:space="preserve">
+    <value>_Fit to Screen</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextMenuGeometryView" xml:space="preserve">
+    <value>Switch to Geometry _View</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
+    <value>Nodes From _Selected Geometry</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextMenuNodesFromSelection" xml:space="preserve">
+    <value>New Node F_rom Selection</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextMenuNodeToCode" xml:space="preserve">
+    <value>Node to _Code</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextMenuPan" xml:space="preserve">
+    <value>Pa_n</value>
+    <comment>Context menu item </comment>
+  </data>
+  <data name="ContextMenuPublishCustomNode" xml:space="preserve">
+    <value>Publish This Custom Node...</value>
+    <comment>Context menu item</comment>
+  </data>
   <data name="DynamoViewCancelButton" xml:space="preserve">
     <value>Cancel</value>
     <comment>Cancel button</comment>
