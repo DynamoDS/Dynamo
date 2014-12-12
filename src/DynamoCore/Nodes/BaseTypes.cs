@@ -18,6 +18,7 @@ using System.Globalization;
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using System.Web;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -685,9 +686,9 @@ namespace Dynamo.Nodes
     /// Builds sublists from a list. Inputs are a list and an offset to indicate the number of items to skip before
     /// the start of each subsequent sublist. Enter a range of values using series syntax to indicate the first sublist.
     /// </summary>
-    [NodeName("Build Sublists")]
+    [NodeName(Resources.BuildSublists)]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
+    [NodeDescription(Resources.BuildSublistsFromList)]
     public class Sublists : BasicInteractive<string>
     {
         public Sublists(WorkspaceModel ws): base(ws)
@@ -921,9 +922,9 @@ namespace Dynamo.Nodes
 
     #region Functions
 
-    [NodeName("Compose Functions")]
+    [NodeName(Resources.ComposeFunctions)]
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
-    [NodeDescription("Composes two single parameter functions into one function.")]
+    [NodeDescription(Resources.TwoFunctionsToOneFunction)]
     public class ComposeFunctions : NodeModel
     { 
         public ComposeFunctions(WorkspaceModel ws) : base(ws)
@@ -1143,9 +1144,9 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName("String")]
+    [NodeName(Resources.String)]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a string.")]
+    [NodeDescription(Resources.CreateString)]
     [IsDesignScriptCompatible]
     public class StringInput : AbstractString
     {
@@ -1248,9 +1249,9 @@ namespace Dynamo.Nodes
 
     public delegate double ConversionDelegate(double value);
 
-    [NodeName("Number")]
+    [NodeName(Resources.Number)]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a number.")]
+    [NodeDescription(Resources.CreateNumber)]
     [IsDesignScriptCompatible]
     public class DoubleInput : NodeModel
     {

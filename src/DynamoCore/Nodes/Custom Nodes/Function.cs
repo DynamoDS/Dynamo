@@ -7,14 +7,15 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
     /// <summary>
     ///     DesignScript Custom Node instance.
     /// </summary>
-    [NodeName("Custom Node")]
-    [NodeDescription("Instance of a Custom Node")]
+    [NodeName(Resources.CustomNode)]
+    [NodeDescription(Resources.InstanceOfCustomNode)]
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
@@ -310,9 +311,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Input")]
+    [NodeName(Resources.Input)]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function parameter, use with custom nodes")]
+    [NodeDescription(Resources.UsingCustomNodesWithFunctionParam)]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
@@ -380,9 +381,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Output")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function output, use with custom nodes")]
+    [NodeName(Resources.Output)]    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription(Resources.UsingCustomeNodesWithFunctionOutput)]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
