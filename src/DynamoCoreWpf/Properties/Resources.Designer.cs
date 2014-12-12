@@ -61,6 +61,465 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Edit.
+        /// </summary>
+        public static string DynamoViewEditMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Bottom.
+        /// </summary>
+        public static string DynamoViewEditMenuAlighBottom {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuAlighBottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Left.
+        /// </summary>
+        public static string DynamoViewEditMenuAlignLeft {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuAlignLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Right.
+        /// </summary>
+        public static string DynamoViewEditMenuAlignRight {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuAlignRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Align Selection.
+        /// </summary>
+        public static string DynamoViewEditMenuAlignSelection {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuAlignSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Top.
+        /// </summary>
+        public static string DynamoViewEditMenuAlignTop {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuAlignTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _X Average.
+        /// </summary>
+        public static string DynamoViewEditMenuAlignXAverage {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuAlignXAverage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _X Distribute.
+        /// </summary>
+        public static string DynamoViewEditMenuAlignXDistribute {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuAlignXDistribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Y Average.
+        /// </summary>
+        public static string DynamoViewEditMenuAlignYAverage {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuAlignYAverage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Y Distribute.
+        /// </summary>
+        public static string DynamoViewEditMenuAlignYDistribute {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuAlignYDistribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Cleanup Node Layout.
+        /// </summary>
+        public static string DynamoViewEditMenuCleanupLayout {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuCleanupLayout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Copy.
+        /// </summary>
+        public static string DynamoViewEditMenuCopy {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Create Node From Selection.
+        /// </summary>
+        public static string DynamoViewEditMenuCreateNodeFromSelection {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuCreateNodeFromSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Create Note.
+        /// </summary>
+        public static string DynamoViewEditMenuCreateNote {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuCreateNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Delete Selected.
+        /// </summary>
+        public static string DynamoViewEditMenuDeleteSelected {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuDeleteSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Paste.
+        /// </summary>
+        public static string DynamoViewEditMenuPaste {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuPaste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Redo.
+        /// </summary>
+        public static string DynamoViewEditMenuRedo {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuRedo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Select All.
+        /// </summary>
+        public static string DynamoViewEditMenuSelectAll {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuSelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Undo.
+        /// </summary>
+        public static string DynamoViewEditMenuUndo {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Exit.
+        /// </summary>
+        public static string DynamoViewFiileMenuExit {
+            get {
+                return ResourceManager.GetString("DynamoViewFiileMenuExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _File.
+        /// </summary>
+        public static string DynamoViewFileMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Export Workspace As Image....
+        /// </summary>
+        public static string DynamoViewFileMenuExportAsImage {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuExportAsImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Export Model to STL....
+        /// </summary>
+        public static string DynamoViewFileMenuExportToSTL {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuExportToSTL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Import Library....
+        /// </summary>
+        public static string DynamoViewFileMenuImport {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _New.
+        /// </summary>
+        public static string DynamoViewFileMenuNew {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Custom Node....
+        /// </summary>
+        public static string DynamoViewFileMenuNewCustomNode {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuNewCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Home Workspace....
+        /// </summary>
+        public static string DynamoViewFileMenuNewHomeWorkSpace {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuNewHomeWorkSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Open....
+        /// </summary>
+        public static string DynamoViewFileMenuOpen {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Recent Files.
+        /// </summary>
+        public static string DynamoViewFileMenuRecentFiles {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuRecentFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Save.
+        /// </summary>
+        public static string DynamoViewFileMenuSave {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Save As....
+        /// </summary>
+        public static string DynamoViewFileMenuSaveAs {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuSaveAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _View.
+        /// </summary>
+        public static string DynamoViewViewMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Background 3D Preview.
+        /// </summary>
+        public static string DynamoViewViewMenu3DPreview {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenu3DPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Geometry in {0}.
+        /// </summary>
+        public static string DynamoViewViewMenuAlternateContextGeometry {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuAlternateContextGeometry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Connectors.
+        /// </summary>
+        public static string DynamoViewViewMenuConnector {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuConnector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Connector Type.
+        /// </summary>
+        public static string DynamoViewViewMenuConnectorType {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuConnectorType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curves.
+        /// </summary>
+        public static string DynamoViewViewMenuConnectorTypeCurve {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuConnectorTypeCurve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Polylines.
+        /// </summary>
+        public static string DynamoViewViewMenuConnectorTypePolylines {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuConnectorTypePolylines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Console.
+        /// </summary>
+        public static string DynamoViewViewMenuHideConsole {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuHideConsole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Pan.
+        /// </summary>
+        public static string DynamoViewViewMenuPan {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuPan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pan Down (Mouse wheel drag down).
+        /// </summary>
+        public static string DynamoViewViewMenuPanDown {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuPanDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pan Left (Mouse wheel drag left).
+        /// </summary>
+        public static string DynamoViewViewMenuPanLeft {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuPanLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pan Right (Mouse wheel drag right).
+        /// </summary>
+        public static string DynamoViewViewMenuPanRight {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuPanRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pan Up (Mouse wheel drag up).
+        /// </summary>
+        public static string DynamoViewViewMenuPanUp {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuPanUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate Background 3D Preview.
+        /// </summary>
+        public static string DynamoViewViewMenuPreviewNavigate {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuPreviewNavigate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Showing Background 3D Preview.
+        /// </summary>
+        public static string DynamoViewViewMenuShowBackground3DPreview {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuShowBackground3DPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Show Connectors.
+        /// </summary>
+        public static string DynamoViewViewMenuShowConnectors {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuShowConnectors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Console.
+        /// </summary>
+        public static string DynamoViewViewMenuShowConsole {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuShowConsole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Zoom.
+        /// </summary>
+        public static string DynamoViewViewMenuZoom {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuZoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom In (Mouse wheel down).
+        /// </summary>
+        public static string DynamoViewViewMenuZoomIn {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuZoomIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom Out (Mouse wheel up).
+        /// </summary>
+        public static string DynamoViewViewMenuZoomOut {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuZoomOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASK.
         /// </summary>
         public static string StartPageAsk {

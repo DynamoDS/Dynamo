@@ -117,6 +117,210 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DynamoViewEditMenu" xml:space="preserve">
+    <value>_Edit</value>
+    <comment>Edit menu</comment>
+  </data>
+  <data name="DynamoViewEditMenuAlighBottom" xml:space="preserve">
+    <value>_Bottom</value>
+    <comment>Edit menu | Align based on selected nodes' bottom Y position</comment>
+  </data>
+  <data name="DynamoViewEditMenuAlignLeft" xml:space="preserve">
+    <value>_Left</value>
+    <comment>Edit menu | Align based on selected nodes' leftmost X position</comment>
+  </data>
+  <data name="DynamoViewEditMenuAlignRight" xml:space="preserve">
+    <value>_Right</value>
+    <comment>Edit menu | Align based on selected nodes' rightmost X position</comment>
+  </data>
+  <data name="DynamoViewEditMenuAlignSelection" xml:space="preserve">
+    <value>_Align Selection</value>
+    <comment>Edit menu | Align selected nodes</comment>
+  </data>
+  <data name="DynamoViewEditMenuAlignTop" xml:space="preserve">
+    <value>_Top</value>
+    <comment>Edit menu | Align based on selected nodes' topmost Y position</comment>
+  </data>
+  <data name="DynamoViewEditMenuAlignXAverage" xml:space="preserve">
+    <value>_X Average</value>
+    <comment>Edit menu | Align based on selected nodes' average X positions</comment>
+  </data>
+  <data name="DynamoViewEditMenuAlignXDistribute" xml:space="preserve">
+    <value>_X Distribute</value>
+    <comment>Edit menu | Align selected nodes evenly on horizontal direction</comment>
+  </data>
+  <data name="DynamoViewEditMenuAlignYAverage" xml:space="preserve">
+    <value>_Y Average</value>
+    <comment>Edit menu | Align based on selected nodes' average Y positions</comment>
+  </data>
+  <data name="DynamoViewEditMenuAlignYDistribute" xml:space="preserve">
+    <value>_Y Distribute</value>
+    <comment>Edit menu | Align selected nodes evenly on vertical direction</comment>
+  </data>
+  <data name="DynamoViewEditMenuCleanupLayout" xml:space="preserve">
+    <value>_Cleanup Node Layout</value>
+    <comment>Edit menu | Automatically layout graph</comment>
+  </data>
+  <data name="DynamoViewEditMenuCopy" xml:space="preserve">
+    <value>_Copy</value>
+    <comment>Edit menu | Copy</comment>
+  </data>
+  <data name="DynamoViewEditMenuCreateNodeFromSelection" xml:space="preserve">
+    <value>_Create Node From Selection</value>
+    <comment>Edit menu | Create custom node from selected nodes</comment>
+  </data>
+  <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
+    <value>_Create Note</value>
+    <comment>Edit menu | Create note for a node</comment>
+  </data>
+  <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
+    <value>_Delete Selected</value>
+    <comment>Edit menu | Delete selected nodes</comment>
+  </data>
+  <data name="DynamoViewEditMenuPaste" xml:space="preserve">
+    <value>_Paste</value>
+    <comment>Edit menu | Paste</comment>
+  </data>
+  <data name="DynamoViewEditMenuRedo" xml:space="preserve">
+    <value>_Redo</value>
+    <comment>Edit menu | Redo</comment>
+  </data>
+  <data name="DynamoViewEditMenuSelectAll" xml:space="preserve">
+    <value>_Select All</value>
+    <comment>Edit menu | Select all nodes</comment>
+  </data>
+  <data name="DynamoViewEditMenuUndo" xml:space="preserve">
+    <value>_Undo</value>
+    <comment>Edit menu | Undo</comment>
+  </data>
+  <data name="DynamoViewFiileMenuExit" xml:space="preserve">
+    <value>_Exit</value>
+    <comment>File menu | Exit Dynamo</comment>
+  </data>
+  <data name="DynamoViewFileMenu" xml:space="preserve">
+    <value>_File</value>
+    <comment>File menu</comment>
+  </data>
+  <data name="DynamoViewFileMenuExportAsImage" xml:space="preserve">
+    <value>_Export Workspace As Image...</value>
+    <comment>File menu | Export workspace as image</comment>
+  </data>
+  <data name="DynamoViewFileMenuExportToSTL" xml:space="preserve">
+    <value>_Export Model to STL...</value>
+    <comment>File menu | Export geometry model to STL file format</comment>
+  </data>
+  <data name="DynamoViewFileMenuImport" xml:space="preserve">
+    <value>_Import Library...</value>
+    <comment>File menu | Import</comment>
+  </data>
+  <data name="DynamoViewFileMenuNew" xml:space="preserve">
+    <value>_New</value>
+    <comment>File menu | New</comment>
+  </data>
+  <data name="DynamoViewFileMenuNewCustomNode" xml:space="preserve">
+    <value>_Custom Node...</value>
+    <comment>FIle menu | New | New custom node</comment>
+  </data>
+  <data name="DynamoViewFileMenuNewHomeWorkSpace" xml:space="preserve">
+    <value>_Home Workspace...</value>
+    <comment>File menu | New | New home workspace</comment>
+  </data>
+  <data name="DynamoViewFileMenuOpen" xml:space="preserve">
+    <value>_Open...</value>
+    <comment>File menu | Open</comment>
+  </data>
+  <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
+    <value>_Recent Files</value>
+    <comment>File menu | Recent files</comment>
+  </data>
+  <data name="DynamoViewFileMenuSave" xml:space="preserve">
+    <value>_Save</value>
+    <comment>File menu | Save</comment>
+  </data>
+  <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
+    <value>_Save As...</value>
+    <comment>File menu | Save as</comment>
+  </data>
+  <data name="DynamoViewViewMenu" xml:space="preserve">
+    <value>_View</value>
+    <comment>View menu</comment>
+  </data>
+  <data name="DynamoViewViewMenu3DPreview" xml:space="preserve">
+    <value>_Background 3D Preview</value>
+    <comment>View menu | Background 3d preview</comment>
+  </data>
+  <data name="DynamoViewViewMenuAlternateContextGeometry" xml:space="preserve">
+    <value>Show Geometry in {0}</value>
+    <comment>View menu | Show geometry in some context</comment>
+  </data>
+  <data name="DynamoViewViewMenuConnector" xml:space="preserve">
+    <value>_Connectors</value>
+    <comment>View menu | Connector setting</comment>
+  </data>
+  <data name="DynamoViewViewMenuConnectorType" xml:space="preserve">
+    <value>_Connector Type</value>
+    <comment>View menu | Connector type</comment>
+  </data>
+  <data name="DynamoViewViewMenuConnectorTypeCurve" xml:space="preserve">
+    <value>Curves</value>
+    <comment>View menu | Curve type connector</comment>
+  </data>
+  <data name="DynamoViewViewMenuConnectorTypePolylines" xml:space="preserve">
+    <value>Polylines</value>
+    <comment>View menu | Polyline type connector</comment>
+  </data>
+  <data name="DynamoViewViewMenuHideConsole" xml:space="preserve">
+    <value>Hide Console</value>
+    <comment>View menu | Hide console</comment>
+  </data>
+  <data name="DynamoViewViewMenuPan" xml:space="preserve">
+    <value>_Pan</value>
+    <comment>View menu | Pan</comment>
+  </data>
+  <data name="DynamoViewViewMenuPanDown" xml:space="preserve">
+    <value>Pan Down (Mouse wheel drag down)</value>
+    <comment>View menu | Pan down</comment>
+  </data>
+  <data name="DynamoViewViewMenuPanLeft" xml:space="preserve">
+    <value>Pan Left (Mouse wheel drag left)</value>
+    <comment>View menu | Pan left</comment>
+  </data>
+  <data name="DynamoViewViewMenuPanRight" xml:space="preserve">
+    <value>Pan Right (Mouse wheel drag right)</value>
+    <comment>View menu | Pan right</comment>
+  </data>
+  <data name="DynamoViewViewMenuPanUp" xml:space="preserve">
+    <value>Pan Up (Mouse wheel drag up)</value>
+    <comment>View menu | Pan up</comment>
+  </data>
+  <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
+    <value>Navigate Background 3D Preview</value>
+    <comment>View menu | Navigate background 3D preview</comment>
+  </data>
+  <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
+    <value>Showing Background 3D Preview</value>
+    <comment>View menu | Show background preview</comment>
+  </data>
+  <data name="DynamoViewViewMenuShowConnectors" xml:space="preserve">
+    <value>_Show Connectors</value>
+    <comment>View menu | Show connectors</comment>
+  </data>
+  <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
+    <value>Show Console</value>
+    <comment>View menu | Show console</comment>
+  </data>
+  <data name="DynamoViewViewMenuZoom" xml:space="preserve">
+    <value>_Zoom</value>
+    <comment>View menu | Zoom</comment>
+  </data>
+  <data name="DynamoViewViewMenuZoomIn" xml:space="preserve">
+    <value>Zoom In (Mouse wheel down)</value>
+    <comment>View menu | Zoom in</comment>
+  </data>
+  <data name="DynamoViewViewMenuZoomOut" xml:space="preserve">
+    <value>Zoom Out (Mouse wheel up)</value>
+    <comment>View menu | Zoom out</comment>
+  </data>
   <data name="StartPageAsk" xml:space="preserve">
     <value>ASK</value>
   </data>
@@ -137,12 +341,15 @@
   </data>
   <data name="StartPageNewCustomNode" xml:space="preserve">
     <value>Custom Node</value>
+    <comment>Start page | New custom node</comment>
   </data>
   <data name="StartPageNewFile" xml:space="preserve">
     <value>New</value>
+    <comment>Start page | New</comment>
   </data>
   <data name="StartPageOpenFile" xml:space="preserve">
     <value>Open</value>
+    <comment>Start page | Open files</comment>
   </data>
   <data name="StartPageRecent" xml:space="preserve">
     <value>RECENT</value>
@@ -164,11 +371,16 @@
   </data>
   <data name="StartPageVideoTutorials" xml:space="preserve">
     <value>Video Tutorials</value>
+    <comment>Start page | Link to videos
+Start page | Link to DynamoBIM
+Start page | Link to tutorials</comment>
   </data>
   <data name="StartPageVisitDynamoBim" xml:space="preserve">
     <value>Visit www.dynamobim.org</value>
+    <comment>Start page | Link to DynamoBIM</comment>
   </data>
   <data name="StartPageWrittenTutorials" xml:space="preserve">
     <value>Written Tutorials</value>
+    <comment>Start page | Link to tutorials</comment>
   </data>
 </root>

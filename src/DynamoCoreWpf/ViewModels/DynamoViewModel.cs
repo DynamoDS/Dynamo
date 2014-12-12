@@ -22,6 +22,7 @@ using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.ViewModels
 {
@@ -329,7 +330,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return string.Format("Show Geometry in {0}",
+                return string.Format(Resources.DynamoViewViewMenuAlternateContextGeometry, 
                                      this.VisualizationManager.AlternateContextName);
             }
         }

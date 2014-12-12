@@ -21,6 +21,7 @@ using Dynamo.Search.SearchElements;
 using System.Windows.Input;
 
 using RestSharp.Contrib;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Controls
 {
@@ -822,11 +823,11 @@ namespace Dynamo.Controls
         {
             if ((int)value > 0)
             {
-                return "Hide Console";
+                return Resources.DynamoViewViewMenuHideConsole;
             }
             else
             {
-                return "Show Console";
+                return Resources.DynamoViewViewMenuShowConsole;
             }
         }
 
@@ -846,7 +847,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            string menuValue = "Showing Background 3D Preview";
+            string menuValue = Resources.DynamoViewViewMenuShowBackground3DPreview;
             if ((bool)value == true)
                 return menuValue;
             else
