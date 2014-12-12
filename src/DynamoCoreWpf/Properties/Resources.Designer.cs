@@ -97,6 +97,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string CancelButton {
+            get {
+                return ResourceManager.GetString("CancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Custom Node....
         /// </summary>
         public static string ContextMenuEditCustomNode {
@@ -174,6 +183,60 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenuPublishCustomNode {
             get {
                 return ResourceManager.GetString("ContextMenuPublishCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category.
+        /// </summary>
+        public static string CustomNodePropertyWindowCategory {
+            get {
+                return ResourceManager.GetString("CustomNodePropertyWindowCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string CustomNodePropertyWindowDescription {
+            get {
+                return ResourceManager.GetString("CustomNodePropertyWindowDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description of Custom Node.
+        /// </summary>
+        public static string CustomNodePropertyWindowDescriptionHint {
+            get {
+                return ResourceManager.GetString("CustomNodePropertyWindowDescriptionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string CustomNodePropertyWindowName {
+            get {
+                return ResourceManager.GetString("CustomNodePropertyWindowName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name of Custom Node.
+        /// </summary>
+        public static string CustomNodePropertyWindowNameHint {
+            get {
+                return ResourceManager.GetString("CustomNodePropertyWindowNameHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Node Properties.
+        /// </summary>
+        public static string CustomNodePropertyWindowTitle {
+            get {
+                return ResourceManager.GetString("CustomNodePropertyWindowTitle", resourceCulture);
             }
         }
         
@@ -597,6 +660,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewHelpMenuReportBug {
             get {
                 return ResourceManager.GetString("DynamoViewHelpMenuReportBug", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show In Folder.
+        /// </summary>
+        public static string DynamoViewHelpMenuShowInFolder {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpMenuShowInFolder", resourceCulture);
             }
         }
         
@@ -1371,6 +1443,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeHelpWindowNodeType {
             get {
                 return ResourceManager.GetString("NodeHelpWindowNodeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string OKButton {
+            get {
+                return ResourceManager.GetString("OKButton", resourceCulture);
             }
         }
         

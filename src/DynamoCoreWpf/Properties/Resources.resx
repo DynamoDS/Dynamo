@@ -761,4 +761,38 @@
     <value>Written Tutorials</value>
     <comment>Start page | Link to tutorials</comment>
   </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
+    <value>Category</value>
+    <comment>Label - specify custom node category</comment>
+  </data>
+  <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
+    <value>Description</value>
+    <comment>Label - custom node description</comment>
+  </data>
+  <data name="CustomNodePropertyWindowDescriptionHint" xml:space="preserve">
+    <value>Description of Custom Node</value>
+    <comment>Text box hint</comment>
+  </data>
+  <data name="CustomNodePropertyWindowName" xml:space="preserve">
+    <value>Name</value>
+    <comment>Label - specify custom node name</comment>
+  </data>
+  <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
+    <value>Name of Custom Node</value>
+    <comment>Text box hint</comment>
+  </data>
+  <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
+    <value>Custom Node Properties</value>
+    <comment>Dialog name</comment>
+  </data>
+  <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
+    <value>Show In Folder</value>
+    <comment>Help menu | Show in Folder</comment>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

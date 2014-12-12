@@ -393,7 +393,7 @@
                                        InputGestureText="Ctrl + -" />
                         </MenuItem>
 
-                        <MenuItem Header="DynamoViewViewMenuPan"
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuPan}"
                                   Name="panMenu">
                             <MenuItem  Header="{x:Static p:Resources.DynamoViewViewMenuPanLeft}"
                                        Command="{Binding PanCommand}"
