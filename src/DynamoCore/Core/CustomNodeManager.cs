@@ -26,7 +26,6 @@ namespace Dynamo.Utilities
 
         #region Fields and properties
 
-        //TODO(Steve): We probably just want to store a list of guids to determine load order.
         private readonly OrderedDictionary loadedCustomNodes = new OrderedDictionary();
         private readonly Dictionary<Guid, CustomNodeWorkspaceModel> loadedWorkspaceModels =
             new Dictionary<Guid, CustomNodeWorkspaceModel>();
@@ -634,20 +633,8 @@ namespace Dynamo.Utilities
         /// <param name="args"></param>
         public WorkspaceModel Collapse(
             IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, ILogger logger,
-            bool isTestMode, FunctionNamePromptEventArgs args = null)
+            bool isTestMode, FunctionNamePromptEventArgs args)
         {
-            //TODO(Steve): Do this somewhere else, preferably after this has completed successfully.
-            if (args == null || !args.Success)
-            {
-                args = new FunctionNamePromptEventArgs();
-                dynamoModel.OnRequestsFunctionNamePrompt(null, args);
-
-                if (!args.Success)
-                {
-                    return null;
-                }
-            }
-
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
             // Note that undoable actions are only recorded for the "currentWorkspace", 
             // the nodes which get moved into "newNodeWorkspace" are not recorded for undo,
@@ -788,7 +775,6 @@ namespace Dynamo.Utilities
                 foreach (var ele in fullySelectedConns)
                 {
                     undoRecorder.RecordDeletionForUndo(ele);
-                    currentWorkspace.Connectors.Remove(ele);
                 }
 
                 #endregion
@@ -807,8 +793,7 @@ namespace Dynamo.Utilities
                 foreach (ConnectorModel connector in partiallySelectedConns)
                 {
                     undoRecorder.RecordDeletionForUndo(connector);
-                    connector.NotifyConnectedPortsOfDeletion();
-                    currentWorkspace.Connectors.Remove(connector);
+                    connector.Delete();
                 }
 
                 #endregion
@@ -1021,7 +1006,6 @@ namespace Dynamo.Utilities
                                     nodeTuple.to))
                         .Where(connector => connector != null))
                 {
-                    currentWorkspace.AddConnection(connector);
                     undoRecorder.RecordCreationForUndo(connector);
                 }
 
@@ -1034,7 +1018,6 @@ namespace Dynamo.Utilities
                                 nodeTuple.Item2,
                                 nodeTuple.Item3)).Where(connector => connector != null))
                 {
-                    currentWorkspace.AddConnection(connector);
                     undoRecorder.RecordCreationForUndo(connector);
                 }
             }

@@ -948,6 +948,16 @@ namespace Dynamo.Models
         #region Input and Output Connections
 
         /// <summary>
+        /// TODO
+        /// </summary>
+        public event Action<ConnectorModel> ConnectorAdded;
+        protected virtual void OnConnectorAdded(ConnectorModel obj)
+        {
+            var handler = ConnectorAdded;
+            if (handler != null) handler(obj);
+        }
+
+        /// <summary>
         /// If node is connected to some other node(other than Output) then it is not a 'top' node
         /// </summary>
         public bool IsTopMostNode
@@ -1397,10 +1407,9 @@ namespace Dynamo.Models
                     InPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += p_PortConnected;
+                    p.PortConnected += c => p_PortConnected(p, c);
                     p.PortDisconnected += p_PortDisconnected;
                     
-                   
                     return p;
 
                 case PortType.Output:
@@ -1421,7 +1430,7 @@ namespace Dynamo.Models
                     OutPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += p_PortConnected;
+                    p.PortConnected += c => p_PortConnected(p, c);
                     p.PortDisconnected += p_PortDisconnected;
 
                     return p;
@@ -1430,20 +1439,20 @@ namespace Dynamo.Models
             return null;
         }
 
-      
-        private void p_PortConnected(object sender, EventArgs e)
+        private void p_PortConnected(PortModel port, ConnectorModel connector)
         {
             ValidateConnections();
 
-            var port = (PortModel)sender;
             if (port.PortType == PortType.Input)
             {
                 int data = InPorts.IndexOf(port);
-                PortModel startPort = port.Connectors[0].Start;
+                PortModel startPort = connector.Start;
                 int outData = startPort.Owner.OutPorts.IndexOf(startPort);
                 ConnectInput(data, outData, startPort.Owner);
                 startPort.Owner.ConnectOutput(outData, data, this);
             }
+            else
+                OnConnectorAdded(connector);
         }
 
         private void p_PortDisconnected(object sender, EventArgs e)

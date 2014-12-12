@@ -466,9 +466,9 @@ namespace Dynamo.Nodes
         /// runner throws an exception that is not handled anywhere else. This 
         /// message instructs user to save their work and restart Dynamo.
         /// </summary>
+        /// <param name="dynamoModel"></param>
         /// <param name="exception">The exception to display.</param>
-        [Obsolete("Fire event for this kind thing, handle events on the ViewModel layer.", true)]
-        internal static TaskDialogEventArgs DisplayEngineFailureMessage(Exception exception)
+        internal static TaskDialogEventArgs DisplayEngineFailureMessage(DynamoModel dynamoModel, Exception exception)
         {
             StabilityTracking.GetInstance().NotifyCrash();
             InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
@@ -500,7 +500,7 @@ If you don't mind, it would be helpful for you to send us your file. That will m
             //TODO(Steve): Fire event that returns these event args, perform below in handler on DynamoModel
             dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)ButtonId.Submit)
-                DynamoViewModel.ReportABug(null);
+                dynamoModel.OnRequestBugReport();
 
             return args;
         }
@@ -547,7 +547,7 @@ If you don't mind, it would be helpful for you to send us your file. That will m
             if (args.ClickedButtonId == (int)ButtonId.DownloadLatest)
             {
                 // this should be an event on DynamoModel
-                DynamoViewModel.DownloadDynamo();
+                dynamoModel.OnRequestDownloadDynamo();
                 return false;
             }
 

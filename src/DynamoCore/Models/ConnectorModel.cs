@@ -7,8 +7,8 @@ namespace Dynamo.Models
     public enum ConnectorType { Bezier, Polyline };
 
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
-
-    public class ConnectorModel: ModelBase
+    
+    public class ConnectorModel : ModelBase
     {
         #region properties
         
@@ -127,7 +127,7 @@ namespace Dynamo.Models
 
         }
 
-        public void NotifyConnectedPortsOfDeletion()
+        public void Delete()
         {
             if (pStart != null && pStart.Connectors.Contains(this))
             {
@@ -137,6 +137,7 @@ namespace Dynamo.Models
             {
                 pEnd.Disconnect(this);
             }
+            OnDeleted();
         }
 
         #region Serialization/Deserialization Methods
@@ -181,6 +182,13 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+        public event Action Deleted;
+        protected virtual void OnDeleted()
+        {
+            var handler = Deleted;
+            if (handler != null) handler();
+        }
     }
 
     public class InvalidPortException : ApplicationException

@@ -171,6 +171,11 @@ namespace Dynamo.Utilities
             return option.Bind(x => Some(selector(x)));
         }
 
+        public static bool HasValue<T>(this IOption<T> option)
+        {
+            return option is _Some<T>;
+        }
+
         private class _Some<T> : IOption<T>
         {
             private readonly T value;

@@ -23,7 +23,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Event triggered when a port is connected.
         /// </summary>
-        public event PortConnectedHandler PortConnected;
+        public event Action<ConnectorModel> PortConnected;
 
         /// <summary>
         /// Event triggered when a port is disconnected.
@@ -216,8 +216,7 @@ namespace Dynamo.Models
             while (Connectors.Any())
             {
                 ConnectorModel connector = Connectors[0];
-                Owner.Workspace.Connectors.Remove(connector);
-                connector.NotifyConnectedPortsOfDeletion();
+                connector.Delete();
             }
         }
 
@@ -226,7 +225,7 @@ namespace Dynamo.Models
             connectors.Add(connector);
 
             //throw the event for a connection
-            OnPortConnected(EventArgs.Empty);
+            OnPortConnected(connector);
 
             IsConnected = true;
         }
@@ -238,9 +237,6 @@ namespace Dynamo.Models
             
             //throw the event for a connection
             OnPortDisconnected(EventArgs.Empty);
-
-            //also trigger the model's connector deletion
-            owner.Workspace.DynamoModel.OnConnectorDeleted(connector);
 
             connectors.Remove(connector);
             
@@ -257,11 +253,11 @@ namespace Dynamo.Models
         /// <summary>
         /// Called when a port is connected.
         /// </summary>
-        /// <param name="e"></param>
-        protected virtual void OnPortConnected(EventArgs e)
+        /// <param name="connector"></param>
+        protected virtual void OnPortConnected(ConnectorModel connector)
         {
             if (PortConnected != null)
-                PortConnected(this, e);
+                PortConnected(connector);
         }
 
         /// <summary>

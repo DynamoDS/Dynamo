@@ -425,8 +425,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        //TODO(Steve): This definitely doesn't belong here...
-        private void ClearWarnings(IEnumerable<NodeModel> nodes)
+        private static void ClearWarnings(IEnumerable<NodeModel> nodes)
         {
             var warningNodes = nodes.Where(n => n.State == ElementState.Warning);
 
@@ -436,7 +435,6 @@ namespace Dynamo.DSEngine
             }
         }
 
-        //TODO(Steve): This definitely doesn't belong here...
         private void ShowRuntimeWarnings(IEnumerable<NodeModel> nodes)
         {
             // Clear all previous warnings
@@ -480,29 +478,7 @@ namespace Dynamo.DSEngine
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
         }
-
-        /// <summary>
-        ///     Get function descriptor from managed function name.
-        /// </summary>
-        /// <param name="library"></param>
-        /// <param name="managledName"></param>
-        /// <returns></returns>
-        [Obsolete("Access LibraryServices.Instance.GetFunctionDescriptor directly.", true)]
-        public FunctionDescriptor GetFunctionDescriptor(string library, string managledName)
-        {
-            return LibraryServices.GetFunctionDescriptor(library, managledName);
-        }
-
-        /// <summary>
-        /// Get function descriptor from managed function name.
-        /// </summary>
-        /// <param name="managledName"></param>
-        [Obsolete("Access LibraryServices.Instance.GetFunctionDescriptor directly.", true)]
-        public FunctionDescriptor GetFunctionDescriptor(string managledName)
-        {
-            return LibraryServices.GetFunctionDescriptor(managledName);
-        }
-
+        
         #region Implement IAstNodeContainer interface
 
         public void OnAstNodeBuilding(Guid nodeGuid)

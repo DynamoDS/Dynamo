@@ -238,16 +238,7 @@ namespace Dynamo.Nodes
             //TODO(Steve): Have owning Workspace listen for PropertyChanged("Code"), and delete if Code == ""
             if (value == "")
             {
-                if (Code == "")
-                {
-                    recorder.PopFromUndoGroup();
-                    DynamoSelection.Instance.Selection.Remove(this);
-                    this.Workspace.Nodes.Remove(this);
-                }
-                else
-                {
-                    this.Workspace.RecordAndDeleteModels(new List<ModelBase>() { this });
-                }
+                Code = "";
             }
             else
             {
@@ -268,13 +259,10 @@ namespace Dynamo.Nodes
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.DeserializeCore(nodeElement, context);
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(nodeElement);
-                shouldFocus = helper.ReadBoolean("ShouldFocus");
-                code = helper.ReadString("CodeText");
-                ProcessCodeDirect();
-            }
+            var helper = new XmlElementHelper(nodeElement);
+            shouldFocus = helper.ReadBoolean("ShouldFocus");
+            code = helper.ReadString("CodeText");
+            ProcessCodeDirect();
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -662,7 +650,7 @@ namespace Dynamo.Nodes
                         {
                             PortType p;
                             NodeModel startNode = startPortModel.Owner;
-                            ConnectorModel connector = this.Workspace.AddConnection(
+                            var connector = ConnectorModel.Make(
                                 startNode,
                                 this,
                                 startNode.GetPortIndexAndType(startPortModel, out p),
@@ -695,8 +683,8 @@ namespace Dynamo.Nodes
                         {
                             PortType p;
                             NodeModel endNode = endPortModel.Owner;
-                            var connector = this.Workspace.AddConnection(this, endNode, i,
-                                endNode.GetPortIndexAndType(endPortModel, out p), PortType.Input);
+                            var connector = ConnectorModel.Make(this, endNode, i,
+                                endNode.GetPortIndexAndType(endPortModel, out p));
                             recorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
@@ -724,8 +712,8 @@ namespace Dynamo.Nodes
                     {
                         PortType p;
                         NodeModel endNode = endPortModel.Owner;
-                        var connector = this.Workspace.AddConnection(this, endNode, index,
-                            endNode.GetPortIndexAndType(endPortModel, out p), PortType.Input);
+                        var connector = ConnectorModel.Make(this, endNode, index,
+                            endNode.GetPortIndexAndType(endPortModel, out p));
                         recorder.RecordCreationForUndo(connector);
                     }
                     outportConnections[index] = null;
@@ -751,12 +739,11 @@ namespace Dynamo.Nodes
                 {
                     PortType p;
                     NodeModel endNode = endPortModel.Owner;
-                    ConnectorModel connector = this.Workspace.AddConnection(
+                    ConnectorModel connector = ConnectorModel.Make(
                         this,
                         endNode,
                         undefinedIndices[0],
-                        endNode.GetPortIndexAndType(endPortModel, out p),
-                        PortType.Input);
+                        endNode.GetPortIndexAndType(endPortModel, out p));
                     recorder.RecordCreationForUndo(connector);
                 }
                 undefinedIndices.RemoveAt(0);

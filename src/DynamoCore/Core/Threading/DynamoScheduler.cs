@@ -165,7 +165,7 @@ namespace Dynamo.Core.Threading
         }
 
         /// <summary>
-        /// TODO
+        ///     Flag determining whether or not the scheduler is operating in Test Mode.
         /// </summary>
         public bool IsTestMode { get; private set; }
 

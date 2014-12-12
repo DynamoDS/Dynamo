@@ -141,7 +141,7 @@ namespace Dynamo.Models
                 {
                     var models = new List<ModelBase> { connector };
                     CurrentWorkspace.RecordAndDeleteModels(models);
-                    connector.NotifyConnectedPortsOfDeletion();
+                    connector.Delete();
                 }
             }
             else
@@ -165,7 +165,6 @@ namespace Dynamo.Models
             if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.Input)
             {
                 connectorToRemove = portModel.Connectors[0];
-                CurrentWorkspace.Connectors.Remove(connectorToRemove);
                 portModel.Disconnect(connectorToRemove);
                 var startPort = connectorToRemove.Start;
                 startPort.Disconnect(connectorToRemove);
@@ -191,8 +190,6 @@ namespace Dynamo.Models
                 second.Owner,
                 firstPort.Index,
                 second.Index);
-
-            CurrentWorkspace.AddConnection(newConnectorModel);
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();

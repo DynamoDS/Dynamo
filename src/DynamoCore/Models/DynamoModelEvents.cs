@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows;
 
 using Dynamo.Core;
 
@@ -234,6 +232,14 @@ namespace Dynamo.Models
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         public virtual void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
+            if (!e.EvaluationSucceeded)
+            {
+                Action showFailureMessage = () =>
+                    Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(this, e.Error);
+
+                OnRequestDispatcherBeginInvoke(showFailureMessage);
+            }
+
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);
         }

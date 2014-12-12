@@ -114,8 +114,7 @@ namespace Dynamo.Models
         #endregion
 
         #region public properties
-        //TODO(Steve): Attempt to make the majority of these readonly fields
-        
+
         public readonly LibraryServices LibraryServices;
 
         /// <summary>
@@ -132,50 +131,49 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
-        //TODO(Steve): This is still really crappy. We may be able to make it static, at the very least.
-        public string Context { get; private set; }
+        public readonly string Context;
 
         /// <summary>
         /// TODO
         /// </summary>
-        public DynamoLoader Loader { get; private set; }
+        public readonly DynamoLoader Loader;
 
         /// <summary>
         /// TODO
         /// </summary>
-        public PackageLoader PackageLoader { get; private set; }
-        
-        /// <summary>
-        /// TODO
-        /// </summary>
-        public PackageManagerClient PackageManagerClient { get; private set; }
+        public readonly PackageLoader PackageLoader;
 
         /// <summary>
         /// TODO
         /// </summary>
-        public CustomNodeManager CustomNodeManager { get; private set; }
-        
+        public readonly PackageManagerClient PackageManagerClient;
+
         /// <summary>
         /// TODO
         /// </summary>
-        public DynamoLogger Logger { get; private set; }
+        public readonly CustomNodeManager CustomNodeManager;
 
         /// <summary>
-        /// 
+        /// TODO
+        /// </summary>
+        public readonly DynamoLogger Logger;
+
+        /// <summary>
+        /// TODO
         /// </summary>
         public DynamoScheduler Scheduler { get; private set; }
         
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         public int MaxTesselationDivisions { get; set; }
 
         /// <summary>
         /// TODO
         /// </summary>
-        public NodeSearchModel SearchModel { get; private set; }
+        public readonly NodeSearchModel SearchModel;
 
         /// <summary>
         /// The application version string for analytics reporting APIs
@@ -192,51 +190,23 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
-        public DebugSettings DebugSettings { get; private set; }
+        public readonly DebugSettings DebugSettings;
 
         /// <summary>
         /// TODO
         /// </summary>
-        [Obsolete("EngineController now kept on HomeWorkspace", true)]
-        public EngineController EngineController { get; private set; }
+        public readonly PreferenceSettings PreferenceSettings;
 
         /// <summary>
         /// TODO
         /// </summary>
-        public PreferenceSettings PreferenceSettings { get; private set; }
+        public readonly NodeFactory NodeFactory;
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public WorkspaceModel CurrentWorkspace { get; set; }
         
-        /// <summary>
-        /// TODO
-        /// </summary>
-        public NodeFactory NodeFactory { get; private set; }
-
-        /// <summary>
-        /// TODO
-        /// </summary>
-        public WorkspaceModel CurrentWorkspace { get; internal set;
-            //get { return currentWorkspace; }
-            //internal set
-            //{
-            //    if (currentWorkspace != value)
-            //    {
-            //        if (currentWorkspace != null)
-            //            currentWorkspace.IsCurrentSpace = false;
-
-            //        currentWorkspace = value;
-
-            //        if (currentWorkspace != null)
-            //            currentWorkspace.IsCurrentSpace = true;
-
-            //        OnCurrentWorkspaceChanged(currentWorkspace);
-            //        RaisePropertyChanged("CurrentWorkspace");
-            //    }
-            //}
-        }
-        //private WorkspaceModel currentWorkspace;
-
-        [Obsolete("This makes no sense with multiple home workspaces.", true)]
-        public HomeWorkspaceModel HomeSpace { get; protected set; }
-
         /// <summary>
         /// TODO
         /// </summary>
@@ -273,15 +243,9 @@ namespace Dynamo.Models
         public static bool IsCrashing { get; set; }
 
         /// <summary>
-        /// TODO
-        /// </summary>
-        [Obsolete("Running now handled on HomeWorkspaceModel", true)]
-        public bool DynamicRunEnabled { get; set; }
-
-        /// <summary>
         ///     The collection of visible workspaces in Dynamo
         /// </summary>
-        public ObservableCollection<WorkspaceModel> Workspaces { get; set; }
+        public readonly ObservableCollection<WorkspaceModel> Workspaces;
 
         /// <summary>
         /// Returns a shallow copy of the collection of Nodes in the model.
@@ -407,7 +371,6 @@ namespace Dynamo.Models
 
         private void InitializeCustomNodeManager()
         {
-            CustomNodeManager = new CustomNodeManager(NodeFactory);
             CustomNodeManager.MessageLogged += LogMessage;
 
             var customNodeSearchRegistry = new HashSet<Guid>();
@@ -501,7 +464,6 @@ namespace Dynamo.Models
             Scheduler = new DynamoScheduler(thread, IsTestMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
             
-            //TODO(Steve): This is ugly
             if (preferences is PreferenceSettings)
             {
                 PreferenceSettings = preferences as PreferenceSettings;
@@ -519,6 +481,7 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
+            CustomNodeManager = new CustomNodeManager(NodeFactory);
             InitializeCustomNodeManager();
             
             Loader = new DynamoLoader();
@@ -826,7 +789,7 @@ namespace Dynamo.Models
                 currentVersion,
                 workspaceInfo.FileName,
                 IsTestMode,
-                Logger);
+                Logger, NodeFactory);
 
             if (decision == MigrationManager.Decision.Abort)
             {
@@ -906,17 +869,7 @@ namespace Dynamo.Models
         {
             return true;
         }
-        
-        /// <summary>
-        ///     Change the currently visible workspace to the home workspace
-        /// </summary>
-        [Obsolete("This makes no sense with multiple home workspaces.", true)]
-        internal void ViewHomeWorkspace()
-        {
-            CurrentWorkspace = HomeSpace;
-        }
 
-        //TODO(Steve): Move to WorkspaceModel
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
         {
             if (null == CurrentWorkspace)
@@ -937,12 +890,6 @@ namespace Dynamo.Models
             }
 
             OnDeletionComplete(this, EventArgs.Empty);
-        }
-
-        [Obsolete("This makes no sense with multiple home workspaces.", true)]
-        internal bool CanGoHome(object parameter)
-        {
-            return CurrentWorkspace != HomeSpace;
         }
 
         internal void DumpLibraryToXml(object parameter)
@@ -987,6 +934,7 @@ namespace Dynamo.Models
             workspace.NodeAdded += OnNodeAdded;
             workspace.NodeDeleted += OnNodeDeleted;
             workspace.ConnectorAdded += OnConnectorAdded;
+            workspace.ConnectorDeleted += OnConnectorDeleted;
             workspace.MessageLogged += LogMessage;
 
             workspace.Disposed += () =>
@@ -995,6 +943,7 @@ namespace Dynamo.Models
                 workspace.NodeAdded -= OnNodeAdded;
                 workspace.NodeDeleted -= OnNodeDeleted;
                 workspace.ConnectorAdded -= OnConnectorAdded;
+                workspace.ConnectorDeleted -= OnConnectorDeleted;
                 workspace.MessageLogged -= LogMessage;
             };
 
@@ -1122,11 +1071,7 @@ namespace Dynamo.Models
                 select
                     ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
 
-            foreach (var connector in newConnectors)
-            {
-                CurrentWorkspace.AddConnection(connector);
-                createdModels.Add(connector);
-            }
+            createdModels.AddRange(newConnectors);
 
             //process the queue again to create the connectors
             //DynamoCommands.ProcessCommandQueue();

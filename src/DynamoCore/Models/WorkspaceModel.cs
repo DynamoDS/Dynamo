@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -39,7 +40,6 @@ namespace Dynamo.Models
         private string category = "";
         private bool hasUnsavedChanges;
         private readonly ObservableCollection<NodeModel> nodes;
-        private readonly ObservableCollection<ConnectorModel> connectors;
         private readonly ObservableCollection<NoteModel> notes;
         private readonly UndoRedoRecorder undoRecorder;
 
@@ -47,16 +47,38 @@ namespace Dynamo.Models
 
         #region events
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="model"></param>
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
 
+        /// <summary>
+        /// TODO
+        /// </summary>
         public event NodeEventHandler RequestNodeCentered;
+        
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
         {
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public delegate void ZoomEventHandler(object sender, EventArgs e);
+        
+        /// <summary>
+        /// TODO
+        /// </summary>
         public event ZoomEventHandler ZoomChanged;
 
         /// <summary>
@@ -73,7 +95,16 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public delegate void PointEventHandler(object sender, EventArgs e);
+
+        /// <summary>
+        /// TODO
+        /// </summary>
         public event PointEventHandler CurrentOffsetChanged;
 
         /// <summary>
@@ -90,10 +121,10 @@ namespace Dynamo.Models
             }
         }
 
-        public event Action WorkspaceSaved;
         /// <summary>
-        ///     If there are observers for the save, notifies them
+        /// TODO
         /// </summary>
+        public event Action WorkspaceSaved;
         protected virtual void OnWorkspaceSaved()
         {
             LastSaved = DateTime.Now;
@@ -103,52 +134,39 @@ namespace Dynamo.Models
                 WorkspaceSaved();
         }
 
-        //TODO(Steve): Since we now expose a
-        public event Action<NodeModel> NodeAdded;
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="obj"></param>
+        public event Action<NodeModel> NodeAdded;
         protected virtual void OnNodeAdded(NodeModel obj)
         {
             var handler = NodeAdded;
             if (handler != null) handler(obj);
         }
 
-        public event Action<ConnectorModel> ConnectorAdded;
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
-        /// <param name="obj"></param>
+        public event Action<ConnectorModel> ConnectorAdded;
         protected virtual void OnConnectorAdded(ConnectorModel obj)
         {
+            obj.Deleted += () => OnConnectorDeleted(obj);
             var handler = ConnectorAdded;
             if (handler != null) handler(obj);
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public event Action<ConnectorModel> ConnectorDeleted;
+        protected virtual void OnConnectorDeleted(ConnectorModel obj)
+        {
+            var handler = ConnectorDeleted;
+            if (handler != null) handler(obj);
+        }
         #endregion
 
         #region public properties
-
-        [Obsolete("Use Modified event", true)]
-        public bool WatchChanges
-        {
-            set
-            {
-                if (value)
-                {
-                    nodes.CollectionChanged += MarkUnsavedAndModified;
-                    notes.CollectionChanged += MarkUnsaved;
-                    connectors.CollectionChanged += MarkUnsavedAndModified;
-                }
-                else
-                {
-                    nodes.CollectionChanged -= MarkUnsavedAndModified;
-                    notes.CollectionChanged -= MarkUnsaved;
-                    connectors.CollectionChanged -= MarkUnsavedAndModified;
-                }
-            }
-        }
 
         /// <summary>
         ///     The date of the last save.
@@ -189,8 +207,6 @@ namespace Dynamo.Models
             }
         }
 
-        //TODO(Steve): split these into IEnumerable and INotifyCollectionChanged, so that external components can't mutate
-
         /// <summary>
         ///     All of the nodes currently in the workspace.
         /// </summary>
@@ -199,7 +215,15 @@ namespace Dynamo.Models
         /// <summary>
         ///     All of the connectors currently in the workspace.
         /// </summary>
-        public ObservableCollection<ConnectorModel> Connectors { get { return connectors; } }
+        public IEnumerable<ConnectorModel> Connectors
+        {
+            get
+            {
+                return nodes.SelectMany(
+                    node => node.OutPorts.SelectMany(port => port.Connectors))
+                    .Distinct();
+            }
+        }
 
         /// <summary>
         ///     All of the notes currently in the workspace.
@@ -357,7 +381,6 @@ namespace Dynamo.Models
             Name = name;
 
             nodes = new ObservableCollection<NodeModel>(e);
-            connectors = new ObservableCollection<ConnectorModel>(c);
             notes = new ObservableCollection<NoteModel>(n);
             X = x;
             Y = y;
@@ -397,16 +420,15 @@ namespace Dynamo.Models
                 foreach (PortModel p in el.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
-                        p.Connectors[i].NotifyConnectedPortsOfDeletion();
+                        p.Connectors[i].Delete();
                 }
                 foreach (PortModel port in el.OutPorts)
                 {
                     for (int i = port.Connectors.Count - 1; i >= 0; i--)
-                        port.Connectors[i].NotifyConnectedPortsOfDeletion();
+                        port.Connectors[i].Delete();
                 }
             }
 
-            Connectors.Clear();
             Nodes.Clear();
             Notes.Clear();
 
@@ -450,6 +472,7 @@ namespace Dynamo.Models
         public void AddNode(NodeModel node, bool centered)
         {
             node.Modified += OnModified;
+            node.ConnectorAdded += OnConnectorAdded;
             node.Disposed += () => { node.Modified -= OnModified; };
 
             if (centered)
@@ -458,12 +481,33 @@ namespace Dynamo.Models
                 OnRequestNodeCentered(this, args);
             }
 
+            var cbn = node as CodeBlockNodeModel;
+            if (cbn != null)
+            {
+                var firstChange = true;
+                PropertyChangedEventHandler codeChangedHandler = (sender, args) =>
+                {
+                    if (args.PropertyName != "Code") return;
+                    
+                    if (string.IsNullOrWhiteSpace(cbn.Code))
+                    {
+                        if (firstChange)
+                            RemoveNode(cbn);
+                        else
+                            RecordAndDeleteModels(new List<ModelBase> { cbn });
+                    }
+                    firstChange = false;
+                };
+                cbn.PropertyChanged += codeChangedHandler;
+                cbn.Disposed += () => { cbn.PropertyChanged -= codeChangedHandler; };
+            }
+
             nodes.Add(node);
             OnNodeAdded(node);
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         protected virtual void OnModified()
         {
@@ -490,12 +534,6 @@ namespace Dynamo.Models
         {
             var handler = NodeDeleted;
             if (handler != null) handler(node);
-        }
-
-        public void AddConnection(ConnectorModel connector)
-        {
-            Connectors.Add(connector);
-            OnConnectorAdded(connector);
         }
 
         public void AddNote(NoteModel note, bool centered)
@@ -794,8 +832,7 @@ namespace Dynamo.Models
                 var nodeList = selectedNodes.ToList();
                 int nodeCount = nodeList.Count;
                 double totalX = 0, totalY = 0;
-
-
+                
                 foreach (var node in nodeList) 
                 {
                     #region Step I.A. Delete the connections for the node
@@ -823,8 +860,7 @@ namespace Dynamo.Models
 
                         //Delete the connector
                         UndoRecorder.RecordDeletionForUndo(connector);
-                        connector.NotifyConnectedPortsOfDeletion();
-                        Connectors.Remove(connector);
+                        connector.Delete();
                     }
                     #endregion
 
@@ -1017,8 +1053,7 @@ namespace Dynamo.Models
                         // the Enumerator in this "foreach" to become invalid.
                         foreach (var conn in node.AllConnectors.ToList())
                         {
-                            conn.NotifyConnectedPortsOfDeletion();
-                            Connectors.Remove(conn);
+                            conn.Delete();
                             undoRecorder.RecordDeletionForUndo(conn);
                         }
 
@@ -1030,7 +1065,6 @@ namespace Dynamo.Models
                     else if (model is ConnectorModel)
                     {
                         var connector = model as ConnectorModel;
-                        Connectors.Remove(connector);
                         undoRecorder.RecordDeletionForUndo(model);
                     }
                 }
@@ -1066,8 +1100,7 @@ namespace Dynamo.Models
             else if (model is ConnectorModel)
             {
                 var connector = model as ConnectorModel;
-                Connectors.Remove(connector);
-                connector.NotifyConnectedPortsOfDeletion();
+                connector.Delete();
             }
             else if (model is NodeModel)
                 Nodes.Remove(model as NodeModel);
@@ -1118,13 +1151,10 @@ namespace Dynamo.Models
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
                 ConnectorModel connector;
-                var loaded = NodeGraph.LoadConnectorFromXml(
+                NodeGraph.LoadConnectorFromXml(
                     modelData,
                     Nodes.ToDictionary(node => node.GUID),
                     out connector);
-                
-                if (loaded)
-                    Connectors.Add(connector);
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
@@ -1163,19 +1193,12 @@ namespace Dynamo.Models
 
         internal ModelBase GetModelInternal(Guid modelGuid)
         {
-            ModelBase foundModel = null;
-            if (Connectors.Count > 0)
-                foundModel = Connectors.FirstOrDefault(c => c.GUID == modelGuid);
-
-            if (null == foundModel && (Nodes.Count > 0))
-                foundModel = Nodes.FirstOrDefault(node => node.GUID == modelGuid);
-
-            if (null == foundModel && (Notes.Count > 0))
-                foundModel = Notes.FirstOrDefault(note => note.GUID == modelGuid);
+            ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
+                ?? (ModelBase)Nodes.FirstOrDefault(node => node.GUID == modelGuid))
+                ?? Notes.FirstOrDefault(note => note.GUID == modelGuid);
 
             return foundModel;
         }
-
         #endregion
 
         #region Node To Code Reconnection
@@ -1224,7 +1247,6 @@ namespace Dynamo.Models
                     startIndex,
                     endIndex);
 
-                AddConnection(newConnector);
                 UndoRecorder.RecordCreationForUndo(newConnector);
             }
         }
@@ -1262,28 +1284,12 @@ namespace Dynamo.Models
                         codeBlockNode,
                         startIndex,
                         endIndex);
-                    AddConnection(newConnector);
                     UndoRecorder.RecordCreationForUndo(newConnector);
                 }
             }
         }
         
         #endregion
-
-        /// <summary>
-        ///     Syncronously get a string representation of the workspace
-        /// </summary>
-        [Obsolete("Dispatch GetStringRepOfWorkspace() manually", true)]
-        internal string GetStringRepOfWorkspaceSync()
-        {
-            string outData = String.Empty;
-
-            Action getString = (() => { outData = GetStringRepOfWorkspace(); });
-
-            //dynamoModel.OnRequestDispatcherInvoke(getString);
-            
-            return outData;
-        }
 
         internal string GetStringRepOfWorkspace()
         {

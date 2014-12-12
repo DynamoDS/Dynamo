@@ -275,18 +275,6 @@ namespace Dynamo.Models
                 node.Warning(message.Value); // Update node warning message.
             }
 
-            // This method is guaranteed to be called in the context of 
-            // ISchedulerThread (for Revit's case, it is the idle thread).
-            // Dispatch the failure message display for execution on UI thread.
-            // 
-            if (task.Exception != null && (IsTestMode == false))
-            {
-                Action showFailureMessage = () =>
-                    Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(dynamoModel, task.Exception);
-
-                OnRequestDispatcherBeginInvoke(showFailureMessage);
-            }
-
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
                 modifiedNode.RequestValueUpdateAsync(scheduler, engineController);
@@ -297,8 +285,14 @@ namespace Dynamo.Models
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
 
-            // Notify handlers that evaluation took place.
-            var e = new EvaluationCompletedEventArgs(true);
+            // This method is guaranteed to be called in the context of 
+            // ISchedulerThread (for Revit's case, it is the idle thread).
+            // Dispatch the failure message display for execution on UI thread.
+            // 
+            EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
+                ? new EvaluationCompletedEventArgs(true)
+                : new EvaluationCompletedEventArgs(true, task.Exception);
+
             OnEvaluationCompleted(e);
         }
 

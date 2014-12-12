@@ -94,7 +94,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         /// <param name="xmlDoc"></param>
         /// <param name="fileVersion"></param>
@@ -102,10 +102,11 @@ namespace Dynamo.Models
         /// <param name="xmlPath"></param>
         /// <param name="isTestMode"></param>
         /// <param name="logger"></param>
+        /// <param name="factory"></param>
         /// <returns></returns>
         public static Decision ProcessWorkspace(
-            XmlDocument xmlDoc, Version fileVersion, Version currentVersion, string xmlPath, bool isTestMode,
-            ILogger logger)
+            XmlDocument xmlDoc, Version fileVersion, Version currentVersion, string xmlPath,
+            bool isTestMode, ILogger logger, NodeFactory factory)
         {
             switch (ShouldMigrateFile(fileVersion, currentVersion, isTestMode))
             {
@@ -130,7 +131,7 @@ namespace Dynamo.Models
                         fileVersion = new Version(0, 6, 0, 0);
 
                     Instance.ProcessWorkspaceMigrations(currentVersion, xmlDoc, fileVersion);
-                    Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion, currentVersion);
+                    Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion, currentVersion, factory);
                     return Decision.Migrate;
                 case Decision.Retain:
                     return Decision.Retain;
@@ -828,13 +829,19 @@ namespace Dynamo.Models
             if (element == null)
                 throw new ArgumentNullException("element");
 
-            if (inportCount < 0 || (outportCount < 0))
+            if (inportCount < 0)
             {
-                var message = "Argument value must be equal or larger than zero";
-                throw new ArgumentException(message, "inportCount/outportCount");
+                const string message = "Argument value must be equal or larger than zero";
+                throw new ArgumentException(message, "inportCount");
             }
 
-            var dummyNodeName = "DSCoreNodesUI.DummyNode";
+            if (outportCount < 0)
+            {
+                const string message = "Argument value must be equal or larger than zero";
+                throw new ArgumentException(message, "outportCount");
+            }
+
+            const string dummyNodeName = "DSCoreNodesUI.DummyNode";
             XmlDocument document = element.OwnerDocument;
             XmlElement dummy = document.CreateElement(dummyNodeName);
 
