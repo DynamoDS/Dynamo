@@ -1026,6 +1026,12 @@
     <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\CustomNode\customNode.png" />
+    <Resource Include="UI\Images\Tooltip\code.png" />
+    <Resource Include="UI\Images\Tooltip\copy.png" />
+    <Resource Include="UI\Images\Tooltip\copy_hover.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

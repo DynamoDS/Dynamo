@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 
 using Dynamo.Search;
@@ -11,8 +9,6 @@ using Dynamo.Search.SearchElements;
 
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
-
-using ProtoCore.DesignScriptParser;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -45,13 +41,14 @@ namespace Dynamo.Wpf.ViewModels
             this.Items.ToList().ForEach(x => x.RecursivelySort());
         }
 
-        private void ItemsOnCollectionChanged(object sender, 
+        private void ItemsOnCollectionChanged(object sender,
             NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (BrowserItem item in e.NewItems.OfType<BrowserItem>()) {
+                    foreach (BrowserItem item in e.NewItems.OfType<BrowserItem>())
+                    {
                         Items.Add(Wrap(item));
                     }
                     break;
@@ -99,6 +96,11 @@ namespace Dynamo.Wpf.ViewModels
         internal static DSFunctionNodeSearchElementViewModel WrapExplicit(DSFunctionNodeSearchElement elem)
         {
             return new DSFunctionNodeSearchElementViewModel(elem);
+        }
+
+        internal static BrowserInternalElementForClassesViewModel WrapExplicit(BrowserInternalElementForClasses elem)
+        {
+            return new BrowserInternalElementForClassesViewModel(elem);
         }
 
         #endregion

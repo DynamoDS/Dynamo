@@ -13,7 +13,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
-using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -25,7 +24,7 @@ namespace Dynamo.Search
         private readonly SearchViewModel viewModel;
         private readonly DynamoViewModel dynamoViewModel;
 
-        private const string baseUrl = @"pack://application:,,,/DynamoCore;component/UI/Images/";
+        private const string baseUrl = @"pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
 
         private BitmapImage searchIconBitmapNormal =
             new BitmapImage(new Uri(baseUrl + "search_normal.png"));

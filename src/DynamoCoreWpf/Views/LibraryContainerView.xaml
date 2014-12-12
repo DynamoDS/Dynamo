@@ -128,7 +128,7 @@
 
 
                     <Image x:Name="SearchIcon"
-                           Source="/DynamoCore;component/UI/Images/search_normal.png"
+                           Source="/DynamoCoreWpf;component/UI/Images/search_normal.png"
                            Width="25"
                            Height="26"
                            VerticalAlignment="Center"

@@ -27,7 +27,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Image x:Name="ExpandCollapseStateIcon"
-                           Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
+                           Source="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"
                            Width="16"
                            Height="16"
                            VerticalAlignment="Center" />
@@ -52,7 +52,7 @@
                     <MultiTrigger.Setters>
                         <Setter Property="Source"
                                 TargetName="ExpandCollapseStateIcon"
-                                Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
+                                Value="/DynamoCoreWpf;component/UI/Images/collapsestate_hover.png" />
                     </MultiTrigger.Setters>
                 </MultiTrigger>
 
@@ -66,7 +66,7 @@
                     <MultiTrigger.Setters>
                         <Setter Property="Source"
                                 TargetName="ExpandCollapseStateIcon"
-                                Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
+                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_hover.png" />
                         <Setter Property="TextBlock.FontWeight"
                                 TargetName="HeaderContent"
                                 Value="Semibold" />
@@ -86,7 +86,7 @@
                     <MultiTrigger.Setters>
                         <Setter Property="Source"
                                 TargetName="ExpandCollapseStateIcon"
-                                Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
+                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_normal.png" />
                         <Setter Property="TextBlock.FontWeight"
                                 TargetName="HeaderContent"
                                 Value="Semibold" />

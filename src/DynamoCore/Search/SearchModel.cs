@@ -343,7 +343,7 @@ namespace Dynamo.Search
             if (string.IsNullOrEmpty(fullCategoryName))
                 return string.Empty;
 
-            var catName = fullCategoryName.Replace(Configurations.ShortenedCategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
 
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)

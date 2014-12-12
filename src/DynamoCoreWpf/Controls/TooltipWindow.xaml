@@ -167,7 +167,7 @@
                         <Binding Path="FullName"
                                  Converter="{StaticResource EmptyStringToCollapsedConverter}" />
                     </StackPanel.Visibility>
-                    <Image Source="/DynamoCore;component/UI/Images/Tooltip/code.png" />
+                    <Image Source="/DynamoCoreWpf;component/UI/Images/Tooltip/code.png" />
                     <TextBlock Name="code"
                                FontSize="13"
                                FontFamily="Consolas Regular"
@@ -189,12 +189,12 @@
                                     <Trigger Property="IsMouseOver"
                                              Value="False">
                                         <Setter Property="Source"
-                                                Value="/DynamoCore;component/UI/Images/Tooltip/copy.png" />
+                                                Value="/DynamoCoreWpf;component/UI/Images/Tooltip/copy.png" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver"
                                              Value="True">
                                         <Setter Property="Source"
-                                                Value="/DynamoCore;component/UI/Images/Tooltip/copy_hover.png" />
+                                                Value="/DynamoCoreWpf;component/UI/Images/Tooltip/copy_hover.png" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
