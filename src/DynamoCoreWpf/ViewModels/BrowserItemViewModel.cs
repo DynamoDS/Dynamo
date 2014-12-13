@@ -105,11 +105,6 @@ namespace Dynamo.Wpf.ViewModels
             return new BrowserInternalElementForClassesViewModel(elem);
         }
 
-        //internal static ClassInformationViewModel WrapExplicit(ClassInformation elem)
-        //{
-        //    return new ClassInformationViewModel(elem);
-        //}
-
         #endregion
 
     }

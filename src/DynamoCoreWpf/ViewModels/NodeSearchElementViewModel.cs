@@ -18,7 +18,7 @@ namespace Dynamo.Wpf.ViewModels
         public NodeSearchElementViewModel(NodeSearchElement element) : base(element) { }
     }
 
-    public class CustomNodeSearchElementViewModel : SearchElementBaseViewModel
+    public class CustomNodeSearchElementViewModel : NodeSearchElementViewModel
     {
         public CustomNodeSearchElementViewModel(CustomNodeSearchElement element) : base(element) { }
     }

@@ -78,6 +78,13 @@ namespace Dynamo.Search
             foreach (var ele in this.Siblings)
                 ele.IsExpanded = false;
 
+            // Collapse all expanded items on next level.
+            if (endState)
+            {
+                foreach (var ele in this.Items)
+                    ele.IsExpanded = false;
+            }
+
             //Walk down the tree expanding anything nested one layer deep
             //this can be removed when we have the hierachy implemented properly
             if (this.Items.Count == 1)

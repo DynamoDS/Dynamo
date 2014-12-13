@@ -180,7 +180,7 @@
                     <TextBlock Name="memberName"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
-                               Text="{Binding Name}"
+                               Text="{Binding Model.Name}"
                                Margin="5,0,0,0"
                                Foreground="#989898"
                                FontSize="13" />
