@@ -205,6 +205,71 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        public static string CrashPromptDialogContinueButton {
+            get {
+                return ResourceManager.GetString("CrashPromptDialogContinueButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string CrashPromptDialogCopyButton {
+            get {
+                return ResourceManager.GetString("CrashPromptDialogCopyButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uh oh... something went wrong and dynamo has crashed, sorry about that.
+        ///
+        ///You will get a chance to save your work..
+        /// </summary>
+        public static string CrashPromptDialogCrashMessage {
+            get {
+                return ResourceManager.GetString("CrashPromptDialogCrashMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Details.
+        /// </summary>
+        public static string CrashPromptDialogDetailButton {
+            get {
+                return ResourceManager.GetString("CrashPromptDialogDetailButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Folder.
+        /// </summary>
+        public static string CrashPromptDialogOpenFolderButton {
+            get {
+                return ResourceManager.GetString("CrashPromptDialogOpenFolderButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submit Bug To Github.
+        /// </summary>
+        public static string CrashPromptDialogSubmitBugButton {
+            get {
+                return ResourceManager.GetString("CrashPromptDialogSubmitBugButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo has crashed.
+        /// </summary>
+        public static string CrashPromptDialogTitle {
+            get {
+                return ResourceManager.GetString("CrashPromptDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom Node Property Error.
         /// </summary>
         public static string CustomNodePropertyErrorMessageBoxTitle {
@@ -282,6 +347,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DownloadWarniingMessageBoxTitle {
             get {
                 return ResourceManager.GetString("DownloadWarniingMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Dynamo update is available. Click to install..
+        /// </summary>
+        public static string DynamoUpdateAvailabeToolTip {
+            get {
+                return ResourceManager.GetString("DynamoUpdateAvailabeToolTip", resourceCulture);
             }
         }
         
@@ -1348,6 +1422,60 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Node Name.
+        /// </summary>
+        public static string EditNodeWindowTitle {
+            get {
+                return ResourceManager.GetString("EditNodeWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept.
+        /// </summary>
+        public static string EditWindowAcceptButton {
+            get {
+                return ResourceManager.GetString("EditWindowAcceptButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set value....
+        /// </summary>
+        public static string EditWindowTitle {
+            get {
+                return ResourceManager.GetString("EditWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sample Left Button.
+        /// </summary>
+        public static string GenericTaskDialogSampleLeftButton {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogSampleLeftButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sample Right Button.
+        /// </summary>
+        public static string GenericTaskDialogSampleRightButton {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogSampleRightButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generic Task Dialog.
+        /// </summary>
+        public static string GenericTaskDialogTitle {
+            get {
+                return ResourceManager.GetString("GenericTaskDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import Library.
         /// </summary>
         public static string ImportLibraryDialogTitle {
@@ -2030,6 +2158,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UninstallPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UninstallPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Agreement to collect usability data on your use of Dynamo.
+        /// </summary>
+        public static string UsageReportPromptDialogTitle {
+            get {
+                return ResourceManager.GetString("UsageReportPromptDialogTitle", resourceCulture);
             }
         }
     }

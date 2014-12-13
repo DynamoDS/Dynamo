@@ -960,4 +960,59 @@ You can always re-deprecate the package.</value>
     <value>Uninstall Failure</value>
     <comment>Message box title</comment>
   </data>
+  <data name="CrashPromptDialogContinueButton" xml:space="preserve">
+    <value>Continue</value>
+    <comment>Continue to use Dynamo</comment>
+  </data>
+  <data name="CrashPromptDialogCopyButton" xml:space="preserve">
+    <value>Copy</value>
+    <comment>Copy crash details</comment>
+  </data>
+  <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
+    <value>Uh oh... something went wrong and dynamo has crashed, sorry about that.
+
+You will get a chance to save your work.</value>
+  </data>
+  <data name="CrashPromptDialogDetailButton" xml:space="preserve">
+    <value>Details</value>
+    <comment>Click it to display crash details</comment>
+  </data>
+  <data name="CrashPromptDialogOpenFolderButton" xml:space="preserve">
+    <value>Open Folder</value>
+    <comment>Open folder that contains crash report</comment>
+  </data>
+  <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
+    <value>Submit Bug To Github</value>
+    <comment>Submit a but on github</comment>
+  </data>
+  <data name="CrashPromptDialogTitle" xml:space="preserve">
+    <value>Dynamo has crashed</value>
+  </data>
+  <data name="DynamoUpdateAvailabeToolTip" xml:space="preserve">
+    <value>A Dynamo update is available. Click to install.</value>
+  </data>
+  <data name="EditNodeWindowTitle" xml:space="preserve">
+    <value>Edit Node Name</value>
+    <comment>Dialog for editing a node's name</comment>
+  </data>
+  <data name="EditWindowAcceptButton" xml:space="preserve">
+    <value>Accept</value>
+  </data>
+  <data name="EditWindowTitle" xml:space="preserve">
+    <value>Set value...</value>
+  </data>
+  <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
+    <value>Sample Left Button</value>
+    <comment>Sample button, it will be replaced at runtime</comment>
+  </data>
+  <data name="GenericTaskDialogSampleRightButton" xml:space="preserve">
+    <value>Sample Right Button</value>
+    <comment>Sample button, it will be replaced at runtime</comment>
+  </data>
+  <data name="GenericTaskDialogTitle" xml:space="preserve">
+    <value>Generic Task Dialog</value>
+  </data>
+  <data name="UsageReportPromptDialogTitle" xml:space="preserve">
+    <value>Agreement to collect usability data on your use of Dynamo</value>
+  </data>
 </root>
