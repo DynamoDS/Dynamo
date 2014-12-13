@@ -195,6 +195,24 @@ namespace Analysis
             surface.Tessellate(package, 0.01);
 
             int colorCount = 0;
+
+            // Build a quadtree
+            var qt = new Quadtree(UV.ByCoordinates(), UV.ByCoordinates(1, 1));
+            for (int i = 0; i < uvs.Count(); i++)
+            {
+                qt.Root.Insert(uvs[i]);
+            }
+
+            // Store the colors
+            for (int i = 0; i < uvs.Count(); i++)
+            {
+                Node node;
+                if(qt.Root.TryFind(uvs[i], out node))
+                {
+                    node.Item = colors[i];
+                }
+            }
+
             for (int i = 0; i < package.TriangleVertices.Count; i += 3)
             {
                 var vx = package.TriangleVertices[i];
@@ -204,7 +222,20 @@ namespace Analysis
                 // Get the triangle vertex
                 var v = Point.ByCoordinates(vx, vy, vz);
                 var uv = surface.UVParameterAtPoint(v);
-                var avgColor = Color.BuildColorFrom2DRange(colors, uvs, uv);
+                var avgColor = Color.ByARGB(255, 255, 255, 255);
+
+                // Create the weighted color by finding
+                // all nodes within 2 levels of the node
+                Node node = qt.Root.FindNodeWhichContains(uv);
+                if (node != null)
+                {
+                    var nodes = node.FindAllNodesUpLevel(1);
+                    var weightedColors =
+                        nodes.Where(n => n.Point != null)
+                            .Where(n => n.Item != null)
+                            .Select(n => new Color.WeightedColor2D((Color)n.Item, n.Point, uv.Area(n.Point))).ToList();
+                    avgColor = Color.Blerp(weightedColors);
+                }
 
                 package.TriangleVertexColors[colorCount] = avgColor.Red;
                 package.TriangleVertexColors[colorCount + 1] = avgColor.Green;

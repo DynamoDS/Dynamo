@@ -22,6 +22,11 @@ namespace Analysis
         {
             return Root.TryFind(uv, out node);
         }
+
+        internal List<Node> GetAllNodes()
+        {
+            return Root.GetAllNodes();
+        }
     }
 
     public class SurfaceQuadtree : Quadtree, IGraphicItem
@@ -132,7 +137,10 @@ namespace Analysis
 
         public void Insert(UV uv)
         {
-            if (!Contains(uv)) return;
+            if (!Contains(uv))
+            {
+                return;
+            }
 
             if (IsLeafNode)
             {
@@ -153,6 +161,7 @@ namespace Analysis
 
                 Split();
 
+                // Move the existing point into a new cell
                 NW.Insert(UV.ByCoordinates(Point.U, Point.V));
                 NE.Insert(UV.ByCoordinates(Point.U, Point.V));
                 SE.Insert(UV.ByCoordinates(Point.U, Point.V));
@@ -227,28 +236,115 @@ namespace Analysis
                 }
             }
 
-            if (NW.TryFind(uv, out node))
+            if (NW.Contains(uv))
             {
-                return true;
+                if (NW.TryFind(uv, out node))
+                {
+                    return true;
+                }
             }
 
-            if (NE.TryFind(uv, out node))
+            else if (NE.Contains(uv))
             {
-                return true;
+                if (NE.TryFind(uv, out node))
+                {
+                    return true;
+                }
             }
 
-            if (SW.TryFind(uv, out node))
+
+            else if (SW.Contains(uv))
             {
-                return true;
+                if (SW.TryFind(uv, out node))
+                {
+                    return true;
+                }
             }
 
-            if (SE.TryFind(uv, out node))
+            else if (SE.Contains(uv))
             {
-                return true;
+                if (SE.TryFind(uv, out node))
+                {
+                    return true;
+                } 
             }
 
             node = null;
             return false;
+        }
+
+        public List<Node> GetAllNodes()
+        {
+            var nodes = new List<Node>();
+
+            if (IsLeafNode)
+            {
+                nodes.Add(this);
+                return nodes;
+            }
+
+            nodes.AddRange(NW.GetAllNodes());
+            nodes.AddRange(NE.GetAllNodes());
+            nodes.AddRange(SW.GetAllNodes());
+            nodes.AddRange(SE.GetAllNodes());
+
+            return nodes;
+        }
+
+        public List<Node> FindAllNodesUpLevel(int count)
+        {
+            var i = 0;
+            Node level = this;
+
+            while (i < count)
+            {
+                if (level.Parent != null)
+                {
+                    level = level.Parent;
+                }
+                else
+                {
+                    break;
+                }
+                i++;
+            }
+
+            return level.GetAllNodes();
+        }
+
+        public Node FindNodeWhichContains(UV point)
+        {
+            Node n = null;
+
+            if (IsLeafNode)
+            {
+                if (Contains(point))
+                {
+                    return this;
+                }
+            }
+            else
+            {
+                if (NW.Contains(point))
+                {
+                    n = NW.FindNodeWhichContains(point);
+                }
+                else if (NE.Contains(point))
+                {
+                    n = NE.FindNodeWhichContains(point);
+                }
+                else if (SW.Contains(point))
+                {
+                    n = SW.FindNodeWhichContains(point);
+                }
+                else if (SE.Contains(point))
+                {
+                    n = SE.FindNodeWhichContains(point);
+                }
+                
+            }
+
+            return n;
         }
     }
 
@@ -275,8 +371,8 @@ namespace Analysis
 
         public bool Contains(UV uv)
         {
-            return uv.U < Max.U && uv.U >= Min.U && 
-                uv.V < Max.V && uv.V >= Min.V;
+            return uv.U <= Max.U && uv.U >= Min.U && 
+                uv.V <= Max.V && uv.V >= Min.V;
         }
 
         public bool Intersects(UVRect rect)
@@ -291,6 +387,13 @@ namespace Analysis
         {
             const double tolerance = 0.00001;
             return System.Math.Abs(a.U - b.U) < tolerance && System.Math.Abs(a.V - b.V) < tolerance;
+        }
+
+        public static double Area(this UV min, UV max)
+        {
+            var u = System.Math.Sqrt(System.Math.Pow(max.U - min.U, 2));
+            var v = System.Math.Sqrt(System.Math.Pow(max.V - min.V, 2));
+            return u * v;
         }
     }
 }

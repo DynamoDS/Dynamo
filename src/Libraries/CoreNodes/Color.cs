@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Authentication;
-using System.Threading;
-using System.Windows.Forms;
-using System.Windows.Media;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
@@ -153,16 +148,16 @@ namespace DSCore
             // If any of the bounding conditions are not met,
             // just return white.
 
-            if (!colors.Any() || 
+            if (!colors.Any() ||
                 !indices.Any() ||
                 colors.Count != indices.Count ||
-                index < 0.0 || 
+                index < 0.0 ||
                 index > 1.0)
             {
                 return Color.ByARGB(255, 255, 255, 255);
             }
 
-            var indexedColors = colors.Zip(indices, (c, i) => new IndexedColor1D(c, i, Math.Sqrt(Math.Pow(index - i, 2)))).ToList();
+            var indexedColors = colors.Zip(indices, (c, i) => new WeightedColor1D(c, i, Math.Sqrt(Math.Pow(index - i, 2)))).ToList();
             var colorsByIndex = indexedColors.OrderBy(ci => ci.Index);
 
             // If the supplied index matches one of the indexed colors' indices,
@@ -177,15 +172,15 @@ namespace DSCore
             // positions, then use the bottom and top colors
             if (!indices.Any(i => i == 0.0))
             {
-                indexedColors.Insert(0,new IndexedColor1D(colors.First(), 0.0, index));
+                indexedColors.Insert(0, new WeightedColor1D(colors.First(), 0.0, index));
             }
 
             if (!indices.Any(i => i == 1.0))
             {
-                indexedColors.Add(new IndexedColor1D(colors.Last(), 1.0, 1.0 - index));
+                indexedColors.Add(new WeightedColor1D(colors.Last(), 1.0, 1.0 - index));
             }
 
-            IndexedColor1D c1, c2;
+            WeightedColor1D c1, c2;
 
             c1 = colorsByIndex.First();
             c2 = colorsByIndex.Last();
@@ -205,143 +200,7 @@ namespace DSCore
                 }
             }
 
-            return Lerp(c1.Color, c2.Color, (index - c1.Index)/(c2.Index - c1.Index));
-        }
-
-        /// <summary>
-        /// Build
-        /// </summary>
-        /// <param name="colors"></param>
-        /// <param name="indices"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static Color BuildColorFrom2DRange(IList<Color> colors, IList<UV> indices, UV index)
-        {
-            if (!colors.Any() ||
-                !indices.Any() ||
-                colors.Count != indices.Count)
-            {
-                return Color.ByARGB(255, 255, 255, 255);
-            }
-
-            var indexPt = Point.ByCoordinates(index.U, index.V);
-            var indexedColors = colors.Zip(indices, (c, i) => new IndexedColor2D(c, i, Area(index,i))).ToList();
-
-            IndexedColor2D ul = null;
-            IndexedColor2D ur = null;
-            IndexedColor2D lr = null;
-            IndexedColor2D ll  = null;
-
-            // If values are not supplied for the range corners,
-            // then use the closest colors.
-            if (!indices.Any(uv => uv.U == 0.0 && uv.V == 0.0))
-            {
-                ul = CreateIndexedColor(index, indexedColors, 0, 0);
-                indexedColors.Add(ul);
-            }
-            else
-            {
-                ul = indexedColors.First(ci => ci.Index.U == 0.0 && ci.Index.V == 0.0);
-            }
-
-            if (!indices.Any(uv => uv.U == 1.0 && uv.V == 0.0))
-            {
-                ur = CreateIndexedColor(index, indexedColors, 1, 0);
-                indexedColors.Add(ur);
-            }
-            else
-            {
-                ur = indexedColors.First(ci => ci.Index.U == 1.0 && ci.Index.V == 0.0);
-            }
-
-            if (!indices.Any(uv => uv.U == 1.0 && uv.V == 1.0))
-            {
-                lr = CreateIndexedColor(index, indexedColors, 1, 1);
-                indexedColors.Add(lr);
-            }
-            else
-            {
-                lr = indexedColors.First(ci => ci.Index.U == 1.0 && ci.Index.V == 1.0);
-            }
-
-            if (!indices.Any(uv => uv.U == 0.0 && uv.V == 1.0))
-            {
-                ll = CreateIndexedColor(index, indexedColors, 0, 1);
-                indexedColors.Add(ll);
-            }
-            else
-            {
-                ll = indexedColors.First(ci => ci.Index.U == 0.0 && ci.Index.V == 1.0);
-            }
-
-            // If one of the supplied indices matches 
-            // the index exactly, return that color.
-            var found =
-                indexedColors.FirstOrDefault(ci => Point.ByCoordinates(ci.Index.U, ci.Index.V).IsAlmostEqualTo(indexPt));
-            if (found != null)
-            {
-                return found.Color;
-            }
-
-            foreach (var ci in indexedColors)
-            {
-                var uv = ci.Index;
-
-                if (uv.U < index.U && uv.V < index.V)
-                {
-                    // ul candidate
-                    if (uv.U > ul.Index.U && uv.V > ul.Index.V)
-                    {
-                        ul = ci;
-                    }
-                }
-                if (uv.U > index.U && uv.V < index.V)
-                {
-                    // ur candidate
-                    if (uv.U < ur.Index.U && uv.V > ur.Index.V)
-                    {
-                        ur = ci;
-                    }
-                }
-                if (uv.U > index.U && uv.V > index.V)
-                {
-                    // lr candidate
-                    if (uv.U < lr.Index.U && uv.V < lr.Index.V)
-                    {
-                        lr = ci;
-                    }
-                }
-                if (uv.U < index.U && uv.V > index.V)
-                {
-                    // ll candidate
-                    if (uv.U > ll.Index.U && uv.V < ll.Index.V)
-                    {
-                        ll = ci;
-                    }
-                }
-            }
-
-            return Blerp(new List<IndexedColor2D>() { ul, ur, lr, ll });
-
-        }
-
-        private static double Area(UV min, UV max)
-        {
-            var u = System.Math.Sqrt(System.Math.Pow(max.U - min.U, 2));
-            var v = System.Math.Sqrt(System.Math.Pow(max.V - min.V, 2));
-            return u*v;
-        }
-
-        private static IndexedColor2D CreateIndexedColor(UV index, List<IndexedColor2D> indexedColors, double u, double v)
-        {
-            var uv = UV.ByCoordinates(u, v);
-
-            // Find the indexed color which as the smallest area relative
-            // to the UV input. This is the "closest" UV.
-            var ord = indexedColors.OrderBy(ci => Area(uv,ci.Index));
-            
-            return new IndexedColor2D(ord.First().Color, uv, Area(index,uv));
+            return Lerp(c1.Color, c2.Color, (index - c1.Index) / (c2.Index - c1.Index));
         }
 
         /// <summary>
@@ -351,7 +210,8 @@ namespace DSCore
         /// <param name="end">The end color.</param>
         /// <param name="t">A parameter between 0.0 and 1.0.</param>
         /// <returns>The interpolated color or white.</returns>
-        internal static Color Lerp(Color start, Color end, double t)
+        [IsVisibleInDynamoLibrary(false)]
+        public static Color Lerp(Color start, Color end, double t)
         {
             if (start == null || 
                 end == null || 
@@ -378,20 +238,21 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Bilinearly interpolate between four colors.
+        /// Bilinearly interpolate between a set of colors.
         /// </summary>
         /// <param name="start">The start color.</param>
         /// <param name="end">The end color.</param>
         /// <param name="t">A parameter between 0.0 and 1.0.</param>
         /// <returns>The interpolated color or white.</returns>
-        internal static Color Blerp(List<IndexedColor2D> colors)
+        [IsVisibleInDynamoLibrary(false)]
+        public static Color Blerp(List<WeightedColor2D> colors)
         {
             // Calculate the weighted average
             var num = new double[4];
             var totalArea = 0.0;
             foreach (var ci in colors)
             {
-                var a = 1 - ci.Area;
+                var a = 1 - ci.Weight;
                 num[0] += ci.Color.Alpha * a;
                 num[1] += ci.Color.Red * a;
                 num[2] += ci.Color.Green * a;
@@ -456,27 +317,27 @@ namespace DSCore
             return color.GetHashCode();
         }
 
-        internal abstract class IndexedColorBase
+        [IsVisibleInDynamoLibrary(false)]
+        public abstract class WeightedColorBase
         {
             public Color Color { get; set; }
-            
+            public double Weight { get; set; }
         }
 
-        internal class IndexedColor1D: IndexedColorBase, IComparable
+        [IsVisibleInDynamoLibrary(false)]
+        public class WeightedColor1D: WeightedColorBase, IComparable
         {
             public double Index { get; set; }
-            public double Distance { get; set; }
 
-            internal IndexedColor1D(Color color, double index, double distance)
+            public WeightedColor1D(Color color, double index, double weight)
             {
                 Color = color;
                 Index = index;
-                Distance = distance;
             }
 
             public int CompareTo(object obj)
             {
-                var ic = obj as IndexedColor1D;
+                var ic = obj as WeightedColor1D;
 
                 if (ic == null)
                 {
@@ -502,25 +363,17 @@ namespace DSCore
             }
         }
 
-        internal class IndexedColor2D : IndexedColorBase
+        [IsVisibleInDynamoLibrary(false)]
+        public class WeightedColor2D : WeightedColorBase
         {
             public UV Index { get; set; }
-            public double Area { get; set; }
 
-            internal IndexedColor2D(Color color, UV index, double area)
+            public WeightedColor2D(Color color, UV index, double weight)
             {
                 Color = color;
                 Index = index;
-                Area = area;
+                Weight = weight;
             }
         }
     }
-
-    // Extension methods for the color class to allow the 
-    // averaging of colors
-    public static class ColorExtensions
-    {
-        
-    }
-
 }
