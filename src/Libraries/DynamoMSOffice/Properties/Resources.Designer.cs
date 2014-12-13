@@ -61,7 +61,9 @@ namespace DynamoMSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add a new Worksheet to a Workbook with a given name.  \n\nThis node requires Microsoft Excel to be installed..
+        ///   Looks up a localized string similar to Add a new Worksheet to a Workbook with a given name.
+        ///
+        ///This node requires Microsoft Excel to be installed..
         /// </summary>
         internal static string AddExcelWorksheetToWorkbookDescription {
             get {
@@ -70,7 +72,9 @@ namespace DynamoMSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get the non-empty range of Cell data from an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed..
+        ///   Looks up a localized string similar to Get the non-empty range of Cell data from an Excel Worksheet.
+        ///
+        ///This node requires Microsoft Excel to be installed..
         /// </summary>
         internal static string GetDataFromExcelWorksheetDescription {
             get {
@@ -79,7 +83,9 @@ namespace DynamoMSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gets the first Worksheet in an Excel Workbook with the given name.  \n\nThis node requires Microsoft Excel to be installed..
+        ///   Looks up a localized string similar to Gets the first Worksheet in an Excel Workbook with the given name.
+        ///
+        ///This node requires Microsoft Excel to be installed..
         /// </summary>
         internal static string GetExcelWorksheetByNameDescription {
             get {
@@ -88,7 +94,9 @@ namespace DynamoMSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get the list of Worksheets from an Excel Workbook.  \n\nThis node requires Microsoft Excel to be installed..
+        ///   Looks up a localized string similar to Get the list of Worksheets from an Excel Workbook.
+        ///
+        ///This node requires Microsoft Excel to be installed..
         /// </summary>
         internal static string GetWorksheetsFromExcelWorkbookDescription {
             get {
@@ -97,7 +105,9 @@ namespace DynamoMSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a new Excel Workbook object.  \n\nThis node requires Microsoft Excel to be installed..
+        ///   Looks up a localized string similar to Create a new Excel Workbook object.
+        ///
+        ///This node requires Microsoft Excel to be installed..
         /// </summary>
         internal static string NewExelWorkbookDescription {
             get {
@@ -106,7 +116,9 @@ namespace DynamoMSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.  \n\nThis node requires Microsoft Excel to be installed..
+        ///   Looks up a localized string similar to Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.  
+        ///
+        ///This node requires Microsoft Excel to be installed..
         /// </summary>
         internal static string OpenExelWorkbookDescription {
             get {
@@ -115,7 +127,9 @@ namespace DynamoMSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Write an Excel Workbook to a file with the given filename.  \n\nThis node requires Microsoft Excel to be installed..
+        ///   Looks up a localized string similar to Write an Excel Workbook to a file with the given filename.  
+        ///
+        ///This node requires Microsoft Excel to be installed..
         /// </summary>
         internal static string SaveExcelWorkbookAsDescription {
             get {
@@ -124,7 +138,9 @@ namespace DynamoMSOffice.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Write data to a Cell of an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed..
+        ///   Looks up a localized string similar to Write data to a Cell of an Excel Worksheet.  
+        ///
+        ///This node requires Microsoft Excel to be installed..
         /// </summary>
         internal static string WriteDataToExcelWorksheetDescription {
             get {

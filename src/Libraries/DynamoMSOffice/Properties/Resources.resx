@@ -118,35 +118,51 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddExcelWorksheetToWorkbookDescription" xml:space="preserve">
-    <value>Add a new Worksheet to a Workbook with a given name.  \n\nThis node requires Microsoft Excel to be installed.</value>
+    <value>Add a new Worksheet to a Workbook with a given name.
+
+This node requires Microsoft Excel to be installed.</value>
     <comment>Description for Add Excel Worksheet To Workbook</comment>
   </data>
   <data name="GetDataFromExcelWorksheetDescription" xml:space="preserve">
-    <value>Get the non-empty range of Cell data from an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed.</value>
+    <value>Get the non-empty range of Cell data from an Excel Worksheet.
+
+This node requires Microsoft Excel to be installed.</value>
     <comment>Description for Get Data From Excel Worksheet</comment>
   </data>
   <data name="GetExcelWorksheetByNameDescription" xml:space="preserve">
-    <value>Gets the first Worksheet in an Excel Workbook with the given name.  \n\nThis node requires Microsoft Excel to be installed.</value>
+    <value>Gets the first Worksheet in an Excel Workbook with the given name.
+
+This node requires Microsoft Excel to be installed.</value>
     <comment>Description for Get Excel Worksheet By Name</comment>
   </data>
   <data name="GetWorksheetsFromExcelWorkbookDescription" xml:space="preserve">
-    <value>Get the list of Worksheets from an Excel Workbook.  \n\nThis node requires Microsoft Excel to be installed.</value>
+    <value>Get the list of Worksheets from an Excel Workbook.
+
+This node requires Microsoft Excel to be installed.</value>
     <comment>Description for Get Worksheets From Excel Workbook</comment>
   </data>
   <data name="NewExelWorkbookDescription" xml:space="preserve">
-    <value>Create a new Excel Workbook object.  \n\nThis node requires Microsoft Excel to be installed.</value>
+    <value>Create a new Excel Workbook object.
+
+This node requires Microsoft Excel to be installed.</value>
     <comment>Description for New Exel Workbook</comment>
   </data>
   <data name="OpenExelWorkbookDescription" xml:space="preserve">
-    <value>Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.  \n\nThis node requires Microsoft Excel to be installed.</value>
+    <value>Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.  
+
+This node requires Microsoft Excel to be installed.</value>
     <comment>Description for Open Exel Workbook</comment>
   </data>
   <data name="SaveExcelWorkbookAsDescription" xml:space="preserve">
-    <value>Write an Excel Workbook to a file with the given filename.  \n\nThis node requires Microsoft Excel to be installed.</value>
+    <value>Write an Excel Workbook to a file with the given filename.  
+
+This node requires Microsoft Excel to be installed.</value>
     <comment>Description for Save Excel Workbook As</comment>
   </data>
   <data name="WriteDataToExcelWorksheetDescription" xml:space="preserve">
-    <value>Write data to a Cell of an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed.</value>
+    <value>Write data to a Cell of an Excel Worksheet.  
+
+This node requires Microsoft Excel to be installed.</value>
     <comment>Description for Write Data To Excel Worksheet</comment>
   </data>
 </root>
