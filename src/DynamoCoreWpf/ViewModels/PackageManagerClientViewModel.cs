@@ -222,7 +222,7 @@ namespace Dynamo.ViewModels
                                 catch
                                 {
                                     MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, packageDownloadHandle.Name),
-                                        Resources.UninstallPackageMessageBoxTitle, 
+                                        Resources.UninstallFailureMessageBoxTitle, 
                                         MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
                             }
