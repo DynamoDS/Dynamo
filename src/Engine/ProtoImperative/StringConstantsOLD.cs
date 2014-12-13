@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProtoImperative
 {
-    public struct StringConstants
+    public struct StringConstantsOLD
     {
         public const string invalidNestedImperativeBlock = "An imperative language block is declared within an imperative language block.";
         public const string onlyIdentifierOrIdentifierListCanBeOnLeftSide = "Only identifier or identifier list can appear on the left hand side of assignment.";
