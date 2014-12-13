@@ -555,7 +555,7 @@ namespace Dynamo.PackageManager
                 {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
                     if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo, JoinPackageNames(immediateUninstalls)),
-                        Resources.DownloadWarniingMessageBoxTitle, 
+                        Resources.DownloadWarningMessageBoxTitle, 
                         MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                         return;
                 }

@@ -342,11 +342,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Download Warning.
         /// </summary>
-        public static string DownloadWarniingMessageBoxTitle {
+        public static string DownloadWarningMessageBoxTitle {
             get {
-                return ResourceManager.GetString("DownloadWarniingMessageBoxTitle", resourceCulture);
+                return ResourceManager.GetString("DownloadWarningMessageBoxTitle", resourceCulture);
             }
         }
         

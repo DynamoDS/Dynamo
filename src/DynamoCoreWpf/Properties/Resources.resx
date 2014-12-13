@@ -796,9 +796,6 @@
   <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
     <value>Deprecating Package</value>
   </data>
-  <data name="DownloadWarniingMessageBoxTitle" xml:space="preserve">
-    <value />
-  </data>
   <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
     <value>Show In Folder</value>
     <comment>Help menu | Show in Folder</comment>
@@ -979,6 +976,9 @@ You will get a chance to save your work.</value>
   </data>
   <data name="CrashPromptDialogTitle" xml:space="preserve">
     <value>Dynamo has crashed</value>
+  </data>
+  <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
+    <value>Download Warning</value>
   </data>
   <data name="DynamoUpdateAvailabeToolTip" xml:space="preserve">
     <value>A Dynamo update is available. Click to install.</value>
