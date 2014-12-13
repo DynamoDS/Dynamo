@@ -4,10 +4,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.Controls
 {
@@ -23,11 +23,11 @@ namespace Dynamo.Controls
         /// </summary>
         private int selectedClassProspectiveIndex = -2;
         private double classObjectWidth = double.NaN;
-        private ObservableCollection<BrowserItem> collection;
-        private BrowserInternalElement currentClass;
+        private ObservableCollection<BrowserItemViewModel> collection;
+        private BrowserInternalElementViewModel currentClass;
         private ListView classListView;
 
-        internal bool MakeOrClearSelection(BrowserInternalElement selectedClass)
+        internal bool MakeOrClearSelection(BrowserInternalElementViewModel selectedClass)
         {
             if (currentClass != null)
             {
@@ -59,8 +59,8 @@ namespace Dynamo.Controls
         {
             // ListView should never be null.
             classListView = WpfUtilities.FindUpVisualTree<ListView>(this);
-            collection = classListView.ItemsSource as ObservableCollection<BrowserItem>;
-            collection.Add(new ClassInformation());
+            collection = classListView.ItemsSource as ObservableCollection<BrowserItemViewModel>;
+            collection.Add(new ClassInformationViewModel());
             classListView.SelectionChanged += OnClassViewSelectionChanged;
 
             this.KeyDown += OnLibraryWrapPanelKeyDown;
@@ -208,7 +208,7 @@ namespace Dynamo.Controls
 
             foreach (UIElement child in this.Children)
             {
-                var classInformation = (child as FrameworkElement).DataContext as ClassInformation;
+                var classInformation = (child as FrameworkElement).DataContext as ClassInformationViewModel;
                 // Hidden StandardPanel shouldn't be arranged.
                 if (classInformation != null && !classInformation.ClassDetailsVisibility)
                     continue;
@@ -269,7 +269,7 @@ namespace Dynamo.Controls
             {
                 if (classInfoIndex != -1)
                 {
-                    (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = false;
+                    (collection[classInfoIndex] as ClassInformationViewModel).ClassDetailsVisibility = false;
                     currentClass = null;
                 }
                 OrderListItems();
@@ -277,10 +277,10 @@ namespace Dynamo.Controls
             }
             else
             {
-                (collection[classInfoIndex] as ClassInformation).ClassDetailsVisibility = true;
+                (collection[classInfoIndex] as ClassInformationViewModel).ClassDetailsVisibility = true;
             }
 
-            currentClass = collection[selectedIndex] as BrowserInternalElement;
+            currentClass = collection[selectedIndex] as BrowserInternalElementViewModel;
             OrderListItems(); // Selection change, we may need to reorder items.
         }
 
@@ -302,7 +302,7 @@ namespace Dynamo.Controls
 
         private int GetClassInformationIndex()
         {
-            var query = collection.Select(c => c).Where(c => c is ClassInformation);
+            var query = collection.Select(c => c).Where(c => c is ClassInformationViewModel);
             var classObjectBase = query.ElementAt(0);
             return collection.IndexOf(classObjectBase);
         }
@@ -319,12 +319,12 @@ namespace Dynamo.Controls
             var classObjectBase = collection[currentClassInformationIndex];
 
             // If there is no selection, then mark the StandardPanel as hidden.
-            var classInformation = classObjectBase as ClassInformation;
+            var classInformation = classObjectBase as ClassInformationViewModel;
             if (classInformation != null && (selectedClassProspectiveIndex == -1))
                 return;
 
             //Add members of selected class to StandardPanel            
-            classInformation.PopulateMemberCollections(currentClass as BrowserInternalElement);
+            classInformation.PopulateMemberCollections((currentClass as BrowserInternalElementViewModel).Model);
 
             // When we know the number of items on a single row, through selected 
             // item index we will find out where the expanded StandardPanel sit.

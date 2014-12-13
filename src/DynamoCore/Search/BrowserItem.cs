@@ -96,7 +96,8 @@ namespace Dynamo.Search
             this.IsExpanded = false;
             foreach (var ele in Items)
             {
-                if (ele is ClassInformation) continue;
+                // TODO (Vladimir): check if this is needed
+                //if (ele is ClassInformation) continue;
                 ele.CollapseToLeaves();
             }
         }
@@ -109,7 +110,8 @@ namespace Dynamo.Search
             this.Visibility = visibility;
             foreach (var ele in Items)
             {
-                if (ele is ClassInformation) continue;
+                // TODO (Vladimir): check if this is needed
+                //if (ele is ClassInformation) continue;
                 ele.SetVisibilityToLeaves(visibility);
             }
         }

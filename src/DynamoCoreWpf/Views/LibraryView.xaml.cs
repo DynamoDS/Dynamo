@@ -7,6 +7,7 @@ using Dynamo.Controls;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.UI.Views
 {
@@ -115,7 +116,7 @@ namespace Dynamo.UI.Views
         private void OnTreeViewItemPreviewMouseLeftButton(object sender, MouseButtonEventArgs e)
         {
             var categoryButton = sender as TreeViewItem;
-            if (!(categoryButton.DataContext is BrowserRootElement))
+            if (!(categoryButton.DataContext is BrowserRootElementViewModel))
                 return;
 
             var wrapPanels = new List<LibraryWrapPanel>();
@@ -124,10 +125,10 @@ namespace Dynamo.UI.Views
                 return;
 
             var selectedElement = e.OriginalSource as FrameworkElement;
-            var selectedClass = selectedElement.DataContext as BrowserInternalElement;
+            var selectedClass = selectedElement.DataContext as BrowserInternalElementViewModel;
             // Continue work with real class: not null, child of BrowserInternalElementForClasses.
-            if (selectedClass == null || selectedClass is NodeSearchElement ||
-                !(selectedClass.Parent is BrowserInternalElementForClasses))
+            if (selectedClass == null || selectedClass is NodeSearchElementViewModel ||
+                !(selectedClass.CastedModel.Parent is BrowserInternalElementForClasses))
                 return;
 
             // Go through all available for current top category LibraryWrapPanel.

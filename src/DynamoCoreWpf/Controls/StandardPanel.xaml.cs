@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.UI.Controls
 {
@@ -27,7 +28,7 @@ namespace Dynamo.UI.Controls
         // Specifies if all Lists (CreateMembers, QueryMembers and ActionMembers) are not empty
         // and should be presented on StandardPanel.
         private bool areAllListsPresented;
-        private ClassInformation castedDataContext;
+        private ClassInformationViewModel castedDataContext;
 
         public bool FocusItemOnSelection { get; set; }
 
@@ -51,12 +52,12 @@ namespace Dynamo.UI.Controls
 
             if (senderTag == QueryHeaderTag)
             {
-                castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
                 secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
             else
             {
-                castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Action;
+                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Action;
                 secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
             }
 
@@ -110,7 +111,7 @@ namespace Dynamo.UI.Controls
 
         private void GridDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            castedDataContext = this.DataContext as ClassInformation;
+            castedDataContext = this.DataContext as ClassInformationViewModel;
             if (castedDataContext == null)
                 return;
 
@@ -130,7 +131,7 @@ namespace Dynamo.UI.Controls
             castedDataContext.SecondaryHeaderLeftText = ActionHeaderText;
             castedDataContext.SecondaryHeaderRightText = QueryHeaderText;
 
-            castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.None;
+            castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.None;
 
             castedDataContext.HiddenSecondaryMembersCount = 0;
 
@@ -153,14 +154,14 @@ namespace Dynamo.UI.Controls
                     castedDataContext.IsSecondaryHeaderLeftVisible = true;
                     secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
 
-                    castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Action;
+                    castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Action;
                 }
                 else if (hasQueryMembers)
                 {
                     // No "Action" members but "Query" members are available.
                     castedDataContext.IsSecondaryHeaderLeftVisible = true;
                     castedDataContext.SecondaryHeaderLeftText = QueryHeaderText;
-                    castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+                    castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
 
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
@@ -182,7 +183,7 @@ namespace Dynamo.UI.Controls
                 {
                     castedDataContext.IsSecondaryHeaderLeftVisible = true;
                     castedDataContext.SecondaryHeaderLeftText = QueryHeaderText;
-                    castedDataContext.CurrentDisplayMode = ClassInformation.DisplayMode.Query;
+                    castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
 
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
@@ -204,7 +205,7 @@ namespace Dynamo.UI.Controls
         private void OnMoreButtonClick(object sender, RoutedEventArgs e)
         {
             IEnumerable<BrowserInternalElement> collection = castedDataContext.ActionMembers;
-            if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.Query)
+            if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
                 collection = castedDataContext.QueryMembers;
 
             secondaryMembers.ItemsSource = collection;
@@ -214,11 +215,11 @@ namespace Dynamo.UI.Controls
 
         private void TruncateSecondaryMembers()
         {
-            if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.None)
+            if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.None)
                 return;
 
             IEnumerable<BrowserInternalElement> collection = castedDataContext.ActionMembers;
-            if (castedDataContext.CurrentDisplayMode == ClassInformation.DisplayMode.Query)
+            if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
                 collection = castedDataContext.QueryMembers;
 
             secondaryMembers.ItemsSource = collection.Take(TruncatedMembersCount);

@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
-
+using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -211,43 +210,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void BrowserRootElementToSubclassesConverterTest()
-        {
-            BrowserRootElement BRE = new BrowserRootElement("BRE");
-            NodeSearchElement NSE1 = new NodeSearchElement("name1", "description", new List<string>() { "tag" }, SearchElementGroup.Action);
-            NodeSearchElement NSE2 = new NodeSearchElement("name2", "description", new List<string>() { "tag" }, SearchElementGroup.Action);
-            BrowserInternalElement BIE = new BrowserInternalElement();
-
-            BrowserRootElementToSubclassesConverter converter = new BrowserRootElementToSubclassesConverter();
-            object result;
-
-            //1. BRE contains only node elemnts.
-            //2. BRE contains node elements and internal element.
-            //3. BRE is null.
-
-            // 1 case
-            BRE.AddChild(NSE1);
-            BRE.AddChild(NSE2);
-            result = converter.Convert(BRE, null, null, null);
-            Assert.AreEqual(BRE.ClassDetails, result);
-
-            // 2 case
-            BRE.AddChild(BIE);
-            result = converter.Convert(BRE, null, null, null);
-            Assert.AreEqual(BRE, result);
-
-            // 3 case
-            result = converter.Convert(null, null, null, null);
-            Assert.AreEqual(null, result);
-        }
-
-        [Test]
         public void DisplayModeToBackgroundConverterTest()
         {
-            DisplayModeToBackgroundConverter converter = new DisplayModeToBackgroundConverter();
-            bool isSecondaryHeaderRightVisible = false;
-            ClassInformation.DisplayMode displayMode = ClassInformation.DisplayMode.None;
-            string parameter = "";
+            var converter = new DisplayModeToBackgroundConverter();
+            var isSecondaryHeaderRightVisible = false;
+            var displayMode = ClassInformationViewModel.DisplayMode.None;
+            var parameter = "";
             object[] array = { displayMode, isSecondaryHeaderRightVisible };
             object result;
 
@@ -271,12 +239,12 @@ namespace Dynamo.Tests
             Assert.AreEqual(converter.ActiveColor, result);
 
             // 4 case
-            array[0] = ClassInformation.DisplayMode.Query;
+            array[0] = ClassInformationViewModel.DisplayMode.Query;
             result = converter.Convert(array, null, parameter, null);
             Assert.AreEqual(converter.ActiveColor, result);
 
             // 5 case
-            array[0] = ClassInformation.DisplayMode.Action;
+            array[0] = ClassInformationViewModel.DisplayMode.Action;
             result = converter.Convert(array, null, parameter, null);
             Assert.AreEqual(converter.ActiveColor, result);
 
@@ -333,10 +301,10 @@ namespace Dynamo.Tests
         public void ElementTypeToBoolConverterTest()
         {
             ElementTypeToBoolConverter converter = new ElementTypeToBoolConverter();
-            NodeSearchElement NSE = new NodeSearchElement("name", "description", new List<string>() { "tag" }, SearchElementGroup.Action);
-            BrowserInternalElement BIE = new BrowserInternalElement();
-            BrowserInternalElementForClasses BIEFC = new BrowserInternalElementForClasses("name", BIE);
-            BrowserRootElement BRE = new BrowserRootElement("name");
+            var NseVM = new NodeSearchElementViewModel(new NodeSearchElement("name", "description", new List<string>() { "tag" }, SearchElementGroup.Action));
+            var BieVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
+            var BiefcVM = new BrowserInternalElementForClassesViewModel(new BrowserInternalElementForClasses("name", BieVM.Model));
+            var BreVM = new BrowserRootElementViewModel(new BrowserRootElement("name"));
             object result;
 
             //1. Element is null.
@@ -350,19 +318,19 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, result);
 
             // 2 case
-            result = converter.Convert(NSE, null, null, null);
+            result = converter.Convert(NseVM, null, null, null);
             Assert.AreEqual(false, result);
 
             // 3 case
-            result = converter.Convert(BIE, null, null, null);
+            result = converter.Convert(BieVM, null, null, null);
             Assert.AreEqual(true, result);
 
             // 4 case
-            result = converter.Convert(BIEFC, null, null, null);
+            result = converter.Convert(BiefcVM, null, null, null);
             Assert.AreEqual(true, result);
 
             // 5 case
-            result = converter.Convert(BRE, null, null, null);
+            result = converter.Convert(BreVM, null, null, null);
             Assert.AreEqual(true, result);
         }
 
@@ -384,16 +352,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(falseBrush, result);
 
             // 2 case
-            CustomNodeSearchElement CNE = new CustomNodeSearchElement(new Dynamo.Utilities.CustomNodeInfo(new Guid(), "name", "cat", "desc", "path"), SearchElementGroup.Action);
-            result = converter.Convert(CNE, null, null, null);
+            var CneVM = new CustomNodeSearchElementViewModel(new CustomNodeSearchElement(new Dynamo.Utilities.CustomNodeInfo(new Guid(), "name", "cat", "desc", "path"), SearchElementGroup.Action));
+            result = converter.Convert(CneVM, null, null, null);
             Assert.AreEqual(trueBrush, result);
         }
 
         [Test]
         public void RootElementToBoolConverterTest()
         {
-            RootElementToBoolConverter converter = new RootElementToBoolConverter();
-            BrowserRootElement BRE = new BrowserRootElement("BRE");
+            var converter = new RootElementVMToBoolConverter();
+            var BreVM = new BrowserRootElementViewModel(new BrowserRootElement("BRE"));
             object result;
 
             //1. Element is null.
@@ -404,15 +372,15 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, result);
 
             // 2 case
-            result = converter.Convert(BRE, null, null, null);
+            result = converter.Convert(BreVM, null, null, null);
             Assert.AreEqual(true, result);
         }
 
         [Test]
         public void BrowserInternalElementToBoolConverterTest()
         {
-            var converter = new BrowserInternalElementToBoolConverter();
-            var element = new BrowserInternalElement();
+            var converter = new BrowserInternalElementVMToBoolConverter();
+            var elementVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
             object result;
 
             //1. Element is null.            
@@ -423,16 +391,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, result);
 
             // 2 case
-            result = converter.Convert(element, null, null, null);
+            result = converter.Convert(elementVM, null, null, null);
             Assert.AreEqual(true, result);
         }
 
         [Test]
         public void HasParentRootElementTest()
         {
-            HasParentRootElement converter = new HasParentRootElement();
-            BrowserRootElement BRE = new BrowserRootElement("BRE");
-            BrowserInternalElement BIE = new BrowserInternalElement();
+            var converter = new HasParentRootElement();
+            var BreVM = new BrowserRootElementViewModel(new BrowserRootElement("BRE"));
+            var BieVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
             object result;
 
             //1. Element is null.
@@ -445,16 +413,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, result);
 
             // 2 case
-            result = converter.Convert(BRE, null, null, null);
+            result = converter.Convert(BreVM, null, null, null);
             Assert.AreEqual(true, result);
 
             // 3 case
-            result = converter.Convert(BIE, null, null, null);
+            result = converter.Convert(BieVM, null, null, null);
             Assert.AreEqual(false, result);
 
             // 4 case
-            BRE.AddChild(BIE);
-            result = converter.Convert(BIE, null, null, null);
+            BreVM.CastedModel.AddChild(BieVM.CastedModel);
+            result = converter.Convert(BieVM, null, null, null);
             Assert.AreEqual(true, result);
         }
 
@@ -552,11 +520,13 @@ namespace Dynamo.Tests
             var result = converter.Convert(null, null, null, null);
             Assert.AreEqual(Visibility.Visible, result);
 
-            result = converter.Convert(new BrowserInternalElement(), null, null, null);
+            var BieVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
+            result = converter.Convert(BieVM, null, null, null);
             Assert.AreEqual(Visibility.Visible, result);
 
             var rootElement = new BrowserRootElement("Top Category");
-            rootElement.Items.Add(new BrowserInternalElementForClasses("Classes", rootElement));
+            var BiefcVM = new BrowserInternalElementForClassesViewModel(new BrowserInternalElementForClasses("Classes", rootElement));
+            rootElement.Items.Add(BiefcVM.Model);
 
             result = converter.Convert(rootElement.Items[0], null, null, null);
             Assert.AreEqual(Visibility.Collapsed, result);

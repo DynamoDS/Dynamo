@@ -9,7 +9,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Search;
@@ -17,8 +16,8 @@ using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
-
 using RestSharp.Contrib;
 
 namespace Dynamo.Controls
@@ -1762,29 +1761,6 @@ namespace Dynamo.Controls
         }
     }
 
-    /// This converter provides BrowserRootElement or ClassInformation
-    /// instance depending on value of IsPlaceHolder property. 
-    /// BrowserRootElement is needed to show subclasses in LibraryView.
-    /// ClassInformation is needed to show member list of root category
-    /// which doesn't have any subclasses.
-    public class BrowserRootElementToSubclassesConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            BrowserRootElement rootElement = value as BrowserRootElement;
-
-            if (rootElement != null && rootElement.IsPlaceholder)
-                return rootElement.ClassDetails;
-
-            return rootElement;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     /// This converter modifies TextBlock Background depending on DisplayMode.
     /// To know for which TextBlock the converter works the parameter used.
     /// Converter is used on StandardPanel.
@@ -1803,7 +1779,7 @@ namespace Dynamo.Controls
             if (!isSecondaryHeaderRightVisible)
                 return ActiveColor;
 
-            var displayMode = (ClassInformation.DisplayMode)values[0];
+            var displayMode = (ClassInformationViewModel.DisplayMode)values[0];
 
             if (displayMode.ToString() == parameter.ToString())
                 return ActiveColor;
@@ -1846,16 +1822,16 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is NodeSearchElement) 
+            if (value is NodeSearchElementViewModel) 
                 return false;
-            if (value is BrowserInternalElement)
+            if (value is BrowserInternalElementViewModel)
                 return true;
-            if (value is BrowserInternalElementForClasses)
+            if (value is BrowserInternalElementForClassesViewModel)
                 return true;
 
             if (value is BrowserRootElement)
             {
-                var rootElement = value as BrowserRootElement;
+                var rootElement = value as BrowserRootElementViewModel;
                 return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
             }
             return false;
@@ -1876,7 +1852,7 @@ namespace Dynamo.Controls
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is CustomNodeSearchElement)
+            if (value is CustomNodeSearchElementViewModel)
                 return TrueBrush;
             return FalseBrush;
         }
@@ -1888,11 +1864,11 @@ namespace Dynamo.Controls
         }
     }
 
-    public class RootElementToBoolConverter : IValueConverter
+    public class RootElementVMToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value is BrowserRootElement);
+            return (value is BrowserRootElementViewModel);
         }
 
         public object ConvertBack(
@@ -1902,11 +1878,11 @@ namespace Dynamo.Controls
         }
     }
 
-    public class BrowserInternalElementToBoolConverter : IValueConverter
+    public class BrowserInternalElementVMToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value is BrowserInternalElement);
+            return (value is BrowserInternalElementViewModel);
         }
 
         public object ConvertBack(
@@ -1921,10 +1897,10 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is BrowserRootElement) return true;
-            if (value is BrowserInternalElement)
+            if (value is BrowserRootElementViewModel) return true;
+            if (value is BrowserInternalElementViewModel)
             {
-                return (value as BrowserInternalElement).Parent is BrowserRootElement; 
+                return (value as BrowserInternalElementViewModel).CastedModel.Parent is BrowserRootElement;
             }
             else return false;
         }
@@ -1962,7 +1938,7 @@ namespace Dynamo.Controls
 
             if (string.IsNullOrEmpty(incomingString)) return new Thickness(5, 0, 0, 0);
 
-            var numberOfPoints = incomingString.Count(x => x == '.');
+            var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
             return new Thickness(5 + 20 * numberOfPoints, 0, 20, 0);
         }
 
@@ -1996,7 +1972,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is BrowserInternalElementForClasses)
+            if (value is BrowserInternalElementForClassesViewModel)
                 return Visibility.Collapsed;
 
             return Visibility.Visible;

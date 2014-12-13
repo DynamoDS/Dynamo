@@ -18,6 +18,8 @@ namespace Dynamo.Wpf.ViewModels
         public BrowserItem Model { get; private set; }
         public ObservableCollection<BrowserItemViewModel> Items { get; set; }
 
+        protected BrowserItemViewModel() { }
+
         protected BrowserItemViewModel(BrowserItem model)
         {
             this.Model = model;
@@ -102,6 +104,11 @@ namespace Dynamo.Wpf.ViewModels
         {
             return new BrowserInternalElementForClassesViewModel(elem);
         }
+
+        //internal static ClassInformationViewModel WrapExplicit(ClassInformation elem)
+        //{
+        //    return new ClassInformationViewModel(elem);
+        //}
 
         #endregion
 

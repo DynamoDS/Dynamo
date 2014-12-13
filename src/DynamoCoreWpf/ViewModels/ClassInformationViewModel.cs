@@ -1,36 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 
-namespace Dynamo.Search
+namespace Dynamo.Wpf.ViewModels
 {
-    public class ClassInformation : BrowserItem
+    public class ClassInformationViewModel : BrowserItemViewModel
     {
-        #region BrowserItem abstract members implementation
-
-        public override ObservableCollection<BrowserItem> Items
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-                throw new System.NotImplementedException();
-            }
-        }
-
-        public override string Name
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        #endregion
-
         private bool hideClassDetails = false;
 
         /// <summary>
@@ -111,14 +88,6 @@ namespace Dynamo.Search
             }
         }
 
-        public ClassInformation()
-            : base()
-        {
-            createMembers = new List<BrowserInternalElement>();
-            actionMembers = new List<BrowserInternalElement>();
-            queryMembers = new List<BrowserInternalElement>();
-        }
-
         private List<BrowserInternalElement> createMembers;
         public IEnumerable<BrowserInternalElement> CreateMembers
         {
@@ -135,6 +104,13 @@ namespace Dynamo.Search
         public IEnumerable<BrowserInternalElement> QueryMembers
         {
             get { return this.queryMembers; }
+        }
+
+        public ClassInformationViewModel()
+        {
+            createMembers = new List<BrowserInternalElement>();
+            actionMembers = new List<BrowserInternalElement>();
+            queryMembers = new List<BrowserInternalElement>();
         }
 
         public void PopulateMemberCollections(BrowserItem element)
@@ -168,11 +144,6 @@ namespace Dynamo.Search
                         break;
                 }
             }
-        }
-
-        public override void Execute()
-        {
-            throw new NotImplementedException();
         }
     }
 }

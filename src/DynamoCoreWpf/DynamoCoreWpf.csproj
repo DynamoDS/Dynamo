@@ -171,6 +171,7 @@
     <Compile Include="ViewModels\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\BrowserItemViewModel.cs" />
     <Compile Include="ViewModels\BrowserRootElementViewModel.cs" />
+    <Compile Include="ViewModels\ClassInformationViewModel.cs" />
     <Compile Include="ViewModels\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\StateMachine.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SublistsViewCustomization.cs" />

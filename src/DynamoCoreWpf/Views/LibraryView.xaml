@@ -20,12 +20,11 @@
 
             <!--Converter to Make class details not focusable-->
             <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
-            <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
             <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
-            <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
+            <controls:RootElementVMToBoolConverter x:Key="RootElementToBoolConverter" />
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
             <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
@@ -895,7 +894,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="60" />
                 </Grid.RowDefinitions>
-                <TreeView ItemsSource="{Binding Model.BrowserRootCategories}"
+                <TreeView ItemsSource="{Binding BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
                           ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
                           RequestBringIntoView="OnRequestBringIntoView"

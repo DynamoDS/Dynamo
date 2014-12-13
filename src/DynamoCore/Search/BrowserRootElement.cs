@@ -52,22 +52,6 @@ namespace Dynamo.Search
         /// </summary>
         public SearchModel.ElementType ElementType { get; set; }
 
-        private ClassInformation classDetails;
-        public ClassInformation ClassDetails
-        {
-            get
-            {
-                if (classDetails == null && IsPlaceholder)
-                {
-                    classDetails = new ClassInformation();
-                    classDetails.IsRootCategoryDetails = true;
-                    classDetails.PopulateMemberCollections(this);
-                }
-
-                return classDetails;
-            }
-        }
-
         public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {
             this.Height = 32;

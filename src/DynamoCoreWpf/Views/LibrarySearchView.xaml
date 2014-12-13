@@ -134,7 +134,6 @@
 
         <!--Converter to Make class details not focusable-->
         <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
-        <controls:BrowserRootElementToSubclassesConverter x:Key="BrowserRootElementToSubclassesConverter" />
 
         <!--Converter that will be used, if number of found classes equals 0. 
             Then classes will be collapsed.-->

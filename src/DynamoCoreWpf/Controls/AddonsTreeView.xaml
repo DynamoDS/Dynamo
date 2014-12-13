@@ -17,7 +17,7 @@
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
-        <controls:RootElementToBoolConverter x:Key="RootElementToBoolConverter" />
+        <controls:RootElementVMToBoolConverter x:Key="RootElementToBoolConverter" />
         <controls:HasParentRootElement x:Key="HasParentRootElement" />
         <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
         <controls:ElementTypeToShorthandConverter x:Key="ElementTypeToShorthandConverter" />

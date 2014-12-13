@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using Dynamo.Search;
-using Dynamo.Search.SearchElements;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.Controls
 {
@@ -14,13 +13,13 @@ namespace Dynamo.Controls
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (item is NodeSearchElement)
+            if (item is NodeSearchElementViewModel)
                 return MemberTemplate;
 
-            if (item is BrowserInternalElementForClasses)
+            if (item is BrowserInternalElementForClassesViewModel)
                 return SubclassesTemplate;
 
-            if (item is BrowserRootElement || item is BrowserInternalElement)
+            if (item is BrowserRootElementViewModel || item is BrowserInternalElementViewModel)
                 return NestedCategoryTemplate;
 
             const string message = "Unknown object bound to collection";
