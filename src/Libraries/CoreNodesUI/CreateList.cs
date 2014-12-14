@@ -19,7 +19,7 @@ namespace DSCoreNodesUI
     }
 
     [NodeName("List.Create")]
-    [NodeDescription("Makes a new list out of the given inputs")]
+    [NodeDescription("ListCreateDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
     public class CreateList : VariableInputNode

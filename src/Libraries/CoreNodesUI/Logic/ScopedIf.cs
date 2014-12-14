@@ -17,7 +17,7 @@ using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 namespace DSCoreNodesUI.Logic
 {
     [NodeName("ScopeIf"), NodeCategory(BuiltinNodeCategories.LOGIC),
-     NodeDescription("Scoped If statement"), IsDesignScriptCompatible]
+     NodeDescription("ScopeIfDescription", typeof(Properties.Resources)), IsDesignScriptCompatible]
     public class ScopedIf : ScopedNodeModel
     {
         public ScopedIf(WorkspaceModel workspaceModel) : base(workspaceModel)

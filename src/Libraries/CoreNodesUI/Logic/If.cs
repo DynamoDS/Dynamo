@@ -15,7 +15,7 @@ namespace DSCoreNodesUI.Logic
 {
     [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("Conditional statement")]
+    [NodeDescription("IfDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class If : NodeModel
     {

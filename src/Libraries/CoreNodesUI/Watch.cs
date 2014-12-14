@@ -9,12 +9,13 @@ using Dynamo.ViewModels;
 using ProtoCore.AST.AssociativeAST;
 
 using VMDataBridge;
+using DSCoreNodesUI.Properties;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("Visualize the output of node. ")]
+    [NodeDescription("WatchDescription", typeof(Resources))]
     [NodeSearchTags("print", "output", "display")]
     [IsDesignScriptCompatible]
     public class Watch : NodeModel
