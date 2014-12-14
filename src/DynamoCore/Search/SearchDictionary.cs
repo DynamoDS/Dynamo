@@ -91,10 +91,10 @@ namespace Dynamo.Search
             {
                 keys = new Dictionary<string, double>();
                 entryDictionary[value] = keys;
+                OnEntryAdded(value);
             }
             foreach (var tag in tags.Select(x => x.ToLower()))
                 keys[tag] = weight;
-            OnEntryAdded(value);
         }
 
         /// <summary>

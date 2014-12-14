@@ -23,7 +23,9 @@ namespace Dynamo.Search
     /// </summary>
     public interface ISearchEntry
     {
+        string Name { get; }
         ICollection<string> SearchTags { get; }
+        string Description { get; }
     }
 
     /// <summary>
@@ -34,6 +36,13 @@ namespace Dynamo.Search
     public class SearchLibrary<TEntry, TItem> : SearchDictionary<TEntry>, ISource<TItem> 
         where TEntry : ISearchEntry, ISource<TItem>
     {
+        public void Add(TEntry entry)
+        {
+            Add(entry, entry.Name);
+            Add(entry, entry.SearchTags, .5);
+            Add(entry, entry.Description);
+        }
+
         protected override void OnEntryRemoved(TEntry entry)
         {
             base.OnEntryRemoved(entry);
@@ -62,11 +71,6 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
-        public void Add(NodeSearchElement entry)
-        {
-            Add(entry, entry.SearchKeywords);
-        }
-
         #region Xml Dump
         public void DumpLibraryToXml(string fileName)
         {
@@ -206,6 +210,11 @@ namespace Dynamo.Search
             }
         }
 
+        string ISearchEntry.Name 
+        {
+            get { return FullCategoryName + "." + Name; }
+        }
+
         public string Name
         {
             get { return name; }
@@ -253,12 +262,7 @@ namespace Dynamo.Search
         {
             get
             {
-                return
-                    SearchKeywords.Concat(Name.AsSingleton())
-                        .SelectMany(
-                            baseName => new[] { baseName, FullCategoryName + "." + baseName })
-                        .Concat(Description.AsSingleton())
-                        .ToList();
+                return SearchKeywords.ToList();
             }
         }
 
