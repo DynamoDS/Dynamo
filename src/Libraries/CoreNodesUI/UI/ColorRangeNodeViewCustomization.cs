@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using Dynamo.Controls;
+using Dynamo.UI;
 using Dynamo.Wpf;
 
 using Color = DSCore.Color;
@@ -20,9 +21,8 @@ namespace DSCoreNodesUI
             var drawPlane = new Image
             {
                 Stretch = Stretch.Fill,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Width = 100,
-                Height = 200
+                Width = 200,
+                Height = Configurations.PortHeightInPixels * 3
             };
 
             var dm = model.Workspace.DynamoModel;
@@ -77,17 +77,15 @@ namespace DSCoreNodesUI
         //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
         private WriteableBitmap CompleteColorScale(IList<Color> colors, IList<double> values)
         {
-            const int size = 64;
-
-            const int width = 1;
-            const int height = size;
+            const int width = 64;
+            const int height = 1;
 
             var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var pixels = new uint[width * height];
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < width; i++)
             {
-                double t = (double)i/size;
+                double t = (double)i / width;
                 var newColor = Color.BuildColorFrom1DRange(colors, values, t);
 
                 pixels[i] = (uint)((255 << 24) + (newColor.Red << 16) + (newColor.Green << 8) + newColor.Blue);
