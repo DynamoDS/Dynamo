@@ -2,6 +2,7 @@
 
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
 {
@@ -30,6 +31,7 @@ namespace Analysis
             return new Label(point,label);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
             package.PushPointVertex(point.X, point.Y, point.Z);
