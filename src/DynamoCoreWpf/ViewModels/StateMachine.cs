@@ -834,7 +834,7 @@ namespace Dynamo.ViewModels
                     new CodeBlockNodeModel(
                         owningWorkspace.DynamoViewModel.HomeSpace.EngineController.LiveRunnerCore);
 
-                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.AddNodeCommand(node, cursor.X, cursor.Y, false, true));
+                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(node, cursor.X, cursor.Y, false, true));
 
                 // select node
                 DynamoSelection.Instance.ClearSelection();

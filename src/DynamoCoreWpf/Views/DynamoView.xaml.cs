@@ -615,7 +615,11 @@ namespace Dynamo.Controls
 
             do
             {
-                var dialog = new FunctionNamePrompt(dynamoViewModel.Model.SearchModel.AllCategoryNames)
+                var allCategories =
+                    SearchCategory.CategorizeSearchEntries(
+                        dynamoViewModel.Model.SearchModel.SearchEntries,
+                        entry => entry.Categories).GetAllCategoryNames();
+                var dialog = new FunctionNamePrompt(allCategories)
                 {
                     categoryBox = { Text = e.Category },
                     DescriptionInput = { Text = e.Description },

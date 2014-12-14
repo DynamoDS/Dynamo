@@ -1,34 +1,96 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Documents;
 
-using Dynamo.Search.SearchElements;
+using Dynamo.Search;
+using Dynamo.UI.Commands;
+
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Wpf.ViewModels
 {
-    public abstract class SearchElementBaseViewModel : BrowserItemViewModel
+    public class NodeSearchElementViewModel : NotificationObject, ISearchEntryViewModel
     {
-        protected SearchElementBaseViewModel(SearchElementBase element) : base(element) { }
+        private bool isSelected;
+
+        public NodeSearchElementViewModel(NodeSearchElement element)
+        {
+            Model = element;
+            Model.PropertyChanged += ModelOnPropertyChanged;
+        }
+
+        private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            switch (propertyChangedEventArgs.PropertyName)
+            {
+                case "Name":
+                    RaisePropertyChanged("Name");
+                    break;
+                case "IsVisibleInSearch":
+                    RaisePropertyChanged("Visibility");
+                    break;
+            }
+        }
+
+        public NodeSearchElement Model { get; set; }
+
+        public string Name
+        {
+            get { return Model.Name; }
+        }
+
+        public bool Visibility
+        {
+            get { return Model.IsVisibleInSearch; }
+        }
+
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                if (value.Equals(isSelected)) return;
+                isSelected = value;
+                RaisePropertyChanged("IsSelected");
+            }
+        }
     }
 
-    public class NodeSearchElementViewModel : SearchElementBaseViewModel
+    public class CustomNodeSearchElementViewModel : NodeSearchElementViewModel
     {
-        public NodeSearchElementViewModel(Search.SearchElements.NodeModelSearchElement element) : base(element) { }
-    }
+        private string path;
 
-    public class CustomNodeSearchElementViewModel : SearchElementBaseViewModel
-    {
-        public CustomNodeSearchElementViewModel(Search.SearchElements.CustomNodeSearchElement element) : base(element) { }
-    }
+        public CustomNodeSearchElementViewModel(CustomNodeSearchElement element) : base(element)
+        {
+            Model.PropertyChanged += ModelOnPropertyChanged;
+            Path = Model.Path;
+        }
 
-    public class CategorySearchElementViewModel : SearchElementBaseViewModel
-    {
-        public CategorySearchElementViewModel(Search.SearchElements.CategorySearchElement element) : base(element) { }
-    }
+        public string Path
+        {
+            get { return path; }
+            set
+            {
+                if (value == path) return;
+                path = value;
+                RaisePropertyChanged("Path");
+            }
+        }
 
-    public class DSFunctionNodeSearchElementViewModel : NodeSearchElementViewModel
-    {
-        public DSFunctionNodeSearchElementViewModel(Search.SearchElements.DSFunctionNodeSearchElement element) : base(element) { }
+        private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "Path")
+                RaisePropertyChanged("Path");
+        }
+
+        public new CustomNodeSearchElement Model
+        {
+            get { return base.Model as CustomNodeSearchElement; }
+            set { base.Model = value; }
+        }
     }
 }

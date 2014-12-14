@@ -13,6 +13,8 @@ using System.Linq;
 
 using DynamoUtilities;
 
+using ProtoCore.Compiler.Associative;
+
 namespace Dynamo.Search
 {
     /// <summary>
@@ -58,23 +60,11 @@ namespace Dynamo.Search
     /// <summary>
     ///     Searchable library of NodeSearchElements that can produce NodeModels.
     /// </summary>
-    public class NodeSearchModel : CategorizedSearchModel<NodeSearchElement, NodeModel>
+    public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
         public void Add(NodeSearchElement entry)
         {
-            Library.Add(entry, entry.SearchKeywords);
-        }
-
-        public void Remove(NodeSearchElement entry)
-        {
-            Library.Remove(entry);
-        }
-
-        //TODO(Steve): Search() method
-
-        protected override ICollection<string> GetCategoriesForEntry(NodeSearchElement entry)
-        {
-            return entry.Categories;
+            Add(entry, entry.SearchKeywords);
         }
 
         #region Xml Dump
@@ -91,10 +81,14 @@ namespace Dynamo.Search
         {
             var document = XmlHelper.CreateDocument("LibraryTree");
 
-            foreach (var category in Root.SubCategories)
+            var root = SearchCategory.CategorizeSearchEntries(
+                SearchEntries,
+                entry => entry.Categories);
+
+            foreach (var category in root.SubCategories)
                 AddCategoryToXml(document.DocumentElement, category);
 
-            foreach (var entry in Root.Entries)
+            foreach (var entry in root.Entries)
                 AddEntryToXml(document.DocumentElement, entry);
 
             return document;
@@ -136,37 +130,18 @@ namespace Dynamo.Search
 
     public static class SearchCategory
     {
-        public static IEnumerable<string> GetAllCategoryNames<TEntry>(this ISearchCategory<TEntry> category)
+        private sealed class SearchCategoryImpl<TEntry> : ISearchCategory<TEntry>
         {
-            return
-                category.SubCategories.SelectMany(
-                    sub =>
-                        sub.GetAllCategoryNames()
-                        .Select(name => sub.Name + "." + name)
-                        .Concat(sub.Name.AsSingleton()));
-        }
-    }
-    
-    /// <summary>
-    /// TODO
-    /// </summary>
-    /// <typeparam name="TEntry"></typeparam>
-    /// <typeparam name="TItem"></typeparam>
-    public abstract class CategorizedSearchModel<TEntry, TItem>  : ISource<TItem>
-        where TEntry : ISearchEntry, ISource<TItem>
-    {
-        private sealed class SearchCategory : ISearchCategory<TEntry>
-        {
-            private SearchCategory(string name, IEnumerable<TEntry> entries, IEnumerable<SearchCategory> subCategories)
+            private SearchCategoryImpl(string name, IEnumerable<TEntry> entries, IEnumerable<SearchCategoryImpl<TEntry>> subCategories)
             {
                 SubCategories = subCategories;
                 Entries = entries;
                 Name = name;
             }
 
-            public static SearchCategory Create(string categoryName, IEnumerable<SearchCategory> subCategories, IEnumerable<TEntry> entries)
+            public static SearchCategoryImpl<TEntry> Create(string categoryName, IEnumerable<SearchCategoryImpl<TEntry>> subCategories, IEnumerable<TEntry> entries)
             {
-                return new SearchCategory(categoryName, entries, subCategories);
+                return new SearchCategoryImpl<TEntry>(categoryName, entries, subCategories);
             }
 
             public string Name { get; private set; }
@@ -174,37 +149,20 @@ namespace Dynamo.Search
             public IEnumerable<ISearchCategory<TEntry>> SubCategories { get; private set; }
         }
 
-        protected readonly SearchLibrary<TEntry, TItem> Library;
-        
-        public ISearchCategory<TEntry> Root
+        public static ISearchCategory<TEntry> CategorizeSearchEntries<TEntry>(
+            IEnumerable<TEntry> entries, Func<TEntry, ICollection<string>> categorySelector)
         {
-            get
-            {
-                return Library.SearchEntries.GroupByRecursive<TEntry, string, SearchCategory>(
-                    GetCategoriesForEntry,
-                    SearchCategory.Create,
-                    "Root");
-            }
+            return entries.GroupByRecursive<TEntry, string, SearchCategoryImpl<TEntry>>(
+                categorySelector,
+                SearchCategoryImpl<TEntry>.Create,
+                "Root");
         }
 
-        public IEnumerable<string> AllCategoryNames
+        public static IEnumerable<string> GetAllCategoryNames<TEntry>(this ISearchCategory<TEntry> category)
         {
-            get { return Root.SubCategories.SelectMany(sub => sub.GetAllCategoryNames()); }
-        }
-
-        protected abstract ICollection<string> GetCategoriesForEntry(TEntry entry);
-
-        protected CategorizedSearchModel()
-        {
-            Library = new SearchLibrary<TEntry, TItem>();
-            Library.ItemProduced += OnItemProduced;
-        }
-
-        public event Action<TItem> ItemProduced;
-        protected virtual void OnItemProduced(TItem obj)
-        {
-            var handler = ItemProduced;
-            if (handler != null) handler(obj);
+            yield return category.Name;
+            foreach (var name in category.SubCategories.SelectMany(GetAllCategoryNames))
+                yield return string.Format("{0}.{1}", category.Name, name);
         }
     }
 
@@ -219,6 +177,7 @@ namespace Dynamo.Search
         private string name;
         private bool isVisibleInSearch = true;
 
+        //TODO(Steve): This probably should exist only in the ViewModel
         public bool IsVisibleInSearch
         {
             get { return isVisibleInSearch; }
@@ -374,8 +333,18 @@ namespace Dynamo.Search
     {
         private readonly CustomNodeManager customNodeManager;
         private Guid id;
+        private string path;
 
-        public string Path { get; private set; }
+        public string Path
+        {
+            get { return path; }
+            private set
+            {
+                if (value == path) return;
+                path = value;
+                OnPropertyChanged("Path");
+            }
+        }
 
         public CustomNodeSearchElement(CustomNodeManager customNodeManager, CustomNodeInfo info)
         {

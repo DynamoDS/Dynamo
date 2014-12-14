@@ -11,9 +11,10 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.ViewModels;
+
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
-using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -318,12 +319,13 @@ namespace Dynamo.Search
             Keyboard.Focus(SearchTextBox);
         }
 
+
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
             if (menuItem != null)
             {
-                var element = menuItem.DataContext as CustomNodeSearchElement;
+                var element = menuItem.DataContext as CustomNodeSearchElementViewModel;
                 if (element != null)
                 {
                     if (dynamoViewModel.OpenCommand.CanExecute(element.Path))

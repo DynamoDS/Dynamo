@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Design;
 using System.Linq;
+using System.Web.Configuration;
 using System.Xml;
 using ICSharpCode.AvalonEdit.Utils; //TODO(Steve): Replace with .NET ImmutableCollections
 
@@ -14,8 +16,28 @@ namespace Dynamo.Utilities
     /// <typeparam name="T"></typeparam>
     public interface IRecursiveGrouping<out T> : IGrouping<T, IRecursiveGrouping<T>> { }
 
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <typeparam name="TNodeTag"></typeparam>
+    /// <typeparam name="TLeaf"></typeparam>
+    public interface ITree<out TNodeTag, out TLeaf>
+    {
+        TNodeTag Tag { get; }
+        IEnumerable<TLeaf> Leaves { get; }
+        IEnumerable<ITree<TNodeTag, TLeaf>> SubTrees { get; }
+    }
+
     public static class ExtensionMethods
     {
+        public static IEnumerable<TNodeTag> GetAllTags<TNodeTag, TLeaf>(
+            this ITree<TNodeTag, TLeaf> tree)
+        {
+            yield return tree.Tag;
+            foreach (var tag in tree.SubTrees.SelectMany(sub => sub.GetAllTags()))
+                yield return tag;
+        }
+
         /// <summary>
         /// TODO
         /// </summary>
@@ -40,6 +62,16 @@ namespace Dynamo.Utilities
             return GroupByRecursive(query);
         }
 
+        public static ITree<TNodeTag, TLeaf> GroupByRecursive<TNodeTag, TLeaf>(
+            this IEnumerable<TLeaf> entries, Func<TLeaf, ICollection<TNodeTag>> categorySelector,
+            TNodeTag rootTag)
+        {
+            return entries.GroupByRecursive<TLeaf, TNodeTag, _Tree<TNodeTag, TLeaf>>(
+                categorySelector,
+                _Tree<TNodeTag, TLeaf>.Create,
+                rootTag);
+        }
+
         /// <summary>
         /// TODO
         /// </summary>
@@ -57,8 +89,29 @@ namespace Dynamo.Utilities
         {
             return GroupByRecursive(allLeaves.GroupByRecursive(keySelector), treeCreator, rootKey);
         }
-
+        
         #region GroupByRecursive helpers
+
+        private sealed class _Tree<TNode, TEntry> : ITree<TNode, TEntry>
+        {
+            private _Tree(TNode name, IEnumerable<TEntry> entries, IEnumerable<_Tree<TNode, TEntry>> subCategories)
+            {
+                SubTrees = subCategories;
+                Leaves = entries;
+                Tag = name;
+            }
+
+            public static _Tree<TNode, TEntry> Create(TNode categoryName, IEnumerable<_Tree<TNode, TEntry>> subCategories, IEnumerable<TEntry> entries)
+            {
+                return new _Tree<TNode, TEntry>(categoryName, entries, subCategories);
+            }
+
+            public TNode Tag { get; private set; }
+            public IEnumerable<TEntry> Leaves { get; private set; }
+            public IEnumerable<ITree<TNode, TEntry>> SubTrees { get; private set; }
+        }
+
+
         private static V GroupByRecursive<TLeaf, TNodeKey, V>(
             IEnumerable<IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>> grouped,
             Func<TNodeKey, IEnumerable<V>, IEnumerable<TLeaf>, V> grouper, TNodeKey rootKey)
