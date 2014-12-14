@@ -266,6 +266,30 @@ namespace DSCore
                 (int)(num[3] / totalArea));
         }
 
+        public static Color[,] CreateColorMap(int width, int height, IList<Color> colors, IList<UV> uvs  )
+        {
+            var colorMap = new Color[width, height];
+
+            for (int w = 0; w < width; w++)
+            {
+                for (int h = 0; h < height; h++)
+                {
+                    var currentUV = UV.ByCoordinates(w/width, h/height);
+                    var weightedColors = colors.Zip(uvs, (c, uv) => new WeightedColor2D(c, Area(uv, currentUV))).ToList();
+                    colorMap[w, h] = Blerp(weightedColors);
+                }
+            }
+
+            return colorMap;
+        }
+
+        private static double Area(UV min, UV max)
+        {
+            var u = System.Math.Sqrt(System.Math.Pow(max.U - min.U, 2));
+            var v = System.Math.Sqrt(System.Math.Pow(max.V - min.V, 2));
+            return u * v;
+        }
+
         public override string ToString()
         {
             return string.Format("Color: Red={0}, Green={1}, Blue={2}, Alpha={3}", Red, Green, Blue, Alpha);
@@ -366,12 +390,9 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(false)]
         public class WeightedColor2D : WeightedColorBase
         {
-            public UV Index { get; set; }
-
-            public WeightedColor2D(Color color, UV index, double weight)
+            public WeightedColor2D(Color color, double weight)
             {
                 Color = color;
-                Index = index;
                 Weight = weight;
             }
         }

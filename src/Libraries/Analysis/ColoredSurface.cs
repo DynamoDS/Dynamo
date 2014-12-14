@@ -233,7 +233,7 @@ namespace Analysis
                     var weightedColors =
                         nodes.Where(n => n.Point != null)
                             .Where(n => n.Item != null)
-                            .Select(n => new Color.WeightedColor2D((Color)n.Item, n.Point, uv.Area(n.Point))).ToList();
+                            .Select(n => new Color.WeightedColor2D((Color)n.Item, uv.Area(n.Point))).ToList();
                     avgColor = Color.Blerp(weightedColors);
                 }
 
@@ -244,50 +244,6 @@ namespace Analysis
 
                 colorCount += 4;
             }
-        }
-
-        private Color CalculateColorDistance(UV uv)
-        {
-            // The distances from this to each of the calculation points
-            var distances = new double[uvs.Count()];
-            var maxDistance = 0.0;
-            for (int k = 0; k < uvs.Count(); k++)
-            {
-                var uvTest = uvs[k];
-                var d =
-                    System.Math.Sqrt(
-                        System.Math.Pow(uvTest.U - uv.U, 2) + System.Math.Pow(uvTest.V - uv.V, 2));
-                distances[k] = d;
-
-                if (d > maxDistance)
-                    maxDistance = d;
-            }
-
-            var colorContributions = new List<DSCore.Color>();
-
-            for (int j = 0; j < colors.Count(); j++)
-            {
-                var c = colors[j];
-
-                var color = Color.Divide(colors[j],System.Math.Pow(distances[j] + 1,2));
-                colorContributions.Add(color);
-            }
-
-            var a = 255;
-            var r = 255;
-            var g = 255;
-            var b = 255;
-
-            foreach (var c in colorContributions)
-            {
-                a += c.Alpha;
-                r += c.Red;
-                g += c.Green;
-                b += c.Blue;
-            }
-
-            var size = colors.Count() + 1;
-            return DSCore.Color.ByARGB(255, r/size, g/size, b/size);
         }
     }
 }
