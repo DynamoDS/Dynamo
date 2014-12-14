@@ -1829,7 +1829,7 @@ namespace Dynamo.Controls
             if (value is BrowserInternalElementForClassesViewModel)
                 return true;
 
-            if (value is BrowserRootElement)
+            if (value is BrowserRootElementViewModel)
             {
                 var rootElement = value as BrowserRootElementViewModel;
                 return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();

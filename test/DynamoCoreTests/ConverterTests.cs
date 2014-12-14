@@ -525,10 +525,12 @@ namespace Dynamo.Tests
             Assert.AreEqual(Visibility.Visible, result);
 
             var rootElement = new BrowserRootElement("Top Category");
-            var BiefcVM = new BrowserInternalElementForClassesViewModel(new BrowserInternalElementForClasses("Classes", rootElement));
-            rootElement.Items.Add(BiefcVM.Model);
+            var BIEFC = new BrowserInternalElementForClasses("Classes", rootElement);
+            rootElement.Items.Add(BIEFC);
 
-            result = converter.Convert(rootElement.Items[0], null, null, null);
+            var BreVM = new BrowserRootElementViewModel(rootElement);
+
+            result = converter.Convert(BreVM.Items[0], null, null, null);
             Assert.AreEqual(Visibility.Collapsed, result);
         }
 
