@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -23,6 +24,7 @@ using SharpDX;
 using Material = System.Windows.Media.Media3D.Material;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Point = System.Windows.Point;
+using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Controls
 {
@@ -201,7 +203,7 @@ namespace Dynamo.Controls
             this.FillLightColor = new Color4(0.3f, 0.3f, 0.3f, 1.0f);
             this.FillLightDirection = new Vector3(0.5f, -1, 0);
 
-            this.RenderTechnique = Techniques.RenderColors;
+            this.RenderTechnique = Techniques.RenderPhong;
             this.WhiteMaterial = PhongMaterials.White;
 
             this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);
@@ -209,8 +211,8 @@ namespace Dynamo.Controls
             // camera setup
             this.Camera = new HelixToolkit.Wpf.SharpDX.PerspectiveCamera
             {
-                Position = new Point3D(3, 3, 5),
-                LookDirection = new Vector3D(-3, -3, -5),
+                Position = new Point3D(10, 10, 10),
+                LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0)
             };
 
@@ -387,7 +389,8 @@ namespace Dynamo.Controls
 
             for (int x = -size; x <= size; x++)
             {
-                positions.Add(new Vector3(x, -.001f, -size));
+                var v = new Vector3(x, -.001f, -size);
+                positions.Add(v);
                 indices.Add(positions.Count-1);
                 positions.Add(new Vector3(x, -.001f, size));
                 indices.Add(positions.Count-1);
@@ -440,7 +443,7 @@ namespace Dynamo.Controls
 
             positions.Add(new Vector3());
             indices.Add(positions.Count - 1);
-            positions.Add(new Vector3(0, 0, 1));
+            positions.Add(new Vector3(0, 0, -1));
             indices.Add(positions.Count - 1);
             colors.Add(Color.Green);
             colors.Add(Color.Green);
@@ -589,7 +592,7 @@ namespace Dynamo.Controls
                 var z = (float)p.PointVertices[i + 2];
 
                 // DirectX convention - Y Up
-                var pt = new Vector3(x, z, y);
+                var pt = new Vector3(x, z, -y);
 
                 if (i == 0 && p.DisplayLabels)
                 {
@@ -635,7 +638,7 @@ namespace Dynamo.Controls
                     var z1 = (float)p.LineStripVertices[idx + 2];
 
                     // DirectX convention - Y Up
-                    var point = new Vector3(x1, z1, y1);
+                    var point = new Vector3(x1, z1, -y1);
 
                     if (i == 0 && outerCount == 0 && p.DisplayLabels)
                     {
@@ -735,26 +738,6 @@ namespace Dynamo.Controls
             {
                 MeshCount++;
             }
-
-            // Backface rendering. Currently causes 
-            // out of memory exceptions as we're doubling.
-            // geometry inside the same mesh.
-
-            //if (!p.TriangleVertices.Any()) return;
-
-            // Create reversed backfaces
-            //var copytri = new int[mesh.Indices.Count];
-            //mesh.Indices.CopyTo(copytri);
-            //Array.Reverse(copytri);
-
-            //var copynorm = new Vector3[mesh.Normals.Count];
-            //for (int i = 0; i < copynorm.Length; i++)
-            //    copynorm[i] = -1 * mesh.Normals[i];
-
-            //mesh.Positions.AddRange(mesh.Positions.ToArray());
-            //mesh.Indices.AddRange(copytri);
-            //mesh.Normals.AddRange(copynorm);
-            //mesh.Colors.AddRange(mesh.Colors.ToArray());
         }
 
         private static Color4 GetColor(RenderPackage p, int color_idx)
@@ -780,7 +763,7 @@ namespace Dynamo.Controls
             var z = (float)p[i + 2];
 
             // DirectX convention - Y Up
-            var new_point = new Vector3(x, z, y);
+            var new_point = new Vector3(x, z, -y);
             return new_point;
         }
 
