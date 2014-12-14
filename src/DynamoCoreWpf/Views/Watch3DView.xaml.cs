@@ -378,7 +378,7 @@ namespace Dynamo.Controls
             var indices = new IntCollection();
             var colors = new Color4Collection();
 
-            var size = 50;
+            var size = 100;
 
             for (int x = -size; x <= size; x++)
             {
