@@ -596,10 +596,14 @@ namespace Dynamo.Controls
                     text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), pt));
                 }
 
-                var ptColor = new SharpDX.Color4(
+                var ptColor = SharpDX.Color4.Black;
+                if (p.PointVertexColors.Count > color_idx + 2)
+                {
+                    ptColor = new SharpDX.Color4(
                                         (p.PointVertexColors[color_idx] / 255.0f),
                                         (p.PointVertexColors[color_idx + 1] / 255.0f),
                                         (p.PointVertexColors[color_idx + 2] / 255.0f), 1);
+                }
 
                 if (ptColor == SharpDX.Color.Red)
                 {
