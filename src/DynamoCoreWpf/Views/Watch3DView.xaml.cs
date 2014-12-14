@@ -101,10 +101,6 @@ namespace Dynamo.Controls
         
         public Color4 DirectionalLightColor { get; private set; }
         
-        public Vector3 FillLightDirection { get; private set; }
-        
-        public Color4 FillLightColor { get; private set; }
-        
         public Color4 AmbientLightColor { get; private set; }
         
         public System.Windows.Media.Media3D.Transform3D Model1Transform { get; private set; }
@@ -199,9 +195,6 @@ namespace Dynamo.Controls
 
             this.DirectionalLightColor = SharpDX.Color.White;
             this.DirectionalLightDirection = new Vector3(-0.5f, -1, 0);
-
-            this.FillLightColor = new Color4(0.3f, 0.3f, 0.3f, 1.0f);
-            this.FillLightDirection = new Vector3(0.5f, -1, 0);
 
             this.RenderTechnique = Techniques.RenderPhong;
             this.WhiteMaterial = PhongMaterials.White;
