@@ -121,16 +121,32 @@
     <value>Enter an area.</value>
     <comment>Description for Area From String</comment>
   </data>
+  <data name="AreaFromStringSearchTags" xml:space="preserve">
+    <value>Imperial;Metric;Area;Project;units</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
+  </data>
   <data name="LengthFromStringDescription" xml:space="preserve">
     <value>Enter a length.</value>
     <comment>Description for Length From String</comment>
+  </data>
+  <data name="LengthFromStringSearchTags" xml:space="preserve">
+    <value>Imperial;Metric;Length;Project;units</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="UnitTypesDescription" xml:space="preserve">
     <value>Select a unit of measurement.</value>
     <comment>Description for Unit Types</comment>
   </data>
+  <data name="UnitTypesSearchTags" xml:space="preserve">
+    <value>units</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
+  </data>
   <data name="VolumeFromStringDescription" xml:space="preserve">
     <value>Enter a volume.</value>
     <comment>Description for Volume From String</comment>
+  </data>
+  <data name="VolumeFromStringSearchTags" xml:space="preserve">
+    <value>Imperial;Metric;volume;Project;units</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
 </root>

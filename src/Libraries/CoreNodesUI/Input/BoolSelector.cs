@@ -40,7 +40,7 @@ namespace DSCoreNodesUI
     [NodeName("Boolean")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("BooleanDescription", typeof(Properties.Resources))]
-    [NodeSearchTags("true", "truth", "false")]
+    [NodeSearchTags("BooleanSelectorSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class BoolSelector : Bool
     {

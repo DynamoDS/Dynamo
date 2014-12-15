@@ -2028,6 +2028,23 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All)]
     public class NodeSearchTagsAttribute : Attribute
     {
+        public NodeSearchTagsAttribute(string tagsID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                var tagString = (string)prop.GetValue(null, null);
+                Tags = tagString.Split(';').ToList();
+            }
+            else
+            {
+                Tags = new List<String> { tagsID };
+            }
+        }
+
         public NodeSearchTagsAttribute(params string[] tags)
         {
             Tags = tags.ToList();
@@ -2064,19 +2081,19 @@ namespace Dynamo.Models
             ElementDescription = description;
         }
 
-        public NodeDescriptionAttribute(string description, Type resourceType)
+        public NodeDescriptionAttribute(string descriptionResourceID, Type resourceType)
         {
             if (resourceType == null)
                 throw new ArgumentNullException("resourceType");
 
-            var prop = resourceType.GetProperty(description, BindingFlags.Public | BindingFlags.Static);
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static);
             if (prop != null && prop.PropertyType == typeof(String))
             {
                 ElementDescription = (string)prop.GetValue(null, null);
             }
             else
             {
-                ElementDescription = description;
+                ElementDescription = descriptionResourceID;
             }
         }
 

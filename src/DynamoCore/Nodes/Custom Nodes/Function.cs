@@ -314,7 +314,7 @@ namespace Dynamo.Nodes
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("InputNodeDescription", typeof(Properties.Resources))]
-    [NodeSearchTags("variable", "argument", "parameter")]
+    [NodeSearchTags("InputNodeSearchTags", typeof(Properties.Resources))]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]

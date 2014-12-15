@@ -125,6 +125,10 @@
     <value>Selection between a true and false.</value>
     <comment>Description for Boolean</comment>
   </data>
+  <data name="BooleanSelectorSearchTags" xml:space="preserve">
+    <value>true;truth;false</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
+  </data>
   <data name="ColorRangeDescription" xml:space="preserve">
     <value>Get a color given a color range.</value>
     <comment>Description for Color Range</comment>
@@ -152,6 +156,14 @@
   <data name="FormulaDescription" xml:space="preserve">
     <value>Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/</value>
     <comment>Description for Formula</comment>
+  </data>
+  <data name="FromArraySearchTags" xml:space="preserve">
+    <value>string.fromarray;tostring;2string;list2string;listtostring;array2string;arraytostring</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
+  </data>
+  <data name="FromObjectSearchTags" xml:space="preserve">
+    <value>string.fromobject;tostring;2string;number2string;numbertostring</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FunctionApplyDescription" xml:space="preserve">
     <value>Applies a function to arguments.</value>
@@ -248,6 +260,14 @@
   <data name="WatchImageDescription" xml:space="preserve">
     <value>Previews an image</value>
     <comment>Description for Watch Image</comment>
+  </data>
+  <data name="WatchImageSearchTags" xml:space="preserve">
+    <value>image</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
+  </data>
+  <data name="WatchSearchTags" xml:space="preserve">
+    <value>print;output;display</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
     <value>Make a web request given a url.</value>

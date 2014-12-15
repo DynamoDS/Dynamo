@@ -140,6 +140,10 @@
     <value>A function parameter, use with custom nodes</value>
     <comment>Description for input node</comment>
   </data>
+  <data name="InputNodeSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
+  </data>
   <data name="NumberNodeDescription" xml:space="preserve">
     <value>Creates a number.</value>
     <comment>Description for number node</comment>

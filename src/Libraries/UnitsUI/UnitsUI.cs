@@ -197,7 +197,7 @@ namespace UnitsUI
     [NodeName("Length From String")]
     [NodeCategory("Units.Length.Create")]
     [NodeDescription("LengthFromStringDescription",typeof(Properties.Resources))]
-    [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
+    [NodeSearchTags("LengthFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
@@ -246,7 +246,7 @@ namespace UnitsUI
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
     [NodeDescription("AreaFromStringDescription",typeof(Properties.Resources))]
-    [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
+    [NodeSearchTags("AreaFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
     {
@@ -277,7 +277,7 @@ namespace UnitsUI
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
     [NodeDescription("VolumeFromStringDescription",typeof(Properties.Resources))]
-    [NodeSearchTags("Imperial", "Metric", "volume", "Project", "units")]
+    [NodeSearchTags("VolumeFromStringSearchTags",typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
     {
@@ -299,7 +299,7 @@ namespace UnitsUI
     [NodeName("Unit Types")]
     [NodeCategory("Units")]
     [NodeDescription("UnitTypesDescription", typeof(Properties.Resources))]
-    [NodeSearchTags("units")]
+    [NodeSearchTags("UnitTypesSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
