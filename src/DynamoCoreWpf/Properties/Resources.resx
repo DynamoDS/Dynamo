@@ -1082,7 +1082,177 @@ You will get a chance to save your work.</value>
   <data name="InstalledPackageViewTitle" xml:space="preserve">
     <value>Installed Packages</value>
   </data>
+  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
+    <value>Downloaded</value>
+  </data>
+  <data name="PackageDownloadStateDownloading" xml:space="preserve">
+    <value>Downloading</value>
+  </data>
+  <data name="PackageDownloadStateError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="PackageDownloadStateInstalled" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="PackageDownloadStateInstalling" xml:space="preserve">
+    <value>Installing</value>
+  </data>
+  <data name="PackageDownloadStateStarting" xml:space="preserve">
+    <value>Starting</value>
+  </data>
   <data name="PackageManagerWebSiteButton" xml:space="preserve">
     <value>Package Manager Website</value>
+  </data>
+  <data name="PackageSearchStateNoResult" xml:space="preserve">
+    <value>Search returned no results!</value>
+  </data>
+  <data name="PackageSearchStateSearching" xml:space="preserve">
+    <value>Searching...</value>
+  </data>
+  <data name="PackageSearchStateSyncingWithServer" xml:space="preserve">
+    <value>Syncing with server...</value>
+  </data>
+  <data name="PackageSearchViewClearButton" xml:space="preserve">
+    <value>Clear</value>
+    <comment>Clear completed installation</comment>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderAscending" xml:space="preserve">
+    <value>Ascending</value>
+    <comment>Order by Ascending</comment>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderDescending" xml:space="preserve">
+    <value>Descending</value>
+    <comment>Order by Descending</comment>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByAuthor" xml:space="preserve">
+    <value>Author</value>
+    <comment>Sort package by author name</comment>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByDownloads" xml:space="preserve">
+    <value>Downloads</value>
+    <comment>Sort package by download numbers</comment>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByName" xml:space="preserve">
+    <value>Name</value>
+    <comment>Sort package by name</comment>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByVotes" xml:space="preserve">
+    <value>Votes</value>
+    <comment>Sort package by user votes</comment>
+  </data>
+  <data name="PackageSearchViewContextMenuSortyByUpdate" xml:space="preserve">
+    <value>Most Recent Update</value>
+    <comment>Sort package by the most recent update</comment>
+  </data>
+  <data name="PackageSearchViewDeprecated" xml:space="preserve">
+    <value>DEPRECATED</value>
+    <comment>Indicate package has been deprecated</comment>
+  </data>
+  <data name="PackageSearchViewDescription" xml:space="preserve">
+    <value>Description</value>
+    <comment>Package description</comment>
+  </data>
+  <data name="PackageSearchViewInstallButton" xml:space="preserve">
+    <value>⇓ Install</value>
+    <comment>To install package</comment>
+  </data>
+  <data name="PackageSearchViewKeywords" xml:space="preserve">
+    <value>Keywords</value>
+    <comment>Package keywords</comment>
+  </data>
+  <data name="PackageSearchViewSearchTextBox" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="PackageSearchViewSortByButton" xml:space="preserve">
+    <value>Sort by</value>
+  </data>
+  <data name="PackageSearchViewTitle" xml:space="preserve">
+    <value>Online Package Search</value>
+  </data>
+  <data name="PackageSearchViewVersions" xml:space="preserve">
+    <value>Versions</value>
+    <comment>Package versions</comment>
+  </data>
+  <data name="PackageSearchViewVisitRepositoryBuutton" xml:space="preserve">
+    <value>Visit package repository</value>
+  </data>
+  <data name="PackageSearchViewVisitWebSiteButton" xml:space="preserve">
+    <value>Visit package website</value>
+  </data>
+  <data name="PackageStateUnknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="PackageUploadStateCompressing" xml:space="preserve">
+    <value>Compressing...</value>
+  </data>
+  <data name="PackageUploadStateCopying" xml:space="preserve">
+    <value>Copying...</value>
+  </data>
+  <data name="PackageUploadStateError" xml:space="preserve">
+    <value>Error!</value>
+    <comment>Something wrong with package uploading</comment>
+  </data>
+  <data name="PackageUploadStateReady" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="PackageUploadStateUploaded" xml:space="preserve">
+    <value>Uploaded</value>
+  </data>
+  <data name="PackageUploadStateUploading" xml:space="preserve">
+    <value>Uploading...</value>
+  </data>
+  <data name="PublishPackagePackageContent" xml:space="preserve">
+    <value>Package Contents</value>
+  </data>
+  <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
+    <value>Is Node Library</value>
+  </data>
+  <data name="PublishPackageViewLicense" xml:space="preserve">
+    <value>License (optional - default is MIT)</value>
+  </data>
+  <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
+    <value>Dependencies</value>
+  </data>
+  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PublishPackageViewPackageGroup" xml:space="preserve">
+    <value>Group (optional)</value>
+    <comment>User to input group name about this package</comment>
+  </data>
+  <data name="PublishPackageViewPackageGroupTooltip" xml:space="preserve">
+    <value>A group to help categorize this package.  Might be useful for a collection of packages related to a firm, school, etc.</value>
+  </data>
+  <data name="PublishPackageViewPackageKeywords" xml:space="preserve">
+    <value>Keywords (optional)</value>
+    <comment>User to input some keywords about this package</comment>
+  </data>
+  <data name="PublishPackageViewPackageKeywordsTooltip" xml:space="preserve">
+    <value>Keywords help find your package in the database.  Separate them by spaces.</value>
+  </data>
+  <data name="PublishPackageViewPackageName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PublishPackageViewPackageVersion" xml:space="preserve">
+    <value>Version (major minor build)</value>
+  </data>
+  <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
+    <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
+  </data>
+  <data name="PublishPackageViewPublish" xml:space="preserve">
+    <value>Publish a Package Online</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
+    <value>Website Url (optional)</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
+    <value>Repository Url (optional)</value>
+    <comment>Github repository</comment>
+  </data>
+  <data name="PublishPackageViewTitle" xml:space="preserve">
+    <value>Publish a Dynamo Package</value>
+  </data>
+  <data name="UnknowDateFormat" xml:space="preserve">
+    <value>Unknown date format</value>
   </data>
 </root>

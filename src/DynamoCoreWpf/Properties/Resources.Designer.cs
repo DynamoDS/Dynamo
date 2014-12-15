@@ -2036,11 +2036,317 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloaded.
+        /// </summary>
+        public static string PackageDownloadStateDownloaded {
+            get {
+                return ResourceManager.GetString("PackageDownloadStateDownloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading.
+        /// </summary>
+        public static string PackageDownloadStateDownloading {
+            get {
+                return ResourceManager.GetString("PackageDownloadStateDownloading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string PackageDownloadStateError {
+            get {
+                return ResourceManager.GetString("PackageDownloadStateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed.
+        /// </summary>
+        public static string PackageDownloadStateInstalled {
+            get {
+                return ResourceManager.GetString("PackageDownloadStateInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installing.
+        /// </summary>
+        public static string PackageDownloadStateInstalling {
+            get {
+                return ResourceManager.GetString("PackageDownloadStateInstalling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting.
+        /// </summary>
+        public static string PackageDownloadStateStarting {
+            get {
+                return ResourceManager.GetString("PackageDownloadStateStarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Manager Website.
         /// </summary>
         public static string PackageManagerWebSiteButton {
             get {
                 return ResourceManager.GetString("PackageManagerWebSiteButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search returned no results!.
+        /// </summary>
+        public static string PackageSearchStateNoResult {
+            get {
+                return ResourceManager.GetString("PackageSearchStateNoResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Searching....
+        /// </summary>
+        public static string PackageSearchStateSearching {
+            get {
+                return ResourceManager.GetString("PackageSearchStateSearching", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syncing with server....
+        /// </summary>
+        public static string PackageSearchStateSyncingWithServer {
+            get {
+                return ResourceManager.GetString("PackageSearchStateSyncingWithServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string PackageSearchViewClearButton {
+            get {
+                return ResourceManager.GetString("PackageSearchViewClearButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ascending.
+        /// </summary>
+        public static string PackageSearchViewContextMenuOrderAscending {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuOrderAscending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Descending.
+        /// </summary>
+        public static string PackageSearchViewContextMenuOrderDescending {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuOrderDescending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author.
+        /// </summary>
+        public static string PackageSearchViewContextMenuSortByAuthor {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuSortByAuthor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads.
+        /// </summary>
+        public static string PackageSearchViewContextMenuSortByDownloads {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuSortByDownloads", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PackageSearchViewContextMenuSortByName {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuSortByName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Votes.
+        /// </summary>
+        public static string PackageSearchViewContextMenuSortByVotes {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuSortByVotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most Recent Update.
+        /// </summary>
+        public static string PackageSearchViewContextMenuSortyByUpdate {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuSortyByUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DEPRECATED.
+        /// </summary>
+        public static string PackageSearchViewDeprecated {
+            get {
+                return ResourceManager.GetString("PackageSearchViewDeprecated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string PackageSearchViewDescription {
+            get {
+                return ResourceManager.GetString("PackageSearchViewDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ⇓ Install.
+        /// </summary>
+        public static string PackageSearchViewInstallButton {
+            get {
+                return ResourceManager.GetString("PackageSearchViewInstallButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keywords.
+        /// </summary>
+        public static string PackageSearchViewKeywords {
+            get {
+                return ResourceManager.GetString("PackageSearchViewKeywords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search....
+        /// </summary>
+        public static string PackageSearchViewSearchTextBox {
+            get {
+                return ResourceManager.GetString("PackageSearchViewSearchTextBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort by.
+        /// </summary>
+        public static string PackageSearchViewSortByButton {
+            get {
+                return ResourceManager.GetString("PackageSearchViewSortByButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Online Package Search.
+        /// </summary>
+        public static string PackageSearchViewTitle {
+            get {
+                return ResourceManager.GetString("PackageSearchViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Versions.
+        /// </summary>
+        public static string PackageSearchViewVersions {
+            get {
+                return ResourceManager.GetString("PackageSearchViewVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visit package repository.
+        /// </summary>
+        public static string PackageSearchViewVisitRepositoryBuutton {
+            get {
+                return ResourceManager.GetString("PackageSearchViewVisitRepositoryBuutton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visit package website.
+        /// </summary>
+        public static string PackageSearchViewVisitWebSiteButton {
+            get {
+                return ResourceManager.GetString("PackageSearchViewVisitWebSiteButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string PackageStateUnknown {
+            get {
+                return ResourceManager.GetString("PackageStateUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compressing....
+        /// </summary>
+        public static string PackageUploadStateCompressing {
+            get {
+                return ResourceManager.GetString("PackageUploadStateCompressing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copying....
+        /// </summary>
+        public static string PackageUploadStateCopying {
+            get {
+                return ResourceManager.GetString("PackageUploadStateCopying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error!.
+        /// </summary>
+        public static string PackageUploadStateError {
+            get {
+                return ResourceManager.GetString("PackageUploadStateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready.
+        /// </summary>
+        public static string PackageUploadStateReady {
+            get {
+                return ResourceManager.GetString("PackageUploadStateReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploaded.
+        /// </summary>
+        public static string PackageUploadStateUploaded {
+            get {
+                return ResourceManager.GetString("PackageUploadStateUploaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploading....
+        /// </summary>
+        public static string PackageUploadStateUploading {
+            get {
+                return ResourceManager.GetString("PackageUploadStateUploading", resourceCulture);
             }
         }
         
@@ -2059,6 +2365,150 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageWarningMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageWarningMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Contents.
+        /// </summary>
+        public static string PublishPackagePackageContent {
+            get {
+                return ResourceManager.GetString("PublishPackagePackageContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is Node Library.
+        /// </summary>
+        public static string PublishPackageViewContextMenuIsNodeLibrary {
+            get {
+                return ResourceManager.GetString("PublishPackageViewContextMenuIsNodeLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License (optional - default is MIT).
+        /// </summary>
+        public static string PublishPackageViewLicense {
+            get {
+                return ResourceManager.GetString("PublishPackageViewLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dependencies.
+        /// </summary>
+        public static string PublishPackageViewPackageDependencies {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageDependencies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string PublishPackageViewPackageDescription {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group (optional).
+        /// </summary>
+        public static string PublishPackageViewPackageGroup {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A group to help categorize this package.  Might be useful for a collection of packages related to a firm, school, etc..
+        /// </summary>
+        public static string PublishPackageViewPackageGroupTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageGroupTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keywords (optional).
+        /// </summary>
+        public static string PublishPackageViewPackageKeywords {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageKeywords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keywords help find your package in the database.  Separate them by spaces..
+        /// </summary>
+        public static string PublishPackageViewPackageKeywordsTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageKeywordsTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PublishPackageViewPackageName {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version (major minor build).
+        /// </summary>
+        public static string PublishPackageViewPackageVersion {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted..
+        /// </summary>
+        public static string PublishPackageViewPackageVersionTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageVersionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish a Package Online.
+        /// </summary>
+        public static string PublishPackageViewPublish {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPublish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Website Url (optional).
+        /// </summary>
+        public static string PublishPackageViewPublisherWebiSite {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPublisherWebiSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository Url (optional).
+        /// </summary>
+        public static string PublishPackageViewRepositoryUrl {
+            get {
+                return ResourceManager.GetString("PublishPackageViewRepositoryUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish a Dynamo Package.
+        /// </summary>
+        public static string PublishPackageViewTitle {
+            get {
+                return ResourceManager.GetString("PublishPackageViewTitle", resourceCulture);
             }
         }
         
@@ -2284,6 +2734,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UninstallingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UninstallingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown date format.
+        /// </summary>
+        public static string UnknowDateFormat {
+            get {
+                return ResourceManager.GetString("UnknowDateFormat", resourceCulture);
             }
         }
         

@@ -53,7 +53,7 @@ namespace Dynamo.Controls
             var dateString = value as string;
             if (dateString != null) return PrettyDate(dateString);
 
-            return "Unknown date format";
+            return Resources.UnknowDateFormat;
         }
 
         private string PrettyDate(string json_string)
@@ -80,23 +80,23 @@ namespace Dynamo.Controls
 
                 if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
                 {
-                    return "Search returned no results!";
+                    return Resources.PackageSearchStateNoResult;
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
                 {
-                    return "";
+                    return String.Empty;
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
                 {
-                    return "Searching...";
+                    return Resources.PackageSearchStateSearching;
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
                 {
-                    return "Syncing with server...";
+                    return Resources.PackageSearchStateSyncingWithServer;
                 }
             }
 
-            return "Unknown";
+            return Resources.PackageStateUnknown;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -116,32 +116,31 @@ namespace Dynamo.Controls
 
                 if (st == PackageUploadHandle.State.Compressing)
                 {
-                    return "Compressing...";
+                    return Resources.PackageUploadStateCompressing;
                 }
                 else if (st == PackageUploadHandle.State.Copying)
                 {
-                    return "Copying...";
+                    return Resources.PackageUploadStateCopying;
                 }
                 else if (st == PackageUploadHandle.State.Error)
                 {
-                    return "Error!";
+                    return Resources.PackageUploadStateError;
                 }
                 else if (st == PackageUploadHandle.State.Ready)
                 {
-                    return "Ready";
+                    return Resources.PackageUploadStateReady;
                 }
                 else if (st == PackageUploadHandle.State.Uploaded)
                 {
-                    return "Uploaded";
+                    return Resources.PackageUploadStateUploaded;
                 }
                 else if (st == PackageUploadHandle.State.Uploading)
                 {
-                    return "Uploading...";
+                    return Resources.PackageUploadStateUploading;
                 }
-
             }
 
-            return "Unknown";
+            return Resources.PackageStateUnknown;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -162,32 +161,31 @@ namespace Dynamo.Controls
 
                 if (st == PackageDownloadHandle.State.Downloaded)
                 {
-                    return "Downloaded";
+                    return Resources.PackageDownloadStateDownloaded;
                 }
                 else if (st == PackageDownloadHandle.State.Downloading)
                 {
-                    return "Downloading";
+                    return Resources.PackageDownloadStateDownloading;
                 }
                 else if (st == PackageDownloadHandle.State.Error)
                 {
-                    return "Error";
+                    return Resources.PackageDownloadStateError;
                 }
                 else if (st == PackageDownloadHandle.State.Installed)
                 {
-                    return "Installed";
+                    return Resources.PackageDownloadStateInstalled;
                 }
                 else if (st == PackageDownloadHandle.State.Installing)
                 {
-                    return "Installing";
+                    return Resources.PackageDownloadStateInstalling;
                 }
                 else  if (st == PackageDownloadHandle.State.Uninitialized)
                 {
-                    return "Starting";
+                    return Resources.PackageDownloadStateStarting;
                 }
-
             }
 
-            return "Unknown";
+            return Resources.PackageStateUnknown;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
