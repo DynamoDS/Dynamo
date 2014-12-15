@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Documents;
+﻿using System.ComponentModel;
+using System.Windows.Input;
 
 using Dynamo.Search;
-using Dynamo.UI.Commands;
 
+using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Wpf.ViewModels
@@ -21,6 +16,7 @@ namespace Dynamo.Wpf.ViewModels
         {
             Model = element;
             Model.PropertyChanged += ModelOnPropertyChanged;
+            ClickedCommand = new DelegateCommand(Model.ProduceNode);
         }
 
         private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -32,6 +28,9 @@ namespace Dynamo.Wpf.ViewModels
                     break;
                 case "IsVisibleInSearch":
                     RaisePropertyChanged("Visibility");
+                    break;
+                case "Description":
+                    RaisePropertyChanged("Description");
                     break;
             }
         }
@@ -58,6 +57,13 @@ namespace Dynamo.Wpf.ViewModels
                 RaisePropertyChanged("IsSelected");
             }
         }
+
+        public string Description
+        {
+            get { return Model.Description; }
+        }
+
+        public ICommand ClickedCommand { get; private set; }
     }
 
     public class CustomNodeSearchElementViewModel : NodeSearchElementViewModel

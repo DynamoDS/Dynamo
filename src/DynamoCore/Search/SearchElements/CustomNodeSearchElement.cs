@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Dynamo.Search.SearchElements
 {
+    [Obsolete("No longer used.", true)]
     public class CustomNodeSearchElement : NodeModelSearchElement, IEquatable<CustomNodeSearchElement>
     {
         public Guid Guid { get; internal set; }

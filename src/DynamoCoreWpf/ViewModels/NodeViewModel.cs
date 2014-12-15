@@ -11,7 +11,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 
 using System.Windows;
-using GraphLayout;
+
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -320,7 +320,7 @@ namespace Dynamo.ViewModels
 
             if (IsDebugBuild)
             {
-                DynamoViewModel.HomeSpace.EngineController.AstBuilt += EngineController_AstBuilt;
+                DynamoViewModel.EngineController.AstBuilt += EngineController_AstBuilt;
             }
         }
 

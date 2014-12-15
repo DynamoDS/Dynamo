@@ -118,9 +118,8 @@ namespace Dynamo.Utilities
             }
             else
             {
-                info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
-                def = null;
-                workspace = null;
+                info = NodeInfos[id];
+                def = loadedCustomNodes[id] as CustomNodeDefinition;
             }
 
             var node = new Function(def, info.Description, info.Category);

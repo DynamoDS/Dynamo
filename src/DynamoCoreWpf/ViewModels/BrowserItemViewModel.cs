@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -7,7 +6,6 @@ using System.Linq;
 using System.Windows.Input;
 
 using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -94,16 +92,22 @@ namespace Dynamo.Wpf.ViewModels
     {
         string Name { get; }
         bool Visibility { get; }
+        bool IsSelected { get; }
+        string Description { get; }
+        ICommand ClickedCommand { get; }
     }
 
     public class NodeCategoryViewModel : NotificationObject, ISearchEntryViewModel
     {
+        public ICommand ClickedCommand { get; private set; }
+
         private string name;
         private ObservableCollection<ISearchEntryViewModel> items;
         private ObservableCollection<NodeSearchElementViewModel> entries;
         private ObservableCollection<NodeCategoryViewModel> subCategories;
         private bool visibility;
         private bool isExpanded;
+        private bool isSelected;
 
         public string Name
         {
@@ -160,6 +164,25 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                if (value.Equals(isSelected)) return;
+                isSelected = value;
+                RaisePropertyChanged("IsSelected");
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return "";
+            }
+        }
+
         public bool IsExpanded
         {
             get { return isExpanded; }
@@ -179,6 +202,8 @@ namespace Dynamo.Wpf.ViewModels
 
         public NodeCategoryViewModel(string name, IEnumerable<NodeSearchElementViewModel> entries, IEnumerable<NodeCategoryViewModel> subs)
         {
+            ClickedCommand = new DelegateCommand(Expand);
+
             Name = name;
             Entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
             SubCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
@@ -192,6 +217,33 @@ namespace Dynamo.Wpf.ViewModels
 
             Visibility = true;
             IsExpanded = false;
+        }
+
+        protected virtual void Expand()
+        {
+            var endState = !IsExpanded;
+
+            //foreach (var ele in this.Siblings)
+            //    ele.IsExpanded = false;
+
+            //Walk down the tree expanding anything nested one layer deep
+            //this can be removed when we have the hierachy implemented properly
+            if (Items.Count == 1 && SubCategories.Any())
+            {
+                var subElement = SubCategories[0];
+                while (subElement.Items.Count == 1)
+                {
+                    subElement.IsExpanded = true;
+                    if (subElement.SubCategories.Any())
+                        subElement = subElement.SubCategories[0];
+                    else 
+                        break;
+                }
+
+                subElement.IsExpanded = true;
+            }
+
+            IsExpanded = endState;
         }
 
         private void SubCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)

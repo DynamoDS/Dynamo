@@ -13,6 +13,7 @@ using DSCoreNodesUI;
 
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
@@ -70,7 +71,7 @@ namespace UnitsUI
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            tb.OnChangeCommitted += delegate { model.RequiresRecalc = true; };
+            tb.OnChangeCommitted += model.OnAstUpdated;
 
             (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
         }
@@ -83,7 +84,7 @@ namespace UnitsUI
                 e.PropertyName == "NumberFormat")
             {
                 this.mesBaseModel.ForceValueRaisePropertyChanged();
-                this.mesBaseModel.RequiresRecalc = true;
+                this.mesBaseModel.OnAstUpdated();
             }
         }
 
@@ -106,7 +107,7 @@ namespace UnitsUI
 
         public void Dispose()
         {
-            tb.OnChangeCommitted += delegate { this.mesBaseModel.RequiresRecalc = true; };
+            tb.OnChangeCommitted += mesBaseModel.OnAstUpdated;
         }
     }
 
@@ -134,14 +135,14 @@ namespace UnitsUI
             RaisePropertyChanged("Value");
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
@@ -171,7 +172,7 @@ namespace UnitsUI
             }
         }
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             if (name == "Value")
             {
@@ -180,7 +181,7 @@ namespace UnitsUI
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
 
     }
@@ -303,7 +304,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
-        public UnitTypes(WorkspaceModel workspace) : base(workspace) { }
+        public UnitTypes(WorkspaceModel workspace) : base() { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {

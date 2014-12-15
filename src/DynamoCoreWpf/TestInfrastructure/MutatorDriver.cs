@@ -111,7 +111,7 @@ namespace Dynamo.TestInfrastructure
                     writer.Flush();
 
                     var engineController =
-                        dynamoViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController;
+                        dynamoViewModel.EngineController;
 
                     passed = mutator.RunTest(node, engineController, writer);
 

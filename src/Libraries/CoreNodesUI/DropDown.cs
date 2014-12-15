@@ -6,7 +6,6 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.Models;
-using Dynamo.Nodes;
 
 namespace DSCoreNodesUI
 {
@@ -86,12 +85,12 @@ namespace DSCoreNodesUI
             PopulateItems();
         }
 
-        protected override void Serialize(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             nodeElement.SetAttribute("index", SaveSelectedIndex(SelectedIndex, Items));            
         }
 
-        protected override void Deserialize(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             // Drop downs previsouly saved their selected index as an int.
             // Between versions of host applications where the number or order of items

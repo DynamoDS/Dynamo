@@ -15,6 +15,7 @@ using DynamoUtilities;
 
 namespace Dynamo.Search
 {
+    [Obsolete("No longer used.", true)]
     public class SearchModel : NotificationObject
     {
         #region Events

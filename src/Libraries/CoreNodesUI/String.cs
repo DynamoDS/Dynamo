@@ -1,9 +1,7 @@
 ﻿using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DSCoreNodesUI.StringNodes
 {
@@ -13,8 +11,7 @@ namespace DSCoreNodesUI.StringNodes
     /// </summary>
     public class ToStringNodeBase : NodeModel
     {
-        public ToStringNodeBase(WorkspaceModel workspace, string functionName)
-            : base(workspace)
+        public ToStringNodeBase(string functionName)
         {
             this.functionName = functionName;
         }
@@ -62,8 +59,7 @@ namespace DSCoreNodesUI.StringNodes
     [IsDesignScriptCompatible]
     public class FromObject: ToStringNodeBase 
     {
-        public FromObject(WorkspaceModel workspace)
-            : base(workspace, "__ToStringFromObject")
+        public FromObject() : base("__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData("obj", "Object to be serialized"));
@@ -79,8 +75,7 @@ namespace DSCoreNodesUI.StringNodes
     [IsDesignScriptCompatible]
     public class FromArray : ToStringNodeBase 
     {
-        public FromArray(WorkspaceModel workspace)
-            : base(workspace, "__ToStringFromArray")
+        public FromArray() : base("__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData("arr", "The array of object to be serialized"));

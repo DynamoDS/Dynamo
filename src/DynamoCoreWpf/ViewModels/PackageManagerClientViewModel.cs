@@ -245,7 +245,7 @@ namespace Dynamo.ViewModels
 
                                 var loader = DynamoViewModel.Model.Loader;
                                 var logger = DynamoViewModel.Model.Logger;
-                                var libraryServices = DynamoViewModel.HomeSpace.EngineController.LibraryServices;
+                                var libraryServices = DynamoViewModel.EngineController.LibraryServices;
                                 downloadPkg.LoadIntoDynamo(
                                     loader,
                                     logger,

@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -215,9 +216,9 @@ namespace Dynamo.Nodes
 
         #region public methods
 
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
@@ -258,11 +259,11 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.SaveNode(xmlDoc, nodeElement, context);
+            base.SerializeCore(nodeElement, context);
 
-            var viewElement = xmlDoc.CreateElement("view");
+            var viewElement = nodeElement.OwnerDocument.CreateElement("view");
             nodeElement.AppendChild(viewElement);
             var viewHelper = new XmlElementHelper(viewElement);
 
@@ -272,7 +273,7 @@ namespace Dynamo.Nodes
             // the view stores the latest position
             OnRequestUpdateLatestCameraPosition();
 
-            var camElement = xmlDoc.CreateElement("camera");
+            var camElement = nodeElement.OwnerDocument.CreateElement("camera");
             viewElement.AppendChild(camElement);
             var camHelper = new XmlElementHelper(camElement);
 
@@ -284,9 +285,9 @@ namespace Dynamo.Nodes
             camHelper.SetAttribute("look_z", LookDirection.Z);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.LoadNode(nodeElement);
+            base.DeserializeCore(nodeElement, context);
             try
             {
                 foreach (XmlNode node in nodeElement.ChildNodes)
@@ -316,15 +317,16 @@ namespace Dynamo.Nodes
             }
             catch (Exception ex)
             {
-                this.Workspace.DynamoModel.Logger.Log(ex);
-                this.Workspace.DynamoModel.Logger.Log("View attributes could not be read from the file.");
+                Log(LogMessage.Error(ex));
+                Log("View attributes could not be read from the file.");
             }
 
         }
 
-        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
+        protected override void RequestVisualUpdateAsyncCore(
+            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
-            return; // No visualization update is required for this node type.
+            // No visualization update is required for this node type.
         }
 
 

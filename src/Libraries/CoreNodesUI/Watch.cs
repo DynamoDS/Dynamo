@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 
 using Dynamo.Controls;
+using Dynamo.Core.Threading;
+using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.ViewModels;
@@ -72,8 +74,9 @@ namespace Dynamo.Nodes
 
             foreach (PortModel p in InPorts)
             {
-                p.PortConnected += InputPortConnected;
-            } 
+                PortModel p1 = p;
+                p.PortConnected += _ => InputPortConnected(p1);
+            }
 
             ShouldDisplayPreviewCore = false;
         }
@@ -107,10 +110,10 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void InputPortConnected(object sender, EventArgs e)
+        private void InputPortConnected(PortModel sender)
         {
             Tuple<int, NodeModel> input;
-            if (TryGetInput(InPorts.IndexOf(sender as PortModel), out input))
+            if (TryGetInput(InPorts.IndexOf(sender), out input))
             {
                 var oldId = astBeingWatched;
                 astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
@@ -201,7 +204,7 @@ namespace Dynamo.Nodes
                 ? AstIdentifierForPreview.Name
                 : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
-            var core = Workspace.DynamoModel.EngineController.LiveRunnerCore;
+            var core = DynamoViewModel.EngineController.LiveRunnerCore;
 
             if (Root != null)
             {
@@ -211,13 +214,13 @@ namespace Dynamo.Nodes
                     inputVar,
                     Root.ShowRawData);
             }
-            else
-                return DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
+            return DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
         }
-        
-        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
+
+        protected override void RequestVisualUpdateAsyncCore(
+            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
-            return; // No visualization update is required for this node type.
+            // Do nothing
         }
         
         #endregion

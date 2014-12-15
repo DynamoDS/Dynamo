@@ -139,7 +139,7 @@ namespace Dynamo.DSEngine
             var scopedNode = node as ScopedNodeModel;
             IEnumerable<AssociativeNode> astNodes = 
                 scopedNode != null
-                    ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging)
+                    ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
                     : node.BuildAst(inputAstNodes);
             
             if (verboseLogging)

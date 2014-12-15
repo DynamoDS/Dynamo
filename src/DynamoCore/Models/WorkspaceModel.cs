@@ -584,22 +584,7 @@ namespace Dynamo.Models
         protected virtual void ResetWorkspaceCore()
         {
         }
-
-        //TODO: Replace all RequestSync calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
-        [Obsolete("Use OnModified Event", true)]
-        public void DisableReporting()
-        {
-            foreach (var node in Nodes)
-                node.DisableReporting();
-        }
-
-        [Obsolete("Use OnModified Event", true)]
-        public void EnableReporting()
-        {
-            foreach (var node in Nodes)
-                node.EnableReporting();
-        }
-
+        
         public IEnumerable<NodeModel> GetHangingNodes()
         {
             return

@@ -66,7 +66,7 @@ namespace SystemTestServices
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
-            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             StartDynamo();
         }
@@ -103,7 +103,7 @@ namespace SystemTestServices
         {
             //Ensure that we leave the workspace marked as
             //not having changes.
-            Model.HomeSpace.HasUnsavedChanges = false;
+            ViewModel.HomeSpace.HasUnsavedChanges = false;
 
             if (View.IsLoaded)
                 View.Close();
@@ -148,7 +148,7 @@ namespace SystemTestServices
         protected void OpenAndRunDynamoDefinition(string subPath)
         {
             OpenDynamoDefinition(subPath);
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ((HomeWorkspaceModel)Model.CurrentWorkspace).Run());
         }
 
         /// <summary>
@@ -187,12 +187,12 @@ namespace SystemTestServices
 
         public void RunCurrentModel()
         {
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => Model.Workspaces.OfType<HomeWorkspaceModel>().First().Run());
         }
 
         public void AssertNoDummyNodes()
         {
-            var nodes = ViewModel.Model.Nodes;
+            var nodes = ViewModel.Model.CurrentWorkspace.Nodes;
 
             double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
             if (dummyNodesCount >= 1)
@@ -214,7 +214,7 @@ namespace SystemTestServices
 
         public NodeModel GetNode<T>(string guid) where T : NodeModel
         {
-            var allNodes = ViewModel.Model.Nodes;
+            var allNodes = ViewModel.Model.CurrentWorkspace.Nodes;
             var nodes = allNodes.Where(x => string.CompareOrdinal(x.GUID.ToString(), guid) == 0);
             if (nodes.Count() < 1)
                 return null;

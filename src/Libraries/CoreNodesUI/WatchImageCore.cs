@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
-using Dynamo.Controls;
+﻿using System.Collections.Generic;
+
+using Dynamo.Core.Threading;
+using Dynamo.DSEngine;
 using Dynamo.Models;
-using Dynamo.UI;
 
 using ProtoCore.AST.AssociativeAST;
 using Image = System.Windows.Controls.Image;
@@ -23,7 +19,6 @@ namespace Dynamo.Nodes
         private Image image;
 
         public WatchImageCore()
-            : base()
         {
             InPortData.Add(new PortData("image", "image"));
             OutPortData.Add(new PortData("image", "image"));
@@ -38,15 +33,10 @@ namespace Dynamo.Nodes
             yield return AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0]);
         }
 
-        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
+        protected override void RequestVisualUpdateAsyncCore(
+            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
-            return; // No visualization update is required for this node type.
-        }
-        
-        public override void UpdateRenderPackage(int maxTessDivisions)
-        {
-            //do nothing
-            //a watch should not draw its outputs
+            //Do nothing
         }
     }
 

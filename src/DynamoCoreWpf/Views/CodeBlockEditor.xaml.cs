@@ -72,7 +72,7 @@ namespace Dynamo.UI.Controls
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
             var engineController =
-                dynamoViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController;
+                dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.GetCompletionsOnType(code, stringToComplete).
                 Select(x => new CodeBlockCompletionData(x));
@@ -80,8 +80,7 @@ namespace Dynamo.UI.Controls
 
         internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
         {
-            var engineController =
-                dynamoViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController;
+            var engineController = dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid).
                 Select(x => new CodeBlockCompletionData(x));
@@ -89,8 +88,7 @@ namespace Dynamo.UI.Controls
 
         internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
-            var engineController =
-                dynamoViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController;
+            var engineController = dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix).
                 Select(x => new CodeBlockInsightItem(x));
@@ -165,8 +163,7 @@ namespace Dynamo.UI.Controls
                 Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
             };
 
-            var engineController =
-                dynamoViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController;
+            var engineController = dynamoViewModel.EngineController;
 
             var wordList = engineController.CodeCompletionServices.GetClasses();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
@@ -184,8 +181,7 @@ namespace Dynamo.UI.Controls
                 Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
             };
 
-            var engineController =
-                dynamoViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController;
+            var engineController = dynamoViewModel.EngineController;
 
             var wordList = engineController.CodeCompletionServices.GetGlobals();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));

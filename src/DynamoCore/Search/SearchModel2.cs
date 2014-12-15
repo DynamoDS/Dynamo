@@ -40,7 +40,7 @@ namespace Dynamo.Search
         {
             Add(entry, entry.Name);
             Add(entry, entry.SearchTags, .5);
-            Add(entry, entry.Description);
+            Add(entry, entry.Description, .2);
         }
 
         protected override void OnEntryRemoved(TEntry entry)
@@ -279,24 +279,52 @@ namespace Dynamo.Search
     /// <summary>
     /// TODO
     /// </summary>
-    public class NodeModelSearchElement : NodeSearchElement
+    public class NodeModelSearchElement : NodeModelSearchElementBase
     {
         private readonly Func<NodeModel> constructor; 
 
-        public NodeModelSearchElement(TypeLoadData typeLoadData)
+        public NodeModelSearchElement(TypeLoadData typeLoadData) : base(typeLoadData)
         {
-            Name = typeLoadData.Name;
-            foreach (var aka in typeLoadData.AlsoKnownAs.Concat(typeLoadData.SearchKeys))
-                SearchKeywords.Add(aka);
-            FullCategoryName = typeLoadData.Category;
-            Description = typeLoadData.Description;
-
             constructor = typeLoadData.Type.GetDefaultConstructor<NodeModel>();
         }
 
         protected override NodeModel ConstructNewNodeModel()
         {
             return constructor();
+        }
+    }
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    public abstract class NodeModelSearchElementBase : NodeSearchElement
+    {
+        protected NodeModelSearchElementBase(TypeLoadData typeLoadData)
+        {
+            Name = typeLoadData.Name;
+            foreach (var aka in typeLoadData.AlsoKnownAs.Concat(typeLoadData.SearchKeys))
+                SearchKeywords.Add(aka);
+            FullCategoryName = typeLoadData.Category;
+            Description = typeLoadData.Description;
+        }
+    }
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    public class CodeBlockNodeSearchElement : NodeModelSearchElementBase
+    {
+        private readonly IEngineControllerManager engineManager;
+
+        public CodeBlockNodeSearchElement(TypeLoadData data, IEngineControllerManager manager)
+            : base(data)
+        {
+            engineManager = manager;
+        }
+
+        protected override NodeModel ConstructNewNodeModel()
+        {
+            return new CodeBlockNodeModel(engineManager.EngineController.LiveRunnerCore);
         }
     }
 

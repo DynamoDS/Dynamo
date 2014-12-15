@@ -6,10 +6,10 @@ using System.Diagnostics;
 
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
+using Dynamo.DSEngine;
 using Dynamo.UI;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -120,6 +120,8 @@ namespace Dynamo.ViewModels
                 return model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             }
         }
+
+        public EngineController EngineController { get { return Model.EngineController; } }
 
         public WorkspaceModel CurrentSpace
         {
@@ -891,7 +893,7 @@ namespace Dynamo.ViewModels
                     break;
             }
 
-            RaisePropertyChanged("Workspaces");
+            //RaisePropertyChanged("Workspaces");
         }
 
         internal void AddToRecentFiles(string path)
@@ -1065,7 +1067,7 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path, HomeSpace.EngineController.LiveRunnerCore);
+            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerCore);
         }
 
         public virtual bool RunInDebug
@@ -1098,7 +1100,7 @@ namespace Dynamo.ViewModels
             // crash sould always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save(HomeSpace.EngineController.LiveRunnerCore);
+                workspace.Save(EngineController.LiveRunnerCore);
                 return true;
             }
             else
@@ -1109,7 +1111,7 @@ namespace Dynamo.ViewModels
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName, HomeSpace.EngineController.LiveRunnerCore);
+                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerCore);
                     return true;
                 }
             }
@@ -1604,11 +1606,11 @@ namespace Dynamo.ViewModels
         {
             if (parameters.ToString() == "BEZIER")
             {
-                ConnectorType = ConnectorType.Bezier;
+                ConnectorType = ConnectorType.BEZIER;
             }
             else
             {
-                ConnectorType = ConnectorType.Polyline;
+                ConnectorType = ConnectorType.POLYLINE;
             }
         }
 
@@ -1757,7 +1759,7 @@ namespace Dynamo.ViewModels
             {
                 foreach (var file in openFileDialog.FileNames)
                 {
-                    HomeSpace.EngineController.ImportLibrary(file);
+                    EngineController.ImportLibrary(file);
                 }
             }
         }

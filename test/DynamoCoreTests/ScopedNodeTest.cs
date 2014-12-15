@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         // test class
         private sealed class TwoScopedInputs: ScopedNodeModel
         {
-            public TwoScopedInputs(WorkspaceModel workspaceModel) : base(workspaceModel)
+            public TwoScopedInputs()
             {
                 InPortData.Add(new PortData("port1", "Port1 block"));
                 InPortData.Add(new PortData("port2", "Port2 block"));
@@ -64,7 +64,7 @@ namespace Dynamo.Tests
 
             var cbn5 = createCbn("n5;");
 
-            var s1 = new TwoScopedInputs(model.CurrentWorkspace);
+            var s1 = new TwoScopedInputs();
             s1.ConnectInput(0, 0, cbn4);
             s1.ConnectInput(1, 0, cbn5);
 
@@ -85,7 +85,7 @@ namespace Dynamo.Tests
             var cbn7 = createCbn("n7;");
             cbn7.ConnectInput(0, 0, cbn6);
 
-            var s2 = new TwoScopedInputs(model.CurrentWorkspace);
+            var s2 = new TwoScopedInputs();
             s2.ConnectInput(0, 0, cbn7);
 
             scopedNodes = s2.GetInScopeNodesForInport(0).ToList();
@@ -130,7 +130,7 @@ namespace Dynamo.Tests
             var cbn5 = createCbn("n5;");
             cbn5.ConnectInput(0, 0, cbn4);
 
-            var s1 = new TwoScopedInputs(model.CurrentWorkspace);
+            var s1 = new TwoScopedInputs();
             s1.ConnectInput(0, 0, cbn4);
 
             var scopedNodes = s1.GetInScopeNodesForInport(0);
@@ -167,7 +167,7 @@ namespace Dynamo.Tests
             var cbn5 = createCbn("n5;");
             cbn5.ConnectInput(0, 0, cbn2);
 
-            var s1 = new TwoScopedInputs(model.CurrentWorkspace);
+            var s1 = new TwoScopedInputs();
             s1.ConnectInput(0, 0, cbn4);
 
             var scopedNodes = s1.GetInScopeNodesForInport(0).ToList();

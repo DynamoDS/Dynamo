@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Controls;
+using Dynamo.Core;
+
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
@@ -11,7 +13,7 @@ namespace DSCoreNodesUI
             return "\"" + base.PrintExpression() + "\"";
         }
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             if (name == "Value")
             {
@@ -20,7 +22,7 @@ namespace DSCoreNodesUI
                 return true;
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

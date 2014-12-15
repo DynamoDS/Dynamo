@@ -25,14 +25,9 @@ namespace Dynamo.Nodes
             : base(new CustomNodeController<CustomNodeDefinition>(def))
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            NickName = def.DisplayName;
             Description = description;
             Category = category;
-        }
-        
-        [Obsolete("Use Definition.FunctionId.ToString()", true)]
-        public string Symbol
-        {
-            get { return Definition.FunctionId.ToString(); }
         }
 
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }

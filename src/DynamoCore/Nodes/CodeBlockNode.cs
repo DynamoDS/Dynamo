@@ -190,6 +190,7 @@ namespace Dynamo.Nodes
                 }
 
                 RaisePropertyChanged("Code");
+                ForceReExecuteOfNode = true;
                 OnAstUpdated();
                 ReportPosition();
 

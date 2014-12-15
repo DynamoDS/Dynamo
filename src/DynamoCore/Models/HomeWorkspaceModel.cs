@@ -29,9 +29,9 @@ namespace Dynamo.Models
 
         public readonly bool VerboseLogging;
 
-        public HomeWorkspaceModel(LibraryServices libraryServices, DynamoScheduler scheduler, NodeFactory factory, bool verboseLogging, bool isTestMode)
+        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, NodeFactory factory, bool verboseLogging, bool isTestMode)
             : this(
-                libraryServices,
+                engine,
                 scheduler,
                 factory,
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
@@ -42,21 +42,17 @@ namespace Dynamo.Models
                 0, verboseLogging, isTestMode) { }
 
         public HomeWorkspaceModel(
-            LibraryServices libraryServices, DynamoScheduler scheduler, NodeFactory factory,
+            EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e,
             IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y, bool verboseLogging,
             bool isTestMode) : base("Home", e, c, n, x, y, factory)
         {
+            RunEnabled = true;
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
             VerboseLogging = verboseLogging;
 
-            EngineController = new EngineController(
-                libraryServices,
-                DynamoPathManager.Instance.GeometryFactory,
-                verboseLogging);
-            EngineController.MessageLogged += Log;
-            EngineController.LibraryServices.LibraryLoaded += LibraryLoaded;
+            ResetEngine(engine);
 
             runExpressionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             runExpressionTimer.Tick += OnRunExpression;
@@ -67,11 +63,14 @@ namespace Dynamo.Models
         public override void Dispose()
         {
             base.Dispose();
-            EngineController.MessageLogged -= Log;
-            EngineController.Dispose();
+            if (EngineController != null)
+            {
+                EngineController.MessageLogged -= Log;
+                EngineController.Dispose();
+                EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+            }
             runExpressionTimer.Stop();
             runExpressionTimer.Tick -= OnRunExpression;
-            EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
         }
         /// <summary>
         /// This does not belong here, period. It is here simply because there is 
@@ -197,54 +196,28 @@ namespace Dynamo.Models
         }
 
         #region evaluation
-
-        /// <summary>
-        /// TODO
-        /// </summary>
-        /// <param name="definition"></param>
-        public void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
-        {
-            EngineController.GenerateGraphSyncDataForCustomNode(Nodes, definition, VerboseLogging);
-        }
-
         /// <summary>
         /// Call this method to reset the virtual machine, avoiding a race 
         /// condition by using a thread join inside the vm executive.
         /// TODO(Luke): Push this into a resync call with the engine controller
         /// </summary>
-        /// <param name="customNodeDefinitions"></param>
-        /// <param name="verboseLogging"></param>
+        /// <param name="controller"></param>
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
-        public virtual void ResetEngine(IEnumerable<CustomNodeDefinition> customNodeDefinitions, bool verboseLogging, bool markNodesAsDirty = false)
+        public void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
         {
-            ResetEngineInternal(customNodeDefinitions);
+            if (EngineController != null)
+                EngineController.MessageLogged -= Log;
+
+            EngineController = controller;
+            controller.MessageLogged += Log;
             if (markNodesAsDirty)
             {
                 foreach (var node in Nodes)
                     node.ForceReExecuteOfNode = true;
                 OnAstUpdated();
             }
-        }
-
-        private void ResetEngineInternal(IEnumerable<CustomNodeDefinition> customNodeDefinitions)
-        {
-            var libServices = EngineController.LibraryServices;
-
-            var oldVerbose = EngineController.VerboseLogging;
-
-            if (EngineController != null)
-            {
-                EngineController.Dispose();
-                EngineController = null;
-            }
-
-            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
-            EngineController = new EngineController(libServices, geomFactory, oldVerbose);
-            
-            foreach (var def in customNodeDefinitions)
-                RegisterCustomNodeDefinitionWithEngine(def);
         }
 
         /// <summary>
@@ -313,15 +286,6 @@ namespace Dynamo.Models
         public bool IsTestMode { get; set; }
 
         /// <summary>
-        /// TODO
-        /// </summary>
-        public void Shutdown()
-        {
-            EngineController.Dispose();
-            EngineController = null;
-        }
-
-        /// <summary>
         /// This method is typically called from the main application thread (as 
         /// a result of user actions such as button click or node UI changes) to
         /// schedule an update of the graph. This call may or may not represent 
@@ -365,20 +329,6 @@ namespace Dynamo.Models
         {
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
-        }
-
-        /// <summary>
-        /// TODO
-        /// </summary>
-        /// <param name="customNodeDefinitions"></param>
-        /// <param name="verboseLogging"></param>
-        public void ForceRun(IEnumerable<CustomNodeDefinition> customNodeDefinitions, bool verboseLogging)
-        {
-            Log("Beginning engine reset");
-            ResetEngine(customNodeDefinitions, verboseLogging);
-            Log("Reset complete");
-
-            Run();
         }
 
         #endregion

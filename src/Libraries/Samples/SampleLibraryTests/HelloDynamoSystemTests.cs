@@ -53,7 +53,7 @@ namespace SampleLibraryTests
 
             // Ensure that the value of that node after evaluation is
             // the value that we are looking for.
-            Assert.AreEqual(addNode.GetValue(0).Data, 42);
+            Assert.AreEqual(addNode.GetValue(0, Model.EngineController).Data, 42);
         }
     }
 }

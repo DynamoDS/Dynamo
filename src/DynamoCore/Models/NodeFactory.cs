@@ -90,9 +90,15 @@ namespace Dynamo.Models
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
 
-            var loader = new NodeModelTypeLoader(nodeType);
-
-            AddLoader(nodeType, loader, alsoKnownAs);
+            try
+            {
+                var loader = new NodeModelTypeLoader(nodeType);
+                AddLoader(nodeType, loader, alsoKnownAs);
+            }
+            catch (Exception e)
+            {
+                Log(e);
+            }
         }
 
         private class NodeModelTypeLoader : INodeLoader<NodeModel>
@@ -194,6 +200,24 @@ namespace Dynamo.Models
             if (!GetNodeModelInstanceByName(typeName, elNode, context, out node))
                 node = new DummyNode(1, 1, typeName, elNode, "", DummyNode.Nature.Deprecated);
             return node;
+        }
+    }
+
+    /// <summary>
+    ///     Xml Loader for CodeBlock nodes.
+    /// </summary>
+    public class CodeBlockNodeLoader : INodeLoader<CodeBlockNodeModel>
+    {
+        private readonly IEngineControllerManager engineManager;
+
+        public CodeBlockNodeLoader(IEngineControllerManager manager)
+        {
+            engineManager = manager;
+        }
+
+        public CodeBlockNodeModel CreateNodeFromXml(XmlElement elNode)
+        {
+            return new CodeBlockNodeModel(engineManager.EngineController.LiveRunnerCore);
         }
     }
 

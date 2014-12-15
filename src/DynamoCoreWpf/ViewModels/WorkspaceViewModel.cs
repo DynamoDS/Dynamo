@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;

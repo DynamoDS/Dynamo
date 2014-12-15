@@ -96,15 +96,15 @@ namespace Dynamo.Nodes
             Port = null;
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Port.PortName);
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             Port.PortName =
                 nodeElement.ChildNodes.Cast<XmlNode>()

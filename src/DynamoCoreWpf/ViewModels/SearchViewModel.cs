@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using Dynamo.Models;
 using Dynamo.Search;
-using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 
@@ -128,7 +125,7 @@ namespace Dynamo.ViewModels
         ///     An ordered list representing all of the visible items in the browser.
         ///     This is used to manage up-down navigation through the menu.
         /// </summary>
-        private List<NodeSearchElementViewModel> visibleSearchResults =
+        private readonly List<NodeSearchElementViewModel> visibleSearchResults =
             new List<NodeSearchElementViewModel>();
 
         private bool searchScrollBarVisibility = true;
@@ -248,13 +245,25 @@ namespace Dynamo.ViewModels
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
-                var categories = target == null
+                var isRoot = target == null;
+                var categories = isRoot
                     ? BrowserRootCategories.Cast<NodeCategoryViewModel>()
                     : target.SubCategories;
                 var newTarget = categories.FirstOrDefault(c => c.Name == next);
                 if (newTarget == default(NodeCategoryViewModel))
                 {
-                    PlaceInNewCategory(entry, target, nameStack);
+                    if (isRoot)
+                    {
+                        var newCategory = new RootNodeCategoryViewModel(next);
+                        BrowserRootCategories.Add(newCategory);
+                        newTarget = newCategory;
+                    }
+                    else
+                    {
+                        newTarget = new NodeCategoryViewModel(next);
+                        target.SubCategories.Add(newTarget);
+                    }
+                    PlaceInNewCategory(entry, newTarget, nameStack);
                     return;
                 }
                 target = newTarget;
@@ -313,6 +322,8 @@ namespace Dynamo.ViewModels
             if (string.IsNullOrEmpty(query))
                 return;
 
+            SearchRootCategories.Clear();
+
             if (!result.Any())
                 return;
             
@@ -356,7 +367,8 @@ namespace Dynamo.ViewModels
                     foreach (var visible in GetVisibleSearchResults(sub))
                         yield return visible;
                 }
-                yield return (NodeSearchElementViewModel)item;
+                else
+                    yield return (NodeSearchElementViewModel)item;
             }
         }
 

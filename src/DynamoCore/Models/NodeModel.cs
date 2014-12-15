@@ -31,7 +31,6 @@ namespace Dynamo.Models
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
-        [Obsolete("No longer supported", true)] private bool interactionEnabled = true;
         private bool isUpstreamVisible;
         private bool isVisible;
         private string nickName;
@@ -58,9 +57,6 @@ namespace Dynamo.Models
         #endregion
 
         #region public members
-
-        [Obsolete("No longer supported.", true)]
-        public WorkspaceModel Workspace { get; internal set; }
 
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
 
@@ -425,20 +421,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Is UI interaction enabled for this Node?
-        /// </summary>
-        [Obsolete("No longer supported", true)]
-        public bool InteractionEnabled
-        {
-            get { return interactionEnabled; }
-            set
-            {
-                interactionEnabled = value;
-                RaisePropertyChanged("InteractionEnabled");
-            }
-        }
-
-        /// <summary>
         ///     ProtoAST Identifier for result of the node before any output unpacking has taken place.
         ///     If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
         /// </summary>
@@ -536,6 +518,8 @@ namespace Dynamo.Models
 
             IsVisible = true;
             IsUpstreamVisible = true;
+            ShouldDisplayPreviewCore = true;
+            forceReExec = true;
 
             PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
             {
@@ -603,41 +587,6 @@ namespace Dynamo.Models
         #region Modification Reporting
 
         /// <summary>
-        ///     Is this Node reporting state modifications?
-        /// </summary>
-        [Obsolete("Use OnAstUpdated Event", true)]
-        protected internal bool IsReportingModifications { get; set; }
-
-        /// <summary>
-        ///     Disable reporting of state modifications.
-        /// </summary>
-        [Obsolete("Use OnAstUpdated Event", true)]
-        protected internal void DisableReporting()
-        {
-            IsReportingModifications = false;
-        }
-
-        /// <summary>
-        ///     Enable reporting of state modifications.
-        /// </summary>
-        [Obsolete("Use OnAstUpdated Event", true)]
-        protected internal void EnableReporting()
-        {
-            IsReportingModifications = true;
-            ValidateConnectionsSync();
-        }
-
-        /// <summary>
-        ///     Report to Dynamo that this node's state has been modified.
-        /// </summary>
-        [Obsolete("Use OnAstUpdated Event", true)]
-        protected internal void ReportModification(WorkspaceModel workspace)
-        {
-            //if (IsReportingModifications && workspace != null)
-            //    workspace.OnAstUpdated();
-        }
-
-        /// <summary>
         /// TODO
         /// </summary>
         public event Action AstUpdated;
@@ -649,170 +598,6 @@ namespace Dynamo.Models
             if (handler != null) handler();
         }
 
-        #endregion
-
-        #region Load/Save
-
-        /// <summary>
-        ///     Override this to implement custom save data for your Element. If overridden, you should also override
-        ///     LoadNode() in order to read the data back when loaded.
-        /// </summary>
-        /// <param name="xmlDoc">The XmlDocument representing the whole Workspace containing this Element.</param>
-        /// <param name="nodeElement">The XmlElement representing this Element.</param>
-        /// <param name="context">Why is this being called?</param>
-        [Obsolete("Use Setialize() method instead.", true)]
-        protected virtual void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context) { }
-
-        /// <summary>
-        ///     Saves this node into an XML Document.
-        /// </summary>
-        /// <param name="xmlDoc">Overall XmlDocument representing the entire Workspace being saved.</param>
-        /// <param name="dynEl">The XmlElement representing this node in the Workspace.</param>
-        /// <param name="context">The context of this save operation.</param>
-        [Obsolete("Use Serialize() method instead.", true)]
-        public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
-        {
-            SaveBasicData(dynEl);
-
-            SaveNode(xmlDoc, dynEl, context);
-            
-            var portsWithDefaultValues = 
-                inPorts.Select((port, index) => new { port, index })
-                   .Where(x => x.port.UsingDefaultValue);
-
-            //write port information
-            foreach (var port in portsWithDefaultValues)
-            {
-                XmlElement portInfo = xmlDoc.CreateElement("PortInfo");
-                portInfo.SetAttribute("index", port.index.ToString(CultureInfo.InvariantCulture));
-                portInfo.SetAttribute("default", true.ToString());
-                dynEl.AppendChild(portInfo);
-            }
-        }
-
-        [Obsolete("Use Serialize() method instead.", true)]
-        private void SaveBasicData(XmlElement dynEl)
-        {
-            //set the type attribute
-            dynEl.SetAttribute("type", GetType().ToString());
-            dynEl.SetAttribute("guid", GUID.ToString());
-            dynEl.SetAttribute("nickname", NickName);
-            dynEl.SetAttribute("x", X.ToString(CultureInfo.InvariantCulture));
-            dynEl.SetAttribute("y", Y.ToString(CultureInfo.InvariantCulture));
-            dynEl.SetAttribute("isVisible", IsVisible.ToString().ToLower());
-            dynEl.SetAttribute("isUpstreamVisible", IsUpstreamVisible.ToString().ToLower());
-            dynEl.SetAttribute("lacing", ArgumentLacing.ToString());
-        }
-
-        /// <summary>
-        ///     Override this to implement loading of custom data for your Element. If overridden, you should also override
-        ///     SaveNode() in order to write the data when saved.
-        /// </summary>
-        /// <param name="nodeElement">The XmlNode representing this Element.</param>
-        [Obsolete("Use Deserialize() method instead.", true)]
-        protected virtual void LoadNode(XmlElement nodeElement) { }
-
-        [Obsolete("Use Deserialize() method instead.", true)]
-        private void ReadBasicData(XmlNode elNode)
-        {
-            XmlAttribute guidAttrib = elNode.Attributes["guid"];
-            XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
-            XmlAttribute xAttrib = elNode.Attributes["x"];
-            XmlAttribute yAttrib = elNode.Attributes["y"];
-            XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
-            XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
-            XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
-
-            //test the GUID to confirm that it is non-zero
-            //if it is zero, then we have to fix it
-            //this will break the connectors, but it won't keep
-            //propagating bad GUIDs
-            Guid guid;
-            if (!Guid.TryParse(guidAttrib.Value, out guid))
-                guid = Guid.NewGuid();
-
-            GUID = guid;
-
-            string nickname = nicknameAttrib.Value;
-            if (!string.IsNullOrEmpty(nickname))
-                NickName = nickname;
-
-            double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
-            double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
-
-            bool isVisible = true;
-            if (isVisAttrib != null)
-                isVisible = isVisAttrib.Value == "true";
-
-            bool isUpstreamVisible = true;
-            if (isUpstreamVisAttrib != null)
-                isUpstreamVisible = isUpstreamVisAttrib.Value == "true";
-
-            X = x;
-            Y = y;
-
-            if (lacingAttrib != null)
-            {
-                if (ArgumentLacing != LacingStrategy.Disabled)
-                {
-                    LacingStrategy lacing;
-                    Enum.TryParse(lacingAttrib.Value, out lacing);
-                    ArgumentLacing = lacing;
-                }
-            }
-
-            //TODO(Steve): Move this to ZeroTouchManager I guess
-            #region DSFunction only
-            // Retrieve optional 'function' attribute (only for DSFunction).
-            XmlAttribute signatureAttrib = elNode.Attributes["function"];
-            var signature = signatureAttrib == null ? null : signatureAttrib.Value;
-
-            // This is to fix MAGN-3648. Method reference in CBN that gets 
-            // loaded before method definition causes a CBN to be left in 
-            // a warning state. This is to clear such warnings and set the 
-            // node to "Dead" state (correct value of which will be set 
-            // later on with a call to "EnableReporting" below). Please 
-            // refer to the defect for details and other possible fixes.
-            // 
-            if (State == ElementState.Warning && (this is CodeBlockNodeModel))
-                State = ElementState.Dead; // Condition to fix MAGN-3648
-            #endregion
-
-            IsVisible = isVisible;
-            IsUpstreamVisible = isUpstreamVisible;
-        }
-
-        [Obsolete("Use Deserialize() method instead.", true)]
-        public void Load(XmlElement elNode)
-        {
-            ReadBasicData(elNode);
-            
-            LoadNode(elNode);
-
-            var portInfoProcessed = new HashSet<int>();
-
-            //read port information
-            foreach (XmlNode subNode in elNode.ChildNodes)
-            {
-                if (subNode.Name == "PortInfo")
-                {
-                    int index = int.Parse(subNode.Attributes["index"].Value);
-                    portInfoProcessed.Add(index);
-                    bool def = bool.Parse(subNode.Attributes["default"].Value);
-                    inPorts[index].UsingDefaultValue = def;
-                }
-            }
-
-            //set defaults
-            foreach (var port in inPorts.Select((x, i) => new { x, i }).Where(x => !portInfoProcessed.Contains(x.i)))
-                port.x.UsingDefaultValue = false;
-        }
-
-        /// <summary>
-        ///     Called when the node's Workspace has been saved.
-        /// </summary>
-        protected internal virtual void OnSave() { }
-        
         #endregion
 
         #region ProtoAST Compilation
@@ -981,16 +766,7 @@ namespace Dynamo.Models
                 return true;
             }
         }
-
-        /// <summary>
-        ///     Is this node an entry point to the program?
-        /// </summary>
-        [Obsolete("Use IsTopMostNode instead.", true)]
-        public bool IsTopmost
-        {
-            get { return OutPorts == null || OutPorts.All(x => !x.Connectors.Any()); }
-        }
-
+        
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
@@ -1100,54 +876,9 @@ namespace Dynamo.Models
             foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
         }
-        
-        #region Interaction
-
-        [Obsolete("No longer supported", true)]
-        internal void DisableInteraction()
-        {
-            State = ElementState.Dead;
-            InteractionEnabled = false;
-        }
-        [Obsolete("No longer supported", true)]
-        internal void EnableInteraction()
-        {
-            ValidateConnections();
-            InteractionEnabled = true;
-        }
-
-        #endregion
 
         #region Node State
 
-        /// <summary>
-        ///     Color the connection according to it's port connectivity
-        ///     if all ports are connected, color green, else color orange
-        /// </summary>
-        [Obsolete("Use ValidateConnections() and dispatch manually", true)]
-        public void ValidateConnectionsSync()
-        {
-            //Action setState = ValidateConnections;
-
-            //// This is put in place to solve the crashing issue outlined in 
-            //// the following defect. ValidateConnectionsSync can be called from 
-            //// a background evaluation thread at any point in time, we do 
-            //// not want such calls to update UI in anyway while we're here 
-            //// (the UI update is caused by setting State property which leads
-            //// to tool-tip update that triggers InfoBubble to update its UI,
-            //// a problem that is currently being resolved and tested on a 
-            //// separate branch). When the InfoBubble restructuring gets over,
-            //// please ensure the following scenario is tested and continue to 
-            //// work:
-            //// 
-            ////      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
-            //// 
-
-            //if (this.Workspace.DynamoModel != null)
-            //    this.Workspace.DynamoModel.OnRequestDispatcherBeginInvoke(setState);
-        }
-
-        //TODO(Steve): When decoupling ConnectorModel and NodeModel, this should be handled at graph level
         public void ValidateConnections()
         {
             // if there are inputs without connections
@@ -1456,9 +1187,8 @@ namespace Dynamo.Models
                 int outData = startPort.Owner.OutPorts.IndexOf(startPort);
                 ConnectInput(data, outData, startPort.Owner);
                 startPort.Owner.ConnectOutput(outData, data, this);
-            }
-            else
                 OnConnectorAdded(connector);
+            }
         }
 
         private void p_PortDisconnected(object sender, EventArgs e)
@@ -1563,6 +1293,11 @@ namespace Dynamo.Models
         #endregion
 
         #region Serialization/Deserialization Methods
+
+        /// <summary>
+        ///     Called when the node's Workspace has been saved.
+        /// </summary>
+        protected internal virtual void OnSave() { }
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
@@ -1672,26 +1407,6 @@ namespace Dynamo.Models
         #endregion
 
         #region Dirty Management
-        
-        [Obsolete("Call OnAstUpdated() instead", true)]
-        private bool dirty = true;
-
-        /// <summary>
-        ///     Does this Element need to be regenerated? Setting this to true will trigger a modification event
-        ///     for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
-        ///     trigger an evaluation.
-        /// </summary>
-        [Obsolete("Call OnAstUpdated() instead", true)]
-        public bool RequiresRecalc 
-        {
-            get { return dirty; }
-            set
-            {
-                dirty = value;
-                if (dirty)
-                    ReportModification(null);
-            } 
-        }
 
         /// <summary>
         ///     This property forces all AST nodes that generated from this node
@@ -1709,6 +1424,7 @@ namespace Dynamo.Models
                 RaisePropertyChanged("ForceReExecuteOfNode");
             }
         }
+
         #endregion
 
         #region Visualization Related Methods

@@ -615,10 +615,14 @@ namespace Dynamo.Controls
 
             do
             {
-                var allCategories =
+                var categorized = 
                     SearchCategory.CategorizeSearchEntries(
                         dynamoViewModel.Model.SearchModel.SearchEntries,
-                        entry => entry.Categories).GetAllCategoryNames();
+                        entry => entry.Categories);
+
+                var allCategories =
+                    categorized.SubCategories.SelectMany(sub => sub.GetAllCategoryNames());
+
                 var dialog = new FunctionNamePrompt(allCategories)
                 {
                     categoryBox = { Text = e.Category },

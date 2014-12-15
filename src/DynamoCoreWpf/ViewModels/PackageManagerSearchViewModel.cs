@@ -9,7 +9,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 

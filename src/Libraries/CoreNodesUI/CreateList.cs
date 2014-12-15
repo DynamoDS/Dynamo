@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
@@ -24,7 +23,7 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class CreateList : VariableInputNode
     {
-        public CreateList(WorkspaceModel workspace) : base(workspace)
+        public CreateList()
         {
             InPortData.Add(new PortData("index0", "Item Index #0"));
             OutPortData.Add(new PortData("list", "A list"));

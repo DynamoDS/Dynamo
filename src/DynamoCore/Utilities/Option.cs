@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Dynamo.Utilities
 {
@@ -176,7 +177,7 @@ namespace Dynamo.Utilities
             return option is _Some<T>;
         }
 
-        private class _Some<T> : IOption<T>
+        private class _Some<T> : IOption<T>, IEquatable<_Some<T>>
         {
             private readonly T value;
 
@@ -199,10 +200,50 @@ namespace Dynamo.Utilities
             {
                 get { return value; }
             }
+
+            public bool Equals(_Some<T> other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return EqualityComparer<T>.Default.Equals(value, other.value);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((_Some<T>)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return EqualityComparer<T>.Default.GetHashCode(value);
+            }
+
+            public static bool operator ==(_Some<T> left, _Some<T> right)
+            {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(_Some<T> left, _Some<T> right)
+            {
+                return !Equals(left, right);
+            }
         }
 
-        private class _None<T> : IOption<T>
+        private class _None<T> : IOption<T>, IEquatable<_None<T>>
         {
+            public static bool operator ==(_None<T> left, _None<T> right)
+            {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(_None<T> left, _None<T> right)
+            {
+                return !Equals(left, right);
+            }
+
             public static readonly IOption<T> Instance = new _None<T>();
 
             public IOption<U> Bind<U>(Func<T, IOption<U>> selector)
@@ -218,6 +259,11 @@ namespace Dynamo.Utilities
             public T Value
             {
                 get { throw new InvalidOperationException("None type has no value."); }
+            }
+
+            public bool Equals(_None<T> other)
+            {
+                return this == other;
             }
         }
     }

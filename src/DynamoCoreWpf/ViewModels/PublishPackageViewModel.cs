@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;

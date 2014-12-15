@@ -49,7 +49,7 @@ namespace Dynamo.Models
 
             IsDeprecated = Type.GetCustomAttributes<NodeDeprecatedAttribute>(true).Any();
             IsMetaNode = Type.GetCustomAttributes<IsMetaNodeAttribute>(false).Any();
-            IsDSCompatible = Type.GetCustomAttributes<IsMetaNodeAttribute>(false).Any();
+            IsDSCompatible = Type.GetCustomAttributes<IsDesignScriptCompatibleAttribute>(false).Any();
             IsHidden = Type.GetCustomAttributes<IsVisibleInDynamoLibraryAttribute>(true)
                 .Any(attr => !attr.Visible);
 

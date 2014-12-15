@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Core;
+
 using Dynamo.Nodes;
 using Dynamo.UI;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
@@ -830,9 +831,7 @@ namespace Dynamo.ViewModels
             private void CreateCodeBlockNode(Point cursor)
             {
                 // create node
-                var node =
-                    new CodeBlockNodeModel(
-                        owningWorkspace.DynamoViewModel.HomeSpace.EngineController.LiveRunnerCore);
+                var node = new CodeBlockNodeModel(owningWorkspace.DynamoViewModel.EngineController.LiveRunnerCore);
 
                 owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(node, cursor.X, cursor.Y, false, true));
 

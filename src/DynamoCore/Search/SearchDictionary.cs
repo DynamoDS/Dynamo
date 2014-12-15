@@ -249,188 +249,78 @@ namespace Dynamo.Search
                 || element.Contains("\\");
         }
         #endregion
-
-        private static IEnumerable<Func<string, bool>> SearchMethodsForQuery(
-            string query)
-        {
-            yield return kv => kv.Contains(query);
-
-            if (!ContainsSpecialCharacters(query))
-                yield break;
-            var regexPattern = MakePattern(SplitOnWhiteSpace(SanitizeQuery(query)));
-            yield return kv => MatchWithQuerystring(kv, regexPattern);
-        }
-
+        
         /// <summary>
-        ///     Search for elements in the dictionary.
+        /// Search for elements in the dictionary based on the query
         /// </summary>
-        /// <param name="query">The search query</param>
-        public IEnumerable<V> Search(string query)
+        /// <param name="query"> The query </param>
+        /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
+        public IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
         {
-            return
-                entryDictionary.AsParallel()
-                    
-                    //Begin the search by "flattening" the entryDictionary.
-                    .SelectMany(
-                        entryAndTags =>
-                            //For each entry in the entry dictionary, get all the tag/weight pairs.
-                            entryAndTags.Value.AsParallel().Select(
-                                //Package together the search tag, the weight associated with the tag, and the entry.
-                                tagAndWeight =>
-                                    new
-                                    {
-                                        Tag = tagAndWeight.Key,
-                                        Weight = tagAndWeight.Value,
-                                        Entry = entryAndTags.Key
-                                    }))
+            var searchDict = new Dictionary<V, double>();
 
-                    //Group together matching search tags. Each search tag now has an enumerable sequence of entries and associated weight
-                    .GroupBy(
-                        tagWeightAndEntry => tagWeightAndEntry.Tag,
-                        tagWeightAndEntry =>
-                            new { tagWeightAndEntry.Entry, tagWeightAndEntry.Weight })
+            var _tagDictionary = entryDictionary.AsParallel()
+                .SelectMany(
+                    entryAndTags =>
+                        entryAndTags.Value.AsParallel().Select(
+                            tagAndWeight =>
+                                new
+                                {
+                                    Tag = tagAndWeight.Key,
+                                    Weight = tagAndWeight.Value,
+                                    Entry = entryAndTags.Key
+                                }))
+                .GroupBy(
+                    tagWeightAndEntry => tagWeightAndEntry.Tag,
+                    tagWeightAndEntry =>
+                        Tuple.Create(tagWeightAndEntry.Entry, tagWeightAndEntry.Weight)).ToList();
 
-                    //For each grouping, we calculate a "match closeness" based on the difference between the search tag and the query
-                    .Select(
-                        tagAndEntries =>
-                            new
-                            {
-                                MatchCloseness = JaroWinkler.StringDistance(tagAndEntries.Key, query),
-                                EntriesAndWeights = tagAndEntries
-                            })
-                    
-                    //We combine the match closeness with each individual weight to calculate the total weight associated with each entry.
-                    .SelectMany(
-                        closenessAndEntries =>
-                            closenessAndEntries.EntriesAndWeights.Select(
-                                entryAndWeight =>
-                                    new
-                                    {
-                                        entryAndWeight.Entry,
-                                        Weight =
-                                    entryAndWeight.Weight*closenessAndEntries.MatchCloseness
-                                    }))
-                    
-                    //Filter out all entries with a weight of approximately zero
-                    .Where(entryAndWeight => Math.Abs(entryAndWeight.Weight) >= double.Epsilon)
-                    
-                    //Group together all results consisting of the same entry.
-                    .GroupBy(
-                        entryAndWeight => entryAndWeight.Entry,
-                        entryAndWeight => entryAndWeight.Weight)
-                    
-                    //We remove all duplicates, using the largest available weight
-                    .Select(
-                        entryAndWeights =>
-                            new { Entry = entryAndWeights.Key, Weight = entryAndWeights.Max() })
-                    
-                    //Sort results in descending order by weight.
-                    .OrderByDescending(entryAndWeight => entryAndWeight.Weight)
-                    
-                    //Select only the entries, stripping out the weights.
-                    .Select(entryAndWeight => entryAndWeight.Entry);
+            query = query.ToLower();
+
+            // do containment check
+            foreach (var pair in _tagDictionary.Where(x => x.Key.Contains(query)))
+            {
+                ComputeWeightAndAddToDictionary(query, pair, searchDict);
+            }
+
+            // if you don't have enough results and the query contains special characters, do fuzzy search
+            if (searchDict.Count <= minResultsForTolerantSearch && ContainsSpecialCharacters(query))
+            {
+                var regexPattern = MakePattern(SplitOnWhiteSpace(SanitizeQuery(query)));
+
+                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key, regexPattern)))
+                {
+                    ComputeWeightAndAddToDictionary(query, pair, searchDict);
+                }
+            }
+
+            return searchDict
+                .OrderByDescending(x => x.Value)
+                .Select(x => x.Key);
         }
 
-
-        public static class JaroWinkler
+        private static void ComputeWeightAndAddToDictionary(string query,
+            IGrouping<string, Tuple<V, double>> pair, Dictionary<V, double> searchDict)
         {
-            /// <summary>
-            /// Gets or sets the current value of the threshold used for adding the Winkler bonus.
-            /// Set to a negative value to get the Jaro distance. The default value is 0.7.
-            /// </summary>
-            private const float THRESHOLD = 0.7f;
+            // it has a match, how close is it to matching the entire string?
+            double matchCloseness = ((double)query.Length) / pair.Key.Length;
 
-            private static int[] Matches(String s1, String s2)
+            foreach (var eleAndWeight in pair)
             {
-                string max, min;
+                var ele = eleAndWeight.Item1;
+                double weight = matchCloseness*eleAndWeight.Item2;
 
-                if (s1.Length > s2.Length)
+                // we may have seen V before
+                if (searchDict.ContainsKey(ele))
                 {
-                    max = s1;
-                    min = s2;
+                    // if we have, update its weight if better than the current one
+                    if (searchDict[ele] < weight) searchDict[ele] = weight;
                 }
                 else
                 {
-                    max = s2;
-                    min = s1;
+                    // if we haven't seen it, add it to the dictionary for this search
+                    searchDict.Add(ele, weight);
                 }
-
-                var range = Math.Max(max.Length/2 - 1, 0);
-                var matchIndexes = new int[min.Length];
-
-                for (var i = 0; i < matchIndexes.Length; i++)
-                    matchIndexes[i] = -1;
-
-                var matchFlags = new bool[max.Length];
-                var matches = 0;
-
-                for (var mi = 0; mi < min.Length; mi++)
-                {
-                    var c1 = min[mi];
-                    for (int xi = Math.Max(mi - range, 0),
-                        xn = Math.Min(mi + range + 1, max.Length);
-                         xi < xn;
-                         xi++)
-                    {
-                        if (matchFlags[xi] || c1 != max[xi]) continue;
-
-                        matchIndexes[mi] = xi;
-                        matchFlags[xi] = true;
-                        matches++;
-                        break;
-                    }
-                }
-
-                var ms1 = new char[matches];
-                var ms2 = new char[matches];
-
-                for (int i = 0, si = 0; i < min.Length; i++)
-                {
-                    if (matchIndexes[i] != -1)
-                    {
-                        ms1[si] = min[i];
-                        si++;
-                    }
-                }
-
-                for (int i = 0, si = 0; i < max.Length; i++)
-                {
-                    if (matchFlags[i])
-                    {
-                        ms2[si] = max[i];
-                        si++;
-                    }
-                }
-
-                var transpositions = ms1.Where((t, mi) => t != ms2[mi]).Count();
-
-                var prefix = 0;
-                for (var mi = 0; mi < min.Length; mi++)
-                {
-                    if (s1[mi] == s2[mi])
-                    {
-                        prefix++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                return new[] { matches, transpositions/2, prefix, max.Length };
-            }
-
-            public static float StringDistance(String s1, String s2)
-            {
-                var mtp = Matches(s1, s2);
-                var m = (float)mtp[0];
-
-                if (Math.Abs(m) < 0.0001)
-                    return 0f;
-
-                float j = ((m/s1.Length + m/s2.Length + (m - mtp[1])/m))/3;
-                float jw = j < THRESHOLD ? j : j + Math.Min(0.1f, 1f/mtp[3])*mtp[2]*(1 - j);
-                return jw;
             }
         }
     }

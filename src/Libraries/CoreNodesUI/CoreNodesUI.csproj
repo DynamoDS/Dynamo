@@ -58,7 +58,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseTypes.cs" />
+    <Compile Include="Input\BaseTypes.cs" />
     <Compile Include="UI\DirectoryNodeViewCustomization.cs" />
     <Compile Include="Input\Double.cs" />
     <Compile Include="Input\DoubleSlider.cs" />
@@ -83,9 +83,6 @@
     </Compile>
     <Compile Include="UI\DropDownNodeViewCustomization.cs" />
     <Compile Include="UI\DummyNodeNodeViewCustomization.cs" />
-    <Compile Include="UI\ElementSelectionControl.xaml.cs">
-      <DependentUpon>ElementSelectionControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Enum.cs" />
     <Compile Include="Formula.cs" />
     <Compile Include="UI\FormulaNodeViewCustomization.cs" />
@@ -120,6 +117,7 @@
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
       <Name>DynamoCoreWpf</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>

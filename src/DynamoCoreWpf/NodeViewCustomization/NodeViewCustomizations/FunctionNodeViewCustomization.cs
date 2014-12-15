@@ -86,7 +86,7 @@ namespace Dynamo.Wpf
                 ws.SetInfo(args.Name, args.Category, args.Description);
                 
                 if (!string.IsNullOrEmpty(ws.FileName))
-                    ws.Save(dynamoViewModel.HomeSpace.EngineController.LiveRunnerCore);
+                    ws.Save(dynamoViewModel.EngineController.LiveRunnerCore);
             }
         }
 

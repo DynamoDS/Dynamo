@@ -1107,12 +1107,14 @@ namespace ProtoScript.Runners
 
         private void InitCore()
         {
-            coreOptions = new Options();
-            coreOptions.GenerateExprID = true;
-            coreOptions.IsDeltaExecution = true;
-            coreOptions.BuildOptErrorAsWarning = true;
-            coreOptions.WebRunner = false;
-            coreOptions.ExecutionMode = ExecutionMode.Serial;
+            coreOptions = new Options
+            {
+                GenerateExprID = true,
+                IsDeltaExecution = true,
+                BuildOptErrorAsWarning = true,
+                WebRunner = false,
+                ExecutionMode = ExecutionMode.Serial
+            };
 
             runnerCore = new ProtoCore.Core(coreOptions);
             runnerCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(runnerCore));

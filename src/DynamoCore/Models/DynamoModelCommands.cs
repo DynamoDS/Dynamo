@@ -46,9 +46,7 @@ namespace Dynamo.Models
 
         void ForceRunCancelImpl(ForceRunCancelCommand command)
         {
-            var model = CurrentWorkspace as HomeWorkspaceModel;
-            if (model != null)
-                model.ForceRun(CustomNodeManager.LoadedDefinitions, DebugSettings.VerboseLogging);
+            ForceRun();
         }
 
         void CreateNodeImpl(CreateNodeCommand command)

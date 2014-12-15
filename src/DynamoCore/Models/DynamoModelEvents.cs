@@ -64,15 +64,6 @@ namespace Dynamo.Models
             }
         }
 
-        public event WorkspaceHandler CurrentWorkspaceChanged;
-        public virtual void OnCurrentWorkspaceChanged(WorkspaceModel workspace)
-        {
-            if (CurrentWorkspaceChanged != null)
-            {
-                CurrentWorkspaceChanged(workspace);
-            }
-        }
-
         public event EventHandler WorkspaceCleared;
         public virtual void OnWorkspaceCleared(object sender, EventArgs e)
         {

@@ -4,7 +4,6 @@ using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Library;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
@@ -41,29 +40,6 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        ///     Save document will call this method to serialize node to xml data
-        /// </summary>
-        /// <param name="xmlDoc"></param>
-        /// <param name="nodeElement"></param>
-        /// <param name="context"></param>
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            Controller.SaveNode(xmlDoc, nodeElement, context);
-        }
-
-        /// <summary>
-        ///     Open document will call this method to unsearilize xml data to node
-        /// </summary>
-        /// <param name="nodeElement"></param>
-        protected override void LoadNode(XmlElement nodeElement)
-        {
-            if (Controller.Definition != null) return;
-
-            Controller.SyncNodeWithDefinition(this);
-        }
-
-        /// <summary>
         ///     Copy command will call it to serialize this node to xml data.
         /// </summary>
         protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -75,7 +51,8 @@ namespace Dynamo.Nodes
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.DeserializeCore(nodeElement, context);
-            Controller.DeserializeCore(nodeElement, context);
+            if (Controller.Definition != null) return;
+            Controller.SyncNodeWithDefinition(this);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -177,27 +154,21 @@ namespace Dynamo.Nodes
                 model.OutPortData.Add(new PortData(displayReturnType, displayReturnType));
             }
         }
-
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        
+        public override void SerializeCore(XmlElement element, SaveContext context)
         {
+            base.SerializeCore(element, context);
             var asmPath = Definition.Assembly ?? "";
 
             if (context == SaveContext.File)
             {
                 // We only make relative paths in a file saving operation.
-                var docPath = Utilities.GetDocumentXmlPath(xmlDoc);
+                var docPath = Utilities.GetDocumentXmlPath(element.OwnerDocument);
                 asmPath = Utilities.MakeRelativePath(docPath, asmPath);
             }
 
-            nodeElement.SetAttribute("assembly", asmPath);
-            nodeElement.SetAttribute("function", Definition.MangledName ?? "");
-        }
-
-        public override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context);
-            var helper = new XmlElementHelper(element);
-            helper.SetAttribute("name", Definition.MangledName);
+            element.SetAttribute("assembly", asmPath);
+            element.SetAttribute("function", Definition.MangledName ?? "");
         }
 
         public override void SyncNodeWithDefinition(NodeModel model)

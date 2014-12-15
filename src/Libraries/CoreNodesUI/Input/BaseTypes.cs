@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
+
+using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Utilities;
+
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using String = DSCoreNodesUI.String;
@@ -19,25 +22,14 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class StringInput : String
     {
-        public override string Value
-        {
-            get
-            {
-                return HttpUtility.HtmlDecode(base.Value);
-            }
-            set
-            {
-                base.Value = value;
-            }
-        }
-
         public StringInput()
         {
             RegisterAllPorts();
             Value = "";
+            ShouldDisplayPreviewCore = false;
         }
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             if (name == "Value")
             {
@@ -49,27 +41,27 @@ namespace Dynamo.Nodes
             // since they are both bound to the same property, 'StringInput' 
             // should be given a chance to handle the property value change first
             // before the base class 'String'.
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
 
-        protected override string SerializeValue(string val)
+        protected override string SerializeValue()
         {
-            return val;
+            return HttpUtility.HtmlEncode(Value);
         }
 
         protected override string DeserializeValue(string val)
         {
-            return val;
+            return HttpUtility.HtmlDecode(val);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            XmlElement outEl = xmlDoc.CreateElement(typeof(string).FullName);
-            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(string).FullName);
+            outEl.SetAttribute("value", SerializeValue().ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
@@ -88,7 +80,7 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            var rhs = AstFactory.BuildStringNode(this.Value);
+            var rhs = AstFactory.BuildStringNode(Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
@@ -129,9 +121,10 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", ""));
             RegisterAllPorts();
 
+            ShouldDisplayPreviewCore = false;
             _convertToken = Convert;
 
-            ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
+            //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
         public virtual double Convert(double value)
@@ -186,12 +179,12 @@ namespace Dynamo.Nodes
                     Error(e.Message);
                 }
 
-                RequiresRecalc = value != null;
+                OnAstUpdated();
                 RaisePropertyChanged("Value");
             }
         }
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             if (name == "Value")
             {
@@ -199,15 +192,7 @@ namespace Dynamo.Nodes
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value);
-        }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
+            return base.UpdateValueCore(name, value, recorder);
         }
 
 
@@ -216,47 +201,34 @@ namespace Dynamo.Nodes
             get { return true; }
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
-            outEl.SetAttribute("value", Value);
-            nodeElement.AppendChild(outEl);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>().Where(subNode => subNode.Name.Equals(typeof(double).FullName)))
-            {
-                Value = subNode.Attributes[0].Value;
-            }
-        }
-
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context); //Base implementation must be called
 
-            if (context == SaveContext.Undo)
-            {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("doubleInputValue", Value);
-            }
+            XmlElement outEl = element.OwnerDocument.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", Value);
+            element.AppendChild(outEl);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called
 
-            if (context == SaveContext.Undo)
+            foreach (
+                XmlNode subNode in
+                    element.ChildNodes.Cast<XmlNode>()
+                        .Where(subNode => subNode.Name.Equals(typeof(double).FullName)))
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                this.Value = helper.ReadString("doubleInputValue");
+                Value = subNode.Attributes[0].Value;
             }
         }
 
         #endregion
+
+        private static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
+        private static readonly string[] RangeSeparatorTokens = { "..", ":", };
 
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
@@ -265,7 +237,7 @@ namespace Dynamo.Nodes
                 delegate(string x)
                 {
                     var rangeIdentifiers = x.Split(
-                        Sublists.RangeSeparatorTokens,
+                        RangeSeparatorTokens,
                         StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
 
                     if (rangeIdentifiers.Length > 3)
@@ -346,7 +318,7 @@ namespace Dynamo.Nodes
             if (double.TryParse(id, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                 return new DoubleToken(dbl);
 
-            var match = Sublists.IdentifierPattern.Match(id);
+            var match = IdentifierPattern.Match(id);
             if (match.Success)
             {
                 var tokenId = match.Groups["id"].Value;

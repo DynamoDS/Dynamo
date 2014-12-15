@@ -185,11 +185,6 @@ namespace Dynamo.Nodes
         /// <param name="model">Node to produce a function application for.</param>
         /// <param name="inputAstNodes">Arguments to the function application.</param>
         protected abstract AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes);
-
-        /// <summary>
-        ///     Writes Controller information to a node's XML.
-        /// </summary>
-        public virtual void SaveNode(XmlDocument xmlDocument, XmlElement xmlElement, SaveContext saveContext) { }
         
         /// <summary>
         ///     Deserializes Controller information from XML.

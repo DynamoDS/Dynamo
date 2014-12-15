@@ -4,7 +4,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
-    public enum ConnectorType { Bezier, Polyline };
+    public enum ConnectorType { BEZIER, POLYLINE };
 
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
     

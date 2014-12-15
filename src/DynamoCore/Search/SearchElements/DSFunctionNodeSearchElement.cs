@@ -4,6 +4,7 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Search.SearchElements
 {
+    [Obsolete("No longer used", true)]
     public class DSFunctionNodeSearchElement : NodeModelSearchElement, IEquatable<DSFunctionNodeSearchElement>
     {
         internal readonly FunctionDescriptor FunctionDescriptor;

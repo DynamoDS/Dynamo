@@ -457,11 +457,11 @@ namespace DynamoCoreUITests
             #endregion
 
             #region ConnectorType
-            ConnectorType expectedConnector = ConnectorType.Bezier;
+            ConnectorType expectedConnector = ConnectorType.BEZIER;
             ViewModel.SetConnectorType("BEZIER");
             Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
 
-            expectedConnector = ConnectorType.Polyline;
+            expectedConnector = ConnectorType.POLYLINE;
             ViewModel.SetConnectorType("POLYLINE");
             Assert.AreEqual(expectedConnector, ViewModel.Model.PreferenceSettings.ConnectorType);
             #endregion
@@ -501,7 +501,7 @@ namespace DynamoCoreUITests
 
             #region First Test
 
-            initalSetting.ConnectorType = ConnectorType.Bezier;
+            initalSetting.ConnectorType = ConnectorType.BEZIER;
             initalSetting.ConsoleHeight = 100;
             initalSetting.FullscreenWatchShowing = true;
 
@@ -514,7 +514,7 @@ namespace DynamoCoreUITests
             #endregion
 
             #region Second Test
-            initalSetting.ConnectorType = ConnectorType.Polyline;
+            initalSetting.ConnectorType = ConnectorType.POLYLINE;
             initalSetting.ConsoleHeight = 0;
             initalSetting.FullscreenWatchShowing = false;
 

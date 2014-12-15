@@ -5,6 +5,7 @@ using System.Xml;
 using Autodesk.DesignScript.Runtime;
 
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 
 namespace Dynamo.Nodes
@@ -50,21 +51,21 @@ namespace Dynamo.Nodes
             }
         }
 
-        #region Load/Save
+        #region Serialization/Deserialization Methods
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.SaveNode(xmlDoc, nodeElement, context);
+            base.SerializeCore(element, context); // Base implementation must be called.
 
-            XmlElement outEl = xmlDoc.CreateElement("Range");
+            XmlElement outEl = element.OwnerDocument.CreateElement("Range");
             outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
             outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-            nodeElement.AppendChild(outEl);
+            element.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.LoadNode(nodeElement);
+            base.DeserializeCore(nodeElement, context); //Base implementation must be called.
 
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
@@ -94,56 +95,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); // Base implementation must be called.
-
-            if (context == SaveContext.Undo)
-            {
-                var xmlDocument = element.OwnerDocument;
-                XmlElement subNode = xmlDocument.CreateElement("Range");
-                subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-                subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-                element.AppendChild(subNode);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
-        {
-            base.DeserializeCore(nodeElement, context); //Base implementation must be called.
-
-            if (context == SaveContext.Undo)
-            {
-                foreach (XmlNode subNode in nodeElement.ChildNodes)
-                {
-                    if (!subNode.Name.Equals("Range"))
-                        continue;
-                    if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
-                        continue;
-
-                    double min = this.Min;
-                    double max = this.Max;
-
-                    foreach (XmlAttribute attr in subNode.Attributes)
-                    {
-                        if (attr.Name.Equals("min"))
-                            min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
-                            max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                    }
-
-                    this.Min = min;
-                    this.Max = max;
-                    break;
-                }
-            }
-        }
-
-        #endregion
-
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             var converter = new DoubleDisplay();
             switch (name)
@@ -167,7 +119,7 @@ namespace Dynamo.Nodes
                     return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
     }
 }

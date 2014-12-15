@@ -107,10 +107,10 @@ namespace Dynamo.Nodes
             base.SyncNodeWithDefinition(model);
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext saveContext)
+        public override void SerializeCore(XmlElement nodeElement, SaveContext saveContext)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement("ID");
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement("ID");
 
             outEl.SetAttribute("value", Definition.FunctionId.ToString());
             nodeElement.AppendChild(outEl);

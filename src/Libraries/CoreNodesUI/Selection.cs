@@ -8,6 +8,8 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
+using Microsoft.Practices.Prism.Commands;
+
 namespace Dynamo.Nodes
 {
     public delegate List<string> ElementsSelectionDelegate(string message,
@@ -48,7 +50,7 @@ namespace Dynamo.Nodes
                 {
                     selectionResults = value.ToList();
                     ForceReExecuteOfNode = true;
-                    RequiresRecalc = true;
+                    OnAstUpdated();
                 }
                 else
                     selectionResults = null;
@@ -154,7 +156,7 @@ namespace Dynamo.Nodes
                 State = ElementState.Active;
         }
 
-        protected bool CanBeginSelect(object parameter)
+        protected bool CanBeginSelect()
         {
             return CanSelect;
         }
@@ -192,7 +194,7 @@ namespace Dynamo.Nodes
                 // to cast the temp selection type to the 
                 // stored collection type.
                 UpdateSelection(newSelection);
-
+                
                 CanSelect = true;
             }
             catch (Exception e)
@@ -204,7 +206,7 @@ namespace Dynamo.Nodes
 
         protected abstract IEnumerable<TResult> ExtractSelectionResults(TSelection selections);
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             if (!SelectionResults.Any()) return;
 
@@ -213,13 +215,13 @@ namespace Dynamo.Nodes
 
             foreach (var id in uuidsSelection)
             {
-                XmlElement outEl = xmlDoc.CreateElement("instance");
+                XmlElement outEl = nodeElement.OwnerDocument.CreateElement("instance");
                 outEl.SetAttribute("id", id);
                 nodeElement.AppendChild(outEl);
             }
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var savedUuids =
                 nodeElement.ChildNodes.Cast<XmlNode>()
@@ -234,7 +236,7 @@ namespace Dynamo.Nodes
 
             UpdateSelection(loadedSelection);
 
-            RequiresRecalc = true;
+            OnAstUpdated();
             RaisePropertyChanged("SelectionResults");
         }
 

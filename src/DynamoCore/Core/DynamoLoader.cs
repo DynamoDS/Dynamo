@@ -157,8 +157,9 @@ namespace Dynamo.Utilities
         public static bool IsNodeSubType(Type t)
         {
             return //t.Namespace == "Dynamo.Nodes" &&
-                   !t.IsAbstract &&
-                   t.IsSubclassOf(typeof(NodeModel));
+                !t.IsAbstract &&
+                    t.IsSubclassOf(typeof(NodeModel))
+                    && t.GetConstructor(Type.EmptyTypes) != null;
         }
 
         internal bool ContainsNodeModelSubType(Assembly assem)
@@ -206,7 +207,7 @@ namespace Dynamo.Utilities
                 {
                     //only load types that are in the right namespace, are not abstract
                     //and have the elementname attribute
-                    if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes")
+                    if (!IsNodeSubType(t))
                         continue;
 
                     //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 

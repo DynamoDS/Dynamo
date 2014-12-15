@@ -9,6 +9,7 @@ namespace Dynamo.Search.SearchElements
 
     /// <summary>
     /// A search element representing a local node </summary>
+    [Obsolete("No longer used.", true)]
     public class NodeModelSearchElement : SearchElementBase, IEquatable<NodeModelSearchElement>
     {
         internal readonly string FullName;

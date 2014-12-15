@@ -1,4 +1,6 @@
-﻿using DSCoreNodesUI;
+﻿using System.Web.Profile;
+
+using DSCoreNodesUI;
 using DSNodeServices;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
@@ -30,7 +32,12 @@ using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
 {
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable // : ModelBase
+    public interface IEngineControllerManager
+    {
+        EngineController EngineController { get; }
+    }
+
+    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager // : ModelBase
     {
         #region private members
         private WorkspaceModel currentWorkspace;
@@ -117,6 +124,14 @@ namespace Dynamo.Models
 
         #region public properties
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public EngineController EngineController { get; set; }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
         public readonly LibraryServices LibraryServices;
 
         /// <summary>
@@ -213,8 +228,9 @@ namespace Dynamo.Models
             set
             {
                 if (Equals(value, currentWorkspace)) return;
-                OnWorkspaceHidden(currentWorkspace);
+                var old = currentWorkspace;
                 currentWorkspace = value;
+                OnWorkspaceHidden(old);
                 OnPropertyChanged("CurrentWorkspace");
             }
         }
@@ -298,8 +314,8 @@ namespace Dynamo.Models
 
         protected virtual void ShutDownCore(bool shutdownHost)
         {
-            foreach (var hws in Workspaces.OfType<HomeWorkspaceModel>())
-                hws.Shutdown();
+            EngineController.Dispose();
+            EngineController = null;
 
             PreferenceSettings.Save();
 
@@ -394,6 +410,7 @@ namespace Dynamo.Models
                     }
                 };
             };
+            CustomNodeManager.DefinitionUpdated += RegisterCustomNodeDefinitionWithEngine;
         }
 
         private void InitializeBuiltinNodeLibrary()
@@ -411,15 +428,13 @@ namespace Dynamo.Models
             NodeFactory.AddLoader(dsFuncData.Type, ztLoader, dsFuncData.AlsoKnownAs);
             NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader, dsVarArgFuncData.AlsoKnownAs);
 
-            NodeFactory.AddLoader(cbnData.Type, cbnData.AlsoKnownAs);
+            NodeFactory.AddLoader(cbnData.Type, new CodeBlockNodeLoader(this), cbnData.AlsoKnownAs);
             NodeFactory.AddLoader(dummyData.Type, dummyData.AlsoKnownAs);
 
             NodeFactory.AddLoader(symbolData.Type, symbolData.AlsoKnownAs);
             NodeFactory.AddLoader(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel.Add(new NodeModelSearchElement(dsFuncData));
-            SearchModel.Add(new NodeModelSearchElement(dsVarArgFuncData));
-            SearchModel.Add(new NodeModelSearchElement(cbnData));
+            SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, this));
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -430,9 +445,9 @@ namespace Dynamo.Models
                 IsVisibleInSearch = CurrentWorkspace is CustomNodeWorkspaceModel
             };
 
-            CurrentWorkspaceChanged += workspace =>
+            WorkspaceHidden += _ =>
             {
-                var isVisible = workspace is CustomNodeWorkspaceModel;
+                var isVisible = CurrentWorkspace is CustomNodeWorkspaceModel;
                 symbolSearchElement.IsVisibleInSearch = isVisible;
                 outputSearchElement.IsVisibleInSearch = isVisible;
             };
@@ -443,7 +458,9 @@ namespace Dynamo.Models
 
         protected DynamoModel(StartConfiguration configuration)
         {
+            ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = 128;
+
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
@@ -472,10 +489,8 @@ namespace Dynamo.Models
             InitializeInstrumentationLogger();
 
             SearchModel = new NodeSearchModel();
-            SearchModel.ItemProduced += node =>
-            {
-                ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
-            };
+            SearchModel.ItemProduced +=
+                node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
 
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
@@ -504,6 +519,8 @@ namespace Dynamo.Models
             LibraryServices = new LibraryServices(libraryCore);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
+
+            ResetEngineInternal();
 
             InitializeCurrentWorkspace();
 
@@ -660,17 +677,8 @@ namespace Dynamo.Models
         
         public void Dispose()
         {
-            NodeFactory.MessageLogged -= LogMessage;
-            CustomNodeManager.MessageLogged -= LogMessage;
-            Loader.MessageLogged -= LogMessage;
-            PackageLoader.MessageLogged -= LogMessage;
-
-            LibraryServices.MessageLogged -= LogMessage;
-            LibraryServices.LibraryLoaded -= LibraryLoaded;
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
-
-            //SearchModel.ItemProduced -= AddNodeToCurrentWorkspace;
 
             if (PreferenceSettings != null)
             {
@@ -687,12 +695,11 @@ namespace Dynamo.Models
         private void InitializeCurrentWorkspace()
         {
             var defaultWorkspace = new HomeWorkspaceModel(
-                LibraryServices,
+                EngineController,
                 Scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,
-                IsTestMode
-            );
+                IsTestMode);
 
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);
@@ -736,6 +743,73 @@ namespace Dynamo.Models
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
+        }
+
+        #endregion
+
+        #region Engine Management
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="definition"></param>
+        public void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
+        {
+            EngineController.GenerateGraphSyncDataForCustomNode(
+                Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Nodes),
+                definition,
+                DebugSettings.VerboseLogging);
+        }
+
+        /// <summary>
+        /// Call this method to reset the virtual machine, avoiding a race 
+        /// condition by using a thread join inside the vm executive.
+        /// TODO(Luke): Push this into a resync call with the engine controller
+        /// </summary>
+        /// <param name="customNodeDefinitions"></param>
+        /// <param name="verboseLogging"></param>
+        /// <param name="markNodesAsDirty">Set this parameter to true to force 
+        ///     reset of the execution substrait. Note that setting this parameter 
+        ///     to true will have a negative performance impact.</param>
+        public virtual void ResetEngine(bool markNodesAsDirty = false)
+        {
+            ResetEngineInternal();
+            foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
+                workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
+        }
+
+        private void ResetEngineInternal()
+        {
+            if (EngineController != null)
+            {
+                EngineController.MessageLogged -= LogMessage;
+                EngineController.Dispose();
+                EngineController = null;
+            }
+
+            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
+            EngineController = new EngineController(
+                LibraryServices,
+                geomFactory,
+                DebugSettings.VerboseLogging);
+            EngineController.MessageLogged += LogMessage;
+
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+                RegisterCustomNodeDefinitionWithEngine(def);
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="customNodeDefinitions"></param>
+        /// <param name="verboseLogging"></param>
+        public void ForceRun()
+        {
+            Logger.Log("Beginning engine reset");
+            ResetEngine();
+            Logger.Log("Reset complete");
+            
+            ((HomeWorkspaceModel)CurrentWorkspace).Run();
         }
 
         #endregion
@@ -826,7 +900,7 @@ namespace Dynamo.Models
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
             var newWorkspace = new HomeWorkspaceModel(
-                LibraryServices,
+                EngineController,
                 Scheduler,
                 NodeFactory,
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
@@ -845,15 +919,10 @@ namespace Dynamo.Models
 
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
-            foreach (var def in CustomNodeManager.LoadedDefinitions)
-                newWorkspace.RegisterCustomNodeDefinitionWithEngine(def);
-
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
-            CustomNodeManager.DefinitionUpdated += newWorkspace.RegisterCustomNodeDefinitionWithEngine;
             newWorkspace.Disposed += () =>
             {
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
-                CustomNodeManager.DefinitionUpdated -= newWorkspace.RegisterCustomNodeDefinitionWithEngine;
             };
         }
 

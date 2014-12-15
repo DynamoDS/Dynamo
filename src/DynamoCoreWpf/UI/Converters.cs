@@ -6,13 +6,15 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+
 using Dynamo.UI;
 using Dynamo.Models;
-using System.Web;
 
 using Dynamo.ViewModels;
 using Dynamo.PackageManager;
 using System.Windows.Controls;
+
+using Dynamo.Wpf.ViewModels;
 
 using DynamoUnits;
 
@@ -744,7 +746,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is NodeModelSearchElement)
+            if (value is NodeSearchElementViewModel)
                 return true;
 
             return false;

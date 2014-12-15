@@ -598,7 +598,7 @@ namespace Dynamo
                 // Visualization update for a given node is desired.
                 nodeModel.RequestVisualUpdateAsync(
                     dynamoModel.Scheduler,
-                    dynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController,
+                    dynamoModel.EngineController,
                     MaxTesselationDivisions);
             }
             else
@@ -609,7 +609,7 @@ namespace Dynamo
                     // Visualization update for a given node is desired.
                     node.RequestVisualUpdateAsync(
                         dynamoModel.Scheduler,
-                        dynamoModel.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController,
+                        dynamoModel.EngineController,
                         MaxTesselationDivisions);
                 }
             }
