@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.Models;
 using System.Web;
@@ -1384,9 +1385,18 @@ namespace Dynamo.Controls
                 return val;
             //check if the value exceeds the 32 bit maximum / minimum value
             string integerValue = value.ToString();
-            if (integerValue.Length > 1 && ((integerValue[0] == '-' && char.IsDigit(value.ToString()[1]))
-                || char.IsDigit(value.ToString()[0])))
-                val = value.ToString()[0] == '-' ? int.MinValue : int.MaxValue;
+            if (integerValue.Length > 1)
+            {
+                var start =  integerValue[0] == '-' ? 1 : 0;
+                for (var i = start; i < integerValue.Length; i++)
+                {
+                    if (!char.IsDigit(integerValue[i]))
+                    {
+                        return 0;
+                    }
+                }
+                val = start == 0 ? int.MaxValue : int.MinValue;
+            }
             return val;
         }
     }
