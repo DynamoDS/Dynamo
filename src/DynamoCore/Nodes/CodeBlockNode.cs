@@ -13,6 +13,7 @@ using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore.Utils;
 using Dynamo.UI;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
