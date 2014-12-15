@@ -7,8 +7,8 @@
     <!--Workspaces-->
     <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>
     <SolidColorBrush Color="#232323" x:Key="WorkspaceBackgroundBrush"/>
-    
-    <Color x:Key="WorkspaceBackgroundHome">#F0F0F0</Color>
+
+    <Color x:Key="WorkspaceBackgroundHome">#F9F9F9</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>
     <SolidColorBrush Color="#BBBBBB" x:Key="WorkspaceTabHeaderActiveTextBrush"></SolidColorBrush>
     <SolidColorBrush Color="#777777" x:Key="WorkspaceTabHeaderInactiveTextBrush"></SolidColorBrush>
