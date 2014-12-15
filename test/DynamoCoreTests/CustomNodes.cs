@@ -783,6 +783,20 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestCustomNodeInvalidInput()
+        {
+            // Custom node has invalid input like "x = f(x)", but the evalution should continue
+            // so that old custom node won't be broken
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestInvalidInput.dyn");
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            ViewModel.Model.RunExpression();
+
+            AssertPreviewValue("7134638a-26f4-4a13-affb-857ed519db5f", 84);
+        }
+
+
+        [Test]
         public void TestCustomNodeFromCollapsedNodeHasTypes()
         {
             var model = ViewModel.Model;
