@@ -10,6 +10,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoWebServer.Responses;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Threading;
 using Dynamo.Core.Threading;
@@ -18,6 +19,8 @@ namespace DynamoWebServer.Messages
 {
     public class MessageHandler
     {
+        const string MESSAGE_TYPE = "DynamoWebServer.Messages.{0}, DynamoWebServer";
+
         public event ResultReadyEventHandler ResultReady;
         public string SessionId { get; set; }
 
@@ -81,7 +84,10 @@ namespace DynamoWebServer.Messages
         {
             try
             {
-                return JsonConvert.DeserializeObject(jsonString, jsonSettings) as Message;
+                var jObject = JObject.Parse(jsonString);
+                var type = GetTypeFromString(jObject["type"].Value<string>());
+
+                return JsonConvert.DeserializeObject(jsonString, type, jsonSettings) as Message;
             }
             catch
             {
@@ -566,6 +572,11 @@ namespace DynamoWebServer.Messages
             }
 
             dynamoModel.Clear(null);
+        }
+
+        private Type GetTypeFromString(string type)
+        {
+            return Type.GetType(String.Format(MESSAGE_TYPE, type));
         }
 
         #endregion
