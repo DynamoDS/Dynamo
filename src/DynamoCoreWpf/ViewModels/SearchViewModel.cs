@@ -156,11 +156,17 @@ namespace Dynamo.ViewModels
         }
 
         public Typeface RegularTypeface { get; private set; }
-        
-        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;
-            private set; }
-        public ObservableCollection<BrowserRootElementViewModel> SearchRootCategories { get;
-            private set; }
+
+        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories
+        {
+            get;
+            private set;
+        }
+        public ObservableCollection<SearchCategory> SearchRootCategories
+        {
+            get;
+            private set;
+        }
 
         public SearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
@@ -181,7 +187,7 @@ namespace Dynamo.ViewModels
         {
             SearchResults = new ObservableCollection<SearchElementBaseViewModel>();
             BrowserRootCategories = new ObservableCollection<BrowserRootElementViewModel>();
-            SearchRootCategories = new ObservableCollection<BrowserRootElementViewModel>();
+            SearchRootCategories = new ObservableCollection<SearchCategory>();
 
             Visible = false;
             searchText = "";
@@ -202,20 +208,8 @@ namespace Dynamo.ViewModels
             }
 
             this.Model.BrowserRootCategoriesCollectionChanged = BrowserRootCategoriesOnCollectionChanged;
-            //this.Model.SearchRootCategories.CollectionChanged += SearchRootCategoriesOnCollectionChanged;
-            
+
             this.SortCategoryChildren();
-        }
-
-        private void BrowserRootCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            CollectionChangedInner(BrowserRootCategories, e);
-        }
-
-
-        private void SearchRootCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            CollectionChangedInner(SearchRootCategories, e);
         }
 
         /// <summary>
@@ -223,25 +217,24 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CollectionChangedInner(ObservableCollection<BrowserRootElementViewModel> collectionToSync,
-            NotifyCollectionChangedEventArgs e)
+        private void BrowserRootCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (BrowserRootElement item in e.NewItems.OfType<BrowserRootElement>())
                     {
-                        collectionToSync.Add(BrowserItemViewModel.WrapExplicit(item));
+                        BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    collectionToSync.Clear();
+                    BrowserRootCategories.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
-                        var vm = collectionToSync.First(x => x.Model == item);
-                        collectionToSync.Remove(vm);
+                        var vm = BrowserRootCategories.First(x => x.Model == item);
+                        BrowserRootCategories.Remove(vm);
                     }
                     break;
             }
