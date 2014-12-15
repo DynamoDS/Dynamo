@@ -196,7 +196,7 @@ namespace UnitsUI
 
     [NodeName("Length From String")]
     [NodeCategory("Units.Length.Create")]
-    [NodeDescription("Enter a length.")]
+    [NodeDescription("LengthFromStringDescription",typeof(Properties.Resources))]
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
@@ -245,7 +245,7 @@ namespace UnitsUI
 
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
-    [NodeDescription("Enter an area.")]
+    [NodeDescription("AreaFromStringDescription",typeof(Properties.Resources))]
     [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
@@ -276,7 +276,7 @@ namespace UnitsUI
 
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
-    [NodeDescription("Enter a volume.")]
+    [NodeDescription("VolumeFromStringDescription",typeof(Properties.Resources))]
     [NodeSearchTags("Imperial", "Metric", "volume", "Project", "units")]
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
@@ -298,7 +298,7 @@ namespace UnitsUI
 
     [NodeName("Unit Types")]
     [NodeCategory("Units")]
-    [NodeDescription("Select a unit of measurement.")]
+    [NodeDescription("UnitTypesDescription", typeof(Properties.Resources))]
     [NodeSearchTags("units")]
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
