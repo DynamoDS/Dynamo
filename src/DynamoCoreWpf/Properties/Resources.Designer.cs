@@ -1458,6 +1458,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No file selected..
+        /// </summary>
+        public static string FilePathConverterNoFileSelected {
+            get {
+                return ResourceManager.GetString("FilePathConverterNoFileSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sample Left Button.
         /// </summary>
         public static string GenericTaskDialogSampleLeftButton {
@@ -1481,6 +1490,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GenericTaskDialogTitle {
             get {
                 return ResourceManager.GetString("GenericTaskDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Classic Node Library.
+        /// </summary>
+        public static string HideClassicNodeLibrary {
+            get {
+                return ResourceManager.GetString("HideClassicNodeLibrary", resourceCulture);
             }
         }
         
@@ -1706,6 +1724,51 @@ namespace Dynamo.Wpf.Properties {
         public static string InstalledPackageViewTitle {
             get {
                 return ResourceManager.GetString("InstalledPackageViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}..
+        /// </summary>
+        public static string LacingCrossProductToolTip {
+            get {
+                return ResourceManager.GetString("LacingCrossProductToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arugment lacing is disabled for this node..
+        /// </summary>
+        public static string LacingDisabledToolTip {
+            get {
+                return ResourceManager.GetString("LacingDisabledToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For two lists {a,b,c}{1,2,3} returns {a1}..
+        /// </summary>
+        public static string LacingFirstToolTip {
+            get {
+                return ResourceManager.GetString("LacingFirstToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For two lists {a,b,c}{1,2} returns {a1,b2,c2}..
+        /// </summary>
+        public static string LacingLongestToolTip {
+            get {
+                return ResourceManager.GetString("LacingLongestToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For two lists {a,b,c}{1,2} returns {a1,b2}..
+        /// </summary>
+        public static string LacingShortestToolTip {
+            get {
+                return ResourceManager.GetString("LacingShortestToolTip", resourceCulture);
             }
         }
         
@@ -2770,6 +2833,15 @@ namespace Dynamo.Wpf.Properties {
         public static string SelectionErrorMessageBoxTitle {
             get {
                 return ResourceManager.GetString("SelectionErrorMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Classic Node Library.
+        /// </summary>
+        public static string ShowClassicNodeLibrary {
+            get {
+                return ResourceManager.GetString("ShowClassicNodeLibrary", resourceCulture);
             }
         }
         

@@ -870,11 +870,11 @@ namespace Dynamo.Controls
         {
             if ((bool)value == true)
             {
-                return "Hide Classic Node Library";
+                return Resources.HideClassicNodeLibrary;
             }
             else
             {
-                return "Show Classic Node Library";
+                return Resources.ShowClassicNodeLibrary;
             }
         }
 
@@ -1268,15 +1268,15 @@ namespace Dynamo.Controls
             switch (strategy)
             {
                 case LacingStrategy.Disabled:
-                    return "Arugment lacing is disabled for this node.";
+                    return Resources.LacingDisabledToolTip;
                 case LacingStrategy.CrossProduct:
-                    return "For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}.";
+                    return Resources.LacingCrossProductToolTip;
                 case LacingStrategy.First:
-                    return "For two lists {a,b,c}{1,2,3} returns {a1}.";
+                    return Resources.LacingFirstToolTip;
                 case LacingStrategy.Longest:
-                    return "For two lists {a,b,c}{1,2} returns {a1,b2,c2}.";
+                    return Resources.LacingLongestToolTip;
                 case LacingStrategy.Shortest:
-                    return "For two lists {a,b,c}{1,2} returns {a1,b2}.";
+                    return Resources.LacingShortestToolTip; 
             }
 
             return "?";
@@ -1459,12 +1459,12 @@ namespace Dynamo.Controls
         {
             //source->target
             if (value == null)
-                return "No file selected.";
+                return Resources.FilePathConverterNoFileSelected;
 
             var str = HttpUtility.UrlDecode(value.ToString());
 
             if (string.IsNullOrEmpty(str))
-                return "No file selected.";
+                return Resources.FilePathConverterNoFileSelected;
 
             // if the number of directories deep exceeds threshold
             if (str.Length - str.Replace(@"\", "").Length >= 5)
