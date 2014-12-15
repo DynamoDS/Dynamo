@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -160,6 +159,8 @@ namespace Dynamo.ViewModels
         
         public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;
             private set; }
+        public ObservableCollection<BrowserRootElementViewModel> SearchRootCategories { get;
+            private set; }
 
         public SearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
@@ -180,6 +181,7 @@ namespace Dynamo.ViewModels
         {
             SearchResults = new ObservableCollection<SearchElementBaseViewModel>();
             BrowserRootCategories = new ObservableCollection<BrowserRootElementViewModel>();
+            SearchRootCategories = new ObservableCollection<BrowserRootElementViewModel>();
 
             Visible = false;
             searchText = "";
@@ -200,8 +202,20 @@ namespace Dynamo.ViewModels
             }
 
             this.Model.BrowserRootCategories.CollectionChanged += BrowserRootCategoriesOnCollectionChanged;
-
+            this.Model.SearchRootCategories.CollectionChanged += SearchRootCategoriesOnCollectionChanged;
+            
             this.SortCategoryChildren();
+        }
+
+        private void BrowserRootCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            CollectionChangedInner(BrowserRootCategories, e);
+        }
+
+
+        private void SearchRootCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            CollectionChangedInner(SearchRootCategories, e);
         }
 
         /// <summary>
@@ -209,24 +223,25 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BrowserRootCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void CollectionChangedInner(ObservableCollection<BrowserRootElementViewModel> collectionToSync,
+            NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (BrowserRootElement item in e.NewItems.OfType<BrowserRootElement>())
                     {
-                        BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
+                        collectionToSync.Add(BrowserItemViewModel.WrapExplicit(item));
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    BrowserRootCategories.Clear();
+                    collectionToSync.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
-                        var vm = BrowserRootCategories.First(x => x.Model == item);
-                        BrowserRootCategories.Remove(vm);
+                        var vm = collectionToSync.First(x => x.Model == item);
+                        collectionToSync.Remove(vm);
                     }
                     break;
             }
