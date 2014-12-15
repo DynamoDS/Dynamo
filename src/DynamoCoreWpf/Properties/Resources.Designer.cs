@@ -369,6 +369,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string DynamoViewContextMenuClearLog {
+            get {
+                return ResourceManager.GetString("DynamoViewContextMenuClearLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Debug.
         /// </summary>
         public static string DynamoViewDebugMenu {
@@ -599,6 +608,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewEditMenuSelectAll {
             get {
                 return ResourceManager.GetString("DynamoViewEditMenuSelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Select Neighbors.
+        /// </summary>
+        public static string DynamoViewEditMenuSelectNeighbours {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuSelectNeighbours", resourceCulture);
             }
         }
         
@@ -1503,11 +1521,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove the pending uninstall status.
+        /// </summary>
+        public static string InstalledPackageViewContextMenuCancelUninstallTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuCancelUninstallTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deprecate.
         /// </summary>
         public static string InstalledPackageViewContextMenuDeprecate {
             get {
                 return ResourceManager.GetString("InstalledPackageViewContextMenuDeprecate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set this package as deprecated.  Only allowed if you&apos;re a current maintainer of the package..
+        /// </summary>
+        public static string InstalledPackageViewContextMenuDeprecateTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuDeprecateTooltip", resourceCulture);
             }
         }
         
@@ -1521,11 +1557,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check if there is a newer version of this package and download it..
+        /// </summary>
+        public static string InstalledPackageViewContextMenuGetLatestTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuGetLatestTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish....
         /// </summary>
         public static string InstalledPackageViewContextMenuPublish {
             get {
                 return ResourceManager.GetString("InstalledPackageViewContextMenuPublish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish this package, if it has yet to be published..
+        /// </summary>
+        public static string InstalledPackageViewContextMenuPublishTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuPublishTooltip", resourceCulture);
             }
         }
         
@@ -1539,11 +1593,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish a new version of this package, assuming it has already been published. Only allowed if you&apos;re a current maintainer of the package..
+        /// </summary>
+        public static string InstalledPackageViewContextMenuPublishVersionTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuPublishVersionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove deprecation.
         /// </summary>
         public static string InstalledPackageViewContextMenuRemoveDeprecation {
             get {
                 return ResourceManager.GetString("InstalledPackageViewContextMenuRemoveDeprecation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove package deprecation. Only allowed if you&apos;re a current maintainer of the package..
+        /// </summary>
+        public static string InstalledPackageViewContextMenuRemoveDeprecationTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuRemoveDeprecationTooltip", resourceCulture);
             }
         }
         
@@ -1557,6 +1629,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to See the types loaded by this package.
+        /// </summary>
+        public static string InstalledPackageViewContextMenuShowContentTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuShowContentTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Root Directory.
         /// </summary>
         public static string InstalledPackageViewContextMenuShowRootDir {
@@ -1566,11 +1647,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go to the root folder of this package.
+        /// </summary>
+        public static string InstalledPackageViewContextMenuShowRootDirTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuShowRootDirTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uninstall....
         /// </summary>
         public static string InstalledPackageViewContextMenuUninstall {
             get {
                 return ResourceManager.GetString("InstalledPackageViewContextMenuUninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall this package, only allowed if none of the types are currently in use.
+        /// </summary>
+        public static string InstalledPackageViewContextMenuUninstallTooltip {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuUninstallTooltip", resourceCulture);
             }
         }
         
@@ -1607,6 +1706,42 @@ namespace Dynamo.Wpf.Properties {
         public static string InstalledPackageViewTitle {
             get {
                 return ResourceManager.GetString("InstalledPackageViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit....
+        /// </summary>
+        public static string LibraryViewContextMenuEditNode {
+            get {
+                return ResourceManager.GetString("LibraryViewContextMenuEditNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No matches found.
+        /// </summary>
+        public static string LibraryViewNoMatchesFound {
+            get {
+                return ResourceManager.GetString("LibraryViewNoMatchesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string LibraryViewSearchText {
+            get {
+                return ResourceManager.GetString("LibraryViewSearchText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Library.
+        /// </summary>
+        public static string LibraryViewTitle {
+            get {
+                return ResourceManager.GetString("LibraryViewTitle", resourceCulture);
             }
         }
         
@@ -1991,6 +2126,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string NoteViewContextMenuDelete {
+            get {
+                return ResourceManager.GetString("NoteViewContextMenuDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit....
+        /// </summary>
+        public static string NoteViewContextMenuEdit {
+            get {
+                return ResourceManager.GetString("NoteViewContextMenuEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OKButton {
@@ -2365,6 +2518,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageWarningMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageWarningMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Default Value.
+        /// </summary>
+        public static string PortViewContextMenuUserDefaultValue {
+            get {
+                return ResourceManager.GetString("PortViewContextMenuUserDefaultValue", resourceCulture);
             }
         }
         

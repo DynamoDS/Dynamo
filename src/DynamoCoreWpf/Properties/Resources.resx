@@ -1037,6 +1037,13 @@ You will get a chance to save your work.</value>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
     <value>Agreement to collect usability data on your use of Dynamo</value>
   </data>
+  <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
+    <value>Clear</value>
+    <comment>Clear log</comment>
+  </data>
+  <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
+    <value>_Select Neighbors</value>
+  </data>
   <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
     <value>Additional Files</value>
   </data>
@@ -1046,29 +1053,56 @@ You will get a chance to save your work.</value>
   <data name="InstalledPackageViewContextMenuCancelUninstall" xml:space="preserve">
     <value>Cancel pending uninstall...</value>
   </data>
+  <data name="InstalledPackageViewContextMenuCancelUninstallTooltip" xml:space="preserve">
+    <value>Remove the pending uninstall status</value>
+  </data>
   <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
     <value>Deprecate</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuDeprecateTooltip" xml:space="preserve">
+    <value>Set this package as deprecated.  Only allowed if you're a current maintainer of the package.</value>
   </data>
   <data name="InstalledPackageViewContextMenuGetLatest" xml:space="preserve">
     <value>Get Latest Version</value>
   </data>
+  <data name="InstalledPackageViewContextMenuGetLatestTooltip" xml:space="preserve">
+    <value>Check if there is a newer version of this package and download it.</value>
+  </data>
   <data name="InstalledPackageViewContextMenuPublish" xml:space="preserve">
     <value>Publish...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishTooltip" xml:space="preserve">
+    <value>Publish this package, if it has yet to be published.</value>
   </data>
   <data name="InstalledPackageViewContextMenuPublishVersion" xml:space="preserve">
     <value>Publish Version...</value>
   </data>
+  <data name="InstalledPackageViewContextMenuPublishVersionTooltip" xml:space="preserve">
+    <value>Publish a new version of this package, assuming it has already been published. Only allowed if you're a current maintainer of the package.</value>
+  </data>
   <data name="InstalledPackageViewContextMenuRemoveDeprecation" xml:space="preserve">
     <value>Remove deprecation</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuRemoveDeprecationTooltip" xml:space="preserve">
+    <value>Remove package deprecation. Only allowed if you're a current maintainer of the package.</value>
   </data>
   <data name="InstalledPackageViewContextMenuShowContent" xml:space="preserve">
     <value>Show Contents</value>
   </data>
+  <data name="InstalledPackageViewContextMenuShowContentTooltip" xml:space="preserve">
+    <value>See the types loaded by this package</value>
+  </data>
   <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
     <value>Show Root Directory</value>
   </data>
+  <data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
+    <value>Go to the root folder of this package</value>
+  </data>
   <data name="InstalledPackageViewContextMenuUninstall" xml:space="preserve">
     <value>Uninstall...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuUninstallTooltip" xml:space="preserve">
+    <value>Uninstall this package, only allowed if none of the types are currently in use</value>
   </data>
   <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
     <value>Custom Nodes</value>
@@ -1081,6 +1115,27 @@ You will get a chance to save your work.</value>
   </data>
   <data name="InstalledPackageViewTitle" xml:space="preserve">
     <value>Installed Packages</value>
+  </data>
+  <data name="LibraryViewContextMenuEditNode" xml:space="preserve">
+    <value>Edit...</value>
+  </data>
+  <data name="LibraryViewNoMatchesFound" xml:space="preserve">
+    <value>No matches found</value>
+    <comment>No matches for the search llibrary</comment>
+  </data>
+  <data name="LibraryViewSearchText" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="LibraryViewTitle" xml:space="preserve">
+    <value>Library</value>
+  </data>
+  <data name="NoteViewContextMenuDelete" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Delete note </comment>
+  </data>
+  <data name="NoteViewContextMenuEdit" xml:space="preserve">
+    <value>Edit...</value>
+    <comment>Edit note</comment>
   </data>
   <data name="PackageDownloadStateDownloaded" xml:space="preserve">
     <value>Downloaded</value>
@@ -1200,6 +1255,9 @@ You will get a chance to save your work.</value>
   </data>
   <data name="PackageUploadStateUploading" xml:space="preserve">
     <value>Uploading...</value>
+  </data>
+  <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
+    <value>Use Default Value</value>
   </data>
   <data name="PublishPackagePackageContent" xml:space="preserve">
     <value>Package Contents</value>

@@ -336,7 +336,7 @@
                                   Command="{Binding DeleteCommand}"
                                   Name="deleteSelected"
                                   InputGestureText="Delete" />
-                        <!--<MenuItem Focusable="False" Header="_Select Neighbors" Command="{Binding Path=ExpandSelectionCommand}"  Name="expandSelect" InputGestureText="Tab"/>-->
+                        <!--<MenuItem Focusable="False" Header="{x:Static p:Resources.DynamoViewEditMenuSelectNeighbours}" Command="{Binding Path=ExpandSelectionCommand}"  Name="expandSelect" InputGestureText="Tab"/>-->
                         <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}"
                                    Name="Align">
                             <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}"
@@ -1491,7 +1491,7 @@
 
             <ScrollViewer.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Clear"
+                    <MenuItem Header="{x:Static p:Resources.DynamoViewContextMenuClearLog}"
                               Command="{Binding ClearLogCommand}" />
                 </ContextMenu>
             </ScrollViewer.ContextMenu>
