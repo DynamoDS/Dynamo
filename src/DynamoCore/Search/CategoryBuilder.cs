@@ -9,6 +9,7 @@ namespace Dynamo.Search
     class CategoryBuilder
     {
         private ObservableCollection<BrowserRootElement> rootCategories;
+        private NotifyCollectionChangedEventHandler rootCategoriesCollectionChanged;
         private SearchModel searchModel;
         private bool isAddons;
 
@@ -17,7 +18,25 @@ namespace Dynamo.Search
             get { return rootCategories; }
         }
 
-        internal NotifyCollectionChangedEventHandler RootCategoriesCollectionChanged { get; set; }
+        internal NotifyCollectionChangedEventHandler RootCategoriesCollectionChanged
+        {
+            get { return rootCategoriesCollectionChanged; }
+            set
+            {
+                if (rootCategories == null)
+                    return;
+
+                if (value == null)
+                {
+                    rootCategories.CollectionChanged -= rootCategoriesCollectionChanged;
+                    rootCategoriesCollectionChanged = null;
+                    return;
+                }
+
+                rootCategoriesCollectionChanged = value;
+                rootCategories.CollectionChanged += rootCategoriesCollectionChanged;
+            }
+        }
 
         internal CategoryBuilder(SearchModel searchModel, bool isAddons)
         {
