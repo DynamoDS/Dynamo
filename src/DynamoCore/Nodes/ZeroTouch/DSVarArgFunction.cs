@@ -1,15 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
-
-using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Library;
 using Dynamo.Models;
-using Dynamo.UI;
-
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
@@ -20,7 +16,7 @@ namespace Dynamo.Nodes
     /// </summary>
     [NodeName("Function Node w/ VarArgs"), NodeDescription("DesignScript Builtin Functions"),
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
-    public class DSVarArgFunction : DSFunctionBase, IWpfNode
+    public class DSVarArgFunction : DSFunctionBase
     {
         public DSVarArgFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
 
@@ -101,11 +97,7 @@ namespace Dynamo.Nodes
             }
         }
         #endregion
-        
-        public void SetupCustomUIElements(dynNodeView view)
-        {
-            VarInputController.SetupNodeUI(view);
-        }
+
     }
 
     /// <summary>
@@ -113,8 +105,9 @@ namespace Dynamo.Nodes
     /// </summary>
     public class ZeroTouchVarArgNodeController : ZeroTouchNodeController
     {
-        public ZeroTouchVarArgNodeController(EngineController engineController, 
-            FunctionDescriptor zeroTouchDef) : base(engineController, zeroTouchDef) { }
+        public ZeroTouchVarArgNodeController(EngineController engineController,
+            FunctionDescriptor zeroTouchDef)
+            : base(engineController, zeroTouchDef) { }
 
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {

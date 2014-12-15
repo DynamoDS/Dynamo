@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="DSCoreNodesUI.IntegerSliderSettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" Content="Min" VerticalContentAlignment="Center"></Label>
+            <Label Grid.Column="0" Grid.Row="1" Content="Max" VerticalContentAlignment="Center"></Label>
+            <nodes:DynamoTextBox Name="MinTb" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"/>
+            <nodes:DynamoTextBox Name="MaxTb" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center"/>
+        </Grid>
+    </Grid>
+</UserControl>

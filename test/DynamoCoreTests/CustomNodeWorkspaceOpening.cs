@@ -32,7 +32,7 @@ namespace Dynamo.Tests
             
             ViewModel.SearchViewModel.SearchAndUpdateResults("Sequence2");
             Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count);
-            Assert.AreEqual("Sequence2", ViewModel.SearchViewModel.SearchResults[0].Name);
+            Assert.AreEqual("Sequence2", ViewModel.SearchViewModel.SearchResults[0].Model.Name);
         }
     }
 

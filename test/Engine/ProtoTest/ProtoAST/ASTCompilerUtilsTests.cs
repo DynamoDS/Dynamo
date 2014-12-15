@@ -15,15 +15,8 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.ProtoAST
 {
-    class ASTCompilerUtilsTests
+    class ASTCompilerUtilsTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestBuildAST_01()
