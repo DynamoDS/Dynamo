@@ -44,7 +44,7 @@ namespace SamplesLibraryUI
 
     // The description will display in the tooltip
     // and in the help window for the node.
-    [NodeDescription("A sample UI node which displays custom UI.")]
+    [NodeDescription("HelloDynamoDescription",typeof(Properties.Resources))]
 
     [IsDesignScriptCompatible]
     public class HelloDynamo : NodeModel

@@ -15,7 +15,7 @@ using Expression = NCalc.Expression;
 namespace DSCoreNodesUI
 {
     [NodeName("Formula")]
-    [NodeDescription("Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/")]
+    [NodeDescription("FormulaDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     //[NodeDeprecated]

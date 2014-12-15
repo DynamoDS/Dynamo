@@ -18,6 +18,7 @@ using System.Globalization;
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using System.Web;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -687,7 +688,7 @@ namespace Dynamo.Nodes
     /// </summary>
     [NodeName("Build Sublists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
+    [NodeDescription("BuildSublistsDescription", typeof(Properties.Resources))]
     public class Sublists : BasicInteractive<string>
     {
         public Sublists(WorkspaceModel ws): base(ws)
@@ -923,7 +924,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Compose Functions")]
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
-    [NodeDescription("Composes two single parameter functions into one function.")]
+    [NodeDescription("ComposeFunctionNodeDescription", typeof(Properties.Resources))]
     public class ComposeFunctions : NodeModel
     { 
         public ComposeFunctions(WorkspaceModel ws) : base(ws)
@@ -1145,7 +1146,7 @@ namespace Dynamo.Nodes
 
     [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a string.")]
+    [NodeDescription("StringNodeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class StringInput : AbstractString
     {
@@ -1250,7 +1251,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a number.")]
+    [NodeDescription("NumberNodeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class DoubleInput : NodeModel
     {

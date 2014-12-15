@@ -11,7 +11,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Double Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces double values.")]
+    [NodeDescription("DoubleSliderDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DoubleSlider : DSCoreNodesUI.Double

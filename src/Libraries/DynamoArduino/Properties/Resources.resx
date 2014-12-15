@@ -117,39 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BuildSublistsDescription" xml:space="preserve">
-    <value>Build sublists from a list using DesignScript range syntax.</value>
-    <comment>Description for code block node</comment>
+  <data name="ArduinoDescription" xml:space="preserve">
+    <value>Manages connection to an Arduino microcontroller.</value>
+    <comment>Description for Arduino</comment>
   </data>
-  <data name="CodeBlockNodeDescription" xml:space="preserve">
-    <value>Allows for DesignScript code to be authored directly</value>
+  <data name="ReadArduinoDescription" xml:space="preserve">
+    <value>Reads values from an Arduino microcontroller.</value>
+    <comment>Description for Read Arduino</comment>
   </data>
-  <data name="NumberNodeDescription" xml:space="preserve">
-    <value>Creates a number.</value>
-    <comment>Description for number node</comment>
-  </data>
-  <data name="StringNodeDescription" xml:space="preserve">
-    <value>Creates a string.</value>
-    <comment>Description for string node</comment>
-  </data>
-  <data name="FunctionNodeDescription" xml:space="preserve">
-    <value>DesignScript Builtin Functions</value>
-    <comment>Description for function node</comment>
-  </data>
-  <data name="CustomNodeDesciption" xml:space="preserve">
-    <value>Instance of a Custom Node</value>
-    <comment>Description for custom node</comment>
-  </data>
-  <data name="ComposeFunctionNodeDescription" xml:space="preserve">
-    <value>Composes two single parameter functions into one function.</value>
-    <comment>Description for compose function node</comment>
-  </data>
-  <data name="OutputNodeDescription" xml:space="preserve">
-    <value>A function output, use with custom nodes</value>
-    <comment>Description for output node</comment>
-  </data>
-  <data name="InputNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes</value>
-    <comment>Description for input node</comment>
+  <data name="WriteArduinoDescription" xml:space="preserve">
+    <value>Writes values to an Arduino microcontroller.</value>
+    <comment>Description for Write Arduino</comment>
   </data>
 </root>
