@@ -1273,10 +1273,6 @@ r = Equals(x, {41, 42});
 
 
         [Test]
-<<<<<<< HEAD
-        [Category("Failing")]
-=======
->>>>>>> 95d40a5d4bb8b49d755245c08c15577407d1b098
         public void TestFunctionModification04()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4161

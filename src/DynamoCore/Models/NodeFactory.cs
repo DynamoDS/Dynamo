@@ -383,10 +383,10 @@ namespace Dynamo.Models
     /// </summary>
     public class CustomNodeLoader : INodeLoader<Function>
     {
-        private readonly CustomNodeManager customNodeManager;
+        private readonly ICustomNodeSource customNodeManager;
         private readonly bool isTestMode;
 
-        public CustomNodeLoader(CustomNodeManager customNodeManager, bool isTestMode=false)
+        public CustomNodeLoader(ICustomNodeSource customNodeManager, bool isTestMode = false)
         {
             this.customNodeManager = customNodeManager;
             this.isTestMode = isTestMode;

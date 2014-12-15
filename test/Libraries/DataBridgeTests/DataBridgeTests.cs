@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Tests;
 
@@ -22,8 +22,11 @@ namespace DataBridgeTests
 
             RunModel(Path.Combine(examplesPath, "watchdatabridge.dyn"));
 
-            var customNodeWorkspace =
-                model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().Definition.WorkspaceModel;
+            var customNodeId =
+                model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().Definition.FunctionId;
+
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(customNodeId, true, out customNodeWorkspace));
 
             var innerWatch = customNodeWorkspace.FirstNodeFromWorkspace<Watch>();
             var outerWatch = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();

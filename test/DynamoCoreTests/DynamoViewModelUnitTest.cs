@@ -114,7 +114,7 @@ namespace Dynamo.Tests
             string exampleFilePath, IEnumerable<KeyValuePair<Guid, object>> tests)
         {
             this.ViewModel.OpenCommand.Execute(exampleFilePath);
-            this.ViewModel.Model.RunExpression();
+            this.ViewModel.HomeSpace.Run();
 
             foreach (var test in tests)
             {
@@ -125,7 +125,7 @@ namespace Dynamo.Tests
 
         protected void AssertNoDummyNodes()
         {
-            var nodes = ViewModel.Model.Nodes;
+            var nodes = ViewModel.Model.CurrentWorkspace.Nodes;
 
             var dummyNodes = nodes.OfType<DSCoreNodesUI.DummyNode>();
             string logs = string.Empty;
@@ -144,7 +144,7 @@ namespace Dynamo.Tests
         protected IEnumerable<object> GetPreviewValues()
         {
             List<object> objects = new List<object>();
-            foreach(var node in ViewModel.Model.Nodes)
+            foreach(var node in ViewModel.Model.CurrentWorkspace.Nodes)
             {
                 objects.Add(GetPreviewValue(node.GUID));
             }
@@ -153,7 +153,7 @@ namespace Dynamo.Tests
 
         protected void AssertNullValues()
         {
-            foreach (var node in ViewModel.Model.Nodes)
+            foreach (var node in ViewModel.Model.CurrentWorkspace.Nodes)
             {
                 string varname = GetVarName(node.GUID);
                 var mirror = GetRuntimeMirror(varname);

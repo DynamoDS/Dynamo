@@ -202,7 +202,9 @@ namespace Dynamo.PackageManager
         /// <param name="context"></param>
         /// <param name="isTestMode"></param>
         /// <param name="customNodeManager"></param>
-        public void LoadIntoDynamo(DynamoLoader loader, ILogger logger, LibraryServices libraryServices, string context, bool isTestMode, CustomNodeManager customNodeManager)
+        public void LoadIntoDynamo(
+            DynamoLoader loader, ILogger logger, LibraryServices libraryServices, string context,
+            bool isTestMode, CustomNodeManager customNodeManager)
         {
             // Prevent duplicate loads
             if (Loaded) return;
@@ -219,7 +221,6 @@ namespace Dynamo.PackageManager
                 Log("Exception when attempting to load package " + Name + " from " + RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
-
         }
 
         public void EnumerateAdditionalFiles()

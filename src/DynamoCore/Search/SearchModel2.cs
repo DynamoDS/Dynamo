@@ -40,7 +40,13 @@ namespace Dynamo.Search
         {
             Add(entry, entry.Name);
             Add(entry, entry.SearchTags, .5);
-            Add(entry, entry.Description, .2);
+            Add(entry, entry.Description, .1);
+        }
+
+        public void Update(TEntry entry)
+        {
+            Remove(entry);
+            Add(entry);
         }
 
         protected override void OnEntryRemoved(TEntry entry)
@@ -195,7 +201,24 @@ namespace Dynamo.Search
 
         public ICollection<string> Categories
         {
-            get { return FullCategoryName.Split('.'); }
+            get { return SplitCategoryName(FullCategoryName).ToList(); }
+        }
+
+        public const char CATEGORY_DELIMITER = '.';
+
+        /// <summary>
+        /// Split a category name into individual category names splitting be DEFAULT_DELIMITER
+        /// </summary>
+        /// <param name="categoryName">The name</param>
+        /// <returns>A list of output</returns>
+        public static IEnumerable<string> SplitCategoryName(string categoryName)
+        {
+            if (String.IsNullOrEmpty(categoryName))
+                return Enumerable.Empty<string>();
+
+            return
+                categoryName.Split(CATEGORY_DELIMITER)
+                    .Where(x => x != CATEGORY_DELIMITER.ToString() && !String.IsNullOrEmpty(x));
         }
 
         public string FullCategoryName
@@ -363,8 +386,8 @@ namespace Dynamo.Search
     /// </summary>
     public class CustomNodeSearchElement : NodeSearchElement
     {
-        private readonly CustomNodeManager customNodeManager;
-        private Guid id;
+        private readonly ICustomNodeSource customNodeManager;
+        public Guid ID { get; private set; }
         private string path;
 
         public string Path
@@ -378,7 +401,7 @@ namespace Dynamo.Search
             }
         }
 
-        public CustomNodeSearchElement(CustomNodeManager customNodeManager, CustomNodeInfo info)
+        public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
             this.customNodeManager = customNodeManager;
             SyncWithCustomNodeInfo(info);
@@ -386,7 +409,7 @@ namespace Dynamo.Search
 
         public void SyncWithCustomNodeInfo(CustomNodeInfo info)
         {
-            id = info.FunctionId;
+            ID = info.FunctionId;
             Name = info.Name;
             FullCategoryName = info.Category;
             Description = info.Description;
@@ -395,7 +418,7 @@ namespace Dynamo.Search
 
         protected override NodeModel ConstructNewNodeModel()
         {
-            return customNodeManager.CreateCustomNodeInstance(id);
+            return customNodeManager.CreateCustomNodeInstance(ID);
         }
     }
 }

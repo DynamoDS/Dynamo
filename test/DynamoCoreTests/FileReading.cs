@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.Utilities;
@@ -18,7 +19,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_pre6_0.dyn");
 
             ViewModel.OpenCommand.Execute(testFilePath);
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression()); 
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run()); 
         }
 
         [Test]
@@ -27,7 +28,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_post6_0.dyn");
 
             ViewModel.OpenCommand.Execute(testFilePath);
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         [Test]
@@ -39,7 +40,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "Defect_MAGN_781.dyf");
 
             ViewModel.OpenCommand.Execute(testFilePath);
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         [Test]
@@ -54,7 +55,7 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(testFilePath);
             WorkspaceModel wsm = ViewModel.CurrentSpace;
             Assert.AreEqual(wsm.Nodes.Count, 0);
-            Assert.AreEqual(wsm.Connectors.Count, 0);
+            Assert.AreEqual(wsm.Connectors.Count(), 0);
         }
 
         [Test]
@@ -68,7 +69,7 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(testFilePath);
             WorkspaceModel wsm = ViewModel.CurrentSpace;
             Assert.AreEqual(wsm.Nodes.Count, 0);
-            Assert.AreEqual(wsm.Connectors.Count, 0);
+            Assert.AreEqual(wsm.Connectors.Count(), 0);
         }
     }
 }

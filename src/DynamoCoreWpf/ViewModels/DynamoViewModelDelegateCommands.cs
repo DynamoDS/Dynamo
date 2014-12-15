@@ -37,7 +37,7 @@ namespace Dynamo.ViewModels
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
-            CopyCommand = new DelegateCommand(model.Copy, CanCopy);
+            CopyCommand = new DelegateCommand(_ => model.Copy(), CanCopy);
             PasteCommand = new DelegateCommand(_ => model.Paste(), CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             CancelRunCommand = new DelegateCommand(CancelRunCmd, CanCancelRunCmd);

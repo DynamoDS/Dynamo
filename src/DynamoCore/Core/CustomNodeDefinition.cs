@@ -204,10 +204,7 @@ namespace Dynamo
         {
             if (functionId == Guid.Empty)
                 throw new ArgumentException(@"FunctionId invalid.", "functionId");
-
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException(@"Name invalid.", "name");
-
+            
             FunctionId = functionId;
             Name = name;
             Category = category;

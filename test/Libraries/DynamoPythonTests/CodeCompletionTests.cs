@@ -156,7 +156,7 @@ namespace DynamoPythonTests
         public void CanMatchAllVariablesSingleLine()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
 
             var matches = completionProvider.FindAllVariables(str);
 
@@ -169,7 +169,7 @@ namespace DynamoPythonTests
         public void CanMatchAllVariableTypes()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }\nb = {}\nc = 5.0\nd = 'pete'\ne = []";
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
 
             var matches = completionProvider.FindAllVariables(str);
 
@@ -208,7 +208,7 @@ namespace DynamoPythonTests
         public void CanImportLibrary()
         {
             var str = "\nimport System\n";
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
@@ -220,7 +220,7 @@ namespace DynamoPythonTests
         public void DuplicateCallsToImportShouldBeFine()
         {
             var str = "\nimport System\nimport System";
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
@@ -232,7 +232,7 @@ namespace DynamoPythonTests
         public void CanImportSystemLibraryAndGetCompletionData()
         {
             var str = "\nimport System\nSystem.";
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
 
             var completionData = completionProvider.GetCompletionData(str);
 
@@ -247,7 +247,7 @@ namespace DynamoPythonTests
         public void CanImportSystemCollectionsLibraryAndGetCompletionData()
         {
             var str = "\nimport System.Collections\nSystem.Collections.";
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
 
             var completionData = completionProvider.GetCompletionData(str);
 
@@ -269,7 +269,7 @@ namespace DynamoPythonTests
         public void CanMatchImportSystemAndLoadLibraryAndWithComment()
         {
             var str = "# Write your script here.\r\nimport System.";
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
@@ -282,7 +282,7 @@ namespace DynamoPythonTests
         {
             var str = "a = 5.0\na.";
 
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
             var completionData = completionProvider.GetCompletionData(str);
 
             Assert.AreNotEqual(0, completionData.Length);
@@ -345,7 +345,7 @@ namespace DynamoPythonTests
         {
             var str = "from itertools import *\nimport math\nfrom sys import callstats\n";
 
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(3, completionProvider.ImportedTypes.Count);
@@ -360,7 +360,7 @@ namespace DynamoPythonTests
         public void CanFindSystemCollectionsAssignmentAndType()
         {
             var str = "from System.Collections import ArrayList\na = ArrayList()\n";
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
             completionProvider.UpdateImportedTypes(str);
             completionProvider.UpdateVariableTypes(str);
 
@@ -373,7 +373,7 @@ namespace DynamoPythonTests
         public void CanGetCompletionDataForArrayListVariable()
         {
             var str = "from System.Collections import ArrayList\na = ArrayList()\na.";
-            var completionProvider = new IronPythonCompletionProvider(logger);
+            var completionProvider = new IronPythonCompletionProvider();
             var matches = completionProvider.GetCompletionData(str);
 
             Assert.AreNotEqual(0, matches.Length);

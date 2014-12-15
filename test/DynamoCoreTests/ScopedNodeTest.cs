@@ -48,8 +48,10 @@ namespace Dynamo.Tests
             //         n5 in its scope (for input port 1)
             // For s2, s1, n6, n7 in its scope for input port 0
             DynamoModel model = ViewModel.Model;
+
+
             Func<string, CodeBlockNodeModel> createCbn = 
-                s => new CodeBlockNodeModel(s, Guid.NewGuid(), 0, 0);
+                s => new CodeBlockNodeModel(s, Guid.NewGuid(), 0, 0, model.EngineController.LiveRunnerCore);
 
             var cbn1 = createCbn("n1;");
 
@@ -114,7 +116,7 @@ namespace Dynamo.Tests
             // For s1, none is in its scope 
             DynamoModel model = ViewModel.Model;
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, Guid.NewGuid(), 0, 0);
+                s => new CodeBlockNodeModel(s, Guid.NewGuid(), 0, 0, model.EngineController.LiveRunnerCore);
 
             var cbn1 = createCbn("n1;");
 
@@ -151,7 +153,7 @@ namespace Dynamo.Tests
             // For s1, n3, n4 are in its scope
             DynamoModel model = ViewModel.Model;
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, Guid.NewGuid(), 0, 0);
+                s => new CodeBlockNodeModel(s, Guid.NewGuid(), 0, 0, model.EngineController.LiveRunnerCore);
 
             var cbn1 = createCbn("n1;");
 

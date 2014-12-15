@@ -964,11 +964,7 @@ namespace Dynamo.ViewModels
                 return;
 
             DynamoViewModel.Model.CustomNodeManager.Collapse(
-                selectedNodes,
-                Model,
-                DynamoViewModel.Model.Logger,
-                DynamoModel.IsTestMode,
-                args);
+                selectedNodes, Model, DynamoModel.IsTestMode, args);
         }
 
         internal void Loaded()

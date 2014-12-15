@@ -471,6 +471,9 @@ namespace Dynamo.Models
         /// <param name="centered"></param>
         public void AddNode(NodeModel node, bool centered)
         {
+            if (nodes.Contains(node))
+                return;
+
             node.AstUpdated += OnAstUpdated;
             node.ConnectorAdded += OnConnectorAdded;
             node.Disposed += () => { node.AstUpdated -= OnAstUpdated; };
@@ -504,6 +507,7 @@ namespace Dynamo.Models
 
             nodes.Add(node);
             OnNodeAdded(node);
+            HasUnsavedChanges = true;
         }
 
         /// <summary>
@@ -601,14 +605,7 @@ namespace Dynamo.Models
         #endregion
 
         #region private/internal methods
-
-        public event EventHandler Updated;
-        public void OnUpdated(EventArgs e)
-        {
-            if (Updated != null)
-                Updated(this, e);
-        }
-
+        
         private bool SaveInternal(string targetFilePath, ProtoCore.Core core)
         {
             // Create the xml document to write to.
@@ -703,6 +700,7 @@ namespace Dynamo.Models
         }
 
         // TODO(Ben): Documentation to come before pull request.
+        // TODO(Steve): This probably belongs on HomeWorkspaceModel.
         protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
         {
             if (document.DocumentElement == null)

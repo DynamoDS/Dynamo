@@ -149,7 +149,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("aa03e3b7-066b-4564-91bc-69c247bc8bdb");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);
@@ -311,7 +311,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("d36759fb-da7a-475a-a43a-9c85996ad55d");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);
@@ -413,7 +413,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("0f912454-b278-499f-b15f-c42c039a5453");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);
@@ -448,7 +448,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("0f912454-b278-499f-b15f-c42c039a5453");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);
@@ -511,7 +511,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("294a2376-6751-43c3-a8b1-5492fa942dbe");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);
@@ -626,7 +626,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("9e19aed1-90ec-4de3-bb5d-e0b547f69138");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);
@@ -753,7 +753,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("a20ad56b-cd14-4aa3-b39c-d9bd0ac0e9f8");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);
@@ -817,7 +817,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("6b6593df-5c71-4472-a91b-7fc69feb14d4");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);
@@ -881,7 +881,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = model.CurrentWorkspace.NodeFromWorkspace("6a6a3d81-57bc-44ae-af37-9dabcf25b8e4");
             Assert.AreEqual(ElementState.Warning, nodeModel.State);

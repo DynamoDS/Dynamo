@@ -17,7 +17,7 @@ namespace Dynamo.Utilities
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
     /// </summary>
-    public class CustomNodeManager : LogSourceBase
+    public class CustomNodeManager : LogSourceBase, ICustomNodeSource
     {
         public CustomNodeManager(NodeFactory nodeFactory)
         {
@@ -627,11 +627,10 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         /// <param name="currentWorkspace"> The workspace where</param>
-        /// <param name="logger"></param>
         /// <param name="isTestMode"></param>
         /// <param name="args"></param>
         public WorkspaceModel Collapse(
-            IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, ILogger logger,
+            IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
             bool isTestMode, FunctionNamePromptEventArgs args)
         {
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
@@ -681,7 +680,7 @@ namespace Dynamo.Utilities
 
                 #region Detect 1-node holes (higher-order function extraction)
 
-                logger.LogWarning("Could not repair 1-node holes", WarningLevel.Mild);
+                Log("Could not repair 1-node holes", WarningLevel.Mild);
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
 
                 //var curriedNodeArgs =

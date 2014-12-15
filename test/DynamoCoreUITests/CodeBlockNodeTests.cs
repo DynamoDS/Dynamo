@@ -310,7 +310,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(element);
 
             // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
+            var duplicate = DynamoModel.RecordableCommand.Deserialize(element, ViewModel.Model.NodeFactory);
             Assert.IsNotNull(duplicate);
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;

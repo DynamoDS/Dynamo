@@ -1061,8 +1061,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Copy selected ISelectable objects to the clipboard.
         /// </summary>
-        /// <param name="parameters"></param>
-        public void Copy(object parameters)
+        public void Copy()
         {
             ClipBoard.Clear();
 

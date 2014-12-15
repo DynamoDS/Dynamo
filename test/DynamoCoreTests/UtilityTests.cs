@@ -113,7 +113,8 @@ namespace Dynamo.Tests
             Assert.Throws<ArgumentNullException>(() =>
             {
                 string fqn = null;
-                DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
+                Type type;
+                ViewModel.Model.NodeFactory.ResolveType(fqn, out type);
             });
         }
 
@@ -121,12 +122,9 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void ResolveType01()
         {
-            // Empty fullyQualifiedName throws an exception.
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                string fqn = string.Empty;
-                DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            });
+            string fqn = string.Empty;
+            Type type;
+            Assert.IsFalse(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
         }
 
         [Test]
@@ -135,7 +133,8 @@ namespace Dynamo.Tests
         {
             // Unknown type returns a 'null'.
             string fqn = "Dynamo.Connectors.ConnectorModel";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
+            Type type;
+            Assert.IsFalse(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
             Assert.AreEqual(null, type);
         }
 
@@ -145,8 +144,9 @@ namespace Dynamo.Tests
         {
             // Known internal type.
             string fqn = "Dynamo.Nodes.Addition";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            Assert.AreNotEqual(null, type);
+            Type type;
+            Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+            Assert.IsNotNull(type);
             Assert.AreEqual("Dynamo.Nodes.Addition", type.FullName);
         }
 
@@ -156,8 +156,9 @@ namespace Dynamo.Tests
         {
             // System type names should be discoverable.
             string fqn = "System.Environment";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            Assert.AreNotEqual(null, type);
+            Type type;
+            Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+            Assert.IsNotNull(type);
             Assert.AreEqual("System.Environment", type.FullName);
         }
 
@@ -167,8 +168,9 @@ namespace Dynamo.Tests
         {
             // 'NumberRange' class makes use of this attribute.
             string fqn = "Dynamo.Nodes.dynBuildSeq";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            Assert.AreNotEqual(null, type);
+            Type type;
+            Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+            Assert.IsNotNull(type);
             Assert.AreEqual("Dynamo.Nodes.NumberRange", type.FullName);
         }
 

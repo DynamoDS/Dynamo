@@ -104,7 +104,7 @@ namespace Dynamo.TestInfrastructure
 
                 DynamoViewModel.ExecuteCommand(selectNodeCommand);
 
-                DynamoModel.Copy(null);
+                DynamoModel.Copy();
                 DynamoModel.Paste();
             }));
 
