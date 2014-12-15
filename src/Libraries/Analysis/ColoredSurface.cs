@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -95,8 +96,6 @@ namespace Analysis
             }
             DebugTime(sw, "Ellapsed for storing colors.");
 
-            var avgColor = Color.ByARGB(255, 255, 255, 255);
-
             for (int i = 0; i < package.TriangleVertices.Count; i += 3)
             {
                 var vx = package.TriangleVertices[i];
@@ -106,6 +105,7 @@ namespace Analysis
                 // Get the triangle vertex
                 var v = Point.ByCoordinates(vx, vy, vz);
                 var uv = surface.UVParameterAtPoint(v);
+                var avgColor = Color.ByARGB(255, 255, 255, 255);
 
                 // Create the weighted color by finding
                 // all nodes within 2 levels of the node
@@ -124,7 +124,7 @@ namespace Analysis
                 //double radius = 0.05;
                 //while (nodes.Count() < 3)
                 //{
-                    //nodes = qt.Root.FindNodesWithinRadius(uv, radius);
+                //    nodes = qt.Root.FindNodesWithinRadius(uv, radius);
                 //    radius += 0.01;
                 //}
                 //DebugTime(sw, "For finding nodes in radius.");
