@@ -4,7 +4,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("New Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Create a new Excel Workbook object.  \n\nThis node requires Microsoft Excel to be installed.")]
+    [NodeDescription("NewExelWorkbookDescription",typeof(Properties.Resources))]
     public class NewExcelWorkbook : NodeModel
     {
         public NewExcelWorkbook(WorkspaceModel workspace)
@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Open Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.  \n\nThis node requires Microsoft Excel to be installed.")]
+    [NodeDescription("OpenExelWorkbookDescription",typeof(Properties.Resources))]
     public class ReadExcelFile : FileReaderBase
     {
 
@@ -44,7 +44,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Get Worksheets From Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Get the list of Worksheets from an Excel Workbook.  \n\nThis node requires Microsoft Excel to be installed.")]
+    [NodeDescription("GetWorksheetsFromExcelWorkbookDescription", typeof(Properties.Resources))]
     public class GetWorksheetsFromExcelWorkbook : NodeModel
     {
 
@@ -66,7 +66,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Get Excel Worksheet By Name")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Gets the first Worksheet in an Excel Workbook with the given name.  \n\nThis node requires Microsoft Excel to be installed.")]
+    [NodeDescription("GetExcelWorksheetByName", typeof(Properties.Resources))]
     public class GetExcelWorksheetByName : NodeModel
     {
 
@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Get Data From Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Get the non-empty range of Cell data from an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed.")]
+    [NodeDescription("GetDataFromExcelWorksheetDescription", typeof(Properties.Resources))]
     public class GetDataFromExcelWorksheet : NodeModel
     {
 
@@ -111,7 +111,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Write Data To Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Write data to a Cell of an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed.")]
+    [NodeDescription("WriteDataToExcelWorksheetDescription", typeof(Properties.Resources))]
     public class WriteDataToExcelWorksheet : NodeModel
     {
 
@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Add Excel Worksheet To Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Add a new Worksheet to a Workbook with a given name.  \n\nThis node requires Microsoft Excel to be installed.")]
+    [NodeDescription("AddExcelWorksheetToWorkbookDescription", typeof(Properties.Resources))]
     public class AddExcelWorksheetToWorkbook : NodeModel
     {
 
@@ -163,7 +163,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Save Excel Workbook As")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Write an Excel Workbook to a file with the given filename.  \n\nThis node requires Microsoft Excel to be installed.")]
+    [NodeDescription("SaveExcelWorkbookAsDescription", typeof(Properties.Resources))]
     public class SaveAsExcelWorkbook : NodeModel
     {
         public SaveAsExcelWorkbook(WorkspaceModel workspace)
