@@ -266,6 +266,17 @@ namespace DSCore
                 (int)(num[3] / totalArea));
         }
 
+        /// <summary>
+        /// Create a two-dimensional map of colors which use bi-linear interpolation
+        /// to blend the colors at a UV based on the weighted average of the
+        /// other colors.
+        /// </summary>
+        /// <param name="width">The width of the color map.</param>
+        /// <param name="height">The height of the color map.</param>
+        /// <param name="colors">The set of colors to be used for interpolation.</param>
+        /// <param name="uvs">A set of UVs corresponding to the colors to be used
+        /// for interpolation.</param>
+        /// <returns>A two-dimensional array of colors.</returns>
         public static Color[,] CreateColorMap(int width, int height, IList<Color> colors, IList<UV> uvs  )
         {
             var colorMap = new Color[width, height];

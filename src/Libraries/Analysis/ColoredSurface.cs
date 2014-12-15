@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
@@ -188,11 +190,14 @@ namespace Analysis
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
+            var sw = new Stopwatch();
+
             // Use ASM's tesselation routine to tesselate
             // the surface. Tesselate with a high degree 
             // of precision to ensure that UVs can be matched 
             // to vertices.
-            surface.Tessellate(package, 0.01);
+            surface.Tessellate(package, 0.1);
+            DebugTime(sw, "Ellapsed for tessellation.");
 
             int colorCount = 0;
 
@@ -202,16 +207,18 @@ namespace Analysis
             {
                 qt.Root.Insert(uvs[i]);
             }
+            DebugTime(sw, "Ellapsed for quadtree construction.");
 
             // Store the colors
             for (int i = 0; i < uvs.Count(); i++)
             {
                 Node node;
-                if(qt.Root.TryFind(uvs[i], out node))
+                if (qt.Root.TryFind(uvs[i], out node))
                 {
                     node.Item = colors[i];
                 }
             }
+            DebugTime(sw, "Ellapsed for storing colors.");
 
             for (int i = 0; i < package.TriangleVertices.Count; i += 3)
             {
@@ -237,6 +244,22 @@ namespace Analysis
                     avgColor = Color.Blerp(weightedColors);
                 }
 
+                //var nodes = new List<Node>();
+                //double radius = 0.05;
+                //while (nodes.Count() < 3)
+                //{
+                    //nodes = qt.Root.FindNodesWithinRadius(uv, radius);
+                //    radius += 0.01;
+                //}
+                //DebugTime(sw, "For finding nodes in radius.");
+
+                //var weightedColors =
+                //    nodes.Where(n => n.Point != null)
+                //        .Where(n => n.Item != null)
+                //        .Select(n => new Color.WeightedColor2D((Color)n.Item, uv.Area(n.Point))).ToList();
+                //avgColor = Color.Blerp(weightedColors);
+                //DebugTime(sw, "For interpolating colors.");
+
                 package.TriangleVertexColors[colorCount] = avgColor.Red;
                 package.TriangleVertexColors[colorCount + 1] = avgColor.Green;
                 package.TriangleVertexColors[colorCount + 2] = avgColor.Blue;
@@ -244,6 +267,17 @@ namespace Analysis
 
                 colorCount += 4;
             }
+
+            DebugTime(sw, "Ellapsed for setting colors on mesh.");
+            sw.Stop();
+        }
+
+        private void DebugTime(Stopwatch sw, string message)
+        {
+            sw.Stop();
+            Debug.WriteLine("{0}:{1}",sw.Elapsed, message);
+            sw.Reset();
+            sw.Start();
         }
     }
 }

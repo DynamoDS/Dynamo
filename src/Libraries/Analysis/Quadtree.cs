@@ -17,16 +17,6 @@ namespace Analysis
         {
             Root = new Node(min, max);
         }
-
-        internal bool TryFind(UV uv, out Node node)
-        {
-            return Root.TryFind(uv, out node);
-        }
-
-        internal List<Node> GetAllNodes()
-        {
-            return Root.GetAllNodes();
-        }
     }
 
     public class SurfaceQuadtree : Quadtree, IGraphicItem
@@ -107,6 +97,7 @@ namespace Analysis
                 package.PushLineStripVertexCount(2);
             }
         }
+
     }
 
     internal class Node
@@ -346,13 +337,57 @@ namespace Analysis
 
             return n;
         }
+
+        public List<Node> FindNodesWithinRadius(UV location, double radius)
+        {
+            var nodes = new List<Node>();
+            var circle = Circle.ByCenterPointRadius(
+                Autodesk.DesignScript.Geometry.Point.ByCoordinates(location.U, location.V),
+                radius);
+
+            if (!Intersects(circle)) return nodes;
+
+            if (IsLeafNode)
+            {
+                nodes.Add(this);
+                return nodes;
+            }
+            else
+            {
+                nodes.AddRange(NW.FindNodesWithinRadius(location, radius));
+                nodes.AddRange(NE.FindNodesWithinRadius(location, radius));
+                nodes.AddRange(SW.FindNodesWithinRadius(location, radius));
+                nodes.AddRange(SE.FindNodesWithinRadius(location, radius));
+            }
+
+            return nodes;
+        } 
+
+        private bool Intersects(Circle circle)
+        {
+            //http://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
+
+            var circleDistX = Math.Abs(circle.CenterPoint.X - Bounds.CenterPoint.U);
+            var circleDistY = Math.Abs(circle.CenterPoint.Y - Bounds.CenterPoint.V);
+
+            if (circleDistX > (Bounds.Width / 2 + circle.Radius)) { return false; }
+            if (circleDistY > (Bounds.Height / 2 + circle.Radius)) { return false; }
+
+            if (circleDistX <= (Bounds.Width / 2)) { return true; }
+            if (circleDistY <= (Bounds.Height / 2)) { return true; }
+
+            var cornerDistance_sq = Math.Pow(circleDistX - Bounds.Width / 2, 2) +
+                                 Math.Pow(circleDistY - Bounds.Height / 2, 2);
+
+            return (cornerDistance_sq <= Math.Pow(circle.Radius, 2));
+        }
     }
 
     internal class UVRect
     {
         public UV Min { get; set; }
         public UV Max { get; set; }
-
+        
         public double Width
         {
             get { return Max.U - Min.U; }
@@ -361,6 +396,11 @@ namespace Analysis
         public double Height
         {
             get { return Max.V - Min.V; }
+        }
+
+        public UV CenterPoint
+        {
+            get { return UV.ByCoordinates(Min.U + Width/2, Min.V + Height/2); }
         }
 
         public UVRect(UV min, UV max)
