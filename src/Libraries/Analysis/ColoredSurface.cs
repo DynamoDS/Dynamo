@@ -196,7 +196,8 @@ namespace Analysis
             // the surface. Tesselate with a high degree 
             // of precision to ensure that UVs can be matched 
             // to vertices.
-            surface.Tessellate(package, 0.1);
+            surface.Tessellate(package);
+
             DebugTime(sw, "Ellapsed for tessellation.");
 
             int colorCount = 0;
@@ -220,6 +221,8 @@ namespace Analysis
             }
             DebugTime(sw, "Ellapsed for storing colors.");
 
+            var avgColor = Color.ByARGB(255, 255, 255, 255);
+
             for (int i = 0; i < package.TriangleVertices.Count; i += 3)
             {
                 var vx = package.TriangleVertices[i];
@@ -229,7 +232,6 @@ namespace Analysis
                 // Get the triangle vertex
                 var v = Point.ByCoordinates(vx, vy, vz);
                 var uv = surface.UVParameterAtPoint(v);
-                var avgColor = Color.ByARGB(255, 255, 255, 255);
 
                 // Create the weighted color by finding
                 // all nodes within 2 levels of the node

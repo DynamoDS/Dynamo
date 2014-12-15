@@ -23,14 +23,23 @@ namespace Analysis
     {
         private Surface surface;
         private IList<UV> uvs;
- 
+        private Quadtree qt;
+
         private SurfaceQuadtree(Surface surface, IList<UV> uvs)
             : base(UV.ByCoordinates(), UV.ByCoordinates(1, 1))
         {
             this.surface = surface;
             this.uvs = uvs;
+
+            qt = new Quadtree(UV.ByCoordinates(), UV.ByCoordinates(1, 1));
         }
 
+        /// <summary>
+        /// Construct a quadtree on a surface.
+        /// </summary>
+        /// <param name="surface">The surface on which to construct the quadtree.</param>
+        /// <param name="uvs">The UV locations to add as nodes in the quadtree.</param>
+        /// <returns>A quadtree object.</returns>
         public static SurfaceQuadtree BySurfaceAndUVs(Surface surface, IList<UV> uvs)
         {
             if (surface == null)
@@ -46,11 +55,20 @@ namespace Analysis
             return new SurfaceQuadtree(surface, uvs);
         }
 
+        /// <summary>
+        /// Find all quadtree points (UVs) in the quadtree within a radius of the given UV location.
+        /// </summary>
+        /// <param name="center">The UV at the center of the search area.</param>
+        /// <param name="r">The radius of the search area.</param>
+        /// <returns>A list of UVs.</returns>
+        public List<UV> FindPointsWithinRadius(UV center, double r)
+        {
+            return qt.Root.FindNodesWithinRadius(center, r).Where(n=>n.Point != null).Select(n=>n.Point).ToList();
+        }
+            
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
-            var qt = new Quadtree(UV.ByCoordinates(), UV.ByCoordinates(1, 1));
-
             foreach (var uv in uvs)
             {
                 var pt = surface.PointAtParameter(uv.U, uv.V);
