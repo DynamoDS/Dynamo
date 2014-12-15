@@ -176,15 +176,7 @@ namespace Dynamo.Utilities
             text = NormalizeLineBreaks(text);
             var lines = text.Split(new char[] { '\n' }, StringSplitOptions.None);
 
-            // We could have hard-coded "pack" instead of "UriSchemePack" here, 
-            // but in NUnit scenario there is no "Application" created. When there 
-            // is no Application instance, the Uri format "pack://" will fail Uri 
-            // object creation. Adding a reference to "UriSchemePack" resolves 
-            // this issue to avoid a "UriFormatException".
-            // 
-            string pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
-            var uri = new Uri(pack + "://application:,,,/DynamoCore;component/");
-            var textFontFamily = new FontFamily(uri, ResourceNames.FontResourceUri);
+            var textFontFamily = new FontFamily("Consolas");
 
             var typeface = new Typeface(textFontFamily, FontStyles.Normal,
                 FontWeights.Normal, FontStretches.Normal);
