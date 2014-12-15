@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
             if (Definition.Parameters == null) return;
 
             foreach (string arg in Definition.Parameters)
-                model.InPortData.Add(new PortData(arg, "parameter"));
+                model.InPortData.Add(new PortData(arg, Dynamo.Properties.Resources.PortDataParameterToolTip));
         }
 
         protected override void InitializeOutputs(NodeModel model)

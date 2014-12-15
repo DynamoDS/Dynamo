@@ -693,11 +693,11 @@ namespace Dynamo.Nodes
     {
         public Sublists(WorkspaceModel ws): base(ws)
         {
-            InPortData.Add(new PortData("list", "The list from which to create sublists."));
-            InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}..."));
+            InPortData.Add(new PortData("list", Resources.SublistsPortDataListToolTip));
+            InPortData.Add(new PortData("offset", Resources.SublistsPortDataOffsetToolTip));
 
             OutPortData.RemoveAt(0); //remove the existing blank output
-            OutPortData.Add(new PortData("list", "The sublists."));
+            OutPortData.Add(new PortData("list", Resources.SublistPortDataResultToolTip));
 
             RegisterAllPorts();
 
@@ -760,7 +760,7 @@ namespace Dynamo.Nodes
 
                 foreach (string parameter in parameters)
                 {
-                    InPortData.Add(new PortData(parameter, "variable"));
+                    InPortData.Add(new PortData(parameter, Resources.PortDataVariableToolTip));
                 }
 
                 RegisterInputPorts();
@@ -929,9 +929,9 @@ namespace Dynamo.Nodes
     { 
         public ComposeFunctions(WorkspaceModel ws) : base(ws)
         {
-            InPortData.Add(new PortData("f", "A Function"));
-            InPortData.Add(new PortData("g", "A Function"));
-            OutPortData.Add(new PortData("g ∘ f", "Composed function: g(f(x))"));
+            InPortData.Add(new PortData("f", Resources.ComposeFunctionPortDataFunctionToolTip));
+            InPortData.Add(new PortData("g", Resources.ComposeFunctionPortDataFunctionToolTip));
+            OutPortData.Add(new PortData("g ∘ f", Resources.ComposeFunctionPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -989,7 +989,7 @@ namespace Dynamo.Nodes
             : base(ws)
         {
             Type type = typeof(T);
-            OutPortData.Add(new PortData("", type.Name));
+            OutPortData.Add(new PortData(string.Empty, type.Name));
         }
 
         protected override bool ShouldDisplayPreviewCore
@@ -1258,7 +1258,7 @@ namespace Dynamo.Nodes
         public DoubleInput(WorkspaceModel ws)
             : base(ws)
         {
-            OutPortData.Add(new PortData("", ""));
+            OutPortData.Add(new PortData(String.Empty, String.Empty));
             RegisterAllPorts();
 
             _convertToken = Convert;
@@ -1305,7 +1305,7 @@ namespace Dynamo.Nodes
 
                     foreach (var id in idList)
                     {
-                        InPortData.Add(new PortData(id, "variable"));
+                        InPortData.Add(new PortData(id, Resources.PortDataVariableToolTip));
                     }
 
                     RegisterInputPorts();

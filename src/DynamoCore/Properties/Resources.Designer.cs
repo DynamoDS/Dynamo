@@ -88,6 +88,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A Function.
+        /// </summary>
+        public static string ComposeFunctionPortDataFunctionToolTip {
+            get {
+                return ResourceManager.GetString("ComposeFunctionPortDataFunctionToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Composed function: g(f(x)).
+        /// </summary>
+        public static string ComposeFunctionPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("ComposeFunctionPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
         public static string CustomNodeDesciption {
@@ -133,6 +151,51 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount of numbers in the sequence.
+        /// </summary>
+        public static string NumberRangePortDataAmountToolTip {
+            get {
+                return ResourceManager.GetString("NumberRangePortDataAmountToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number to end the sequence at.
+        /// </summary>
+        public static string NumberRangePortDataEndToolTip {
+            get {
+                return ResourceManager.GetString("NumberRangePortDataEndToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New sequence.
+        /// </summary>
+        public static string NumberRangePortDataSeqToolTip {
+            get {
+                return ResourceManager.GetString("NumberRangePortDataSeqToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number to start the sequence at.
+        /// </summary>
+        public static string NumberRangePortDataStartToolTip {
+            get {
+                return ResourceManager.GetString("NumberRangePortDataStartToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Space between numbers.
+        /// </summary>
+        public static string NumberRangePortDataStepToolTip {
+            get {
+                return ResourceManager.GetString("NumberRangePortDataStepToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A function output, use with custom nodes.
         /// </summary>
         public static string OutputNodeDescription {
@@ -142,11 +205,56 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to parameter.
+        /// </summary>
+        public static string PortDataParameterToolTip {
+            get {
+                return ResourceManager.GetString("PortDataParameterToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to variable.
+        /// </summary>
+        public static string PortDataVariableToolTip {
+            get {
+                return ResourceManager.GetString("PortDataVariableToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a string..
         /// </summary>
         public static string StringNodeDescription {
             get {
                 return ResourceManager.GetString("StringNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sublists..
+        /// </summary>
+        public static string SublistPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("SublistPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The list from which to create sublists..
+        /// </summary>
+        public static string SublistsPortDataListToolTip {
+            get {
+                return ResourceManager.GetString("SublistsPortDataListToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The offset to apply to the sub-list. Ex. The range &quot;0..2&quot; with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}....
+        /// </summary>
+        public static string SublistsPortDataOffsetToolTip {
+            get {
+                return ResourceManager.GetString("SublistsPortDataOffsetToolTip", resourceCulture);
             }
         }
     }

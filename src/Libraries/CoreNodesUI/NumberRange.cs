@@ -1,5 +1,6 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Properties;
 using ProtoCore.AST.AssociativeAST;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,10 @@ namespace DSCoreNodesUI
         public NumberRange(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("start", "Number to start the sequence at"));
-            InPortData.Add(new PortData("end", "Number to end the sequence at"));
-            InPortData.Add(new PortData("step", "Space between numbers"));
-            OutPortData.Add(new PortData("seq", "New sequence"));
+            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
+            InPortData.Add(new PortData("end", Resources.NumberRangePortDataEndToolTip));
+            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
+            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
 
             RegisterAllPorts();
 
@@ -54,10 +55,10 @@ namespace DSCoreNodesUI
         public NumberSeq(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("start", "Number to start the sequence at"));
-            InPortData.Add(new PortData("amount", "Amount of numbers in the sequence"));
-            InPortData.Add(new PortData("step", "Space between numbers"));
-            OutPortData.Add(new PortData("seq", "New sequence"));
+            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
+            InPortData.Add(new PortData("amount", Resources.NumberRangePortDataAmountToolTip));
+            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
+            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
 
             RegisterAllPorts();
 

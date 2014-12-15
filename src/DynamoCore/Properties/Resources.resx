@@ -156,4 +156,44 @@
     <value>variable;argument;parameter</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
+  <data name="ComposeFunctionPortDataFunctionToolTip" xml:space="preserve">
+    <value>A Function</value>
+  </data>
+  <data name="ComposeFunctionPortDataResultToolTip" xml:space="preserve">
+    <value>Composed function: g(f(x))</value>
+  </data>
+  <data name="NumberRangePortDataAmountToolTip" xml:space="preserve">
+    <value>Amount of numbers in the sequence</value>
+  </data>
+  <data name="NumberRangePortDataEndToolTip" xml:space="preserve">
+    <value>Number to end the sequence at</value>
+  </data>
+  <data name="NumberRangePortDataSeqToolTip" xml:space="preserve">
+    <value>New sequence</value>
+  </data>
+  <data name="NumberRangePortDataStartToolTip" xml:space="preserve">
+    <value>Number to start the sequence at</value>
+  </data>
+  <data name="NumberRangePortDataStepToolTip" xml:space="preserve">
+    <value>Space between numbers</value>
+  </data>
+  <data name="PortDataParameterToolTip" xml:space="preserve">
+    <value>parameter</value>
+  </data>
+  <data name="PortDataVariableToolTip" xml:space="preserve">
+    <value>variable</value>
+    <comment>Tooltip to indidate it is a variable</comment>
+  </data>
+  <data name="SublistPortDataResultToolTip" xml:space="preserve">
+    <value>The sublists.</value>
+    <comment>Tooltip</comment>
+  </data>
+  <data name="SublistsPortDataListToolTip" xml:space="preserve">
+    <value>The list from which to create sublists.</value>
+    <comment>Tooltip for inport data</comment>
+  </data>
+  <data name="SublistsPortDataOffsetToolTip" xml:space="preserve">
+    <value>The offset to apply to the sub-list. Ex. The range "0..2" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}...</value>
+    <comment>Tooltip</comment>
+  </data>
 </root>
