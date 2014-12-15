@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
@@ -13,109 +12,57 @@ namespace Analysis
     {
         internal Node Root { get; set; }
 
-        internal Quadtree(UV min, UV max)
+        private Quadtree()
         {
-            Root = new Node(min, max);
+            Root = new Node(UV.ByCoordinates(), UV.ByCoordinates(1, 1));
         }
-    }
 
-    public class SurfaceQuadtree : Quadtree, IGraphicItem
-    {
-        private Surface surface;
-        private IList<UV> uvs;
-        private Quadtree qt;
-
-        private SurfaceQuadtree(Surface surface, IList<UV> uvs)
-            : base(UV.ByCoordinates(), UV.ByCoordinates(1, 1))
+        private Quadtree(IEnumerable<UV> uvs)
         {
-            this.surface = surface;
-            this.uvs = uvs;
-
-            qt = new Quadtree(UV.ByCoordinates(), UV.ByCoordinates(1, 1));
+            Root = new Node(UV.ByCoordinates(), UV.ByCoordinates(1, 1));
+            uvs.ToList().ForEach(uv=>Root.Insert(uv));
         }
 
         /// <summary>
-        /// Construct a quadtree on a surface.
+        /// Construct a Quadtree encompassing the (0,0)->(1,1) domain.
         /// </summary>
-        /// <param name="surface">The surface on which to construct the quadtree.</param>
-        /// <param name="uvs">The UV locations to add as nodes in the quadtree.</param>
-        /// <returns>A quadtree object.</returns>
-        public static SurfaceQuadtree BySurfaceAndUVs(Surface surface, IList<UV> uvs)
+        /// <param name="uv">A set of UVs in the (0,0)->(1,1) domain.</param>
+        /// <returns>A Quadtree object.</returns>
+        public static Quadtree ByUVs(IList<UV> uvs)
         {
-            if (surface == null)
+            if (uvs == null)
             {
-                throw new ArgumentNullException("surface");
+                throw new ArgumentNullException("uvs", AnalysisResources.QuadtreeConstructionNullUVSetMessage);   
             }
 
             if (!uvs.Any())
             {
-                throw new Exception("You must specify some UV locations.");
+                throw new ArgumentException(AnalysisResources.QuadtreeConstructionEmptyUVSetMessage);
             }
 
-            return new SurfaceQuadtree(surface, uvs);
+            return new Quadtree(uvs);
         }
 
         /// <summary>
         /// Find all quadtree points (UVs) in the quadtree within a radius of the given UV location.
         /// </summary>
         /// <param name="center">The UV at the center of the search area.</param>
-        /// <param name="r">The radius of the search area.</param>
+        /// <param name="radius">The radius of the search area.</param>
         /// <returns>A list of UVs.</returns>
-        public List<UV> FindPointsWithinRadius(UV center, double r)
+        public List<UV> FindPointsWithinRadius(UV center, double radius)
         {
-            return qt.Root.FindNodesWithinRadius(center, r).Where(n=>n.Point != null).Select(n=>n.Point).ToList();
-        }
-            
-        [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
-        {
-            foreach (var uv in uvs)
+            if (center == null)
             {
-                var pt = surface.PointAtParameter(uv.U, uv.V);
-                package.PushPointVertex(pt.X, pt.Y, pt.Z);
-                package.PushPointVertexColor(0,0,0,255);
-
-                qt.Root.Insert(uv);
+                throw new ArgumentNullException("center", AnalysisResources.FindPointsWithinRadiusNullPointMessage);
             }
 
-            DrawNode(qt.Root, package);
-        }
-
-        private void DrawNode(Node node, IRenderPackage package)
-        {
-            if (!node.IsLeafNode)
+            if (radius <= 0.0)
             {
-                DrawNode(node.NW, package);
-                DrawNode(node.NE, package);
-                DrawNode(node.SW, package);
-                DrawNode(node.SE, package);
+                throw new ArgumentException("radius", AnalysisResources.FindPointsWithinRadiusSearchRadiusMessage);
             }
-            else
-            {
-                // Draw the node boundary
-                var a = surface.PointAtParameter(node.Bounds.Min.U, node.Bounds.Min.V);
-                var b = surface.PointAtParameter(node.Bounds.Min.U, node.Bounds.Max.V);
-                var c = surface.PointAtParameter(node.Bounds.Max.U, node.Bounds.Max.V);
-                var d = surface.PointAtParameter(node.Bounds.Max.U, node.Bounds.Min.V);
 
-                package.PushLineStripVertex(a.X, a.Y, a.Z);
-                package.PushLineStripVertex(b.X, b.Y, b.Z);
-                package.PushLineStripVertexCount(2);
-
-                package.PushLineStripVertex(b.X, b.Y, b.Z);
-                package.PushLineStripVertex(c.X, c.Y, c.Z);
-                package.PushLineStripVertexCount(2);
-
-                package.PushLineStripVertex(c.X, c.Y, c.Z);
-                package.PushLineStripVertex(d.X, d.Y, d.Z);
-                package.PushLineStripVertexCount(2);
-
-                package.PushLineStripVertex(d.X, d.Y, d.Z);
-                package.PushLineStripVertex(a.X, a.Y, a.Z);
-                package.PushLineStripVertexCount(2);
-            }
+            return Root.FindNodesWithinRadius(center, radius).Where(n => n.Point != null).Select(n => n.Point).ToList();
         }
-
     }
 
     internal class Node
@@ -401,6 +348,10 @@ namespace Analysis
         }
     }
 
+    /// <summary>
+    /// Helper class used to define a Rectangle described
+    /// by a minimum and a maximum UV.
+    /// </summary>
     internal class UVRect
     {
         public UV Min { get; set; }
@@ -439,6 +390,9 @@ namespace Analysis
         }
     }
 
+    /// <summary>
+    /// Extensions methods for UVs.
+    /// </summary>
     internal static class UVExtensions
     {
         public static bool IsAlmostEqualTo(this UV a, UV b)

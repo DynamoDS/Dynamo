@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -16,18 +17,18 @@ namespace Analysis
     public class ColoredSurface : IGraphicItem
     {
         private Surface surface;
-        private Color[] colors;
-        private UV[] uvs;
+        private IList<Color> colors;
+        private IList<UV> uvs;
 
         private ColoredSurface(Surface surface, 
-            DSCore.Color[] colors, UV[] uvs)
+            IList<Color> colors, IList<UV> uvs)
         {
             this.surface = surface;
             this.colors = colors;
             this.uvs = uvs;
         }
 
-        public static ColoredSurface ByColorsAndUVs(Surface surface, DSCore.Color[] colors, UV[] uvs)
+        public static ColoredSurface ByColorsAndUVs(Surface surface, IList<Color> colors, IList<UV> uvs)
         {
             if (surface == null)
             {
@@ -41,7 +42,7 @@ namespace Analysis
 
             if (!colors.Any())
             {
-                throw new ArgumentException("There are no colors specified.");
+                throw new ArgumentException(AnalysisResources.ColoredSurfaceConstructionNoColorsMessage);
             }
 
             if (uvs == null)
@@ -51,12 +52,12 @@ namespace Analysis
 
             if (!uvs.Any())
             {
-                throw new ArgumentException("There are no UVs specified.");
+                throw new ArgumentException(AnalysisResources.ColoredSurfaceConstructionNoUVsMessage);
             }
 
             if (uvs.Count() != colors.Count())
             {
-                throw new Exception("The number of colors and the number of locations specified must be equal.");
+                throw new Exception(AnalysisResources.ColoredSurfaceConstructionColorsAndUVsMessage);
             }
 
             return new ColoredSurface(surface, colors, uvs);
@@ -78,11 +79,7 @@ namespace Analysis
             int colorCount = 0;
 
             // Build a quadtree
-            var qt = new Quadtree(UV.ByCoordinates(), UV.ByCoordinates(1, 1));
-            for (int i = 0; i < uvs.Count(); i++)
-            {
-                qt.Root.Insert(uvs[i]);
-            }
+            var qt = Quadtree.ByUVs(uvs);
             DebugTime(sw, "Ellapsed for quadtree construction.");
 
             // Store the colors

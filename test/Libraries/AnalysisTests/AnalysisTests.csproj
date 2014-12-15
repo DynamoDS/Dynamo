@@ -56,7 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalysisTests.cs" />
+    <Compile Include="ColoredSurfaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuadtreeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
@@ -66,6 +68,14 @@
     <ProjectReference Include="..\..\..\src\Libraries\Analysis\Analysis.csproj">
       <Project>{76686ed6-e759-4772-81c2-768740be13fa}</Project>
       <Name>Analysis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Libraries\CoreNodes\CoreNodes.csproj">
+      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
+      <Name>CoreNodes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestServices\TestServices.csproj">
+      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
+      <Name>TestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
