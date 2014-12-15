@@ -150,9 +150,14 @@ namespace Dynamo.Models
         public event Action<ConnectorModel> ConnectorAdded;
         protected virtual void OnConnectorAdded(ConnectorModel obj)
         {
-            obj.Deleted += () => OnConnectorDeleted(obj);
+            RegisterConnector(obj);
             var handler = ConnectorAdded;
             if (handler != null) handler(obj);
+        }
+
+        private void RegisterConnector(ConnectorModel connector)
+        {
+            connector.Deleted += () => OnConnectorDeleted(connector);
         }
 
         /// <summary>
@@ -375,7 +380,7 @@ namespace Dynamo.Models
         #region constructors
 
         protected WorkspaceModel(
-            string name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n,
+            string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
             double x, double y, NodeFactory factory)
         {
             Name = name;
@@ -392,6 +397,12 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
+
+            foreach (var node in nodes)
+                RegisterNode(node);
+
+            foreach (var connector in Connectors)
+                RegisterConnector(connector);
         }
 
         public readonly NodeFactory NodeFactory;
@@ -474,9 +485,7 @@ namespace Dynamo.Models
             if (nodes.Contains(node))
                 return;
 
-            node.AstUpdated += OnAstUpdated;
-            node.ConnectorAdded += OnConnectorAdded;
-            node.Disposed += () => { node.AstUpdated -= OnAstUpdated; };
+            RegisterNode(node);
 
             if (centered)
             {
@@ -508,6 +517,13 @@ namespace Dynamo.Models
             nodes.Add(node);
             OnNodeAdded(node);
             HasUnsavedChanges = true;
+        }
+
+        private void RegisterNode(NodeModel node)
+        {
+            node.AstUpdated += OnAstUpdated;
+            node.ConnectorAdded += OnConnectorAdded;
+            node.Disposed += () => { node.AstUpdated -= OnAstUpdated; };
         }
 
         /// <summary>

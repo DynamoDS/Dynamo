@@ -1340,7 +1340,7 @@ namespace Dynamo.Models
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var helper = new XmlElementHelper(nodeElement);
-            GUID = helper.ReadGuid("guid", Guid.NewGuid());
+            GUID = helper.ReadGuid("guid", GUID);
 
             // Resolve node nick name.
             string name = helper.ReadString("nickname", string.Empty);

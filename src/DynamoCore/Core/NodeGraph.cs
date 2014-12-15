@@ -58,7 +58,7 @@ namespace Dynamo.Core
             //XmlAttribute intEndAttrib = connEl.Attributes[3];
             //XmlAttribute portTypeAttrib = connEl.Attributes[4];
 
-            var guid = helper.ReadGuid("guid");
+            var guid = helper.ReadGuid("guid", Guid.NewGuid());
             var guidStart = helper.ReadGuid("start");
             var guidEnd = helper.ReadGuid("end");
             int startIndex = helper.ReadInteger("start_index");

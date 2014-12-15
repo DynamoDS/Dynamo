@@ -82,7 +82,11 @@ namespace Dynamo.Nodes
 
             XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
             if (nameNode != null && nameNode.Attributes != null)
-                NickName = nameNode.Attributes[0].Value;
+                NickName = nameNode.Attributes["value"].Value;
+
+            XmlNode descNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Description"));
+            if (descNode != null && descNode.Attributes != null)
+                Description = descNode.Attributes["value"].Value;
 
             foreach (XmlNode subNode in childNodes)
             {
@@ -157,7 +161,6 @@ namespace Dynamo.Nodes
             //before this was the case, we need to ensure it here.
             ArgumentLacing = LacingStrategy.Disabled;
 
-            Description = new XmlElementHelper(nodeElement).ReadString("functionDesc");
         }
 
         #endregion

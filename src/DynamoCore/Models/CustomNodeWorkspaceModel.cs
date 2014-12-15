@@ -39,16 +39,14 @@ namespace Dynamo.Models
                 description,
                 factory,
                 Enumerable.Empty<NodeModel>(),
-                Enumerable.Empty<ConnectorModel>(),
                 Enumerable.Empty<NoteModel>(),
                 x,
                 y,
                 customNodeId) { }
 
         public CustomNodeWorkspaceModel(
-            string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e,
-            IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y, Guid customNodeId) 
-            : base(name, e, c, n, x, y, factory)
+            string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, double x, double y, Guid customNodeId) 
+            : base(name, e, n, x, y, factory)
         {
             CustomNodeId = customNodeId;
             //WatchChanges = true;

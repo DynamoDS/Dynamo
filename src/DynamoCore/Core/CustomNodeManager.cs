@@ -99,31 +99,28 @@ namespace Dynamo.Utilities
             CustomNodeWorkspaceModel workspace;
             CustomNodeDefinition def;
             CustomNodeInfo info;
-            if (!TryGetFunctionWorkspace(id, isTestMode, out workspace))
+            // Try to get the definition, initializing the custom node if necessary
+            if (TryGetFunctionDefinition(id, isTestMode, out def))
             {
-                if (nickname == null || !TryGetNodeInfo(nickname, out info))
-                {
-                    Log(
-                        "Unable to create instance of custom node with id: \"" + id + "\"",
-                        WarningLevel.Moderate);
-                    info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
-                    def = null;
-                }
-                else
-                {
-                    id = info.FunctionId;
-                    def = loadedCustomNodes[id] as CustomNodeDefinition;
-                    workspace = loadedWorkspaceModels[id];
-                }
+                // Got the definition, proceed as planned.
+                info = NodeInfos[id];
             }
             else
             {
-                info = NodeInfos[id];
-                def = loadedCustomNodes[id] as CustomNodeDefinition;
+                // Couldn't get the workspace with the given ID, try a nickname lookup instead.
+                if (nickname != null && TryGetNodeInfo(nickname, out info))
+                    return CreateCustomNodeInstance(info.FunctionId, nickname, isTestMode);
+                
+                // Couldn't find the workspace at all, prepare for a late initialization.
+                Log(
+                    "Unable to create instance of custom node with id: \"" + id + "\"",
+                    WarningLevel.Moderate);
+                info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
+                def = null;
             }
 
             var node = new Function(def, info.Description, info.Category);
-            if (workspace != null)
+            if (loadedWorkspaceModels.TryGetValue(id, out workspace))
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
             else
                 RegisterCustomNodeInstanceForLateInitialization(node, id, nickname, isTestMode);
@@ -328,12 +325,12 @@ namespace Dynamo.Utilities
         {
             if (Contains(id))
             {
-                if (IsInitialized(id))
+                if (!loadedWorkspaceModels.TryGetValue(id, out ws))
                 {
-                    ws = loadedWorkspaceModels[id];
-                    return true;
+                    if (InitializeCustomNode(id, isTestMode, out ws))
+                        return true;
                 }
-                if (InitializeCustomNode(id, isTestMode, out ws))
+                else
                     return true;
             }
             ws = null;
@@ -398,7 +395,7 @@ namespace Dynamo.Utilities
         /// <param name="guid">Whether the definition is stored with the manager.</param>
         public bool IsInitialized(Guid guid)
         {
-            return loadedWorkspaceModels.ContainsKey(guid);
+            return loadedCustomNodes.Contains(guid);
         }
 
         /// <summary>
@@ -484,7 +481,6 @@ namespace Dynamo.Utilities
                 workspaceInfo.Description,
                 nodeFactory,
                 nodeGraph.Nodes,
-                nodeGraph.Connectors,
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
@@ -979,7 +975,6 @@ namespace Dynamo.Utilities
                     args.Description,
                     nodeFactory,
                     newNodes,
-                    newConnectors,
                     Enumerable.Empty<NoteModel>(),
                     0,
                     0,

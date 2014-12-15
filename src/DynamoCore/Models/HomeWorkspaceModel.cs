@@ -36,16 +36,14 @@ namespace Dynamo.Models
                 factory,
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
                 Enumerable.Empty<NodeModel>(),
-                Enumerable.Empty<ConnectorModel>(),
                 Enumerable.Empty<NoteModel>(),
                 0,
                 0, verboseLogging, isTestMode) { }
 
         public HomeWorkspaceModel(
             EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
-            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e,
-            IEnumerable<ConnectorModel> c, IEnumerable<NoteModel> n, double x, double y, bool verboseLogging,
-            bool isTestMode) : base("Home", e, c, n, x, y, factory)
+            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, double x, double y, bool verboseLogging,
+            bool isTestMode) : base("Home", e, n, x, y, factory)
         {
             RunEnabled = true;
             PreloadedTraceData = traceData;

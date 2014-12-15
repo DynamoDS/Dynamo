@@ -903,7 +903,6 @@ namespace Dynamo.Models
                 NodeFactory,
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
-                nodeGraph.Connectors,
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
