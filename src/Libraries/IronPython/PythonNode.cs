@@ -107,7 +107,7 @@ namespace DSIronPythonNode
 
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("Runs an embedded IronPython script.")]
+    [NodeDescription("PythonScriptDescription",typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
@@ -213,7 +213,7 @@ namespace DSIronPythonNode
 
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("Runs a IronPython script from a string.")]
+    [NodeDescription("PythonScriptFromStringDescription",typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase

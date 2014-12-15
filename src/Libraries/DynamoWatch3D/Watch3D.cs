@@ -125,7 +125,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("Shows a dynamic preview of geometry.")]
+    [NodeDescription("Watch3DDescription",typeof(Properties.Resources))]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel, IWatchViewModel
