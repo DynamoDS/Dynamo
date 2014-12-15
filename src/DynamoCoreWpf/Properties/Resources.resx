@@ -1037,4 +1037,52 @@ You will get a chance to save your work.</value>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
     <value>Agreement to collect usability data on your use of Dynamo</value>
   </data>
+  <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
+    <value>Additional Files</value>
+  </data>
+  <data name="InstalledPackageViewAdditionalLabel" xml:space="preserve">
+    <value>Additional Libraries</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuCancelUninstall" xml:space="preserve">
+    <value>Cancel pending uninstall...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
+    <value>Deprecate</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuGetLatest" xml:space="preserve">
+    <value>Get Latest Version</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublish" xml:space="preserve">
+    <value>Publish...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishVersion" xml:space="preserve">
+    <value>Publish Version...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuRemoveDeprecation" xml:space="preserve">
+    <value>Remove deprecation</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuShowContent" xml:space="preserve">
+    <value>Show Contents</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
+    <value>Show Root Directory</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuUninstall" xml:space="preserve">
+    <value>Uninstall...</value>
+  </data>
+  <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
+    <value>Custom Nodes</value>
+  </data>
+  <data name="InstalledPackageViewNodeLibrariesLabel" xml:space="preserve">
+    <value>Node Libraries</value>
+  </data>
+  <data name="InstalledPackageViewPendingInstallButton" xml:space="preserve">
+    <value>Pending uninstall</value>
+  </data>
+  <data name="InstalledPackageViewTitle" xml:space="preserve">
+    <value>Installed Packages</value>
+  </data>
+  <data name="PackageManagerWebSiteButton" xml:space="preserve">
+    <value>Package Manager Website</value>
+  </data>
 </root>

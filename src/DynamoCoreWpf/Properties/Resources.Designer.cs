@@ -1476,6 +1476,141 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Additional Files.
+        /// </summary>
+        public static string InstalledPackageViewAdditionalFileLabel {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewAdditionalFileLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Additional Libraries.
+        /// </summary>
+        public static string InstalledPackageViewAdditionalLabel {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewAdditionalLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel pending uninstall....
+        /// </summary>
+        public static string InstalledPackageViewContextMenuCancelUninstall {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuCancelUninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deprecate.
+        /// </summary>
+        public static string InstalledPackageViewContextMenuDeprecate {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuDeprecate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get Latest Version.
+        /// </summary>
+        public static string InstalledPackageViewContextMenuGetLatest {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuGetLatest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish....
+        /// </summary>
+        public static string InstalledPackageViewContextMenuPublish {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuPublish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Version....
+        /// </summary>
+        public static string InstalledPackageViewContextMenuPublishVersion {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuPublishVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove deprecation.
+        /// </summary>
+        public static string InstalledPackageViewContextMenuRemoveDeprecation {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuRemoveDeprecation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Contents.
+        /// </summary>
+        public static string InstalledPackageViewContextMenuShowContent {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuShowContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Root Directory.
+        /// </summary>
+        public static string InstalledPackageViewContextMenuShowRootDir {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuShowRootDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall....
+        /// </summary>
+        public static string InstalledPackageViewContextMenuUninstall {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewContextMenuUninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Nodes.
+        /// </summary>
+        public static string InstalledPackageViewCustomNodesLabel {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewCustomNodesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Libraries.
+        /// </summary>
+        public static string InstalledPackageViewNodeLibrariesLabel {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewNodeLibrariesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending uninstall.
+        /// </summary>
+        public static string InstalledPackageViewPendingInstallButton {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewPendingInstallButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed Packages.
+        /// </summary>
+        public static string InstalledPackageViewTitle {
+            get {
+                return ResourceManager.GetString("InstalledPackageViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamo has already installed {0}.
         ///
         ///Dynamo will attempt to uninstall this package before installing..
@@ -1897,6 +2032,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageDownloadMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageDownloadMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Manager Website.
+        /// </summary>
+        public static string PackageManagerWebSiteButton {
+            get {
+                return ResourceManager.GetString("PackageManagerWebSiteButton", resourceCulture);
             }
         }
         
