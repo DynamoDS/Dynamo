@@ -1,6 +1,4 @@
-﻿using System.Web.Profile;
-
-using DSCoreNodesUI;
+﻿using DSCoreNodesUI;
 using DSNodeServices;
 using Dynamo.Core;
 using Dynamo.Core.Threading;

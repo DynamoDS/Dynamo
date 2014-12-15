@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Interfaces;
+using Dynamo.Library;
 using Dynamo.Models;
 
 using ProtoCore;
@@ -219,7 +220,10 @@ namespace Dynamo.DSEngine
         /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
         /// <param name="verboseLogging"></param>
-        public void CompileCustomNodeDefinition(Guid functionId, IEnumerable<string> returnKeys, string functionName, IEnumerable<NodeModel> funcBody, IEnumerable<AssociativeNode> outputNodes, IEnumerable<string> parameters, bool verboseLogging)
+        public void CompileCustomNodeDefinition(
+            Guid functionId, IEnumerable<string> returnKeys, string functionName,
+            IEnumerable<NodeModel> funcBody, IEnumerable<AssociativeNode> outputNodes,
+            IEnumerable<TypedParameter> parameters, bool verboseLogging)
         {
             OnAstNodeBuilding(functionId);
 
@@ -237,7 +241,7 @@ namespace Dynamo.DSEngine
                  */
 
                 // return array, holds all outputs
-                string rtnName = "__temp_rtn_" + functionId.ToString().Replace("-", String.Empty); 
+                string rtnName = "__temp_rtn_" + functionId.ToString().Replace("-", String.Empty);
                 functionBody.Body.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(rtnName),
@@ -275,7 +279,7 @@ namespace Dynamo.DSEngine
                     new ArgumentSignatureNode
                     {
                         Arguments =
-                            parameters.Select(param => AstFactory.BuildParamNode(param, allTypes)).ToList()
+                            parameters.Select(param => AstFactory.BuildParamNode(param.Name, allTypes)).ToList()
                     },
                 FunctionBody = functionBody,
                 ReturnType = allTypes

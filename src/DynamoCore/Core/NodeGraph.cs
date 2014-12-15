@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Double = System.Double;
 
 namespace Dynamo.Core
@@ -47,18 +48,21 @@ namespace Dynamo.Core
         /// <param name="nodes"></param>
         /// <param name="connector"></param>
         /// <returns></returns>
-        public static bool LoadConnectorFromXml(XmlNode connEl, IDictionary<Guid, NodeModel> nodes, out ConnectorModel connector)
+        public static bool LoadConnectorFromXml(XmlElement connEl, IDictionary<Guid, NodeModel> nodes, out ConnectorModel connector)
         {
-            XmlAttribute guidStartAttrib = connEl.Attributes[0];
-            XmlAttribute intStartAttrib = connEl.Attributes[1];
-            XmlAttribute guidEndAttrib = connEl.Attributes[2];
-            XmlAttribute intEndAttrib = connEl.Attributes[3];
+            var helper = new XmlElementHelper(connEl);
+
+            //XmlAttribute guidStartAttrib = connEl.Attributes[0];
+            //XmlAttribute intStartAttrib = connEl.Attributes[1];
+            //XmlAttribute guidEndAttrib = connEl.Attributes[2];
+            //XmlAttribute intEndAttrib = connEl.Attributes[3];
             //XmlAttribute portTypeAttrib = connEl.Attributes[4];
 
-            var guidStart = new Guid(guidStartAttrib.Value);
-            var guidEnd = new Guid(guidEndAttrib.Value);
-            int startIndex = Convert.ToInt16(intStartAttrib.Value);
-            int endIndex = Convert.ToInt16(intEndAttrib.Value);
+            var guid = helper.ReadGuid("guid");
+            var guidStart = helper.ReadGuid("start");
+            var guidEnd = helper.ReadGuid("end");
+            int startIndex = helper.ReadInteger("start_index");
+            int endIndex = helper.ReadInteger("end_index");
             //var portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
 
             //find the elements to connect
@@ -68,7 +72,7 @@ namespace Dynamo.Core
                 NodeModel end;
                 if (nodes.TryGetValue(guidEnd, out end))
                 {
-                    connector = ConnectorModel.Make(start, end, startIndex, endIndex);
+                    connector = ConnectorModel.Make(start, end, startIndex, endIndex, guid);
                     return connector != null;
                 }
             }
@@ -83,7 +87,7 @@ namespace Dynamo.Core
                 cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
             XmlNode cNodesList = cNodes[0];
 
-            foreach (XmlNode connector in cNodesList.ChildNodes)
+            foreach (XmlElement connector in cNodesList.ChildNodes)
             {
                 ConnectorModel c;
                 if (LoadConnectorFromXml(connector, nodes, out c))

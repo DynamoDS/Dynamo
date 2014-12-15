@@ -166,7 +166,6 @@ namespace Dynamo.Nodes
         {
             Controller.Definition = def;
             Controller.SyncNodeWithDefinition(this);
-            OnAstUpdated();
         }
     }
 

@@ -50,23 +50,25 @@ namespace Dynamo.Models
         /// <param name="end">The port where the connector ends</param>
         /// <param name="startIndex"></param>
         /// <param name="endIndex"></param>
+        /// <param name="guid"></param>
         /// <returns>The valid connector model or null if the connector is invalid</returns>
         internal static ConnectorModel Make(
-            NodeModel start, NodeModel end, int startIndex, int endIndex)
+            NodeModel start, NodeModel end, int startIndex, int endIndex, Guid? guid = null)
         {
             if (start != null && end != null && start != end && startIndex >= 0
                 && endIndex >= 0 && start.OutPorts.Count > startIndex
                 && end.InPorts.Count > endIndex)
             {
-                return new ConnectorModel(start, end, startIndex, endIndex);
+                return new ConnectorModel(start, end, startIndex, endIndex, guid ?? Guid.NewGuid());
             }
 
             return null;
         }
 
         private ConnectorModel(
-            NodeModel start, NodeModel end, int startIndex, int endIndex)
+            NodeModel start, NodeModel end, int startIndex, int endIndex, Guid guid)
         {
+            GUID = guid;
             pStart = start.OutPorts[startIndex];
 
             PortModel endPort = end.InPorts[endIndex];

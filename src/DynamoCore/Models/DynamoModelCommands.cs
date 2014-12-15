@@ -163,9 +163,7 @@ namespace Dynamo.Models
             if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.Input)
             {
                 connectorToRemove = portModel.Connectors[0];
-                portModel.Disconnect(connectorToRemove);
-                var startPort = connectorToRemove.Start;
-                startPort.Disconnect(connectorToRemove);
+                connectorToRemove.Delete();
             }
 
             // We could either connect from an input port to an output port, or 
@@ -259,6 +257,7 @@ namespace Dynamo.Models
                 functionId: command.NodeId);
 
             AddWorkspace(workspace);
+            CurrentWorkspace = workspace;
         }
 
         void SwitchTabImpl(SwitchTabCommand command)

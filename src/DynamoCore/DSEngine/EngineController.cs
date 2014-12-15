@@ -259,7 +259,8 @@ namespace Dynamo.DSEngine
                     definition.FunctionName,
                     definition.FunctionBody,
                     definition.OutputNodes,
-                    definition.DisplayParameters, verboseLogging);
+                    definition.Parameters,
+                    verboseLogging);
 
                 if (!VerifyGraphSyncData(nodes) || (graphSyncDataQueue.Count == 0))
                     return false;

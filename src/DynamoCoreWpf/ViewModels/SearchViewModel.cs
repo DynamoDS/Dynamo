@@ -172,7 +172,7 @@ namespace Dynamo.ViewModels
             // When Library changes, sync up
             Model.EntryAdded += entry =>
             {
-                InsertEntry(new NodeSearchElementViewModel(entry), entry.Categories);
+                InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
                 SearchAndUpdateResults();
             };
             Model.EntryRemoved += entry =>
@@ -240,7 +240,7 @@ namespace Dynamo.ViewModels
 
         private void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
         {
-            var nameStack = new Stack<string>(categoryNames);
+            var nameStack = new Stack<string>(categoryNames.Reverse());
             NodeCategoryViewModel target = null;
             while (nameStack.Any())
             {
