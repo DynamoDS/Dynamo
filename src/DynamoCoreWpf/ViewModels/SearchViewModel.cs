@@ -201,8 +201,8 @@ namespace Dynamo.ViewModels
                 BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
             }
 
-            this.Model.BrowserRootCategories.CollectionChanged += BrowserRootCategoriesOnCollectionChanged;
-            this.Model.SearchRootCategories.CollectionChanged += SearchRootCategoriesOnCollectionChanged;
+            this.Model.BrowserRootCategoriesCollectionChanged = BrowserRootCategoriesOnCollectionChanged;
+            //this.Model.SearchRootCategories.CollectionChanged += SearchRootCategoriesOnCollectionChanged;
             
             this.SortCategoryChildren();
         }

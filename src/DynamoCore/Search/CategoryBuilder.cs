@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
@@ -16,6 +17,8 @@ namespace Dynamo.Search
             get { return rootCategories; }
         }
 
+        internal NotifyCollectionChangedEventHandler RootCategoriesCollectionChanged { get; set; }
+
         internal CategoryBuilder(SearchModel searchModel, bool isAddons)
         {
             this.searchModel = searchModel;
@@ -25,7 +28,9 @@ namespace Dynamo.Search
 
         internal void SortCategoryItems()
         {
+            rootCategories.CollectionChanged -= RootCategoriesCollectionChanged;
             rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.OrderBy(x => x.Name));
+            rootCategories.CollectionChanged += RootCategoriesCollectionChanged;
         }
 
         internal void SortCategoryChildren()
@@ -35,7 +40,9 @@ namespace Dynamo.Search
 
         internal void RemoveEmptyCategories()
         {
+            rootCategories.CollectionChanged -= RootCategoriesCollectionChanged;
             rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.Where(x => x.Items.Any()));
+            rootCategories.CollectionChanged += RootCategoriesCollectionChanged;
         }
 
         internal void RemoveEmptyRootCategory(string categoryName)
