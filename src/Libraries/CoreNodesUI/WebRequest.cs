@@ -8,7 +8,7 @@ using ProtoCore.AST.AssociativeAST;
 namespace DSCoreNodesUI
 {
     [NodeName("Web Request")]
-    [NodeDescription("Make a web request given a url.")]
+    [NodeDescription("WebRequestDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel

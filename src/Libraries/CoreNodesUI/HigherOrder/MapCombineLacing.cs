@@ -4,13 +4,13 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using DSCoreNodesUI.Properties;
 
 namespace DSCore
 {
     [NodeName("List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(
-        "Applies a function over all elements of a list, generating a new list from the results.")]
+    [NodeDescription("ListMapDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Map : NodeModel
     {
@@ -80,7 +80,7 @@ namespace DSCore
 
     [NodeName("List.Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Applies a combinator to each element in two sequences")]
+    [NodeDescription("ListCombineDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Combine : CombinatorNode
     {
@@ -106,7 +106,7 @@ namespace DSCore
     [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.ForEach")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
+    [NodeDescription("ListForEachDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class ForEach : CombinatorNode
     {
@@ -132,7 +132,7 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.")]
+    [NodeDescription("ListLaceShortestDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class LaceShortest : CombinatorNode
     {
@@ -158,7 +158,7 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
+    [NodeDescription("ListLaceLongestDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class LaceLongest : CombinatorNode
     {
@@ -185,7 +185,7 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
+    [NodeDescription("ListCartesianProductDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class CartesianProduct : CombinatorNode
     {
@@ -272,7 +272,7 @@ namespace DSCore
 
     [NodeName("List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result.")]
+    [NodeDescription("ListReduceDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Reduce : VariableInputNode
     {
@@ -363,7 +363,7 @@ namespace DSCore
 
     [NodeName("List.Scan")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result, produces a list of successive reduced values.")]
+    [NodeDescription("ListScanDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class ScanList : VariableInputNode
     {
@@ -454,7 +454,7 @@ namespace DSCore
 
     [NodeName("List.Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Filters a sequence by a given condition such that for an arbitrary element \"x,\" condition(x) = True or False.")]
+    [NodeDescription("ListFilterDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Filter : NodeModel
     {
@@ -498,7 +498,7 @@ namespace DSCore
 
     [NodeName("ReplaceByCondition")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Replaces an object with a given substitute if the original object satisfies a given condition.")]
+    [NodeDescription("ReplaceByConditionDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Replace : NodeModel
     {

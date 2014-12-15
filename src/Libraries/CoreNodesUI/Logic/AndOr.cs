@@ -7,6 +7,7 @@ using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using Autodesk.DesignScript.Runtime;
+using DSCoreNodesUI.Properties;
 
 namespace DSCore.Logic
 {
@@ -65,7 +66,7 @@ namespace DSCore.Logic
     /// </summary>
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
+    [NodeDescription("AndDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class And : BinaryLogic
     {
@@ -77,7 +78,7 @@ namespace DSCore.Logic
     /// </summary>
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.")]
+    [NodeDescription("OrDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Or : BinaryLogic
     {

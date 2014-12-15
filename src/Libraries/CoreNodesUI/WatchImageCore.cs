@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
+using DSCoreNodesUI.Properties;
 
 using ProtoCore.AST.AssociativeAST;
 using Image = System.Windows.Controls.Image;
@@ -15,7 +16,7 @@ namespace Dynamo.Nodes
 {
 
     [NodeName("Watch Image")]
-    [NodeDescription("Previews an image")]
+    [NodeDescription("WatchImageDescription", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeSearchTags("image")]
     [IsDesignScriptCompatible]

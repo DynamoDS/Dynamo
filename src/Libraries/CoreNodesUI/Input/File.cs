@@ -15,6 +15,7 @@ using Dynamo.UI;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
+using DSCoreNodesUI.Properties;
 
 namespace DSCore.File
 {
@@ -33,7 +34,7 @@ namespace DSCore.File
 
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows you to select a file on the system to get its filename.")]
+    [NodeDescription("FilePathDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
@@ -51,7 +52,7 @@ namespace DSCore.File
 
     [NodeName("Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows you to select a directory on the system to get its path.")]
+    [NodeDescription("DirectoryPathDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
@@ -181,7 +182,7 @@ namespace DSCore.File
 
     [NodeName("File.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("Creates a file object from a path.")]
+    [NodeDescription("FileFromPathDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
@@ -235,7 +236,7 @@ namespace DSCore.File
 
     [NodeName("Directory.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("Creates a directory object from a path.")]
+    [NodeDescription("DirectoryFromPathDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
