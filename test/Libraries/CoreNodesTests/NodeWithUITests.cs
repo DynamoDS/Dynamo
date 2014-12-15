@@ -69,6 +69,18 @@ namespace DSCoreNodesTests
             Assert.AreEqual(
                  -1,
                  integerSliderNode.Min);
+
+            integerSliderNode.UpdateValue("Value", "2147483648");
+
+            Assert.AreEqual(
+                2147483647,
+                integerSliderNode.Max);
+
+            integerSliderNode.UpdateValue("Value", "-2147483649");
+
+            Assert.AreEqual(
+                -2147483648,
+                integerSliderNode.Min);
         }
     }
 }

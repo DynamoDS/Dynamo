@@ -1383,7 +1383,9 @@ namespace Dynamo.Controls
             if (int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val))
                 return val;
             //check if the value exceeds the 32 bit maximum / minimum value
-            if(value.ToString()[0] == '-' || char.IsDigit(value.ToString()[0]))
+            string integerValue = value.ToString();
+            if (integerValue.Length > 1 && ((integerValue[0] == '-' && char.IsDigit(value.ToString()[1]))
+                || char.IsDigit(value.ToString()[0])))
                 val = value.ToString()[0] == '-' ? int.MinValue : int.MaxValue;
             return val;
         }
