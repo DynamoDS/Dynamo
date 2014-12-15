@@ -161,7 +161,11 @@
 
                             <StackPanel Width ="445" Name="SearchEle">
 
-                                <TextBlock Text="{x:Static p:Resources.PackageSearchViewDeprecated}" Padding="5" Foreground ="#555" ToolTip="The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!" FontSize="10">
+                                <TextBlock Text="{x:Static p:Resources.PackageSearchViewDeprecated}" 
+                                           Padding="5" 
+                                           Foreground ="#555" 
+                                           ToolTip="{x:Static p:Resources.PackageSearchViewDeprecatedTooltip}" 
+                                           FontSize="10">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
@@ -226,9 +230,21 @@
                                     </Button>
 
                                     <StackPanel Width="30"  Orientation="Vertical" Margin="10,0,0,0">
-                                        <Button Name="UpvoteButton" FontSize="10" ToolTip="Vote in support of this package"  Content="▲" Foreground="Gray" Command="{Binding Path=UpvoteCommand}" Style="{StaticResource FlatButton}" />
+                                        <Button Name="UpvoteButton" 
+                                                FontSize="10" 
+                                                ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
+                                                Content="▲" 
+                                                Foreground="Gray" 
+                                                Command="{Binding Path=UpvoteCommand}" 
+                                                Style="{StaticResource FlatButton}" />
                                         <TextBlock FontSize="10"  HorizontalAlignment="Center" Padding="0,10" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
-                                        <Button Name="DownvoteButton" FontSize="10" ToolTip="Downvote to voice lack of support for this package" Foreground="Gray" Content="▼" Command="{Binding Path=DownvoteCommand}" Style="{StaticResource FlatButton}" />
+                                        <Button Name="DownvoteButton" 
+                                                FontSize="10" 
+                                                ToolTip="{x:Static p:Resources.PackageSearchViewDownvoteButtonTooltip}" 
+                                                Foreground="Gray" 
+                                                Content="▼" 
+                                                Command="{Binding Path=DownvoteCommand}" 
+                                                Style="{StaticResource FlatButton}" />
                                     </StackPanel>
                                 </StackPanel>
 
@@ -259,7 +275,11 @@
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                        <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="{x:Static p:Resources.PackageSearchViewInstallButton}" Command="{Binding Path=Item2}" Style="{StaticResource SBadgeButton}" />
+                                                        <Button Name="DownloadVersionButton"  
+                                                                ToolTip="{x:Static p:Resources.PackageSearchViewInstallButtonTooltip}" 
+                                                                Content="{x:Static p:Resources.PackageSearchViewInstallButton}" 
+                                                                Command="{Binding Path=Item2}" 
+                                                                Style="{StaticResource SBadgeButton}" />
                                                         <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
                                                     </StackPanel>
                                                 </DataTemplate>
@@ -303,7 +323,10 @@
 
             <StackPanel Name="Controls" Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Background="#222" Visibility="{Binding Path=HasDownloads, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-                <Button Name="ClearCompletedButton" Margin="1, 0, 1, 0" ToolTip="Clear Downloads" Content="{x:Static p:Resources.PackageSearchViewClearButton}"
+                <Button Name="ClearCompletedButton" 
+                        Margin="1, 0, 1, 0" 
+                        ToolTip="{x:Static p:Resources.PackageSearchViewClearButtonTooltip}" 
+                        Content="{x:Static p:Resources.PackageSearchViewClearButton}"
                       Style="{DynamicResource SBadgeButton}" Command="{Binding Path=ClearCompletedCommand}"/>
 
             </StackPanel>

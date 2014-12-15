@@ -1315,4 +1315,16 @@ You will get a chance to save your work.</value>
   <data name="UnknowDateFormat" xml:space="preserve">
     <value>Unknown date format</value>
   </data>
+  <data name="Watch3DViewContextMenuPan" xml:space="preserve">
+    <value>_Pan</value>
+  </data>
+  <data name="Watch3DViewContextMenuRotate" xml:space="preserve">
+    <value>_Rotate</value>
+  </data>
+  <data name="Watch3DViewContextMenuSwitchView" xml:space="preserve">
+    <value>Switch to Node _View</value>
+  </data>
+  <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
+    <value>_Zoom to Fit</value>
+  </data>
 </root>

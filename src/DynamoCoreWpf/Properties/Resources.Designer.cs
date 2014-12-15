@@ -2288,6 +2288,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear Downloads.
+        /// </summary>
+        public static string PackageSearchViewClearButtonTooltip {
+            get {
+                return ResourceManager.GetString("PackageSearchViewClearButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ascending.
         /// </summary>
         public static string PackageSearchViewContextMenuOrderAscending {
@@ -2360,6 +2369,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!.
+        /// </summary>
+        public static string PackageSearchViewDeprecatedTooltip {
+            get {
+                return ResourceManager.GetString("PackageSearchViewDeprecatedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string PackageSearchViewDescription {
@@ -2369,11 +2387,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downvote to voice lack of support for this package.
+        /// </summary>
+        public static string PackageSearchViewDownvoteButtonTooltip {
+            get {
+                return ResourceManager.GetString("PackageSearchViewDownvoteButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ⇓ Install.
         /// </summary>
         public static string PackageSearchViewInstallButton {
             get {
                 return ResourceManager.GetString("PackageSearchViewInstallButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install This Version.
+        /// </summary>
+        public static string PackageSearchViewInstallButtonTooltip {
+            get {
+                return ResourceManager.GetString("PackageSearchViewInstallButtonTooltip", resourceCulture);
             }
         }
         
@@ -2410,6 +2446,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageSearchViewTitle {
             get {
                 return ResourceManager.GetString("PackageSearchViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vote in support of this package.
+        /// </summary>
+        public static string PackageSearchViewUpvoteButtonTooltip {
+            get {
+                return ResourceManager.GetString("PackageSearchViewUpvoteButtonTooltip", resourceCulture);
             }
         }
         
@@ -2536,6 +2581,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackagePackageContent {
             get {
                 return ResourceManager.GetString("PublishPackagePackageContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add file....
+        /// </summary>
+        public static string PublishPackageViewAddFileButton {
+            get {
+                return ResourceManager.GetString("PublishPackageViewAddFileButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add File To Package.
+        /// </summary>
+        public static string PublishPackageViewAddFileButtonTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewAddFileButtonTooltip", resourceCulture);
             }
         }
         
@@ -3004,6 +3067,42 @@ namespace Dynamo.Wpf.Properties {
         public static string UsageReportPromptDialogTitle {
             get {
                 return ResourceManager.GetString("UsageReportPromptDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Pan.
+        /// </summary>
+        public static string Watch3DViewContextMenuPan {
+            get {
+                return ResourceManager.GetString("Watch3DViewContextMenuPan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Rotate.
+        /// </summary>
+        public static string Watch3DViewContextMenuRotate {
+            get {
+                return ResourceManager.GetString("Watch3DViewContextMenuRotate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to Node _View.
+        /// </summary>
+        public static string Watch3DViewContextMenuSwitchView {
+            get {
+                return ResourceManager.GetString("Watch3DViewContextMenuSwitchView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Zoom to Fit.
+        /// </summary>
+        public static string Watch3DViewContextMenuZoomToFit {
+            get {
+                return ResourceManager.GetString("Watch3DViewContextMenuZoomToFit", resourceCulture);
             }
         }
     }
