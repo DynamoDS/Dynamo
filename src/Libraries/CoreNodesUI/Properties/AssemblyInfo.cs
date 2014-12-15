@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -7,6 +8,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("DSCoreNodesUI")]
 [assembly: AssemblyCulture("")]
+[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("719d70c8-5955-456d-a5e6-dd217f906e3a")]
 
