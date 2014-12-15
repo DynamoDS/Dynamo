@@ -719,5 +719,96 @@ namespace Dynamo.Tests
             AssertPreviewValue("1b8b309b-ee2e-44fe-ac98-2123b2711bea", 1);
             AssertPreviewValue("08db7d60-845c-439c-b7ca-c2a06664a948", 2);
         }
+
+        [Test]
+        public void TestCustomNodeInputType()
+        {
+            // Custom node's signature is add(x:int, y:int)
+            // Test type conversion happens.
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestTypeConversion.dyn");
+
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            ViewModel.Model.RunExpression();
+            
+            // add(1.49, 3.49) => 4
+            AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", 4);
+        }
+
+        [Test]
+        public void TestCustomNodeLacing()
+        {
+            // Test lacing works ofr custom node. 
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestLacing.dyn");
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            
+            var instance = model.Nodes.OfType<Function>().First();
+            instance.ArgumentLacing = LacingStrategy.CrossProduct;
+            ViewModel.Model.RunExpression();
+
+            // {1,2} + {3,4}
+            AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { new object [] {4, 5}, new object [] {5, 6}});
+
+            instance.ArgumentLacing = LacingStrategy.Longest;
+            ViewModel.Model.RunExpression();
+            AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { 4, 6});
+
+        }
+
+        [Test]
+        public void TestCustomNodeDefaultValue()
+        {
+            // Test custom node default value works
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestDefaultValue.dyn");
+
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            ViewModel.Model.RunExpression();
+
+            AssertPreviewValue("405d0c03-6b22-466e-a2b9-b9bf602e1762", 142);
+        }
+
+        [Test]
+        public void TestCustomNodeInvalidType()
+        {
+            // Custom node has invalid type, which should be captured by Input node
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\invalidType.dyf");
+
+            ViewModel.OpenCommand.Execute(dynFilePath);
+
+            var node = model.Nodes.OfType<Symbol>().First();
+            Assert.IsTrue(node.State == ElementState.Warning);
+        }
+
+        [Test]
+        public void TestCustomNodeFromCollapsedNodeHasTypes()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "simpleGeometry.dyn"));
+
+            // Convert a DSFunction node Line.ByStartPointEndPoint to custom node.
+            var workspace = model.CurrentWorkspace;
+            var node = workspace.Nodes.OfType<DSFunction>().First();
+
+            List<NodeModel> selectionSet = new List<NodeModel>() { node };
+            NodeCollapser.Collapse(ViewModel.Model,
+                selectionSet.AsEnumerable(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            // Get custom node instance
+            var instance = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            // All its input types are Point
+            Assert.IsTrue(instance.Controller.Definition.Parameters.All(t => t.Name.Contains("Point")));
+        }
     }
 }
