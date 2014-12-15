@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 
@@ -24,11 +23,6 @@ namespace Dynamo.Search
             this.rootCategories = new ObservableCollection<BrowserRootElement>();
         }
 
-        internal void RemoveEmptyCategories()
-        {
-            rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.Where(x => x.Items.Any()));
-        }
-
         internal void SortCategoryItems()
         {
             rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.OrderBy(x => x.Name));
@@ -37,6 +31,11 @@ namespace Dynamo.Search
         internal void SortCategoryChildren()
         {
             rootCategories.ToList().ForEach(x => x.RecursivelySort());
+        }
+
+        internal void RemoveEmptyCategories()
+        {
+            rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.Where(x => x.Items.Any()));
         }
 
         internal void RemoveEmptyRootCategory(string categoryName)

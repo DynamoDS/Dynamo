@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
 using Dynamo.DSEngine;
 using Dynamo.Library;
 using Utils = Dynamo.Nodes.Utilities;

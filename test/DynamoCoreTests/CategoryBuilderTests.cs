@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using NUnit.Framework;
 

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web.UI.WebControls;
 
+using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -16,13 +13,23 @@ using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Utilities;
 using Greg.Requests;
-using Microsoft.Practices.Prism;
-using Microsoft.Practices.Prism.ViewModel;
+
 using Newtonsoft.Json;
 using String = System.String;
 
 namespace Dynamo.PackageManager
 {
+    public class PackageAssembly
+    {
+        public bool IsNodeLibrary { get; set; }
+        public Assembly Assembly { get; set; }
+
+        public string Name
+        {
+            get { return Assembly.GetName().Name; }
+        }
+    }
+
     public class Package : NotificationObject
     {
 
@@ -109,7 +116,7 @@ namespace Dynamo.PackageManager
         internal IEnumerable<Assembly> NodeLibraries
         {
             get { return this.LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
-        } 
+        }
 
         public String SiteUrl { get; set; }
         public String RepositoryUrl { get; set; }
@@ -188,7 +195,7 @@ namespace Dynamo.PackageManager
         /// <param name="loader"></param>
         /// <param name="logger"></param>
         /// <param name="libraryServices"></param>
-        public void LoadIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
+        public void LoadIntoDynamo(DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
             // Prevent duplicate loads
             if (Loaded) return;
@@ -196,9 +203,9 @@ namespace Dynamo.PackageManager
             try
             {
                 this.LoadAssembliesIntoDynamo(loader, logger, libraryServices);
-                this.LoadCustomNodesIntoDynamo( loader );
+                this.LoadCustomNodesIntoDynamo(loader);
                 this.EnumerateAdditionalFiles();
-                
+
                 Loaded = true;
             }
             catch (Exception e)
@@ -221,7 +228,7 @@ namespace Dynamo.PackageManager
                 .Select(x => new PackageFileInfo(this.RootDirectory, x));
 
             this.AdditionalFiles.Clear();
-            this.AdditionalFiles.AddRange( nonDyfDllFiles );
+            this.AdditionalFiles.AddRange(nonDyfDllFiles);
         }
 
         public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
@@ -234,13 +241,13 @@ namespace Dynamo.PackageManager
                 SearchOption.AllDirectories);
         }
 
-        private void LoadCustomNodesIntoDynamo( DynamoLoader loader)
+        private void LoadCustomNodesIntoDynamo(DynamoLoader loader)
         {
             loader.LoadCustomNodes(CustomNodeDirectory, SearchModel.ElementType.Package).
                 ForEach(x => LoadedCustomNodes.Add(x));
         }
 
-        private void LoadAssembliesIntoDynamo( DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
+        private void LoadAssembliesIntoDynamo(DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
         {
             var assemblies = LoadAssembliesInBinDirectory();
 
@@ -328,7 +335,7 @@ namespace Dynamo.PackageManager
 
             foreach (var assem in assemblies)
             {
-                this.LoadedAssemblies.Add( assem );
+                this.LoadedAssemblies.Add(assem);
             }
 
             return assemblies;
@@ -340,7 +347,7 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
-        internal bool InUse( DynamoModel dynamoModel )
+        internal bool InUse(DynamoModel dynamoModel)
         {
             return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
         }
@@ -365,10 +372,10 @@ namespace Dynamo.PackageManager
             return
                 dynamoModel.Workspaces.Any(
                     x =>
-                        {
-                            var def = dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(x);
-                            return def != null && guids.Contains(def.FunctionId);
-                        });
+                    {
+                        var def = dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(x);
+                        return def != null && guids.Contains(def.FunctionId);
+                    });
         }
 
         internal void MarkForUninstall(IPreferences prefs)
@@ -387,7 +394,7 @@ namespace Dynamo.PackageManager
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(this.RootDirectory));
         }
 
-        internal void UninstallCore( CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs, ILogger logger )
+        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs, ILogger logger)
         {
             if (this.LoadedAssemblies.Any())
             {

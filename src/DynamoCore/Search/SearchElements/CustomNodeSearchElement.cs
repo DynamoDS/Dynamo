@@ -16,9 +16,10 @@ namespace Dynamo.Search.SearchElements
         public string Path
         {
             get { return _path; }
-            set { 
-                _path = value; 
-                RaisePropertyChanged("Path"); 
+            set
+            {
+                _path = value;
+                RaisePropertyChanged("Path");
             }
         }
 
@@ -31,7 +32,7 @@ namespace Dynamo.Search.SearchElements
         {
             TryLoadDocumentation();
 
-            if(!inputParameters.Any())
+            if (!inputParameters.Any())
                 inputParameters.Add(Tuple.Create("", "none"));
 
             return inputParameters;

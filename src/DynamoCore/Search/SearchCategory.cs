@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
-using Dynamo.ViewModels;
-using System.Collections.ObjectModel;
 
 namespace Dynamo.Search
 {
@@ -36,7 +34,7 @@ namespace Dynamo.Search
         {
             string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
                 memberNode.Group);
-            string shortenedCategory = SearchViewModel.ShortenCategoryName(categoryWithGroup);
+            string shortenedCategory = SearchModel.ShortenCategoryName(categoryWithGroup);
 
             var group = memberGroups.FirstOrDefault(mg => mg.FullyQualifiedName == shortenedCategory);
             if (group == null)
@@ -93,8 +91,8 @@ namespace Dynamo.Search
 
         public void SortChildren()
         {
-            Classes.ToList().ForEach(x=>x.RecursivelySort());
-            MemberGroups.ToList().ForEach(x=>x.Sort());
+            Classes.ToList().ForEach(x => x.RecursivelySort());
+            MemberGroups.ToList().ForEach(x => x.Sort());
         }
     }
 }

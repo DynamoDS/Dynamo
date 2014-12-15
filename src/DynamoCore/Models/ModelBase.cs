@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Windows;
 using System.Xml;
+
+using Dynamo.Core;
 using Dynamo.Selection;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -65,9 +66,9 @@ namespace Dynamo.Models
         /// Used for notification in situations where you don't
         /// want to have property notifications for X and Y
         /// </summary>
-        public Point Position
+        public Point2D Position
         {
-            get{return new Point(x,y);}
+            get{return new Point2D(x,y);}
         }
 
         /// <summary>
@@ -97,9 +98,9 @@ namespace Dynamo.Models
             }
         }
 
-        public Rect Rect
+        public Rect2D Rect
         {
-            get{return new Rect(x,y,width,height);}
+            get{return new Rect2D(x,y,width,height);}
         }
 
         public event EventHandler Updated; 
@@ -246,7 +247,7 @@ namespace Dynamo.Models
         double Y { get; set; }
         double Width { get; set; }
         double Height { get; set; }
-        Rect Rect { get; }
+        Rect2D Rect { get; }
         double CenterX { get; set; }
         double CenterY { get; set; }
         void ReportPosition();
