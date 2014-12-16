@@ -153,7 +153,6 @@ namespace net.riversofdata.dhlogger
         private const int ERROR_DELAY_MS = 10000;
         private const int DELAY_MS = 10;
 
-
         #region Public API
 
 
@@ -246,9 +245,6 @@ namespace net.riversofdata.dhlogger
         /// <param name="text"></param>
         private void PrepAndPushItem(string tag, string priority, string text)
         {
-
-
-
             //We don't need to validate the content of text as it's going to get base64
             //encoded
             if (this.EnableDiagnosticsOutput)

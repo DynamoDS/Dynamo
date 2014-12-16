@@ -424,7 +424,7 @@ namespace Dynamo.Models
                 DisposeNode(node);
             foreach (var connector in Connectors)
                 OnConnectorDeleted(connector);
-            
+
             var handler = Disposed;
             if (handler != null) 
                 handler();
@@ -555,22 +555,23 @@ namespace Dynamo.Models
         public void RemoveNode(NodeModel model)
         {
             if (nodes.Remove(model))
+            {
                 DisposeNode(model);
+                OnAstUpdated();
+            }
         }
 
-        private void DisposeNode(NodeModel model)
+        protected void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
             model.AstUpdated -= OnAstUpdated;
-            OnNodeDeleted(model);
-            model.Dispose();
+            OnNodeRemoved(model);
         }
 
-        public event Action<NodeModel> NodeDeleted;
-
-        protected virtual void OnNodeDeleted(NodeModel node)
+        public event Action<NodeModel> NodeRemoved;
+        protected virtual void OnNodeRemoved(NodeModel node)
         {
-            var handler = NodeDeleted;
+            var handler = NodeRemoved;
             if (handler != null) handler(node);
         }
 

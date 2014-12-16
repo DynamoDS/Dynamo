@@ -61,6 +61,20 @@ namespace Dynamo.Models
                 WorkspaceCleared(this, e);
         }
 
+        public event Action<WorkspaceModel> WorkspaceAdded;
+        protected virtual void OnWorkspaceAdded(WorkspaceModel obj)
+        {
+            var handler = WorkspaceAdded;
+            if (handler != null) handler(obj);
+        }
+
+        public event Action<WorkspaceModel> WorkspaceRemoved;
+        protected virtual void OnWorkspaceRemoved(WorkspaceModel obj)
+        {
+            var handler = WorkspaceRemoved;
+            if (handler != null) handler(obj);
+        }
+
         public event EventHandler DeletionStarted;
         public virtual void OnDeletionStarted(object sender, EventArgs e)
         {
@@ -85,53 +99,11 @@ namespace Dynamo.Models
                 CleaningUp(this);
         }
 
-        /// <summary>
-        /// Event triggered when a node is added to a workspace
-        /// </summary>
-        public event NodeHandler NodeAdded;
-        internal void OnNodeAdded(NodeModel node)
-        {
-            if (NodeAdded != null && node != null)
-                NodeAdded(node);
-        }
-
         public event NodeHandler RequestCancelActiveStateForNode;
         private void OnRequestCancelActiveStateForNode(NodeModel node)
         {
             if (RequestCancelActiveStateForNode != null)
                 RequestCancelActiveStateForNode(node);
-        }
-
-        /// <summary>
-        /// Event triggered when a node is deleted
-        /// </summary>
-        public event NodeHandler NodeDeleted;
-        internal void OnNodeDeleted(NodeModel node)
-        {
-            OnRequestCancelActiveStateForNode(node);
-
-            if (NodeDeleted != null)
-                NodeDeleted(node);
-        }
-
-        /// <summary>
-        /// Event triggered when a connector is added.
-        /// </summary>
-        public event ConnectorHandler ConnectorAdded;
-        internal void OnConnectorAdded(ConnectorModel connector)
-        {
-            if (ConnectorAdded != null)
-                ConnectorAdded(connector);
-        }
-
-        /// <summary>
-        /// Event triggered when a connector is deleted.
-        /// </summary>
-        public event ConnectorHandler ConnectorDeleted;
-        internal void OnConnectorDeleted(ConnectorModel connector)
-        {
-            if (ConnectorDeleted != null)
-                ConnectorDeleted(connector);
         }
 
         /// <summary>

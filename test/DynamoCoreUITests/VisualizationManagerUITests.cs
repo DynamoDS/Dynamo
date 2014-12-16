@@ -345,7 +345,7 @@ namespace DynamoCoreUITests
             Assert.Greater(BackgroundPreview.Points.Count, 0);
 
             //now clear the workspace
-            model.Clear(null);
+            model.ClearCurrentWorkspace();
 
             //ensure that we have no visualizations
             Assert.AreEqual(0, BackgroundPreview.Points.Count);

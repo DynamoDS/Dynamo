@@ -108,7 +108,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanClearWorkspaceWithEmptyWorkspace()
         {
-            ViewModel.Model.Clear(null);
+            ViewModel.Model.ClearCurrentWorkspace();
             Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Nodes.Count());
         }
 
@@ -125,7 +125,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.AddNode(new DoubleInput(), false);
             Assert.AreEqual(3, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
-            model.Clear(null);
+            model.ClearCurrentWorkspace();
             Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Nodes.Count());
         }
 
@@ -616,8 +616,8 @@ namespace Dynamo.Tests
                 @"core\dsfunction\dsvarargfunction.dyn");
 
             var dynamoModel = ViewModel.Model;
-            var workspace = dynamoModel.CurrentWorkspace;
             ViewModel.OpenCommand.Execute(openPath);
+            var workspace = dynamoModel.CurrentWorkspace;
             Assert.AreEqual(1, workspace.Nodes.Count);
 
             var node = workspace.NodeFromWorkspace<DSVarArgFunction>(
@@ -768,11 +768,12 @@ namespace Dynamo.Tests
         public void Defect_MAGN_3166()
         {
             // Create the node with given information.
-            var nodeGuid = Guid.NewGuid();
             var vm = ViewModel;
             NodeModel node =
                 new DSVarArgFunction(vm.Model.LibraryServices.GetFunctionDescriptor("DSCore.List.Join@var[]..[]"));
             vm.ExecuteCommand(new DynCmd.CreateNodeCommand(node, 0, 0, true, false));
+            
+            var nodeGuid = node.GUID;
 
             // The node sound be found, and it should be a DSVarArgFunction.
             var workspace = ViewModel.Model.CurrentWorkspace;

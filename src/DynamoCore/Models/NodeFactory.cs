@@ -24,8 +24,9 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         /// <param name="elNode"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        T CreateNodeFromXml(XmlElement elNode);
+        T CreateNodeFromXml(XmlElement elNode, SaveContext context);
     }
 
     /// <summary>
@@ -124,9 +125,11 @@ namespace Dynamo.Models
                 constructor = t.GetDefaultConstructor<NodeModel>();
             }
 
-            public NodeModel CreateNodeFromXml(XmlElement elNode)
+            public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
             {
-                return constructor();
+                var node = constructor();
+                node.Deserialize(elNode, context);
+                return node;
             }
         }
 
@@ -174,8 +177,7 @@ namespace Dynamo.Models
                 return false;
             }
 
-            node = data.CreateNodeFromXml(elNode);
-            node.Deserialize(elNode, context);
+            node = data.CreateNodeFromXml(elNode, context);
             return true;
         }
 
@@ -227,9 +229,11 @@ namespace Dynamo.Models
             engineManager = manager;
         }
 
-        public CodeBlockNodeModel CreateNodeFromXml(XmlElement elNode)
+        public CodeBlockNodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
         {
-            return new CodeBlockNodeModel(engineManager.EngineController.LiveRunnerCore);
+            var node = new CodeBlockNodeModel(engineManager.EngineController.LiveRunnerCore);
+            node.Deserialize(elNode, context);
+            return node;
         }
     }
 
@@ -245,7 +249,7 @@ namespace Dynamo.Models
             this.libraryServices = libraryServices;
         }
 
-        public NodeModel CreateNodeFromXml(XmlElement nodeElement)
+        public NodeModel CreateNodeFromXml(XmlElement nodeElement, SaveContext context)
         {
             string assembly = "";
             string function;
@@ -274,7 +278,7 @@ namespace Dynamo.Models
                 function = hintedSigniture ?? xmlSignature;
             }
 
-            if (!string.IsNullOrEmpty(assembly))
+            if (context == SaveContext.File && !string.IsNullOrEmpty(assembly))
             {
                 var document = nodeElement.OwnerDocument;
                 var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
@@ -300,10 +304,11 @@ namespace Dynamo.Models
                     DummyNode.Nature.Unresolved);
             }
 
-            DSFunctionBase result = descriptor.IsVarArg
+            var result = descriptor.IsVarArg
                 ? new DSVarArgFunction(descriptor) as DSFunctionBase
                 : new DSFunction(descriptor);
 
+            result.Deserialize(nodeElement, context);
             return result;
         }
 
@@ -404,7 +409,7 @@ namespace Dynamo.Models
             this.isTestMode = isTestMode;
         }
         
-        public Function CreateNodeFromXml(XmlElement nodeElement)
+        public Function CreateNodeFromXml(XmlElement nodeElement, SaveContext context)
         {
             XmlNode idNode =
                 nodeElement.ChildNodes.Cast<XmlNode>()
@@ -421,7 +426,9 @@ namespace Dynamo.Models
             if (!Guid.TryParse(id, out funcId))
                 funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nickname);
 
-            return customNodeManager.CreateCustomNodeInstance(funcId, nickname, isTestMode);
+            var node = customNodeManager.CreateCustomNodeInstance(funcId, nickname, isTestMode);
+            node.Deserialize(nodeElement, context);
+            return node;
         }
     }
 }

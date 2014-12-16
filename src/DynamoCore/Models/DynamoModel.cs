@@ -272,8 +272,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     The collection of visible workspaces in Dynamo
         /// </summary>
-        public readonly ObservableCollection<WorkspaceModel> Workspaces =
-            new ObservableCollection<WorkspaceModel>();
+        public readonly List<WorkspaceModel> Workspaces =
+            new List<WorkspaceModel>();
         
         #endregion
 
@@ -402,10 +402,11 @@ namespace Dynamo.Models
             var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
             Scheduler = new DynamoScheduler(thread, IsTestMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
-            
-            if (preferences is PreferenceSettings)
+
+            var settings = preferences as PreferenceSettings;
+            if (settings != null)
             {
-                PreferenceSettings = preferences as PreferenceSettings;
+                PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
 
@@ -750,7 +751,7 @@ namespace Dynamo.Models
         public void ForceRun()
         {
             Logger.Log("Beginning engine reset");
-            ResetEngine();
+            ResetEngine(true);
             Logger.Log("Reset complete");
             
             ((HomeWorkspaceModel)CurrentWorkspace).Run();
@@ -891,10 +892,9 @@ namespace Dynamo.Models
             foreach (ModelBase model in modelsToDelete)
             {
                 selection.Remove(model); // Remove from selection set.
-                if (model is NodeModel)
-                    OnNodeDeleted(model as NodeModel);
-                if (model is ConnectorModel)
-                    OnConnectorDeleted(model as ConnectorModel);
+                var node = model as NodeModel;
+                if (node != null)
+                    node.Dispose();
             }
 
             OnDeletionComplete(this, EventArgs.Empty);
@@ -928,11 +928,9 @@ namespace Dynamo.Models
         {
             if (Workspaces.Remove(workspace))
             {
-                workspace.Dispose(); 
-                //TODO(Steve): May not be safe for CustomNodeWorkspaceModels, which still exist inside
-                //             the CustomNodeManager after removal from DynamoModel.
-                //             Technically it's safe for now, since we only hook the Disposed event
-                //             for this situation.
+                if (workspace is HomeWorkspaceModel)
+                    workspace.Dispose();
+                OnWorkspaceRemoved(workspace);
             }
         }
 
@@ -1016,7 +1014,6 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
 
             var nodes = ClipBoard.OfType<NodeModel>();
-
             var connectors = ClipBoard.OfType<ConnectorModel>();
 
             var xmlDoc = new XmlDocument();
@@ -1121,8 +1118,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Clear the workspace. Removes all nodes, notes, and connectors from the current workspace.
         /// </summary>
-        /// <param name="parameter"></param>
-        public void Clear(object parameter)
+        public void ClearCurrentWorkspace()
         {
             OnWorkspaceClearing(this, EventArgs.Empty);
 
@@ -1211,30 +1207,15 @@ namespace Dynamo.Models
         {
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
-
-            workspace.NodeAdded += OnNodeAdded;
-            workspace.NodeDeleted += OnNodeDeleted;
-            workspace.ConnectorAdded += OnConnectorAdded;
-            workspace.ConnectorDeleted += OnConnectorDeleted;
             workspace.MessageLogged += LogMessage;
-
             workspace.Disposed += () =>
             {
                 workspace.WorkspaceSaved -= savedHandler;
-                workspace.NodeAdded -= OnNodeAdded;
-                workspace.NodeDeleted -= OnNodeDeleted;
-                workspace.ConnectorAdded -= OnConnectorAdded;
-                workspace.ConnectorDeleted -= OnConnectorDeleted;
                 workspace.MessageLogged -= LogMessage;
             };
 
             Workspaces.Add(workspace);
-
-            foreach (var node in workspace.Nodes)
-                OnNodeAdded(node);
-
-            foreach (var connector in workspace.Connectors)
-                OnConnectorAdded(connector);
+            OnWorkspaceAdded(workspace);
         }
 
         #endregion

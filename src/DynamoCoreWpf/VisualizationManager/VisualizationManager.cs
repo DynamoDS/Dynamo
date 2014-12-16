@@ -231,8 +231,8 @@ namespace Dynamo
             dynamoModel.WorkspaceClearing += Pause;
             dynamoModel.WorkspaceCleared += UnPauseAndUpdate;
 
-            dynamoModel.NodeAdded += NodeAdded;
-            dynamoModel.NodeDeleted += NodeDeleted;
+            dynamoModel.WorkspaceAdded += WorkspaceAdded;
+            dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
 
             dynamoModel.DeletionStarted += Pause;
             dynamoModel.DeletionComplete += UnPauseAndUpdate;
@@ -458,11 +458,35 @@ namespace Dynamo
             OnRenderComplete(this, new RenderCompletionEventArgs(-1)); ;
         }
 
+        private void WorkspaceAdded(WorkspaceModel model)
+        {
+            var workspace = model as HomeWorkspaceModel;
+            if (workspace != null)
+            {
+                foreach (var node in workspace.Nodes)
+                    NodeRemovedFromHomeWorkspace(node);
+                workspace.NodeAdded -= NodeAddedToHomeWorkspace;
+                workspace.NodeRemoved -= NodeRemovedFromHomeWorkspace;
+            }
+        }
+
+        private void WorkspaceRemoved(WorkspaceModel model)
+        {
+            var workspace = model as HomeWorkspaceModel;
+            if (workspace != null)
+            {
+                foreach (var node in workspace.Nodes)
+                    NodeAddedToHomeWorkspace(node);
+                workspace.NodeAdded += NodeAddedToHomeWorkspace;
+                workspace.NodeRemoved += NodeRemovedFromHomeWorkspace;
+            }
+        }
+
         /// <summary>
         /// Handler for the model's NodeDeleted event.
         /// </summary>
         /// <param name="node"></param>
-        private void NodeDeleted(NodeModel node)
+        private void NodeRemovedFromHomeWorkspace(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
 
@@ -477,7 +501,7 @@ namespace Dynamo
         /// Registers for property changed events on the node.
         /// </summary>
         /// <param name="node"></param>
-        private void NodeAdded(NodeModel node)
+        private void NodeAddedToHomeWorkspace(NodeModel node)
         {
             //node.BlockingStarted += Pause;
             //node.BlockingEnded += UnPause;
@@ -552,7 +576,7 @@ namespace Dynamo
         {
             dynamoModel.EvaluationCompleted += Update;
             dynamoModel.RequestsRedraw += Update;
-            dynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
+            //dynamoModel.ConnectorDeletedFromHomeWorkspace += DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
             foreach (var n in dynamoModel.CurrentWorkspace.Nodes)
@@ -563,7 +587,7 @@ namespace Dynamo
         {
             dynamoModel.EvaluationCompleted -= Update;
             dynamoModel.RequestsRedraw -= Update;
-            dynamoModel.ConnectorDeleted -= DynamoModel_ConnectorDeleted;
+            //dynamoModel.ConnectorDeletedFromHomeWorkspace -= DynamoModel_ConnectorDeleted;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
             foreach (var n in dynamoModel.CurrentWorkspace.Nodes)

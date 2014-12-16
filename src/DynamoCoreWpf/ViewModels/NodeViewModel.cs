@@ -480,7 +480,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                if (!DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(ErrorBubble))
+                if (!WorkspaceViewModel.Errors.Contains(ErrorBubble))
                     return;
 
                 var topLeft = new Point(NodeModel.X, NodeModel.Y);

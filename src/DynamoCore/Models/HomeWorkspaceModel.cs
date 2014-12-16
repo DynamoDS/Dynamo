@@ -5,7 +5,6 @@ using System.Windows.Threading;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
-using DynamoUtilities;
 
 namespace Dynamo.Models
 {
@@ -122,9 +121,9 @@ namespace Dynamo.Models
             Run();
         }
 
-        protected override void OnNodeDeleted(NodeModel node)
+        protected override void OnNodeRemoved(NodeModel node)
         {
-            base.OnNodeDeleted(node);
+            base.OnNodeRemoved(node);
             EngineController.NodeDeleted(node);
         }
 

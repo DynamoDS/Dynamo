@@ -48,7 +48,7 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     All loaded custom node workspaces.
         /// </summary>
-        public IEnumerable<CustomNodeWorkspaceModel> Workspaces
+        public IEnumerable<CustomNodeWorkspaceModel> LoadedWorkspaces
         {
             get { return loadedWorkspaceModels.Values; }
         }
@@ -239,6 +239,8 @@ namespace Dynamo.Utilities
         {
             if (loadedCustomNodes.Contains(guid))
                 loadedCustomNodes.Remove(guid);
+            var ws = loadedWorkspaceModels[guid];
+            ws.Dispose();
             loadedWorkspaceModels.Remove(guid);
         }
 
@@ -772,9 +774,10 @@ namespace Dynamo.Utilities
                             return startSelected && endSelected;
                         }));
 
-                foreach (var ele in fullySelectedConns)
+                foreach (var connector in fullySelectedConns)
                 {
-                    undoRecorder.RecordDeletionForUndo(ele);
+                    undoRecorder.RecordDeletionForUndo(connector);
+                    connector.Delete();
                 }
 
                 #endregion
@@ -790,7 +793,7 @@ namespace Dynamo.Utilities
                             selectedNodeSet.Contains(conn.Start.Owner)
                                 || selectedNodeSet.Contains(conn.End.Owner)).ToList();
 
-                foreach (ConnectorModel connector in partiallySelectedConns)
+                foreach (var connector in partiallySelectedConns)
                 {
                     undoRecorder.RecordDeletionForUndo(connector);
                     connector.Delete();
@@ -808,7 +811,7 @@ namespace Dynamo.Utilities
                 foreach (var node in selectedNodeSet)
                 {
                     undoRecorder.RecordDeletionForUndo(node);
-                    currentWorkspace.Nodes.Remove(node);
+                    currentWorkspace.RemoveNode(node);
 
                     // Assign a new guid to this node, otherwise when node is
                     // compiled to AST, literally it is still in global scope
@@ -823,7 +826,10 @@ namespace Dynamo.Utilities
                     newNodes.Add(node);
                 }
 
-                var newConnectors = fullySelectedConns.ToList();
+                foreach (var conn in fullySelectedConns)
+                {
+                    ConnectorModel.Make(conn.Start.Owner, conn.End.Owner, conn.Start.Index, conn.End.Index);
+                }
 
                 #endregion
 
@@ -833,7 +839,7 @@ namespace Dynamo.Utilities
                 var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
 
                 //Step 3: insert variables (reference step 1)
-                foreach (var input in Enumerable.Range(0, inputs.Count).Zip<int, Tuple<NodeModel, int, Tuple<int, NodeModel>>, Tuple<int, Tuple<NodeModel, int, Tuple<int, NodeModel>>>>(inputs, Tuple.Create))
+                foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
                 {
                     int inputIndex = input.Item1;
 
@@ -872,7 +878,7 @@ namespace Dynamo.Utilities
 
                     //if (curriedNode == null)
                     //{
-                    newConnectors.Add(ConnectorModel.Make(node, inputReceiverNode, 0, inputReceiverData));
+                    ConnectorModel.Make(node, inputReceiverNode, 0, inputReceiverData);
                     //}
                     //else
                     //{
@@ -926,8 +932,7 @@ namespace Dynamo.Utilities
                             node.SetNickNameFromAttribute();
 
                             newNodes.Add(node);
-                            newConnectors.Add(
-                                ConnectorModel.Make(outputSenderNode, node, outputSenderData, 0));
+                            ConnectorModel.Make(outputSenderNode, node, outputSenderData, 0);
 
                             i++;
                         }
@@ -966,7 +971,7 @@ namespace Dynamo.Utilities
                         node.SetNickNameFromAttribute();
 
                         newNodes.Add(node);
-                        newConnectors.Add(ConnectorModel.Make(hanging.node, node, hanging.port, 0));
+                        ConnectorModel.Make(hanging.node, node, hanging.port, 0);
 
                         i++;
                     }
