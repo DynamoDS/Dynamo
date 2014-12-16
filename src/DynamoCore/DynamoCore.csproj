@@ -328,7 +328,7 @@ copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
       xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
       xcopy  /Y "$(SolutionDir)..\extern\LibG_221\*" "$(OutputPath)libg_221\"
       xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
-      xcopy /Y "$(SolutionDir)..\extern\Helix3D\NET40\Helix3D_SharpDX\*" "$(OutputPath)" /i /s</PostBuildEvent>
+      xcopy /Y "$(SolutionDir)..\extern\Helix3D\NET40\*" "$(OutputPath)" /i /s</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

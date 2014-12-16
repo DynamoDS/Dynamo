@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -208,7 +207,7 @@ namespace Dynamo.Controls
                 LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0)
             };
-
+            
             DrawGrid();
         }
 
