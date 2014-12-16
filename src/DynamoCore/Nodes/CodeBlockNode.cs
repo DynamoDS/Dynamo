@@ -196,6 +196,7 @@ namespace Dynamo.Nodes
 
                         if (Workspace != null)
                         {
+                            Workspace.FindNextExecutingNodes();
                             Workspace.Modified();
                         }
 

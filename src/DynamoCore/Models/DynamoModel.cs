@@ -656,7 +656,7 @@ namespace Dynamo.Models
                 if (node == null)
                     continue;
 
-                node.Warning(message.Value); // Update node warning message.
+                node.Warning(message.Value); // Update node warning message.               
             }
 
             // This method is guaranteed to be called in the context of 
@@ -675,9 +675,14 @@ namespace Dynamo.Models
             foreach (var modifiedNode in updateTask.ModifiedNodes)
             {
                 modifiedNode.RequestValueUpdateAsync();
+                if (modifiedNode.State != ElementState.Error &&
+                    modifiedNode.State != ElementState.Warning)
+                {
+                    modifiedNode.IsNodeExecuted = false;
+                }               
             }
 
-            // Notify listeners (optional) of completion.
+            // Notify listeners (optional) of completion. 
             RunEnabled = true; // Re-enable 'Run' button.
             // Notify handlers that evaluation took place.
             var e = new EvaluationCompletedEventArgs(true);

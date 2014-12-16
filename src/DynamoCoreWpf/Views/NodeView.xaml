@@ -369,8 +369,8 @@
                    Stroke="#7E43F041"
                    StrokeThickness="8"
                    StrokeLineJoin="Round"
-                   IsHitTestVisible="False"
-                   Canvas.ZIndex="20"
+                   IsHitTestVisible="False"                   
+                   Canvas.ZIndex="50"
                    Margin="-10">
             <Rectangle.Visibility>
                 <Binding Path="IsNodeExecuted"
