@@ -183,7 +183,7 @@ namespace ProtoCore.Utils
         #endregion
     }
 
-    public class CompilerUtils
+    public static class CompilerUtils
     {
         /// <summary>
         /// Does the first pass of compilation and returns a list of wanrnings in compilation
