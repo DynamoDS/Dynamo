@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
 
                 if (subNode.Name == "Input")
                 {
-                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
+                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, string.Empty));
                 }
             }
             RegisterAllPorts();
@@ -125,7 +125,7 @@ namespace Dynamo.Nodes
                     {
                         XmlNode subNode = inNodes.Item(currLength);
                         string nickName = subNode.Attributes["name"].Value;
-                        InPortData.Add(new PortData(nickName, ""));
+                        InPortData.Add(new PortData(nickName, String.Empty));
                     }
                 }
                 else if (nextLength < currLength)

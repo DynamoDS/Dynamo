@@ -250,8 +250,26 @@ If you don't mind, it would be helpful for you to send us your file. That will m
     <value>A function output, use with custom nodes</value>
     <comment>Description for output node</comment>
   </data>
+  <data name="PortDataFunctionOutputToolTip" xml:space="preserve">
+    <value>function output</value>
+  </data>
+  <data name="PortDataInputToolTip" xml:space="preserve">
+    <value>Input #{0}</value>
+  </data>
+  <data name="PortDataOutputToolTip" xml:space="preserve">
+    <value>Output #{0}</value>
+  </data>
   <data name="PortDataParameterToolTip" xml:space="preserve">
     <value>parameter</value>
+  </data>
+  <data name="PortDataPathToFileToolTip" xml:space="preserve">
+    <value>Path to the file</value>
+  </data>
+  <data name="PortDataReturnValueToolTip" xml:space="preserve">
+    <value>return value</value>
+  </data>
+  <data name="PortDataSymbolToolTip" xml:space="preserve">
+    <value>Symbol</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
     <value>variable</value>

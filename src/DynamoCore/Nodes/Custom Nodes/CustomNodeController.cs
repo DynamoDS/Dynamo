@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -47,10 +48,10 @@ namespace Dynamo.Nodes
             if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
                 foreach (string key in Definition.ReturnKeys)
-                    model.OutPortData.Add(new PortData(key, "return value"));
+                    model.OutPortData.Add(new PortData(key, Resources.PortDataReturnValueToolTip));
             }
             else
-                model.OutPortData.Add(new PortData("", "return value"));
+                model.OutPortData.Add(new PortData(string.Empty, Resources.PortDataReturnValueToolTip));
         }
 
         protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)

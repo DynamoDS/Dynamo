@@ -190,8 +190,8 @@ namespace DSCore.File
         public FileObject(WorkspaceModel workspaceModel)
             : base(workspaceModel, IO.File.FromPath)
         {
-            InPortData.Add(new PortData("path", "Path to the file."));
-            OutPortData.Add(new PortData("file", "File object"));
+            InPortData.Add(new PortData("path", Resources.FileObjectPortDataPathToolTip));
+            OutPortData.Add(new PortData("file", Resources.FileObjectPortDataResultToolTip));
             RegisterAllPorts();
         }
 
@@ -244,8 +244,8 @@ namespace DSCore.File
         public DirectoryObject(WorkspaceModel workspaceModel)
             : base(workspaceModel, IO.Directory.FromPath)
         {
-            InPortData.Add(new PortData("path", "Path to the directory."));
-            OutPortData.Add(new PortData("directory", "Directory object."));
+            InPortData.Add(new PortData("path", Resources.DirectoryObjectPortDataPathToolTip));
+            OutPortData.Add(new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip));
             RegisterAllPorts();
         }
 

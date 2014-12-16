@@ -121,6 +121,27 @@
     <value>Manages connection to an Arduino microcontroller.</value>
     <comment>Description for Arduino</comment>
   </data>
+  <data name="ArduinoPortDataExecToolTip" xml:space="preserve">
+    <value>Execution Interval</value>
+  </data>
+  <data name="ArduinoPortDataOutputToolTip" xml:space="preserve">
+    <value>Serial port for later read/write</value>
+  </data>
+  <data name="ArduinoReadPortDataOutputToolTip" xml:space="preserve">
+    <value>Serial output line</value>
+  </data>
+  <data name="ArduinoWritePortDataOutputToolTip" xml:space="preserve">
+    <value>Whether or not the operation was successful.</value>
+  </data>
+  <data name="ArduionReadPortDataDelimiterToolTip" xml:space="preserve">
+    <value>The delimeter in your data coming from the Arduino.</value>
+  </data>
+  <data name="ArduionWritePortDataTextToolTip" xml:space="preserve">
+    <value>Text to be written</value>
+  </data>
+  <data name="PortDataArduinoToolTip" xml:space="preserve">
+    <value>Arduino serial connection</value>
+  </data>
   <data name="ReadArduinoDescription" xml:space="preserve">
     <value>Reads values from an Arduino microcontroller.</value>
     <comment>Description for Read Arduino</comment>

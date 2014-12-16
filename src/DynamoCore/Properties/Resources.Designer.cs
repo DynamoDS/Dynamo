@@ -387,11 +387,65 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to function output.
+        /// </summary>
+        public static string PortDataFunctionOutputToolTip {
+            get {
+                return ResourceManager.GetString("PortDataFunctionOutputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input #{0}.
+        /// </summary>
+        public static string PortDataInputToolTip {
+            get {
+                return ResourceManager.GetString("PortDataInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output #{0}.
+        /// </summary>
+        public static string PortDataOutputToolTip {
+            get {
+                return ResourceManager.GetString("PortDataOutputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to parameter.
         /// </summary>
         public static string PortDataParameterToolTip {
             get {
                 return ResourceManager.GetString("PortDataParameterToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path to the file.
+        /// </summary>
+        public static string PortDataPathToFileToolTip {
+            get {
+                return ResourceManager.GetString("PortDataPathToFileToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to return value.
+        /// </summary>
+        public static string PortDataReturnValueToolTip {
+            get {
+                return ResourceManager.GetString("PortDataReturnValueToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Symbol.
+        /// </summary>
+        public static string PortDataSymbolToolTip {
+            get {
+                return ResourceManager.GetString("PortDataSymbolToolTip", resourceCulture);
             }
         }
         

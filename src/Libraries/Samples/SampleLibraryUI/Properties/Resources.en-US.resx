@@ -121,4 +121,10 @@
     <value>A sample UI node which displays custom UI.</value>
     <comment>Description for Hello Dynamo</comment>
   </data>
+  <data name="HelloDynamoPortDataInputToolTip" xml:space="preserve">
+    <value>Input a string.</value>
+  </data>
+  <data name="HelloDynamoPortDataOutputToolTip" xml:space="preserve">
+    <value>A result.</value>
+  </data>
 </root>

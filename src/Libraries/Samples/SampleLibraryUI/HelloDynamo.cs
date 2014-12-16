@@ -9,6 +9,7 @@ using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Wpf;
 using ProtoCore.AST.AssociativeAST;
+using SamplesLibraryUI.Properties;
 
 namespace SamplesLibraryUI
 {
@@ -115,12 +116,12 @@ namespace SamplesLibraryUI
             // work of setting up the ports yourself. To do this,
             // you can populate the InPortData and the OutPortData
             // collections with PortData objects describing your ports.
-            InPortData.Add(new PortData("something", "Input a string."));
+            InPortData.Add(new PortData("something", Resources.HelloDynamoPortDataInputToolTip));
 
             // Nodes can have an arbitrary number of inputs and outputs.
             // If you want more ports, just create more PortData objects.
-            OutPortData.Add(new PortData("something", "A result."));
-            OutPortData.Add(new PortData("some awesome", "A result."));
+            OutPortData.Add(new PortData("something", Resources.HelloDynamoPortDataOutputToolTip));
+            OutPortData.Add(new PortData("some awesome", Resources.HelloDynamoPortDataOutputToolTip));
 
             // This call is required to ensure that your ports are
             // properly created.

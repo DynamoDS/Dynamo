@@ -35,7 +35,7 @@ namespace DSCoreNodesUI
             : base(workspace)
         {
             Type type = typeof(T);
-            OutPortData.Add(new PortData("", type.Name));
+            OutPortData.Add(new PortData(string.Empty, type.Name));
             RegisterAllPorts();
         }
 

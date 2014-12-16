@@ -121,4 +121,10 @@
     <value>Shows a dynamic preview of geometry.</value>
     <comment>Description for Watch 3D</comment>
   </data>
+  <data name="Watch3DPortDataInputToolTip" xml:space="preserve">
+    <value>Incoming geometry objects.</value>
+  </data>
+  <data name="Watch3DPortDataOutputToolTip" xml:space="preserve">
+    <value>Watch contents, passed through</value>
+  </data>
 </root>

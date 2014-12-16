@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI.HigherOrder
@@ -16,8 +17,8 @@ namespace DSCoreNodesUI.HigherOrder
     {
         public ApplyFunction(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            InPortData.Add(new PortData("func", "Function to apply."));
-            OutPortData.Add(new PortData("func(args)", "Result of application."));
+            InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
+            OutPortData.Add(new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip));
             AddInput();
             RegisterAllPorts();
         }
@@ -73,10 +74,10 @@ namespace DSCoreNodesUI.HigherOrder
         public ComposeFunctions(WorkspaceModel workspaceModel)
             : base(workspaceModel)
         {
-            InPortData.Add(new PortData("func0", "Function #0"));
-            InPortData.Add(new PortData("func1", "Function #1"));
+            InPortData.Add(new PortData("func0", Resources.ComposePortDataFunc0ToolTip));
+            InPortData.Add(new PortData("func1", Resources.ComposePortDataFunc1ToolTip));
 
-            OutPortData.Add(new PortData("func", "Composed function."));
+            OutPortData.Add(new PortData("func", Resources.ComposePortDataResultToolTip));
             RegisterAllPorts();
         }
 

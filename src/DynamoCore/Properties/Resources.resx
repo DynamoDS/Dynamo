@@ -196,6 +196,24 @@
     <value>The offset to apply to the sub-list. Ex. The range "0..2" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}...</value>
     <comment>Tooltip</comment>
   </data>
+  <data name="PortDataFunctionOutputToolTip" xml:space="preserve">
+    <value>function output</value>
+  </data>
+  <data name="PortDataInputToolTip" xml:space="preserve">
+    <value>Input #{0}</value>
+  </data>
+  <data name="PortDataOutputToolTip" xml:space="preserve">
+    <value>Output #{0}</value>
+  </data>
+  <data name="PortDataPathToFileToolTip" xml:space="preserve">
+    <value>Path to the file</value>
+  </data>
+  <data name="PortDataReturnValueToolTip" xml:space="preserve">
+    <value>return value</value>
+  </data>
+  <data name="PortDataSymbolToolTip" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
   <data name="ArgumentValueEqualOrLargerThanZero" xml:space="preserve">
     <value>Argument value must be equal or larger than zero</value>
     <comment>ArgumentException</comment>

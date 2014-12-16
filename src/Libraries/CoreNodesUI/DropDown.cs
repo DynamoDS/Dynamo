@@ -7,6 +7,7 @@ using System.Xml;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
+using DSCoreNodesUI.Properties;
 
 namespace DSCoreNodesUI
 {
@@ -46,7 +47,7 @@ namespace DSCoreNodesUI
 
         protected DSDropDownBase(WorkspaceModel workspaceModel, string outputName) : base(workspaceModel)
         {
-            OutPortData.Add(new PortData(outputName, string.Format("The selected {0}", outputName)));
+            OutPortData.Add(new PortData(outputName, string.Format(Resources.DropDownPortDataResultToolTip, outputName)));
             RegisterAllPorts();
             PopulateItems();
         }

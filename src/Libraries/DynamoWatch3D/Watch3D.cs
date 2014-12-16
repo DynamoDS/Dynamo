@@ -25,6 +25,7 @@ using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
 using Color = System.Windows.Media.Color;
+using DynamoWatch3D.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -192,8 +193,8 @@ namespace Dynamo.Nodes
 
         public Watch3D(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("", "Incoming geometry objects."));
-            OutPortData.Add(new PortData("", "Watch contents, passed through"));
+            InPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
+            OutPortData.Add(new PortData("", Resources.Watch3DPortDataOutputToolTip));
 
             RegisterAllPorts();
 

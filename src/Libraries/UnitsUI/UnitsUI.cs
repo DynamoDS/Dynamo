@@ -23,6 +23,7 @@ using Dynamo.Wpf;
 
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
+using UnitsUI.Properties;
 
 namespace UnitsUI
 {
@@ -204,7 +205,7 @@ namespace UnitsUI
         public LengthFromString(WorkspaceModel ws) : base(ws)
         {
             Measure = Length.FromDouble(0.0);
-            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters."));
+            OutPortData.Add(new PortData("length", Resources.LengthFromStringPortDataLengthToolTip));
             RegisterAllPorts();
         }
 
@@ -253,7 +254,7 @@ namespace UnitsUI
         public AreaFromString(WorkspaceModel workspaceModel) : base(workspaceModel) 
         {
             Measure = Area.FromDouble(0.0);
-            OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared."));
+            OutPortData.Add(new PortData("area", Resources.AreaFromStringPortDataAreaToolTip));
             RegisterAllPorts();
         }
 
@@ -284,7 +285,7 @@ namespace UnitsUI
         public VolumeFromString(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             Measure = Volume.FromDouble(0.0);
-            OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed."));
+            OutPortData.Add(new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip));
             RegisterAllPorts();
         }
 
