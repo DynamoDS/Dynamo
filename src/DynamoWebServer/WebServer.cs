@@ -86,7 +86,8 @@ namespace DynamoWebServer
             var session = webSocket.GetAppSessionById(sessionId);
             if (session != null)
             {
-                session.Send(JsonConvert.SerializeObject(response, jsonSettings));
+                var json = JsonConvert.SerializeObject(response, jsonSettings);
+                session.Send(json.Replace("DynamoWebServer.Responses.", "").Replace(", DynamoWebServer", ""));
                 LogInfo("Web socket: send [Status: " + response.Status + "]");
             }
             else
@@ -139,7 +140,6 @@ namespace DynamoWebServer
 
             try
             {
-                message = message.Replace("Message, DynamoCore", "Message, DynamoWebServer");
                 ExecuteMessageFromSocket(message, session.SessionID);
             }
             catch (Exception ex)
