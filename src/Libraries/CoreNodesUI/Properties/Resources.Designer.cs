@@ -70,6 +70,24 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Result of application..
+        /// </summary>
+        public static string ApplyPortDataFuncArgToolTip {
+            get {
+                return ResourceManager.GetString("ApplyPortDataFuncArgToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function to apply..
+        /// </summary>
+        public static string ApplyPortDataFuncToolTip {
+            get {
+                return ResourceManager.GetString("ApplyPortDataFuncToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Selection between a true and false..
         /// </summary>
         public static string BooleanDescription {
@@ -97,11 +115,128 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The end color..
+        /// </summary>
+        public static string ColorRangePortDataEndToolTip {
+            get {
+                return ResourceManager.GetString("ColorRangePortDataEndToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected color..
+        /// </summary>
+        public static string ColorRangePortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("ColorRangePortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The start color..
+        /// </summary>
+        public static string ColorRangePortDataStartToolTip {
+            get {
+                return ResourceManager.GetString("ColorRangePortDataStartToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value between 0 and 1 of the selected color..
+        /// </summary>
+        public static string ColorRangePortDataValueToolTip {
+            get {
+                return ResourceManager.GetString("ColorRangePortDataValueToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Combinator.
+        /// </summary>
+        public static string CombinatorPortDataCombToolTip {
+            get {
+                return ResourceManager.GetString("CombinatorPortDataCombToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Combined lists.
+        /// </summary>
+        public static string CombinatorPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("CombinatorPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function #0.
+        /// </summary>
+        public static string ComposePortDataFunc0ToolTip {
+            get {
+                return ResourceManager.GetString("ComposePortDataFunc0ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function #1.
+        /// </summary>
+        public static string ComposePortDataFunc1ToolTip {
+            get {
+                return ResourceManager.GetString("ComposePortDataFunc1ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Composed function..
+        /// </summary>
+        public static string ComposePortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("ComposePortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item Index #0.
+        /// </summary>
+        public static string CreateListPortDataIndex0ToolTip {
+            get {
+                return ResourceManager.GetString("CreateListPortDataIndex0ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A list.
+        /// </summary>
+        public static string CreateListPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("CreateListPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a directory object from a path..
         /// </summary>
         public static string DirectoryFromPathDescription {
             get {
                 return ResourceManager.GetString("DirectoryFromPathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path to the directory..
+        /// </summary>
+        public static string DirectoryObjectPortDataPathToolTip {
+            get {
+                return ResourceManager.GetString("DirectoryObjectPortDataPathToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory object..
+        /// </summary>
+        public static string DirectoryObjectPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("DirectoryObjectPortDataResultToolTip", resourceCulture);
             }
         }
         
@@ -124,11 +259,38 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The selected {0}.
+        /// </summary>
+        public static string DropDownPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("DropDownPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a file object from a path..
         /// </summary>
         public static string FileFromPathDescription {
             get {
                 return ResourceManager.GetString("FileFromPathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path to the file..
+        /// </summary>
+        public static string FileObjectPortDataPathToolTip {
+            get {
+                return ResourceManager.GetString("FileObjectPortDataPathToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File object.
+        /// </summary>
+        public static string FileObjectPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("FileObjectPortDataResultToolTip", resourceCulture);
             }
         }
         
@@ -142,6 +304,42 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Predicate used to determine if an element is filtered in or out..
+        /// </summary>
+        public static string FilterPortDataConditionToolTip {
+            get {
+                return ResourceManager.GetString("FilterPortDataConditionToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List to filter.
+        /// </summary>
+        public static string FilterPortDataListToolTip {
+            get {
+                return ResourceManager.GetString("FilterPortDataListToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List containing all elements &quot;x&quot; where condition(x) = True.
+        /// </summary>
+        public static string FilterPortDataResultInToolTip {
+            get {
+                return ResourceManager.GetString("FilterPortDataResultInToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List containing all elements &quot;x&quot; where condition(x) = False.
+        /// </summary>
+        public static string FilterPortDataResultOutToolTip {
+            get {
+                return ResourceManager.GetString("FilterPortDataResultOutToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/.
         /// </summary>
         public static string FormulaDescription {
@@ -151,11 +349,56 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Result of math computation.
+        /// </summary>
+        public static string FormulaPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("FormulaPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The array of object to be serialized.
+        /// </summary>
+        public static string FromArrayPortDataArrayToolTip {
+            get {
+                return ResourceManager.GetString("FromArrayPortDataArrayToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String representation of the array.
+        /// </summary>
+        public static string FromArrayPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("FromArrayPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to string.fromarray;tostring;2string;list2string;listtostring;array2string;arraytostring.
         /// </summary>
         public static string FromArraySearchTags {
             get {
                 return ResourceManager.GetString("FromArraySearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object to be serialized.
+        /// </summary>
+        public static string FromObjectPortDataObjToolTip {
+            get {
+                return ResourceManager.GetString("FromObjectPortDataObjToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String representation of the object.
+        /// </summary>
+        public static string FromObjectPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("FromObjectPortDataResultToolTip", resourceCulture);
             }
         }
         
@@ -304,6 +547,33 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The procedure used to map element.
+        /// </summary>
+        public static string MapPortDataFxToolTip {
+            get {
+                return ResourceManager.GetString("MapPortDataFxToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The list to map over..
+        /// </summary>
+        public static string MapPortDataListToolTip {
+            get {
+                return ResourceManager.GetString("MapPortDataListToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapped list.
+        /// </summary>
+        public static string MapPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("MapPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a sequence of numbers in the specified range..
         /// </summary>
         public static string NumberRangeDescription {
@@ -331,6 +601,114 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to False block.
+        /// </summary>
+        public static string PortDataFalseBlockToolTip {
+            get {
+                return ResourceManager.GetString("PortDataFalseBlockToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to image.
+        /// </summary>
+        public static string PortDataImageToolTip {
+            get {
+                return ResourceManager.GetString("PortDataImageToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List #1.
+        /// </summary>
+        public static string PortDataList1ToolTip {
+            get {
+                return ResourceManager.GetString("PortDataList1ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List #2.
+        /// </summary>
+        public static string PortDataList2ToolTip {
+            get {
+                return ResourceManager.GetString("PortDataList2ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to operand.
+        /// </summary>
+        public static string PortDataOperandToolTip {
+            get {
+                return ResourceManager.GetString("PortDataOperandToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to result.
+        /// </summary>
+        public static string PortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("PortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test block.
+        /// </summary>
+        public static string PortDataTestBlockToolTip {
+            get {
+                return ResourceManager.GetString("PortDataTestBlockToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to True block.
+        /// </summary>
+        public static string PortDataTrueBlockToolTip {
+            get {
+                return ResourceManager.GetString("PortDataTrueBlockToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to variable.
+        /// </summary>
+        public static string PortDataVariableToolTip {
+            get {
+                return ResourceManager.GetString("PortDataVariableToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value..
+        /// </summary>
+        public static string ReducePortDataReductorToolTip {
+            get {
+                return ResourceManager.GetString("ReducePortDataReductorToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reduced lists.
+        /// </summary>
+        public static string ReducePortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("ReducePortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting accumulated value, to be passed into the first call to the Reductor function..
+        /// </summary>
+        public static string ReducePortDataSeedToolTip {
+            get {
+                return ResourceManager.GetString("ReducePortDataSeedToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replaces an object with a given substitute if the original object satisfies a given condition..
         /// </summary>
         public static string ReplaceByConditionDescription {
@@ -340,11 +718,83 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Predicate used to determine if it should be replaced..
+        /// </summary>
+        public static string ReplacePortDataConditionToolTip {
+            get {
+                return ResourceManager.GetString("ReplacePortDataConditionToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item to potentially be replaced.
+        /// </summary>
+        public static string ReplacePortDataItemToolTip {
+            get {
+                return ResourceManager.GetString("ReplacePortDataItemToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object to replace with.
+        /// </summary>
+        public static string ReplacePortDataReplaceWithToolTip {
+            get {
+                return ResourceManager.GetString("ReplacePortDataReplaceWithToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If condition(item) = True, then &quot;replaceWith&quot; is returned. Otherwise &quot;item&quot; is returned unaltered..
+        /// </summary>
+        public static string ReplacePortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("ReplacePortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value..
+        /// </summary>
+        public static string ScanPortDataReductorToolTip {
+            get {
+                return ResourceManager.GetString("ScanPortDataReductorToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scanned lists.
+        /// </summary>
+        public static string ScanPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("ScanPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting accumulated value, to be passed into the first call to the Reductor function..
+        /// </summary>
+        public static string ScanPortDataSeedToolTip {
+            get {
+                return ResourceManager.GetString("ScanPortDataSeedToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scoped If statement.
         /// </summary>
         public static string ScopeIfDescription {
             get {
                 return ResourceManager.GetString("ScopeIfDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected elements..
+        /// </summary>
+        public static string SelectionPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("SelectionPortDataResultToolTip", resourceCulture);
             }
         }
         
@@ -394,6 +844,24 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node to evaluate..
+        /// </summary>
+        public static string WatchPortDataInputToolTip {
+            get {
+                return ResourceManager.GetString("WatchPortDataInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Watch contents..
+        /// </summary>
+        public static string WatchPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("WatchPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to print;output;display.
         /// </summary>
         public static string WatchSearchTags {
@@ -408,6 +876,24 @@ namespace DSCoreNodesUI.Properties {
         public static string WebRequestDescription {
             get {
                 return ResourceManager.GetString("WebRequestDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The result of the web request..
+        /// </summary>
+        public static string WebRequestPortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("WebRequestPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The url for the web request..
+        /// </summary>
+        public static string WebRequestPortDataUrlToolTip {
+            get {
+                return ResourceManager.GetString("WebRequestPortDataUrlToolTip", resourceCulture);
             }
         }
     }

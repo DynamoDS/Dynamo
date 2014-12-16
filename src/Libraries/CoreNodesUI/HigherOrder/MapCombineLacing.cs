@@ -16,10 +16,10 @@ namespace DSCore
     {
         public Map(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("list", "The list to map over."));
-            InPortData.Add(new PortData("f(x)", "The procedure used to map elements"));
+            InPortData.Add(new PortData("list", Resources.MapPortDataListToolTip));
+            InPortData.Add(new PortData("f(x)", Resources.MapPortDataFxToolTip));
 
-            OutPortData.Add(new PortData("mapped", "Mapped list"));
+            OutPortData.Add(new PortData("mapped", Resources.MapPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -47,11 +47,11 @@ namespace DSCore
 
         protected CombinatorNode(WorkspaceModel workspace) : this(workspace, 3)
         {
-            InPortData.Add(new PortData("comb", "Combinator"));
-            InPortData.Add(new PortData("list1", "List #1"));
-            InPortData.Add(new PortData("list2", "List #2"));
+            InPortData.Add(new PortData("comb", Resources.CombinatorPortDataCombToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData("list2", Resources.PortDataList2ToolTip));
 
-            OutPortData.Add(new PortData("combined", "Combined lists"));
+            OutPortData.Add(new PortData("combined", Resources.CombinatorPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -280,15 +280,11 @@ namespace DSCore
 
         public Reduce(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            reductorPort = new PortData(
-                "reductor",
-                "Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.");
+            InPortData.Add(new PortData("reductor", Resources.ReducePortDataReductorToolTip));
+            InPortData.Add(new PortData("seed", Resources.ReducePortDataSeedToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
 
-            InPortData.Add(reductorPort);
-            InPortData.Add(new PortData("seed", "Starting accumulated value, to be passed into the first call to the Reductor function."));
-            InPortData.Add(new PortData("list1", "List #1"));
-
-            OutPortData.Add(new PortData("reduced", "Reduced lists"));
+            OutPortData.Add(new PortData("reduced", Resources.ReducePortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -371,15 +367,11 @@ namespace DSCore
 
         public ScanList(WorkspaceModel workspace) : base(workspace)
         {
-            reductorPort = new PortData(
-                "reductor",
-                "Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.");
+            InPortData.Add(new PortData("reductor", Resources.ScanPortDataReductorToolTip));
+            InPortData.Add(new PortData("seed", Resources.ScanPortDataSeedToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
 
-            InPortData.Add(reductorPort);
-            InPortData.Add(new PortData("seed", "Starting accumulated value, to be passed into the first call to the Reductor function."));
-            InPortData.Add(new PortData("list1", "List #1"));
-
-            OutPortData.Add(new PortData("scanned", "Scanned lists"));
+            OutPortData.Add(new PortData("scanned", Resources.ScanPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -460,13 +452,11 @@ namespace DSCore
     {
         public Filter(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("list", "List to filter"));
-            InPortData.Add(new PortData("condition", "Predicate used to determine if an element is filtered in or out."));
+            InPortData.Add(new PortData("list", Resources.FilterPortDataListToolTip));
+            InPortData.Add(new PortData("condition", Resources.FilterPortDataConditionToolTip));
 
-            OutPortData.Add(
-                new PortData("in", "List containing all elements \"x\" where condition(x) = True"));
-            OutPortData.Add(
-                new PortData("out", "List containing all elements \"x\" where condition(x) = False"));
+            OutPortData.Add(new PortData("in", Resources.FilterPortDataResultInToolTip));
+            OutPortData.Add(new PortData("out", Resources.FilterPortDataResultOutToolTip));
 
             RegisterAllPorts();
         }
@@ -504,11 +494,11 @@ namespace DSCore
     {
         public Replace(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("item", "Item to potentially be replaced"));
-            InPortData.Add(new PortData("replaceWith", "Object to replace with"));
-            InPortData.Add(new PortData("condition", "Predicate used to determine if it should be replaced."));
+            InPortData.Add(new PortData("item", Resources.ReplacePortDataItemToolTip));
+            InPortData.Add(new PortData("replaceWith", Resources.ReplacePortDataReplaceWithToolTip));
+            InPortData.Add(new PortData("condition", Resources.ReplacePortDataConditionToolTip));
 
-            OutPortData.Add(new PortData("var", "If condition(item) = True, then \"replaceWith\" is returned. Otherwise \"item\" is returned unaltered."));
+            OutPortData.Add(new PortData("var", Resources.ReplacePortDataResultToolTip));
 
             RegisterAllPorts();
         }

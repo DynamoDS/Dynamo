@@ -6,6 +6,7 @@ using System.Xml;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using DSCoreNodesUI.Properties;
 
 using NCalc;
 using ProtoCore;
@@ -58,7 +59,7 @@ namespace DSCoreNodesUI
             : base(workspace)
         {
             ArgumentLacing = LacingStrategy.Shortest;
-            OutPortData.Add(new PortData("", "Result of math computation"));
+            OutPortData.Add(new PortData(string.Empty, Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
 
@@ -193,7 +194,7 @@ namespace DSCoreNodesUI
 
             foreach (var p in parameters)
             {
-                InPortData.Add(new PortData(p, "variable"));
+                InPortData.Add(new PortData(p, Resources.PortDataVariableToolTip));
             }
 
             RegisterInputPorts();

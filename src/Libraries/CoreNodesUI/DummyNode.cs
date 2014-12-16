@@ -60,13 +60,13 @@ namespace DSCoreNodesUI
             for (int input = 0; input < this.InputCount; input++)
             {
                 var name = string.Format("Port {0}", input + 1);
-                InPortData.Add(new PortData(name, ""));
+                InPortData.Add(new PortData(name, string.Empty));
             }
 
             for (int output = 0; output < this.OutputCount; output++)
             {
                 var name = string.Format("Port {0}", output + 1);
-                OutPortData.Add(new PortData(name, ""));
+                OutPortData.Add(new PortData(name, string.Empty));
             }
 
             this.RegisterAllPorts();
