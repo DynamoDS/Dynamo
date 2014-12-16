@@ -281,28 +281,25 @@ namespace net.riversofdata.dhlogger
             byte[] byteRepresentation = System.Text.Encoding.UTF8.GetBytes(text);
             string safeStr = System.Convert.ToBase64String(byteRepresentation);
 
-
             //Destroy the original representations to ensure runtime errors if used later in this method
             text = null;
-
 
             string dateTime = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
             string microTime = sw.ElapsedMilliseconds.ToString();
 
-            Dictionary<String, String> item = new Dictionary<String, String>();
-
-            item.Add("Tag", tag);
-            item.Add("Priority", priority);
-            item.Add("AppIdent", AppName);
-            item.Add("UserID", UserID);
-            item.Add("SessionID", SessionID);
-            item.Add("DateTime", dateTime);
-            item.Add("MicroTime", microTime);
-
-            item.Add("Data", safeStr);
+            var item = new Dictionary<string, string>
+            {
+                { "Tag", tag },
+                { "Priority", priority },
+                { "AppIdent", AppName },
+                { "UserID", UserID },
+                { "SessionID", SessionID },
+                { "DateTime", dateTime },
+                { "MicroTime", microTime },
+                { "Data", safeStr }
+            };
 
             PushItem(item);
-
         }
 
         /// <summary>

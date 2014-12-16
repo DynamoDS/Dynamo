@@ -26,7 +26,6 @@ using System.Xml;
 
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
-using Type = System.Type;
 using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -49,18 +48,14 @@ namespace Dynamo.Models
         public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
         {
             if (RequestsFunctionNamePrompt != null)
-            {
                 RequestsFunctionNamePrompt(this, e);
-            }
         }
 
         public event WorkspaceHandler WorkspaceSaved;
         internal void OnWorkspaceSaved(WorkspaceModel model)
         {
             if (WorkspaceSaved != null)
-            {
                 WorkspaceSaved(model);
-            }
         }
 
         /// <summary>
@@ -318,15 +313,11 @@ namespace Dynamo.Models
 
         protected virtual void ShutDownCore(bool shutdownHost)
         {
-            EngineController.Dispose();
-            EngineController = null;
-
+            Dispose();
             PreferenceSettings.Save();
 
             OnCleanup();
-
-            Logger.Dispose();
-
+            
             DynamoSelection.DestroyInstance();
 
             InstrumentationLogger.End();
@@ -385,79 +376,6 @@ namespace Dynamo.Models
                 configuration.Preferences = new PreferenceSettings();
 
             return new DynamoModel(configuration);
-        }
-
-        private void InitializeCustomNodeManager()
-        {
-            CustomNodeManager.MessageLogged += LogMessage;
-
-            var customNodeSearchRegistry = new HashSet<Guid>();
-            CustomNodeManager.InfoUpdated += info =>
-            {
-                if (customNodeSearchRegistry.Contains(info.FunctionId))
-                    return;
-
-                customNodeSearchRegistry.Add(info.FunctionId);
-                var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
-                SearchModel.Add(searchElement);
-                CustomNodeManager.InfoUpdated += newInfo =>
-                {
-                    if (info.FunctionId == newInfo.FunctionId)
-                        searchElement.SyncWithCustomNodeInfo(newInfo);
-                };
-                CustomNodeManager.CustomNodeRemoved += id =>
-                {
-                    if (info.FunctionId == id)
-                    {
-                        customNodeSearchRegistry.Remove(info.FunctionId);
-                        SearchModel.Remove(searchElement);
-                    }
-                };
-            };
-            CustomNodeManager.DefinitionUpdated += RegisterCustomNodeDefinitionWithEngine;
-        }
-
-        private void InitializeBuiltinNodeLibrary()
-        {
-            NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
-
-            var dsFuncData = new TypeLoadData(typeof(DSFunction));
-            var dsVarArgFuncData = new TypeLoadData(typeof(DSVarArgFunction));
-            var cbnData = new TypeLoadData(typeof(CodeBlockNodeModel));
-            var dummyData = new TypeLoadData(typeof(DummyNode));
-            var symbolData = new TypeLoadData(typeof(Symbol));
-            var outputData = new TypeLoadData(typeof(Output));
-
-            var ztLoader = new ZeroTouchNodeLoader(LibraryServices);
-            NodeFactory.AddLoader(dsFuncData.Type, ztLoader, dsFuncData.AlsoKnownAs);
-            NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader, dsVarArgFuncData.AlsoKnownAs);
-
-            NodeFactory.AddLoader(cbnData.Type, new CodeBlockNodeLoader(this), cbnData.AlsoKnownAs);
-            NodeFactory.AddLoader(dummyData.Type, dummyData.AlsoKnownAs);
-
-            NodeFactory.AddLoader(symbolData.Type, symbolData.AlsoKnownAs);
-            NodeFactory.AddLoader(outputData.Type, outputData.AlsoKnownAs);
-
-            SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, this));
-
-            var symbolSearchElement = new NodeModelSearchElement(symbolData)
-            {
-                IsVisibleInSearch = CurrentWorkspace is CustomNodeWorkspaceModel
-            };
-            var outputSearchElement = new NodeModelSearchElement(outputData)
-            {
-                IsVisibleInSearch = CurrentWorkspace is CustomNodeWorkspaceModel
-            };
-
-            WorkspaceHidden += _ =>
-            {
-                var isVisible = CurrentWorkspace is CustomNodeWorkspaceModel;
-                symbolSearchElement.IsVisibleInSearch = isVisible;
-                outputSearchElement.IsVisibleInSearch = isVisible;
-            };
-
-            SearchModel.Add(symbolSearchElement);
-            SearchModel.Add(outputSearchElement);
         }
 
         protected DynamoModel(StartConfiguration configuration)
@@ -590,9 +508,99 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <filterpriority>2</filterpriority>
+        public void Dispose()
+        {
+            LibraryServices.Dispose();
+            LibraryServices.LibraryManagementCore.Cleanup();
+            Logger.Dispose();
+
+            if (PreferenceSettings != null)
+            {
+                PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+            }
+        }
+
+        private void InitializeCustomNodeManager()
+        {
+            CustomNodeManager.MessageLogged += LogMessage;
+
+            var customNodeSearchRegistry = new HashSet<Guid>();
+            CustomNodeManager.InfoUpdated += info =>
+            {
+                if (customNodeSearchRegistry.Contains(info.FunctionId))
+                    return;
+
+                customNodeSearchRegistry.Add(info.FunctionId);
+                var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
+                SearchModel.Add(searchElement);
+                CustomNodeManager.InfoUpdated += newInfo =>
+                {
+                    if (info.FunctionId == newInfo.FunctionId)
+                        searchElement.SyncWithCustomNodeInfo(newInfo);
+                };
+                CustomNodeManager.CustomNodeRemoved += id =>
+                {
+                    if (info.FunctionId == id)
+                    {
+                        customNodeSearchRegistry.Remove(info.FunctionId);
+                        SearchModel.Remove(searchElement);
+                    }
+                };
+            };
+            CustomNodeManager.DefinitionUpdated += RegisterCustomNodeDefinitionWithEngine;
+        }
+
+        private void InitializeIncludedNodes()
+        {
+            NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
+
+            var dsFuncData = new TypeLoadData(typeof(DSFunction));
+            var dsVarArgFuncData = new TypeLoadData(typeof(DSVarArgFunction));
+            var cbnData = new TypeLoadData(typeof(CodeBlockNodeModel));
+            var dummyData = new TypeLoadData(typeof(DummyNode));
+            var symbolData = new TypeLoadData(typeof(Symbol));
+            var outputData = new TypeLoadData(typeof(Output));
+
+            var ztLoader = new ZeroTouchNodeLoader(LibraryServices);
+            NodeFactory.AddLoader(dsFuncData.Type, ztLoader, dsFuncData.AlsoKnownAs);
+            NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader, dsVarArgFuncData.AlsoKnownAs);
+
+            NodeFactory.AddLoader(cbnData.Type, new CodeBlockNodeLoader(this), cbnData.AlsoKnownAs);
+            NodeFactory.AddLoader(dummyData.Type, dummyData.AlsoKnownAs);
+
+            NodeFactory.AddLoader(symbolData.Type, symbolData.AlsoKnownAs);
+            NodeFactory.AddLoader(outputData.Type, outputData.AlsoKnownAs);
+
+            SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, this));
+
+            var symbolSearchElement = new NodeModelSearchElement(symbolData)
+            {
+                IsVisibleInSearch = CurrentWorkspace is CustomNodeWorkspaceModel
+            };
+            var outputSearchElement = new NodeModelSearchElement(outputData)
+            {
+                IsVisibleInSearch = CurrentWorkspace is CustomNodeWorkspaceModel
+            };
+
+            WorkspaceHidden += _ =>
+            {
+                var isVisible = CurrentWorkspace is CustomNodeWorkspaceModel;
+                symbolSearchElement.IsVisibleInSearch = isVisible;
+                outputSearchElement.IsVisibleInSearch = isVisible;
+            };
+
+            SearchModel.Add(symbolSearchElement);
+            SearchModel.Add(outputSearchElement);
+        }
+
         private void InitializeNodeLibrary(IPreferences preferences)
         {
-            InitializeBuiltinNodeLibrary();
+            // Initialize all nodes inside of this assembly.
+            InitializeIncludedNodes();
 
             List<TypeLoadData> modelTypes;
             List<TypeLoadData> migrationTypes;
@@ -631,75 +639,6 @@ namespace Dynamo.Models
             CustomNodeManager.AddUninitializedCustomNodesInPath(DynamoPathManager.Instance.CommonDefinitions, IsTestMode);
         }
 
-#if DEBUG_LIBRARY
-        private void DumpLibrarySnapshot(IEnumerable<DSEngine.FunctionGroup> functionGroups)
-        {
-            if (null == functionGroups)
-                return;
-
-            var descriptions =
-                functionGroups.Select(functionGroup => functionGroup.Functions.ToList())
-                    .Where(functions => functions.Any())
-                    .SelectMany(
-                        functions => 
-                            (from function in functions
-                             where function.IsVisibleInLibrary
-                             let displayString = function.UserFriendlyName
-                             where !displayString.Contains("GetType")
-                             select string.IsNullOrEmpty(function.Namespace)
-                                ? ""
-                                : function.Namespace + "." + function.Signature + "\n"));
-            
-            var sb = string.Join("\n", descriptions);
-
-            Logger.Log(sb, LogLevel.File);
-        }
-#endif
-
-        private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
-        {
-            if (!typeLoadData.IsDSCompatible || typeLoadData.IsDeprecated || typeLoadData.IsHidden
-                || typeLoadData.IsMetaNode)
-            {
-                return;
-            }
-
-            SearchModel.Add(new NodeModelSearchElement(typeLoadData));
-        }
-
-        private void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
-        {
-            foreach (var funcGroup in functionGroups)
-                AddZeroTouchNodeToSearch(funcGroup);
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup)
-        {
-            foreach (var functionDescriptor in funcGroup.Functions)
-            {
-                AddZeroTouchNodeToSearch(functionDescriptor);
-            }
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor)
-        {
-            if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
-            {
-                SearchModel.Add(new ZeroTouchSearchElement(functionDescriptor));
-            }
-        }
-        
-        public void Dispose()
-        {
-            LibraryServices.Dispose();
-            LibraryServices.LibraryManagementCore.Cleanup();
-
-            if (PreferenceSettings != null)
-            {
-                PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
-            }
-        }
-
         private void InitializeInstrumentationLogger()
         {
             if (IsTestMode == false)
@@ -718,11 +657,6 @@ namespace Dynamo.Models
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);
             CurrentWorkspace = defaultWorkspace;
-
-            //AddHomeWorkspace();
-            //CurrentWorkspace = HomeSpace;
-            //CurrentWorkspace.X = 0;
-            //CurrentWorkspace.Y = 0;
         }
 
         private static void InitializePreferences(IPreferences preferences)
@@ -761,7 +695,7 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region Engine Management
+        #region engine management
 
         /// <summary>
         /// TODO
@@ -939,16 +873,9 @@ namespace Dynamo.Models
 
         #region internal methods
 
-        //TODO(Steve): We shouldn't have to handle post-activation stuff in the model, this stuff can probably go somewhere else.
         internal void PostUIActivation(object parameter)
         {
             Logger.Log("Welcome to Dynamo!");
-        }
-
-        [Obsolete("This is always true", true)]
-        internal bool CanDoPostUIActivation(object parameter)
-        {
-            return true;
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
@@ -1002,9 +929,10 @@ namespace Dynamo.Models
             if (Workspaces.Remove(workspace))
             {
                 workspace.Dispose(); 
-                //TODO(Steve): May not be safe for CustomNodeWorkspaceModels
-                //Technically it's safe for now, since we only hook the Disposed
-                //event for this situation.
+                //TODO(Steve): May not be safe for CustomNodeWorkspaceModels, which still exist inside
+                //             the CustomNodeManager after removal from DynamoModel.
+                //             Technically it's safe for now, since we only hook the Disposed event
+                //             for this situation.
             }
         }
 
@@ -1023,34 +951,6 @@ namespace Dynamo.Models
                 CurrentWorkspace = customNodeWorkspace;
             }
             return false;
-        }
-
-        /// <summary>
-        ///     Adds a workspace to the dynamo model.
-        /// </summary>
-        /// <param name="workspace"></param>
-        private void AddWorkspace(WorkspaceModel workspace)
-        {
-            Action savedHandler = () => OnWorkspaceSaved(workspace);
-            workspace.WorkspaceSaved += savedHandler;
-            
-            workspace.NodeAdded += OnNodeAdded;
-            workspace.NodeDeleted += OnNodeDeleted;
-            workspace.ConnectorAdded += OnConnectorAdded;
-            workspace.ConnectorDeleted += OnConnectorDeleted;
-            workspace.MessageLogged += LogMessage;
-
-            workspace.Disposed += () =>
-            {
-                workspace.WorkspaceSaved -= savedHandler;
-                workspace.NodeAdded -= OnNodeAdded;
-                workspace.NodeDeleted -= OnNodeDeleted;
-                workspace.ConnectorAdded -= OnConnectorAdded;
-                workspace.ConnectorDeleted -= OnConnectorDeleted;
-                workspace.MessageLogged -= LogMessage;
-            };
-
-            Workspaces.Add(workspace);
         }
 
         /// <summary>
@@ -1243,6 +1143,98 @@ namespace Dynamo.Models
         private void LogMessage(ILogMessage obj)
         {
             Logger.Log(obj);
+        }
+
+#if DEBUG_LIBRARY
+        private void DumpLibrarySnapshot(IEnumerable<DSEngine.FunctionGroup> functionGroups)
+        {
+            if (null == functionGroups)
+                return;
+
+            var descriptions =
+                functionGroups.Select(functionGroup => functionGroup.Functions.ToList())
+                    .Where(functions => functions.Any())
+                    .SelectMany(
+                        functions => 
+                            (from function in functions
+                             where function.IsVisibleInLibrary
+                             let displayString = function.UserFriendlyName
+                             where !displayString.Contains("GetType")
+                             select string.IsNullOrEmpty(function.Namespace)
+                                ? ""
+                                : function.Namespace + "." + function.Signature + "\n"));
+            
+            var sb = string.Join("\n", descriptions);
+
+            Logger.Log(sb, LogLevel.File);
+        }
+#endif
+
+        private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
+        {
+            if (!typeLoadData.IsDSCompatible || typeLoadData.IsDeprecated || typeLoadData.IsHidden
+                || typeLoadData.IsMetaNode)
+            {
+                return;
+            }
+
+            SearchModel.Add(new NodeModelSearchElement(typeLoadData));
+        }
+
+        private void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
+        {
+            foreach (var funcGroup in functionGroups)
+                AddZeroTouchNodeToSearch(funcGroup);
+        }
+
+        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup)
+        {
+            foreach (var functionDescriptor in funcGroup.Functions)
+            {
+                AddZeroTouchNodeToSearch(functionDescriptor);
+            }
+        }
+
+        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor)
+        {
+            if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
+            {
+                SearchModel.Add(new ZeroTouchSearchElement(functionDescriptor));
+            }
+        }
+
+        /// <summary>
+        ///     Adds a workspace to the dynamo model.
+        /// </summary>
+        /// <param name="workspace"></param>
+        private void AddWorkspace(WorkspaceModel workspace)
+        {
+            Action savedHandler = () => OnWorkspaceSaved(workspace);
+            workspace.WorkspaceSaved += savedHandler;
+
+            workspace.NodeAdded += OnNodeAdded;
+            workspace.NodeDeleted += OnNodeDeleted;
+            workspace.ConnectorAdded += OnConnectorAdded;
+            workspace.ConnectorDeleted += OnConnectorDeleted;
+            workspace.MessageLogged += LogMessage;
+
+            workspace.Disposed += () =>
+            {
+                workspace.WorkspaceSaved -= savedHandler;
+                workspace.NodeAdded -= OnNodeAdded;
+                workspace.NodeDeleted -= OnNodeDeleted;
+                workspace.ConnectorAdded -= OnConnectorAdded;
+                workspace.ConnectorDeleted -= OnConnectorDeleted;
+                workspace.MessageLogged -= LogMessage;
+            };
+
+            foreach (var node in workspace.Nodes)
+                OnNodeAdded(node);
+
+            foreach (var connector in workspace.Connectors)
+                OnConnectorAdded(connector);
+
+            Workspaces.Add(workspace);
         }
 
         #endregion

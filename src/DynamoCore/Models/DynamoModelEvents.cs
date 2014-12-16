@@ -23,14 +23,10 @@ namespace Dynamo.Models
         {
             // if a dispatcher is attached, invoke it
             if (RequestDispatcherInvoke != null)
-            {
                 RequestDispatcherInvoke(action);
-            }
             else
-            {
                 // otherwise invoke the action
                 action();
-            }
         }
 
         public event ActionHandler RequestDispatcherBeginInvoke;
@@ -38,14 +34,10 @@ namespace Dynamo.Models
         {
             // if a dispatcher is attached, invoke it
             if (RequestDispatcherBeginInvoke != null)
-            {
                 RequestDispatcherBeginInvoke(action);
-            }
             else
-            {
                 // otherwise invoke the action directly
                 action();
-            }  
         }
 
         public event EventHandler RequestLayoutUpdate;
@@ -59,36 +51,28 @@ namespace Dynamo.Models
         public virtual void OnWorkspaceClearing(object sender, EventArgs e)
         {
             if (WorkspaceClearing != null)
-            {
                 WorkspaceClearing(this, e);
-            }
         }
 
         public event EventHandler WorkspaceCleared;
         public virtual void OnWorkspaceCleared(object sender, EventArgs e)
         {
             if (WorkspaceCleared != null)
-            {
                 WorkspaceCleared(this, e);
-            }
         }
 
         public event EventHandler DeletionStarted;
         public virtual void OnDeletionStarted(object sender, EventArgs e)
         {
             if (DeletionStarted != null)
-            {
                 DeletionStarted(this, e);
-            }
         }
 
         public event EventHandler DeletionComplete;
         public virtual void OnDeletionComplete(object sender, EventArgs e)
         {
             if (DeletionComplete != null)
-            {
                 DeletionComplete(this, e);
-            }
         }
 
         /// <summary>
@@ -108,18 +92,14 @@ namespace Dynamo.Models
         internal void OnNodeAdded(NodeModel node)
         {
             if (NodeAdded != null && node != null)
-            {
                 NodeAdded(node);
-            }
         }
 
         public event NodeHandler RequestCancelActiveStateForNode;
         private void OnRequestCancelActiveStateForNode(NodeModel node)
         {
             if (RequestCancelActiveStateForNode != null)
-            {
                 RequestCancelActiveStateForNode(node);
-            }
         }
 
         /// <summary>
@@ -128,7 +108,7 @@ namespace Dynamo.Models
         public event NodeHandler NodeDeleted;
         internal void OnNodeDeleted(NodeModel node)
         {
-            this.OnRequestCancelActiveStateForNode(node);
+            OnRequestCancelActiveStateForNode(node);
 
             if (NodeDeleted != null)
                 NodeDeleted(node);
@@ -141,9 +121,7 @@ namespace Dynamo.Models
         internal void OnConnectorAdded(ConnectorModel connector)
         {
             if (ConnectorAdded != null)
-            {
                 ConnectorAdded(connector);
-            }
         }
 
         /// <summary>
@@ -153,9 +131,7 @@ namespace Dynamo.Models
         internal void OnConnectorDeleted(ConnectorModel connector)
         {
             if (ConnectorDeleted != null)
-            {
                 ConnectorDeleted(connector);
-            }
         }
 
         /// <summary>
@@ -165,9 +141,7 @@ namespace Dynamo.Models
         private void OnWorkspaceHidden(WorkspaceModel workspace)
         {
             if (WorkspaceHidden != null)
-            {
                 WorkspaceHidden(workspace);
-            }
         }
 
         public event EventHandler RequestsRedraw;
@@ -236,7 +210,7 @@ namespace Dynamo.Models
             if (!e.EvaluationSucceeded)
             {
                 Action showFailureMessage = () =>
-                    Dynamo.Nodes.Utilities.DisplayEngineFailureMessage(this, e.Error);
+                    Nodes.Utilities.DisplayEngineFailureMessage(this, e.Error);
 
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
             }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -405,11 +404,27 @@ namespace Dynamo.Models
                 RegisterConnector(connector);
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
         public readonly NodeFactory NodeFactory;
 
+        /// <summary>
+        /// TODO
+        /// </summary>
         public event Action Disposed;
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <filterpriority>2</filterpriority>
         public virtual void Dispose()
         {
+            foreach (var node in Nodes)
+                DisposeNode(node);
+            foreach (var connector in Connectors)
+                OnConnectorDeleted(connector);
+            
             var handler = Disposed;
             if (handler != null) 
                 handler();
@@ -523,7 +538,6 @@ namespace Dynamo.Models
         {
             node.AstUpdated += OnAstUpdated;
             node.ConnectorAdded += OnConnectorAdded;
-            node.Disposed += () => { node.AstUpdated -= OnAstUpdated; };
         }
 
         /// <summary>
@@ -541,11 +555,15 @@ namespace Dynamo.Models
         public void RemoveNode(NodeModel model)
         {
             if (nodes.Remove(model))
-            {
-                model.AstUpdated -= OnAstUpdated;
-                model.Dispose();
-                OnNodeDeleted(model);
-            }
+                DisposeNode(model);
+        }
+
+        private void DisposeNode(NodeModel model)
+        {
+            model.ConnectorAdded -= OnConnectorAdded;
+            model.AstUpdated -= OnAstUpdated;
+            OnNodeDeleted(model);
+            model.Dispose();
         }
 
         public event Action<NodeModel> NodeDeleted;
