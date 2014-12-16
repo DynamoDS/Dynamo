@@ -31,6 +31,11 @@ copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\ProtoGeometry_DynamoCust
 robocopy %cwd%\..\..\extern\LibG_219 %cwd%\temp\bin\LibG_219
 robocopy %cwd%\..\..\extern\LibG_220 %cwd%\temp\bin\LibG_220
 
+REM Localized resource assemblies
+set OPT_Language=en-US
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%OPT_Language% %cwd%\temp\bin\%OPT_Language% *.dll
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\nodes\%OPT_Language% %cwd%\temp\bin\nodes\%OPT_Language% *.dll
+
 robocopy %cwd%\..\..\ %cwd%\Extra README.md
 cd %cwd%\Extra
 del README.txt

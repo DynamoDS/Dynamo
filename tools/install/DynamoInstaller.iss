@@ -55,6 +55,8 @@ Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritere
 Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 
+#include "Localized.iss"
+
 ;Revit 2014 / Vasari Beta 3
 Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForVasariBeta3
 Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForVasariBeta3
