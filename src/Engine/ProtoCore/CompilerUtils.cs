@@ -183,7 +183,7 @@ namespace ProtoCore.Utils
         #endregion
     }
 
-    public static class CompilerUtils
+    public class CompilerUtils
     {
         /// <summary>
         /// Does the first pass of compilation and returns a list of wanrnings in compilation
@@ -305,12 +305,12 @@ namespace ProtoCore.Utils
 
                 core.ResetForPrecompilation();
 
-                // Read Namespace cache in ElementResolver to substitute 
+                // Lookup namespace resolution map in ElementResolver to substitute 
                 // partial classnames with their fully qualified names in ASTs
-                // before passing them for pre-compilation. If partial class is not found in cache, 
-                // update namespace cache in ElementResolver with fully resolved name from compiler.
-                if(elementResolver != null)
-                    elementResolver.ResolveClassNamespace(core.ClassTable, ref codeblock);
+                // before passing them for pre-compilation. If partial class is not found in map, 
+                // update ResolutionMap in ElementResolver with fully resolved name from compiler.
+                if (elementResolver != null)
+                    elementResolver.ReplaceClassNamesWithResolvedNames(core.ClassTable, ref codeblock);
 
                 buildStatus = PreCompile(string.Empty, core, codeblock, out blockId);
 

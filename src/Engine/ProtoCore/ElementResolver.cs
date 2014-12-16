@@ -12,28 +12,28 @@ namespace ProtoCore
     /// </summary>
     public class ElementResolver
     {
-        private Dictionary<string, string> namespaceCache;
+        private Dictionary<string, string> resolutionMap;
 
 
         /// <summary>
-        /// Maintains a table of partial class IdentifierList vs. its fully qualified IdentifierList 
+        /// Maintains a lookup table of partial class identifiers vs. its fully qualified identifier names
         /// </summary>
-        public Dictionary<string, string> NamespaceCache
+        public Dictionary<string, string> ResolutionMap
         {
-            get { return namespaceCache; }
+            get { return resolutionMap; }
         }
 
         #region public constructors and methods
         public ElementResolver() { }
 
-        public ElementResolver(string[] namespaceList)
+        public ElementResolver(string[] namespaceLookupMap)
         {
-            namespaceCache = new Dictionary<string, string>();
-            InitializeNamespaceCache(namespaceList);
+            resolutionMap = new Dictionary<string, string>();
+            InitializeNamespaceResolutionMap(namespaceLookupMap);
         }
 
 
-        public void ResolveClassNamespace(ClassTable classTable, ref CodeBlockNode codeBlockNode)
+        public void ReplaceClassNamesWithResolvedNames(ClassTable classTable, ref CodeBlockNode codeBlockNode)
         {
             var body = codeBlockNode.Body;
             for (int i = 0; i < body.Count; ++i)
@@ -52,21 +52,21 @@ namespace ProtoCore
 
             foreach (var partialName in classIdentifiers)
             {
-                if (namespaceCache == null)
-                    namespaceCache = new Dictionary<string, string>();
+                if (resolutionMap == null)
+                    resolutionMap = new Dictionary<string, string>();
 
                 string resolvedName;
-                if (namespaceCache.TryGetValue(partialName, out resolvedName))
+                if (resolutionMap.TryGetValue(partialName, out resolvedName))
                 {
                     ReplacePartialWithFullNode(ref astNode, partialName, resolvedName);
                 }
                 else
                 {
-                    // If cache does not contain entry for partial name, 
+                    // If namespace resolution map does not contain entry for partial name, 
                     // back up on compiler to resolve the namespace from partial name
                     resolvedName = GetResolvedClassName(classTable, partialName);
                     
-                    namespaceCache.Add(partialName, resolvedName);
+                    resolutionMap.Add(partialName, resolvedName);
                     ReplacePartialWithFullNode(ref astNode, partialName, resolvedName);
                 }
             }
@@ -78,7 +78,7 @@ namespace ProtoCore
         /// <param name="classTable"> class table in Core </param>
         /// <param name="partialName"> partial class name </param>
         /// <returns> fully resolved name as Identifier list </returns>
-        private static string GetResolvedClassName(ClassTable classTable, string partialName)
+        public static string GetResolvedClassName(ClassTable classTable, string partialName)
         {
             throw new NotImplementedException();
         }
@@ -96,7 +96,7 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Find all partial class (Identifier/IdentifierListNode's) by performing a DFS traversal on input AST node
+        /// Find all partial class (Identifier/Identifier lists) by performing a DFS traversal on input AST node
         /// </summary>
         /// <param name="astNode"> input AST node </param>
         /// <returns> list of IdentifierNode/IdentifierListNode of Class identifiers </returns>
@@ -107,7 +107,7 @@ namespace ProtoCore
 
 
         // Given a fully resolved class name, convert it into an Identifier/IdentifierListNode
-        private void InitializeNamespaceCache(string[] namespaceList)
+        private void InitializeNamespaceResolutionMap(string[] namespaceLookupMap)
         {
             throw new NotImplementedException();
         }

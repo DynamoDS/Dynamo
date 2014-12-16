@@ -246,7 +246,7 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(nodeElement as XmlElement);
             code = helper.ReadString("CodeText");
             
-            // TODO: Read namespace cache if available and initialize 
+            // TODO: Lookup namespace resolution map if available and initialize 
             // new instance of ElementResolver
             ProcessCodeDirect();
             shouldFocus = helper.ReadBoolean("ShouldFocus");
