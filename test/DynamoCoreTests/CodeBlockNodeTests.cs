@@ -825,9 +825,10 @@ b = c[w][x][y][z];";
                 "yCoordinates1 = 50;\n" +
                 "zCoordinates1 = 60;\n" +
                 "\n" +
-                "secondLine = Line.ByStartPointEndPoint(" +
-                "Point.ByCoordinatesinates(xCoordinates0, yCoordinates0, zCoordinates0), " +
-                "Point.ByCoordinatesinates(xCoordinates1, yCoordinates1, zCoordinates1));\n" +
+                "secondLine = Line.ByStartPointEndPoint" +
+                "(Point.ByCoordinatesinates(xCoordinates0, yCoordinates0, " +
+                "zCoordinates0), Point.ByCoordinatesinates(xCoordinates1, " + 
+                "yCoordinates1, zCoordinates1));\n" +
                 "\n" +
                 "\n" +
                 "sp = firstLine.StartPoint;\n" +
@@ -838,21 +839,110 @@ b = c[w][x][y][z];";
             Assert.IsNotNull(maps);
             Assert.AreEqual(17, maps.Count()); // Note the empty last line.
             Assert.AreEqual(0, maps.ElementAt(0));
-            Assert.AreEqual(2, maps.ElementAt(1));
-            Assert.AreEqual(3, maps.ElementAt(2));
-            Assert.AreEqual(4, maps.ElementAt(3));
+            Assert.AreEqual(3, maps.ElementAt(1));
+            Assert.AreEqual(4, maps.ElementAt(2));
+            Assert.AreEqual(5, maps.ElementAt(3));
+            Assert.AreEqual(6, maps.ElementAt(4));
+            Assert.AreEqual(7, maps.ElementAt(5));
+            Assert.AreEqual(8, maps.ElementAt(6));
+            Assert.AreEqual(9, maps.ElementAt(7));
+            Assert.AreEqual(10, maps.ElementAt(8));
+            Assert.AreEqual(11, maps.ElementAt(9));
+            Assert.AreEqual(12, maps.ElementAt(10));
+            Assert.AreEqual(13, maps.ElementAt(11));
+            Assert.AreEqual(17, maps.ElementAt(12));
+            Assert.AreEqual(18, maps.ElementAt(13));
+            Assert.AreEqual(19, maps.ElementAt(14));
+            Assert.AreEqual(20, maps.ElementAt(15));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMapLogicalToVisualLineIndices05()
+        {
+            var code = @"//import(""ProtoGeometry.dll"");" + "\n" +
+                        "WCS = CoordinateSystem.Identity();\n" +
+                        "\n" +
+                        "//======Establish the context for creating" +
+                        "CoordinateSystem========\n" +
+                        "radius = 1;\n" +
+                        "theta  = 0..180..60;\n" +
+                        "// this can be a singleton as well;\n" +
+                        "height = 1;\n" +
+                        "//" +
+                        "===========================================================" +
+                        "=====\n" +
+                        "\n" +
+                        "//Create CoordinateSystem using constructor: " +
+                        "ByCylindricalCoordinates\n" +
+                        "myCS = CoordinateSystem.ByCylindricalCoordinates(WCS, " +
+                        "radius, theta, height);\n" +
+                        "\n" +
+                        "//Guaranteed Properties for Coordinate System.\n" +
+                        "myCSContextCoordinateSystem = myCS.ContextCoordinateSystem;\n" +
+                        "myCSOrigin                  = myCS.Origin;\n" +
+                        "myCSX                       = myCS.X;\n" +
+                        "myCSy                       = myCS.Y;\n" +
+                        "myCSZ                       = myCS.Z;\n" +
+                        "myCSIsNormalized            = myCS.IsNormalized;\n" +
+                        "myCSIsSheared               = myCS.IsSheared;\n" +
+                        "myCSXAxis                   = myCS.XAxis;\n" +
+                        "myCSYAxis                   = myCS.YAxis;\n" +
+                        "myCSZAxis                   = myCS.ZAxis;\n" +
+                        "myCSXTranslation            = myCS.XTranslation;\n" +
+                        "myCSYTranslation            = myCS.YTranslation;\n" +
+                        "myCSZTranslation            = myCS.ZTranslation;\n" +
+                        "myCSLocalXAxis              = myCS.LocalXAxis;\n" +
+                        "myCSLocalYAxis              = myCS.LocalYAxis;\n" +
+                        "myCSLocalZAxis              = myCS.LocalZAxis;\n" +
+                        "\n" +
+                        "//Guaranteed Properties for Coordinate System.\n" +
+                        "//based on Constructor: ByCylindricalCoordinates\n" +
+                        "myCSRadius = myCS.Radius;\n" +
+                        "myCSTheta  = myCS.Theta;\n" +
+                        "myCSHeight = myCS.Height;\n";
+
+            var maps = CodeBlockUtils.MapLogicalToVisualLineIndices(code);
+
+            Assert.IsNotNull(maps);
+            Assert.AreEqual(37, maps.Count()); // Note the empty last line.
+            Assert.AreEqual(0, maps.ElementAt(0));
+            Assert.AreEqual(1, maps.ElementAt(1));
+            Assert.AreEqual(2, maps.ElementAt(2));
+            Assert.AreEqual(3, maps.ElementAt(3));
             Assert.AreEqual(5, maps.ElementAt(4));
             Assert.AreEqual(6, maps.ElementAt(5));
             Assert.AreEqual(7, maps.ElementAt(6));
             Assert.AreEqual(8, maps.ElementAt(7));
             Assert.AreEqual(9, maps.ElementAt(8));
-            Assert.AreEqual(10, maps.ElementAt(9));
-            Assert.AreEqual(11, maps.ElementAt(10));
-            Assert.AreEqual(12, maps.ElementAt(11));
-            Assert.AreEqual(15, maps.ElementAt(12));
-            Assert.AreEqual(16, maps.ElementAt(13));
-            Assert.AreEqual(17, maps.ElementAt(14));
-            Assert.AreEqual(18, maps.ElementAt(15));
+            Assert.AreEqual(12, maps.ElementAt(9));
+            Assert.AreEqual(13, maps.ElementAt(10));
+            Assert.AreEqual(15, maps.ElementAt(11));
+            Assert.AreEqual(17, maps.ElementAt(12));
+            Assert.AreEqual(18, maps.ElementAt(13));
+            Assert.AreEqual(19, maps.ElementAt(14));
+            Assert.AreEqual(20, maps.ElementAt(15));
+            Assert.AreEqual(21, maps.ElementAt(16));
+            Assert.AreEqual(22, maps.ElementAt(17));
+            Assert.AreEqual(23, maps.ElementAt(18));
+            Assert.AreEqual(24, maps.ElementAt(19));
+            Assert.AreEqual(25, maps.ElementAt(20));
+            Assert.AreEqual(26, maps.ElementAt(21));
+            Assert.AreEqual(27, maps.ElementAt(22));
+            Assert.AreEqual(28, maps.ElementAt(23));
+            Assert.AreEqual(29, maps.ElementAt(24));
+            Assert.AreEqual(30, maps.ElementAt(25));
+            Assert.AreEqual(31, maps.ElementAt(26));
+            Assert.AreEqual(32, maps.ElementAt(27));
+            Assert.AreEqual(33, maps.ElementAt(28));
+            Assert.AreEqual(34, maps.ElementAt(29));
+            Assert.AreEqual(35, maps.ElementAt(30));
+            Assert.AreEqual(36, maps.ElementAt(31));
+            Assert.AreEqual(37, maps.ElementAt(32));
+            Assert.AreEqual(38, maps.ElementAt(33));
+            Assert.AreEqual(39, maps.ElementAt(34));
+            Assert.AreEqual(40, maps.ElementAt(35));
+            Assert.AreEqual(41, maps.ElementAt(36));
         }
 
         #endregion
