@@ -29,7 +29,7 @@ namespace Dynamo.UI
         public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
         public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
 
-        public static string UsageReportingErrorMessage = "Uh oh...\n\rWe're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.\n\rYou can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.\n\rSorry about that.";
+        public static string UsageReportingErrorMessage = Properties.Resources.UsageReportingErrorMessage;
         #endregion
 
         #region Canvas Configurations

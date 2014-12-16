@@ -112,7 +112,7 @@ namespace Dynamo.DSEngine
 
 #if DEBUG
                     Validity.Assert(inputNode != null,
-                        "Shouldn't have null nodes in the AST list");
+                        Properties.Resources.NullNodeShouldNotBeInASTList);
 #endif
                     inputAstNodes.Add(inputNode);
                 }
@@ -134,8 +134,8 @@ namespace Dynamo.DSEngine
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
-            Validity.Assert(inputAstNodes.All(n => n != null), 
-                "Shouldn't have null nodes in the AST list");
+            Validity.Assert(inputAstNodes.All(n => n != null),
+                Properties.Resources.NullNodeShouldNotBeInASTList);
 #endif
 
             var scopedNode = node as ScopedNodeModel;

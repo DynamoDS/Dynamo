@@ -206,7 +206,7 @@ namespace Dynamo.Models
 
         public InvalidPortException()
         {
-            message = "Connection port is not valid.";
+            message = Properties.Resources.InvalidPortException;
         }
     }
 }

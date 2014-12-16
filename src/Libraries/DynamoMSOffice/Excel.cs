@@ -4,7 +4,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("New Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("NewExelWorkbookDescription",typeof(Properties.Resources))]
+    [NodeDescription("NewExelWorkbookDescription",typeof(DynamoMSOffice.Properties.Resources))]
     public class NewExcelWorkbook : NodeModel
     {
         public NewExcelWorkbook(WorkspaceModel workspace)
@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Open Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("OpenExelWorkbookDescription",typeof(Properties.Resources))]
+    [NodeDescription("OpenExelWorkbookDescription",typeof(DynamoMSOffice.Properties.Resources))]
     public class ReadExcelFile : FileReaderBase
     {
 
@@ -44,7 +44,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Get Worksheets From Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("GetWorksheetsFromExcelWorkbookDescription", typeof(Properties.Resources))]
+    [NodeDescription("GetWorksheetsFromExcelWorkbookDescription", typeof(DynamoMSOffice.Properties.Resources))]
     public class GetWorksheetsFromExcelWorkbook : NodeModel
     {
 
@@ -66,7 +66,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Get Excel Worksheet By Name")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("GetExcelWorksheetByName", typeof(Properties.Resources))]
+    [NodeDescription("GetExcelWorksheetByName", typeof(DynamoMSOffice.Properties.Resources))]
     public class GetExcelWorksheetByName : NodeModel
     {
 
@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Get Data From Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("GetDataFromExcelWorksheetDescription", typeof(Properties.Resources))]
+    [NodeDescription("GetDataFromExcelWorksheetDescription", typeof(DynamoMSOffice.Properties.Resources))]
     public class GetDataFromExcelWorksheet : NodeModel
     {
 
@@ -111,7 +111,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Write Data To Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("WriteDataToExcelWorksheetDescription", typeof(Properties.Resources))]
+    [NodeDescription("WriteDataToExcelWorksheetDescription", typeof(DynamoMSOffice.Properties.Resources))]
     public class WriteDataToExcelWorksheet : NodeModel
     {
 
@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Add Excel Worksheet To Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("AddExcelWorksheetToWorkbookDescription", typeof(Properties.Resources))]
+    [NodeDescription("AddExcelWorksheetToWorkbookDescription", typeof(DynamoMSOffice.Properties.Resources))]
     public class AddExcelWorksheetToWorkbook : NodeModel
     {
 
@@ -163,7 +163,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Save Excel Workbook As")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("SaveExcelWorkbookAsDescription", typeof(Properties.Resources))]
+    [NodeDescription("SaveExcelWorkbookAsDescription", typeof(DynamoMSOffice.Properties.Resources))]
     public class SaveAsExcelWorkbook : NodeModel
     {
         public SaveAsExcelWorkbook(WorkspaceModel workspace)

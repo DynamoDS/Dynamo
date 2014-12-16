@@ -165,7 +165,7 @@ namespace Dynamo.Models
                     return command;
                 }
 
-                string message = string.Format("Unknown command: {0}", element.Name);
+                string message = string.Format(Properties.Resources.UnknownCommand, element.Name);
                 throw new ArgumentException(message);
             }
 
@@ -321,7 +321,7 @@ namespace Dynamo.Models
 
                     if (File.Exists(xmlFilePath) == false) // When all else fail.
                     {
-                        var message = "Target file cannot be found!";
+                        var message = Properties.Resources.TargetFileNotFound;
                         throw new FileNotFoundException(message, xmlFileName);
                     }
                 }
