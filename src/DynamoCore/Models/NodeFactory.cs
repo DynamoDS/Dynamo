@@ -36,8 +36,8 @@ namespace Dynamo.Models
         private readonly Dictionary<Type, INodeLoader<NodeModel>> nodeSources =
             new Dictionary<Type, INodeLoader<NodeModel>>();
 
-        private readonly Dictionary<string, string> alsoKnownAsMappings =
-            new Dictionary<string, string>();
+        private readonly Dictionary<string, Type> alsoKnownAsMappings =
+            new Dictionary<string, Type>();
 
         /// <summary>
         /// 
@@ -56,17 +56,18 @@ namespace Dynamo.Models
         /// <param name="nodeType"></param>
         /// <param name="loader"></param>
         /// <param name="alsoKnownAs"></param>
-        public void AddLoader<T>(Type nodeType, INodeLoader<T> loader, IEnumerable<string> alsoKnownAs = null) where T : NodeModel
+        public void AddLoader<T>(Type nodeType, INodeLoader<T> loader, IEnumerable<string> alsoKnownAs=null) where T : NodeModel
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
 
-            nodeSources[nodeType] = loader; 
+            nodeSources[nodeType] = loader;
+            alsoKnownAsMappings[nodeType.FullName] = nodeType;
             
             if (alsoKnownAs != null)
             {
                 foreach (var name in alsoKnownAs)
-                    alsoKnownAsMappings[name] = nodeType.FullName;
+                    alsoKnownAsMappings[name] = nodeType;
             }
         }
 
@@ -99,6 +100,19 @@ namespace Dynamo.Models
             {
                 Log(e);
             }
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="aka"></param>
+        /// <param name="realType"></param>
+        /// <param name="overwrite"></param>
+        public void AddAlsoKnownAs(string aka, Type realType, bool overwrite=false)
+        {
+            if (!overwrite && alsoKnownAsMappings.ContainsKey(aka))
+                throw new InvalidOperationException(string.Format("There already exists an AlsoKnownAs mapping for {0}.", aka));
+            alsoKnownAsMappings[aka] = realType;
         }
 
         private class NodeModelTypeLoader : INodeLoader<NodeModel>
@@ -149,13 +163,8 @@ namespace Dynamo.Models
             Type type;
             if (!ResolveType(name, out type))
             {
-                string realName;
-                if (!alsoKnownAsMappings.TryGetValue(name, out realName)
-                    || !ResolveType(realName, out type))
-                {
-                    node = null;
-                    return false;
-                }
+                node = null;
+                return false;
             }
 
             INodeLoader<NodeModel> data;
@@ -180,6 +189,9 @@ namespace Dynamo.Models
         {
             if (fullyQualifiedName == null)
                 throw new ArgumentNullException(@"fullyQualifiedName");
+
+            if (alsoKnownAsMappings.TryGetValue(fullyQualifiedName, out type))
+                return true;
 
             type = Type.GetType(fullyQualifiedName);
             return type != null;

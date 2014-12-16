@@ -119,7 +119,7 @@ namespace Dynamo.Utilities
                 def = null;
             }
 
-            var node = new Function(def, info.Description, info.Category);
+            var node = new Function(def, info.Name, info.Description, info.Category);
             if (loadedWorkspaceModels.TryGetValue(id, out workspace))
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
             else
@@ -198,6 +198,12 @@ namespace Dynamo.Utilities
                 loadedCustomNodes[id] = def;
             else
                 loadedCustomNodes.Add(id, def);
+        }
+
+        private void SetPreloadFunctionDefinition(Guid id)
+        {
+            if (!loadedCustomNodes.Contains(id)) 
+                loadedCustomNodes.Add(id, null);
         }
 
         /// <summary>
@@ -471,7 +477,7 @@ namespace Dynamo.Utilities
         {
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
-            SetFunctionDefinition(new CustomNodeDefinition(functionId));
+            SetPreloadFunctionDefinition(functionId);
 
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
 

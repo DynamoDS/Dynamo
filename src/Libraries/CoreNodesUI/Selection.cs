@@ -208,6 +208,7 @@ namespace Dynamo.Nodes
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.SerializeCore(nodeElement, context);
             if (!SelectionResults.Any()) return;
 
             var uuidsSelection =
@@ -223,6 +224,7 @@ namespace Dynamo.Nodes
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             var savedUuids =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)

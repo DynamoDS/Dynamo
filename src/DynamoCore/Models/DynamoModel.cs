@@ -23,9 +23,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using Dynamo.Annotations;
+
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
+using Type = System.Type;
 using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -216,6 +217,11 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         public readonly NodeFactory NodeFactory;
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public readonly MigrationManager MigrationManager;
 
         /// <summary>
         /// TODO
@@ -462,16 +468,18 @@ namespace Dynamo.Models
             string context = configuration.Context;
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
-            bool isTestMode = configuration.StartInTestMode;
+            bool testMode = configuration.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
 
             Context = context;
-            IsTestMode = isTestMode;
+            IsTestMode = testMode;
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
 
-            MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
+            MigrationManager = new MigrationManager();
+            MigrationManager.MessageLogged += LogMessage;
+            MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
             var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
             Scheduler = new DynamoScheduler(thread, IsTestMode);
@@ -586,12 +594,20 @@ namespace Dynamo.Models
         {
             InitializeBuiltinNodeLibrary();
 
+            List<TypeLoadData> modelTypes;
+            List<TypeLoadData> migrationTypes;
+            Loader.LoadNodeModelsAndMigrations(Context, out modelTypes, out migrationTypes);
+
             // Load NodeModels
-            foreach (var type in Loader.LoadNodeModels(Context))
+            foreach (var type in modelTypes)
             {
                 NodeFactory.AddLoader(type.Type, type.AlsoKnownAs);
                 AddNodeTypeToSearch(type);
             }
+
+            // Load migrations
+            foreach (var type in migrationTypes)
+                MigrationManager.AddMigrationType(type);
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
@@ -764,8 +780,6 @@ namespace Dynamo.Models
         /// condition by using a thread join inside the vm executive.
         /// TODO(Luke): Push this into a resync call with the engine controller
         /// </summary>
-        /// <param name="customNodeDefinitions"></param>
-        /// <param name="verboseLogging"></param>
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
@@ -799,8 +813,6 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
-        /// <param name="customNodeDefinitions"></param>
-        /// <param name="verboseLogging"></param>
         public void ForceRun()
         {
             Logger.Log("Beginning engine reset");
@@ -864,7 +876,7 @@ namespace Dynamo.Models
                 currentVersion,
                 workspaceInfo.FileName,
                 IsTestMode,
-                Logger, NodeFactory);
+                NodeFactory);
 
             if (decision == MigrationManager.Decision.Abort)
             {
@@ -967,7 +979,7 @@ namespace Dynamo.Models
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(directory, fileName);
 
-            this.SearchModel.DumpLibraryToXml(fullFileName);
+            SearchModel.DumpLibraryToXml(fullFileName);
 
             Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
         }

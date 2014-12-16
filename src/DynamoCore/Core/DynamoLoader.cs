@@ -66,7 +66,9 @@ namespace Dynamo.Utilities
         /// the controller's dictionaries.
         /// </summary>
         /// <param name="context"></param>
-        public List<TypeLoadData> LoadNodeModels(string context)
+        /// <param name="modelTypes"></param>
+        /// <param name="migrationTypes"></param>
+        public void LoadNodeModelsAndMigrations(string context, out List<TypeLoadData> modelTypes, out List<TypeLoadData> migrationTypes)
         {
             var loadedAssembliesByPath = new Dictionary<string, Assembly>();
             var loadedAssembliesByName = new Dictionary<string, Assembly>();
@@ -104,6 +106,7 @@ namespace Dynamo.Utilities
             AppDomain.CurrentDomain.AssemblyResolve += resolver;
 
             var result = new List<TypeLoadData>();
+            var result2 = new List<TypeLoadData>();
 
             foreach (var assemblyPath in allDynamoAssemblyPaths)
             {
@@ -129,7 +132,7 @@ namespace Dynamo.Utilities
                         loadedAssembliesByPath[assemblyPath] = assembly;
                     }
 
-                    result.AddRange(LoadNodesFromAssembly(assembly, context));
+                    LoadNodesFromAssembly(assembly, context, result, result2);
                     loadedAssemblies.Add(assembly);
                     OnAssemblyLoaded(assembly);
                 }
@@ -145,7 +148,8 @@ namespace Dynamo.Utilities
 
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
-            return result;
+            modelTypes = result;
+            migrationTypes = result2;
         }
 
         /// <summary>
@@ -162,6 +166,14 @@ namespace Dynamo.Utilities
                     && t.GetConstructor(Type.EmptyTypes) != null;
         }
 
+        public static bool IsMigration(Type t)
+        {
+            return
+                t.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .SelectMany(method => method.GetCustomAttributes<NodeMigrationAttribute>(false))
+                    .Any();
+        }
+
         internal bool ContainsNodeModelSubType(Assembly assem)
         {
             return assem.GetTypes().Any(IsNodeSubType);
@@ -173,7 +185,9 @@ namespace Dynamo.Utilities
         ///     to the console.
         /// </summary>
         /// <Returns>The list of node types loaded from this assembly</Returns>
-        public IEnumerable<TypeLoadData> LoadNodesFromAssembly(Assembly assembly, string context)
+        public void LoadNodesFromAssembly(
+            Assembly assembly, string context, List<TypeLoadData> nodeModels,
+            List<TypeLoadData> migrationTypes)
         {
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
@@ -202,36 +216,34 @@ namespace Dynamo.Utilities
 
             foreach (var t in (loadedTypes ?? Enumerable.Empty<Type>()))
             {
-                TypeLoadData data;
                 try
                 {
                     //only load types that are in the right namespace, are not abstract
                     //and have the elementname attribute
-                    if (!IsNodeSubType(t))
-                        continue;
-
-                    //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
-                    //if available, to discern whether we should load this type
-                    if (!context.Equals(Context.NONE)
-                        && t.GetCustomAttributes<DoNotLoadOnPlatformsAttribute>(false)
-                            .SelectMany(attr => attr.Values)
-                            .Any(e => e.Contains(context)))
+                    if (IsNodeSubType(t))
                     {
-                        continue;
+                        //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
+                        //if available, to discern whether we should load this type
+                        if (context.Equals(Context.NONE)
+                            || !t.GetCustomAttributes<DoNotLoadOnPlatformsAttribute>(false)
+                                .SelectMany(attr => attr.Values)
+                                .Any(e => e.Contains(context)))
+                        {
+                            nodeModels.Add(new TypeLoadData(t));
+                        }
                     }
 
-                    data = new TypeLoadData(t);
+                    if (IsMigration(t))
+                    {
+                        migrationTypes.Add(new TypeLoadData(t));
+                    }
                 }
                 catch (Exception e)
                 {
                     Log("Failed to load type from " + assembly.FullName);
                     Log("The type was " + t.FullName);
                     Log(e);
-                    data = null;
                 }
-
-                if (data != null)
-                    yield return data;
             }
         }
 

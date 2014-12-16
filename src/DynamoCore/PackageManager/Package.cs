@@ -264,13 +264,9 @@ namespace Dynamo.PackageManager
             foreach (var assem in assemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly))
             {
                 if (loader.ContainsNodeModelSubType(assem))
-                {
                     nodeModelAssemblies.Add(assem);
-                }
                 else
-                {
                     zeroTouchAssemblies.Add(assem);
-                }
             }
 
             // load the zero touch assemblies
@@ -278,10 +274,16 @@ namespace Dynamo.PackageManager
                 libraryServices.ImportLibrary(zeroTouchAssem.Location);
 
             // load the node model assemblies
-            foreach (var node in nodeModelAssemblies.SelectMany(assem => loader.LoadNodesFromAssembly(assem, context)))
-            {
+            var nodes = nodeModelAssemblies.SelectMany(
+                assem =>
+                {
+                    var assemblyNodes = new List<TypeLoadData>();
+                    loader.LoadNodesFromAssembly(assem, context, assemblyNodes, new List<TypeLoadData>());
+                    return assemblyNodes;
+                });
+
+            foreach (var node in nodes)
                 LoadedTypes.Add(node.Type);
-            }
         }
 
         /// <summary>

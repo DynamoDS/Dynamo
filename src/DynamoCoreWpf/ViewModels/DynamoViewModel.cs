@@ -885,7 +885,16 @@ namespace Dynamo.ViewModels
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
-                        workspaces.Add(new WorkspaceViewModel(item as WorkspaceModel, this));
+                    {
+                        if (item is HomeWorkspaceModel)
+                        {
+                            Model.RemoveWorkspace(HomeSpace);
+                            Model.ResetEngine();
+                            workspaces.Insert(0, new WorkspaceViewModel(item as WorkspaceModel, this));
+                        }
+                        else
+                            workspaces.Add(new WorkspaceViewModel(item as WorkspaceModel, this));
+                    }
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)

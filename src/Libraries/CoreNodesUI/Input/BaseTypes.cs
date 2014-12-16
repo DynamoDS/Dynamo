@@ -56,6 +56,7 @@ namespace Dynamo.Nodes
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.SerializeCore(nodeElement, context);
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(string).FullName);
             outEl.SetAttribute("value", SerializeValue().ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
@@ -63,6 +64,7 @@ namespace Dynamo.Nodes
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (subNode.Name.Equals(typeof(string).FullName))

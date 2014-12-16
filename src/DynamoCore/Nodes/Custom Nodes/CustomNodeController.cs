@@ -125,15 +125,14 @@ namespace Dynamo.Nodes
         /// </summary>
         public bool IsInSyncWithNode(NodeModel model)
         {
-            return Definition != null
-                && ((Definition.DisplayParameters == null
-                    || (Definition.DisplayParameters.Count() == model.InPortData.Count()
-                        && Definition.DisplayParameters.SequenceEqual(
-                            model.InPortData.Select(p => p.NickName))))
-                    && (Definition.ReturnKeys == null
-                        || Definition.ReturnKeys.Count() == model.OutPortData.Count()
-                            && Definition.ReturnKeys.SequenceEqual(
-                                model.OutPortData.Select(p => p.NickName))));
+            return Definition == null || (Definition.DisplayParameters == null
+                || (Definition.DisplayParameters.Count() == model.InPortData.Count()
+                    && Definition.DisplayParameters.SequenceEqual(
+                        model.InPortData.Select(p => p.NickName))))
+                && (Definition.ReturnKeys == null
+                    || Definition.ReturnKeys.Count() == model.OutPortData.Count()
+                        && Definition.ReturnKeys.SequenceEqual(
+                            model.OutPortData.Select(p => p.NickName)));
         }
     }
 }

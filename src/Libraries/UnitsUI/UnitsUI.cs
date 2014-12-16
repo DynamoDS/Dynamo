@@ -137,6 +137,7 @@ namespace UnitsUI
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.SerializeCore(nodeElement, context);
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
@@ -144,6 +145,7 @@ namespace UnitsUI
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 // this node now stores a double, having previously stored a measure type

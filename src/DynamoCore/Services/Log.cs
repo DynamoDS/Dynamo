@@ -363,7 +363,6 @@ namespace net.riversofdata.dhlogger
                     
                 }
             }
-
             catch (Exception e)
             {
                 LastResortFailure(e);

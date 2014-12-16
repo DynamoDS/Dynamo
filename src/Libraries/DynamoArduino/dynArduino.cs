@@ -98,6 +98,7 @@ namespace Dynamo.Nodes
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.SerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Port.PortName);
@@ -106,6 +107,7 @@ namespace Dynamo.Nodes
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             Port.PortName =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name == typeof(double).FullName && subNode.Attributes != null)

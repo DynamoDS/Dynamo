@@ -64,7 +64,6 @@ namespace Dynamo.Models
             if (EngineController != null)
             {
                 EngineController.MessageLogged -= Log;
-                EngineController.Dispose();
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
             }
             runExpressionTimer.Stop();
@@ -206,10 +205,15 @@ namespace Dynamo.Models
         public void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
         {
             if (EngineController != null)
+            {
                 EngineController.MessageLogged -= Log;
+                EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+            }
 
             EngineController = controller;
             controller.MessageLogged += Log;
+            controller.LibraryServices.LibraryLoaded += LibraryLoaded;
+            
             if (markNodesAsDirty)
             {
                 foreach (var node in Nodes)

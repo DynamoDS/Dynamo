@@ -4,7 +4,6 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -21,11 +20,12 @@ namespace Dynamo.Nodes
     public class Function 
         : FunctionCallBase<CustomNodeController<CustomNodeDefinition>, CustomNodeDefinition>
     {
-        public Function(CustomNodeDefinition def, string description, string category)
+        public Function(
+            CustomNodeDefinition def, string nickName, string description, string category)
             : base(new CustomNodeController<CustomNodeDefinition>(def))
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            NickName = def.DisplayName;
+            NickName = nickName;
             Description = description;
             Category = category;
         }
@@ -88,64 +88,6 @@ namespace Dynamo.Nodes
             if (descNode != null && descNode.Attributes != null)
                 Description = descNode.Attributes["value"].Value;
 
-            foreach (XmlNode subNode in childNodes)
-            {
-                if (subNode.Name.Equals("Outputs"))
-                {
-                    var data =
-                        subNode.ChildNodes.Cast<XmlNode>()
-                               .Select(
-                                   (outputNode, i) =>
-                                       new
-                                       {
-                                           data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1)),
-                                           idx = i
-                                       });
-
-                    foreach (var dataAndIdx in data)
-                    {
-                        if (OutPortData.Count > dataAndIdx.idx)
-                            OutPortData[dataAndIdx.idx] = dataAndIdx.data;
-                        else
-                            OutPortData.Add(dataAndIdx.data);
-                    }
-                }
-                else if (subNode.Name.Equals("Inputs"))
-                {
-                    var data =
-                        subNode.ChildNodes.Cast<XmlNode>()
-                               .Select(
-                                   (inputNode, i) =>
-                                       new
-                                       {
-                                           data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1)),
-                                           idx = i
-                                       });
-
-                    foreach (var dataAndIdx in data)
-                    {
-                        if (InPortData.Count > dataAndIdx.idx)
-                            InPortData[dataAndIdx.idx] = dataAndIdx.data;
-                        else
-                            InPortData.Add(dataAndIdx.data);
-                    }
-                }
-
-                #region Legacy output support
-
-                else if (subNode.Name.Equals("Output"))
-                {
-                    var data = new PortData(subNode.Attributes[0].Value, "function output");
-
-                    if (OutPortData.Any())
-                        OutPortData[0] = data;
-                    else
-                        OutPortData.Add(data);
-                }
-
-                #endregion
-            }
-
             if (!Controller.IsInSyncWithNode(this))
             {
                 Controller.SyncNodeWithDefinition(this);
@@ -153,6 +95,64 @@ namespace Dynamo.Nodes
             }
             else
             {
+                foreach (XmlNode subNode in childNodes)
+                {
+                    if (subNode.Name.Equals("Outputs"))
+                    {
+                        var data =
+                            subNode.ChildNodes.Cast<XmlNode>()
+                                   .Select(
+                                       (outputNode, i) =>
+                                           new
+                                           {
+                                               data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1)),
+                                               idx = i
+                                           });
+
+                        foreach (var dataAndIdx in data)
+                        {
+                            if (OutPortData.Count > dataAndIdx.idx)
+                                OutPortData[dataAndIdx.idx] = dataAndIdx.data;
+                            else
+                                OutPortData.Add(dataAndIdx.data);
+                        }
+                    }
+                    else if (subNode.Name.Equals("Inputs"))
+                    {
+                        var data =
+                            subNode.ChildNodes.Cast<XmlNode>()
+                                   .Select(
+                                       (inputNode, i) =>
+                                           new
+                                           {
+                                               data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1)),
+                                               idx = i
+                                           });
+
+                        foreach (var dataAndIdx in data)
+                        {
+                            if (InPortData.Count > dataAndIdx.idx)
+                                InPortData[dataAndIdx.idx] = dataAndIdx.data;
+                            else
+                                InPortData.Add(dataAndIdx.data);
+                        }
+                    }
+
+                    #region Legacy output support
+
+                    else if (subNode.Name.Equals("Output"))
+                    {
+                        var data = new PortData(subNode.Attributes[0].Value, "function output");
+
+                        if (OutPortData.Any())
+                            OutPortData[0] = data;
+                        else
+                            OutPortData.Add(data);
+                    }
+
+                    #endregion
+                }
+
                 RegisterAllPorts();
             }
 
@@ -160,7 +160,6 @@ namespace Dynamo.Nodes
             //by default in the constructor, but for any workflow saved
             //before this was the case, we need to ensure it here.
             ArgumentLacing = LacingStrategy.Disabled;
-
         }
 
         #endregion
@@ -212,6 +211,7 @@ namespace Dynamo.Nodes
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.SerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
             outEl.SetAttribute("value", InputSymbol);
@@ -220,6 +220,7 @@ namespace Dynamo.Nodes
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             foreach (var subNode in
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name == "Symbol"))
@@ -293,6 +294,7 @@ namespace Dynamo.Nodes
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.SerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
             outEl.SetAttribute("value", Symbol);
@@ -301,6 +303,7 @@ namespace Dynamo.Nodes
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             foreach (var subNode in 
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name == "Symbol"))

@@ -35,7 +35,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class MigrationManager
+    public class MigrationManager : LogSourceBase
     {
         /// <summary>
         /// Enumerator to determine if migration should proceed or abort. This 
@@ -63,20 +63,10 @@ namespace Dynamo.Models
             /// </summary>
             Retain
         }
+        
+        private const int NEW_NODE_OFFSET_X = -150;
 
-        private static MigrationManager _instance;
-
-        private const int NewNodeOffsetX = -150;
-
-        private const int NewNodeOffsetY = 100;
-
-        /// <summary>
-        /// The singleton instance property.
-        /// </summary>
-        public static MigrationManager Instance
-        {
-            get { return _instance ?? (_instance = new MigrationManager()); }
-        }
+        private const int NEW_NODE_OFFSET_Y = 100;
 
         private MigrationReport migrationReport;
 
@@ -85,12 +75,30 @@ namespace Dynamo.Models
         /// </summary>
         public List<Type> MigrationTargets { get; set; }
 
+        private readonly Dictionary<string, Type> nodeMigrationLookup =
+            new Dictionary<string, Type>(); 
+
         /// <summary>
         /// The private constructor.
         /// </summary>
-        private MigrationManager()
+        public MigrationManager()
         {
             MigrationTargets = new List<Type>();
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="t"></param>
+        public void AddMigrationType(TypeLoadData t)
+        {
+            nodeMigrationLookup[t.Type.FullName] = t.Type;
+            foreach (var aka in t.AlsoKnownAs)
+            {
+                if (nodeMigrationLookup.ContainsKey(aka))
+                    Log(string.Format("Duplicate migration type registered for {0}", aka), WarningLevel.Moderate);
+                nodeMigrationLookup[aka] = t.Type;
+            }
         }
 
         /// <summary>
@@ -101,12 +109,11 @@ namespace Dynamo.Models
         /// <param name="currentVersion"></param>
         /// <param name="xmlPath"></param>
         /// <param name="isTestMode"></param>
-        /// <param name="logger"></param>
         /// <param name="factory"></param>
         /// <returns></returns>
-        public static Decision ProcessWorkspace(
+        public Decision ProcessWorkspace(
             XmlDocument xmlDoc, Version fileVersion, Version currentVersion, string xmlPath,
-            bool isTestMode, ILogger logger, NodeFactory factory)
+            bool isTestMode, NodeFactory factory)
         {
             switch (ShouldMigrateFile(fileVersion, currentVersion, isTestMode))
             {
@@ -121,7 +128,7 @@ namespace Dynamo.Models
                             Path.GetFileName(xmlPath),
                             backupPath);
 
-                        logger.Log(message);
+                        Log(message);
                     }
 
                     //Hardcode the file version to 0.6.0.0. The file whose version is 0.7.0.x
@@ -130,8 +137,8 @@ namespace Dynamo.Models
                     if (fileVersion == new Version(0, 7, 0, 0))
                         fileVersion = new Version(0, 6, 0, 0);
 
-                    Instance.ProcessWorkspaceMigrations(currentVersion, xmlDoc, fileVersion);
-                    Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion, currentVersion, factory);
+                    ProcessWorkspaceMigrations(currentVersion, xmlDoc, fileVersion);
+                    ProcessNodesInWorkspace(xmlDoc, fileVersion, currentVersion, factory);
                     return Decision.Migrate;
                 case Decision.Retain:
                     return Decision.Retain;
@@ -173,7 +180,8 @@ namespace Dynamo.Models
             }
         }
 
-        public void ProcessNodesInWorkspace(XmlDocument xmlDoc, Version workspaceVersion, Version currentVersion, NodeFactory factory)
+        public void ProcessNodesInWorkspace(
+            XmlDocument xmlDoc, Version workspaceVersion, Version currentVersion, NodeFactory nodeFactory)
         {
             if (DynamoModel.EnableMigrationLogging)
             {
@@ -182,26 +190,25 @@ namespace Dynamo.Models
             }
 
             XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
-            if (elNodes == null || (elNodes.Count == 0))
+            if (elNodes.Count == 0)
                 elNodes = xmlDoc.GetElementsByTagName("dynElements");
 
             // A new list to store migrated nodes.
-            List<XmlElement> migratedNodes = new List<XmlElement>();
+            var migratedNodes = new List<XmlElement>();
 
             XmlNode elNodesList = elNodes[0];
-            foreach (XmlNode elNode in elNodesList.ChildNodes)
+            foreach (XmlElement elNode in elNodesList.ChildNodes)
             {
                 string typeName = elNode.Attributes["type"].Value;
                 typeName = Nodes.Utilities.PreprocessTypeName(typeName);
 
                 Type type;
-                if (!factory.ResolveType(typeName, out type))
+                if (!nodeFactory.ResolveType(typeName, out type)
+                    && !nodeMigrationLookup.TryGetValue(typeName, out type))
                 {
                     // If we are not able to resolve the type given its name, 
                     // turn it into a deprecated node so that user is aware.
-                    migratedNodes.Add(CreateMissingNode(
-                        elNode as XmlElement, 1, 1));
-
+                    migratedNodes.Add(CreateMissingNode(elNode, 1, 1));
                     continue; // Error displayed in console, continue on.
                 }
 
@@ -530,10 +537,10 @@ namespace Dynamo.Models
 
             element.SetAttribute("x",
                 (Convert.ToDouble(oldNode.GetAttribute("x"))
-                + NewNodeOffsetX).ToString());
+                + NEW_NODE_OFFSET_X).ToString());
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
-                + nodeIndex * NewNodeOffsetY).ToString());
+                + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
         }
@@ -556,10 +563,10 @@ namespace Dynamo.Models
 
             element.SetAttribute("x",
                 (Convert.ToDouble(oldNode.GetAttribute("x"))
-                + NewNodeOffsetX).ToString());
+                + NEW_NODE_OFFSET_X).ToString());
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
-                + nodeIndex * NewNodeOffsetY).ToString());
+                + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
         }
@@ -582,10 +589,10 @@ namespace Dynamo.Models
 
             element.SetAttribute("x",
                 (Convert.ToDouble(oldNode.GetAttribute("x"))
-                + NewNodeOffsetX).ToString());
+                + NEW_NODE_OFFSET_X).ToString());
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
-                + nodeIndex * NewNodeOffsetY).ToString());
+                + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
         }
@@ -605,10 +612,10 @@ namespace Dynamo.Models
 
             element.SetAttribute("x",
                 (Convert.ToDouble(oldNode.GetAttribute("x"))
-                + NewNodeOffsetX).ToString());
+                + NEW_NODE_OFFSET_X).ToString());
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
-                + nodeIndex * NewNodeOffsetY).ToString());
+                + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
         }
