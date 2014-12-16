@@ -157,15 +157,12 @@ namespace Dynamo.ViewModels
 
         public Typeface RegularTypeface { get; private set; }
 
-        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories
-        {
-            get;
-            private set;
-        }
+        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;
+            private set; }
+
         public ObservableCollection<SearchCategory> SearchRootCategories
         {
-            get;
-            private set;
+            get { return Model.SearchRootCategories; }
         }
 
         public SearchModel Model { get; private set; }
@@ -187,7 +184,6 @@ namespace Dynamo.ViewModels
         {
             SearchResults = new ObservableCollection<SearchElementBaseViewModel>();
             BrowserRootCategories = new ObservableCollection<BrowserRootElementViewModel>();
-            SearchRootCategories = new ObservableCollection<SearchCategory>();
 
             Visible = false;
             searchText = "";
@@ -286,7 +282,7 @@ namespace Dynamo.ViewModels
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
             RaisePropertyChanged("SearchAddonsVisibility");
-            RaisePropertyChanged("Model");
+            RaisePropertyChanged("SearchRootCategories");
 
             // SearchResults doesn't used everywhere.
             // It is populated for making connected tests as successful.
