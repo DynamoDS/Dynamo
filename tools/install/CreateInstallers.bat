@@ -36,8 +36,8 @@ set OPT_Language=en-US
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%OPT_Language% %cwd%\temp\bin\%OPT_Language% *.dll
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\nodes\%OPT_Language% %cwd%\temp\bin\nodes\%OPT_Language% *.dll
 
-robocopy %cwd%\..\..\ %cwd%\Extra README.md
-cd %cwd%\Extra
+robocopy %cwd%\..\..\ %cwd%\Extra\%OPT_Language% README.md
+cd %cwd%\Extra\%OPT_Language%
 del README.txt
 rename README.md README.txt
 
