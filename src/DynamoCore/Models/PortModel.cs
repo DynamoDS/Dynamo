@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 
 using Dynamo.UI;
-using Dynamo.Nodes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -41,7 +41,7 @@ namespace Dynamo.Models
         private bool _usingDefaultValue;
         private bool _defaultValueEnabled;
         private Thickness marginThickness;
-
+        
         #endregion
 
         #region public members
@@ -134,7 +134,7 @@ namespace Dynamo.Models
         /// offsets from the node origin based on the port's index in the 
         /// ports collection.
         /// </summary>
-        public Point Center
+        public Point2D Center
         {
             get
             {
@@ -145,11 +145,11 @@ namespace Dynamo.Models
                 double y = owner.Y + headerHeight + 5 + halfHeight + offset;
 
                 if (portType == PortType.INPUT)
-                    return new Point(owner.X, y);
+                    return new Point2D(owner.X, y);
                 else if (portType == PortType.OUTPUT)
-                    return new Point(owner.X + owner.Width, y);
+                    return new Point2D(owner.X + owner.Width, y);
 
-                return new Point();
+                return new Point2D();
             }
         }
 
@@ -192,6 +192,8 @@ namespace Dynamo.Models
             }
         }
 
+        public SnapExtensionEdges extensionEdges { get; set; }        
+    
         #endregion
 
         public PortModel(PortType portType, NodeModel owner, PortData data)
@@ -203,7 +205,7 @@ namespace Dynamo.Models
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
-
+           
             if (data.Height == 0)
                 this.Height = Configurations.PortHeightInPixels;
             else

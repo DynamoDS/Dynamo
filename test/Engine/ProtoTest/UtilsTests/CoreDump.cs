@@ -8,16 +8,12 @@ namespace ProtoTest.UtilsTests
     using ProtoCore.DSASM.Mirror;
     using ProtoScript.Runners;
     [TestFixture]
-    public class CoreDumpTest
+    class CoreDumpTest : ProtoTestBase
     {
-        private ProtoCore.Core core = null;
         private ProtoScriptTestRunner coreRunner = null;
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            base.Setup();
             coreRunner = new ProtoScript.Runners.ProtoScriptTestRunner();
         }
         [Test]

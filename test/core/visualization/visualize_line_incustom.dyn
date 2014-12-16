@@ -1,0 +1,14 @@
+<Workspace Version="0.7.5.3301" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="52b1be36-046c-4cce-aabe-1fa3c3ff0754" nickname="Line.ByStartPointDirectionLength" x="403" y="122.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,double">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f6abaad7-7b77-49ed-a8e3-e32e1c5fc1b7" nickname="Code Block" x="46" y="135" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(0, 0, 0);&#xA;Vector.ZAxis();&#xA;10;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f6abaad7-7b77-49ed-a8e3-e32e1c5fc1b7" start_index="0" end="52b1be36-046c-4cce-aabe-1fa3c3ff0754" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6abaad7-7b77-49ed-a8e3-e32e1c5fc1b7" start_index="1" end="52b1be36-046c-4cce-aabe-1fa3c3ff0754" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6abaad7-7b77-49ed-a8e3-e32e1c5fc1b7" start_index="2" end="52b1be36-046c-4cce-aabe-1fa3c3ff0754" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

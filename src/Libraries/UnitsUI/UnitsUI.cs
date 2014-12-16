@@ -19,15 +19,100 @@ using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 
 namespace UnitsUI
 {
-    public abstract class MeasurementInputBase : NodeModel, IWpfNode
+    public abstract class MeasurementInputBaseNodeViewCustomization : INodeViewCustomization<MeasurementInputBase>
     {
-        protected SIUnit _measure;
+        private MeasurementInputBase mesBaseModel;
+        private DynamoViewModel dynamoViewModel;
+        private DynamoTextBox tb;
+
+        public void CustomizeView(MeasurementInputBase model, NodeView nodeView)
+        {
+            this.mesBaseModel = model;
+            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+
+            //add an edit window option to the 
+            //main context window
+            var editWindowItem = new MenuItem()
+            {
+                Header = "Edit...",
+                IsCheckable = false,
+                Tag = nodeView.ViewModel.DynamoViewModel
+            };
+
+            nodeView.MainContextMenu.Items.Add(editWindowItem);
+
+            editWindowItem.Click += editWindowItem_Click;
+
+            //add a text box to the input grid of the control
+            this.tb = new DynamoTextBox();
+            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = VerticalAlignment.Center;
+            nodeView.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+
+            tb.DataContext = model;
+            tb.BindToProperty(new Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new MeasureConverter(),
+                ConverterParameter = model.Measure,
+                NotifyOnValidationError = false,
+                Source = model,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            tb.OnChangeCommitted += delegate { model.RequiresRecalc = true; };
+
+            (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AreaUnit" ||
+                e.PropertyName == "VolumeUnit" ||
+                e.PropertyName == "LengthUnit" ||
+                e.PropertyName == "NumberFormat")
+            {
+                this.mesBaseModel.ForceValueRaisePropertyChanged();
+                this.mesBaseModel.RequiresRecalc = true;
+            }
+        }
+
+        private void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.dynamoViewModel;
+            var editWindow = new EditWindow(viewModel) { DataContext = this.mesBaseModel };
+            editWindow.BindToProperty(null, new Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new MeasureConverter(),
+                ConverterParameter = this.mesBaseModel.Measure,
+                NotifyOnValidationError = false,
+                Source = this.mesBaseModel,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            editWindow.ShowDialog();
+        }
+
+        public void Dispose()
+        {
+            tb.OnChangeCommitted += delegate { this.mesBaseModel.RequiresRecalc = true; };
+        }
+    }
+
+    public abstract class MeasurementInputBase : NodeModel
+    {
+        public SIUnit Measure { get; protected set; }
 
         protected MeasurementInputBase(WorkspaceModel workspaceModel) : base(workspaceModel) { }
 
@@ -35,13 +120,18 @@ namespace UnitsUI
         {
             get
             {
-                return _measure.Value;
+                return Measure.Value;
             }
             set
             {
-                _measure.Value = value;
+                Measure.Value = value;
                 RaisePropertyChanged("Value");
             }
+        }
+
+        internal void ForceValueRaisePropertyChanged()
+        {
+            RaisePropertyChanged("Value");
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -81,84 +171,26 @@ namespace UnitsUI
             }
         }
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            //add an edit window option to the 
-            //main context window
-            var editWindowItem = new System.Windows.Controls.MenuItem()
-            {
-                Header = "Edit...",
-                IsCheckable = false,
-                Tag = nodeUI.ViewModel.DynamoViewModel
-            };
-
-            nodeUI.MainContextMenu.Items.Add(editWindowItem);
-
-            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-            //add a text box to the input grid of the control
-            var tb = new DynamoTextBox();
-            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = VerticalAlignment.Center;
-            nodeUI.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-
-            tb.DataContext = this;
-            tb.BindToProperty(new System.Windows.Data.Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new MeasureConverter(),
-                ConverterParameter = _measure,
-                NotifyOnValidationError = false,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
-
-            (nodeUI.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
-        }
-
-        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "AreaUnit" ||
-                e.PropertyName == "VolumeUnit" ||
-                e.PropertyName == "LengthUnit" ||
-                e.PropertyName == "NumberFormat")
-            {
-                RaisePropertyChanged("Value");
-                RequiresRecalc = true;
-            }
-        }
-
         protected override bool UpdateValueCore(string name, string value)
         {
             if (name == "Value")
             {
                 var converter = new MeasureConverter();
-                this.Value = ((double)converter.ConvertBack(value, typeof(double), _measure, null));
+                this.Value = ((double)converter.ConvertBack(value, typeof(double), Measure, null));
                 return true; // UpdateValueCore handled.
             }
 
             return base.UpdateValueCore(name, value);
         }
 
-        private void editWindowItem_Click(object sender, RoutedEventArgs e)
-        {
-            var viewModel = GetDynamoViewModelFromMenuItem(sender as MenuItem);
-            var editWindow = new EditWindow(viewModel) { DataContext = this };
-            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new MeasureConverter(),
-                ConverterParameter = _measure,
-                NotifyOnValidationError = false,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
+    }
 
-            editWindow.ShowDialog();
+    public class LengthFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
+                                                         INodeViewCustomization<LengthFromString>
+    {
+        public void CustomizeView(LengthFromString model, NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
         }
     }
 
@@ -171,7 +203,7 @@ namespace UnitsUI
     {
         public LengthFromString(WorkspaceModel ws) : base(ws)
         {
-            _measure = Length.FromDouble(0.0);
+            Measure = Length.FromDouble(0.0);
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters."));
             RegisterAllPorts();
         }
@@ -202,6 +234,15 @@ namespace UnitsUI
         }
     }
 
+    public class AreaFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
+                                                     INodeViewCustomization<AreaFromString>
+    {
+        public void CustomizeView(AreaFromString model, NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
+        }
+    }
+
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
     [NodeDescription("Enter an area.")]
@@ -211,7 +252,7 @@ namespace UnitsUI
     {
         public AreaFromString(WorkspaceModel workspaceModel) : base(workspaceModel) 
         {
-            _measure = Area.FromDouble(0.0);
+            Measure = Area.FromDouble(0.0);
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared."));
             RegisterAllPorts();
         }
@@ -224,6 +265,15 @@ namespace UnitsUI
         }
     }
 
+    public class VolumeFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
+                                                 INodeViewCustomization<VolumeFromString>
+    {
+        public void CustomizeView(VolumeFromString model, NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
+        }
+    }
+
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
     [NodeDescription("Enter a volume.")]
@@ -233,7 +283,7 @@ namespace UnitsUI
     {
         public VolumeFromString(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            _measure = Volume.FromDouble(0.0);
+            Measure = Volume.FromDouble(0.0);
             OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed."));
             RegisterAllPorts();
         }
