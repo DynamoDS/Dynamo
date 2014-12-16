@@ -1228,13 +1228,13 @@ namespace Dynamo.Models
                 workspace.MessageLogged -= LogMessage;
             };
 
+            Workspaces.Add(workspace);
+
             foreach (var node in workspace.Nodes)
                 OnNodeAdded(node);
 
             foreach (var connector in workspace.Connectors)
                 OnConnectorAdded(connector);
-
-            Workspaces.Add(workspace);
         }
 
         #endregion

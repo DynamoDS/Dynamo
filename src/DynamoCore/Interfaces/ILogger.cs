@@ -2,6 +2,9 @@
 
 namespace Dynamo.Interfaces
 {
+    /// <summary>
+    /// TODO
+    /// </summary>
     public interface ILogger
     {
         void Log(string message);
@@ -214,6 +217,10 @@ namespace Dynamo.Interfaces
             }
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <returns></returns>
         public ILogger AsLogger()
         {
             return new DispatchedLogger(this);

@@ -898,11 +898,9 @@ namespace Dynamo.ViewModels
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
-                        workspaces.Remove(workspaces.ToList().First(x => x.Model == item));
+                        workspaces.Remove(workspaces.First(x => x.Model == item));
                     break;
             }
-
-            //RaisePropertyChanged("Workspaces");
         }
 
         internal void AddToRecentFiles(string path)
