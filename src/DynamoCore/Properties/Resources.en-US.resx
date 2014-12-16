@@ -117,10 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArgumentValueEqualOrLargerThanZero" xml:space="preserve">
-    <value>Argument value must be equal or larger than zero</value>
-    <comment>ArgumentException</comment>
-  </data>
   <data name="BuildErrorForLib" xml:space="preserve">
     <value>Build error for library: {0}</value>
     <comment>errorMessage</comment>
@@ -313,10 +309,8 @@ If you don't mind, it would be helpful for you to send us your file. That will m
   <data name="UsageReportingErrorMessage" xml:space="preserve">
     <value>Uh oh...
  We're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.
-You can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.\n\rSorry about that.</value>
-  </data>
-  <data name="XmlDocumentCannotBeNull" xml:space="preserve">
-    <value>'XmlDocument.DocumentElement' cannot be null</value>
-    <comment>ArgumentException</comment>
+You can also try deleting [FILEPATH] and trying again.
+Depending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.
+Sorry about that.</value>
   </data>
 </root>

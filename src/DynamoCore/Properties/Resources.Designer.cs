@@ -61,15 +61,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Argument value must be equal or larger than zero.
-        /// </summary>
-        public static string ArgumentValueEqualOrLargerThanZero {
-            get {
-                return ResourceManager.GetString("ArgumentValueEqualOrLargerThanZero", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Build error for library: {0}.
         /// </summary>
         public static string BuildErrorForLib {
@@ -542,20 +533,13 @@ namespace Dynamo.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Uh oh...
         /// We&apos;re sorry - we tried to save your decisions, but something went wrong. The decision probably hasn&apos;t been saved. This really shouldn&apos;t have happened. Please get in touch via GitHub and send us this information.
-        ///You can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you&apos;re worried about this, please consider not using Dynamo until we&apos;ve got back to you to solve the problem.\n\rSorry about that..
+        ///You can also try deleting [FILEPATH] and trying again.
+        ///Depending on your previous choice, instrumentation may still be running, if you&apos;re worried about this, please consider not using Dynamo until we&apos;ve got back to you to solve the problem.
+        ///Sorry about that..
         /// </summary>
         public static string UsageReportingErrorMessage {
             get {
                 return ResourceManager.GetString("UsageReportingErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;XmlDocument.DocumentElement&apos; cannot be null.
-        /// </summary>
-        public static string XmlDocumentCannotBeNull {
-            get {
-                return ResourceManager.GetString("XmlDocumentCannotBeNull", resourceCulture);
             }
         }
     }

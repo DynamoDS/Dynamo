@@ -318,7 +318,7 @@ namespace Dynamo.Nodes
 
             if (document.DocumentElement == null)
             {
-                var message = Properties.Resources.XmlDocumentCannotBeNull;
+                var message = "'XmlDocument.DocumentElement' cannot be null";
                 throw new ArgumentException(message);
             }
 
@@ -347,7 +347,7 @@ namespace Dynamo.Nodes
 
             if (document.DocumentElement == null)
             {
-                var message = Properties.Resources.XmlDocumentCannotBeNull;
+                var message = "'XmlDocument.DocumentElement' cannot be null";
                 throw new ArgumentException(message);
             }
 

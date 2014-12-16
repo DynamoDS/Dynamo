@@ -439,7 +439,7 @@ namespace Dynamo.Models
         {
             if (ShutdownRequested)
             {
-                /*NXLT*/const string message = "'DynamoModel.ShutDown' called twice";
+                const string message = /*NXLT*/"'DynamoModel.ShutDown' called twice";
                 throw new InvalidOperationException(message);
             }
 

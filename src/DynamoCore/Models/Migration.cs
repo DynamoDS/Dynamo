@@ -800,7 +800,7 @@ namespace Dynamo.Models
 
             if (inportCount < 0 || (outportCount < 0))
             {
-                var message = Properties.Resources.ArgumentValueEqualOrLargerThanZero;
+                var message = "Argument value must be equal or larger than zero";
                 throw new ArgumentException(message, "inportCount/outportCount");
             }
 
