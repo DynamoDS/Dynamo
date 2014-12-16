@@ -70,6 +70,69 @@ namespace Dynamo.Nodes.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Execution Interval.
+        /// </summary>
+        public static string ArduinoPortDataExecToolTip {
+            get {
+                return ResourceManager.GetString("ArduinoPortDataExecToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Serial port for later read/write.
+        /// </summary>
+        public static string ArduinoPortDataOutputToolTip {
+            get {
+                return ResourceManager.GetString("ArduinoPortDataOutputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Serial output line.
+        /// </summary>
+        public static string ArduinoReadPortDataOutputToolTip {
+            get {
+                return ResourceManager.GetString("ArduinoReadPortDataOutputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether or not the operation was successful..
+        /// </summary>
+        public static string ArduinoWritePortDataOutputToolTip {
+            get {
+                return ResourceManager.GetString("ArduinoWritePortDataOutputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The delimeter in your data coming from the Arduino..
+        /// </summary>
+        public static string ArduionReadPortDataDelimiterToolTip {
+            get {
+                return ResourceManager.GetString("ArduionReadPortDataDelimiterToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text to be written.
+        /// </summary>
+        public static string ArduionWritePortDataTextToolTip {
+            get {
+                return ResourceManager.GetString("ArduionWritePortDataTextToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arduino serial connection.
+        /// </summary>
+        public static string PortDataArduinoToolTip {
+            get {
+                return ResourceManager.GetString("PortDataArduinoToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reads values from an Arduino microcontroller..
         /// </summary>
         public static string ReadArduinoDescription {

@@ -126,7 +126,8 @@ namespace Dynamo.Nodes
                                    (outputNode, i) =>
                                        new
                                        {
-                                           data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1)),
+                                           data = new PortData(outputNode.Attributes[0].Value, 
+                                                               String.Format(Resources.PortDataOutputToolTip, (i + 1))),
                                            idx = i
                                        });
 
@@ -146,7 +147,8 @@ namespace Dynamo.Nodes
                                    (inputNode, i) =>
                                        new
                                        {
-                                           data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1)),
+                                           data = new PortData(inputNode.Attributes[0].Value, 
+                                                               String.Format(Resources.PortDataInputToolTip, (i + 1))),
                                            idx = i
                                        });
 
@@ -163,7 +165,7 @@ namespace Dynamo.Nodes
 
                 else if (subNode.Name.Equals("Output"))
                 {
-                    var data = new PortData(subNode.Attributes[0].Value, "function output");
+                    var data = new PortData(subNode.Attributes[0].Value, Resources.PortDataFunctionOutputToolTip);
 
                     if (OutPortData.Any())
                         OutPortData[0] = data;
@@ -243,7 +245,8 @@ namespace Dynamo.Nodes
                         (inputNode, i) =>
                             new
                             {
-                                data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1)),
+                                data = new PortData(inputNode.Attributes[0].Value, 
+                                                    String.Format(Resources.PortDataInputToolTip, (i + 1))),
                                 idx = i
                             });
 
@@ -261,7 +264,8 @@ namespace Dynamo.Nodes
                         (outputNode, i) =>
                             new
                             {
-                                data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1)),
+                                data = new PortData(outputNode.Attributes[0].Value, 
+                                                    String.Format(Resources.PortDataOutputToolTip, (i + 1))),
                                 idx = i
                             });
 
@@ -281,7 +285,7 @@ namespace Dynamo.Nodes
             foreach (var portData in 
                 from XmlNode subNode in element.ChildNodes
                 where subNode.Name.Equals("Output")
-                select new PortData(subNode.Attributes[0].Value, "function output"))
+                select new PortData(subNode.Attributes[0].Value, Resources.PortDataFunctionOutputToolTip))
             {
                 if (OutPortData.Any())
                     OutPortData[0] = portData;
@@ -324,7 +328,7 @@ namespace Dynamo.Nodes
 
         public Symbol(WorkspaceModel workspace) : base(workspace)
         {
-            OutPortData.Add(new PortData("", "Symbol"));
+            OutPortData.Add(new PortData(string.Empty, Resources.PortDataSymbolToolTip));
 
             RegisterAllPorts();
 
@@ -392,7 +396,7 @@ namespace Dynamo.Nodes
 
         public Output(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("", ""));
+            InPortData.Add(new PortData(string.Empty, string.Empty));
 
             RegisterAllPorts();
 

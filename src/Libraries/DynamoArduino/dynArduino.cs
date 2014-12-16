@@ -8,6 +8,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Wpf;
+using Dynamo.Nodes.Properties;
 
 
 namespace Dynamo.Nodes
@@ -73,8 +74,8 @@ namespace Dynamo.Nodes
 
         public Arduino(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("exec", "Execution Interval"));
-            OutPortData.Add(new PortData("arduino", "Serial port for later read/write"));
+            InPortData.Add(new PortData("exec", Resources.ArduinoPortDataExecToolTip));
+            OutPortData.Add(new PortData("arduino", Resources.ArduinoPortDataOutputToolTip));
 
             RegisterAllPorts();
 
@@ -153,9 +154,9 @@ namespace Dynamo.Nodes
         public ArduinoRead(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("arduino", "Arduino serial connection"));
-            InPortData.Add(new PortData("delimiter", "The delimeter in your data coming from the Arduino."));
-            OutPortData.Add(new PortData("output", "Serial output line"));
+            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
+            InPortData.Add(new PortData("delimiter", Resources.ArduionReadPortDataDelimiterToolTip));
+            OutPortData.Add(new PortData("output", Resources.ArduinoReadPortDataOutputToolTip));
 
             RegisterAllPorts();
         }
@@ -213,9 +214,9 @@ namespace Dynamo.Nodes
         public ArduinoWrite(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("arduino", "Arduino serial connection"));
-            InPortData.Add(new PortData("text", "Text to be written"));
-            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful."));
+            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
+            InPortData.Add(new PortData("text", Resources.ArduionWritePortDataTextToolTip));
+            OutPortData.Add(new PortData("success?", Resources.ArduinoWritePortDataOutputToolTip));
 
             RegisterAllPorts();
         }
