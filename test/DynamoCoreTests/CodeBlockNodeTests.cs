@@ -601,6 +601,27 @@ b = c[w][x][y][z];";
             Assert.AreEqual("a = 1;\nb = 2;", after);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TextFormat_CurlyBraces_SemiColonAddedAutomatically()
+        {
+            var before = "{1,2,3}";
+            var after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("{1,2,3};", after);
+
+            before = "{1,2,3};";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("{1,2,3};", after);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TextFormat_SingleLineComment_NoSemiColonAdded()
+        {
+            var before = "//comment";
+            var after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("//comment", after);
+        }
 
         [Test]
         [Category("UnitTests")]
