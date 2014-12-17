@@ -12,6 +12,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoTest.TD;
 using ProtoScript.Runners;
 using ProtoTestFx.TD;
+using ProtoCore.Utils;
 
 namespace ProtoTest.ProtoAST
 {
