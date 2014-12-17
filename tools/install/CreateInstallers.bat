@@ -20,7 +20,6 @@ IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015 (
 	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015\nodes %cwd%\temp\bin\Revit_2015\nodes
 )
 
-robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin License.rtf
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.exe
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\nodes %cwd%\temp\bin\nodes
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\UI %cwd%\temp\bin\UI /E
@@ -31,8 +30,24 @@ copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\ProtoGeometry_DynamoCust
 robocopy %cwd%\..\..\extern\LibG_219 %cwd%\temp\bin\LibG_219
 robocopy %cwd%\..\..\extern\LibG_220 %cwd%\temp\bin\LibG_220
 
-robocopy %cwd%\..\..\ %cwd%\Extra README.md
-cd %cwd%\Extra
+REM Localized resource assemblies
+set OPT_Language=en-US
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%OPT_Language% %cwd%\temp\bin\%OPT_Language% License.rtf
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%OPT_Language% %cwd%\temp\bin\%OPT_Language% *.dll *.xml
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\nodes\%OPT_Language% %cwd%\temp\bin\nodes\%OPT_Language% *.dll *.xml
+
+IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 (
+	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014\%OPT_Language% %cwd%\temp\bin\Revit_2014\%OPT_Language% *.dll *.xml -XF *Tests.dll
+	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014\nodes\%OPT_Language% %cwd%\temp\bin\Revit_2014\nodes\%OPT_Language% *.dll *.xml
+)
+
+IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015 (
+	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015\%OPT_Language% %cwd%\temp\bin\Revit_2015\%OPT_Language% *.dll *.xml -XF *Tests.dll
+	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015\nodes\%OPT_Language% %cwd%\temp\bin\Revit_2015\nodes\%OPT_Language% *.dll *.xml
+)
+
+robocopy %cwd%\..\..\ %cwd%\Extra\%OPT_Language% README.md
+cd %cwd%\Extra\%OPT_Language%
 del README.txt
 rename README.md README.txt
 
@@ -44,3 +59,4 @@ robocopy %cwd%\..\..\doc\distrib\Samples %cwd%\temp\Samples /s
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss
 rmdir /Q /S %cwd%\temp
+rmdir /Q /S %cwd%\Extra\%OPT_Language%
