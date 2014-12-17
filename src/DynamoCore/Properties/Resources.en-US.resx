@@ -162,10 +162,6 @@
 
 If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
   </data>
-  <data name="DocumentHaveNoRootElement" xml:space="preserve">
-    <value>Document does not have a root element</value>
-    <comment>ArgumentException</comment>
-  </data>
   <data name="FileNotOpenedCorrectly" xml:space="preserve">
     <value>Your file may not open correctly</value>
   </data>
@@ -258,10 +254,6 @@ If you don't mind, it would be helpful for you to send us your file. That will m
   <data name="TargetFileNotFound" xml:space="preserve">
     <value>Target file cannot be found!</value>
     <comment>FileNotFoundException</comment>
-  </data>
-  <data name="TradeDataListEmpty" xml:space="preserve">
-    <value>Trade data list must be non-empty</value>
-    <comment>ArgumentException</comment>
   </data>
   <data name="UnhandledExceptionInDynamoEngine" xml:space="preserve">
     <value>Unhandled exception in Dynamo engine</value>

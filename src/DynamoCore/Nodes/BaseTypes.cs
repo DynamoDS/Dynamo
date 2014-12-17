@@ -393,7 +393,7 @@ namespace Dynamo.Nodes
 
             if (document.DocumentElement == null)
             {
-                var message = Properties.Resources.DocumentHaveNoRootElement;
+                var message = "Document does not have a root element";
                 throw new ArgumentException(message, "document");
             }
 
@@ -402,7 +402,7 @@ namespace Dynamo.Nodes
 
             if (nodeTraceDataList.Count() <= 0)
             {
-                var message = Properties.Resources.TradeDataListEmpty;
+                var message = "Trade data list must be non-empty";
                 throw new ArgumentException(message, "nodeTraceDataList");
             }
 

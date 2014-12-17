@@ -171,15 +171,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Document does not have a root element.
-        /// </summary>
-        public static string DocumentHaveNoRootElement {
-            get {
-                return ResourceManager.GetString("DocumentHaveNoRootElement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Your file may not open correctly.
         /// </summary>
         public static string FileNotOpenedCorrectly {
@@ -419,15 +410,6 @@ namespace Dynamo.Properties {
         public static string TargetFileNotFound {
             get {
                 return ResourceManager.GetString("TargetFileNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Trade data list must be non-empty.
-        /// </summary>
-        public static string TradeDataListEmpty {
-            get {
-                return ResourceManager.GetString("TradeDataListEmpty", resourceCulture);
             }
         }
         
