@@ -124,9 +124,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Watch 3D")]
+    [NodeName(/*NXLT*/"Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("Watch3DDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"Watch3DDescription",typeof(Properties.Resources))]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel, IWatchViewModel

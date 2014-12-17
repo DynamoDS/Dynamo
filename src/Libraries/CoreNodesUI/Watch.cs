@@ -13,9 +13,9 @@ using DSCoreNodesUI.Properties;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Watch")]
+    [NodeName(/*NXLT*/"Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("WatchDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"WatchDescription", typeof(Resources))]
     [NodeSearchTags("WatchSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Watch : NodeModel

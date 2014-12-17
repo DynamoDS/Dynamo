@@ -9,9 +9,9 @@ using System.Text;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Number Range")]
+    [NodeName(/*NXLT*/"Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("NumberRangeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"NumberRangeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberRange : NodeModel
     {
@@ -46,9 +46,9 @@ namespace DSCoreNodesUI
         }
     }
 
-    [NodeName("Number Sequence")]
+    [NodeName(/*NXLT*/"Number Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("NumberSequenceDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"NumberSequenceDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberSeq : NodeModel
     {

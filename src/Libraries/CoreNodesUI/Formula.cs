@@ -15,8 +15,8 @@ using Expression = NCalc.Expression;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Formula")]
-    [NodeDescription("FormulaDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"Formula")]
+    [NodeDescription(/*NXLT*/"FormulaDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     //[NodeDeprecated]

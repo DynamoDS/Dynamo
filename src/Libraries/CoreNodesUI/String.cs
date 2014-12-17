@@ -56,8 +56,8 @@ namespace DSCoreNodesUI.StringNodes
         }
     }
 
-    [NodeName("String from Object")]
-    [NodeDescription("StringfromObjectDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"String from Object")]
+    [NodeDescription(/*NXLT*/"StringfromObjectDescription", typeof(Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromObjectSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
@@ -73,8 +73,8 @@ namespace DSCoreNodesUI.StringNodes
         }
     }
 
-    [NodeName("String from Array")]
-    [NodeDescription("StringfromArrayDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"String from Array")]
+    [NodeDescription(/*NXLT*/"StringfromArrayDescription", typeof(Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromArraySearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]

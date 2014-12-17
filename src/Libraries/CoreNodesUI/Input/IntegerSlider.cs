@@ -8,9 +8,9 @@ using Dynamo.Models;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Integer Slider")]
+    [NodeName(/*NXLT*/"Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("IntegerSliderDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"IntegerSliderDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class IntegerSlider : DSCoreNodesUI.Integer

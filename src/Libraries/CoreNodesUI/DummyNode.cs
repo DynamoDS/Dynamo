@@ -8,8 +8,8 @@ using Dynamo.Models;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Legacy Node")]
-    [NodeDescription("LegacyNodeDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"Legacy Node")]
+    [NodeDescription(/*NXLT*/"LegacyNodeDescription", typeof(Properties.Resources))]
     [IsMetaNode]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]

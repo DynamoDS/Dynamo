@@ -9,9 +9,9 @@ using Dynamo.Models;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Double Slider")]
+    [NodeName(/*NXLT*/"Double Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("DoubleSliderDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"DoubleSliderDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DoubleSlider : DSCoreNodesUI.Double

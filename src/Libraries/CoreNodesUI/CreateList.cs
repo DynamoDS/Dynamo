@@ -18,8 +18,8 @@ namespace DSCoreNodesUI
         }
     }
 
-    [NodeName("List.Create")]
-    [NodeDescription("ListCreateDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"List.Create")]
+    [NodeDescription(/*NXLT*/"ListCreateDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
     public class CreateList : VariableInputNode

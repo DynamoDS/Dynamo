@@ -686,9 +686,9 @@ namespace Dynamo.Nodes
     /// Builds sublists from a list. Inputs are a list and an offset to indicate the number of items to skip before
     /// the start of each subsequent sublist. Enter a range of values using series syntax to indicate the first sublist.
     /// </summary>
-    [NodeName("Build Sublists")]
+    [NodeName(/*NXLT*/"Build Sublists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("BuildSublistsDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"BuildSublistsDescription", typeof(Properties.Resources))]
     public class Sublists : BasicInteractive<string>
     {
         public Sublists(WorkspaceModel ws): base(ws)
@@ -922,9 +922,9 @@ namespace Dynamo.Nodes
 
     #region Functions
 
-    [NodeName("Compose Functions")]
+    [NodeName(/*NXLT*/"Compose Functions")]
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
-    [NodeDescription("ComposeFunctionNodeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"ComposeFunctionNodeDescription", typeof(Properties.Resources))]
     public class ComposeFunctions : NodeModel
     { 
         public ComposeFunctions(WorkspaceModel ws) : base(ws)
@@ -1144,9 +1144,9 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName("String")]
+    [NodeName(/*NXLT*/"String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("StringNodeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"StringNodeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class StringInput : AbstractString
     {
@@ -1249,9 +1249,9 @@ namespace Dynamo.Nodes
 
     public delegate double ConversionDelegate(double value);
 
-    [NodeName("Number")]
+    [NodeName(/*NXLT*/"Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("NumberNodeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"NumberNodeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class DoubleInput : NodeModel
     {

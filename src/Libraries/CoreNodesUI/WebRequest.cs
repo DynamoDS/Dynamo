@@ -8,8 +8,8 @@ using DSCoreNodesUI.Properties;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Web Request")]
-    [NodeDescription("WebRequestDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"Web Request")]
+    [NodeDescription(/*NXLT*/"WebRequestDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel

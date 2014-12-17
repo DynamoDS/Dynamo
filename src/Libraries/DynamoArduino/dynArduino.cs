@@ -64,9 +64,9 @@ namespace Dynamo.Nodes
         public void Dispose() { }
     }
 
-    [NodeName("Arduino")]
+    [NodeName(/*NXLT*/"Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("ArduinoDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"ArduinoDescription",typeof(Properties.Resources))]
     [IsVisibleInDynamoLibrary(false)]
     public class Arduino : NodeModel
     {
@@ -144,9 +144,9 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Read Arduino")]
+    [NodeName(/*NXLT*/"Read Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("ReadArduinoDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"ReadArduinoDescription", typeof(Properties.Resources))]
     public class ArduinoRead : NodeModel
     {
         SerialPort port;
@@ -204,9 +204,9 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Write Arduino")]
+    [NodeName(/*NXLT*/"Write Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("WriteArduinoDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"WriteArduinoDescription",typeof(Properties.Resources))]
     public class ArduinoWrite : NodeModel
     {
         SerialPort port;

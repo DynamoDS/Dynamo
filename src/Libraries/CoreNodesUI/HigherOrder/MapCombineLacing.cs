@@ -8,9 +8,9 @@ using DSCoreNodesUI.Properties;
 
 namespace DSCore
 {
-    [NodeName("List.Map")]
+    [NodeName(/*NXLT*/"List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListMapDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListMapDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Map : NodeModel
     {
@@ -78,9 +78,9 @@ namespace DSCore
         }
     }
 
-    [NodeName("List.Combine")]
+    [NodeName(/*NXLT*/"List.Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListCombineDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListCombineDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Combine : CombinatorNode
     {
@@ -104,9 +104,9 @@ namespace DSCore
     }
 
     [IsVisibleInDynamoLibrary(false)]
-    [NodeName("List.ForEach")]
+    [NodeName(/*NXLT*/"List.ForEach")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListForEachDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListForEachDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class ForEach : CombinatorNode
     {
@@ -130,9 +130,9 @@ namespace DSCore
     }
 
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
-    [NodeName("List.LaceShortest")]
+    [NodeName(/*NXLT*/"List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListLaceShortestDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListLaceShortestDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class LaceShortest : CombinatorNode
     {
@@ -156,9 +156,9 @@ namespace DSCore
     }
 
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
-    [NodeName("List.LaceLongest")]
+    [NodeName(/*NXLT*/"List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListLaceLongestDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListLaceLongestDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class LaceLongest : CombinatorNode
     {
@@ -183,9 +183,9 @@ namespace DSCore
 
     ///<search>cross</search>
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
-    [NodeName("List.CartesianProduct")]
+    [NodeName(/*NXLT*/"List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListCartesianProductDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListCartesianProductDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class CartesianProduct : CombinatorNode
     {
@@ -270,9 +270,9 @@ namespace DSCore
     }
     */
 
-    [NodeName("List.Reduce")]
+    [NodeName(/*NXLT*/"List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListReduceDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListReduceDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Reduce : VariableInputNode
     {
@@ -357,9 +357,9 @@ namespace DSCore
         }
     }
 
-    [NodeName("List.Scan")]
+    [NodeName(/*NXLT*/"List.Scan")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListScanDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListScanDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class ScanList : VariableInputNode
     {
@@ -444,9 +444,9 @@ namespace DSCore
         }
     }
 
-    [NodeName("List.Filter")]
+    [NodeName(/*NXLT*/"List.Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListFilterDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListFilterDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Filter : NodeModel
     {
@@ -486,9 +486,9 @@ namespace DSCore
         }
     }
 
-    [NodeName("ReplaceByCondition")]
+    [NodeName(/*NXLT*/"ReplaceByCondition")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ReplaceByConditionDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ReplaceByConditionDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Replace : NodeModel
     {

@@ -9,9 +9,9 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI.HigherOrder
 {
-    [NodeName("Function.Apply")]
+    [NodeName(/*NXLT*/"Function.Apply")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("FunctionApplyDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"FunctionApplyDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ApplyFunction : VariableInputNode
     {
@@ -65,9 +65,9 @@ namespace DSCoreNodesUI.HigherOrder
         }
     }
 
-    [NodeName("Function.Compose")]
+    [NodeName(/*NXLT*/"Function.Compose")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("FunctionComposeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"FunctionComposeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ComposeFunctions : VariableInputNode
     {

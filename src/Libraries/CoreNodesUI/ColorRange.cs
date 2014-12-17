@@ -10,9 +10,9 @@ using ProtoCore.AST.AssociativeAST;
 namespace DSCoreNodesUI
 {
     [IsDesignScriptCompatible]
-    [NodeName("Color Range")]
+    [NodeName(/*NXLT*/"Color Range")]
     [NodeCategory("Core.Color.Create")]
-    [NodeDescription("ColorRangeDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"ColorRangeDescription",typeof(Properties.Resources))]
     public class ColorRange : NodeModel
     {
         public event EventHandler RequestChangeColorRange;

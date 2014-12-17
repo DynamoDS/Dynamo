@@ -64,9 +64,9 @@ namespace DSCore.Logic
     /// <summary>
     /// Short-circuiting Logical AND
     /// </summary>
-    [NodeName("And")]
+    [NodeName(/*NXLT*/"And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("AndDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"AndDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class And : BinaryLogic
     {
@@ -76,9 +76,9 @@ namespace DSCore.Logic
     /// <summary>
     /// Short-circuiting Logical OR
     /// </summary>
-    [NodeName("Or")]
+    [NodeName(/*NXLT*/"Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("OrDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"OrDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Or : BinaryLogic
     {

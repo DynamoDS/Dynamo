@@ -35,7 +35,7 @@ namespace SamplesLibraryUI
     /// 
     // The NodeName attribute is what will display on 
     // top of the node in Dynamo
-    [NodeName("Hello Dynamo")]
+    [NodeName(/*NXLT*/"Hello Dynamo")]
 
     // The NodeCategory attribute determines how your
     // node will be organized in the library. You can
@@ -45,7 +45,7 @@ namespace SamplesLibraryUI
 
     // The description will display in the tooltip
     // and in the help window for the node.
-    [NodeDescription("HelloDynamoDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"HelloDynamoDescription",typeof(Properties.Resources))]
 
     [IsDesignScriptCompatible]
     public class HelloDynamo : NodeModel
