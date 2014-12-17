@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
@@ -144,6 +145,9 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(false)]
         public static Color BuildColorFrom1DRange(IList<Color> colors, IList<double> indices, double index)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             // This method is called from AST. We cannot throw an exception.
             // If any of the bounding conditions are not met,
             // just return white.
@@ -158,15 +162,6 @@ namespace DSCore
             }
 
             var indexedColors = colors.Zip(indices, (c, i) => new WeightedColor1D(c, i, Math.Sqrt(Math.Pow(index - i, 2)))).ToList();
-            var colorsByIndex = indexedColors.OrderBy(ci => ci.Index);
-
-            // If the supplied index matches one of the indexed colors' indices,
-            // then just return that color.
-            var found = colorsByIndex.FirstOrDefault(ci => ci.Index == index);
-            if (found != null)
-            {
-                return found.Color;
-            }
 
             // If values are not supplied for the 0.0 and 1.0
             // positions, then use the bottom and top colors
@@ -178,6 +173,16 @@ namespace DSCore
             if (!indices.Any(i => i == 1.0))
             {
                 indexedColors.Add(new WeightedColor1D(colors.Last(), 1.0, 1.0 - index));
+            }
+
+            var colorsByIndex = indexedColors.OrderBy(ci => ci.Index);
+
+            // If the supplied index matches one of the indexed colors' indices,
+            // then just return that color.
+            var found = colorsByIndex.FirstOrDefault(ci => ci.Index == index);
+            if (found != null)
+            {
+                return found.Color;
             }
 
             WeightedColor1D c1, c2;
@@ -200,7 +205,12 @@ namespace DSCore
                 }
             }
 
-            return Lerp(c1.Color, c2.Color, (index - c1.Index) / (c2.Index - c1.Index));
+            var color = Lerp(c1.Color, c2.Color, (index - c1.Index)/(c2.Index - c1.Index));
+
+            sw.Stop();
+            //Debug.WriteLine("{0} ellapsed for building color range.", sw.Elapsed);
+
+            return color;
         }
 
         /// <summary>
