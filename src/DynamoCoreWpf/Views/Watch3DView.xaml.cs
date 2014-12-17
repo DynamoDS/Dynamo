@@ -18,6 +18,8 @@ using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
+using ProtoCore.Lang;
+
 using SharpDX;
 
 using Material = System.Windows.Media.Media3D.Material;
@@ -377,44 +379,11 @@ namespace Dynamo.Controls
             var indices = new IntCollection();
             var colors = new Color4Collection();
 
-            var size = 100;
-
-            for (int x = -size; x <= size; x++)
+            for(int i= 0; i < 10; i += 1)
             {
-                var v = new Vector3(x, -.001f, -size);
-                positions.Add(v);
-                indices.Add(positions.Count-1);
-                positions.Add(new Vector3(x, -.001f, size));
-                indices.Add(positions.Count-1);
-
-                if (x%5 == 0)
+                for (int j = 0; j < 10; j += 1)
                 {
-                    colors.Add(Color.DarkGray);
-                    colors.Add(Color.DarkGray);
-                }
-                else
-                {
-                    colors.Add(Color.LightGray);
-                    colors.Add(Color.LightGray);
-                }
-            }
-
-            for (int y = -size; y <= size; y++)
-            {
-                positions.Add(new Vector3(-size, -.001f, y)); 
-                indices.Add(positions.Count-1);
-                positions.Add(new Vector3(size, -.001f, y));
-                indices.Add(positions.Count-1);
-
-                if (y % 5 == 0)
-                {
-                    colors.Add(Color.DarkGray);
-                    colors.Add(Color.DarkGray);
-                }
-                else
-                {
-                    colors.Add(Color.LightGray);
-                    colors.Add(Color.LightGray);
+                    DrawGridPatch(positions, indices, colors, -50 + i * 10, -50 + j * 10);
                 }
             }
 
@@ -443,6 +412,52 @@ namespace Dynamo.Controls
             Grid.Positions = positions;
             Grid.Indices = indices;
             Grid.Colors = colors;
+        }
+
+        private static void DrawGridPatch(
+            Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY)
+        {
+            var size = 10;
+
+            for (
+                int x = startX; x <= startX + size; x++)
+            {
+                var v = new Vector3(x, -.001f, startY);
+                positions.Add(v);
+                indices.Add(positions.Count - 1);
+                positions.Add(new Vector3(x, -.001f, startY + size));
+                indices.Add(positions.Count - 1);
+
+                if (x%5 == 0)
+                {
+                    colors.Add(Color.DarkGray);
+                    colors.Add(Color.DarkGray);
+                }
+                else
+                {
+                    colors.Add(Color.LightGray);
+                    colors.Add(Color.LightGray);
+                }
+            }
+
+            for (int y = startY; y <= startY + size; y++)
+            {
+                positions.Add(new Vector3(startX, -.001f, y));
+                indices.Add(positions.Count - 1);
+                positions.Add(new Vector3(startX + size, -.001f, y));
+                indices.Add(positions.Count - 1);
+
+                if (y%5 == 0)
+                {
+                    colors.Add(Color.DarkGray);
+                    colors.Add(Color.DarkGray);
+                }
+                else
+                {
+                    colors.Add(Color.LightGray);
+                    colors.Add(Color.LightGray);
+                }
+            }
         }
 
         /// <summary>
@@ -598,11 +613,6 @@ namespace Dynamo.Controls
                                         (p.PointVertexColors[color_idx] / 255.0f),
                                         (p.PointVertexColors[color_idx + 1] / 255.0f),
                                         (p.PointVertexColors[color_idx + 2] / 255.0f), 1);
-                }
-
-                if (ptColor == SharpDX.Color.Red)
-                {
-                    ptColor = SharpDX.Color.Black;
                 }
 
                 points.Positions.Add(pt);
