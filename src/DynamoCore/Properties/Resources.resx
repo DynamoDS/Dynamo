@@ -242,7 +242,7 @@ If you don't mind, it would be helpful for you to send us your file. That will m
     <value>Your file may not open correctly</value>
   </data>
   <data name="IncompatibleOfFileAndDynamo" xml:space="preserve">
-    <value>Your file '{0}' of version '{1}' cannot " + "be opened by this version of Dynamo ({2})</value>
+    <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
   </data>
   <data name="IncorrectVersionToOpenFile" xml:space="preserve">
     <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>

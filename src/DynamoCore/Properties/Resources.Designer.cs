@@ -189,7 +189,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your file &apos;{0}&apos; of version &apos;{1}&apos; cannot &quot; + &quot;be opened by this version of Dynamo ({2}).
+        ///   Looks up a localized string similar to Your file &apos;{0}&apos; of version &apos;{1}&apos; cannot be opened by this version of Dynamo ({2}).
         /// </summary>
         public static string IncompatibleOfFileAndDynamo {
             get {
