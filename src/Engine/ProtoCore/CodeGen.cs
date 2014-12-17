@@ -2230,7 +2230,7 @@ namespace ProtoCore
             String value = Encoding.UTF8.GetString(utf8bytes);
             if (value.Length > 1)
             {
-                buildStatus.LogSyntaxError("Too many characters in character literal", null, node.line, node.col);
+                buildStatus.LogSyntaxError(StringConstants.tooManyCharacters, null, node.line, node.col);
             }
   
             String strValue = "'" + value + "'";
@@ -2605,7 +2605,7 @@ namespace ProtoCore
                 localProcedure.isConstructor &&
                 core.IsFunctionCodeBlock(codeBlock))
             {
-                buildStatus.LogSemanticError("return statement is not allowed in constructor", 
+                buildStatus.LogSemanticError(StringConstants.returnStatementIsNotAllowedInConstructor, 
                                              core.CurrentDSFileName, 
                                              node.line, 
                                              node.col);
@@ -2960,7 +2960,7 @@ namespace ProtoCore
             int cix = core.ClassTable.IndexOf(string.Format("{0}Attribute", anode.Function.Name));
             if (cix == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
-                buildStatus.LogSemanticError(string.Format("Unknown attribute {0}", anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(StringConstants.unknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
             }
             ProtoCore.DSASM.AttributeEntry attribute = new ProtoCore.DSASM.AttributeEntry();
             attribute.ClassIndex = cix;
@@ -2969,7 +2969,7 @@ namespace ProtoCore
             {
                 if (!IsConstantExpression(attr))
                 {
-                    buildStatus.LogSemanticError("An attribute argument must be a constant expression", core.CurrentDSFileName, anode.line, anode.col);
+                    buildStatus.LogSemanticError(StringConstants.attributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
                     return null;
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);
@@ -2987,7 +2987,7 @@ namespace ProtoCore
             }
             if (!hasMatchedConstructor)
             {
-                buildStatus.LogSemanticError(string.Format("No constructors for Attribute '{0}' takes {1} arguments", anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(StringConstants.noConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
                 return null;
             }
             

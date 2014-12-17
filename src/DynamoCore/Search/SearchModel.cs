@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 
 using System.Collections.ObjectModel;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.DSEngine;
-using Microsoft.Practices.Prism.ViewModel;
-using System.IO;
+
 using System.Xml;
 using DynamoUtilities;
+
 
 namespace Dynamo.Search
 {
@@ -214,10 +214,6 @@ namespace Dynamo.Search
             this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
         }
 
-        internal void SortCategoryChildren()
-        {
-            this.BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
-        }
 
         internal void RemoveEmptyRootCategory(string categoryName)
         {

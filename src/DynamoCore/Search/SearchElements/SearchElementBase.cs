@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Search;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -49,13 +48,13 @@ namespace Dynamo.Search.SearchElements
         /// Higher = closer to the top of search results </value>
         public abstract double Weight { get; set; }
 
-        public virtual void Execute()
+        public override void Execute()
         {
             this.OnExecuted();
         }
 
         public delegate void SearchElementHandler(SearchElementBase ele);
-        internal event SearchElementHandler Executed;
+        public event SearchElementHandler Executed;
         protected void OnExecuted()
         {
             if (Executed != null)

@@ -2,6 +2,7 @@
 
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -178,7 +179,7 @@ namespace Dynamo.Models
         {
             try
             {
-                return (T)Activator.CreateInstance(typeof(T), this.workspaceModel);
+                return (T) typeof(T).GetInstance(this.workspaceModel);
             }
             catch (Exception ex)
             {
@@ -192,7 +193,7 @@ namespace Dynamo.Models
         {
             try
             {
-                return (NodeModel)Activator.CreateInstance(type, this.workspaceModel);
+                return (NodeModel) type.GetInstance(this.workspaceModel);
             }
             catch (Exception ex)
             {

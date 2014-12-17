@@ -1,0 +1,397 @@
+<UserControl x:Class="Dynamo.Controls.NodeView"
+             x:FieldModifier="public"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:dynamo="clr-namespace:Dynamo;assembly=DynamoCore"
+             xmlns:dynamo1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
+             Height="Auto"
+             Width="Auto"
+             Name="topControl"
+             Loaded="topControl_Loaded"
+             KeyUp="OnKeyUp"
+             PreviewKeyUp="OnPreviewKeyUp"
+             MouseLeftButtonDown="topControl_MouseLeftButtonDown"
+             MouseRightButtonDown="topControl_MouseRightButtonDown"
+             Canvas.Left="{Binding Left, Mode=TwoWay}"
+             Canvas.Top="{Binding Top, Mode=TwoWay}">
+    <Grid Name="grid"
+          x:FieldModifier="public"
+          HorizontalAlignment="Left">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"
+                              MinWidth="40"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <!-- CONTEXT MENU -->
+
+        <Grid.ContextMenu>
+            <ContextMenu Name="MainContextMenu"
+                         x:FieldModifier="public">
+                <MenuItem Name="deleteElem_cm"
+                          Header="Delete"
+                          Command="{Binding Path=DeleteCommand}" />
+                <MenuItem Header="Lacing"
+                          Name="lacingStrategy"
+                          Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
+                    <MenuItem Name="lacing_strategy_single"
+                              IsCheckable="True"
+                              IsEnabled="False"
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=First,Mode=TwoWay}"
+                              Command="{Binding Path=SetLacingTypeCommand}"
+                              CommandParameter="First"
+                              Header="First" />
+                    <MenuItem Name="lacing_strategy_shortest"
+                              IsCheckable="True"
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest, Mode=TwoWay}"
+                              Command="{Binding Path=SetLacingTypeCommand}"
+                              CommandParameter="Shortest"
+                              Header="Shortest" />
+                    <MenuItem Name="lacing_strategy_longest"
+                              IsCheckable="True"
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Longest,Mode=TwoWay}"
+                              Command="{Binding Path=SetLacingTypeCommand}"
+                              CommandParameter="Longest"
+                              Header="Longest" />
+                    <MenuItem Name="lacing_strategy_cross"
+                              IsCheckable="True"
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CrossProduct,Mode=TwoWay}"
+                              Command="{Binding Path=SetLacingTypeCommand}"
+                              CommandParameter="CrossProduct"
+                              Header="Cross Product" />
+                </MenuItem>
+                <MenuItem Name="isVisible_cm"
+                          Header="Preview"
+                          IsChecked="{Binding Path=IsVisible}"
+                          Command="{Binding Path=ToggleIsVisibleCommand}"
+                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                <MenuItem Name="isUpstreamVisible_cm"
+                          Header="Preview Upstream"
+                          IsChecked="{Binding Path=IsUpstreamVisible}"
+                          Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"
+                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                <MenuItem Name="isDisplayLabelsEnabled_cm"
+                          Header="Show Labels"
+                          IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
+                          IsCheckable="True"
+                          IsEnabled="{Binding Path=CanDisplayLabels}" />
+                <MenuItem Name="rename_cm"
+                          Header="Rename Node..."
+                          Command="{Binding Path=RenameCommand}" />
+                <MenuItem Name="help_cm"
+                          Header="Help..."
+                          Command="{Binding Path=ShowHelpCommand}" />
+            </ContextMenu>
+        </Grid.ContextMenu>
+
+        <Border Name="customNodeBorder0"
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                Canvas.ZIndex="1"
+                Height="6"
+                Margin="8,0,8,-1"
+                VerticalAlignment="Bottom"
+                BorderThickness="1"
+                BorderBrush="#aaaaaa"
+                Background="#dbd7d1">
+            <Border.Visibility>
+                <Binding Path="IsCustomFunction"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         Converter="{StaticResource BooleanToVisibilityConverter}">
+                </Binding>
+            </Border.Visibility>
+        </Border>
+
+        <Border Name="customNodeBorder1"
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                Canvas.ZIndex="2"
+                Height="4"
+                Margin="4,0,4,-1"
+                VerticalAlignment="Bottom"
+                BorderThickness="1"
+                BorderBrush="#888888"
+                Background="#dbd7d1">
+            <Border.Visibility>
+                <Binding Path="IsCustomFunction"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         Converter="{StaticResource BooleanToVisibilityConverter}">
+                </Binding>
+            </Border.Visibility>
+        </Border>
+
+        <Rectangle Name="nodeBackground"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Grid.RowSpan="3"
+                   Canvas.ZIndex="10">
+            <Rectangle.Fill>
+                <Binding Path="State"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         ConverterParameter="BodyBackground"
+                         Converter="{StaticResource StateToColorConverter}">
+                </Binding>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Rectangle Name="nickNameBackground"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   StrokeThickness="0,0,0,1"
+                   IsHitTestVisible="True"
+                   Canvas.ZIndex="11"
+                   MouseDown="NickNameBlock_OnMouseDown">
+            <Rectangle.Stroke>
+                <Binding Path="State"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         ConverterParameter="HeaderBorder"
+                         Converter="{StaticResource StateToColorConverter}">
+                </Binding>
+            </Rectangle.Stroke>
+            <Rectangle.Fill>
+                <Binding Path="State"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         ConverterParameter="HeaderBackground"
+                         Converter="{StaticResource StateToColorConverter}">
+                </Binding>
+            </Rectangle.Fill>
+            <Rectangle.ToolTip>
+                <dynui:DynamoToolTip AttachmentSide="Top"
+                                     Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <Grid>
+                        <TextBlock Text="{Binding Path=Description}"></TextBlock>
+                    </Grid>
+                </dynui:DynamoToolTip>
+            </Rectangle.ToolTip>
+        </Rectangle>
+
+        <TextBlock Name="nickNameBlock"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Stretch"
+                   Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
+                   Padding="5"
+                   FontSize="13"
+                   FontWeight="SemiBold"
+                   FontFamily="{StaticResource OpenSansSemibold}"
+                   TextAlignment="Center"
+                   IsHitTestVisible="False"
+                   Canvas.ZIndex="12"
+                   Height="27"
+                   Background="{x:Null}"
+                   Style="{StaticResource SZoomFadeText}">
+            <TextBlock.Foreground>
+                <Binding Path="State"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         ConverterParameter="HeaderForeground"
+                         Converter="{StaticResource StateToColorConverter}">
+                </Binding>
+            </TextBlock.Foreground>
+        </TextBlock>
+
+        <!-- INPUT PORTS -->        
+        <DockPanel Name="inPortGrid"
+                   Grid.Row="2"
+                   Grid.Column="0"
+                   VerticalAlignment="Stretch"
+                   IsHitTestVisible="True"
+                   Margin="0"
+                   Background="Transparent"
+                   Canvas.ZIndex="20">
+            <ItemsControl ItemsSource="{Binding Path=InPorts}"
+                          HorizontalContentAlignment="Stretch">
+            </ItemsControl>
+        </DockPanel>
+
+        <!-- OUTPUT PORTS -->
+
+        <DockPanel Name="outPortGrid"
+                   Grid.Row="2"
+                   Grid.Column="2"
+                   VerticalAlignment="Top"
+                   IsHitTestVisible="True"
+                   Background="Transparent"
+                   Canvas.ZIndex="20">
+            <ItemsControl ItemsSource="{Binding Path=OutPorts}">
+            </ItemsControl>
+        </DockPanel>
+
+        <Grid Name="centralGrid"
+              Grid.Column="1"
+              Grid.Row="2"
+              Canvas.ZIndex="20">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!-- INPUT GRID -->
+
+            <Grid Name="inputGrid"
+                  x:FieldModifier="public"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  Canvas.ZIndex="21"
+                  IsEnabled="{Binding Path=IsInteractionEnabled}" MinHeight="{Binding Source={x:Static dynamo1:Configurations.PortHeightInPixels}}">
+            </Grid>
+
+        </Grid>
+        
+        <StackPanel Name="GlyphStackPanel" HorizontalAlignment="Right" Orientation="Horizontal" 
+                    Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="30" Height="25"
+                    Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            
+            <Canvas x:Name="previewIcon"
+                    Width="25"
+                    Height="25"
+                    HorizontalAlignment="Center"
+                    Background="Transparent"
+                    MouseEnter="OnPreviewIconMouseEnter"
+                    MouseLeave="OnPreviewIconMouseLeave"
+                    MouseLeftButtonDown="OnPreviewIconMouseClicked">
+                <Canvas.Visibility>
+                    <Binding Path="IsPreviewInsetVisible"
+                             UpdateSourceTrigger="PropertyChanged"
+                             Mode="OneWay"
+                             Converter="{StaticResource BooleanToVisibilityConverter}"
+                             ConverterParameter="Collapse">
+                    </Binding>
+                </Canvas.Visibility>
+
+                <Rectangle x:Name="previewOuterRect"
+                           Width="9"
+                           Height="9"
+                           Canvas.Left="8"
+                           Canvas.Top="8"
+                           Stretch="Fill"
+                           StrokeMiterLimit="2.75"
+                           Stroke="#FF8A8682" />
+
+                <Rectangle x:Name="previewInnerRect"
+                           Width="4.6875"
+                           Height="4.6875"
+                           Canvas.Left="10.0938"
+                           Canvas.Top="10.2813"
+                           Stretch="Fill"
+                           Fill="#FFB1ACA6"
+                           Visibility="Hidden" />
+            </Canvas>
+            
+            <TextBlock Name="lacingOptionTextBlock"
+                   Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
+                   ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
+                   FontFamily="Tahoma"
+                   FontSize="8"
+                   Margin="5"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
+                   Foreground="#99000000"
+                   FontWeight="Bold"/>
+        
+        </StackPanel>
+
+        <Grid Name="PresentationGrid"
+              x:FieldModifier="public"
+              Grid.Row="3"
+              Grid.Column="0"
+              Grid.ColumnSpan="3"
+              Margin="5"
+              ZIndex="50"
+              Visibility="Collapsed">
+            <!--DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.-->
+        </Grid>
+
+        <Rectangle Name="nodeBorder"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Grid.RowSpan="3"
+                   StrokeThickness="1"
+                   Fill="Transparent"
+                   IsHitTestVisible="False"
+                   Canvas.ZIndex="40">
+            <Rectangle.Stroke>
+                <Binding Path="State"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         ConverterParameter="OuterBorder"
+                         Converter="{StaticResource StateToColorConverter}">
+                </Binding>
+            </Rectangle.Stroke>
+        </Rectangle>
+
+        <Rectangle Name="selectionBorder"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Grid.RowSpan="3"
+                   Fill="Transparent"
+                   Stroke="#4192d9"
+                   StrokeThickness="2"
+                   IsHitTestVisible="False"
+                   Canvas.ZIndex="41"
+                   Margin="-1">
+            <Rectangle.Visibility>
+                <Binding Path="IsSelected"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         Converter="{StaticResource BooleanToVisibilityConverter}">
+                </Binding>
+            </Rectangle.Visibility>
+        </Rectangle>
+
+        <!--DO NOT ERASE. THIS IS FOR DEBUGGING-->
+        <!--<Rectangle Name="ForceReexecBorder"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Grid.RowSpan="3"
+                   Fill="Transparent"
+                   Stroke="#7E43F041"
+                   StrokeThickness="8"
+                   StrokeLineJoin="Round"
+                   IsHitTestVisible="False"
+                   Canvas.ZIndex="20"
+                   Margin="-10">
+            <Rectangle.Visibility>
+                <Binding Path="WillForceReExecuteOfNode"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         Converter="{StaticResource BooleanToVisibilityConverter}">
+                </Binding>
+            </Rectangle.Visibility>
+        </Rectangle>-->
+
+        <Canvas Name="expansionBay"
+                Grid.Row="4"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="4"
+                HorizontalAlignment="Center"
+                Background="Blue">
+        </Canvas>
+
+        <Canvas ClipToBounds="False" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Label Content="{Binding ASTText}" HorizontalContentAlignment="Center"></Label>
+        </Canvas>
+    </Grid>
+</UserControl>

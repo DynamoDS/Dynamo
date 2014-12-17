@@ -2,11 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Windows;
 using System.Xml;
 
 using Dynamo.UI;
-using Dynamo.Nodes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -135,7 +134,7 @@ namespace Dynamo.Models
         /// offsets from the node origin based on the port's index in the 
         /// ports collection.
         /// </summary>
-        public Point Center
+        public Point2D Center
         {
             get
             {
@@ -146,11 +145,11 @@ namespace Dynamo.Models
                 double y = owner.Y + headerHeight + 5 + halfHeight + offset;
 
                 if (portType == PortType.INPUT)
-                    return new Point(owner.X, y);
+                    return new Point2D(owner.X, y);
                 else if (portType == PortType.OUTPUT)
-                    return new Point(owner.X + owner.Width, y);
+                    return new Point2D(owner.X + owner.Width, y);
 
-                return new Point();
+                return new Point2D();
             }
         }
 

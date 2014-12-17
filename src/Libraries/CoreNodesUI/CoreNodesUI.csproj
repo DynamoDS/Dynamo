@@ -42,7 +42,7 @@
     </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -52,7 +52,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -60,42 +59,66 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\DirectoryNodeViewCustomization.cs" />
+    <Compile Include="Input\Double.cs" />
+    <Compile Include="Input\DoubleSlider.cs" />
+    <Compile Include="UI\DoubleSliderNodeViewCustomization.cs" />
+    <Compile Include="Input\File.cs" />
+    <Compile Include="UI\FilenameNodeViewCustomization.cs" />
+    <Compile Include="UI\FileSystemBrowserNodeViewCustomization.cs" />
+    <Compile Include="Input\Integer.cs" />
+    <Compile Include="UI\IntegerSliderNodeViewCustomization.cs" />
+    <Compile Include="Input\String.cs" />
+    <Compile Include="UI\StringInputNodeViewCustomization.cs" />
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="ColorRange.cs" />
+    <Compile Include="UI\ColorRangeNodeViewCustomization.cs" />
     <Compile Include="CreateList.cs" />
     <Compile Include="DropDown.cs" />
+    <Compile Include="UI\DropDownNodeViewCustomization.cs" />
     <Compile Include="DummyNode.cs" />
-    <Compile Include="ElementSelectionControl.xaml.cs">
+    <Compile Include="UI\DummyNodeNodeViewCustomization.cs" />
+    <Compile Include="UI\ElementSelectionControl.xaml.cs">
       <DependentUpon>ElementSelectionControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Enum.cs" />
     <Compile Include="Formula.cs" />
+    <Compile Include="UI\FormulaNodeViewCustomization.cs" />
     <Compile Include="HigherOrder\Apply.cs" />
     <Compile Include="HigherOrder\MapCombineLacing.cs" />
     <Compile Include="IModelSelectionHelper.cs" />
     <Compile Include="Input\BasicInteractive.cs" />
     <Compile Include="Input\BoolSelector.cs" />
-    <Compile Include="Input\File.cs" />
+    <Compile Include="UI\BoolSelectorNodeViewCustomization.cs" />
     <Compile Include="Logic\AndOr.cs" />
-    <Compile Include="Input\Sliders.cs" />
+    <Compile Include="Input\IntegerSlider.cs" />
     <Compile Include="Logic\If.cs" />
     <Compile Include="Logic\ScopedIf.cs" />
     <Compile Include="NumberRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DoubleSliderSettingsControl.xaml.cs">
+    <Compile Include="UI\DoubleSliderSettingsControl.xaml.cs">
       <DependentUpon>DoubleSliderSettingsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IntegerSliderSettingsControl.xaml.cs">
+    <Compile Include="UI\IntegerSliderSettingsControl.xaml.cs">
       <DependentUpon>IntegerSliderSettingsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Selection.cs" />
+    <Compile Include="UI\SelectionBaseNodeViewCustomization.cs" />
+    <Compile Include="Watch.cs" />
+    <Compile Include="WatchImageCore.cs" />
+    <Compile Include="UI\WatchImageNodeViewCustomization.cs" />
+    <Compile Include="UI\WatchNodeViewCustomization.cs" />
     <Compile Include="String.cs" />
-    <Compile Include="WatchImage.cs" />
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
+      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+      <Name>DynamoCoreWpf</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -122,15 +145,15 @@
     <Resource Include="Resources\MissingNode.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DoubleSliderSettingsControl.xaml">
+    <Page Include="UI\DoubleSliderSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ElementSelectionControl.xaml">
+    <Page Include="UI\ElementSelectionControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="IntegerSliderSettingsControl.xaml">
+    <Page Include="UI\IntegerSliderSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
