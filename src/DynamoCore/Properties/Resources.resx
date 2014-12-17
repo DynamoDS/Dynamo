@@ -251,10 +251,6 @@ If you don't mind, it would be helpful for you to send us your file. That will m
     <value>Submit Bug To Github</value>
     <comment>Button submit</comment>
   </data>
-  <data name="TargetFileNotFound" xml:space="preserve">
-    <value>Target file cannot be found!</value>
-    <comment>FileNotFoundException</comment>
-  </data>
   <data name="UnhandledExceptionInDynamoEngine" xml:space="preserve">
     <value>Unhandled exception in Dynamo engine</value>
   </data>

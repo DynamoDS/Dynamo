@@ -405,15 +405,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Target file cannot be found!.
-        /// </summary>
-        public static string TargetFileNotFound {
-            get {
-                return ResourceManager.GetString("TargetFileNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unhandled exception in Dynamo engine.
         /// </summary>
         public static string UnhandledExceptionInDynamoEngine {
