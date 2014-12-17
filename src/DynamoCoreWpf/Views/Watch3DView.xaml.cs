@@ -18,8 +18,6 @@ using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
-using ProtoCore.Lang;
-
 using SharpDX;
 
 using Material = System.Windows.Media.Media3D.Material;
@@ -161,6 +159,7 @@ namespace Dynamo.Controls
 
         public Watch3DView(Guid id)
         {
+
             SetupScene();
 
             InitializeComponent();
