@@ -32,9 +32,9 @@ namespace DSCore.File
         }
     }
 
-    [NodeName("File Path")]
+    [NodeName(/*NXLT*/"File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("FilePathDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"FilePathDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
@@ -50,9 +50,9 @@ namespace DSCore.File
         }
     }
 
-    [NodeName("Directory Path")]
+    [NodeName(/*NXLT*/"Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("DirectoryPathDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"DirectoryPathDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
@@ -180,9 +180,9 @@ namespace DSCore.File
         }
     }
 
-    [NodeName("File.FromPath")]
+    [NodeName(/*NXLT*/"File.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("FileFromPathDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"FileFromPathDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
@@ -190,8 +190,8 @@ namespace DSCore.File
         public FileObject(WorkspaceModel workspaceModel)
             : base(workspaceModel, IO.File.FromPath)
         {
-            InPortData.Add(new PortData("path", Resources.FileObjectPortDataPathToolTip));
-            OutPortData.Add(new PortData("file", Resources.FileObjectPortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"path", Resources.FileObjectPortDataPathToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"file", Resources.FileObjectPortDataResultToolTip));
             RegisterAllPorts();
         }
 
@@ -234,9 +234,9 @@ namespace DSCore.File
         }
     }
 
-    [NodeName("Directory.FromPath")]
+    [NodeName(/*NXLT*/"Directory.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("DirectoryFromPathDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"DirectoryFromPathDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
@@ -244,8 +244,8 @@ namespace DSCore.File
         public DirectoryObject(WorkspaceModel workspaceModel)
             : base(workspaceModel, IO.Directory.FromPath)
         {
-            InPortData.Add(new PortData("path", Resources.DirectoryObjectPortDataPathToolTip));
-            OutPortData.Add(new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"path", Resources.DirectoryObjectPortDataPathToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"directory", Resources.DirectoryObjectPortDataResultToolTip));
             RegisterAllPorts();
         }
 

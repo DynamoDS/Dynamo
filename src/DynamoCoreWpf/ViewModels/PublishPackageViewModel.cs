@@ -51,7 +51,7 @@ namespace Dynamo.PackageManager
                 if (this._uploading != value)
                 {
                     this._uploading = value;
-                    this.RaisePropertyChanged("Uploading");
+                    this.RaisePropertyChanged(/*NXLT*/"Uploading");
                     this.BeginInvoke(
                         (Action) (() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
@@ -72,7 +72,7 @@ namespace Dynamo.PackageManager
                 {
                     this._uploadHandle = value;
                     this._uploadHandle.PropertyChanged += UploadHandleOnPropertyChanged;
-                    this.RaisePropertyChanged("UploadHandle");
+                    this.RaisePropertyChanged(/*NXLT*/"UploadHandle");
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace Dynamo.PackageManager
                 if (this._isNewVersion != value)
                 {
                     this._isNewVersion = value;
-                    this.RaisePropertyChanged("IsNewVersion");
+                    this.RaisePropertyChanged(/*NXLT*/"IsNewVersion");
                 }
             }
         }
@@ -118,7 +118,7 @@ namespace Dynamo.PackageManager
                 if (this._uploadState != value)
                 {
                     this._uploadState = value;
-                    this.RaisePropertyChanged("UploadState");
+                    this.RaisePropertyChanged(/*NXLT*/"UploadState");
                 }
             }
         }
@@ -136,7 +136,7 @@ namespace Dynamo.PackageManager
                 if (this._group != value)
                 {
                     this._group = value;
-                    this.RaisePropertyChanged("Group");
+                    this.RaisePropertyChanged(/*NXLT*/"Group");
                 }
             }
         }
@@ -154,7 +154,7 @@ namespace Dynamo.PackageManager
                 if (this._Description != value)
                 {
                     this._Description = value;
-                    this.RaisePropertyChanged("Description");
+                    this.RaisePropertyChanged(/*NXLT*/"Description");
                     this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
@@ -179,7 +179,7 @@ namespace Dynamo.PackageManager
                     value = regex.Replace(value, @" ");
 
                     this._Keywords = value;
-                    this.RaisePropertyChanged("Keywords");
+                    this.RaisePropertyChanged(/*NXLT*/"Keywords");
                     KeywordList = value.Split(' ').Where(x => x.Length > 0).ToList();
                 }
             }
@@ -216,7 +216,7 @@ namespace Dynamo.PackageManager
                     if (!Int32.TryParse(value, out val) || value == "") return;
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     this._MinorVersion = value;
-                    this.RaisePropertyChanged("MinorVersion");
+                    this.RaisePropertyChanged(/*NXLT*/"MinorVersion");
                     this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
@@ -239,7 +239,7 @@ namespace Dynamo.PackageManager
                     if (!Int32.TryParse(value, out val) || value == "") return;
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     this._BuildVersion = value;
-                    this.RaisePropertyChanged("BuildVersion");
+                    this.RaisePropertyChanged(/*NXLT*/"BuildVersion");
                     this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
@@ -262,7 +262,7 @@ namespace Dynamo.PackageManager
                     if (!Int32.TryParse(value, out val) || value == "") return;
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     this._MajorVersion = value;
-                    this.RaisePropertyChanged("MajorVersion");
+                    this.RaisePropertyChanged(/*NXLT*/"MajorVersion");
                     this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
@@ -283,7 +283,7 @@ namespace Dynamo.PackageManager
                 if (this._license != value)
                 {
                     this._license = value;
-                    this.RaisePropertyChanged("License");
+                    this.RaisePropertyChanged(/*NXLT*/"License");
                 }
             }
         }
@@ -301,7 +301,7 @@ namespace Dynamo.PackageManager
                 if (this._siteUrl != value)
                 {
                     this._siteUrl = value;
-                    this.RaisePropertyChanged("SiteUrl");
+                    this.RaisePropertyChanged(/*NXLT*/"SiteUrl");
                 }
             }
         }
@@ -319,7 +319,7 @@ namespace Dynamo.PackageManager
                 if (this._repositoryUrl != value)
                 {
                     this._repositoryUrl = value;
-                    this.RaisePropertyChanged("RepositoryUrl");
+                    this.RaisePropertyChanged(/*NXLT*/"RepositoryUrl");
                 }
             }
         }
@@ -337,7 +337,7 @@ namespace Dynamo.PackageManager
                 if (this._name != value)
                 {
                     this._name = value;
-                    this.RaisePropertyChanged("Name");
+                    this.RaisePropertyChanged(/*NXLT*/"Name");
                     this.BeginInvoke(
                         (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
@@ -353,7 +353,7 @@ namespace Dynamo.PackageManager
                 if (this._moreExpanded != value)
                 {
                     this._moreExpanded = value;
-                    this.RaisePropertyChanged("MoreExpanded");
+                    this.RaisePropertyChanged(/*NXLT*/"MoreExpanded");
                 }
             }
         }
@@ -436,7 +436,7 @@ namespace Dynamo.PackageManager
                 if (this._additionalFiles != value)
                 {
                     this._additionalFiles = value;
-                    this.RaisePropertyChanged("AdditionalFiles");
+                    this.RaisePropertyChanged(/*NXLT*/"AdditionalFiles");
                 }
             }
         }
@@ -709,7 +709,7 @@ namespace Dynamo.PackageManager
             set
             {
                 this._errorString = value;
-                this.RaisePropertyChanged("ErrorString");
+                this.RaisePropertyChanged(/*NXLT*/"ErrorString");
             }
         }
 
@@ -793,7 +793,7 @@ namespace Dynamo.PackageManager
                 if (funcDef != null && this.CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                 {
                     this.CustomNodeDefinitions.Add(funcDef);
-                    this.RaisePropertyChanged("PackageContents");
+                    this.RaisePropertyChanged(/*NXLT*/"PackageContents");
                 }
             }
         }
@@ -803,7 +803,7 @@ namespace Dynamo.PackageManager
             try
             {
                 this.AdditionalFiles.Add(filename);
-                this.RaisePropertyChanged("PackageContents");
+                this.RaisePropertyChanged(/*NXLT*/"PackageContents");
             }
             catch (Exception e)
             {
@@ -827,7 +827,7 @@ namespace Dynamo.PackageManager
                         Assembly = assem,
                         IsNodeLibrary = true // assume is node library when first added
                     });
-                    this.RaisePropertyChanged("PackageContents");
+                    this.RaisePropertyChanged(/*NXLT*/"PackageContents");
                 }
                 else
                 {

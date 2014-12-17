@@ -124,9 +124,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Watch 3D")]
+    [NodeName(/*NXLT*/"Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("Watch3DDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"Watch3DDescription",typeof(Properties.Resources))]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel, IWatchViewModel
@@ -175,7 +175,7 @@ namespace Dynamo.Nodes
             set
             {
                 _canNavigateBackground = value;
-                RaisePropertyChanged("CanNavigateBackground");
+                RaisePropertyChanged(/*NXLT*/"CanNavigateBackground");
             }
         }
 
@@ -193,8 +193,8 @@ namespace Dynamo.Nodes
 
         public Watch3D(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
-            OutPortData.Add(new PortData("", Resources.Watch3DPortDataOutputToolTip));
+            InPortData.Add(new PortData(String.Empty, Resources.Watch3DPortDataInputToolTip));
+            OutPortData.Add(new PortData(String.Empty, Resources.Watch3DPortDataOutputToolTip));
 
             RegisterAllPorts();
 

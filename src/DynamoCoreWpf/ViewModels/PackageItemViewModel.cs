@@ -27,7 +27,7 @@ namespace Dynamo.PackageManager.UI
             set
             {
                 _height = value;
-                RaisePropertyChanged("Height");
+                RaisePropertyChanged(/*NXLT*/"Height");
             }
         }
 
@@ -57,7 +57,7 @@ namespace Dynamo.PackageManager.UI
             set
             {
                 _visibility = value;
-                RaisePropertyChanged("Visibility");
+                RaisePropertyChanged(/*NXLT*/"Visibility");
             }
         }
 
@@ -71,7 +71,7 @@ namespace Dynamo.PackageManager.UI
             set
             {
                 _isSelected = value;
-                RaisePropertyChanged("IsSelected");
+                RaisePropertyChanged(/*NXLT*/"IsSelected");
             }
         }
 
@@ -85,7 +85,7 @@ namespace Dynamo.PackageManager.UI
             set
             {
                 _isExpanded = value;
-                RaisePropertyChanged("IsExpanded");
+                RaisePropertyChanged(/*NXLT*/"IsExpanded");
             }
         }
 
@@ -196,7 +196,7 @@ namespace Dynamo.PackageManager.UI
             set
             {
                 this.Assembly.IsNodeLibrary = value;
-                RaisePropertyChanged("IsNodeLibrary");
+                RaisePropertyChanged(/*NXLT*/"IsNodeLibrary");
             }
         }
 

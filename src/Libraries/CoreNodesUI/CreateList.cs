@@ -18,16 +18,16 @@ namespace DSCoreNodesUI
         }
     }
 
-    [NodeName("List.Create")]
-    [NodeDescription("ListCreateDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"List.Create")]
+    [NodeDescription(/*NXLT*/"ListCreateDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
     public class CreateList : VariableInputNode
     {
         public CreateList(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("index0", Resources.CreateListPortDataIndex0ToolTip));
-            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"index0", Resources.CreateListPortDataIndex0ToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"list", Resources.CreateListPortDataResultToolTip));
 
             RegisterAllPorts();
 

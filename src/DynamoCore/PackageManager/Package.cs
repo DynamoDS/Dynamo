@@ -65,40 +65,40 @@ namespace Dynamo.PackageManager
                 // this implies the user would like to rescan additional files
                 this.EnumerateAdditionalFiles();
                 typesVisibleInManager = value;
-                RaisePropertyChanged("TypesVisibleInManager");
+                RaisePropertyChanged(/*NXLT*/"TypesVisibleInManager");
             }
         }
 
         private string rootDirectory;
-        public string RootDirectory { get { return rootDirectory; } set { rootDirectory = value; RaisePropertyChanged("RootDirectory"); } }
+        public string RootDirectory { get { return rootDirectory; } set { rootDirectory = value; RaisePropertyChanged(/*NXLT*/"RootDirectory"); } }
 
         private string description = "";
-        public string Description { get { return description; } set { description = value; RaisePropertyChanged("Description"); } }
+        public string Description { get { return description; } set { description = value; RaisePropertyChanged(/*NXLT*/"Description"); } }
 
         private string versionName = "";
-        public string VersionName { get { return versionName; } set { versionName = value; RaisePropertyChanged("VersionName"); } }
+        public string VersionName { get { return versionName; } set { versionName = value; RaisePropertyChanged(/*NXLT*/"VersionName"); } }
 
         private string engineVersion = "";
-        public string EngineVersion { get { return engineVersion; } set { engineVersion = value; RaisePropertyChanged("EngineVersion"); } }
+        public string EngineVersion { get { return engineVersion; } set { engineVersion = value; RaisePropertyChanged(/*NXLT*/"EngineVersion"); } }
 
         private string license = "";
-        public string License { get { return license; } set { license = value; RaisePropertyChanged("License"); } }
+        public string License { get { return license; } set { license = value; RaisePropertyChanged(/*NXLT*/"License"); } }
 
         private string contents = "";
-        public string Contents { get { return contents; } set { contents = value; RaisePropertyChanged("Contents"); } }
+        public string Contents { get { return contents; } set { contents = value; RaisePropertyChanged(/*NXLT*/"Contents"); } }
 
         private IEnumerable<string> _keywords = new List<string>();
-        public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
+        public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged(/*NXLT*/"Keywords"); } }
 
         private bool markedForUninstall;
         public bool MarkedForUninstall
         {
             get { return markedForUninstall; }
-            private set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+            private set { markedForUninstall = value; RaisePropertyChanged(/*NXLT*/"MarkedForUninstall"); }
         }
 
         private string _group = "";
-        public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
+        public string Group { get { return _group; } set { _group = value; RaisePropertyChanged(/*NXLT*/"Group"); } }
 
 
         /// <summary>

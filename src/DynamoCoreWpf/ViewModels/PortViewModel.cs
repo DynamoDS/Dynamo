@@ -158,13 +158,13 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "IsSelected":
-                    RaisePropertyChanged("IsSelected");
+                    RaisePropertyChanged(/*NXLT*/"IsSelected");
                     break;
                 case "State":
-                    RaisePropertyChanged("State");
+                    RaisePropertyChanged(/*NXLT*/"State");
                     break;
                 case "ToolTipContent":
-                    RaisePropertyChanged("ToolTipContent");
+                    RaisePropertyChanged(/*NXLT*/"ToolTipContent");
                     break;
             }
         }
@@ -174,28 +174,28 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "ToolTipContent":
-                    RaisePropertyChanged("ToolTipContent");
+                    RaisePropertyChanged(/*NXLT*/"ToolTipContent");
                     break;
                 case "PortType":
-                    RaisePropertyChanged("PortType");
+                    RaisePropertyChanged(/*NXLT*/"PortType");
                     break;
                 case "PortName":
-                    RaisePropertyChanged("PortName");
+                    RaisePropertyChanged(/*NXLT*/"PortName");
                     break;
                 case "IsConnected":
-                    RaisePropertyChanged("IsConnected");
+                    RaisePropertyChanged(/*NXLT*/"IsConnected");
                     break;
                 case "Center":
-                    RaisePropertyChanged("Center");
+                    RaisePropertyChanged(/*NXLT*/"Center");
                     break;
                 case "DefaultValueEnabled":
-                    RaisePropertyChanged("DefaultValueEnabled");
+                    RaisePropertyChanged(/*NXLT*/"DefaultValueEnabled");
                     break;
                 case "UsingDefaultValue":
-                    RaisePropertyChanged("UsingDefaultValue");
+                    RaisePropertyChanged(/*NXLT*/"UsingDefaultValue");
                     break;
                 case "MarginThickness":
-                    RaisePropertyChanged("MarginThickness");
+                    RaisePropertyChanged(/*NXLT*/"MarginThickness");
                     break;
             }
             

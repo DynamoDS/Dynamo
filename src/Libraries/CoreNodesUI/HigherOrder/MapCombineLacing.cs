@@ -8,18 +8,18 @@ using DSCoreNodesUI.Properties;
 
 namespace DSCore
 {
-    [NodeName("List.Map")]
+    [NodeName(/*NXLT*/"List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListMapDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListMapDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Map : NodeModel
     {
         public Map(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("list", Resources.MapPortDataListToolTip));
-            InPortData.Add(new PortData("f(x)", Resources.MapPortDataFxToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list", Resources.MapPortDataListToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"f(x)", Resources.MapPortDataFxToolTip));
 
-            OutPortData.Add(new PortData("mapped", Resources.MapPortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"mapped", Resources.MapPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -47,11 +47,11 @@ namespace DSCore
 
         protected CombinatorNode(WorkspaceModel workspace) : this(workspace, 3)
         {
-            InPortData.Add(new PortData("comb", Resources.CombinatorPortDataCombToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
-            InPortData.Add(new PortData("list2", Resources.PortDataList2ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"comb", Resources.CombinatorPortDataCombToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list2", Resources.PortDataList2ToolTip));
 
-            OutPortData.Add(new PortData("combined", Resources.CombinatorPortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"combined", Resources.CombinatorPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -78,9 +78,9 @@ namespace DSCore
         }
     }
 
-    [NodeName("List.Combine")]
+    [NodeName(/*NXLT*/"List.Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListCombineDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListCombineDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Combine : CombinatorNode
     {
@@ -104,9 +104,9 @@ namespace DSCore
     }
 
     [IsVisibleInDynamoLibrary(false)]
-    [NodeName("List.ForEach")]
+    [NodeName(/*NXLT*/"List.ForEach")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListForEachDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListForEachDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class ForEach : CombinatorNode
     {
@@ -130,9 +130,9 @@ namespace DSCore
     }
 
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
-    [NodeName("List.LaceShortest")]
+    [NodeName(/*NXLT*/"List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListLaceShortestDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListLaceShortestDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class LaceShortest : CombinatorNode
     {
@@ -156,9 +156,9 @@ namespace DSCore
     }
 
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
-    [NodeName("List.LaceLongest")]
+    [NodeName(/*NXLT*/"List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListLaceLongestDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListLaceLongestDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class LaceLongest : CombinatorNode
     {
@@ -183,9 +183,9 @@ namespace DSCore
 
     ///<search>cross</search>
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
-    [NodeName("List.CartesianProduct")]
+    [NodeName(/*NXLT*/"List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListCartesianProductDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListCartesianProductDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class CartesianProduct : CombinatorNode
     {
@@ -270,9 +270,9 @@ namespace DSCore
     }
     */
 
-    [NodeName("List.Reduce")]
+    [NodeName(/*NXLT*/"List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListReduceDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListReduceDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Reduce : VariableInputNode
     {
@@ -280,11 +280,11 @@ namespace DSCore
 
         public Reduce(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            InPortData.Add(new PortData("reductor", Resources.ReducePortDataReductorToolTip));
-            InPortData.Add(new PortData("seed", Resources.ReducePortDataSeedToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"reductor", Resources.ReducePortDataReductorToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"seed", Resources.ReducePortDataSeedToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list1", Resources.PortDataList1ToolTip));
 
-            OutPortData.Add(new PortData("reduced", Resources.ReducePortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"reduced", Resources.ReducePortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -357,9 +357,9 @@ namespace DSCore
         }
     }
 
-    [NodeName("List.Scan")]
+    [NodeName(/*NXLT*/"List.Scan")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListScanDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListScanDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class ScanList : VariableInputNode
     {
@@ -367,11 +367,11 @@ namespace DSCore
 
         public ScanList(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("reductor", Resources.ScanPortDataReductorToolTip));
-            InPortData.Add(new PortData("seed", Resources.ScanPortDataSeedToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"reductor", Resources.ScanPortDataReductorToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"seed", Resources.ScanPortDataSeedToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list1", Resources.PortDataList1ToolTip));
 
-            OutPortData.Add(new PortData("scanned", Resources.ScanPortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"scanned", Resources.ScanPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -444,19 +444,19 @@ namespace DSCore
         }
     }
 
-    [NodeName("List.Filter")]
+    [NodeName(/*NXLT*/"List.Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListFilterDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ListFilterDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Filter : NodeModel
     {
         public Filter(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("list", Resources.FilterPortDataListToolTip));
-            InPortData.Add(new PortData("condition", Resources.FilterPortDataConditionToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list", Resources.FilterPortDataListToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"condition", Resources.FilterPortDataConditionToolTip));
 
-            OutPortData.Add(new PortData("in", Resources.FilterPortDataResultInToolTip));
-            OutPortData.Add(new PortData("out", Resources.FilterPortDataResultOutToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"in", Resources.FilterPortDataResultInToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"out", Resources.FilterPortDataResultOutToolTip));
 
             RegisterAllPorts();
         }
@@ -486,19 +486,19 @@ namespace DSCore
         }
     }
 
-    [NodeName("ReplaceByCondition")]
+    [NodeName(/*NXLT*/"ReplaceByCondition")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ReplaceByConditionDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"ReplaceByConditionDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Replace : NodeModel
     {
         public Replace(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("item", Resources.ReplacePortDataItemToolTip));
-            InPortData.Add(new PortData("replaceWith", Resources.ReplacePortDataReplaceWithToolTip));
-            InPortData.Add(new PortData("condition", Resources.ReplacePortDataConditionToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"item", Resources.ReplacePortDataItemToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"replaceWith", Resources.ReplacePortDataReplaceWithToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"condition", Resources.ReplacePortDataConditionToolTip));
 
-            OutPortData.Add(new PortData("var", Resources.ReplacePortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"var", Resources.ReplacePortDataResultToolTip));
 
             RegisterAllPorts();
         }

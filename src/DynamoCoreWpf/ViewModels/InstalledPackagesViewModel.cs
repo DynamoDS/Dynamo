@@ -58,7 +58,7 @@ namespace Dynamo.ViewModels
                     break;
             }
 
-            RaisePropertyChanged("LocalPackages");
+            RaisePropertyChanged(/*NXLT*/"LocalPackages");
         }
     }
 }

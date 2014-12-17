@@ -64,7 +64,7 @@ namespace DSIronPythonNode
     {
         protected PythonNodeBase(WorkspaceModel workspace) : base(workspace)
         {
-            OutPortData.Add(new PortData("OUT", Resources.PythonNodePortDataOutputToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"OUT", Resources.PythonNodePortDataOutputToolTip));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -106,9 +106,9 @@ namespace DSIronPythonNode
         }
     }
 
-    [NodeName("Python Script")]
+    [NodeName(/*NXLT*/"Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("PythonScriptDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"PythonScriptDescription",typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
@@ -136,7 +136,7 @@ namespace DSIronPythonNode
                 if (script != value)
                 {
                     script = value;
-                    RaisePropertyChanged("Script");
+                    RaisePropertyChanged(/*NXLT*/"Script");
                 }
             }
         }
@@ -212,16 +212,16 @@ namespace DSIronPythonNode
         #endregion
     }
 
-    [NodeName("Python Script From String")]
+    [NodeName(/*NXLT*/"Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("PythonScriptFromStringDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"PythonScriptFromStringDescription",typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase
     {
         public PythonStringNode(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("script", Resources.PythonStringPortDataScriptToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"script", Resources.PythonStringPortDataScriptToolTip));
             AddInput();
             RegisterAllPorts();
         }

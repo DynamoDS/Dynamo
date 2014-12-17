@@ -13,9 +13,9 @@ using DSCoreNodesUI.Properties;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Watch")]
+    [NodeName(/*NXLT*/"Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("WatchDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"WatchDescription", typeof(Resources))]
     [NodeSearchTags("WatchSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Watch : NodeModel
@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
             set
             {
                 root = value;
-                RaisePropertyChanged("Root");
+                RaisePropertyChanged(/*NXLT*/"Root");
             }
         }
 
@@ -65,8 +65,8 @@ namespace Dynamo.Nodes
         public Watch(WorkspaceModel ws)
             : base(ws)
         {
-            InPortData.Add(new PortData("", Resources.WatchPortDataInputToolTip));
-            OutPortData.Add(new PortData("", Resources.WatchPortDataResultToolTip));
+            InPortData.Add(new PortData(String.Empty, Resources.WatchPortDataInputToolTip));
+            OutPortData.Add(new PortData(String.Empty, Resources.WatchPortDataResultToolTip));
 
             RegisterAllPorts();
 

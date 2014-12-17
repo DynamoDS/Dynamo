@@ -9,9 +9,9 @@ using Dynamo.Models;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Double Slider")]
+    [NodeName(/*NXLT*/"Double Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("DoubleSliderDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"DoubleSliderDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DoubleSlider : DSCoreNodesUI.Double
@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
                 _max = value;
                 if (_max < Value)
                     Value = _max;
-                RaisePropertyChanged("Max");
+                RaisePropertyChanged(/*NXLT*/"Max");
             }
         }
 
@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
                 _min = value;
                 if (_min > Value)
                     Value = _min;
-                RaisePropertyChanged("Min");
+                RaisePropertyChanged(/*NXLT*/"Min");
             }
         }
 

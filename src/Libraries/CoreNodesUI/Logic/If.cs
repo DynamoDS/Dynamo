@@ -14,19 +14,19 @@ using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 
 namespace DSCoreNodesUI.Logic
 {
-    [NodeName("If")]
+    [NodeName(/*NXLT*/"If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("IfDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"IfDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class If : NodeModel
     {
         public If(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));
-            InPortData.Add(new PortData("true", Resources.PortDataTrueBlockToolTip));
-            InPortData.Add(new PortData("false", Resources.PortDataFalseBlockToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"test", Resources.PortDataTestBlockToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"true", Resources.PortDataTrueBlockToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"false", Resources.PortDataFalseBlockToolTip));
 
-            OutPortData.Add(new PortData("result", Resources.PortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"result", Resources.PortDataResultToolTip));
 
             RegisterAllPorts();
 

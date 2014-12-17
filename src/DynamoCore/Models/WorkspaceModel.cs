@@ -124,7 +124,7 @@ namespace Dynamo.Models
             set
             {
                 _isCurrentSpace = value;
-                RaisePropertyChanged("IsCurrentSpace");
+                RaisePropertyChanged(/*NXLT*/"IsCurrentSpace");
             }
         }
 
@@ -134,7 +134,7 @@ namespace Dynamo.Models
             set
             {
                 _category = value;
-                RaisePropertyChanged("Category");
+                RaisePropertyChanged(/*NXLT*/"Category");
             }
         }
 
@@ -147,7 +147,7 @@ namespace Dynamo.Models
             set
             {
                 _lastSaved = value;
-                RaisePropertyChanged("LastSaved");
+                RaisePropertyChanged(/*NXLT*/"LastSaved");
             }
         }
 
@@ -160,7 +160,7 @@ namespace Dynamo.Models
             set
             {
                 _author = value;
-                RaisePropertyChanged("Author");
+                RaisePropertyChanged(/*NXLT*/"Author");
             }
         }
 
@@ -173,7 +173,7 @@ namespace Dynamo.Models
             set
             {
                 _description = value;
-                RaisePropertyChanged("Description");
+                RaisePropertyChanged(/*NXLT*/"Description");
             }
         }
 
@@ -186,7 +186,7 @@ namespace Dynamo.Models
             set
             {
                 _hasUnsavedChanges = value;
-                RaisePropertyChanged("HasUnsavedChanges");
+                RaisePropertyChanged(/*NXLT*/"HasUnsavedChanges");
             }
         }
 
@@ -202,7 +202,7 @@ namespace Dynamo.Models
             set
             {
                 _fileName = value;
-                RaisePropertyChanged("FileName");
+                RaisePropertyChanged(/*NXLT*/"FileName");
             }
         }
 
@@ -212,7 +212,7 @@ namespace Dynamo.Models
             set
             {
                 _name = value;
-                RaisePropertyChanged("Name");
+                RaisePropertyChanged(/*NXLT*/"Name");
             }
         }
 
@@ -225,7 +225,7 @@ namespace Dynamo.Models
             set
             {
                 _x = value;
-                RaisePropertyChanged("X");
+                RaisePropertyChanged(/*NXLT*/"X");
             }
         }
 
@@ -238,7 +238,7 @@ namespace Dynamo.Models
             set
             {
                 _y = value;
-                RaisePropertyChanged("Y");
+                RaisePropertyChanged(/*NXLT*/"Y");
             }
         }
 
@@ -248,7 +248,7 @@ namespace Dynamo.Models
             set
             {
                 _zoom = value;
-                RaisePropertyChanged("Zoom");
+                RaisePropertyChanged(/*NXLT*/"Zoom");
             }
         }
 
@@ -261,7 +261,7 @@ namespace Dynamo.Models
             set
             {
                 _height = value;
-                RaisePropertyChanged("Height");
+                RaisePropertyChanged(/*NXLT*/"Height");
             }
         }
 
@@ -274,7 +274,7 @@ namespace Dynamo.Models
             set
             {
                 _width = value;
-                RaisePropertyChanged("Width");
+                RaisePropertyChanged(/*NXLT*/"Width");
             }
         }
 
@@ -633,7 +633,7 @@ namespace Dynamo.Models
 
         public void ReportPosition()
         {
-            RaisePropertyChanged("Position");
+            RaisePropertyChanged(/*NXLT*/"Position");
         }
 
         #endregion

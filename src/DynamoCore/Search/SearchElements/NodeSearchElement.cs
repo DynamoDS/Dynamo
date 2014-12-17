@@ -72,7 +72,7 @@ namespace Dynamo.Search.SearchElements
             set
             {
                 _descriptionVisibility = value;
-                RaisePropertyChanged("DescriptionVisibility");
+                RaisePropertyChanged(/*NXLT*/"DescriptionVisibility");
             }
         }
 

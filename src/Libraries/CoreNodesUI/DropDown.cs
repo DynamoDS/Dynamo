@@ -23,7 +23,7 @@ namespace DSCoreNodesUI
             set
             {
                 items = value;
-                RaisePropertyChanged("Items");
+                RaisePropertyChanged(/*NXLT*/"Items");
             }
         }
 
@@ -41,7 +41,7 @@ namespace DSCoreNodesUI
                 }
                 else
                     selectedIndex = value;
-                RaisePropertyChanged("SelectedIndex");
+                RaisePropertyChanged(/*NXLT*/"SelectedIndex");
             }
         }
 

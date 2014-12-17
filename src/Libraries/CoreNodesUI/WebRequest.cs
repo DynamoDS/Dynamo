@@ -8,8 +8,8 @@ using DSCoreNodesUI.Properties;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Web Request")]
-    [NodeDescription("WebRequestDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"Web Request")]
+    [NodeDescription(/*NXLT*/"WebRequestDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel
@@ -25,8 +25,8 @@ namespace DSCoreNodesUI
         public WebRequest(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("url", Resources.WebRequestPortDataUrlToolTip));
-            OutPortData.Add(new PortData("result", Resources.WebRequestPortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"url", Resources.WebRequestPortDataUrlToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"result", Resources.WebRequestPortDataResultToolTip));
             RegisterAllPorts();
         }
 
