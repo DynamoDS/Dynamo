@@ -141,6 +141,9 @@ This node requires Microsoft Excel to be installed.</value>
 This node requires Microsoft Excel to be installed.</value>
     <comment>Description for Get Worksheets From Excel Workbook</comment>
   </data>
+  <data name="NewExcelWorkBookPortDataOutputToolTip" xml:space="preserve">
+    <value>The new Excel Workbook</value>
+  </data>
   <data name="NewExelWorkbookDescription" xml:space="preserve">
     <value>Create a new Excel Workbook object.
 
@@ -152,6 +155,48 @@ This node requires Microsoft Excel to be installed.</value>
 
 This node requires Microsoft Excel to be installed.</value>
     <comment>Description for Open Exel Workbook</comment>
+  </data>
+  <data name="PortDataDataToolTip" xml:space="preserve">
+    <value>A single item, a 1d list, or a 2d list to write to the worksheet</value>
+  </data>
+  <data name="PortDataExcelWorkbookToSaveToolTip" xml:space="preserve">
+    <value>The Excel Workbook to save</value>
+  </data>
+  <data name="PortDataExcelWorkbookToWriteToToolTip" xml:space="preserve">
+    <value>The Excel Worksheet to write to</value>
+  </data>
+  <data name="PortDataModifiedWorkSheetToolTip" xml:space="preserve">
+    <value>The modified excel worksheet</value>
+  </data>
+  <data name="PortDataNewlyAddedWorkbookToolTip" xml:space="preserve">
+    <value>The Worksheet newly added to the Workbook</value>
+  </data>
+  <data name="PortDataNewWorkSheetNameToolTip" xml:space="preserve">
+    <value>Name of new Worksheet to add</value>
+  </data>
+  <data name="PortDataStartColumnToolTip" xml:space="preserve">
+    <value>Column index to insert data.</value>
+  </data>
+  <data name="PortDataStartRowToolTip" xml:space="preserve">
+    <value>Row index to insert data.</value>
+  </data>
+  <data name="PortDataWorkbookFileNameToolTip" xml:space="preserve">
+    <value>Filename to save the Workbook to</value>
+  </data>
+  <data name="PortDataWorkbookToolTip" xml:space="preserve">
+    <value>The excel workbook</value>
+  </data>
+  <data name="PortDataWorkSheetNameToolTip" xml:space="preserve">
+    <value>Name of the worksheet to get</value>
+  </data>
+  <data name="PortDataWorkSheetsToolTip" xml:space="preserve">
+    <value>A list of worksheets</value>
+  </data>
+  <data name="PortDataWorkSheetToolTip" xml:space="preserve">
+    <value>The worksheet with the given name</value>
+  </data>
+  <data name="ReadExcelFilePortDataOutputToolTip" xml:space="preserve">
+    <value>The workbook opened from the file</value>
   </data>
   <data name="SaveExcelWorkbookAsDescription" xml:space="preserve">
     <value>Write an Excel Workbook to a file with the given filename.  
