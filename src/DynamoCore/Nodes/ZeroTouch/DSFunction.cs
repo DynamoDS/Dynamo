@@ -129,7 +129,7 @@ namespace Dynamo.Nodes
             {
                 foreach (var key in Definition.ReturnKeys)
                 {
-                    model.OutPortData.Add(new PortData(key, "var"));
+                    model.OutPortData.Add(new PortData(key, Resources.PortDataVariableToolTip));
                 }
             }
             else

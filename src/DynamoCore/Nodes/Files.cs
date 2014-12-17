@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Dynamo.Models;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -31,7 +32,7 @@ namespace Dynamo.Nodes
         protected FileReaderBase(WorkspaceModel ws) : base(ws)
         {
             handler = watcher_FileChanged;
-            InPortData.Add(new PortData("path", "Path to the file"));
+            InPortData.Add(new PortData("path", Resources.PortDataPathToFileToolTip));
         }
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)

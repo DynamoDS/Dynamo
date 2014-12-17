@@ -5,7 +5,7 @@ using System.Text;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
-
+using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
@@ -26,8 +26,8 @@ namespace DSCoreNodesUI
     {
         public CreateList(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("index0", "Item Index #0"));
-            OutPortData.Add(new PortData("list", "A list"));
+            InPortData.Add(new PortData("index0", Resources.CreateListPortDataIndex0ToolTip));
+            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
 
             RegisterAllPorts();
 

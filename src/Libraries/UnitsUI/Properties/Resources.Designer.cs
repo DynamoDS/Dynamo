@@ -70,6 +70,15 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The area. Stored internally as decimal meters squared..
+        /// </summary>
+        public static string AreaFromStringPortDataAreaToolTip {
+            get {
+                return ResourceManager.GetString("AreaFromStringPortDataAreaToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Imperial;Metric;Area;Project;units.
         /// </summary>
         public static string AreaFromStringSearchTags {
@@ -84,6 +93,15 @@ namespace UnitsUI.Properties {
         public static string LengthFromStringDescription {
             get {
                 return ResourceManager.GetString("LengthFromStringDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The length. Stored internally as decimal meters..
+        /// </summary>
+        public static string LengthFromStringPortDataLengthToolTip {
+            get {
+                return ResourceManager.GetString("LengthFromStringPortDataLengthToolTip", resourceCulture);
             }
         }
         
@@ -120,6 +138,15 @@ namespace UnitsUI.Properties {
         public static string VolumeFromStringDescription {
             get {
                 return ResourceManager.GetString("VolumeFromStringDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The volume. Stored internally as decimal meters cubed..
+        /// </summary>
+        public static string VolumeFromStringPortDataVolumeToolTip {
+            get {
+                return ResourceManager.GetString("VolumeFromStringPortDataVolumeToolTip", resourceCulture);
             }
         }
         

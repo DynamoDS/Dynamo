@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DSCoreNodesUI.Properties;
 
 namespace DSCoreNodesUI.StringNodes
 {
@@ -66,8 +67,8 @@ namespace DSCoreNodesUI.StringNodes
             : base(workspace, "__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("obj", "Object to be serialized"));
-            OutPortData.Add(new PortData("str", "String representation of the object"));
+            InPortData.Add(new PortData("obj", Resources.FromObjectPortDataObjToolTip));
+            OutPortData.Add(new PortData("str", Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
     }
@@ -83,8 +84,8 @@ namespace DSCoreNodesUI.StringNodes
             : base(workspace, "__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("arr", "The array of object to be serialized"));
-            OutPortData.Add(new PortData("str", "String representation of the array"));
+            InPortData.Add(new PortData("arr", Resources.FromArrayPortDataArrayToolTip));
+            OutPortData.Add(new PortData("str", Resources.FromArrayPortDataResultToolTip));
             RegisterAllPorts();
         }
     }

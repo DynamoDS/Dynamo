@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using DSCoreNodesUI.Properties; 
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -21,11 +22,11 @@ namespace DSCoreNodesUI.Logic
     {
         public If(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            InPortData.Add(new PortData("test", "Test block"));
-            InPortData.Add(new PortData("true", "True block"));
-            InPortData.Add(new PortData("false", "False block"));
+            InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));
+            InPortData.Add(new PortData("true", Resources.PortDataTrueBlockToolTip));
+            InPortData.Add(new PortData("false", Resources.PortDataFalseBlockToolTip));
 
-            OutPortData.Add(new PortData("result", "Result"));
+            OutPortData.Add(new PortData("result", Resources.PortDataResultToolTip));
 
             RegisterAllPorts();
 

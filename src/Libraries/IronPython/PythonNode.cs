@@ -15,6 +15,7 @@ using Dynamo.Wpf;
 
 using ProtoCore.AST.AssociativeAST;
 using Autodesk.DesignScript.Runtime;
+using DSIronPythonNode.Properties;
 
 namespace DSIronPythonNode
 {
@@ -63,7 +64,7 @@ namespace DSIronPythonNode
     {
         protected PythonNodeBase(WorkspaceModel workspace) : base(workspace)
         {
-            OutPortData.Add(new PortData("OUT", "Result of the python script"));
+            OutPortData.Add(new PortData("OUT", Resources.PythonNodePortDataOutputToolTip));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -220,7 +221,7 @@ namespace DSIronPythonNode
     {
         public PythonStringNode(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("script", "Python script to run."));
+            InPortData.Add(new PortData("script", Resources.PythonStringPortDataScriptToolTip));
             AddInput();
             RegisterAllPorts();
         }

@@ -68,5 +68,23 @@ namespace DynamoWatch3D.Properties {
                 return ResourceManager.GetString("Watch3DDescription", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incoming geometry objects..
+        /// </summary>
+        public static string Watch3DPortDataInputToolTip {
+            get {
+                return ResourceManager.GetString("Watch3DPortDataInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Watch contents, passed through.
+        /// </summary>
+        public static string Watch3DPortDataOutputToolTip {
+            get {
+                return ResourceManager.GetString("Watch3DPortDataOutputToolTip", resourceCulture);
+            }
+        }
     }
 }

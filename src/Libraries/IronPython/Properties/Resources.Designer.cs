@@ -61,6 +61,15 @@ namespace DSIronPythonNode.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Result of the python script.
+        /// </summary>
+        public static string PythonNodePortDataOutputToolTip {
+            get {
+                return ResourceManager.GetString("PythonNodePortDataOutputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Runs an embedded IronPython script..
         /// </summary>
         public static string PythonScriptDescription {
@@ -75,6 +84,15 @@ namespace DSIronPythonNode.Properties {
         public static string PythonScriptFromStringDescription {
             get {
                 return ResourceManager.GetString("PythonScriptFromStringDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python script to run..
+        /// </summary>
+        public static string PythonStringPortDataScriptToolTip {
+            get {
+                return ResourceManager.GetString("PythonStringPortDataScriptToolTip", resourceCulture);
             }
         }
     }
