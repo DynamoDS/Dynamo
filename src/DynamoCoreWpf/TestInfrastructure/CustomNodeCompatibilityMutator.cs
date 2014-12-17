@@ -352,7 +352,7 @@ namespace Dynamo.TestInfrastructure
                             {
                                 MethodInfo[] specialTypeStaticMethods = 
                                     t.GetMethods(BindingFlags.Static | BindingFlags.Public);
-                                const string nameOfMethodCreate = "noSkinSolidMethod";
+                                const string nameOfMethodCreate = /*NXLT*/"noSkinSolidMethod";
                                 bool exclude = true;
                                 foreach (MethodInfo m in specialTypeStaticMethods)
                                 {

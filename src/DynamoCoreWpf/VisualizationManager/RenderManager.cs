@@ -173,7 +173,7 @@ namespace Dynamo
                 nodeModels.ToList().ForEach(x => RenderSpecificNodeSync(x, visualizationManager.MaxTesselationDivisions ));
 
                 sw.Stop();
-                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating render packages.", sw.Elapsed));
+                Debug.WriteLine(string.Format(/*NXLT*/"RENDER: {0} ellapsed for updating render packages.", sw.Elapsed));
 
                 OnRenderComplete(this, new RenderCompletionEventArgs(taskID));
 

@@ -155,7 +155,7 @@ namespace Dynamo.UI.Controls
 
         private HighlightingRule CreateClassHighlightRule()
         {
-            Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
+            Color color = (Color)ColorConverter.ConvertFromString(/*NXLT*/"#2E998F");
             var classHighlightRule = new HighlightingRule();
             classHighlightRule.Color = new HighlightingColor()
             {
@@ -173,7 +173,7 @@ namespace Dynamo.UI.Controls
 
         private HighlightingRule CreateMethodHighlightRule()
         {
-            Color color = (Color)ColorConverter.ConvertFromString("#417693");
+            Color color = (Color)ColorConverter.ConvertFromString(/*NXLT*/"#417693");
             var methodHighlightRule = new HighlightingRule();
             methodHighlightRule.Color = new HighlightingColor()
             {

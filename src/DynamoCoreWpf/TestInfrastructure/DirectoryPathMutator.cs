@@ -20,9 +20,9 @@ namespace Dynamo.TestInfrastructure
         {
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
-            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+            string pathToNodesDll = assemblyDir + /*NXLT*/"\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(pathToNodesDll);
-            Type type = assembly.GetType("DSCore.File.Directory");
+            Type type = assembly.GetType(/*NXLT*/"DSCore.File.Directory");
 
             return type;
         }

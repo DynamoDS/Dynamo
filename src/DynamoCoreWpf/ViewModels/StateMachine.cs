@@ -107,7 +107,7 @@ namespace Dynamo.ViewModels
 
             if (draggedNodes.Count <= 0) // There is nothing to drag.
             {
-                string message = "Shouldn't get here if nothing is dragged";
+                string message = /*NXLT*/"Shouldn't get here if nothing is dragged";
                 throw new InvalidOperationException(message);
             }
         }
@@ -117,7 +117,7 @@ namespace Dynamo.ViewModels
             if (draggedNodes.Count <= 0)
             {
                 throw new InvalidOperationException(
-                    "UpdateDraggedSelection cannot be called now");
+                    /*NXLT*/"UpdateDraggedSelection cannot be called now");
             }
 
             foreach (DraggedNode draggedNode in draggedNodes)

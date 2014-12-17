@@ -1370,4 +1370,49 @@ You will get a chance to save your work.</value>
   <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
     <value>_Zoom to Fit</value>
   </data>
+  <data name="BuildVersionNonNegative" xml:space="preserve">
+    <value>You must provide a Build version as a non-negative integer.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="CannotSubmitPackage" xml:space="preserve">
+    <value>You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
+    <value>Description must be longer than 10 characters.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="MajorVersionNonNegative" xml:space="preserve">
+    <value>You must provide a Major version as a non-negative integer.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="MinorVersionNonNegative" xml:space="preserve">
+    <value>You must provide a Minor version as a non-negative integer.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="NameNeedMoreCharacters" xml:space="preserve">
+    <value>Name must be at least 3 characters.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
+    <value>The name of the package cannot contain /,\, or *.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
+    <value>Your package must contain at least one file.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="UpdateMessage" xml:space="preserve">
+    <value>An update is available for Dynamo
+
+Click OK to close Dynamo and install
+Click CANCEL to cancel the update.</value>
+  </data>
+  <data name="VersionValueGreaterThan0" xml:space="preserve">
+    <value>At least one of your version values must be greater than 0.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="InstallMessageCaption" xml:space="preserve">
+    <value>Install Dynamo</value>
+  </data>
 </root>
