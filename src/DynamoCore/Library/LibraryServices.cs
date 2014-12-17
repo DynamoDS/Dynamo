@@ -245,7 +245,7 @@ namespace Dynamo.DSEngine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library"></param>
-        public void ImportLibrary(string library)
+        public bool ImportLibrary(string library)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -255,21 +255,21 @@ namespace Dynamo.DSEngine
             {
                 const string errorMessage = "Invalid library format.";
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                return;
+                return false;
             }
 
             if (importedFunctionGroups.ContainsKey(library))
             {
                 string errorMessage = string.Format("Library {0} has been loaded.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                return;
+                return false;
             }
 
             if (!DynamoPathManager.Instance.ResolveLibraryPath(ref library))
             {
                 string errorMessage = string.Format("Cannot find library path: {0}.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                return;
+                return false;
             }
 
             OnLibraryLoading(new LibraryLoadingEventArgs(library));
@@ -297,7 +297,7 @@ namespace Dynamo.DSEngine
                     }
 
                     OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                    return;
+                    return false;
                 }
 
                 var loadedClasses = classTable.ClassNodes.Skip(classNumber);
@@ -315,10 +315,11 @@ namespace Dynamo.DSEngine
             catch (Exception e)
             {
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
-                return;
+                return false;
             }
 
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+            return true;
         }
 
         private void ParseLibraryMigrations(string library)

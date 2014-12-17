@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Dynamo.Utilities;
 using Dynamo.Core;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -241,8 +240,7 @@ namespace Dynamo.Models
         {
             CurrentWorkspace.ConvertNodesToCodeInternal(
                 command.NodeId,
-                null,
-                LibraryServices.LibraryManagementCore,
+                EngineController,
                 DebugSettings.VerboseLogging);
 
             CurrentWorkspace.HasUnsavedChanges = true;

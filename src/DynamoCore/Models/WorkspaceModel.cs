@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -35,8 +34,6 @@ namespace Dynamo.Models
         private double zoom = 1.0;
         private DateTime lastSaved;
         private string author = "None provided";
-        private string description = "";
-        private string category = "";
         private bool hasUnsavedChanges;
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
@@ -823,7 +820,7 @@ namespace Dynamo.Models
         }
 
         [Obsolete("Node to Code not enabled, API subject to change.")]
-        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController, ProtoCore.Core core, bool verboseLogging)
+        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController, bool verboseLogging)
         {
             IEnumerable<NodeModel> selectedNodes =
                 DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
@@ -895,8 +892,7 @@ namespace Dynamo.Models
                     code,
                     nodeId,
                     totalX/nodeCount,
-                    totalY/nodeCount,
-                    core);
+                    totalY/nodeCount, engineController.LibraryServices);
                 UndoRecorder.RecordCreationForUndo(codeBlockNode);
                 Nodes.Add(codeBlockNode);
                 #endregion
@@ -913,19 +909,6 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
-            OnAstUpdated();
-        }
-        
-        private void MarkUnsaved(
-            object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            HasUnsavedChanges = true;
-        }
-
-        private void MarkUnsavedAndModified(
-            object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-        {
-            HasUnsavedChanges = true;
             OnAstUpdated();
         }
 
@@ -1081,7 +1064,6 @@ namespace Dynamo.Models
                     }
                     else if (model is ConnectorModel)
                     {
-                        var connector = model as ConnectorModel;
                         undoRecorder.RecordDeletionForUndo(model);
                     }
                 }
@@ -1237,7 +1219,6 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="externalOutputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
-        /// <param name="logger"></param>
         [Obsolete("Node to Code not enabled, API subject to change.")]
         private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel codeBlockNode)
         {
@@ -1274,38 +1255,36 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
-        /// <param name="logger"></param>
         [Obsolete("Node to Code not enabled, API subject to change.")]
         private void ReConnectInputConnections(
-            Dictionary<ConnectorModel, string> externalInputConnections,
-            CodeBlockNodeModel codeBlockNode)
+            Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel codeBlockNode)
         {
-            foreach (var kvp in externalInputConnections)
+            var connections = from kvp in externalInputConnections
+                              let connector = kvp.Key
+                              let variableName = kvp.Value
+                              let startIndex = connector.Start.Owner.OutPorts.IndexOf(connector.Start)
+                              let endIndex = CodeBlockNodeModel.GetInportIndex(codeBlockNode, variableName)
+                              where Connectors.All(c => c.End != codeBlockNode.InPorts[endIndex])
+                              select
+                                  new
+                                  {
+                                      Start = connector.Start.Owner,
+                                      End = codeBlockNode,
+                                      StartIdx = startIndex,
+                                      EndIdx = endIndex
+                                  };
+
+            foreach (var newConnector in connections)
             {
-                var connector = kvp.Key;
-                string variableName = kvp.Value;
-
-                //Find the start and end index of the ports for the connection
-                int startIndex = connector.Start.Owner.OutPorts.IndexOf(connector.Start);
-                int endIndex = CodeBlockNodeModel.GetInportIndex(codeBlockNode, variableName);
-
-                //For inputs, a single node can be an input to multiple nodes in the code block node selection
-                //After conversion, all these connecetions should become only 1 connection and not many
-                //Hence for inputs, it is required to make sure that a certain type of connection has not
-                //been created already.
-                if (Connectors.All(c => c.End != codeBlockNode.InPorts[endIndex]))
-                {
-                    //Make the new connection and then record and add it
-                    var newConnector = ConnectorModel.Make(
-                        connector.Start.Owner,
-                        codeBlockNode,
-                        startIndex,
-                        endIndex);
-                    UndoRecorder.RecordCreationForUndo(newConnector);
-                }
+                var connector = ConnectorModel.Make(
+                    newConnector.Start,
+                    newConnector.End,
+                    newConnector.StartIdx,
+                    newConnector.EndIdx);
+                UndoRecorder.RecordCreationForUndo(connector);
             }
         }
-        
+
         #endregion
 
         internal string GetStringRepOfWorkspace()

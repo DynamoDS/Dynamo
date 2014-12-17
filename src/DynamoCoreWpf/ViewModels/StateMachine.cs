@@ -831,7 +831,7 @@ namespace Dynamo.ViewModels
             private void CreateCodeBlockNode(Point cursor)
             {
                 // create node
-                var node = new CodeBlockNodeModel(owningWorkspace.DynamoViewModel.EngineController.LiveRunnerCore);
+                var node = new CodeBlockNodeModel(owningWorkspace.DynamoViewModel.Model.LibraryServices);
 
                 owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(node, cursor.X, cursor.Y, false, true));
 

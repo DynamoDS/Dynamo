@@ -114,9 +114,7 @@ namespace UnitsUI
     public abstract class MeasurementInputBase : NodeModel
     {
         public SIUnit Measure { get; protected set; }
-
-        protected MeasurementInputBase(WorkspaceModel workspaceModel) : base() { }
-
+        
         public double Value
         {
             get
@@ -204,7 +202,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
-        public LengthFromString(WorkspaceModel ws) : base(ws)
+        public LengthFromString()
         {
             Measure = Length.FromDouble(0.0);
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters."));
@@ -253,7 +251,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
     {
-        public AreaFromString(WorkspaceModel workspaceModel) : base(workspaceModel) 
+        public AreaFromString()
         {
             Measure = Area.FromDouble(0.0);
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared."));
@@ -284,7 +282,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
     {
-        public VolumeFromString(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public VolumeFromString()
         {
             Measure = Volume.FromDouble(0.0);
             OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed."));
@@ -306,8 +304,6 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
-        public UnitTypes(WorkspaceModel workspace) : base() { }
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);

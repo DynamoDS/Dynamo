@@ -158,12 +158,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
             model.CurrentWorkspace.AddNode(
-                new CodeBlockNodeModel(
-                    "30",
-                    Guid.NewGuid(),
-                    100.0,
-                    100.0,
-                    model.EngineController.LiveRunnerCore),
+                 new CodeBlockNodeModel("30", 100.0, 100.0, model.LibraryServices),
                 false);
 
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
@@ -591,8 +586,8 @@ namespace Dynamo.Tests
             
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
             model.CurrentWorkspace.AddNode(addNode, false);
-            model.CurrentWorkspace.AddNode(new CodeBlockNodeModel("2", Guid.NewGuid(), 100.0, 100.0, model.EngineController.LiveRunnerCore), false);
-            model.CurrentWorkspace.AddNode(new CodeBlockNodeModel("2", Guid.NewGuid(), 100.0, 100.0, model.EngineController.LiveRunnerCore), false);
+            model.CurrentWorkspace.AddNode(new CodeBlockNodeModel("2", 100.0, 100.0, model.LibraryServices), false);
+            model.CurrentWorkspace.AddNode(new CodeBlockNodeModel("2", 100.0, 100.0, model.LibraryServices), false);
             model.CurrentWorkspace.AddNode(new Watch { X = 100, Y = 300}, false);
 
             ConnectorModel.Make(ViewModel.Model.CurrentWorkspace.Nodes[1], ViewModel.Model.CurrentWorkspace.Nodes[0], 0, 0);

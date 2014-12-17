@@ -1121,8 +1121,6 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             AssertPreviewValue("6a0207d9-78d7-4fd3-829f-d19644acdc1b", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
-       
-        
     }
 
     [Category("DSCustomNode")]

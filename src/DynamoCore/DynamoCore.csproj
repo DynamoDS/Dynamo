@@ -131,6 +131,7 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="Utilities\OrderedSet.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Nodes\DummyNode.cs" />

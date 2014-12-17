@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -8,7 +7,6 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Utilities
 {
@@ -26,8 +24,11 @@ namespace Dynamo.Utilities
         }
 
         #region Fields and properties
+        private readonly OrderedSet<Guid> loadOrder = new OrderedSet<Guid>();
 
-        private readonly OrderedDictionary loadedCustomNodes = new OrderedDictionary();
+        private readonly Dictionary<Guid, CustomNodeDefinition> loadedCustomNodes =
+            new Dictionary<Guid, CustomNodeDefinition>();
+
         private readonly Dictionary<Guid, CustomNodeWorkspaceModel> loadedWorkspaceModels =
             new Dictionary<Guid, CustomNodeWorkspaceModel>();
 
@@ -36,7 +37,7 @@ namespace Dynamo.Utilities
         /// </summary>
         public IEnumerable<CustomNodeDefinition> LoadedDefinitions
         {
-            get { return loadedCustomNodes.Values.Cast<CustomNodeDefinition>(); }
+            get { return loadOrder.Select(id => loadedCustomNodes[id]); }
         }
 
         /// <summary>
@@ -197,16 +198,13 @@ namespace Dynamo.Utilities
         public void SetFunctionDefinition(CustomNodeDefinition def)
         {
             var id = def.FunctionId;
-            if (loadedCustomNodes.Contains(id))
-                loadedCustomNodes[id] = def;
-            else
-                loadedCustomNodes.Add(id, def);
+            loadedCustomNodes[id] = def;
+            loadOrder.Add(id);
         }
 
         private void SetPreloadFunctionDefinition(Guid id)
         {
-            if (!loadedCustomNodes.Contains(id)) 
-                loadedCustomNodes.Add(id, null);
+            loadedCustomNodes[id] = null;
         }
 
         /// <summary>
@@ -238,13 +236,18 @@ namespace Dynamo.Utilities
         /// TODO
         /// </summary>
         /// <param name="guid"></param>
-        public void Uninitialize(Guid guid)
+        public bool Uninitialize(Guid guid)
         {
-            if (loadedCustomNodes.Contains(guid))
+            CustomNodeWorkspaceModel ws;
+            if (loadedWorkspaceModels.TryGetValue(guid, out ws))
+            {
+                ws.Dispose();
+                loadedWorkspaceModels.Remove(guid);
                 loadedCustomNodes.Remove(guid);
-            var ws = loadedWorkspaceModels[guid];
-            ws.Dispose();
-            loadedWorkspaceModels.Remove(guid);
+                loadOrder.Remove(guid);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -362,7 +365,7 @@ namespace Dynamo.Utilities
                 CustomNodeWorkspaceModel ws;
                 if (IsInitialized(id) || InitializeCustomNode(id, isTestMode, out ws))
                 {
-                    definition = loadedCustomNodes[id] as CustomNodeDefinition;
+                    definition = loadedCustomNodes[id];
                     return true;
                 }
             }
@@ -406,7 +409,7 @@ namespace Dynamo.Utilities
         /// <param name="guid">Whether the definition is stored with the manager.</param>
         public bool IsInitialized(Guid guid)
         {
-            return loadedCustomNodes.Contains(guid);
+            return loadedCustomNodes.ContainsKey(guid);
         }
 
         /// <summary>

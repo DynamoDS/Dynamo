@@ -397,9 +397,7 @@ namespace Dynamo.Models
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
 
-            MigrationManager = new MigrationManager(
-                DisplayFutureFileMessage,
-                DisplayObsoleteFileMessage);
+            MigrationManager = new MigrationManager(DisplayFutureFileMessage, DisplayObsoleteFileMessage);
             MigrationManager.MessageLogged += LogMessage;
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
@@ -418,7 +416,7 @@ namespace Dynamo.Models
             InitializeInstrumentationLogger();
 
             SearchModel = new NodeSearchModel();
-            SearchModel.ItemProduced +=
+            SearchModel.ItemProduced += 
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
 
             NodeFactory = new NodeFactory();
@@ -426,7 +424,7 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
             InitializeCustomNodeManager();
-            
+
             Loader = new DynamoLoader();
             Loader.MessageLogged += LogMessage;
 
@@ -434,12 +432,10 @@ namespace Dynamo.Models
             PackageLoader.MessageLogged += LogMessage;
 
             DisposeLogic.IsShuttingDown = false;
-            
+
             // Create a core which is used for parsing code and loading libraries
-            var libraryCore = new ProtoCore.Core(new Options
-            {
-                RootCustomPropertyFilterPathName = string.Empty
-            });
+            var libraryCore =
+                new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
 
             libraryCore.Executives.Add(Language.kAssociative, new Executive(libraryCore));
             libraryCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(libraryCore));
@@ -458,11 +454,13 @@ namespace Dynamo.Models
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
-            PackageManagerClient = new PackageManagerClient(PackageLoader.RootPackagesDirectory, CustomNodeManager);
-            
+            PackageManagerClient = new PackageManagerClient(
+                PackageLoader.RootPackagesDirectory,
+                CustomNodeManager);
+
             InitializeNodeLibrary(preferences);
         }
-        
+
         /// <summary>
         /// LibraryLoaded event handler.
         /// </summary>
@@ -574,13 +572,13 @@ namespace Dynamo.Models
             NodeFactory.AddLoader(dsFuncData.Type, ztLoader, dsFuncData.AlsoKnownAs);
             NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader, dsVarArgFuncData.AlsoKnownAs);
 
-            NodeFactory.AddLoader(cbnData.Type, new CodeBlockNodeLoader(this), cbnData.AlsoKnownAs);
+            NodeFactory.AddLoader(cbnData.Type, new CodeBlockNodeLoader(LibraryServices), cbnData.AlsoKnownAs);
             NodeFactory.AddLoader(dummyData.Type, dummyData.AlsoKnownAs);
 
             NodeFactory.AddLoader(symbolData.Type, symbolData.AlsoKnownAs);
             NodeFactory.AddLoader(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, this));
+            SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -997,11 +995,7 @@ namespace Dynamo.Models
                         ? (node as Symbol).InputSymbol
                         : (node as Output).Symbol);
                     var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
-                    newNode = new CodeBlockNodeModel(code, LibraryServices.LibraryManagementCore)
-                    {
-                        X = node.X,
-                        Y = node.Y + 100
-                    };
+                    newNode = new CodeBlockNodeModel(code, node.X, node.Y + 100, LibraryServices);
                 }
                 else
                 {

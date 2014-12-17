@@ -848,7 +848,7 @@ b = c[w][x][y][z];";
 
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
-            var cbn = new CodeBlockNodeModel(ViewModel.Model.EngineController.LiveRunnerCore);
+            var cbn = new CodeBlockNodeModel(ViewModel.Model.LibraryServices);
             var command = new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false);
 
             ViewModel.ExecuteCommand(command);

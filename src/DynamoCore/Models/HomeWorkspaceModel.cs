@@ -133,14 +133,6 @@ namespace Dynamo.Models
             // regenerated.
             foreach (var node in Nodes)
             {
-                // All CBN's need to be pre-compiled again after a new library is loaded
-                // to warn for any new namespace conflicts that may arise.
-                var codeBlockNode = node as CodeBlockNodeModel;
-                if (codeBlockNode != null)
-                {
-                    codeBlockNode.ProcessCodeDirect();
-                }
-
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
                 node.ForceReExecuteOfNode = true;

@@ -501,7 +501,6 @@ namespace Dynamo.Tests
 		[Test]
 		public void TestTransposeSingleInput()
 		{
-			DynamoModel model = ViewModel.Model;
 			string testFilePath = Path.Combine(listTestFolder, "testTransposeList_singleInput.dyn");
 			RunModel(testFilePath);
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
+using Dynamo.Search;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -56,7 +57,7 @@ namespace Dynamo.Tests
 
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
-            var cbn = new CodeBlockNodeModel(ViewModel.Model.EngineController.LiveRunnerCore);
+            var cbn = new CodeBlockNodeModel(ViewModel.Model.LibraryServices);
 
             var command = new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false);
             ViewModel.ExecuteCommand(command);
@@ -220,14 +221,12 @@ namespace Dynamo.Tests
                 string functionName = function.FunctionName;
                 Assert.IsTrue(functionName != "MethodWithRefParameter" && functionName != "MethodWithOutParameter" && functionName != "MethodWithRefOutParameters");
             }
-
         }
 
         [Test]
         [Category("UnitTests")]
         public void LibraryLoaded_PrecompileCBN_ShowConflictWarnings()
         {
-
             var model = ViewModel.Model;
 
             // Create the initial code block node.
@@ -250,7 +249,6 @@ namespace Dynamo.Tests
             {
                 libraryServices.ImportLibrary(libraryPath);
             }
-
 
             // Assert that once a library with classname conflicts is loaded the CBN
             // displays the warning
@@ -291,14 +289,12 @@ namespace Dynamo.Tests
                         continue;
 
                     node = document.SelectSingleNode(string.Format(
-                    "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[FullCategoryName='{0}' and Name='{1}']", function.Category, function.FunctionName));
+                        "//{0}[FullCategoryName='{1}' and Name='{2}']", 
+                        typeof(ZeroTouchSearchElement).FullName,
+                        function.Category, function.FunctionName));
                     Assert.IsNotNull(node);
 
                     // 'FullCategoryName' is already checked.
-
-                    subNode = node.SelectSingleNode("FullName");
-                    Assert.IsNotNull(subNode);
-
                     // 'Name' is already checked.
 
                     subNode = node.SelectSingleNode("Description");

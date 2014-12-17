@@ -222,16 +222,16 @@ namespace Dynamo.Models
     /// </summary>
     public class CodeBlockNodeLoader : INodeLoader<CodeBlockNodeModel>
     {
-        private readonly IEngineControllerManager engineManager;
+        private readonly LibraryServices libraryServices;
 
-        public CodeBlockNodeLoader(IEngineControllerManager manager)
+        public CodeBlockNodeLoader(LibraryServices manager)
         {
-            engineManager = manager;
+            libraryServices = manager;
         }
 
         public CodeBlockNodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
         {
-            var node = new CodeBlockNodeModel(engineManager.EngineController.LiveRunnerCore);
+            var node = new CodeBlockNodeModel(libraryServices);
             node.Deserialize(elNode, context);
             return node;
         }
@@ -251,7 +251,6 @@ namespace Dynamo.Models
 
         public NodeModel CreateNodeFromXml(XmlElement nodeElement, SaveContext context)
         {
-            string elementName = nodeElement.Name;
             string assembly = "";
             string function;
             var nickname = nodeElement.Attributes["nickname"].Value;
@@ -285,8 +284,9 @@ namespace Dynamo.Models
                 var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
                 assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
 
-                libraryServices.ImportLibrary(assembly);
-                descriptor = libraryServices.GetFunctionDescriptor(assembly, function);
+                descriptor = libraryServices.IsLibraryLoaded(assembly) || libraryServices.ImportLibrary(assembly)
+                    ? libraryServices.GetFunctionDescriptor(assembly, function)
+                    : libraryServices.GetFunctionDescriptor(function);
             }
             else
             {
@@ -401,8 +401,14 @@ namespace Dynamo.Models
             if (string.IsNullOrEmpty(assemblyName))
                 return string.Empty;
 
-            try { return Path.GetFileName(assemblyName); }
-            catch (Exception) { return string.Empty; }
+            try
+            {
+                return Path.GetFileName(assemblyName); 
+            }
+            catch (Exception) 
+            { 
+                return string.Empty; 
+            }
         }
     }
 

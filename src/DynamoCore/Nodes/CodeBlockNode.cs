@@ -7,7 +7,7 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.Core;
-using Dynamo.Selection;
+using Dynamo.DSEngine;
 
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
         private List<string> inputIdentifiers = new List<string>();
         private readonly List<string> tempVariables = new List<string>();
         private string previewVariable;
-        private readonly ProtoCore.Core core;
+        private readonly LibraryServices libraryServices;
 
         private bool shouldFocus = true;
         public bool ShouldFocus
@@ -49,27 +49,45 @@ namespace Dynamo.Nodes
 
         #region Public Methods
 
-        public CodeBlockNodeModel(ProtoCore.Core core)
+        public CodeBlockNodeModel(LibraryServices libraryServices)
         {
-            this.core = core;
             ArgumentLacing = LacingStrategy.Disabled;
+            this.libraryServices = libraryServices;
+            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
         }
 
-        public CodeBlockNodeModel(string userCode, ProtoCore.Core core) : this(core)
+        public CodeBlockNodeModel(string userCode, LibraryServices libraryServices)
+            : this(libraryServices)
         {
             code = userCode;
             ProcessCodeDirect();
         }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, ProtoCore.Core core)
+        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
+            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices) { }
+
+        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             X = xPos;
             Y = yPos;
+            this.libraryServices = libraryServices;
+            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
             code = userCode;
-            this.core = core;
             GUID = guid;
             ShouldFocus = false;
+
+            ProcessCodeDirect();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            libraryServices.LibraryLoaded -= LibraryServicesOnLibraryLoaded;
+        }
+
+        private void LibraryServicesOnLibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs libraryLoadedEventArgs)
+        {
             ProcessCodeDirect();
         }
 
@@ -368,7 +386,7 @@ namespace Dynamo.Nodes
             try
             {
                 var parseParam = new ParseParam(GUID, code);
-                if (CompilerUtils.PreCompileCodeBlock(core, ref parseParam))
+                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
                     {

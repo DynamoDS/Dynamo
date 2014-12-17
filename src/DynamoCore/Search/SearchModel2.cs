@@ -115,7 +115,7 @@ namespace Dynamo.Search
         private static void AddCategoryToXml(
             XmlNode parent, ISearchCategory<NodeSearchElement> category)
         {
-            var element = XmlHelper.AddNode(parent, category.GetType().ToString());
+            var element = XmlHelper.AddNode(parent, "Category");
             XmlHelper.AddAttribute(element, "Name", category.Name);
 
             foreach (var subCategory in category.SubCategories)
@@ -337,17 +337,17 @@ namespace Dynamo.Search
     /// </summary>
     public class CodeBlockNodeSearchElement : NodeModelSearchElementBase
     {
-        private readonly IEngineControllerManager engineManager;
+        private readonly LibraryServices libraryServices;
 
-        public CodeBlockNodeSearchElement(TypeLoadData data, IEngineControllerManager manager)
+        public CodeBlockNodeSearchElement(TypeLoadData data, LibraryServices manager)
             : base(data)
         {
-            engineManager = manager;
+            libraryServices = manager;
         }
 
         protected override NodeModel ConstructNewNodeModel()
         {
-            return new CodeBlockNodeModel(engineManager.EngineController.LiveRunnerCore);
+            return new CodeBlockNodeModel(libraryServices);
         }
     }
 

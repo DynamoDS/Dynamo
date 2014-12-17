@@ -191,7 +191,7 @@ namespace Dynamo.Nodes
             return AstFactory.BuildFunctionObject(
                 functionNode,
                 model.InPorts.Count(),
-                Enumerable.Range(0, model.InPorts.Count).Where(model.HasConnectedInput),
+                Enumerable.Range(0, model.InPorts.Count).Where(model.HasInput),
                 inputs);
         }
 

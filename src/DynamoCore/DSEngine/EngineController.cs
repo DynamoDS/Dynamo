@@ -4,7 +4,6 @@ using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using DynamoUtilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
@@ -13,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
@@ -35,7 +35,7 @@ namespace Dynamo.DSEngine
         private readonly AstBuilder astBuilder;
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
-        private int shortVarCounter = 0;
+        private int shortVarCounter;
 
         public bool VerboseLogging;
         
@@ -85,8 +85,7 @@ namespace Dynamo.DSEngine
         }
 
         #endregion
-
-
+        
         /// <summary>
         /// Get DesignScript core.
         /// </summary>
@@ -117,7 +116,6 @@ namespace Dynamo.DSEngine
         /// Get runtime mirror for variable.
         /// </summary>
         /// <param name="variableName"></param>
-        /// <param name="verboseLogging"></param>
         /// <returns></returns>
         public RuntimeMirror GetMirror(string variableName)
         {
