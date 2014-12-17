@@ -1755,6 +1755,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install Dynamo.
+        /// </summary>
+        public static string InstallMessageCaption {
+            get {
+                return ResourceManager.GetString("InstallMessageCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}..
         /// </summary>
         public static string LacingCrossProductToolTip {
@@ -3116,9 +3125,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An update is available for {0}.
+        ///   Looks up a localized string similar to An update is available for Dynamo
         ///
-        ///Click OK to close {0} and install
+        ///Click OK to close Dynamo and install
         ///Click CANCEL to cancel the update..
         /// </summary>
         public static string UpdateMessage {

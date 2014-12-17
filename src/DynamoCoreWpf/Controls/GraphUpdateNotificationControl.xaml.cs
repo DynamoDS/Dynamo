@@ -20,9 +20,9 @@ namespace DynamoCore.UI.Controls
         {
             if (DataContext is UpdateManager)
             {
-                var message = string.Format(Dynamo.Wpf.Properties.Resources.UpdateMessage, /*NXLT*/"Dynamo");
+                var message = Dynamo.Wpf.Properties.Resources.UpdateMessage;
 
-                var result = MessageBox.Show(message, /*NXLT*/"Install Dynamo", MessageBoxButton.OKCancel);
+                var result = MessageBox.Show(message, Dynamo.Wpf.Properties.Resources.InstallMessageCaption, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
                 {
