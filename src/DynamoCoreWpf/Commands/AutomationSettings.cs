@@ -304,8 +304,7 @@ namespace Dynamo.ViewModels
                         commandRoot.ChildNodes.Cast<XmlNode>()
                             .Select(
                                 node => DynamoModel.RecordableCommand.Deserialize(
-                                    node as XmlElement,
-                                    owningDynamoModel.NodeFactory))
+                                    node as XmlElement))
                             .Where(command => null != command))
                 {
                     loadedCommands.Add(command);

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using Dynamo.Utilities;
 
@@ -93,12 +92,11 @@ namespace Dynamo.Models
             /// RecordableCommand-derived classes based on its type.
             /// </summary>
             /// <param name="element">The XmlElement from which the RecordableCommand
-            /// can be reconstructed.</param>
-            /// <param name="factory"></param>
+            ///     can be reconstructed.</param>
             /// <returns>Returns the reconstructed RecordableCommand object. If a 
             /// RecordableCommand cannot be reconstructed, this method throws a 
             /// relevant exception.</returns>
-            internal static RecordableCommand Deserialize(XmlElement element, NodeFactory factory)
+            internal static RecordableCommand Deserialize(XmlElement element)
             {
                 if (string.IsNullOrEmpty(element.Name))
                     throw new ArgumentException("XmlElement without name");
@@ -117,7 +115,7 @@ namespace Dynamo.Models
                         command = RunCancelCommand.DeserializeCore(element);
                         break;
                     case "CreateNodeCommand":
-                        command = CreateNodeCommand.DeserializeCore(element, factory);
+                        command = CreateNodeCommand.DeserializeCore(element);
                         break;
                     case "SelectModelCommand":
                         command = SelectModelCommand.DeserializeCore(element);
@@ -431,38 +429,75 @@ namespace Dynamo.Models
         {
             #region Public Class Methods
 
-            public CreateNodeCommand(NodeModel node,
-                double x, double y, bool defaultPosition, bool transformCoordinates)
+            public CreateNodeCommand(
+                NodeModel node, double x, double y, bool defaultPosition, bool transformCoordinates)
+                : this(x, y, defaultPosition, transformCoordinates)
             {
                 Node = node;
-                X = x;
-                Y = y;
-                DefaultPosition = defaultPosition;
-                TransformCoordinates = transformCoordinates;
             }
 
-            internal static CreateNodeCommand DeserializeCore(XmlElement element, NodeFactory factory)
+            private CreateNodeCommand(
+               XmlElement node, double x, double y, bool defaultPosition, bool transformCoordinates)
+                : this(x, y, defaultPosition, transformCoordinates)
+            {
+                NodeXml = node;
+            }
+
+            public CreateNodeCommand(Guid nodeId, string name, double x, double y, bool defaultPos, bool transformCoords)
+                : this(x, y, defaultPos, transformCoords)
+            {
+                NodeId = nodeId;
+                Name = name;
+            }
+
+            private CreateNodeCommand(double x, double y, bool defaultPos, bool transformCoords)
+            {
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPos;
+                TransformCoordinates = transformCoords;
+            }
+
+            internal static CreateNodeCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
                 double x = helper.ReadDouble("X");
                 double y = helper.ReadDouble("Y");
+                bool defaultPos = helper.ReadBoolean("DefaultPosition");
+                bool transformCoords = helper.ReadBoolean("TransformCoordinates");
 
-                var node = factory.CreateNodeFromXml(element, SaveContext.File);
+                var nodeElement = element.ChildNodes.OfType<XmlElement>().FirstOrDefault();
+                
+                if (nodeElement == null)
+                {
+                    // Get the old NodeId and NodeName attributes
+                    Guid nodeId = helper.ReadGuid("NodeId");
+                    string name = helper.ReadString("NodeName");
 
-                return new CreateNodeCommand(node, x, y,
-                    helper.ReadBoolean("DefaultPosition"),
-                    helper.ReadBoolean("TransformCoordinates"));
+                    return new CreateNodeCommand(nodeId, name, x, y, defaultPos, transformCoords);
+                }
+
+                return new CreateNodeCommand(nodeElement, x, y, defaultPos, transformCoords);
             }
 
             #endregion
 
             #region Public Command Properties
 
+            // Faster, direct creation
             internal NodeModel Node { get; private set; }
+
+            // If it was deserialized
+            internal XmlElement NodeXml { get; private set; }
+
             internal double X { get; private set; }
             internal double Y { get; private set; }
             internal bool DefaultPosition { get; private set; }
             internal bool TransformCoordinates { get; private set; }
+
+            //Legacy properties
+            internal string Name { get; private set; }
+            internal Guid NodeId { get; private set; }
 
             #endregion
 

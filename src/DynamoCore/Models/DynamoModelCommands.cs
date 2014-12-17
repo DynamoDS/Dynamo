@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 
@@ -51,10 +52,57 @@ namespace Dynamo.Models
         void CreateNodeImpl(CreateNodeCommand command)
         {
             var node = command.Node;
+            if (node == null)
+            {
+                if (command.NodeXml != null)
+                {
+                    // command was deserialized, we must create the node directly
+                    node = NodeFactory.CreateNodeFromXml(command.NodeXml, SaveContext.File);
+                }
+                else
+                {
+                    // legacy command, hold on to your butts
+
+                    var name = command.Name;
+                    var nodeId = command.NodeId;
+
+                    Guid customNodeId; // To be used in the event it's a custom node we're making.
+
+                    // Then, we have to figure out what kind of node to make, based on the name.
+
+                    // First, we check for a DSFunction by looking for a FunctionDescriptor
+                    var functionItem = LibraryServices.GetFunctionDescriptor(name);
+                    if (functionItem != null)
+                    {
+                        node = (functionItem.IsVarArg)
+                            ? new DSVarArgFunction(functionItem) as NodeModel
+                            : new DSFunction(functionItem);
+                        node.GUID = nodeId;
+                    }
+                    // If that didn't work, let's try using the NodeFactory
+                    else if (NodeFactory.CreateNodeFromTypeName(name, out node))
+                    {
+                        node.GUID = nodeId;
+                    }
+                    // And if that didn't work, then it must be a custom node.
+                    else if (Guid.TryParse(name, out customNodeId))
+                    {
+                        node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
+                        node.GUID = nodeId;
+                    }
+                    // We're out of ideas, log an error.
+                    else
+                    {
+                        Logger.LogError("Could not create instance of node with name: " + name);
+                        return;
+                    }
+                }
+            }
+
             node.X = command.X;
             node.Y = command.Y;
-            AddNodeToCurrentWorkspace(command.Node, centered: command.DefaultPosition);
 
+            AddNodeToCurrentWorkspace(node, centered: command.DefaultPosition);
             CurrentWorkspace.RecordCreatedModel(node);
         }
 

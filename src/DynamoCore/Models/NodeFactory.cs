@@ -32,16 +32,32 @@ namespace Dynamo.Models
     /// <summary>
     /// TODO
     /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface INodeFactory<out T> where T : NodeModel
+    {
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <returns></returns>
+        T CreateNode();
+    }
+
+    /// <summary>
+    /// TODO
+    /// </summary>
     public class NodeFactory : LogSourceBase
     {
-        private readonly Dictionary<Type, INodeLoader<NodeModel>> nodeSources =
+        private readonly Dictionary<Type, INodeFactory<NodeModel>> nodeFactories =
+            new Dictionary<Type, INodeFactory<NodeModel>>();
+
+        private readonly Dictionary<Type, INodeLoader<NodeModel>> nodeLoaders =
             new Dictionary<Type, INodeLoader<NodeModel>>();
 
         private readonly Dictionary<string, Type> alsoKnownAsMappings =
             new Dictionary<string, Type>();
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="loader"></param>
@@ -62,7 +78,7 @@ namespace Dynamo.Models
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
 
-            nodeSources[nodeType] = loader;
+            nodeLoaders[nodeType] = loader;
             alsoKnownAsMappings[nodeType.FullName] = nodeType;
             
             if (alsoKnownAs != null)
@@ -76,10 +92,42 @@ namespace Dynamo.Models
         /// TODO
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="alsoKnownAs"></param>
-        public void AddLoader<T>(IEnumerable<string> alsoKnownAs=null) where T : NodeModel
+        /// <param name="loader"></param>
+        public void AddFactory<T>(INodeFactory<T> loader) where T : NodeModel
         {
-            AddLoader(typeof(T), alsoKnownAs);
+            AddFactory(typeof(T), loader);
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="nodeType"></param>
+        /// <param name="loader"></param>
+        /// <param name="alsoKnownAs"></param>
+        public void AddFactory<T>(Type nodeType, INodeFactory<T> loader, IEnumerable<string> alsoKnownAs = null) where T : NodeModel
+        {
+            if (!nodeType.IsSubclassOf(typeof(NodeModel)))
+                throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
+
+            nodeFactories[nodeType] = loader;
+            alsoKnownAsMappings[nodeType.FullName] = nodeType;
+
+            if (alsoKnownAs != null)
+            {
+                foreach (var name in alsoKnownAs)
+                    alsoKnownAsMappings[name] = nodeType;
+            }
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="alsoKnownAs"></param>
+        public void AddTypeFactoryAndLoader<T>(IEnumerable<string> alsoKnownAs=null) where T : NodeModel
+        {
+            AddTypeFactoryAndLoader(typeof(T), alsoKnownAs);
         }
 
         /// <summary>
@@ -87,7 +135,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="nodeType"></param>
         /// <param name="alsoKnownAs"></param>
-        public void AddLoader(Type nodeType, IEnumerable<string> alsoKnownAs=null)
+        public void AddTypeFactoryAndLoader(Type nodeType, IEnumerable<string> alsoKnownAs=null)
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
@@ -96,6 +144,7 @@ namespace Dynamo.Models
             {
                 var loader = new NodeModelTypeLoader(nodeType);
                 AddLoader(nodeType, loader, alsoKnownAs);
+                AddFactory(nodeType, loader); // We don't re-use alsoKnownAs here, they are already registered from AddLoader.
             }
             catch (Exception e)
             {
@@ -111,12 +160,25 @@ namespace Dynamo.Models
         /// <param name="overwrite"></param>
         public void AddAlsoKnownAs(string aka, Type realType, bool overwrite=false)
         {
-            if (!overwrite && alsoKnownAsMappings.ContainsKey(aka))
+            Type old;
+            if (!overwrite && alsoKnownAsMappings.TryGetValue(aka, out old) && old != realType)
                 throw new InvalidOperationException(string.Format("There already exists an AlsoKnownAs mapping for {0}.", aka));
             alsoKnownAsMappings[aka] = realType;
         }
 
-        private class NodeModelTypeLoader : INodeLoader<NodeModel>
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="names"></param>
+        /// <param name="realType"></param>
+        /// <param name="overwrite"></param>
+        public void AddAlsoKnownAs(IEnumerable<string> names, Type realType, bool overwrite=false)
+        {
+            foreach (var aka in names)
+                AddAlsoKnownAs(aka, realType, overwrite);
+        }
+
+        private class NodeModelTypeLoader : INodeLoader<NodeModel>, INodeFactory<NodeModel>
         {
             private readonly Func<NodeModel> constructor;
 
@@ -127,9 +189,14 @@ namespace Dynamo.Models
 
             public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
             {
-                var node = constructor();
+                var node = CreateNode();
                 node.Deserialize(elNode, context);
                 return node;
+            }
+
+            public NodeModel CreateNode()
+            {
+                return constructor();
             }
         }
 
@@ -139,7 +206,6 @@ namespace Dynamo.Models
                 return true; // Found among built-in types, return it.
 
             Log(string.Format("Could not load node of type: {0}", type.FullName));
-            Log("Loading will continue but nodes might be missing from your workflow.");
 
             return false;
         }
@@ -154,22 +220,15 @@ namespace Dynamo.Models
                     return false;
                 }
 
-                if (nodeSources.TryGetValue(type, out data))
+                if (nodeLoaders.TryGetValue(type, out data))
                     return true; // Found among built-in types, return it.
 
                 type = type.BaseType;
             }
         }
 
-        private bool GetNodeModelInstanceByName(string name, XmlElement elNode, SaveContext context, out NodeModel node)
+        private bool LoadNodeModelInstanceByType(Type type, XmlElement elNode, SaveContext context, out NodeModel node)
         {
-            Type type;
-            if (!ResolveType(name, out type))
-            {
-                node = null;
-                return false;
-            }
-
             INodeLoader<NodeModel> data;
             if (!GetNodeSourceFromType(type, out data))
             {
@@ -178,6 +237,45 @@ namespace Dynamo.Models
             }
 
             node = data.CreateNodeFromXml(elNode, context);
+            return true;
+        }
+
+        private bool GetNodeFactoryFromType(Type type, out INodeFactory<NodeModel> data)
+        {
+            if (GetNodeFactoryFromTypeHelper(type, out data))
+                return true; // Found among built-in types, return it.
+
+            Log(string.Format("Could not load node of type: {0}", type.FullName));
+            return false;
+        }
+
+        private bool GetNodeFactoryFromTypeHelper(Type type, out INodeFactory<NodeModel> data)
+        {
+            while (true)
+            {
+                if (type == null || type == typeof(NodeModel))
+                {
+                    data = null;
+                    return false;
+                }
+
+                if (nodeFactories.TryGetValue(type, out data))
+                    return true; // Found among built-in types, return it.
+
+                type = type.BaseType;
+            }
+        }
+
+        private bool CreateNodeModelInstanceByType(Type type, out NodeModel node)
+        {
+            INodeFactory<NodeModel> data;
+            if (!GetNodeFactoryFromType(type, out data))
+            {
+                node = null;
+                return false;
+            }
+
+            node = data.CreateNode();
             return true;
         }
 
@@ -210,17 +308,39 @@ namespace Dynamo.Models
             XmlAttribute typeAttrib = elNode.Attributes["type"];
             string typeName = Nodes.Utilities.PreprocessTypeName(typeAttrib.Value);
 
+            Type type;
             NodeModel node;
-            if (!GetNodeModelInstanceByName(typeName, elNode, context, out node))
-                node = new DummyNode(1, 1, typeName, elNode, "", DummyNode.Nature.Deprecated);
+            if (ResolveType(typeName, out type)
+                && LoadNodeModelInstanceByType(type, elNode, context, out node))
+            {
+                return node;
+            }
+
+            node = new DummyNode(1, 1, typeName, elNode, "", DummyNode.Nature.Deprecated);
             return node;
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public bool CreateNodeFromTypeName(string typeName, out NodeModel node)
+        {
+            Type type;
+            if (ResolveType(typeName, out type) && CreateNodeModelInstanceByType(type, out node))
+                return true;
+
+            node = null;
+            return false;
         }
     }
 
     /// <summary>
     ///     Xml Loader for CodeBlock nodes.
     /// </summary>
-    public class CodeBlockNodeLoader : INodeLoader<CodeBlockNodeModel>
+    public class CodeBlockNodeLoader : INodeLoader<CodeBlockNodeModel>, INodeFactory<CodeBlockNodeModel>
     {
         private readonly LibraryServices libraryServices;
 
@@ -231,9 +351,14 @@ namespace Dynamo.Models
 
         public CodeBlockNodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
         {
-            var node = new CodeBlockNodeModel(libraryServices);
+            var node = CreateNode();
             node.Deserialize(elNode, context);
             return node;
+        }
+
+        public CodeBlockNodeModel CreateNode()
+        {
+            return new CodeBlockNodeModel(libraryServices);
         }
     }
 
@@ -322,7 +447,7 @@ namespace Dynamo.Models
             result.Deserialize(nodeElement, context);
             return result;
         }
-
+        
         private static int DetermineFunctionInputCount(XmlElement element)
         {
             int additionalPort = 0;

@@ -571,12 +571,16 @@ namespace Dynamo.Models
             var ztLoader = new ZeroTouchNodeLoader(LibraryServices);
             NodeFactory.AddLoader(dsFuncData.Type, ztLoader, dsFuncData.AlsoKnownAs);
             NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader, dsVarArgFuncData.AlsoKnownAs);
+            
+            var cbnLoader = new CodeBlockNodeLoader(LibraryServices);
+            NodeFactory.AddLoader(cbnData.Type, cbnLoader);
+            NodeFactory.AddFactory(cbnData.Type, cbnLoader);
+            NodeFactory.AddAlsoKnownAs(cbnData.AlsoKnownAs, cbnData.Type);
 
-            NodeFactory.AddLoader(cbnData.Type, new CodeBlockNodeLoader(LibraryServices), cbnData.AlsoKnownAs);
-            NodeFactory.AddLoader(dummyData.Type, dummyData.AlsoKnownAs);
+            NodeFactory.AddTypeFactoryAndLoader(dummyData.Type, dummyData.AlsoKnownAs);
 
-            NodeFactory.AddLoader(symbolData.Type, symbolData.AlsoKnownAs);
-            NodeFactory.AddLoader(outputData.Type, outputData.AlsoKnownAs);
+            NodeFactory.AddTypeFactoryAndLoader(symbolData.Type, symbolData.AlsoKnownAs);
+            NodeFactory.AddTypeFactoryAndLoader(outputData.Type, outputData.AlsoKnownAs);
 
             SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
 
@@ -612,7 +616,7 @@ namespace Dynamo.Models
             // Load NodeModels
             foreach (var type in modelTypes)
             {
-                NodeFactory.AddLoader(type.Type, type.AlsoKnownAs);
+                NodeFactory.AddTypeFactoryAndLoader(type.Type, type.AlsoKnownAs);
                 AddNodeTypeToSearch(type);
             }
 
@@ -1018,6 +1022,9 @@ namespace Dynamo.Models
             NodeModel end;
             var newConnectors =
                 from c in connectors
+
+                // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
+                // re-connect to the original.
                 let startNode =
                     nodeLookup.TryGetValue(c.Start.Owner.GUID, out start)
                         ? start
@@ -1026,6 +1033,8 @@ namespace Dynamo.Models
                     nodeLookup.TryGetValue(c.End.Owner.GUID, out end)
                         ? end
                         : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
+                
+                // Don't make a connector if either end is null.
                 where startNode != null && endNode != null
                 select
                     ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
