@@ -384,7 +384,7 @@ namespace Dynamo.ViewModels
                     this.portViewModel = portViewModel;
                     break;
                 case PortEventType.MouseLeave:
-                     IsSnapping = false;
+                    IsSnapping = this.CheckActiveConnectorCompatibility(portViewModel,false);
                     this.portViewModel = portViewModel;
                     break;
                 case PortEventType.MouseLeftButtonDown:
