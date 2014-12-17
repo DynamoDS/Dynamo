@@ -76,13 +76,35 @@ namespace Dynamo.Models
         public List<Type> MigrationTargets { get; set; }
 
         private readonly Dictionary<string, Type> nodeMigrationLookup =
-            new Dictionary<string, Type>(); 
+            new Dictionary<string, Type>();
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="fileVersion"></param>
+        /// <param name="currentVersion"></param>
+        /// <returns></returns>
+        public delegate bool FutureFileCallback(string fileName, Version fileVersion, Version currentVersion);
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="fileVersion"></param>
+        /// <param name="currentVersion"></param>
+        public delegate void ObsoleteFileCallback(string fileName, Version fileVersion, Version currentVersion);
+
+        private readonly FutureFileCallback displayFutureFileMessage;
+        private readonly ObsoleteFileCallback displayObsoleteFileMessage;
 
         /// <summary>
         /// The private constructor.
         /// </summary>
-        public MigrationManager()
+        public MigrationManager(FutureFileCallback displayFutureFileMessage, ObsoleteFileCallback displayObsoleteFileMessage)
         {
+            this.displayFutureFileMessage = displayFutureFileMessage;
+            this.displayObsoleteFileMessage = displayObsoleteFileMessage;
             MigrationTargets = new List<Type>();
         }
 
@@ -104,14 +126,37 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="workspaceInfo"></param>
         /// <param name="xmlDoc"></param>
-        /// <param name="fileVersion"></param>
-        /// <param name="currentVersion"></param>
-        /// <param name="xmlPath"></param>
-        /// <param name="isTestMode"></param>
-        /// <param name="factory"></param>
         /// <returns></returns>
-        public Decision ProcessWorkspace(
+        public bool ProcessWorkspace(WorkspaceHeader workspaceInfo, XmlDocument xmlDoc, bool isTestMode, NodeFactory factory)
+        {
+            Version fileVersion = VersionFromString(workspaceInfo.Version);
+
+            var currentVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false);
+
+            if (fileVersion > currentVersion)
+            {
+                bool resume = displayFutureFileMessage(
+                    workspaceInfo.FileName,
+                    fileVersion,
+                    currentVersion);
+
+                if (!resume)
+                    return false;
+            }
+
+            var decision = ProcessWorkspace(
+                xmlDoc, fileVersion, currentVersion, workspaceInfo.FileName, isTestMode, factory);
+
+            if (decision != Decision.Abort) 
+                return true;
+
+            displayObsoleteFileMessage(workspaceInfo.FileName, fileVersion, currentVersion);
+            return false;
+        }
+
+        private Decision ProcessWorkspace(
             XmlDocument xmlDoc, Version fileVersion, Version currentVersion, string xmlPath,
             bool isTestMode, NodeFactory factory)
         {

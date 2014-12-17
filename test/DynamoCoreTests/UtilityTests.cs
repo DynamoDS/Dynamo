@@ -138,17 +138,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(null, type);
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void ResolveType03()
-        {
-            // Known internal type.
-            string fqn = "Dynamo.Nodes.Addition";
-            Type type;
-            Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
-            Assert.IsNotNull(type);
-            Assert.AreEqual("Dynamo.Nodes.Addition", type.FullName);
-        }
+        //[Test]
+        //[Category("UnitTests")]
+        //public void ResolveType03()
+        //{
+        //    // Known internal type.
+        //    string fqn = "Dynamo.Nodes.Addition";
+        //    Type type;
+        //    Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+        //    Assert.IsNotNull(type);
+        //    Assert.AreEqual("Dynamo.Nodes.Addition", type.FullName);
+        //}
 
         [Test]
         [Category("UnitTests")]
@@ -162,17 +162,17 @@ namespace Dynamo.Tests
             Assert.AreEqual("System.Environment", type.FullName);
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void ResolveType05()
-        {
-            // 'NumberRange' class makes use of this attribute.
-            string fqn = "Dynamo.Nodes.dynBuildSeq";
-            Type type;
-            Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
-            Assert.IsNotNull(type);
-            Assert.AreEqual("Dynamo.Nodes.NumberRange", type.FullName);
-        }
+        //[Test]
+        //[Category("UnitTests")]
+        //public void ResolveType05()
+        //{
+        //    // 'NumberRange' class makes use of this attribute.
+        //    string fqn = "Dynamo.Nodes.dynBuildSeq";
+        //    Type type;
+        //    Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+        //    Assert.IsNotNull(type);
+        //    Assert.AreEqual("Dynamo.Nodes.NumberRange", type.FullName);
+        //}
 
         [Test]
         [Category("UnitTests")]

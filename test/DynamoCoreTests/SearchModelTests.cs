@@ -404,15 +404,10 @@ namespace Dynamo.Tests
             var results = search.Search(nodeName).ToList();
             Assert.AreEqual(2, results.Count());
 
-            var res1 = results[0];
-            var res2 = results[1];
-            Assert.IsInstanceOf<CustomNodeSearchElement>(res1);
-            Assert.IsInstanceOf<CustomNodeSearchElement>(res2);
+            var resultIds = results.Cast<CustomNodeSearchElement>().Select(x => x.ID).ToList();
+            Assert.IsTrue(resultIds.Contains(guid1));
+            Assert.IsTrue(resultIds.Contains(guid2));
 
-            var node1 = (CustomNodeSearchElement)res1;
-            var node2 = (CustomNodeSearchElement)res2;
-            Assert.AreEqual(guid1, node1.ID);
-            Assert.AreEqual(guid2, node2.ID);
         }
 
         [Test]

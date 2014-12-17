@@ -49,7 +49,6 @@ namespace Dynamo.Models
             : base(name, e, n, x, y, factory)
         {
             CustomNodeId = customNodeId;
-            //WatchChanges = true;
             HasUnsavedChanges = false;
             Category = category;
             Description = description;
@@ -59,7 +58,10 @@ namespace Dynamo.Models
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == "Name" || args.PropertyName == "Category" || args.PropertyName == "Description")
+            if (args.PropertyName == "Name")
+                OnInfoChanged();
+
+            if (args.PropertyName == "Category" || args.PropertyName == "Description")
             {
                 HasUnsavedChanges = true;
                 OnInfoChanged();
@@ -186,11 +188,13 @@ namespace Dynamo.Models
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
             if (originalPath != newPath)
+            {
                 CustomNodeId = Guid.NewGuid();
 
-            // This comes after updating the Id, as if to associate the new name
-            // with the new Id.
-            Name = Path.GetFileNameWithoutExtension(newPath);
+                // This comes after updating the Id, as if to associate the new name
+                // with the new Id.
+                SetInfo(Path.GetFileNameWithoutExtension(newPath));
+            }
 
             return true;
         }

@@ -181,6 +181,7 @@ namespace Dynamo.Nodes
                     Error(e.Message);
                 }
 
+                ForceReExecuteOfNode = true;
                 OnAstUpdated();
                 RaisePropertyChanged("Value");
             }

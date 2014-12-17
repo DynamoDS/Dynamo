@@ -24,6 +24,8 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 
+using ProtoCore.Exceptions;
+
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Utils = Dynamo.Nodes.Utilities;
@@ -395,7 +397,9 @@ namespace Dynamo.Models
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
 
-            MigrationManager = new MigrationManager();
+            MigrationManager = new MigrationManager(
+                DisplayFutureFileMessage,
+                DisplayObsoleteFileMessage);
             MigrationManager.MessageLogged += LogMessage;
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
@@ -420,7 +424,7 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            CustomNodeManager = new CustomNodeManager(NodeFactory);
+            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
             InitializeCustomNodeManager();
             
             Loader = new DynamoLoader();
@@ -773,7 +777,7 @@ namespace Dynamo.Models
             WorkspaceHeader workspaceInfo;
             if (WorkspaceHeader.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, Logger, out workspaceInfo))
             {
-                if (HandleMigrations(workspaceInfo, xmlDoc))
+                if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
                 {
                     WorkspaceModel ws;
                     if (OpenFile(workspaceInfo, xmlDoc, out ws))
@@ -785,41 +789,6 @@ namespace Dynamo.Models
                 }
             }
             Logger.LogError("Could not open workspace at: " + xmlPath);
-        }
-
-        private bool HandleMigrations(WorkspaceHeader workspaceInfo, XmlDocument xmlDoc)
-        {
-            Version fileVersion = MigrationManager.VersionFromString(workspaceInfo.Version);
-
-            var currentVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false);
-
-            if (fileVersion > currentVersion)
-            {
-                bool resume = Utils.DisplayFutureFileMessage(
-                    this,
-                    workspaceInfo.FileName,
-                    fileVersion,
-                    currentVersion);
-
-                if (!resume)
-                    return false;
-            }
-
-            var decision = MigrationManager.ProcessWorkspace(
-                xmlDoc,
-                fileVersion,
-                currentVersion,
-                workspaceInfo.FileName,
-                IsTestMode,
-                NodeFactory);
-
-            if (decision == MigrationManager.Decision.Abort)
-            {
-                Utils.DisplayObsoleteFileMessage(this, workspaceInfo.FileName, fileVersion, currentVersion);
-                return false;
-            }
-
-            return true;
         }
 
         private bool OpenFile(WorkspaceHeader workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
@@ -1216,6 +1185,131 @@ namespace Dynamo.Models
 
             Workspaces.Add(workspace);
             OnWorkspaceAdded(workspace);
+        }
+        enum ButtonId
+        {
+            Ok = 43420,
+            Cancel,
+            DownloadLatest,
+            Proceed,
+            Submit
+        }
+
+        /// <summary>
+        /// Call this method to display a message box when a file of an older 
+        /// version cannot be opened by the current version of Dynamo.
+        /// </summary>
+        /// <param name="fullFilePath"></param>
+        /// <param name="fileVersion">Version of the input file.</param>
+        /// <param name="currVersion">Current version of the Dynamo.</param>
+        private void DisplayObsoleteFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
+        {
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
+            var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
+
+            InstrumentationLogger.LogPiiInfo(
+                "ObsoleteFileMessage",
+                fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
+
+            const string summary = "Your file cannot be opened";
+            var description =
+                string.Format(
+                    "Your file '{0}' of version '{1}' cannot " + "be opened by this version of Dynamo ({2})",
+                    fullFilePath,
+                    fileVersion,
+                    currVersion);
+
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
+            var args = new TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative),
+                "Obsolete File",
+                summary,
+                description);
+
+            args.AddRightAlignedButton((int)ButtonId.Ok, "OK");
+
+            OnRequestTaskDialog(null, args);
+        }
+
+        /// <summary>
+        /// Call this method to display an error message in an event when live 
+        /// runner throws an exception that is not handled anywhere else. This 
+        /// message instructs user to save their work and restart Dynamo.
+        /// </summary>
+        /// <param name="exception">The exception to display.</param>
+        private TaskDialogEventArgs DisplayEngineFailureMessage(Exception exception)
+        {
+            StabilityTracking.GetInstance().NotifyCrash();
+            InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
+
+            if (exception != null)
+            {
+                InstrumentationLogger.LogException(exception);
+            }
+
+            const string summary = "Unhandled exception in Dynamo engine";
+
+            string description = (exception is HeapCorruptionException)
+                ? exception.Message
+                : @"The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better.
+
+If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.";
+
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
+            var args = new TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative),
+                "Unhandled exception",
+                summary,
+                description);
+
+            args.AddRightAlignedButton((int)ButtonId.Submit, "Submit Bug To Github");
+            args.AddRightAlignedButton((int)ButtonId.Ok, "Arrrrg, ok");
+            args.Exception = exception;
+
+            OnRequestTaskDialog(null, args);
+            if (args.ClickedButtonId == (int)ButtonId.Submit)
+                OnRequestBugReport();
+
+            return args;
+        }
+
+        /// <summary>
+        /// Displays file open error dialog if the file is of a future version than the currently installed version
+        /// </summary>
+        /// <param name="fullFilePath"></param>
+        /// <param name="fileVersion"></param>
+        /// <param name="currVersion"></param>
+        /// <returns> true if the file must be opened and false otherwise </returns>
+        private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
+        {
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
+            var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
+
+            InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
+                " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
+
+            const string summary = "Your file may not open correctly";
+            var description = string.Format("Your file '{0}' was created in future version '{1}' and may not " +
+                "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
+
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative),
+                "Future File", summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
+
+            args.AddRightAlignedButton((int)ButtonId.Cancel, "Cancel");
+            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, "Download latest version");
+            args.AddRightAlignedButton((int)ButtonId.Proceed, "Proceed anyway");
+
+            OnRequestTaskDialog(null, args);
+            if (args.ClickedButtonId == (int)ButtonId.DownloadLatest)
+            {
+                // this should be an event on DynamoModel
+                OnRequestDownloadDynamo();
+                return false;
+            }
+
+            return args.ClickedButtonId == (int)ButtonId.Proceed;
         }
 
         #endregion

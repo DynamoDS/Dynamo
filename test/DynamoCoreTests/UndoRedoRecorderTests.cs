@@ -594,7 +594,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestBasicAttributes()
         {
-            var sumNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            var sumNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+")) {X = 400, Y = 100};
             
             //Assert inital values
             Assert.AreEqual(400, sumNode.X);

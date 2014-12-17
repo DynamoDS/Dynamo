@@ -251,6 +251,7 @@ namespace Dynamo.Models
 
         public NodeModel CreateNodeFromXml(XmlElement nodeElement, SaveContext context)
         {
+            string elementName = nodeElement.Name;
             string assembly = "";
             string function;
             var nickname = nodeElement.Attributes["nickname"].Value;
@@ -304,9 +305,19 @@ namespace Dynamo.Models
                     DummyNode.Nature.Unresolved);
             }
 
-            var result = descriptor.IsVarArg
-                ? new DSVarArgFunction(descriptor) as DSFunctionBase
-                : new DSFunction(descriptor);
+            DSFunctionBase result;
+            if (descriptor.IsVarArg)
+            {
+                result = new DSVarArgFunction(descriptor);
+                if (nodeElement.Name != typeof(DSVarArgFunction).FullName)
+                {
+                    VariableInputNodeController.SerializeInputCount(
+                        nodeElement,
+                        descriptor.Parameters.Count());
+                }
+            }
+            else
+                result = new DSFunction(descriptor);
 
             result.Deserialize(nodeElement, context);
             return result;

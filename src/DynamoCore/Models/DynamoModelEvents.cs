@@ -181,9 +181,7 @@ namespace Dynamo.Models
         {
             if (!e.EvaluationSucceeded)
             {
-                Action showFailureMessage = () =>
-                    Nodes.Utilities.DisplayEngineFailureMessage(this, e.Error);
-
+                Action showFailureMessage = () => DisplayEngineFailureMessage(e.Error);
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
             }
 

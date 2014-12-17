@@ -19,9 +19,10 @@ namespace Dynamo.Utilities
     /// </summary>
     public class CustomNodeManager : LogSourceBase, ICustomNodeSource
     {
-        public CustomNodeManager(NodeFactory nodeFactory)
+        public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager)
         {
             this.nodeFactory = nodeFactory;
+            this.migrationManager = migrationManager;
         }
 
         #region Fields and properties
@@ -54,6 +55,7 @@ namespace Dynamo.Utilities
         }
 
         private readonly NodeFactory nodeFactory;
+        private readonly MigrationManager migrationManager;
 
         #endregion
 
@@ -165,6 +167,7 @@ namespace Dynamo.Utilities
             Action infoChangedHandler = () =>
             {
                 var info = workspace.CustomNodeInfo;
+                node.NickName = info.Name;
                 node.Description = info.Description;
                 node.Category = info.Category;
             };
@@ -559,15 +562,21 @@ namespace Dynamo.Utilities
                 xmlDoc.Load(xmlPath);
 
                 WorkspaceHeader header;
-                if (!WorkspaceHeader.FromXmlDocument(xmlDoc, xmlPath, isTestMode, AsLogger(), out header)
-                    || !header.IsCustomNodeWorkspace)
+                if (WorkspaceHeader.FromXmlDocument(
+                    xmlDoc,
+                    xmlPath,
+                    isTestMode,
+                    AsLogger(),
+                    out header) && header.IsCustomNodeWorkspace)
                 {
-                    Log(string.Format("Custom node \"{0}\" could not be initialized.", customNodeInfo.Name));
-                    workspace = null;
-                    return false;
+                    if (migrationManager.ProcessWorkspace(header, xmlDoc, isTestMode, nodeFactory))
+                    {
+                        return InitializeCustomNode(functionId, header, xmlDoc, out workspace);
+                    }
                 }
-
-                return InitializeCustomNode(functionId, header, xmlDoc, out workspace);
+                Log(string.Format("Custom node \"{0}\" could not be initialized.", customNodeInfo.Name));
+                workspace = null;
+                return false;
             }
             catch (Exception ex)
             {

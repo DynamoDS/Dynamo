@@ -355,7 +355,7 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(resSave);
             Assert.IsTrue(File.Exists(newPath));
-            Assert.AreEqual(newPath, ViewModel.Model.CurrentWorkspace.FileName);
+            Assert.AreEqual(newPath, def.FileName);
             var saveTime = File.GetLastWriteTime(newPath);
 
             // assert the file has new update
@@ -485,7 +485,7 @@ namespace Dynamo.Tests
             Assert.IsFalse(def.HasUnsavedChanges);
 
             var node = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
-            dynamoModel.CurrentWorkspace.AddNode(node, false);
+            def.AddNode(node, false);
             Assert.IsTrue(def.HasUnsavedChanges);
             Assert.AreEqual(1, def.Nodes.Count );
             
@@ -499,7 +499,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void CustomNodeSaveAsDoesNotGiveNewFunctionIdToNewCustomNode()
+        public void CustomNodeSaveAsDoesGiveNewFunctionIdToNewCustomNode()
         {
             // new custom node
             // SaveAs
@@ -517,11 +517,11 @@ namespace Dynamo.Tests
             var newPath = GetNewFileNameOnTempPath("dyf");
             workspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
-            var newDef = workspace.CustomNodeDefinition;
+            var newDef = workspace.CustomNodeId;
 
             Assert.AreNotEqual(Guid.Empty, initialId);
-            Assert.AreNotEqual(Guid.Empty, newDef.FunctionId);
-            Assert.AreEqual(initialId, newDef.FunctionId);
+            Assert.AreNotEqual(Guid.Empty, newDef);
+            Assert.AreNotEqual(initialId, newDef);
         }
 
         [Test]
@@ -568,7 +568,7 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
-                model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
+                model.Workspaces.OfType<CustomNodeWorkspaceModel>().FirstOrDefault();
             
             Assert.IsNotNull(nodeWorkspace);
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
@@ -582,7 +582,7 @@ namespace Dynamo.Tests
             // workspace now has different function id
             var newDef = nodeWorkspace.CustomNodeDefinition;
             Assert.IsTrue(ViewModel.Model.CustomNodeManager.IsInitialized(newDef.FunctionId));
-            Assert.IsTrue(ViewModel.Model.CustomNodeManager.IsInitialized(oldId));
+            Assert.IsTrue(ViewModel.Model.CustomNodeManager.Contains(oldId));
         }
 
         [Test]
@@ -711,7 +711,7 @@ namespace Dynamo.Tests
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
 
             Assert.IsNotNull(nodeWorkspace);
-            var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
+            var oldId = nodeWorkspace.CustomNodeId;
 
             // place the custom node a few times in home workspace
             var homeWorkspace = model.Workspaces.OfType<HomeWorkspaceModel>().First();
@@ -724,6 +724,7 @@ namespace Dynamo.Tests
 
             // SaveAs
             var newPath = GetNewFileNameOnTempPath("dyf");
+            var newName = Path.GetFileNameWithoutExtension(newPath);
             var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore); // introduces new function id
 
             Assert.IsTrue(res);
@@ -733,9 +734,12 @@ namespace Dynamo.Tests
 
             // can get instances of original custom node
             Assert.AreEqual(10, homeWorkspace.Nodes.Count);
-            var funcs = homeWorkspace.Nodes.OfType<Function>().Where(x => x.Definition.FunctionId == oldId).ToList();
+            var funcs =
+                homeWorkspace.Nodes.OfType<Function>()
+                    .Where(x => x.Definition.FunctionId == nodeWorkspace.CustomNodeId)
+                    .ToList();
             Assert.AreEqual(10, funcs.Count);
-            funcs.ForEach(x => Assert.AreEqual( "Constant2", x.Name ));
+            funcs.ForEach(x => Assert.AreEqual(newName, x.NickName));
             
         }
 

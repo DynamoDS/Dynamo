@@ -249,8 +249,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     The name of this workspace.
         /// </summary>
-        //TODO(Steve): Investigate whether this is necessary
-        public String Name
+        public string Name
         {
             get { return name; }
             set

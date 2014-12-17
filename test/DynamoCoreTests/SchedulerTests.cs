@@ -566,7 +566,7 @@ namespace Dynamo
             Assert.IsFalse(schedulerThread.Initialized);
             Assert.IsFalse(schedulerThread.Destroyed);
 
-            var scheduler = new DynamoScheduler(schedulerThread, true);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
             Assert.IsTrue(schedulerThread.Initialized);
             Assert.IsFalse(schedulerThread.Destroyed);
 
@@ -583,7 +583,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing00()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, true);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -629,7 +629,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing01()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, true);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -675,7 +675,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing02()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, true);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -721,7 +721,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing03()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, true);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -753,7 +753,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing04()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, true);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -787,7 +787,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing05()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, true);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -821,7 +821,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing06()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, true);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             schedulerThread.GetSchedulerToProcessTasks();
             Assert.Pass("Scheduler thread successfully exits");
@@ -836,7 +836,7 @@ namespace Dynamo
         {
             var observer = new TaskEventObserver();
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread, true);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
             scheduler.TaskStateChanged += observer.OnTaskStateChanged;
 
             // Start scheduling a bunch of tasks.
@@ -1234,9 +1234,7 @@ namespace Dynamo
             {
                 new DoubleInput(),
                 new DoubleInput(),
-                new DSFunction(
-                    dynamoModel.LibraryServices.BuiltinFunctionGroups.First(
-                        g => g.QualifiedName == Op.GetOpFunction(Operator.add)).Functions.First())
+                new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"))
             };
 
             var workspace = dynamoModel.CurrentWorkspace;

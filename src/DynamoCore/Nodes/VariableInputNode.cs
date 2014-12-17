@@ -173,13 +173,23 @@ namespace Dynamo.Nodes
             foreach (var idx in Enumerable.Range(0, model.InPortData.Count))
                 connectedLastBuild[idx] = model.HasInput(idx);
         }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="nodeElement"></param>
+        /// <param name="amount"></param>
+        public static void SerializeInputCount(XmlElement nodeElement, int amount)
+        {
+            nodeElement.SetAttribute("inputcount", amount.ToString());
+        }
         
         #region Serialization/Deserialization Methods
 
         public void SerializeCore(XmlElement element, SaveContext context)
         {
             //base.SerializeCore(element, context); //Base implementation must be called
-            element.SetAttribute("inputcount", model.InPortData.Count.ToString());
+            SerializeInputCount(element, model.InPortData.Count);
         }
 
         public void DeserializeCore(XmlElement element, SaveContext context)

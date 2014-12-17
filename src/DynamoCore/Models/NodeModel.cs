@@ -282,7 +282,7 @@ namespace Dynamo.Models
         ///     Name property
         /// </summary>
         /// <value>
-        ///     If the node has a name attribute, return it.  Other wise return empty string.
+        ///     If the node has a name attribute, return it.  Otherwise return empty string.
         /// </value>
         public string Name
         {
@@ -1303,9 +1303,11 @@ namespace Dynamo.Models
         {
             var helper = new XmlElementHelper(element);
 
+            if (context != SaveContext.Copy)
+                helper.SetAttribute("guid", GUID);
+
             // Set the type attribute
             helper.SetAttribute("type", GetType());
-            helper.SetAttribute("guid", GUID);
             helper.SetAttribute("nickname", NickName);
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
@@ -1339,8 +1341,10 @@ namespace Dynamo.Models
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var helper = new XmlElementHelper(nodeElement);
-            GUID = helper.ReadGuid("guid", GUID);
+            var helper = new XmlElementHelper(nodeElement); 
+            
+            if (context != SaveContext.Copy)
+                GUID = helper.ReadGuid("guid", GUID);
 
             // Resolve node nick name.
             string name = helper.ReadString("nickname", string.Empty);

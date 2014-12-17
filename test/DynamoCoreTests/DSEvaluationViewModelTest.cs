@@ -602,7 +602,6 @@ namespace Dynamo.Tests
             AssertPreviewValue("f5b252f3-67b9-4287-a003-eb8d3b8f9cb2",  new int[]{4});
         }
         [Test]
-        [Category("Failure")] //TODO: There's an unresolved node in this file.
         public void CBN_Empty_722()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
