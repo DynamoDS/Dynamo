@@ -460,7 +460,7 @@ namespace Dynamo.Models
 
         protected virtual void ShutDownCore(bool shutdownHost)
         {
-            CleanWorkbench();
+            ClearWorkspace();
 
             EngineController.Dispose();
             EngineController = null;
@@ -837,9 +837,11 @@ namespace Dynamo.Models
             return OpenWorkspace(xmlPath);
         }
 
-        internal void CleanWorkbench()
+        internal void ClearWorkspace()
         {
             Logger.Log("Clearing workflow...");
+
+            OnWorkspaceClearing(this, EventArgs.Empty);
 
             //Copy locally
             List<NodeModel> elements = Nodes.ToList();
@@ -879,6 +881,13 @@ namespace Dynamo.Models
                 this.ResetEngine();
 
             CurrentWorkspace.PreloadedTraceData = null;
+
+            //don't save the file path
+            CurrentWorkspace.FileName = "";
+            CurrentWorkspace.HasUnsavedChanges = false;
+            CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
+
+            OnWorkspaceCleared(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -976,7 +985,7 @@ namespace Dynamo.Models
         {
             Logger.Log("Opening home workspace " + xmlPath + "...");
 
-            CleanWorkbench();
+            ClearWorkspace();
             MigrationManager.ResetIdentifierIndex();
 
             var sw = new Stopwatch();
@@ -1321,7 +1330,7 @@ namespace Dynamo.Models
                 Logger.Log("There was an error opening the workbench.");
                 Logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
-                CleanWorkbench();
+                ClearWorkspace();
                 return false;
             }
 
@@ -1566,16 +1575,7 @@ namespace Dynamo.Models
         /// <param name="parameter"></param>
         public void Clear(object parameter)
         {
-            OnWorkspaceClearing(this, EventArgs.Empty);
-
-            CleanWorkbench();
-
-            //don't save the file path
-            CurrentWorkspace.FileName = "";
-            CurrentWorkspace.HasUnsavedChanges = false;
-            CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
-
-            OnWorkspaceCleared(this, EventArgs.Empty);
+            ClearWorkspace();
         }
 
         /// <summary>

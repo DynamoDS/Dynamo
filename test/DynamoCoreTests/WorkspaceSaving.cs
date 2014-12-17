@@ -59,7 +59,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(true, workspace.CanUndo);
             Assert.AreEqual(false, workspace.CanRedo);
-            dynamoModel.CleanWorkbench(); // Clearing current workspace.
+            dynamoModel.ClearWorkspace(); // Clearing current workspace.
 
             // Undo stack should be cleared.
             Assert.AreEqual(false, workspace.CanUndo);
