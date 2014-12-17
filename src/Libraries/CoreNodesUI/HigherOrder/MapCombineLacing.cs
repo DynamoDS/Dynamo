@@ -16,10 +16,10 @@ namespace DSCore
     {
         public Map(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("list", Resources.MapPortDataListToolTip));
-            InPortData.Add(new PortData("f(x)", Resources.MapPortDataFxToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list", Resources.MapPortDataListToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"f(x)", Resources.MapPortDataFxToolTip));
 
-            OutPortData.Add(new PortData("mapped", Resources.MapPortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"mapped", Resources.MapPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -47,11 +47,11 @@ namespace DSCore
 
         protected CombinatorNode(WorkspaceModel workspace) : this(workspace, 3)
         {
-            InPortData.Add(new PortData("comb", Resources.CombinatorPortDataCombToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
-            InPortData.Add(new PortData("list2", Resources.PortDataList2ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"comb", Resources.CombinatorPortDataCombToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list2", Resources.PortDataList2ToolTip));
 
-            OutPortData.Add(new PortData("combined", Resources.CombinatorPortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"combined", Resources.CombinatorPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -280,11 +280,11 @@ namespace DSCore
 
         public Reduce(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            InPortData.Add(new PortData("reductor", Resources.ReducePortDataReductorToolTip));
-            InPortData.Add(new PortData("seed", Resources.ReducePortDataSeedToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"reductor", Resources.ReducePortDataReductorToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"seed", Resources.ReducePortDataSeedToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list1", Resources.PortDataList1ToolTip));
 
-            OutPortData.Add(new PortData("reduced", Resources.ReducePortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"reduced", Resources.ReducePortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -367,11 +367,11 @@ namespace DSCore
 
         public ScanList(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("reductor", Resources.ScanPortDataReductorToolTip));
-            InPortData.Add(new PortData("seed", Resources.ScanPortDataSeedToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"reductor", Resources.ScanPortDataReductorToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"seed", Resources.ScanPortDataSeedToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list1", Resources.PortDataList1ToolTip));
 
-            OutPortData.Add(new PortData("scanned", Resources.ScanPortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"scanned", Resources.ScanPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -452,11 +452,11 @@ namespace DSCore
     {
         public Filter(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("list", Resources.FilterPortDataListToolTip));
-            InPortData.Add(new PortData("condition", Resources.FilterPortDataConditionToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list", Resources.FilterPortDataListToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"condition", Resources.FilterPortDataConditionToolTip));
 
-            OutPortData.Add(new PortData("in", Resources.FilterPortDataResultInToolTip));
-            OutPortData.Add(new PortData("out", Resources.FilterPortDataResultOutToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"in", Resources.FilterPortDataResultInToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"out", Resources.FilterPortDataResultOutToolTip));
 
             RegisterAllPorts();
         }
@@ -494,11 +494,11 @@ namespace DSCore
     {
         public Replace(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("item", Resources.ReplacePortDataItemToolTip));
-            InPortData.Add(new PortData("replaceWith", Resources.ReplacePortDataReplaceWithToolTip));
-            InPortData.Add(new PortData("condition", Resources.ReplacePortDataConditionToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"item", Resources.ReplacePortDataItemToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"replaceWith", Resources.ReplacePortDataReplaceWithToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"condition", Resources.ReplacePortDataConditionToolTip));
 
-            OutPortData.Add(new PortData("var", Resources.ReplacePortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"var", Resources.ReplacePortDataResultToolTip));
 
             RegisterAllPorts();
         }

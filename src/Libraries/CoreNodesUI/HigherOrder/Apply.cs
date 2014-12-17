@@ -17,8 +17,8 @@ namespace DSCoreNodesUI.HigherOrder
     {
         public ApplyFunction(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
-            OutPortData.Add(new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"func", Resources.ApplyPortDataFuncToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"func(args)", Resources.ApplyPortDataFuncArgToolTip));
             AddInput();
             RegisterAllPorts();
         }
@@ -74,10 +74,10 @@ namespace DSCoreNodesUI.HigherOrder
         public ComposeFunctions(WorkspaceModel workspaceModel)
             : base(workspaceModel)
         {
-            InPortData.Add(new PortData("func0", Resources.ComposePortDataFunc0ToolTip));
-            InPortData.Add(new PortData("func1", Resources.ComposePortDataFunc1ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"func0", Resources.ComposePortDataFunc0ToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"func1", Resources.ComposePortDataFunc1ToolTip));
 
-            OutPortData.Add(new PortData("func", Resources.ComposePortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"func", Resources.ComposePortDataResultToolTip));
             RegisterAllPorts();
         }
 

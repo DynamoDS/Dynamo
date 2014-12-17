@@ -18,10 +18,10 @@ namespace DSCoreNodesUI
         public NumberRange(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
-            InPortData.Add(new PortData("end", Resources.NumberRangePortDataEndToolTip));
-            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
-            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"start", Resources.NumberRangePortDataStartToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"end", Resources.NumberRangePortDataEndToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"step", Resources.NumberRangePortDataStepToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"seq", Resources.NumberRangePortDataSeqToolTip));
 
             RegisterAllPorts();
 
@@ -55,10 +55,10 @@ namespace DSCoreNodesUI
         public NumberSeq(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
-            InPortData.Add(new PortData("amount", Resources.NumberRangePortDataAmountToolTip));
-            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
-            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"start", Resources.NumberRangePortDataStartToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"amount", Resources.NumberRangePortDataAmountToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"step", Resources.NumberRangePortDataStepToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"seq", Resources.NumberRangePortDataSeqToolTip));
 
             RegisterAllPorts();
 

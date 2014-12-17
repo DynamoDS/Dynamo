@@ -23,8 +23,8 @@ namespace DSCore.Logic
         {
             _op = op;
 
-            InPortData.Add(new PortData("bool0", Resources.PortDataOperandToolTip));
-            InPortData.Add(new PortData("bool1", Resources.PortDataOperandToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"bool0", Resources.PortDataOperandToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"bool1", Resources.PortDataOperandToolTip));
             OutPortData.Add(new PortData(string.Empty, Resources.PortDataResultToolTip));
             RegisterAllPorts();
         }

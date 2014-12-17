@@ -65,8 +65,8 @@ namespace Dynamo.Nodes
         public Watch(WorkspaceModel ws)
             : base(ws)
         {
-            InPortData.Add(new PortData("", Resources.WatchPortDataInputToolTip));
-            OutPortData.Add(new PortData("", Resources.WatchPortDataResultToolTip));
+            InPortData.Add(new PortData(String.Empty, Resources.WatchPortDataInputToolTip));
+            OutPortData.Add(new PortData(String.Empty, Resources.WatchPortDataResultToolTip));
 
             RegisterAllPorts();
 

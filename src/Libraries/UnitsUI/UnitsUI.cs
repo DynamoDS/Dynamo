@@ -205,7 +205,7 @@ namespace UnitsUI
         public LengthFromString(WorkspaceModel ws) : base(ws)
         {
             Measure = Length.FromDouble(0.0);
-            OutPortData.Add(new PortData("length", Resources.LengthFromStringPortDataLengthToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"length", Resources.LengthFromStringPortDataLengthToolTip));
             RegisterAllPorts();
         }
 
@@ -254,7 +254,7 @@ namespace UnitsUI
         public AreaFromString(WorkspaceModel workspaceModel) : base(workspaceModel) 
         {
             Measure = Area.FromDouble(0.0);
-            OutPortData.Add(new PortData("area", Resources.AreaFromStringPortDataAreaToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"area", Resources.AreaFromStringPortDataAreaToolTip));
             RegisterAllPorts();
         }
 
@@ -285,7 +285,7 @@ namespace UnitsUI
         public VolumeFromString(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             Measure = Volume.FromDouble(0.0);
-            OutPortData.Add(new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"volume", Resources.VolumeFromStringPortDataVolumeToolTip));
             RegisterAllPorts();
         }
 

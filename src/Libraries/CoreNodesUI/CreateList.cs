@@ -26,8 +26,8 @@ namespace DSCoreNodesUI
     {
         public CreateList(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("index0", Resources.CreateListPortDataIndex0ToolTip));
-            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"index0", Resources.CreateListPortDataIndex0ToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"list", Resources.CreateListPortDataResultToolTip));
 
             RegisterAllPorts();
 

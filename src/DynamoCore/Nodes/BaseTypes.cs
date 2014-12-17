@@ -693,11 +693,11 @@ namespace Dynamo.Nodes
     {
         public Sublists(WorkspaceModel ws): base(ws)
         {
-            InPortData.Add(new PortData("list", Resources.SublistsPortDataListToolTip));
-            InPortData.Add(new PortData("offset", Resources.SublistsPortDataOffsetToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list", Resources.SublistsPortDataListToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"offset", Resources.SublistsPortDataOffsetToolTip));
 
             OutPortData.RemoveAt(0); //remove the existing blank output
-            OutPortData.Add(new PortData("list", Resources.SublistPortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"list", Resources.SublistPortDataResultToolTip));
 
             RegisterAllPorts();
 
@@ -929,9 +929,9 @@ namespace Dynamo.Nodes
     { 
         public ComposeFunctions(WorkspaceModel ws) : base(ws)
         {
-            InPortData.Add(new PortData("f", Resources.ComposeFunctionPortDataFunctionToolTip));
-            InPortData.Add(new PortData("g", Resources.ComposeFunctionPortDataFunctionToolTip));
-            OutPortData.Add(new PortData("g ∘ f", Resources.ComposeFunctionPortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"f", Resources.ComposeFunctionPortDataFunctionToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"g", Resources.ComposeFunctionPortDataFunctionToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"g ∘ f", Resources.ComposeFunctionPortDataResultToolTip));
 
             RegisterAllPorts();
         }

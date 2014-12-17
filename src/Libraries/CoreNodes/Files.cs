@@ -230,13 +230,13 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="directory">Directory to get contents of.</param>
         /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
-        [MultiReturn("files", "directories")]
+        [MultiReturn(/*NXLT*/"files", /*NXLT*/"directories")]
         public static Dictionary<string, IList> Contents(DirectoryInfo directory, string searchString = "*.*")
         {
             return new Dictionary<string, IList>
             {
-                { "files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
-                { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
+                { /*NXLT*/"files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
+                { /*NXLT*/"directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
             };
         }
 
@@ -346,10 +346,14 @@ namespace DSCore.IO
         ///     Gets the width and height of an image.
         /// </summary>
         /// <param name="image">Image to get dimensions of.</param>
-        [MultiReturn("width", "height")]
+        [MultiReturn(/*NXLT*/"width", /*NXLT*/"height")]
         public static Dictionary<string, int> Dimensions(Bitmap image)
         {
-            return new Dictionary<string, int> { { "width", image.Width }, { "height", image.Height } };
+            return new Dictionary<string, int> 
+            { 
+                { /*NXLT*/"width", image.Width }, 
+                { /*NXLT*/"height", image.Height } 
+            };
         }
 
         /// <summary>

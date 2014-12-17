@@ -114,7 +114,7 @@ namespace Dynamo.Nodes
             this.selectionType = selectionType;
             this.selectionObjectType = selectionObjectType;
 
-            OutPortData.Add(new PortData("Elements", Resources.SelectionPortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"Elements", Resources.SelectionPortDataResultToolTip));
             RegisterAllPorts();
 
             SelectCommand = new DelegateCommand(Select, CanBeginSelect);

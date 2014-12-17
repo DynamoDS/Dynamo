@@ -64,7 +64,7 @@ namespace DSIronPythonNode
     {
         protected PythonNodeBase(WorkspaceModel workspace) : base(workspace)
         {
-            OutPortData.Add(new PortData("OUT", Resources.PythonNodePortDataOutputToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"OUT", Resources.PythonNodePortDataOutputToolTip));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -221,7 +221,7 @@ namespace DSIronPythonNode
     {
         public PythonStringNode(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("script", Resources.PythonStringPortDataScriptToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"script", Resources.PythonStringPortDataScriptToolTip));
             AddInput();
             RegisterAllPorts();
         }

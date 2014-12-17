@@ -25,10 +25,10 @@ namespace DSCoreNodesUI
         public ColorRange(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("start", Resources.ColorRangePortDataStartToolTip));
-            InPortData.Add(new PortData("end", Resources.ColorRangePortDataEndToolTip));
-            InPortData.Add(new PortData("value", Resources.ColorRangePortDataValueToolTip));
-            OutPortData.Add(new PortData("color", Resources.ColorRangePortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"start", Resources.ColorRangePortDataStartToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"end", Resources.ColorRangePortDataEndToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"value", Resources.ColorRangePortDataValueToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"color", Resources.ColorRangePortDataResultToolTip));
 
             RegisterAllPorts();
 

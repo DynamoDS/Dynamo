@@ -74,8 +74,8 @@ namespace Dynamo.Nodes
 
         public Arduino(WorkspaceModel workspace) : base(workspace)
         {
-            InPortData.Add(new PortData("exec", Resources.ArduinoPortDataExecToolTip));
-            OutPortData.Add(new PortData("arduino", Resources.ArduinoPortDataOutputToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"exec", Resources.ArduinoPortDataExecToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"arduino", Resources.ArduinoPortDataOutputToolTip));
 
             RegisterAllPorts();
 
@@ -154,9 +154,9 @@ namespace Dynamo.Nodes
         public ArduinoRead(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
-            InPortData.Add(new PortData("delimiter", Resources.ArduionReadPortDataDelimiterToolTip));
-            OutPortData.Add(new PortData("output", Resources.ArduinoReadPortDataOutputToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"arduino", Resources.PortDataArduinoToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"delimiter", Resources.ArduionReadPortDataDelimiterToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"output", Resources.ArduinoReadPortDataOutputToolTip));
 
             RegisterAllPorts();
         }
@@ -214,9 +214,9 @@ namespace Dynamo.Nodes
         public ArduinoWrite(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
-            InPortData.Add(new PortData("text", Resources.ArduionWritePortDataTextToolTip));
-            OutPortData.Add(new PortData("success?", Resources.ArduinoWritePortDataOutputToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"arduino", Resources.PortDataArduinoToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"text", Resources.ArduionWritePortDataTextToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"success?", Resources.ArduinoWritePortDataOutputToolTip));
 
             RegisterAllPorts();
         }

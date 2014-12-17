@@ -117,7 +117,7 @@ namespace DSCore
         /// </summary>
         /// <returns name="val">Saturation value for the color.</returns>
         /// <search>alpha,red,green,blue</search>
-        [MultiReturn("a", "r", "g", "b")]
+        [MultiReturn(/*NXLT*/"a", /*NXLT*/"r", /*NXLT*/"g", /*NXLT*/"b")]
         public static Dictionary<string, byte> Components(Color c)
         {
             return new Dictionary<string, byte>

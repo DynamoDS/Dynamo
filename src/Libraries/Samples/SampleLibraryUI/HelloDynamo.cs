@@ -116,12 +116,12 @@ namespace SamplesLibraryUI
             // work of setting up the ports yourself. To do this,
             // you can populate the InPortData and the OutPortData
             // collections with PortData objects describing your ports.
-            InPortData.Add(new PortData("something", Resources.HelloDynamoPortDataInputToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"something", Resources.HelloDynamoPortDataInputToolTip));
 
             // Nodes can have an arbitrary number of inputs and outputs.
             // If you want more ports, just create more PortData objects.
-            OutPortData.Add(new PortData("something", Resources.HelloDynamoPortDataOutputToolTip));
-            OutPortData.Add(new PortData("some awesome", Resources.HelloDynamoPortDataOutputToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"something", Resources.HelloDynamoPortDataOutputToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"some awesome", Resources.HelloDynamoPortDataOutputToolTip));
 
             // This call is required to ensure that your ports are
             // properly created.
