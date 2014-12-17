@@ -14,9 +14,9 @@ using IronPython.Modules;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("LEGACY Python Script")]
+    [NodeName(/*NXLT*/"LEGACY Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
-    [NodeDescription("LEGACYPythonScriptDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"LEGACYPythonScriptDescription",typeof(Properties.Resources))]
     public class Python : NodeModel
     {
         public Python(WorkspaceModel workspaceModel) : base(workspaceModel) { }
@@ -138,9 +138,9 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName("LEGACY Python Script With Variable Number of Inputs")]
+    [NodeName(/*NXLT*/"LEGACY Python Script With Variable Number of Inputs")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
-    [NodeDescription("LEGACYPythonScriptDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"LEGACYPythonScriptDescription", typeof(Properties.Resources))]
     public class PythonVarIn : VariableInput
     {
         // implement methods from variableinput
@@ -183,9 +183,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("LEGACY Python Script From String")]
+    [NodeName(/*NXLT*/"LEGACY Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
-    [NodeDescription("LEGACYPythonScriptFromStringDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"LEGACYPythonScriptFromStringDescription", typeof(Properties.Resources))]
     public class PythonString : NodeModel
     {
         public PythonString(WorkspaceModel workspaceModel) : base(workspaceModel) { }

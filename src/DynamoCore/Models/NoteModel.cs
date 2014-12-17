@@ -14,7 +14,7 @@ namespace Dynamo.Models
             set
             {
                 _text = value;
-                RaisePropertyChanged("Text");
+                RaisePropertyChanged(/*NXLT*/"Text");
             }
         }
 

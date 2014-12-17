@@ -60,7 +60,7 @@ namespace Dynamo
                 lock (this.guardMutex)
                 {
                     _warningLevel = value;
-                    RaisePropertyChanged("WarningLevel");
+                    RaisePropertyChanged(/*NXLT*/"WarningLevel");
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace Dynamo
                 {
 
                     _warning = value;
-                    RaisePropertyChanged("Warning");
+                    RaisePropertyChanged(/*NXLT*/"Warning");
                 }
             }
         }
@@ -149,7 +149,7 @@ namespace Dynamo
                                 ConsoleWriter.AppendLine(string.Format("{0}", message));
                                 FileWriter.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
                                 FileWriter.Flush();
-                                RaisePropertyChanged("ConsoleWriter");
+                                RaisePropertyChanged(/*NXLT*/"ConsoleWriter");
                             }
                             catch
                             {
@@ -177,7 +177,7 @@ namespace Dynamo
 
                 if (reportModification)
                 {
-                    RaisePropertyChanged("LogText");
+                    RaisePropertyChanged(/*NXLT*/"LogText");
                 }
             }
         }
@@ -253,7 +253,7 @@ namespace Dynamo
             lock (this.guardMutex)
             {
                 ConsoleWriter.Clear();
-                RaisePropertyChanged("LogText");
+                RaisePropertyChanged(/*NXLT*/"LogText");
             }
         }
 

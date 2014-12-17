@@ -140,18 +140,25 @@ namespace DSCore
         ///     Extracts the individual components of a DateTime.
         /// </summary>
         /// <param name="dateTime">A DateTime.</param>
-        [MultiReturn("year", "month", "day", "hour", "minute", "second", "millisecond")]
+        [MultiReturn(
+            /*NXLT*/"year",
+            /*NXLT*/"month",
+            /*NXLT*/"day",
+            /*NXLT*/"hour",
+            /*NXLT*/"minute",
+            /*NXLT*/"second",
+            /*NXLT*/"millisecond")]
         public static Dictionary<string, int> Components(System.DateTime dateTime)
         {
             return new Dictionary<string, int>
             {
-                { "year", dateTime.Year },
-                { "month", dateTime.Month },
-                { "day", dateTime.Day },
-                { "hour", dateTime.Hour },
-                { "minute", dateTime.Minute },
-                { "second", dateTime.Second },
-                { "millisecond", dateTime.Millisecond },
+                { /*NXLT*/"year", dateTime.Year },
+                { /*NXLT*/"month", dateTime.Month },
+                { /*NXLT*/"day", dateTime.Day },
+                { /*NXLT*/"hour", dateTime.Hour },
+                { /*NXLT*/"minute", dateTime.Minute },
+                { /*NXLT*/"second", dateTime.Second },
+                { /*NXLT*/"millisecond", dateTime.Millisecond },
             };
         }
 

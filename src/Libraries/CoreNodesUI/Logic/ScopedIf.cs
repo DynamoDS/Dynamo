@@ -17,17 +17,17 @@ using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 
 namespace DSCoreNodesUI.Logic
 {
-    [NodeName("ScopeIf"), NodeCategory(BuiltinNodeCategories.LOGIC),
-     NodeDescription("ScopeIfDescription", typeof(Properties.Resources)), IsDesignScriptCompatible]
+    [NodeName(/*NXLT*/"ScopeIf"), NodeCategory(BuiltinNodeCategories.LOGIC),
+     NodeDescription(/*NXLT*/"ScopeIfDescription", typeof(Properties.Resources)), IsDesignScriptCompatible]
     public class ScopedIf : ScopedNodeModel
     {
         public ScopedIf(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
-            InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));
-            InPortData.Add(new PortData("true", Resources.PortDataTrueBlockToolTip));
-            InPortData.Add(new PortData("false", Resources.PortDataFalseBlockToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"test", Resources.PortDataTestBlockToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"true", Resources.PortDataTrueBlockToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"false", Resources.PortDataFalseBlockToolTip));
 
-            OutPortData.Add(new PortData("result", Resources.PortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"result", Resources.PortDataResultToolTip));
             RegisterAllPorts();
         }
 

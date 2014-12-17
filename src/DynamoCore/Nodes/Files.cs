@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
         protected FileReaderBase(WorkspaceModel ws) : base(ws)
         {
             handler = watcher_FileChanged;
-            InPortData.Add(new PortData("path", Resources.PortDataPathToFileToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"path", Resources.PortDataPathToFileToolTip));
         }
 
         void watcher_FileChanged(object sender, FileSystemEventArgs e)

@@ -84,7 +84,7 @@ namespace Dynamo
             set
             {
                 alternateDrawingContextAvailable = value;
-                RaisePropertyChanged("AlternateDrawingContextAvailable");
+                RaisePropertyChanged(/*NXLT*/"AlternateDrawingContextAvailable");
             }
         }
 
@@ -118,7 +118,7 @@ namespace Dynamo
                         OnRenderComplete(this, new RenderCompletionEventArgs(-1));
                     }
                 }
-                RaisePropertyChanged("DrawToAlternateContext");
+                RaisePropertyChanged(/*NXLT*/"DrawToAlternateContext");
             }
         }
 

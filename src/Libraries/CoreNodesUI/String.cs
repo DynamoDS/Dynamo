@@ -56,8 +56,8 @@ namespace DSCoreNodesUI.StringNodes
         }
     }
 
-    [NodeName("String from Object")]
-    [NodeDescription("StringfromObjectDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"String from Object")]
+    [NodeDescription(/*NXLT*/"StringfromObjectDescription", typeof(Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromObjectSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
@@ -67,14 +67,14 @@ namespace DSCoreNodesUI.StringNodes
             : base(workspace, "__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("obj", Resources.FromObjectPortDataObjToolTip));
-            OutPortData.Add(new PortData("str", Resources.FormulaPortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"obj", Resources.FromObjectPortDataObjToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"str", Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
     }
 
-    [NodeName("String from Array")]
-    [NodeDescription("StringfromArrayDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"String from Array")]
+    [NodeDescription(/*NXLT*/"StringfromArrayDescription", typeof(Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromArraySearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
@@ -84,8 +84,8 @@ namespace DSCoreNodesUI.StringNodes
             : base(workspace, "__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("arr", Resources.FromArrayPortDataArrayToolTip));
-            OutPortData.Add(new PortData("str", Resources.FromArrayPortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"arr", Resources.FromArrayPortDataArrayToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"str", Resources.FromArrayPortDataResultToolTip));
             RegisterAllPorts();
         }
     }

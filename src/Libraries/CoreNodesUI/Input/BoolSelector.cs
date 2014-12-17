@@ -37,9 +37,9 @@ namespace DSCoreNodesUI
         }
     }
 
-    [NodeName("Boolean")]
+    [NodeName(/*NXLT*/"Boolean")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("BooleanDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"BooleanDescription", typeof(Properties.Resources))]
     [NodeSearchTags("BooleanSelectorSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class BoolSelector : Bool

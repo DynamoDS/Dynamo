@@ -42,7 +42,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _children = value;
-                RaisePropertyChanged("Children");
+                RaisePropertyChanged(/*NXLT*/"Children");
             }
         }
         
@@ -55,7 +55,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _label = value;
-                RaisePropertyChanged("NodeLabel");
+                RaisePropertyChanged(/*NXLT*/"NodeLabel");
             }
         }
         
@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _link = value;
-                RaisePropertyChanged("Link");
+                RaisePropertyChanged(/*NXLT*/"Link");
             }
         }
 
@@ -101,7 +101,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _path = value;
-                RaisePropertyChanged("Path");
+                RaisePropertyChanged(/*NXLT*/"Path");
             }
         }
         
@@ -117,7 +117,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _showRawData = value;
-                RaisePropertyChanged("ShowRawData");
+                RaisePropertyChanged(/*NXLT*/"ShowRawData");
             }
         }
 

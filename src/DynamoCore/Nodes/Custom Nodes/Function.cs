@@ -14,8 +14,8 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     DesignScript Custom Node instance.
     /// </summary>
-    [NodeName("Custom Node")]
-    [NodeDescription("CustomNodeDesciption", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"Custom Node")]
+    [NodeDescription(/*NXLT*/"CustomNodeDesciption", typeof(Properties.Resources))]
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
             set
             {
                 Definition.WorkspaceModel.Name = value;
-                RaisePropertyChanged("Name");
+                RaisePropertyChanged(/*NXLT*/"Name");
             }
         }
 
@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
             set
             {
                 Definition.WorkspaceModel.Description = value;
-                RaisePropertyChanged("Description");
+                RaisePropertyChanged(/*NXLT*/"Description");
             }
         }
 
@@ -315,9 +315,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Input")]
+    [NodeName(/*NXLT*/"Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("InputNodeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"InputNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("InputNodeSearchTags", typeof(Properties.Resources))]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
@@ -342,7 +342,7 @@ namespace Dynamo.Nodes
             {
                 inputSymbol = value;
                 ReportModification();
-                RaisePropertyChanged("InputSymbol");
+                RaisePropertyChanged(/*NXLT*/"InputSymbol");
             }
         }
 
@@ -385,8 +385,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Output")]    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("OutputNodeDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"Output")]    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription(/*NXLT*/"OutputNodeDescription", typeof(Properties.Resources))]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
@@ -410,7 +410,7 @@ namespace Dynamo.Nodes
             {
                 symbol = value;
                 ReportModification();
-                RaisePropertyChanged("Symbol");
+                RaisePropertyChanged(/*NXLT*/"Symbol");
             }
         }
 

@@ -401,7 +401,7 @@ namespace Dynamo.UpdateManager
             private set
             {
                 updateFileLocation = value;
-                RaisePropertyChanged("UpdateFileLocation");
+                RaisePropertyChanged(/*NXLT*/"UpdateFileLocation");
             }
         }
 
@@ -416,7 +416,7 @@ namespace Dynamo.UpdateManager
                 }
                 
                 updateInfo = value;
-                RaisePropertyChanged("UpdateInfo");
+                RaisePropertyChanged(/*NXLT*/"UpdateInfo");
             }
         }
 
@@ -430,7 +430,7 @@ namespace Dynamo.UpdateManager
             set
             {
                 downloadedUpdateInfo = value;
-                RaisePropertyChanged("DownloadedUpdateInfo");
+                RaisePropertyChanged(/*NXLT*/"DownloadedUpdateInfo");
             }
         }
 
@@ -449,7 +449,7 @@ namespace Dynamo.UpdateManager
                     CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath), this));
                 }
                 Configuration.CheckNewerDailyBuild = value;
-                RaisePropertyChanged("CheckNewerDailyBuilds");
+                RaisePropertyChanged(/*NXLT*/"CheckNewerDailyBuilds");
             }
         }
 
@@ -468,7 +468,7 @@ namespace Dynamo.UpdateManager
                     CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath), this));
                 }
                 Configuration.ForceUpdate = value;
-                RaisePropertyChanged("ForceUpdate");
+                RaisePropertyChanged(/*NXLT*/"ForceUpdate");
             }
         }
 

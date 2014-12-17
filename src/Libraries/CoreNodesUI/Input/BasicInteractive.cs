@@ -21,7 +21,7 @@ namespace DSCoreNodesUI
                 {
                     _value = value;
                     RequiresRecalc = !Equals(value, null);
-                    RaisePropertyChanged("Value");
+                    RaisePropertyChanged(/*NXLT*/"Value");
                 }
             }
         }

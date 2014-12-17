@@ -17,9 +17,9 @@ using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Code Block")]
+    [NodeName(/*NXLT*/"Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("CodeBlockNodeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"CodeBlockNodeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class CodeBlockNodeModel : NodeModel
     {
@@ -191,7 +191,7 @@ namespace Dynamo.Nodes
                             LoadAndCreateConnectors(inportConnections, outportConnections);
                         }
 
-                        RaisePropertyChanged("Code");
+                        RaisePropertyChanged(/*NXLT*/"Code");
                         RequiresRecalc = true;
                         ReportPosition();
 
@@ -369,7 +369,7 @@ namespace Dynamo.Nodes
             string warningMessage = string.Empty;
 
             ProcessCode(ref errorMessage, ref warningMessage);
-            RaisePropertyChanged("Code");
+            RaisePropertyChanged(/*NXLT*/"Code");
             RequiresRecalc = true;
 
             if (Workspace != null)

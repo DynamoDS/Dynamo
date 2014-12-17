@@ -24,7 +24,7 @@ namespace Dynamo.PackageManager
         public int Votes
         {
             get { return _votes; }
-            set { _votes = value; RaisePropertyChanged("Votes"); }
+            set { _votes = value; RaisePropertyChanged(/*NXLT*/"Votes"); }
         }
         public bool IsDeprecated { get { return this.Header.deprecated; } }
         public int Downloads { get { return this.Header.downloads; } }

@@ -15,8 +15,8 @@ using Expression = NCalc.Expression;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Formula")]
-    [NodeDescription("FormulaDescription", typeof(Properties.Resources))]
+    [NodeName(/*NXLT*/"Formula")]
+    [NodeDescription(/*NXLT*/"FormulaDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     //[NodeDeprecated]
@@ -41,7 +41,7 @@ namespace DSCoreNodesUI
                         {
                             DisableReporting();
                             ProcessFormula();
-                            RaisePropertyChanged("FormulaString");
+                            RaisePropertyChanged(/*NXLT*/"FormulaString");
                             RequiresRecalc = true;
                             EnableReporting();
                             if (Workspace != null)
@@ -49,7 +49,7 @@ namespace DSCoreNodesUI
                         }
 
                         if (oldState != State)
-                            RaisePropertyChanged("State");
+                            RaisePropertyChanged(/*NXLT*/"State");
                     }
                 }
             }

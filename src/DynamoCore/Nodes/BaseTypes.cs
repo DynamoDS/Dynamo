@@ -686,18 +686,18 @@ namespace Dynamo.Nodes
     /// Builds sublists from a list. Inputs are a list and an offset to indicate the number of items to skip before
     /// the start of each subsequent sublist. Enter a range of values using series syntax to indicate the first sublist.
     /// </summary>
-    [NodeName("Build Sublists")]
+    [NodeName(/*NXLT*/"Build Sublists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("BuildSublistsDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"BuildSublistsDescription", typeof(Properties.Resources))]
     public class Sublists : BasicInteractive<string>
     {
         public Sublists(WorkspaceModel ws): base(ws)
         {
-            InPortData.Add(new PortData("list", Resources.SublistsPortDataListToolTip));
-            InPortData.Add(new PortData("offset", Resources.SublistsPortDataOffsetToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"list", Resources.SublistsPortDataListToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"offset", Resources.SublistsPortDataOffsetToolTip));
 
             OutPortData.RemoveAt(0); //remove the existing blank output
-            OutPortData.Add(new PortData("list", Resources.SublistPortDataResultToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"list", Resources.SublistPortDataResultToolTip));
 
             RegisterAllPorts();
 
@@ -922,16 +922,16 @@ namespace Dynamo.Nodes
 
     #region Functions
 
-    [NodeName("Compose Functions")]
+    [NodeName(/*NXLT*/"Compose Functions")]
     [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
-    [NodeDescription("ComposeFunctionNodeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"ComposeFunctionNodeDescription", typeof(Properties.Resources))]
     public class ComposeFunctions : NodeModel
     { 
         public ComposeFunctions(WorkspaceModel ws) : base(ws)
         {
-            InPortData.Add(new PortData("f", Resources.ComposeFunctionPortDataFunctionToolTip));
-            InPortData.Add(new PortData("g", Resources.ComposeFunctionPortDataFunctionToolTip));
-            OutPortData.Add(new PortData("g ∘ f", Resources.ComposeFunctionPortDataResultToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"f", Resources.ComposeFunctionPortDataFunctionToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"g", Resources.ComposeFunctionPortDataFunctionToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"g ∘ f", Resources.ComposeFunctionPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -977,7 +977,7 @@ namespace Dynamo.Nodes
                     _value = value;
                     //dynamoModel.Logger.Log("Value changed to: " + _value);
                     RequiresRecalc = value != null;
-                    RaisePropertyChanged("Value");
+                    RaisePropertyChanged(/*NXLT*/"Value");
                 }
             }
         }
@@ -1144,9 +1144,9 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    [NodeName("String")]
+    [NodeName(/*NXLT*/"String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("StringNodeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"StringNodeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class StringInput : AbstractString
     {
@@ -1249,9 +1249,9 @@ namespace Dynamo.Nodes
 
     public delegate double ConversionDelegate(double value);
 
-    [NodeName("Number")]
+    [NodeName(/*NXLT*/"Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("NumberNodeDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"NumberNodeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class DoubleInput : NodeModel
     {
@@ -1276,7 +1276,7 @@ namespace Dynamo.Nodes
             switch (e.PropertyName)
             {
                 case "NumberFormat":
-                    RaisePropertyChanged("Value");
+                    RaisePropertyChanged(/*NXLT*/"Value");
                     break;
             }
         }
@@ -1319,7 +1319,7 @@ namespace Dynamo.Nodes
                 }
 
                 RequiresRecalc = value != null;
-                RaisePropertyChanged("Value");
+                RaisePropertyChanged(/*NXLT*/"Value");
             }
         }
 
@@ -1887,7 +1887,7 @@ namespace Dynamo.Nodes
             set
             {
                 items = value;
-                RaisePropertyChanged("Items");
+                RaisePropertyChanged(/*NXLT*/"Items");
             }
         }
 
@@ -1905,7 +1905,7 @@ namespace Dynamo.Nodes
                 }
                 else
                     selectedIndex = value;
-                RaisePropertyChanged("SelectedIndex");
+                RaisePropertyChanged(/*NXLT*/"SelectedIndex");
             }
         }
 

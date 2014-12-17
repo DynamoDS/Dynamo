@@ -3,15 +3,15 @@ using DynamoMSOffice.Properties;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("New Excel Workbook")]
+    [NodeName(/*NXLT*/"New Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("NewExelWorkbookDescription",typeof(Resources))]
+    [NodeDescription(/*NXLT*/"NewExelWorkbookDescription",typeof(Resources))]
     public class NewExcelWorkbook : NodeModel
     {
         public NewExcelWorkbook(WorkspaceModel workspace)
             : base(workspace)
         {
-            OutPortData.Add(new PortData("workbook", Resources.NewExcelWorkBookPortDataOutputToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"workbook", Resources.NewExcelWorkBookPortDataOutputToolTip));
             RegisterAllPorts();
         }
 
@@ -23,15 +23,15 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Open Excel Workbook")]
+    [NodeName(/*NXLT*/"Open Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("OpenExelWorkbookDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"OpenExelWorkbookDescription",typeof(Properties.Resources))]
     public class ReadExcelFile : FileReaderBase
     {
 
         public ReadExcelFile(WorkspaceModel workspace) : base(workspace)
         {
-            OutPortData.Add(new PortData("workbook", Resources.ReadExcelFilePortDataOutputToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"workbook", Resources.ReadExcelFilePortDataOutputToolTip));
             RegisterAllPorts();
         }
 
@@ -43,17 +43,17 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Worksheets From Excel Workbook")]
+    [NodeName(/*NXLT*/"Get Worksheets From Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("GetWorksheetsFromExcelWorkbookDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"GetWorksheetsFromExcelWorkbookDescription", typeof(Properties.Resources))]
     public class GetWorksheetsFromExcelWorkbook : NodeModel
     {
 
         public GetWorksheetsFromExcelWorkbook(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("workbook", Resources.PortDataWorkbookToolTip));
-            OutPortData.Add(new PortData("worksheets", Resources.PortDataWorkSheetsToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"workbook", Resources.PortDataWorkbookToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"worksheets", Resources.PortDataWorkSheetsToolTip));
             RegisterAllPorts();
         }
 
@@ -65,18 +65,18 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Excel Worksheet By Name")]
+    [NodeName(/*NXLT*/"Get Excel Worksheet By Name")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("GetExcelWorksheetByName", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"GetExcelWorksheetByName", typeof(Properties.Resources))]
     public class GetExcelWorksheetByName : NodeModel
     {
 
         public GetExcelWorksheetByName(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("workbook", Resources.PortDataWorkbookToolTip));
-            InPortData.Add(new PortData("name", Resources.PortDataWorkSheetNameToolTip));
-            OutPortData.Add(new PortData("worksheet", Resources.PortDataWorkSheetToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"workbook", Resources.PortDataWorkbookToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"name", Resources.PortDataWorkSheetNameToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"worksheet", Resources.PortDataWorkSheetToolTip));
             RegisterAllPorts();
         }
 
@@ -88,17 +88,17 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Data From Excel Worksheet")]
+    [NodeName(/*NXLT*/"Get Data From Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("GetDataFromExcelWorksheetDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"GetDataFromExcelWorksheetDescription", typeof(Properties.Resources))]
     public class GetDataFromExcelWorksheet : NodeModel
     {
 
         public GetDataFromExcelWorksheet(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("workbook", Resources.PortDataWorkbookToolTip));
-            OutPortData.Add(new PortData("worksheet", Resources.PortDataWorkSheetToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"workbook", Resources.PortDataWorkbookToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"worksheet", Resources.PortDataWorkSheetToolTip));
             RegisterAllPorts();
         }
 
@@ -110,21 +110,21 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Write Data To Excel Worksheet")]
+    [NodeName(/*NXLT*/"Write Data To Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("WriteDataToExcelWorksheetDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"WriteDataToExcelWorksheetDescription", typeof(Properties.Resources))]
     public class WriteDataToExcelWorksheet : NodeModel
     {
 
         public WriteDataToExcelWorksheet(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("worksheet", Resources.PortDataExcelWorkbookToWriteToToolTip));
-            InPortData.Add(new PortData("start row", Resources.PortDataStartRowToolTip, 0));
-            InPortData.Add(new PortData("start column", Resources.PortDataStartColumnToolTip, 0));
-            InPortData.Add(new PortData("data", Resources.PortDataDataToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"worksheet", Resources.PortDataExcelWorkbookToWriteToToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"start row", Resources.PortDataStartRowToolTip, 0));
+            InPortData.Add(new PortData(/*NXLT*/"start column", Resources.PortDataStartColumnToolTip, 0));
+            InPortData.Add(new PortData(/*NXLT*/"data", Resources.PortDataDataToolTip));
 
-            OutPortData.Add(new PortData("worksheet", Resources.PortDataModifiedWorkSheetToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"worksheet", Resources.PortDataModifiedWorkSheetToolTip));
 
             RegisterAllPorts();
         }
@@ -137,19 +137,19 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Add Excel Worksheet To Workbook")]
+    [NodeName(/*NXLT*/"Add Excel Worksheet To Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("AddExcelWorksheetToWorkbookDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"AddExcelWorksheetToWorkbookDescription", typeof(Properties.Resources))]
     public class AddExcelWorksheetToWorkbook : NodeModel
     {
 
         public AddExcelWorksheetToWorkbook(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("workbook", Resources.PortDataExcelWorkbookToWriteToToolTip));
-            InPortData.Add(new PortData("name", Resources.PortDataNewWorkSheetNameToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"workbook", Resources.PortDataExcelWorkbookToWriteToToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"name", Resources.PortDataNewWorkSheetNameToolTip));
 
-            OutPortData.Add(new PortData("worksheet", Resources.PortDataNewlyAddedWorkbookToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"worksheet", Resources.PortDataNewlyAddedWorkbookToolTip));
 
             RegisterAllPorts();
         }
@@ -162,18 +162,18 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Save Excel Workbook As")]
+    [NodeName(/*NXLT*/"Save Excel Workbook As")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("SaveExcelWorkbookAsDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"SaveExcelWorkbookAsDescription", typeof(Properties.Resources))]
     public class SaveAsExcelWorkbook : NodeModel
     {
         public SaveAsExcelWorkbook(WorkspaceModel workspace)
             : base(workspace)
         {
-            InPortData.Add(new PortData("workbook", Resources.PortDataExcelWorkbookToSaveToolTip));
-            InPortData.Add(new PortData("filename", Resources.PortDataWorkbookFileNameToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"workbook", Resources.PortDataExcelWorkbookToSaveToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"filename", Resources.PortDataWorkbookFileNameToolTip));
 
-            OutPortData.Add(new PortData("workbook", Resources.PortDataWorkbookToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"workbook", Resources.PortDataWorkbookToolTip));
 
             RegisterAllPorts();
         }

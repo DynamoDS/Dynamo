@@ -35,7 +35,7 @@ namespace SamplesLibraryUI
     /// 
     // The NodeName attribute is what will display on 
     // top of the node in Dynamo
-    [NodeName("Hello Dynamo")]
+    [NodeName(/*NXLT*/"Hello Dynamo")]
 
     // The NodeCategory attribute determines how your
     // node will be organized in the library. You can
@@ -45,7 +45,7 @@ namespace SamplesLibraryUI
 
     // The description will display in the tooltip
     // and in the help window for the node.
-    [NodeDescription("HelloDynamoDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"HelloDynamoDescription",typeof(Properties.Resources))]
 
     [IsDesignScriptCompatible]
     public class HelloDynamo : NodeModel
@@ -69,7 +69,7 @@ namespace SamplesLibraryUI
             set
             {
                 awesome = value;
-                RaisePropertyChanged("Awesome");
+                RaisePropertyChanged(/*NXLT*/"Awesome");
 
                 RequiresRecalc = true;
             }
@@ -89,7 +89,7 @@ namespace SamplesLibraryUI
                 // Raise a property changed notification
                 // to alert the UI that an element needs
                 // an update.
-                RaisePropertyChanged("NodeMessage");
+                RaisePropertyChanged(/*NXLT*/"NodeMessage");
             }
         }
 
@@ -116,12 +116,12 @@ namespace SamplesLibraryUI
             // work of setting up the ports yourself. To do this,
             // you can populate the InPortData and the OutPortData
             // collections with PortData objects describing your ports.
-            InPortData.Add(new PortData("something", Resources.HelloDynamoPortDataInputToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"something", Resources.HelloDynamoPortDataInputToolTip));
 
             // Nodes can have an arbitrary number of inputs and outputs.
             // If you want more ports, just create more PortData objects.
-            OutPortData.Add(new PortData("something", Resources.HelloDynamoPortDataOutputToolTip));
-            OutPortData.Add(new PortData("some awesome", Resources.HelloDynamoPortDataOutputToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"something", Resources.HelloDynamoPortDataOutputToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"some awesome", Resources.HelloDynamoPortDataOutputToolTip));
 
             // This call is required to ensure that your ports are
             // properly created.

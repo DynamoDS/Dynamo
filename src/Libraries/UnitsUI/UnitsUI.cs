@@ -126,13 +126,13 @@ namespace UnitsUI
             set
             {
                 Measure.Value = value;
-                RaisePropertyChanged("Value");
+                RaisePropertyChanged(/*NXLT*/"Value");
             }
         }
 
         internal void ForceValueRaisePropertyChanged()
         {
-            RaisePropertyChanged("Value");
+            RaisePropertyChanged(/*NXLT*/"Value");
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -195,9 +195,9 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Length From String")]
+    [NodeName(/*NXLT*/"Length From String")]
     [NodeCategory("Units.Length.Create")]
-    [NodeDescription("LengthFromStringDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"LengthFromStringDescription",typeof(Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
@@ -205,7 +205,7 @@ namespace UnitsUI
         public LengthFromString(WorkspaceModel ws) : base(ws)
         {
             Measure = Length.FromDouble(0.0);
-            OutPortData.Add(new PortData("length", Resources.LengthFromStringPortDataLengthToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"length", Resources.LengthFromStringPortDataLengthToolTip));
             RegisterAllPorts();
         }
 
@@ -244,9 +244,9 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Area From String")]
+    [NodeName(/*NXLT*/"Area From String")]
     [NodeCategory("Units.Area.Create")]
-    [NodeDescription("AreaFromStringDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"AreaFromStringDescription",typeof(Properties.Resources))]
     [NodeSearchTags("AreaFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
@@ -254,7 +254,7 @@ namespace UnitsUI
         public AreaFromString(WorkspaceModel workspaceModel) : base(workspaceModel) 
         {
             Measure = Area.FromDouble(0.0);
-            OutPortData.Add(new PortData("area", Resources.AreaFromStringPortDataAreaToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"area", Resources.AreaFromStringPortDataAreaToolTip));
             RegisterAllPorts();
         }
 
@@ -275,9 +275,9 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Volume From String")]
+    [NodeName(/*NXLT*/"Volume From String")]
     [NodeCategory("Units.Volume.Create")]
-    [NodeDescription("VolumeFromStringDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"VolumeFromStringDescription",typeof(Properties.Resources))]
     [NodeSearchTags("VolumeFromStringSearchTags",typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
@@ -285,7 +285,7 @@ namespace UnitsUI
         public VolumeFromString(WorkspaceModel workspaceModel) : base(workspaceModel)
         {
             Measure = Volume.FromDouble(0.0);
-            OutPortData.Add(new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"volume", Resources.VolumeFromStringPortDataVolumeToolTip));
             RegisterAllPorts();
         }
 
@@ -297,9 +297,9 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Unit Types")]
+    [NodeName(/*NXLT*/"Unit Types")]
     [NodeCategory("Units")]
-    [NodeDescription("UnitTypesDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"UnitTypesDescription", typeof(Properties.Resources))]
     [NodeSearchTags("UnitTypesSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
