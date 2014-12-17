@@ -29,7 +29,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _isConnecting = value;
-                RaisePropertyChanged("IsConnecting");
+                RaisePropertyChanged(/*NXLT*/"IsConnecting");
             }
         }
 
@@ -39,7 +39,7 @@ namespace Dynamo.ViewModels
             get { return _isHitTestVisible;  } 
             set { 
                 _isHitTestVisible = value;
-                RaisePropertyChanged("IsHitTestVisible");
+                RaisePropertyChanged(/*NXLT*/"IsHitTestVisible");
             }
         }
 
@@ -84,7 +84,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _curvePoint1 = value;
-                RaisePropertyChanged("CurvePoint1");
+                RaisePropertyChanged(/*NXLT*/"CurvePoint1");
             }
         }
 
@@ -95,7 +95,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _curvePoint2 = value;
-                RaisePropertyChanged("CurvePoint2");
+                RaisePropertyChanged(/*NXLT*/"CurvePoint2");
             }
         }
 
@@ -106,7 +106,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _curvePoint3 = value;
-                RaisePropertyChanged("CurvePoint3");
+                RaisePropertyChanged(/*NXLT*/"CurvePoint3");
             }
         }
 
@@ -117,7 +117,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _dotTop = value;
-                RaisePropertyChanged("DotTop");
+                RaisePropertyChanged(/*NXLT*/"DotTop");
             }
         }
 
@@ -128,7 +128,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _dotLeft = value;
-                RaisePropertyChanged("DotLeft");
+                RaisePropertyChanged(/*NXLT*/"DotLeft");
             }
         }
 
@@ -167,7 +167,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _endDotSize = value;
-                RaisePropertyChanged("EndDotSize");
+                RaisePropertyChanged(/*NXLT*/"EndDotSize");
             }
         }
 
@@ -186,7 +186,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                RaisePropertyChanged("BezVisibility");
+                RaisePropertyChanged(/*NXLT*/"BezVisibility");
             }
         }
 
@@ -205,7 +205,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                RaisePropertyChanged("PlineVisibility");
+                RaisePropertyChanged(/*NXLT*/"PlineVisibility");
             }
         }
 
@@ -252,15 +252,15 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "IsSelected":
-                    RaisePropertyChanged("IsStartSelected");
-                    RaisePropertyChanged("IsStartOrEndSelected");
+                    RaisePropertyChanged(/*NXLT*/"IsStartSelected");
+                    RaisePropertyChanged(/*NXLT*/"IsStartOrEndSelected");
                     break;
                 case "Position":
-                    RaisePropertyChanged("CurvePoint0");
+                    RaisePropertyChanged(/*NXLT*/"CurvePoint0");
                     Redraw();
                     break;
                 case "Width":
-                    RaisePropertyChanged("CurvePoint0");
+                    RaisePropertyChanged(/*NXLT*/"CurvePoint0");
                     Redraw();
                     break;
             }
@@ -276,15 +276,15 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "IsSelected":
-                    RaisePropertyChanged("IsEndSelected");
-                    RaisePropertyChanged("IsStartOrEndSelected");
+                    RaisePropertyChanged(/*NXLT*/"IsEndSelected");
+                    RaisePropertyChanged(/*NXLT*/"IsStartOrEndSelected");
                     break;
                 case "Position":
-                    RaisePropertyChanged("CurvePoint0");
+                    RaisePropertyChanged(/*NXLT*/"CurvePoint0");
                     Redraw();
                     break;
                 case "Width":
-                    RaisePropertyChanged("CurvePoint0");
+                    RaisePropertyChanged(/*NXLT*/"CurvePoint0");
                     Redraw();
                     break;
             }
@@ -308,8 +308,8 @@ namespace Dynamo.ViewModels
                     Redraw();
                     break;
                 case "IsShowingConnectors":
-                    RaisePropertyChanged("BezVisibility");
-                    RaisePropertyChanged("PlineVisibility");
+                    RaisePropertyChanged(/*NXLT*/"BezVisibility");
+                    RaisePropertyChanged(/*NXLT*/"PlineVisibility");
                 break;
             }
         }
@@ -319,8 +319,8 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "CurrentWorkspace":
-                    RaisePropertyChanged("BezVisibility");
-                    RaisePropertyChanged("PlineVisibility");
+                    RaisePropertyChanged(/*NXLT*/"BezVisibility");
+                    RaisePropertyChanged(/*NXLT*/"PlineVisibility");
                     break;
             }
         }

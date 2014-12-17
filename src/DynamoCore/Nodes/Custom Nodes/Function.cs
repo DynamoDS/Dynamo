@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
             set
             {
                 Definition.WorkspaceModel.Name = value;
-                RaisePropertyChanged("Name");
+                RaisePropertyChanged(/*NXLT*/"Name");
             }
         }
 
@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
             set
             {
                 Definition.WorkspaceModel.Description = value;
-                RaisePropertyChanged("Description");
+                RaisePropertyChanged(/*NXLT*/"Description");
             }
         }
 
@@ -342,7 +342,7 @@ namespace Dynamo.Nodes
             {
                 inputSymbol = value;
                 ReportModification();
-                RaisePropertyChanged("InputSymbol");
+                RaisePropertyChanged(/*NXLT*/"InputSymbol");
             }
         }
 
@@ -410,7 +410,7 @@ namespace Dynamo.Nodes
             {
                 symbol = value;
                 ReportModification();
-                RaisePropertyChanged("Symbol");
+                RaisePropertyChanged(/*NXLT*/"Symbol");
             }
         }
 

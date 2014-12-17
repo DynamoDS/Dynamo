@@ -44,7 +44,7 @@ namespace Dynamo.ViewModels
         public bool BrowserVisibility
         {
             get { return browserVisibility; }
-            set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
+            set { browserVisibility = value; RaisePropertyChanged(/*NXLT*/"BrowserVisibility"); }
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Dynamo.ViewModels
             set
             {
                 searchText = value;
-                RaisePropertyChanged("SearchText");
+                RaisePropertyChanged(/*NXLT*/"SearchText");
             }
         }
 
@@ -83,7 +83,7 @@ namespace Dynamo.ViewModels
                     selectedIndex = value;
                     if (visibleSearchResults.Count > selectedIndex)
                         visibleSearchResults[selectedIndex].Model.IsSelected = true;
-                    RaisePropertyChanged("SelectedIndex");
+                    RaisePropertyChanged(/*NXLT*/"SelectedIndex");
                 }
             }
         }
@@ -101,7 +101,7 @@ namespace Dynamo.ViewModels
             set
             {
                 visible = value;
-                RaisePropertyChanged("Visible");
+                RaisePropertyChanged(/*NXLT*/"Visible");
             }
         }
 
@@ -128,7 +128,7 @@ namespace Dynamo.ViewModels
         public bool SearchScrollBarVisibility
         {
             get { return searchScrollBarVisibility; }
-            set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
+            set { searchScrollBarVisibility = value; RaisePropertyChanged(/*NXLT*/"SearchScrollBarVisibility"); }
         }
         
         public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;

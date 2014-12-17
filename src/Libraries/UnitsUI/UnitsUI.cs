@@ -126,13 +126,13 @@ namespace UnitsUI
             set
             {
                 Measure.Value = value;
-                RaisePropertyChanged("Value");
+                RaisePropertyChanged(/*NXLT*/"Value");
             }
         }
 
         internal void ForceValueRaisePropertyChanged()
         {
-            RaisePropertyChanged("Value");
+            RaisePropertyChanged(/*NXLT*/"Value");
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)

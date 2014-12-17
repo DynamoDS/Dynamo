@@ -41,7 +41,7 @@ namespace DSCoreNodesUI
                         {
                             DisableReporting();
                             ProcessFormula();
-                            RaisePropertyChanged("FormulaString");
+                            RaisePropertyChanged(/*NXLT*/"FormulaString");
                             RequiresRecalc = true;
                             EnableReporting();
                             if (Workspace != null)
@@ -49,7 +49,7 @@ namespace DSCoreNodesUI
                         }
 
                         if (oldState != State)
-                            RaisePropertyChanged("State");
+                            RaisePropertyChanged(/*NXLT*/"State");
                     }
                 }
             }

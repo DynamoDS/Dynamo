@@ -175,7 +175,7 @@ namespace Dynamo.Nodes
             set
             {
                 _canNavigateBackground = value;
-                RaisePropertyChanged("CanNavigateBackground");
+                RaisePropertyChanged(/*NXLT*/"CanNavigateBackground");
             }
         }
 

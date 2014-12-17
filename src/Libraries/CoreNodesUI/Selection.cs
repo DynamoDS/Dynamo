@@ -59,8 +59,8 @@ namespace Dynamo.Nodes
 
                 SetSelectionNodeState();
 
-                RaisePropertyChanged("SelectionResults");
-                RaisePropertyChanged("Text");
+                RaisePropertyChanged(/*NXLT*/"SelectionResults");
+                RaisePropertyChanged(/*NXLT*/"Text");
             }
         }
 
@@ -77,7 +77,7 @@ namespace Dynamo.Nodes
             set
             {
                 canSelect = value;
-                RaisePropertyChanged("CanSelect");
+                RaisePropertyChanged(/*NXLT*/"CanSelect");
             }
         }
 
@@ -239,7 +239,7 @@ namespace Dynamo.Nodes
             UpdateSelection(loadedSelection);
 
             RequiresRecalc = true;
-            RaisePropertyChanged("SelectionResults");
+            RaisePropertyChanged(/*NXLT*/"SelectionResults");
         }
 
         protected override bool ShouldDisplayPreviewCore

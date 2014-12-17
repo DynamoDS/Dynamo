@@ -69,7 +69,7 @@ namespace SamplesLibraryUI
             set
             {
                 awesome = value;
-                RaisePropertyChanged("Awesome");
+                RaisePropertyChanged(/*NXLT*/"Awesome");
 
                 RequiresRecalc = true;
             }
@@ -89,7 +89,7 @@ namespace SamplesLibraryUI
                 // Raise a property changed notification
                 // to alert the UI that an element needs
                 // an update.
-                RaisePropertyChanged("NodeMessage");
+                RaisePropertyChanged(/*NXLT*/"NodeMessage");
             }
         }
 

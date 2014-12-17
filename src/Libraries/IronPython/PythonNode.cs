@@ -136,7 +136,7 @@ namespace DSIronPythonNode
                 if (script != value)
                 {
                     script = value;
-                    RaisePropertyChanged("Script");
+                    RaisePropertyChanged(/*NXLT*/"Script");
                 }
             }
         }

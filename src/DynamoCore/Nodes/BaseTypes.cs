@@ -977,7 +977,7 @@ namespace Dynamo.Nodes
                     _value = value;
                     //dynamoModel.Logger.Log("Value changed to: " + _value);
                     RequiresRecalc = value != null;
-                    RaisePropertyChanged("Value");
+                    RaisePropertyChanged(/*NXLT*/"Value");
                 }
             }
         }
@@ -1276,7 +1276,7 @@ namespace Dynamo.Nodes
             switch (e.PropertyName)
             {
                 case "NumberFormat":
-                    RaisePropertyChanged("Value");
+                    RaisePropertyChanged(/*NXLT*/"Value");
                     break;
             }
         }
@@ -1319,7 +1319,7 @@ namespace Dynamo.Nodes
                 }
 
                 RequiresRecalc = value != null;
-                RaisePropertyChanged("Value");
+                RaisePropertyChanged(/*NXLT*/"Value");
             }
         }
 
@@ -1887,7 +1887,7 @@ namespace Dynamo.Nodes
             set
             {
                 items = value;
-                RaisePropertyChanged("Items");
+                RaisePropertyChanged(/*NXLT*/"Items");
             }
         }
 
@@ -1905,7 +1905,7 @@ namespace Dynamo.Nodes
                 }
                 else
                     selectedIndex = value;
-                RaisePropertyChanged("SelectedIndex");
+                RaisePropertyChanged(/*NXLT*/"SelectedIndex");
             }
         }
 

@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
             set
             {
                 root = value;
-                RaisePropertyChanged("Root");
+                RaisePropertyChanged(/*NXLT*/"Root");
             }
         }
 

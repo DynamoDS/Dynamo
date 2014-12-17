@@ -165,7 +165,7 @@ namespace Dynamo.Models
                         currentWorkspace.IsCurrentSpace = true;
 
                     OnCurrentWorkspaceChanged(currentWorkspace);
-                    RaisePropertyChanged("CurrentWorkspace");
+                    RaisePropertyChanged(/*NXLT*/"CurrentWorkspace");
                 }
             }
         }
@@ -240,7 +240,7 @@ namespace Dynamo.Models
             set
             {
                 runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
+                RaisePropertyChanged(/*NXLT*/"RunEnabled");
             }
         }
         public bool RunInDebug { get; set; }

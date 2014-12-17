@@ -44,7 +44,7 @@ namespace Dynamo.Models
             set
             {
                 x = value;
-                RaisePropertyChanged("X");
+                RaisePropertyChanged(/*NXLT*/"X");
             }
         }
 
@@ -57,7 +57,7 @@ namespace Dynamo.Models
             set
             {
                 y = value;
-                RaisePropertyChanged("Y");
+                RaisePropertyChanged(/*NXLT*/"Y");
             }
         }
 
@@ -80,7 +80,7 @@ namespace Dynamo.Models
             set
             {
                 height = value;
-                //RaisePropertyChanged("Height");
+                //RaisePropertyChanged(/*NXLT*/"Height");
             }
         }
 
@@ -94,7 +94,7 @@ namespace Dynamo.Models
 
             {
                 width = value;
-                //RaisePropertyChanged("Width");
+                //RaisePropertyChanged(/*NXLT*/"Width");
             }
         }
 
@@ -116,7 +116,7 @@ namespace Dynamo.Models
             set
             {
                 _isSelected = value;
-                RaisePropertyChanged("IsSelected");
+                RaisePropertyChanged(/*NXLT*/"IsSelected");
             }
         }
 
@@ -133,7 +133,7 @@ namespace Dynamo.Models
             set
             {
                 _guid = value;
-                RaisePropertyChanged("GUID");
+                RaisePropertyChanged(/*NXLT*/"GUID");
             }
         }
 
@@ -154,7 +154,7 @@ namespace Dynamo.Models
 
         public void ReportPosition()
         {
-            RaisePropertyChanged("Position");
+            RaisePropertyChanged(/*NXLT*/"Position");
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Dynamo.Models
         {
             width = w;
             height = h;
-            RaisePropertyChanged("Position");
+            RaisePropertyChanged(/*NXLT*/"Position");
         }
 
         #region Command Framework Supporting Methods

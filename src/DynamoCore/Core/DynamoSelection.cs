@@ -49,7 +49,7 @@ namespace Dynamo.Selection
             set
             {
                 selection = value;
-                RaisePropertyChanged("Selection");
+                RaisePropertyChanged(/*NXLT*/"Selection");
             }
         }
 

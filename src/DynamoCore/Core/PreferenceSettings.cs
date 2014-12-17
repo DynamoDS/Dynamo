@@ -48,7 +48,7 @@ namespace Dynamo
             set
             {
                 _numberFormat = value;
-                RaisePropertyChanged("NumberFormat");
+                RaisePropertyChanged(/*NXLT*/"NumberFormat");
             }
         }
 
@@ -58,7 +58,7 @@ namespace Dynamo
             set
             {
                 _lengthUnit = value;
-                RaisePropertyChanged("LengthUnit");
+                RaisePropertyChanged(/*NXLT*/"LengthUnit");
             }
         }
 
@@ -83,7 +83,7 @@ namespace Dynamo
             set
             {
                 _areaUnit = value;
-                RaisePropertyChanged("AreaUnit");
+                RaisePropertyChanged(/*NXLT*/"AreaUnit");
             }
         }
 
@@ -93,7 +93,7 @@ namespace Dynamo
             set
             {
                 _volumeUnit = value;
-                RaisePropertyChanged("VolumeUnit");
+                RaisePropertyChanged(/*NXLT*/"VolumeUnit");
             }
         }
 

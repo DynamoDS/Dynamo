@@ -15,7 +15,7 @@ namespace Dynamo.Search.SearchElements
             set
             {
                 _path = value;
-                RaisePropertyChanged("Path");
+                RaisePropertyChanged(/*NXLT*/"Path");
             }
         }
 

@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
                 if (_max < Value)
                     Value = _max;
 
-                RaisePropertyChanged("Max");
+                RaisePropertyChanged(/*NXLT*/"Max");
             }
         }
 
@@ -50,7 +50,7 @@ namespace Dynamo.Nodes
                 if (_min > Value)
                     Value = _min;
 
-                RaisePropertyChanged("Min");
+                RaisePropertyChanged(/*NXLT*/"Min");
             }
         }
 

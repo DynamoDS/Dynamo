@@ -51,7 +51,7 @@ namespace Dynamo.Search
             set
             {
                 _height = value;
-                RaisePropertyChanged("Height");
+                RaisePropertyChanged(/*NXLT*/"Height");
             }
         }
 
@@ -107,7 +107,7 @@ namespace Dynamo.Search
             set
             {
                 _visibility = value;
-                RaisePropertyChanged("Visibility");
+                RaisePropertyChanged(/*NXLT*/"Visibility");
             }
         }
 
@@ -121,7 +121,7 @@ namespace Dynamo.Search
             set
             {
                 _isSelected = value;
-                RaisePropertyChanged("IsSelected");
+                RaisePropertyChanged(/*NXLT*/"IsSelected");
             }
         }
 
@@ -135,7 +135,7 @@ namespace Dynamo.Search
             set
             {
                 _isExpanded = value;
-                RaisePropertyChanged("IsExpanded");
+                RaisePropertyChanged(/*NXLT*/"IsExpanded");
             }
         }
 

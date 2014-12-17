@@ -30,7 +30,7 @@ namespace Dynamo.ViewModels
             set 
             { 
                 _model = value;
-                RaisePropertyChanged("Model");
+                RaisePropertyChanged(/*NXLT*/"Model");
             }
         }
 
@@ -43,7 +43,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _model.X = value;
-                RaisePropertyChanged("Left");
+                RaisePropertyChanged(/*NXLT*/"Left");
             }
         }
 
@@ -56,7 +56,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _model.Y = value;
-                RaisePropertyChanged("Top");
+                RaisePropertyChanged(/*NXLT*/"Top");
             }
         }
 
@@ -111,16 +111,16 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "X":
-                    RaisePropertyChanged("Left");
+                    RaisePropertyChanged(/*NXLT*/"Left");
                     break;
                 case "Y":
-                    RaisePropertyChanged("Top");
+                    RaisePropertyChanged(/*NXLT*/"Top");
                     break;
                 case "Text":
-                    RaisePropertyChanged("Text");
+                    RaisePropertyChanged(/*NXLT*/"Text");
                     break;
                 case "IsSelected":
-                    RaisePropertyChanged("IsSelected");
+                    RaisePropertyChanged(/*NXLT*/"IsSelected");
                     break;
 
             }

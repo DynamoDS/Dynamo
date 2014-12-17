@@ -219,7 +219,7 @@ namespace Dynamo.ViewModels
                 this.activeConnector = null;
             }
 
-            this.RaisePropertyChanged("ActiveConnector");
+            this.RaisePropertyChanged(/*NXLT*/"ActiveConnector");
         }
 
         private void RecordSelectionForUndo()

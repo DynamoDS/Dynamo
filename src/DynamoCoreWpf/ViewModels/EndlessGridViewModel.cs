@@ -35,21 +35,21 @@ namespace Dynamo.ViewModels
         public ObservableCollection<Line> GridLines
         {
             get { return gridLines; }
-            set { gridLines = value; RaisePropertyChanged("GridLines"); }
+            set { gridLines = value; RaisePropertyChanged(/*NXLT*/"GridLines"); }
         }
 
         private double left;
         public double Left
         {
             get { return left; }
-            set { left = value; RaisePropertyChanged("Left"); }
+            set { left = value; RaisePropertyChanged(/*NXLT*/"Left"); }
         }
 
         private double top;
         public double Top
         {
             get { return top; }
-            set { top = value; RaisePropertyChanged("Top"); }
+            set { top = value; RaisePropertyChanged(/*NXLT*/"Top"); }
         }
 
         public double ZIndex
@@ -77,14 +77,14 @@ namespace Dynamo.ViewModels
         public double Width
         {
             get { return width; }
-            set { width = value; RaisePropertyChanged("Width"); }
+            set { width = value; RaisePropertyChanged(/*NXLT*/"Width"); }
         }
 
         private double height;
         public double Height
         {
             get { return height; }
-            set { height = value; RaisePropertyChanged("Height"); }
+            set { height = value; RaisePropertyChanged(/*NXLT*/"Height"); }
         }
 
         public double WorkspaceX
@@ -165,7 +165,7 @@ namespace Dynamo.ViewModels
                     RecalculateSize();
                     break;
                 case "FullscreenWatchShowing":
-                    RaisePropertyChanged("FullscreenWatchShowing");
+                    RaisePropertyChanged(/*NXLT*/"FullscreenWatchShowing");
                     break;
             }
         }
