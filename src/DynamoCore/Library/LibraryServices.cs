@@ -246,21 +246,21 @@ namespace Dynamo.DSEngine
             if (!library.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase)
                 && !library.EndsWith(".ds", StringComparison.InvariantCultureIgnoreCase))
             {
-                string errorMessage = Properties.Resources.InvalidLibFormat;
+                const string errorMessage = "Invalid library format.";
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return;
             }
 
             if (importedFunctionGroups.ContainsKey(library))
             {
-                string errorMessage = string.Format(Properties.Resources.LibHasBeenLoaded, library);
+                string errorMessage = string.Format("Library {0} has been loaded.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return;
             }
 
             if (!DynamoPathManager.Instance.ResolveLibraryPath(ref library))
             {
-                string errorMessage = string.Format(Properties.Resources.CannotFindLibPath, library);
+                string errorMessage = string.Format("Cannot find library path: {0}.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return;
             }
@@ -281,7 +281,7 @@ namespace Dynamo.DSEngine
 
                 if (libraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
-                    string errorMessage = string.Format(Properties.Resources.BuildErrorForLib, library);
+                    string errorMessage = string.Format("Build error for library: {0}", library);
                     logger.LogWarning(errorMessage, WarningLevel.Moderate);
                     foreach (ErrorEntry error in libraryManagementCore.BuildStatus.Errors)
                     {

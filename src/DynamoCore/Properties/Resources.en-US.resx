@@ -117,10 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BuildErrorForLib" xml:space="preserve">
-    <value>Build error for library: {0}</value>
-    <comment>errorMessage</comment>
-  </data>
   <data name="BuildSublistsDescription" xml:space="preserve">
     <value>Build sublists from a list using DesignScript range syntax.</value>
     <comment>Description for code block node</comment>
@@ -140,10 +136,6 @@
   <data name="CancelButton" xml:space="preserve">
     <value>Cancel</value>
     <comment>Button Cancel</comment>
-  </data>
-  <data name="CannotFindLibPath" xml:space="preserve">
-    <value>Cannot find library path: {0}.</value>
-    <comment>errorMessage</comment>
   </data>
   <data name="CannotOpenFile" xml:space="preserve">
     <value>Your file cannot be opened</value>
@@ -177,17 +169,9 @@ If you don't mind, it would be helpful for you to send us your file. That will m
   <data name="FileNotOpenedCorrectly" xml:space="preserve">
     <value>Your file may not open correctly</value>
   </data>
-  <data name="FolderNotExistException" xml:space="preserve">
-    <value>Folder {0} does not exist</value>
-    <comment>ArgumentException</comment>
-  </data>
   <data name="FunctionNodeDescription" xml:space="preserve">
     <value>DesignScript Builtin Functions</value>
     <comment>Description for function node</comment>
-  </data>
-  <data name="FunctionSignatureCannotBeDetermined" xml:space="preserve">
-    <value>Function signature cannot be determined.</value>
-    <comment>ArgumentException</comment>
   </data>
   <data name="IncompatibleOfFileAndDynamo" xml:space="preserve">
     <value>Your file '{0}' of version '{1}' cannot " + "be opened by this version of Dynamo ({2})</value>
@@ -202,26 +186,6 @@ If you don't mind, it would be helpful for you to send us your file. That will m
   <data name="InputNodeSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
-  </data>
-  <data name="InvalidLibFormat" xml:space="preserve">
-    <value>Invalid library format.</value>
-    <comment>errorMessage</comment>
-  </data>
-  <data name="InvalidLocationForFunction" xml:space="preserve">
-    <value>Only DSFunction/DSVarArgFunction should be here.</value>
-    <comment>ArgumentException</comment>
-  </data>
-  <data name="InvalidPortException" xml:space="preserve">
-    <value>Connection port is not valid.</value>
-    <comment>InvalidPortException</comment>
-  </data>
-  <data name="LibHasBeenLoaded" xml:space="preserve">
-    <value>Library {0} has been loaded.</value>
-    <comment>errorMessage</comment>
-  </data>
-  <data name="NullNodeShouldNotBeInASTList" xml:space="preserve">
-    <value>Shouldn't have null nodes in the AST list</value>
-    <comment>String in Validity.Assert</comment>
   </data>
   <data name="NumberNodeDescription" xml:space="preserve">
     <value>Creates a number.</value>

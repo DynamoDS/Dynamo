@@ -318,7 +318,7 @@ namespace Dynamo.Models
 
             if (Directory.Exists(baseFolder) == false)
             {
-                var message = string.Format(Properties.Resources.FolderNotExistException, baseFolder);
+                var message = string.Format("Folder {0} does not exist", baseFolder);
                 throw new ArgumentException(message, "rootFolder");
             }
 
@@ -850,7 +850,7 @@ namespace Dynamo.Models
             {
                 if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
                 {
-                    var message = Properties.Resources.InvalidLocationForFunction;
+                    var message = "Only DSFunction/DSVarArgFunction should be here.";
                     throw new ArgumentException(message);
                 }
             }
@@ -860,7 +860,7 @@ namespace Dynamo.Models
             {
                 if (type.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
                 {
-                    var message = Properties.Resources.InvalidLocationForFunction;
+                    var message = "Only DSFunction/DSVarArgFunction should be here.";
                     throw new ArgumentException(message);
                 }
             }
@@ -954,7 +954,7 @@ namespace Dynamo.Models
 
             if (string.IsNullOrEmpty(signature))
             {
-                var message = Properties.Resources.FunctionSignatureCannotBeDetermined;
+                var message = "Function signature cannot be determined.";
                 throw new ArgumentException(message);
             }
 

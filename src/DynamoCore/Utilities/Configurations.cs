@@ -28,8 +28,6 @@ namespace Dynamo.UI
         public static string DynamoDownloadLink = "http://dynamobim.org/download/";
         public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
         public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
-
-        public static string UsageReportingErrorMessage = Properties.Resources.UsageReportingErrorMessage;
         #endregion
 
         #region Canvas Configurations

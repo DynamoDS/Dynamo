@@ -214,10 +214,6 @@
   <data name="PortDataSymbolToolTip" xml:space="preserve">
     <value>Symbol</value>
   </data>
-  <data name="BuildErrorForLib" xml:space="preserve">
-    <value>Build error for library: {0}</value>
-    <comment>errorMessage</comment>
-  </data>
   <data name="ButtonDownloadLastest" xml:space="preserve">
     <value>Download latest version</value>
     <comment>Button Download Lastest</comment>
@@ -234,10 +230,6 @@
     <value>Cancel</value>
     <comment>Button Cancel</comment>
   </data>
-  <data name="CannotFindLibPath" xml:space="preserve">
-    <value>Cannot find library path: {0}.</value>
-    <comment>errorMessage</comment>
-  </data>
   <data name="CannotOpenFile" xml:space="preserve">
     <value>Your file cannot be opened</value>
   </data>
@@ -253,39 +245,11 @@ If you don't mind, it would be helpful for you to send us your file. That will m
   <data name="FileNotOpenedCorrectly" xml:space="preserve">
     <value>Your file may not open correctly</value>
   </data>
-  <data name="FolderNotExistException" xml:space="preserve">
-    <value>Folder {0} does not exist</value>
-    <comment>ArgumentException</comment>
-  </data>
-  <data name="FunctionSignatureCannotBeDetermined" xml:space="preserve">
-    <value>Function signature cannot be determined.</value>
-    <comment>ArgumentException</comment>
-  </data>
   <data name="IncompatibleOfFileAndDynamo" xml:space="preserve">
     <value>Your file '{0}' of version '{1}' cannot " + "be opened by this version of Dynamo ({2})</value>
   </data>
   <data name="IncorrectVersionToOpenFile" xml:space="preserve">
     <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>
-  </data>
-  <data name="InvalidLibFormat" xml:space="preserve">
-    <value>Invalid library format.</value>
-    <comment>errorMessage</comment>
-  </data>
-  <data name="InvalidLocationForFunction" xml:space="preserve">
-    <value>Only DSFunction/DSVarArgFunction should be here.</value>
-    <comment>ArgumentException</comment>
-  </data>
-  <data name="InvalidPortException" xml:space="preserve">
-    <value>Connection port is not valid.</value>
-    <comment>InvalidPortException</comment>
-  </data>
-  <data name="LibHasBeenLoaded" xml:space="preserve">
-    <value>Library {0} has been loaded.</value>
-    <comment>errorMessage</comment>
-  </data>
-  <data name="NullNodeShouldNotBeInASTList" xml:space="preserve">
-    <value>Shouldn't have null nodes in the AST list</value>
-    <comment>String in Validity.Assert</comment>
   </data>
   <data name="SubmitBugToGithub" xml:space="preserve">
     <value>Submit Bug To Github</value>

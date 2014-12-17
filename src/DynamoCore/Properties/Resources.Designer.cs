@@ -61,15 +61,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Build error for library: {0}.
-        /// </summary>
-        public static string BuildErrorForLib {
-            get {
-                return ResourceManager.GetString("BuildErrorForLib", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Build sublists from a list using DesignScript range syntax..
         /// </summary>
         public static string BuildSublistsDescription {
@@ -111,15 +102,6 @@ namespace Dynamo.Properties {
         public static string CancelButton {
             get {
                 return ResourceManager.GetString("CancelButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot find library path: {0}..
-        /// </summary>
-        public static string CannotFindLibPath {
-            get {
-                return ResourceManager.GetString("CannotFindLibPath", resourceCulture);
             }
         }
         
@@ -207,29 +189,11 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Folder {0} does not exist.
-        /// </summary>
-        public static string FolderNotExistException {
-            get {
-                return ResourceManager.GetString("FolderNotExistException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to DesignScript Builtin Functions.
         /// </summary>
         public static string FunctionNodeDescription {
             get {
                 return ResourceManager.GetString("FunctionNodeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Function signature cannot be determined..
-        /// </summary>
-        public static string FunctionSignatureCannotBeDetermined {
-            get {
-                return ResourceManager.GetString("FunctionSignatureCannotBeDetermined", resourceCulture);
             }
         }
         
@@ -266,51 +230,6 @@ namespace Dynamo.Properties {
         public static string InputNodeSearchTags {
             get {
                 return ResourceManager.GetString("InputNodeSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid library format..
-        /// </summary>
-        public static string InvalidLibFormat {
-            get {
-                return ResourceManager.GetString("InvalidLibFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only DSFunction/DSVarArgFunction should be here..
-        /// </summary>
-        public static string InvalidLocationForFunction {
-            get {
-                return ResourceManager.GetString("InvalidLocationForFunction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connection port is not valid..
-        /// </summary>
-        public static string InvalidPortException {
-            get {
-                return ResourceManager.GetString("InvalidPortException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Library {0} has been loaded..
-        /// </summary>
-        public static string LibHasBeenLoaded {
-            get {
-                return ResourceManager.GetString("LibHasBeenLoaded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Shouldn&apos;t have null nodes in the AST list.
-        /// </summary>
-        public static string NullNodeShouldNotBeInASTList {
-            get {
-                return ResourceManager.GetString("NullNodeShouldNotBeInASTList", resourceCulture);
             }
         }
         
