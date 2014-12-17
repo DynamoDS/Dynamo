@@ -1658,7 +1658,7 @@ namespace Dynamo.ViewModels
 
         internal void Pan(object parameter)
         {
-            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", model.CurrentWorkspace.X, model.CurrentWorkspace.Y, model.CurrentWorkspace.Zoom));
+            Debug.WriteLine(string.Format(/*NXLT*/"Offset: {0},{1}, Zoom: {2}", model.CurrentWorkspace.X, model.CurrentWorkspace.Y, model.CurrentWorkspace.Zoom));
             var panType = parameter.ToString();
             double pan = 10;
             var pt = new Point2D(model.CurrentWorkspace.X, model.CurrentWorkspace.Y);

@@ -901,55 +901,55 @@ namespace Dynamo.PackageManager
             // be active when there is no authenticator
             if (this.dynamoViewModel == null || !this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
             {
-                this.ErrorString = "You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.";
+                this.ErrorString = Resources.CannotSubmitPackage;
                 return false;
             }
 
             if (this.Name.Contains(@"\") || this.Name.Contains(@"/") || this.Name.Contains(@"*"))
             {
-                this.ErrorString = @"The name of the package cannot contain /,\, or *.";
+                this.ErrorString = Resources.PackageNameCannotContainTheseCharacters;
                 return false;
             }
 
             if (this.Name.Length < 3)
             {
-                this.ErrorString = "Name must be at least 3 characters.";
+                this.ErrorString = Resources.NameNeedMoreCharacters;
                 return false;
             }
 
             if (Description.Length <= 10)
             {
-                this.ErrorString = "Description must be longer than 10 characters.";
+                this.ErrorString = Resources.DescriptionNeedMoreCharacters;
                 return false;
             }
 
             if (this.MajorVersion.Length <= 0)
             {
-                this.ErrorString = "You must provide a Major version as a non-negative integer.";
+                this.ErrorString = Resources.MajorVersionNonNegative;
                 return false;
             }
 
             if (this.MinorVersion.Length <= 0)
             {
-                this.ErrorString = "You must provide a Minor version as a non-negative integer.";
+                this.ErrorString = Resources.MinorVersionNonNegative;
                 return false;
             }
 
             if (this.BuildVersion.Length <= 0)
             {
-                this.ErrorString = "You must provide a Build version as a non-negative integer.";
+                this.ErrorString = Resources.BuildVersionNonNegative;
                 return false;
             }
 
             if (Double.Parse(this.BuildVersion) + Double.Parse(this.MinorVersion) + Double.Parse(this.MajorVersion) <= 0)
             {
-                this.ErrorString = "At least one of your version values must be greater than 0.";
+                this.ErrorString = Resources.VersionValueGreaterThan0;
                 return false;
             }
 
             if (!this.PackageContents.Any())
             {
-                this.ErrorString = "Your package must contain at least one file.";
+                this.ErrorString = Resources.PackageNeedAtLeastOneFile;
                 return false;
             }
 

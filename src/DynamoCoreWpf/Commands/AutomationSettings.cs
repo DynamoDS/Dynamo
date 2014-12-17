@@ -51,7 +51,7 @@ namespace Dynamo.ViewModels
         /// This is set to "true" by default for recorded command files.
         /// </summary>
         /// 
-        private const string ExitAttribName = "ExitAfterPlayback";
+        private const string ExitAttribName = /*NXLT*/"ExitAfterPlayback";
 
         /// <summary>
         /// This attribute specifies the amount of time in milliseconds that 
@@ -60,7 +60,7 @@ namespace Dynamo.ViewModels
         /// window will not be closed after playback is completed).
         /// </summary>
         /// 
-        private const string PauseAttribName = "PauseAfterPlaybackInMs";
+        private const string PauseAttribName = /*NXLT*/"PauseAfterPlaybackInMs";
 
         /// <summary>
         /// This attribute specifies the interval between two consecutive 
@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
         /// command will be executed after this interval elapsed. The default
         /// value for command interval is 20 milliseconds.
         /// </summary>
-        private const string IntervalAttribName = "CommandIntervalInMs";
+        private const string IntervalAttribName = /*NXLT*/"CommandIntervalInMs";
 
         private System.Windows.Window mainWindow = null;
         private DynamoModel owningDynamoModel = null;

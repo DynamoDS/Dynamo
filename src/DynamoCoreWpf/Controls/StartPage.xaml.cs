@@ -357,7 +357,7 @@ namespace Dynamo.UI.Controls
 
                 default:
                     throw new ArgumentException(
-                        string.Format("Invalid command: {0}", item.ContextData));
+                        string.Format(/*NXLT*/"Invalid command: {0}", item.ContextData));
             }
         }
 
@@ -386,9 +386,9 @@ namespace Dynamo.UI.Controls
 
     struct ButtonNames
     {
-        public const string NewWorkspace = "NewWorkspace";
-        public const string NewCustomNodeWorkspace = "NewCustomNodeWorkspace";
-        public const string OpenWorkspace = "OpenWorkspace";
+        public const string NewWorkspace = /*NXLT*/"NewWorkspace";
+        public const string NewCustomNodeWorkspace = /*NXLT*/"NewCustomNodeWorkspace";
+        public const string OpenWorkspace = /*NXLT*/"OpenWorkspace";
     }
 
     public partial class StartPageView : UserControl
