@@ -13,6 +13,7 @@ using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore.Utils;
 using Dynamo.UI;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Nodes
 {
@@ -36,7 +37,7 @@ namespace Dynamo.Nodes
         }
 
         private readonly DynamoLogger logger;
-        private ProtoCore.ElementResolver elementResolver = null;
+        private ElementResolver elementResolver = null;
 
         private struct Formatting
         {

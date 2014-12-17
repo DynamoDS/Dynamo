@@ -2,6 +2,7 @@
 using ProtoCore.DSASM;
 using System.Collections.Generic;
 using ProtoCore.AST.AssociativeAST;
+using System;
 
 namespace ProtoCore.Utils
 {
@@ -787,6 +788,30 @@ namespace ProtoCore.Utils
             }
             return classNames;
         }
+
+
+        /// <summary>
+        /// Given a partial class name, get fully resolved name from class table
+        /// </summary>
+        /// <param name="classTable"> class table in Core </param>
+        /// <param name="partialName"> partial class name </param>
+        /// <returns> fully resolved name </returns>
+        public static string GetResolvedClassName(ClassTable classTable, string partialName)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Find all partial class (Identifier/Identifier lists) by performing a DFS traversal on input AST node
+        /// </summary>
+        /// <param name="astNode"> input AST node </param>
+        /// <returns> list of Class identifiers </returns>
+        public static IEnumerable<string> GetClassIdentifiers(AST.Node astNode)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// Parses designscript code and outputs ProtoAST

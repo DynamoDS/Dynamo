@@ -117,7 +117,7 @@
     <Compile Include="DSASM\InstructionSet.cs" />
     <Compile Include="DSASM\Mirror\DSASMMirror.cs" />
     <Compile Include="DSASM\Mirror\ExecutionMirror.cs" />
-    <Compile Include="ElementResolver.cs" />
+    <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Exceptions\CompilerInternalException.cs" />
     <Compile Include="Exceptions\ExceptionHandling.cs" />
     <Compile Include="Exceptions\MethodResolution.cs" />
@@ -135,6 +135,7 @@
     <Compile Include="Lang\Replication\ReplicationInstruction.cs" />
     <Compile Include="Lang\Replication\Replicator.cs" />
     <Compile Include="Lang\TraceUtils.cs" />
+    <Compile Include="Namespace\ElementRewriter.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
     <Compile Include="ParserUtils.cs" />
     <Compile Include="Reflection\GraphicDataProvider.cs" />

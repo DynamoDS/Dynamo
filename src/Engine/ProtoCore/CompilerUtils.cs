@@ -1,5 +1,6 @@
 ﻿using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.Namespace;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -305,12 +306,12 @@ namespace ProtoCore.Utils
 
                 core.ResetForPrecompilation();
 
-                // Lookup namespace resolution map in ElementResolver to substitute 
+                // Lookup namespace resolution map in elementResolver to rewrite 
                 // partial classnames with their fully qualified names in ASTs
                 // before passing them for pre-compilation. If partial class is not found in map, 
-                // update ResolutionMap in ElementResolver with fully resolved name from compiler.
+                // update Resolution map in elementResolver with fully resolved name from compiler.
                 if (elementResolver != null)
-                    elementResolver.ReplaceClassNamesWithResolvedNames(core.ClassTable, ref codeblock);
+                    ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, elementResolver, ref codeblock);
 
                 buildStatus = PreCompile(string.Empty, core, codeblock, out blockId);
 

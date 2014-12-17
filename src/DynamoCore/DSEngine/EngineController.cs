@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
+using ProtoCore.Namespace;
 
 namespace Dynamo.DSEngine
 {
