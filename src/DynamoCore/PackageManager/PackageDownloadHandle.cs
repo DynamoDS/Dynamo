@@ -74,7 +74,7 @@ namespace Dynamo.PackageManager
             var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
             if (!Directory.Exists(unzipPath))
             {
-                throw new Exception("The package was found to be empty and was not installed.");
+                throw new Exception(/*NXLT*/"The package was found to be empty and was not installed.");
             }
             
             var installedPath = BuildInstallDirectoryString();

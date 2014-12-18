@@ -165,10 +165,10 @@ namespace Dynamo.Nodes
             base.DeserializeCore(element, context);
 
             var helper = new XmlElementHelper(element);
-            var nickname = helper.ReadString("functionName");
+            var nickname = helper.ReadString(/*NXLT*/"functionName");
 
             Guid funcId;
-            if (!Guid.TryParse(helper.ReadString("functionId"), out funcId))
+            if (!Guid.TryParse(helper.ReadString(/*NXLT*/"functionId"), out funcId))
                 funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nickname);
 
             if (!VerifyFuncId(ref funcId, nickname))
@@ -224,7 +224,7 @@ namespace Dynamo.Nodes
                 IsProxy = true
             };
 
-            string userMsg = "Failed to load custom node: " + nickname + ".  Replacing with proxy custom node.";
+            string userMsg = /*NXLT*/"Failed to load custom node: " + nickname + /*NXLT*/".  Replacing with proxy custom node.";
 
             this.dynamoModel.Logger.Log(userMsg);
 

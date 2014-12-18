@@ -70,7 +70,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                var headerPath = Path.Combine(directory, "pkg.json");
+                var headerPath = Path.Combine(directory, /*NXLT*/"pkg.json");
 
                 Package discoveredPkg = null;
 
@@ -79,11 +79,11 @@ namespace Dynamo.PackageManager
                 {
                     discoveredPkg = Package.FromJson(headerPath, this.logger);
                     if (discoveredPkg == null)
-                        throw new Exception(headerPath + " contains a package with a malformed header.  Ignoring it.");
+                        throw new Exception(headerPath + /*NXLT*/" contains a package with a malformed header.  Ignoring it.");
                 }
                 else
                 {
-                    throw new Exception(headerPath + " contains a package without a header.  Ignoring it.");
+                    throw new Exception(headerPath + /*NXLT*/" contains a package without a header.  Ignoring it.");
                 }
 
                 // prevent duplicates
@@ -94,13 +94,13 @@ namespace Dynamo.PackageManager
                 }
                 else
                 {
-                    throw new Exception("A duplicate of the package called " + discoveredPkg.Name +
-                                              " was found at " + discoveredPkg.RootDirectory + ".  Ignoring it.");
+                    throw new Exception(/*NXLT*/"A duplicate of the package called " + discoveredPkg.Name +
+                        /*NXLT*/" was found at " + discoveredPkg.RootDirectory + /*NXLT*/".  Ignoring it.");
                 }
             }
             catch (Exception e)
             {
-                this.logger.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
+                this.logger.Log(/*NXLT*/"Exception encountered scanning the package directory at " + this.RootPackagesDirectory);
                 this.logger.Log(e.GetType() + ": " + e.Message);
             }
 
@@ -203,12 +203,12 @@ namespace Dynamo.PackageManager
                 {
                     Directory.Delete(pkgNameDirTup, true);
                     pkgDirsRemoved.Add(pkgNameDirTup);
-                    this.logger.Log(String.Format("Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
+                    this.logger.Log(String.Format(/*NXLT*/"Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
                 }
                 catch
                 {
                     this.logger.LogWarning(
-                        String.Format("Failed to delete package directory at \"{0}\", you may need to delete the directory manually.", 
+                        String.Format(/*NXLT*/"Failed to delete package directory at \"{0}\", you may need to delete the directory manually.", 
                         pkgNameDirTup), WarningLevel.Moderate);
                 }
             }

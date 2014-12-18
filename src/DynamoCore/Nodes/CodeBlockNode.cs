@@ -242,16 +242,16 @@ namespace Dynamo.Nodes
         {
             base.LoadNode(nodeElement);
             var helper = new XmlElementHelper(nodeElement as XmlElement);
-            code = helper.ReadString("CodeText");
+            code = helper.ReadString(/*NXLT*/"CodeText");
             ProcessCodeDirect();
-            shouldFocus = helper.ReadBoolean("ShouldFocus");
+            shouldFocus = helper.ReadBoolean(/*NXLT*/"ShouldFocus");
         }
 
         protected override bool UpdateValueCore(string name, string value)
         {
             //Empty code blocks are deleted only on Esc key press. The values are stored all the other times.
             //This is helpful to Undo the deleted values from code block.
-            if (name == "Code")
+            if (name == /*NXLT*/"Code")
             {
                 //Remove the UpdateValue's recording
                 this.Workspace.UndoRecorder.PopFromUndoGroup();              
@@ -277,8 +277,8 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 var helper = new XmlElementHelper(element);
-                shouldFocus = helper.ReadBoolean("ShouldFocus");
-                code = helper.ReadString("CodeText");
+                shouldFocus = helper.ReadBoolean(/*NXLT*/"ShouldFocus");
+                code = helper.ReadString(/*NXLT*/"CodeText");
                 ProcessCodeDirect();
             }
         }
@@ -1037,7 +1037,7 @@ namespace Dynamo.Nodes
             else if (leftNode is FunctionCallNode)
                 return null;
             else
-                throw new ArgumentException("Left node type incorrect");
+                throw new ArgumentException(/*NXLT*/"Left node type incorrect");
         }
         #endregion
 
@@ -1087,7 +1087,7 @@ namespace Dynamo.Nodes
                 // Handle function definitions in CBN
             }
             else
-                throw new ArgumentException("Must be func def or assignment");
+                throw new ArgumentException(/*NXLT*/"Must be func def or assignment");
 
             Variable.SetCorrectColumn(referencedVariables, CurrentType, StartLine);
         }

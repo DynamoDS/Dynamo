@@ -45,7 +45,7 @@ namespace Dynamo.Utilities
             IEnumerable<string> unboundIdents)
         {
             if (unboundIdents == null)
-                throw new ArgumentNullException("unboundIdents");
+                throw new ArgumentNullException(/*NXLT*/"unboundIdents");
 
             int maxLength = Configurations.CBNMaxPortNameLength;
             List<PortData> inputPorts = new List<PortData>();
@@ -82,7 +82,7 @@ namespace Dynamo.Utilities
             IEnumerable<Statement> statements, bool onlyTopLevel)
         {
             if (statements == null)
-                throw new ArgumentNullException("statements");
+                throw new ArgumentNullException(/*NXLT*/"statements");
 
             var definedVariables = new List<List<string>>();
             foreach (var statement in statements)
@@ -112,14 +112,14 @@ namespace Dynamo.Utilities
             IEnumerable<IEnumerable<string>> statementVariables, int index)
         {
             if (statementVariables == null)
-                throw new ArgumentNullException("statementVariables");
+                throw new ArgumentNullException(/*NXLT*/"statementVariables");
 
             int statementCount = statementVariables.Count();
             if (statementCount <= 0)
                 return false;
 
             if (index < 0 || (index >= statementCount))
-                throw new IndexOutOfRangeException("index");
+                throw new IndexOutOfRangeException(/*NXLT*/"index");
 
             if (!statementVariables.ElementAt(index).Any())
                 return false;
@@ -191,7 +191,7 @@ namespace Dynamo.Utilities
 
             if (RequestLogicalToVisualLineIndexMap == null)
             {
-                throw new InvalidOperationException("MapLogicalToVisualLineIndices requires a registered LogicalToVisualLineIndexMapDelegate!");
+                throw new InvalidOperationException(/*NXLT*/"MapLogicalToVisualLineIndices requires a registered LogicalToVisualLineIndexMapDelegate!");
             }
 
             return OnRequestLogicalToVisualLineIndexMap(text);
@@ -307,13 +307,13 @@ namespace Dynamo.Utilities
 
         // This should match with production for identifier in language parser
         // See Start.atg file: ident = (letter | '_' | '@'){letter | digit | '_' | '@'}.
-        private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
+        private static string variableNamePattern = /*NXLT*/@"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
 
-        private static string spacesOrNonePattern = @"(\s*)";
+        private static string spacesOrNonePattern = /*NXLT*/@"(\s*)";
         private static string colonPattern = ":";
 
         // This pattern matches with identifier lists such as Autodesk.DesignScript.Geometry.Point
-        private static string identifierListPattern = string.Format("{0}([.]({0})+)*", variableNamePattern);
+        private static string identifierListPattern = string.Format(/*NXLT*/"{0}([.]({0})+)*", variableNamePattern);
 
         // Maintains a stack of symbols in a nested expression being typed
         // where the symbols are nested based on brackets, braces or parentheses

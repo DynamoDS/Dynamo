@@ -16,8 +16,8 @@ namespace Dynamo.Utilities
 
         public static Collection<T> AddRange<T>(this Collection<T> collection, IEnumerable<T> items)
         {
-            if (collection == null) throw new System.ArgumentNullException("collection");
-            if (items == null) throw new System.ArgumentNullException("items");
+            if (collection == null) throw new System.ArgumentNullException(/*NXLT*/"collection");
+            if (items == null) throw new System.ArgumentNullException(/*NXLT*/"items");
 
             foreach (var each in items)
             {
@@ -58,16 +58,16 @@ namespace Dynamo.Utilities
         public static ObservableCollection<T> RemoveRange<T>(this ObservableCollection<T> coll, int index, int count)
         {
             if (index > coll.Count - 1)
-                throw new ArgumentException("Starting index is greater than the size of the collection.");
+                throw new ArgumentException(/*NXLT*/"Starting index is greater than the size of the collection.");
 
             if (index + count > coll.Count)
-                throw new ArgumentException("Range extends beyond the end of the list.");
+                throw new ArgumentException(/*NXLT*/"Range extends beyond the end of the list.");
 
             if (count < 0)
-                throw new ArgumentException("Cannot have negative count.");
+                throw new ArgumentException(/*NXLT*/"Cannot have negative count.");
 
             if (index < 0)
-                throw new ArgumentException("Cannot have negative index.");
+                throw new ArgumentException(/*NXLT*/"Cannot have negative index.");
 
             for (int i = 0; i < count; i++)
             {
@@ -192,9 +192,9 @@ namespace Dynamo.Utilities
         public static string GetFullName(this Delegate del)
         {
             if (del.Method.DeclaringType == null)
-                throw new ArgumentException("Delegate has no declaring type.", @"del");
+                throw new ArgumentException(/*NXLT*/"Delegate has no declaring type.", @"del");
 
-            return String.Format("{0}.{1}", del.Method.DeclaringType.FullName, del.Method.Name);
+            return String.Format(/*NXLT*/"{0}.{1}", del.Method.DeclaringType.FullName, del.Method.Name);
         }
 
         public static string GetChildNodeStringValue(XmlNode nodeElement)
@@ -212,7 +212,7 @@ namespace Dynamo.Utilities
             var query = from XmlNode childNode in nodeElement.ChildNodes
                         where childNode.Name.Equals(typeName)
                         from XmlAttribute attribute in childNode.Attributes
-                        where attribute.Name.Equals("value")
+                        where attribute.Name.Equals(/*NXLT*/"value")
                         select attribute;
 
             foreach (XmlAttribute attribute in query)

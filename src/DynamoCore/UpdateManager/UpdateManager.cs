@@ -187,7 +187,7 @@ namespace Dynamo.UpdateManager
                 Error = string.Empty;
                 Data = string.Empty;
 
-                manager.OnLog(new LogEventArgs("The update request could not be completed.", LogLevel.File));
+                manager.OnLog(new LogEventArgs(/*NXLT*/"The update request could not be completed.", LogLevel.File));
                 manager.OnLog(new LogEventArgs(ex, LogLevel.File));
             }
 
@@ -204,7 +204,7 @@ namespace Dynamo.UpdateManager
     {
         private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
         private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
-        private const string DEFAULT_CONFIG_FILE_S = "UpdateManagerConfig.xml";
+        private const string DEFAULT_CONFIG_FILE_S = /*NXLT*/"UpdateManagerConfig.xml";
 
         /// <summary>
         /// Defines download location for new installer
@@ -262,7 +262,7 @@ namespace Dynamo.UpdateManager
                     updateManager.OnLog(
                         new LogEventArgs(
                             string.Format(
-                                "Failed to load {0}\n, Exception: {1}",
+                        /*NXLT*/"Failed to load {0}\n, Exception: {1}",
                                 filePath,
                                 ex.Message),
                             LogLevel.Console));
@@ -292,7 +292,7 @@ namespace Dynamo.UpdateManager
                     updateManager.OnLog(
                         new LogEventArgs(
                             string.Format(
-                                "Failed to save {0}\n, Exception: {1}",
+                        /*NXLT*/"Failed to save {0}\n, Exception: {1}",
                                 filePath,
                                 ex.Message),
                             LogLevel.Console));
@@ -335,8 +335,8 @@ namespace Dynamo.UpdateManager
         private bool versionCheckInProgress;
         private BinaryVersion productVersion;
         private IAppVersionInfo updateInfo;
-        private const string InstallNameBase = "DynamoInstall";
-        private const string OldDailyInstallNameBase = "DynamoDailyInstall";
+        private const string InstallNameBase = /*NXLT*/"DynamoInstall";
+        private const string OldDailyInstallNameBase = /*NXLT*/"DynamoDailyInstall";
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
         private IAppVersionInfo downloadedUpdateInfo;
@@ -505,13 +505,13 @@ namespace Dynamo.UpdateManager
         {
             switch (e.PropertyName)
             {
-                case "UpdateInfo":
+                case /*NXLT*/"UpdateInfo":
                     if (updateInfo != null)
                     {
                         //When the UpdateInfo property changes, this will be reflected in the UI
                         //by the vsisibility of the download cloud. The most up to date version will
                         //be downloaded asynchronously.
-                        OnLog(new LogEventArgs("Update download started...", LogLevel.Console));
+                        OnLog(new LogEventArgs(/*NXLT*/"Update download started...", LogLevel.Console));
 
                         var tempPath = Path.GetTempPath();
                         DownloadUpdatePackageAsynchronously(updateInfo.InstallerURL, updateInfo.Version, tempPath);
@@ -530,8 +530,8 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public void CheckForProductUpdate(IAsynchronousRequest request)
         {
-            OnLog(new LogEventArgs("RequestUpdateVersionInfo", LogLevel.File));
-            OnLog(new LogEventArgs("Requesting version update info...", LogLevel.Console));
+            OnLog(new LogEventArgs(/*NXLT*/"RequestUpdateVersionInfo", LogLevel.File));
+            OnLog(new LogEventArgs(/*NXLT*/"Requesting version update info...", LogLevel.Console));
 
             if (versionCheckInProgress)
                 return;
@@ -555,7 +555,7 @@ namespace Dynamo.UpdateManager
             if (!string.IsNullOrEmpty(request.Error) || 
                 string.IsNullOrEmpty(request.Data))
             {
-                OnLog(new LogEventArgs("Couldn't get update data from " + request.Path, LogLevel.Console));
+                OnLog(new LogEventArgs(/*NXLT*/"Couldn't get update data from " + request.Path, LogLevel.Console));
                 versionCheckInProgress = false;
                 return;
             }
@@ -563,7 +563,7 @@ namespace Dynamo.UpdateManager
             var latestBuildFilePath = GetLatestBuildFromS3(request, CheckNewerDailyBuilds);
             if (string.IsNullOrEmpty(latestBuildFilePath))
             {
-                OnLog(new LogEventArgs("Couldn't get the latest build from S3", LogLevel.Console));
+                OnLog(new LogEventArgs(/*NXLT*/"Couldn't get the latest build from S3", LogLevel.Console));
                 versionCheckInProgress = false;
                 return;
             }
@@ -593,7 +593,7 @@ namespace Dynamo.UpdateManager
             }
             else
             {
-                OnLog(new LogEventArgs("The specified file path is not recognizable as a stable or a daily build", LogLevel.Console));
+                OnLog(new LogEventArgs(/*NXLT*/"The specified file path is not recognizable as a stable or a daily build", LogLevel.Console));
                 versionCheckInProgress = false;
                 return;
             }
@@ -626,7 +626,7 @@ namespace Dynamo.UpdateManager
                     }
                     else
                     {
-                        OnLog(new LogEventArgs("Dynamo is up to date.",LogLevel.Console));
+                        OnLog(new LogEventArgs(/*NXLT*/"Dynamo is up to date.", LogLevel.Console));
                     }
                 }
                 else // Check dailies
@@ -637,7 +637,7 @@ namespace Dynamo.UpdateManager
                     }
                     else
                     {
-                        OnLog(new LogEventArgs("Dynamo is up to date.", LogLevel.Console));
+                        OnLog(new LogEventArgs(/*NXLT*/"Dynamo is up to date.", LogLevel.Console));
                     }
                 }
             }
@@ -647,7 +647,7 @@ namespace Dynamo.UpdateManager
 
         public void QuitAndInstallUpdate()
         {
-            OnLog(new LogEventArgs("UpdateManager.QuitAndInstallUpdate-Invoked", LogLevel.File));
+            OnLog(new LogEventArgs(/*NXLT*/"UpdateManager.QuitAndInstallUpdate-Invoked", LogLevel.File));
 
             if (ShutdownRequested != null)
                 ShutdownRequested(this);
@@ -658,7 +658,7 @@ namespace Dynamo.UpdateManager
             if (!string.IsNullOrEmpty(UpdateFileLocation))
             {
                 var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var updater = Path.Combine(currDir, "InstallUpdate.exe");
+                var updater = Path.Combine(currDir, /*NXLT*/"InstallUpdate.exe");
                 if (File.Exists(updater))
                 {
                     Process.Start(updater, UpdateFileLocation);

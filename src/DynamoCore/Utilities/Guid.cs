@@ -34,9 +34,9 @@ namespace Dynamo.Utilities
         public static Guid Create(Guid namespaceId, string name, int version)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(/*NXLT*/"name");
             if (version != 3 && version != 5)
-                throw new ArgumentOutOfRangeException("version", "version must be either 3 or 5.");
+                throw new ArgumentOutOfRangeException(/*NXLT*/"version", /*NXLT*/"version must be either 3 or 5.");
 
             // convert the name to a sequence of octets (as defined by the standard or conventions of its namespace) (step 3)
             // ASSUME: UTF-8 encoding is always appropriate
@@ -73,17 +73,17 @@ namespace Dynamo.Utilities
         /// <summary>
         /// The namespace for fully-qualified domain names (from RFC 4122, Appendix C).
         /// </summary>
-        public static readonly Guid DnsNamespace = new Guid("6ba7b810-9dad-11d1-80b4-00c04fd430c8");
+        public static readonly Guid DnsNamespace = new Guid(/*NXLT*/"6ba7b810-9dad-11d1-80b4-00c04fd430c8");
 
         /// <summary>
         /// The namespace for URLs (from RFC 4122, Appendix C).
         /// </summary>
-        public static readonly Guid UrlNamespace = new Guid("6ba7b811-9dad-11d1-80b4-00c04fd430c8");
+        public static readonly Guid UrlNamespace = new Guid(/*NXLT*/"6ba7b811-9dad-11d1-80b4-00c04fd430c8");
 
         /// <summary>
         /// The namespace for ISO OIDs (from RFC 4122, Appendix C).
         /// </summary>
-        public static readonly Guid IsoOidNamespace = new Guid("6ba7b812-9dad-11d1-80b4-00c04fd430c8");
+        public static readonly Guid IsoOidNamespace = new Guid(/*NXLT*/"6ba7b812-9dad-11d1-80b4-00c04fd430c8");
 
         // Converts a GUID (expressed as a byte array) to/from network order (MSB-first).
         internal static void SwapByteOrder(byte[] guid)

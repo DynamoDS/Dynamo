@@ -150,7 +150,7 @@ namespace Dynamo.PackageManager
 
         public static Package FromDirectory(string rootPath, ILogger logger)
         {
-            return FromJson(Path.Combine(rootPath, "pkg.json"), logger);
+            return FromJson(Path.Combine(rootPath, /*NXLT*/"pkg.json"), logger);
         }
 
         public static Package FromJson(string headerPath, ILogger logger)
@@ -162,7 +162,7 @@ namespace Dynamo.PackageManager
 
                 if (body.name == null || body.version == null)
                 {
-                    throw new Exception("The header is missing a name or version field.");
+                    throw new Exception(/*NXLT*/"The header is missing a name or version field.");
                 }
 
                 var pkg = new Package(Path.GetDirectoryName(headerPath), body.name, body.version, body.license);
@@ -181,7 +181,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                logger.Log("Failed to form package from json header.");
+                logger.Log(/*NXLT*/"Failed to form package from json header.");
                 logger.Log(e.GetType() + ": " + e.Message);
                 return null;
             }
@@ -209,7 +209,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                logger.Log("Exception when attempting to load package " + this.Name + " from " + this.RootDirectory);
+                logger.Log(/*NXLT*/"Exception when attempting to load package " + this.Name + /*NXLT*/" from " + this.RootDirectory);
                 logger.Log(e.GetType() + ": " + e.Message);
             }
 
@@ -223,7 +223,7 @@ namespace Dynamo.PackageManager
                 RootDirectory,
                 "*",
                 SearchOption.AllDirectories)
-                .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll") && !x.ToLower().EndsWith("pkg.json") && !x.ToLower().EndsWith(".backup"))
+                .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(/*NXLT*/".dll") && !x.ToLower().EndsWith(/*NXLT*/"pkg.json") && !x.ToLower().EndsWith(/*NXLT*/".backup"))
                 .Select(x => new PackageFileInfo(this.RootDirectory, x));
 
             this.AdditionalFiles.Clear();
@@ -236,7 +236,7 @@ namespace Dynamo.PackageManager
 
             return Directory.EnumerateFiles(
                 RootDirectory,
-                "*.dll",
+                /*NXLT*/"*.dll",
                 SearchOption.AllDirectories);
         }
 
@@ -315,7 +315,7 @@ namespace Dynamo.PackageManager
             // use the pkg header to determine which assemblies to load
             var nodeLibraries = this.Header.node_libraries;
 
-            foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
+            foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles(/*NXLT*/"*.dll"))
             {
                 Assembly assem;
 
@@ -408,7 +408,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                logger.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
+                logger.Log(/*NXLT*/"Exception when attempting to uninstall the package " + this.Name + /*NXLT*/" from " + this.RootDirectory);
                 logger.Log(e.GetType() + ": " + e.Message);
                 throw e;
             }

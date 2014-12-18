@@ -63,10 +63,10 @@ namespace Dynamo.PackageManager
             catch
             {
                 // give nicer error
-                throw new Exception("Could not compress file.  Is the file in use?");
+                throw new Exception(/*NXLT*/"Could not compress file.  Is the file in use?");
             }
-            
-            if (info.Length > 15 * 1000000) throw new Exception("The package is too large!  The package must be less than 15 MB!");
+
+            if (info.Length > 15 * 1000000) throw new Exception(/*NXLT*/"The package is too large!  The package must be less than 15 MB!");
 
             return zipPath;
         }
@@ -74,7 +74,7 @@ namespace Dynamo.PackageManager
         private static void RemapCustomNodeFilePaths( CustomNodeManager customNodeManager, IEnumerable<string> filePaths, string dyfRoot )
         {
             var defList = filePaths
-                .Where(x => x.EndsWith(".dyf"))
+                .Where(x => x.EndsWith(/*NXLT*/".dyf"))
                 .Select(customNodeManager.GuidFromPath)
                 .Select(customNodeManager.GetFunctionDefinition)
                 .ToList();
@@ -90,7 +90,7 @@ namespace Dynamo.PackageManager
         private static void RemoveDyfFiles(IEnumerable<string> filePaths, DirectoryInfo dyfDir)
         {
             filePaths
-                .Where(x => x.EndsWith(".dyf") && File.Exists(x) && Path.GetDirectoryName(x) != dyfDir.FullName)
+                .Where(x => x.EndsWith(/*NXLT*/".dyf") && File.Exists(x) && Path.GetDirectoryName(x) != dyfDir.FullName)
                 .ToList()
                 .ForEach( File.Delete );
         }
@@ -104,9 +104,9 @@ namespace Dynamo.PackageManager
         {
             // create a directory where the package will be stored
             var rootPath = Path.Combine(packageDirectory, packageName);
-            var dyfPath = Path.Combine(rootPath, "dyf");
-            var binPath = Path.Combine(rootPath, "bin");
-            var extraPath = Path.Combine(rootPath, "extra");
+            var dyfPath = Path.Combine(rootPath, /*NXLT*/"dyf");
+            var binPath = Path.Combine(rootPath, /*NXLT*/"bin");
+            var extraPath = Path.Combine(rootPath, /*NXLT*/"extra");
 
             root = TryCreateDirectory(rootPath);
             dyfDir = TryCreateDirectory(dyfPath);
@@ -121,35 +121,35 @@ namespace Dynamo.PackageManager
             var pkgHeaderStr = jsSer.Serialize(pkgHeader);
 
             // write the pkg header to the root directory of the pkg
-            var headerPath = Path.Combine(rootDir.FullName, "pkg.json");
+            var headerPath = Path.Combine(rootDir.FullName, /*NXLT*/"pkg.json");
             if (File.Exists(headerPath)) File.Delete(headerPath);
             File.WriteAllText(headerPath, pkgHeaderStr);
         }
 
         private static bool IsXmlDocFile(string path, IEnumerable<string> files)
         {
-            if (!path.ToLower().EndsWith(".xml")) return false;
+            if (!path.ToLower().EndsWith(/*NXLT*/".xml")) return false;
 
             var fn = Path.GetFileNameWithoutExtension(path);
 
             return
-                files.Where(x => x.EndsWith(".dll"))
+                files.Where(x => x.EndsWith(/*NXLT*/".dll"))
                     .Select(Path.GetFileNameWithoutExtension)
                     .Contains(fn);
         }
 
         private static bool IsDynamoCustomizationFile(string path, IEnumerable<string> files)
         {
-            if (!path.ToLower().EndsWith(".xml")) return false;
+            if (!path.ToLower().EndsWith(/*NXLT*/".xml")) return false;
 
             var name = Path.GetFileNameWithoutExtension(path);
 
-            if (!name.EndsWith("_DynamoCustomization")) return false;
+            if (!name.EndsWith(/*NXLT*/"_DynamoCustomization")) return false;
 
-            name = name.Remove(name.Length - "_DynamoCustomization".Length);
+            name = name.Remove(name.Length - /*NXLT*/"_DynamoCustomization".Length);
 
             return
-                files.Where(x => x.EndsWith(".dll"))
+                files.Where(x => x.EndsWith(/*NXLT*/".dll"))
                     .Select(Path.GetFileNameWithoutExtension)
                     .Contains(name);
         }
@@ -171,11 +171,11 @@ namespace Dynamo.PackageManager
                 if (!File.Exists(file)) continue;
                 string destPath;
 
-                if (file.ToLower().EndsWith(".dyf"))
+                if (file.ToLower().EndsWith(/*NXLT*/".dyf"))
                 {
                     destPath = Path.Combine(dyfDir.FullName, Path.GetFileName(file));
                 }
-                else if (file.ToLower().EndsWith(".dll") || IsXmlDocFile(file, files) 
+                else if (file.ToLower().EndsWith(/*NXLT*/".dll") || IsXmlDocFile(file, files) 
                     || IsDynamoCustomizationFile(file, files))
                 {
                     destPath = Path.Combine(binDir.FullName, Path.GetFileName(file));
