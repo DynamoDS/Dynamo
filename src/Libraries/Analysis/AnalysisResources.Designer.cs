@@ -86,41 +86,5 @@ namespace Analysis {
                 return ResourceManager.GetString("ColoredSurfaceConstructionNoUVsMessage", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must provide a center point..
-        /// </summary>
-        internal static string FindPointsWithinRadiusNullPointMessage {
-            get {
-                return ResourceManager.GetString("FindPointsWithinRadiusNullPointMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The search radius cannot be zero..
-        /// </summary>
-        internal static string FindPointsWithinRadiusSearchRadiusMessage {
-            get {
-                return ResourceManager.GetString("FindPointsWithinRadiusSearchRadiusMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You cannot construct a quadtree from an empty set of points..
-        /// </summary>
-        internal static string QuadtreeConstructionEmptyUVSetMessage {
-            get {
-                return ResourceManager.GetString("QuadtreeConstructionEmptyUVSetMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A Quadtree cannot be constructed from a null set of UVs..
-        /// </summary>
-        internal static string QuadtreeConstructionNullUVSetMessage {
-            get {
-                return ResourceManager.GetString("QuadtreeConstructionNullUVSetMessage", resourceCulture);
-            }
-        }
     }
 }

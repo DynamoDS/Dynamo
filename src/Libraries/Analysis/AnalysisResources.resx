@@ -126,16 +126,4 @@
   <data name="ColoredSurfaceConstructionNoUVsMessage" xml:space="preserve">
     <value>There are no UVs specified.</value>
   </data>
-  <data name="FindPointsWithinRadiusNullPointMessage" xml:space="preserve">
-    <value>You must provide a center point.</value>
-  </data>
-  <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
-    <value>The search radius cannot be zero.</value>
-  </data>
-  <data name="QuadtreeConstructionEmptyUVSetMessage" xml:space="preserve">
-    <value>You cannot construct a quadtree from an empty set of points.</value>
-  </data>
-  <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
-    <value>A Quadtree cannot be constructed from a null set of UVs.</value>
-  </data>
 </root>
