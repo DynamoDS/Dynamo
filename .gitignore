@@ -65,14 +65,6 @@ Dynamo.sln.DotSettings
 extern/DynamoAsm/
 extern/ASM/
 
-/src/DynamoCore/images.resources
-/src/Libraries/CoreNodes/images.resources
-/src/Libraries/CoreNodesUI/images.resources
-/src/Libraries/IronPython/images.resources
-/src/Libraries/CoreNodes/images.resources
-/src/Libraries/CoreNodes/*.resources
 /src/DynamoIcons/*.resources
-images.resources
 tools/CBNLanguageComparisonTests/GenerateTests.cs
-/src/DynamoCore/*.resources
 src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
