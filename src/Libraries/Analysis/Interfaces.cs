@@ -5,7 +5,7 @@ using Autodesk.DesignScript.Geometry;
 
 namespace Analysis
 {
-    public interface IAnalysisData<TLocation, TResult>
+    public interface IAnalysisData<TLocation, TValue>
     {
         /// <summary>
         /// A collection of calculation locations.
@@ -16,12 +16,12 @@ namespace Analysis
         /// A dictionary of calculation results for
         /// each calculation location.
         /// </summary>
-        Dictionary<string, IList<TResult>> Results { get; }
+        Dictionary<string, IList<TValue>> Values { get; }
 
-        IList<TResult> GetResultByKey(string key);
+        IList<TValue> GetValuesByKey(string key);
     }
 
-    public interface ISurfaceAnalysisData<TLocation, TResult> : IAnalysisData<TLocation, TResult>
+    public interface ISurfaceAnalysisData<TLocation, TValue> : IAnalysisData<TLocation, TValue>
     {
         /// <summary>
         /// The analysis surface.
@@ -29,7 +29,7 @@ namespace Analysis
         Surface Surface { get; }
     }
 
-    public interface ICurveAnalysisData<TLocation, TResult> : IAnalysisData<TLocation, TResult>
+    public interface ICurveAnalysisData<TLocation, TValue> : IAnalysisData<TLocation, TValue>
     {
         /// <summary>
         /// The analysis curve.
@@ -42,10 +42,10 @@ namespace Analysis
     /// </summary>
     /// <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
     /// <typeparam name="TResult">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
-    public interface IAnalysisModel<TLocation,TResult>
+    public interface IAnalysisModel<TLocation, TValue>
     {
         event EventHandler AnalysisCompleted;
         void Analyze(bool parallel);
-        IEnumerable<IAnalysisData<TLocation,TResult>> Results { get; }
+        IEnumerable<IAnalysisData<TLocation, TValue>> Values { get; }
     }
 }

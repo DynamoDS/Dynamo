@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-using Analysis.DataTypes;
+using Analysis;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
@@ -61,7 +61,7 @@ namespace AnalysisTests
         [Test, Category("UnitTests")]
         public void SurfaceAnalysisDataBySurfacePointsAndResults_ValidArgs()
         {
-            var sad = SurfaceAnalysisData.BySurfacePointsAndResults(
+            var sad = SurfaceAnalysisData.BySurfacePointsAndValues(
                 TestSurface(),
                 TestUvs(),
                 TestResultNames(),
@@ -69,45 +69,45 @@ namespace AnalysisTests
 
             Assert.NotNull(sad);
             Assert.NotNull(sad.Surface);
-            Assert.AreEqual(sad.Results.Count, 3);
+            Assert.AreEqual(sad.Values.Count, 3);
         }
 
         [Test, Category("UnitTests")]
         public void SurfaceAnalysisDataBySurfacePointAndResults_BadArgs()
         {
-            Assert.Throws<ArgumentNullException>(() => SurfaceAnalysisData.BySurfacePointsAndResults(
+            Assert.Throws<ArgumentNullException>(() => SurfaceAnalysisData.BySurfacePointsAndValues(
                 null,
                 TestUvs(),
                 TestResultNames(),
                 TestResults()));
 
-            Assert.Throws<ArgumentNullException>(() => SurfaceAnalysisData.BySurfacePointsAndResults(
+            Assert.Throws<ArgumentNullException>(() => SurfaceAnalysisData.BySurfacePointsAndValues(
                 TestSurface(),
                 null,
                 TestResultNames(),
                 TestResults()));
 
-            Assert.Throws<ArgumentNullException>(() => SurfaceAnalysisData.BySurfacePointsAndResults(
+            Assert.Throws<ArgumentNullException>(() => SurfaceAnalysisData.BySurfacePointsAndValues(
                 TestSurface(),
                 TestUvs(),
                 null,
                 TestResults()));
 
-            Assert.Throws<ArgumentNullException>(() => SurfaceAnalysisData.BySurfacePointsAndResults(
+            Assert.Throws<ArgumentNullException>(() => SurfaceAnalysisData.BySurfacePointsAndValues(
                 TestSurface(),
                 TestUvs(),
                 TestResultNames(),
                 null));
 
             // Test empty calculation set
-            Assert.Throws<ArgumentException>(() => SurfaceAnalysisData.BySurfacePointsAndResults(
+            Assert.Throws<ArgumentException>(() => SurfaceAnalysisData.BySurfacePointsAndValues(
                 TestSurface(),
                 new List<UV>(),
                 TestResultNames(),
                 TestResults()));
 
             // Test non matching results sets
-            Assert.Throws<ArgumentException>(() => SurfaceAnalysisData.BySurfacePointsAndResults(
+            Assert.Throws<ArgumentException>(() => SurfaceAnalysisData.BySurfacePointsAndValues(
                 TestSurface(),
                 TestUvs(),
                 new []{"cat","foo"},
@@ -131,31 +131,31 @@ namespace AnalysisTests
         [Test, Category("UnitTests")]
         public void PointAnalysisDataByPointsAndResults_ValidArgs()
         {
-            var pad = PointAnalysisData.ByPointsAndResults(
+            var pad = PointAnalysisData.ByPointsAndValues(
                 TestPoints(),
                 TestResultNames(),
                 TestResults());
 
             Assert.NotNull(pad);
             Assert.NotNull(pad.CalculationLocations);
-            Assert.NotNull(pad.Results);
-            Assert.AreEqual(pad.Results.Count, 3);
+            Assert.NotNull(pad.Values);
+            Assert.AreEqual(pad.Values.Count, 3);
         }
 
         [Test, Category("UnitTests")]
         public void PointAnalysisDataByPointsAndResults_BadArgs()
         {
             Assert.Throws<ArgumentNullException>(
-                () => PointAnalysisData.ByPointsAndResults(null, TestResultNames(), TestResults()));
+                () => PointAnalysisData.ByPointsAndValues(null, TestResultNames(), TestResults()));
 
             Assert.Throws<ArgumentNullException>(
-                () => PointAnalysisData.ByPointsAndResults(TestPoints(), null, TestResults()));
+                () => PointAnalysisData.ByPointsAndValues(TestPoints(), null, TestResults()));
 
             Assert.Throws<ArgumentNullException>(
-                () => PointAnalysisData.ByPointsAndResults(TestPoints(), TestResultNames(), null));
+                () => PointAnalysisData.ByPointsAndValues(TestPoints(), TestResultNames(), null));
 
             Assert.Throws<ArgumentException>(
-                () => PointAnalysisData.ByPointsAndResults(TestPoints(), new []{"cat","foo"}, TestResults()));
+                () => PointAnalysisData.ByPointsAndValues(TestPoints(), new[] { "cat", "foo" }, TestResults()));
         }
 
         [Test, Category("UnitTests")]
@@ -176,11 +176,11 @@ namespace AnalysisTests
         [Test, Category("UnitTests")]
         public void VectorAnalysisDataByPointsAndResults_ValidArgs()
         {
-            var vad = VectorAnalysisData.ByPointsAndResults(TestPoints(), TestResultNames(), TestVectorResults());
+            var vad = VectorAnalysisData.ByPointsAndValues(TestPoints(), TestResultNames(), TestVectorResults());
             Assert.NotNull(vad);
             Assert.NotNull(vad.CalculationLocations);
-            Assert.NotNull(vad.Results);
-            Assert.AreEqual(vad.Results.Count, 3);
+            Assert.NotNull(vad.Values);
+            Assert.AreEqual(vad.Values.Count, 3);
         }
 
         [Test, Category("UnitTests")]
@@ -188,28 +188,28 @@ namespace AnalysisTests
         {
             Assert.Throws<ArgumentNullException>(
                 () =>
-                    VectorAnalysisData.ByPointsAndResults(
+                    VectorAnalysisData.ByPointsAndValues(
                         null,
                         TestResultNames(),
                         TestVectorResults()));
 
             Assert.Throws<ArgumentNullException>(
                 () =>
-                    VectorAnalysisData.ByPointsAndResults(
+                    VectorAnalysisData.ByPointsAndValues(
                         TestPoints(),
                         null,
                         TestVectorResults()));
 
             Assert.Throws<ArgumentNullException>(
                 () =>
-                    VectorAnalysisData.ByPointsAndResults(
+                    VectorAnalysisData.ByPointsAndValues(
                         TestPoints(),
                         TestResultNames(),
                         null));
 
             Assert.Throws<ArgumentException>(
                 () =>
-                    VectorAnalysisData.ByPointsAndResults(
+                    VectorAnalysisData.ByPointsAndValues(
                         TestPoints(),
                         new []{"cat","foo"},
                         TestVectorResults()));
