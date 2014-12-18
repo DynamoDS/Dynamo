@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
-using DSCore.File;
-using DSCoreNodesUI;
-using DSIronPythonNode;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -14,12 +12,38 @@ using Dynamo.UI.Controls;
 using DynamoCoreUITests.Utility;
 using NUnit.Framework;
 using Dynamo.Utilities;
-using UnitsUI;
 
 namespace DynamoCoreUITests
 {
     public class NodeViewCustomizationTests : DynamoTestUIBase
     {
+        // adapted from: http://stackoverflow.com/questions/9336165/correct-method-for-using-the-wpf-dispatcher-in-unit-tests
+        private static class DispatcherUtil
+        {
+            /// <summary>
+            /// Force the Dispatcher to empty it's queue
+            /// </summary>
+            [SecurityPermissionAttribute(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+            public static void DoEvents()
+            {
+                DispatcherFrame frame = new DispatcherFrame();
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
+                    new DispatcherOperationCallback(ExitFrame), frame);
+                Dispatcher.PushFrame(frame);
+            }
+
+            /// <summary>
+            /// Helper method for DispatcherUtil
+            /// </summary>
+            /// <param name="frame"></param>
+            /// <returns></returns>
+            private static object ExitFrame(object frame)
+            {
+                ((DispatcherFrame)frame).Continue = false;
+                return null;
+            }
+        }
+
         public NodeView NodeViewOf<T>() where T : NodeModel
         {
             var nodeViews = View.NodeViewsInFirstWorkspace();
@@ -29,12 +53,35 @@ namespace DynamoCoreUITests
             return nodeViewsOfType.First();
         }
 
+        public NodeView NodeViewWithGuid(string guid)
+        {
+            var nodeViews = View.NodeViewsInFirstWorkspace();
+            var nodeViewsOfType = nodeViews.Where(x => x.ViewModel.NodeLogic.GUID.ToString() == guid);
+            Assert.AreEqual(1, nodeViewsOfType.Count(), "Expected a single NodeView with guid: " + guid);
+
+            return nodeViewsOfType.First();
+        }
+
+        public override void Open(string path)
+        {
+            base.Open(path);
+
+            DispatcherUtil.DoEvents();
+        }
+
+        public override void Run()
+        {
+            base.Run();
+
+            DispatcherUtil.DoEvents();
+        }
+
         [Test]
         public void Watch3DHasViewer()
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<Watch3D>();
+            var nodeView = NodeViewWithGuid("6869c998-b819-4686-8849-6f36162c4182"); // NodeViewOf<Watch3D>();
             var watchView = nodeView.ChildrenOfType<Watch3DView>().First();
             Assert.AreEqual(0, watchView.Points.Count);
         }
@@ -44,7 +91,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<StringInput>();
+            var nodeView = NodeViewWithGuid("3d436f17-cc3d-4b84-afd9-fc71ff538b3b"); // NodeViewOf<StringInput>();
             var element = nodeView.ChildrenOfType<TextBox>().First();
             Assert.AreEqual("\"ok\"", element.Text);
         }
@@ -54,7 +101,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<BoolSelector>();
+            var nodeView = NodeViewWithGuid("5792b7bc-a30c-4bda-bf55-a5888a73a08b"); // NodeViewOf<BoolSelector>();
 
             var elements = nodeView.ChildrenOfType<RadioButton>();
 
@@ -68,7 +115,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<DoubleInput>();
+            var nodeView = NodeViewWithGuid("85b95961-5ac1-482f-b520-82d5dc115e97"); // NodeViewOf<DoubleInput>();
 
             var element = nodeView.ChildrenOfType<DynamoTextBox>().First();
             Assert.AreEqual("12.000", element.Text);
@@ -79,7 +126,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<DoubleSlider>();
+            var nodeView = NodeViewWithGuid("8820644a-ba01-4118-8f04-26ebf58c11cc"); // NodeViewOf<DoubleSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
             Assert.AreEqual(1.0, element.slider.Value, 1e-6);
@@ -90,7 +137,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<IntegerSlider>();
+            var nodeView = NodeViewWithGuid("d0fa1feb-ec0e-4cee-a86a-34077f5a870a"); // NodeViewOf<IntegerSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
             Assert.AreEqual(41, element.slider.Value, 1e-6);
@@ -101,7 +148,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<Filename>();
+            var nodeView = NodeViewWithGuid("32013fd9-f925-4510-b449-3e0b3d8a5887"); // NodeViewOf<Filename>();
 
             var eles = nodeView.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(1, eles.Count());
@@ -112,7 +159,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<DSCore.File.Directory>();
+            var nodeView = NodeViewWithGuid("4e50a79d-783f-4c54-9961-c0a9ee3214e1"); // NodeViewOf<DSCore.File.Directory>();
 
             var eles = nodeView.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(1, eles.Count());
@@ -123,7 +170,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<LengthFromString>();
+            var nodeView = NodeViewWithGuid("41a95cc4-1224-4390-be2a-09968143db7c"); // NodeViewOf<LengthFromString>();
 
             var ele = nodeView.ChildrenOfType<DynamoTextBox>().First();
             Assert.AreEqual("0.000m", ele.Text);
@@ -135,7 +182,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<VolumeFromString>();
+            var nodeView = NodeViewWithGuid("0b0a7eda-f487-4582-90bc-d75f1871627c"); // NodeViewOf<VolumeFromString>();
 
             var ele = nodeView.ChildrenOfType<DynamoTextBox>().First();
             Assert.AreEqual("0.000m³", ele.Text);
@@ -146,7 +193,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<AreaFromString>();
+            var nodeView = NodeViewWithGuid("739f111c-886c-4313-8517-5cfdf4a2e559"); // NodeViewOf<AreaFromString>();
 
             var ele = nodeView.ChildrenOfType<DynamoTextBox>().First();
             Assert.AreEqual("0.000m²", ele.Text);
@@ -157,7 +204,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<PythonNode>();
+            var nodeView = NodeViewWithGuid("23aaaf18-2c93-4b78-85f9-6f348a932e75"); // NodeViewOf<PythonNode>();
 
             var eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(2, eles.Count());
@@ -171,7 +218,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<PythonStringNode>();
+            var nodeView = NodeViewWithGuid("895bcbe1-430f-4105-895a-a686c7cff8aa"); // NodeViewOf<PythonStringNode>();
 
             var eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(2, eles.Count());
@@ -185,7 +232,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\WatchUINodes.dyn");
 
-            var nodeView = NodeViewOf<Dynamo.Nodes.Watch>();
+            var nodeView = NodeViewWithGuid("ed970d46-4fe0-4640-b13b-0fe313f94fe4"); // NodeViewOf<Watch>();
 
             var tree = nodeView.ChildrenOfType<WatchTree>();
             Assert.AreEqual(1, tree.Count());
@@ -199,18 +246,13 @@ namespace DynamoCoreUITests
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
 
-            var nodeView = NodeViewOf<Dynamo.Nodes.Watch>();
+            var nodeView = NodeViewWithGuid("ed970d46-4fe0-4640-b13b-0fe313f94fe4"); // NodeViewOf<Watch>();
 
             var tree = nodeView.ChildrenOfType<WatchTree>();
             Assert.AreEqual(1, tree.Count());
 
-            Action assert = () =>
-            {
-                var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
-                Assert.AreEqual(8, items.Count());
-            };
-
-            AssertWhenDispatcherDone(assert);
+            var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(8, items.Count());
         }
 
         [Test]
@@ -218,7 +260,7 @@ namespace DynamoCoreUITests
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
 
-            var nodeView = NodeViewOf<Dynamo.Nodes.WatchImageCore>();
+            var nodeView = NodeViewWithGuid("cf3ed4fb-f0a2-4dfe-89c1-11e8bbcfe80d"); // NodeViewOf<Dynamo.Nodes.WatchImageCore>();
 
             var imgs = nodeView.ChildrenOfType<Image>();
 
@@ -226,13 +268,8 @@ namespace DynamoCoreUITests
 
             var img = imgs.First();
 
-            Action assert = () =>
-            {
-                Assert.Greater(img.ActualWidth, 10);
-                Assert.Greater(img.ActualHeight, 10);
-            };
-
-            AssertWhenDispatcherDone(assert);
+            Assert.Greater(img.ActualWidth, 10);
+            Assert.Greater(img.ActualHeight, 10);
         }
 
         [Test]
@@ -240,7 +277,7 @@ namespace DynamoCoreUITests
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
 
-            var nodeView = NodeViewOf<Dynamo.Nodes.Watch3D>();
+            var nodeView = NodeViewWithGuid("6edc4c28-15ef-4d60-af6d-6ed829871973"); // NodeViewOf<Dynamo.Nodes.Watch3D>();
 
             var watch3ds = nodeView.ChildrenOfType<Watch3DView>();
 
@@ -248,8 +285,7 @@ namespace DynamoCoreUITests
 
             var watch3DView = watch3ds.First();
 
-            Action assert = () => Assert.AreEqual(1, watch3DView.Points.Count);
-            AssertWhenDispatcherDone(assert);
+            Assert.AreEqual(1, watch3DView.Points.Count);
             
         }
 
@@ -258,7 +294,7 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewOf<Dynamo.Nodes.Function>();
+            var nodeView = NodeViewWithGuid("b97925f7-86d8-44fc-8e57-5768593d6b4e"); // NodeViewOf<Dynamo.Nodes.Function>();
 
             Assert.True( nodeView.customNodeBorder0.Visibility == Visibility.Visible);
         }

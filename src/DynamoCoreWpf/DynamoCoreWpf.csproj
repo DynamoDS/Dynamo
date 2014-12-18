@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -115,7 +115,6 @@
     <Compile Include="Commands\DynamoCommands.cs" />
     <Compile Include="Commands\InfoBubbleCommand.cs" />
     <Compile Include="Commands\NodeCommands.cs" />
-    <Compile Include="Commands\NodeSearchElementCommands.cs" />
     <Compile Include="Commands\NoteCommands.cs" />
     <Compile Include="Commands\PortCommands.cs" />
     <Compile Include="Commands\SearchCommands.cs" />

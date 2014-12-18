@@ -2,14 +2,22 @@
 using System.Collections.Generic;
 
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 
 namespace Dynamo.Wpf
 {
     internal class NodeViewCustomizationLibrary
     {
-        private Dictionary<Type, List<InternalNodeViewCustomization>> lookupDict =
+        private readonly Dictionary<Type, List<InternalNodeViewCustomization>> lookupDict =
             new Dictionary<Type, List<InternalNodeViewCustomization>>();
+
+        private readonly ILogger logger;
+
+        internal NodeViewCustomizationLibrary(ILogger logger)
+        {
+            this.logger = logger;
+        }
 
         internal void Apply(NodeView view)
         {
@@ -44,12 +52,25 @@ namespace Dynamo.Wpf
                 {
                     foreach (var customization in custs)
                     {
-                        var disposable = customization.CustomizeView(model, view);
-                        view.Unloaded += (s, a) => disposable.Dispose();
+                        TryApplyCustomization(model, view, customization);
                     }
                 }
             }
-           
+        }
+
+        private void TryApplyCustomization(NodeModel model, NodeView view, InternalNodeViewCustomization customization)
+        {
+            try
+            {
+                var disposable = customization.CustomizeView(model, view);
+                view.Unloaded += (s, a) => disposable.Dispose();
+            }
+            catch (Exception e)
+            {
+                var message = "Failed to apply NodeViewCustomization for " + model.GetType().Name;
+                logger.LogError(message);
+                logger.Log(e);
+            }
         }
 
         internal void Add(INodeViewCustomizations cs)

@@ -462,7 +462,7 @@ namespace ProtoAssociative
             bool allocateForBaseVar = classScope < classIndex;
             bool isProperty = classIndex != Constants.kInvalidIndex && funcIndex == Constants.kInvalidIndex;
             if (!allocateForBaseVar && !isProperty && core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
-                buildStatus.LogSemanticError(ident + " is a class name, can't be used as a variable.", null, line, col, graphNode);
+                buildStatus.LogSemanticError(String.Format(StringConstants.classNameAsVariableError, ident), null, line, col, graphNode);
 
             ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode();
             symbolnode.name = ident;
@@ -1309,7 +1309,7 @@ namespace ProtoAssociative
                             }
                             else
                             {
-                                string message = String.Format(StringConstants.kCallingNonStaticProperty,
+                                string message = String.Format(ProtoCore.StringConstants.kCallingNonStaticProperty,
                                                                className,
                                                                property);
 
@@ -1342,7 +1342,7 @@ namespace ProtoAssociative
                         {
                             if (subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                             {
-                                string message = String.Format(StringConstants.kStaticMethodNotFound,
+                                string message = String.Format(ProtoCore.StringConstants.kStaticMethodNotFound,
                                                                className,
                                                                procName);
 
@@ -1374,7 +1374,7 @@ namespace ProtoAssociative
                         {
                             if (subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                             {
-                                string message = String.Format(StringConstants.KCallingConstructorOnInstance,
+                                string message = String.Format(ProtoCore.StringConstants.KCallingConstructorOnInstance,
                                                                procName);
                                 buildStatus.LogWarning(WarningID.kCallingConstructorOnInstance,
                                                        message,
@@ -1520,7 +1520,7 @@ namespace ProtoAssociative
 
                         if (!isAccessible)
                         {
-                            string message = String.Format(StringConstants.kMethodIsInaccessible, procName);
+                            string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
                             buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
@@ -1561,7 +1561,7 @@ namespace ProtoAssociative
                         string.Equals(contextProcNode.name, procCallNode.name) &&
                         contextProcNode.runtimeIndex == procCallNode.runtimeIndex)
                     {
-                        string message = String.Format(StringConstants.kCallingConstructorInConstructor, procName);
+                        string message = String.Format(ProtoCore.StringConstants.kCallingConstructorInConstructor, procName);
                         buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
@@ -1751,7 +1751,7 @@ namespace ProtoAssociative
                     {
                         type = lefttype = realType;
                         procNode = null;
-                        string message = String.Format(StringConstants.kMethodIsInaccessible, procName);
+                        string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
                         buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
 
@@ -1825,7 +1825,7 @@ namespace ProtoAssociative
 
                         if (!isAccessible)
                         {
-                            string message = String.Format(StringConstants.kMethodIsInaccessible, procName);
+                            string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
                             buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
 
                             inferedType.UID = (int)PrimitiveType.kTypeNull;
@@ -1852,7 +1852,7 @@ namespace ProtoAssociative
                         string.Equals(contextProcNode.name, procNode.name) &&
                         contextProcNode.runtimeIndex == procNode.runtimeIndex)
                     {
-                        string message = String.Format(StringConstants.kCallingConstructorInConstructor, procName);
+                        string message = String.Format(ProtoCore.StringConstants.kCallingConstructorInConstructor, procName);
                         buildStatus.LogWarning(WarningID.kCallingConstructorInConstructor, message, core.CurrentDSFileName, node.line, node.col, graphNode);
                         inferedType.UID = (int)PrimitiveType.kTypeNull;
                         EmitPushNull();
@@ -4102,7 +4102,7 @@ namespace ProtoAssociative
             ProtoCore.DSASM.SymbolNode symnode = Allocate(classIndex, classScope, ProtoCore.DSASM.Constants.kGlobalScope, name, ptrType, datasize, isStatic, access);
             if (null == symnode)
             {
-                buildStatus.LogSemanticError("Member variable '" + name + "' is already defined in class " + core.ClassTable.ClassNodes[classIndex].name);
+                buildStatus.LogSemanticError(String.Format(StringConstants.memberVariableAlreadyDefined, name, core.ClassTable.ClassNodes[classIndex].name));
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
             }
 
@@ -4395,7 +4395,7 @@ namespace ProtoAssociative
 
                     if (isAllocated)
                     {
-                        string message = String.Format(StringConstants.kPropertyIsInaccessible, t.Value);
+                        string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, t.Value);
                         if (localProcedure != null && localProcedure.isStatic)
                         {
                             SymbolNode tempSymbolNode;
@@ -4409,7 +4409,7 @@ namespace ProtoAssociative
 
                             if (tempSymbolNode != null && !tempSymbolNode.isStatic && isAccessible)
                             {
-                                message = String.Format(StringConstants.kUsingNonStaticMemberInStaticContext, t.Value);
+                                message = String.Format(ProtoCore.StringConstants.kUsingNonStaticMemberInStaticContext, t.Value);
                             }
                         }
                         buildStatus.LogWarning(
@@ -4422,7 +4422,7 @@ namespace ProtoAssociative
                     }
                     else
                     {
-                        string message = String.Format(StringConstants.kUnboundIdentifierMsg, t.Value);
+                        string message = String.Format(ProtoCore.StringConstants.kUnboundIdentifierMsg, t.Value);
                         buildStatus.LogUnboundVariableWarning(unboundVariable, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
                 }
@@ -4633,12 +4633,12 @@ namespace ProtoAssociative
                             if (step == 0)
                             {
                                 isStepValid = false;
-                                warningMsg = StringConstants.kRangeExpressionWithStepSizeZero;
+                                warningMsg = ProtoCore.StringConstants.kRangeExpressionWithStepSizeZero;
                             }
                             else if ((end > current && step < 0) || (end < current && step > 0))
                             {
                                 isStepValid = false;
-                                warningMsg = StringConstants.kRangeExpressionWithInvalidStepSize;
+                                warningMsg = ProtoCore.StringConstants.kRangeExpressionWithInvalidStepSize;
                             }
                         }
 
@@ -4649,7 +4649,7 @@ namespace ProtoAssociative
                        if (hasAmountOperator)
                        {
                            isStepValid = false;
-                           warningMsg = StringConstants.kRangeExpressionWithStepSizeZero;
+                           warningMsg = ProtoCore.StringConstants.kRangeExpressionWithStepSizeZero;
                        }
                        else
                        {
@@ -4657,7 +4657,7 @@ namespace ProtoAssociative
                                subPass == ProtoCore.Compiler.Associative.SubCompilePass.kNone)
                            {
                                buildStatus.LogWarning(WarningID.kInvalidRangeExpression,
-                                                      StringConstants.kRangeExpressionWithNonIntegerStepNumber,
+                                                      ProtoCore.StringConstants.kRangeExpressionWithNonIntegerStepNumber,
                                                       core.CurrentDSFileName,
                                                       stepNode.line,
                                                       stepNode.col, 
@@ -4666,7 +4666,7 @@ namespace ProtoAssociative
                            else if (step <= 0)
                            {
                                isStepValid = false;
-                               warningMsg = StringConstants.kRangeExpressionWithNegativeStepNumber;
+                               warningMsg = ProtoCore.StringConstants.kRangeExpressionWithNegativeStepNumber;
                            }
                        }
 
@@ -4676,12 +4676,12 @@ namespace ProtoAssociative
                         if (hasAmountOperator)
                         {
                             isStepValid = false;
-                            warningMsg = StringConstants.kRangeExpressionConflictOperator;
+                            warningMsg = ProtoCore.StringConstants.kRangeExpressionConflictOperator;
                         }
                         else if (step == 0)
                         {
                             isStepValid = false;
-                            warningMsg = StringConstants.kRangeExpressionWithStepSizeZero;
+                            warningMsg = ProtoCore.StringConstants.kRangeExpressionWithStepSizeZero;
                         }
                         break;
 
@@ -4793,7 +4793,7 @@ namespace ProtoAssociative
                 if (ProtoCore.Language.kAssociative == langblock.codeblock.language && !isTopBlock)
                 {
                     // TODO Jun: Move the associative and all common string into some table
-                    buildStatus.LogSyntaxError("An associative language block is declared within an associative language block.", core.CurrentDSFileName, langblock.line, langblock.col);
+                    buildStatus.LogSyntaxError(StringConstants.invalidNestedAssociativeBlock, core.CurrentDSFileName, langblock.line, langblock.col);
                 }
 
 
@@ -5178,7 +5178,7 @@ namespace ProtoAssociative
                 // Populating the class tables with the class names
                 if (null != codeBlock.parent)
                 {
-                    buildStatus.LogSemanticError("A class cannot be defined inside a language block.\n", core.CurrentDSFileName, classDecl.line, classDecl.col);
+                    buildStatus.LogSemanticError(StringConstants.classCannotBeDefinedInsideLanguageBlock, core.CurrentDSFileName, classDecl.line, classDecl.col);
                 }
 
 
@@ -5598,7 +5598,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    string message = String.Format(StringConstants.kMethodAlreadyDefined, localProcedure.name);
+                    string message = String.Format(ProtoCore.StringConstants.kMethodAlreadyDefined, localProcedure.name);
                     buildStatus.LogWarning(WarningID.kFunctionAlreadyDefined, message, core.CurrentDSFileName, funcDef.line, funcDef.col, gNode);
                     funcDef.skipMe = true;
                 }
@@ -8190,7 +8190,7 @@ namespace ProtoAssociative
 
                 if (inferedType.UID == (int)PrimitiveType.kTypeFunctionPointer && subPass != ProtoCore.Compiler.Associative.SubCompilePass.kUnboundIdentifier && emitDebugInfo)
                 {
-                    buildStatus.LogSemanticError("Function pointer is not allowed at binary expression other than assignment!", core.CurrentDSFileName, bnode.LeftNode.line, bnode.LeftNode.col);
+                    buildStatus.LogSemanticError(StringConstants.functionPointerNotAllowedAtBinaryExpression, core.CurrentDSFileName, bnode.LeftNode.line, bnode.LeftNode.col);
                 }
 
                 leftType.UID = inferedType.UID;
@@ -8269,7 +8269,7 @@ namespace ProtoAssociative
 
                 if (inferedType.UID == (int)PrimitiveType.kTypeFunctionPointer && emitDebugInfo)
                 {
-                    buildStatus.LogSemanticError("Function pointer is not allowed at binary expression other than assignment!", core.CurrentDSFileName, bnode.RightNode.line, bnode.RightNode.col);
+                    buildStatus.LogSemanticError(StringConstants.functionPointerNotAllowedAtBinaryExpression, core.CurrentDSFileName, bnode.RightNode.line, bnode.RightNode.col);
                 }
                 EmitBinaryOperation(leftType, rightType, bnode.Optr);
                 isBooleanOp = false;
@@ -8366,7 +8366,7 @@ namespace ProtoAssociative
                         {
                             if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
                             {
-                                buildStatus.LogSemanticError("\"" + t.Name + "\"" + " is a function and not allowed as a variable name", core.CurrentDSFileName, t.line, t.col);
+                                buildStatus.LogSemanticError(String.Format(StringConstants.functionAsVariableError,t.Name), core.CurrentDSFileName, t.line, t.col);
                             }
                         }
                     }
@@ -8388,7 +8388,7 @@ namespace ProtoAssociative
                     int runtimeIndex = (!isAllocated || !isAccessible) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
                     if (isAllocated && !isAccessible)
                     {
-                        string message = String.Format(StringConstants.kPropertyIsInaccessible, t.Name);
+                        string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, t.Name);
                         buildStatus.LogWarning(WarningID.kAccessViolation, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                     }
 
@@ -9207,7 +9207,7 @@ namespace ProtoAssociative
             int uid = core.TypeSystem.GetType(argNode.ArgumentType.Name);
             if (uid == (int)PrimitiveType.kInvalidType && !core.IsTempVar(argNode.NameNode.Name))
             {
-                string message = String.Format(StringConstants.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
+                string message = String.Format(ProtoCore.StringConstants.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
                 buildStatus.LogWarning(WarningID.kTypeUndefined, message, core.CurrentDSFileName, argNode.line, argNode.col, graphNode);
             }
 

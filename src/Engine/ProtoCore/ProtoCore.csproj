@@ -175,7 +175,12 @@
     <Compile Include="Lang\FunctionEndPoint.cs" />
     <Compile Include="Lang\FunctionGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringConstants.cs" />
+    <Compile Include="StringConstants.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>StringConstants.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StringConstantsOLD.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="Utils\ArrayUtils.cs" />
     <Compile Include="Utils\ClassUtils.cs" />
@@ -211,7 +216,12 @@
     <None Include="Parser\Parser.frame" />
     <None Include="Parser\Scanner.frame" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="StringConstants.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringConstants.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(ProjectDir)ExtendedLibraries\*.ds" "$(OutputPath)"</PostBuildEvent>
   </PropertyGroup>

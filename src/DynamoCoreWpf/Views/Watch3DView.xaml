@@ -19,8 +19,8 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
-            <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
+            <Color x:Key="pointColor">#655682</Color>
+            <Color x:Key="lineColor">#655682</Color>
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -114,8 +114,8 @@
                 </HelixToolkit:LightVisual3D>
                 <HelixToolkit:PointsVisual3D Size="6" Color="{StaticResource pointColor}" Points="{Binding Path=Points, Mode=TwoWay}"/>
                 <HelixToolkit:LinesVisual3D Thickness="1" Color="{StaticResource lineColor}" Points="{Binding Path=Lines, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:PointsVisual3D Size="8" Color="Cyan" Points="{Binding Path=PointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="3" Color="Cyan" Points="{Binding Path=LinesSelected, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:PointsVisual3D Size="8" Color="#009eff" Points="{Binding Path=PointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="3" Color="#009eff" Points="{Binding Path=LinesSelected, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <ModelVisual3D>
                     <ModelVisual3D.Content>
                         <GeometryModel3D Geometry="{Binding Mesh}">
@@ -123,12 +123,12 @@
                                 <MaterialGroup>
                                     <DiffuseMaterial>
                                         <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Color="WhiteSmoke" Opacity="1"/>
+                                            <SolidColorBrush Color="#e8e6e2" Opacity="1"/>
                                         </DiffuseMaterial.Brush>
                                     </DiffuseMaterial>
                                     <SpecularMaterial SpecularPower="85">
                                         <SpecularMaterial.Brush>
-                                            <SolidColorBrush Color="White" Opacity="1"/>
+                                            <SolidColorBrush Color="#e8e6e2" Opacity="1"/>
                                         </SpecularMaterial.Brush>
                                     </SpecularMaterial>
                                 </MaterialGroup>
@@ -137,12 +137,12 @@
                                 <MaterialGroup>
                                     <DiffuseMaterial>
                                         <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Color="WhiteSmoke" Opacity="1"/>
+                                            <SolidColorBrush Color="#e8e6e2" Opacity="1"/>
                                         </DiffuseMaterial.Brush>
                                     </DiffuseMaterial>
                                     <SpecularMaterial SpecularPower="85">
                                         <SpecularMaterial.Brush>
-                                            <SolidColorBrush Color="White" Opacity="1"/>
+                                            <SolidColorBrush Color="#e8e6e2" Opacity="1"/>
                                         </SpecularMaterial.Brush>
                                     </SpecularMaterial>
                                 </MaterialGroup>
@@ -157,12 +157,12 @@
                                 <MaterialGroup>
                                     <DiffuseMaterial>
                                         <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Color="Cyan" Opacity="1"/>
+                                            <SolidColorBrush Color="#009eff" Opacity="1"/>
                                         </DiffuseMaterial.Brush>
                                     </DiffuseMaterial>
                                     <SpecularMaterial SpecularPower="85">
                                         <SpecularMaterial.Brush>
-                                            <SolidColorBrush Color="white" Opacity="1"/>
+                                            <SolidColorBrush Color="#ffffff" Opacity="1"/>
                                         </SpecularMaterial.Brush>
                                     </SpecularMaterial>
                                 </MaterialGroup>
@@ -171,12 +171,12 @@
                                 <MaterialGroup>
                                     <DiffuseMaterial>
                                         <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Color="Cyan" Opacity="1"/>
+                                            <SolidColorBrush Color="#009eff" Opacity="1"/>
                                         </DiffuseMaterial.Brush>
                                     </DiffuseMaterial>
                                     <SpecularMaterial SpecularPower="85">
                                         <SpecularMaterial.Brush>
-                                            <SolidColorBrush Color="white" Opacity="1"/>
+                                            <SolidColorBrush Color="#ffffff" Opacity="1"/>
                                         </SpecularMaterial.Brush>
                                     </SpecularMaterial>
                                 </MaterialGroup>
@@ -187,7 +187,7 @@
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Red" Points="{Binding Path=XAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Green" Points="{Binding Path=YAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Blue" Points="{Binding Path=ZAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkGray" Points="{Binding Path=Grid, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="1" Color="LightGray" Points="{Binding Path=Grid, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
             </ModelVisual3D>
             <HelixToolkit:BillboardTextGroupVisual3D Foreground="DarkGray" Items="{Binding Text}" BorderThickness="1" FontSize="12" Padding="2" FontFamily="Arial" HeightFactor="1"/>
         </HelixToolkit:HelixViewport3D>
