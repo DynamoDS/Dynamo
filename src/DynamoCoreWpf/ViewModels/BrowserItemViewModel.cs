@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -88,7 +89,7 @@ namespace Dynamo.Wpf.ViewModels
 
     }
 
-    public interface ISearchEntryViewModel
+    public interface ISearchEntryViewModel : INotifyPropertyChanged, IDisposable
     {
         string Name { get; }
         bool Visibility { get; }
@@ -155,7 +156,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public bool Visibility
         {
-            get { return visibility; }
+            get { return visibility && Items.Any(item => item.Visibility); }
             set
             {
                 if (value.Equals(visibility)) return;
@@ -208,15 +209,110 @@ namespace Dynamo.Wpf.ViewModels
             Entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
             SubCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
 
-            Entries.CollectionChanged += SubCategoriesOnCollectionChanged;
+            foreach (var category in SubCategories)
+                category.PropertyChanged += CategoryOnPropertyChanged;
+
+            Entries.CollectionChanged += OnCollectionChanged;
+            SubCategories.CollectionChanged += OnCollectionChanged;
             SubCategories.CollectionChanged += SubCategoriesOnCollectionChanged;
 
             Items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
 
+            Items.CollectionChanged += ItemsOnCollectionChanged;
+            
+            foreach (var item in Items)
+                item.PropertyChanged += ItemOnPropertyChanged;
+            
             Visibility = true;
             IsExpanded = false;
+        }
+
+        private void ItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            if (args.Action == NotifyCollectionChangedAction.Move)
+                return;
+
+
+            if (args.NewItems != null)
+            {
+                foreach (var item in args.NewItems.Cast<ISearchEntryViewModel>())
+                {
+                    item.PropertyChanged += ItemOnPropertyChanged;
+                }
+            } 
+            
+            if (args.OldItems != null)
+            {
+                foreach (var item in args.OldItems.Cast<ISearchEntryViewModel>())
+                {
+                    item.PropertyChanged -= ItemOnPropertyChanged;
+                }
+            }
+        }
+
+        private void SubCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            if (args.Action == NotifyCollectionChangedAction.Move)
+                return;
+
+            if (args.NewItems != null)
+            {
+                foreach (var category in args.NewItems.Cast<NodeCategoryViewModel>())
+                {
+                    category.PropertyChanged += CategoryOnPropertyChanged;
+                }
+            }
+
+            if (args.OldItems != null)
+            {
+                foreach (var category in args.OldItems.Cast<NodeCategoryViewModel>())
+                {
+                    category.PropertyChanged -= CategoryOnPropertyChanged;
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (var category in SubCategories)
+                category.PropertyChanged -= CategoryOnPropertyChanged;
+
+            foreach (var item in Items)
+                item.PropertyChanged -= ItemOnPropertyChanged;
+        }
+
+        public void DisposeTree()
+        {
+            Dispose();
+
+            foreach (var entry in Entries)
+                entry.Dispose();
+
+            foreach (var subCategory in SubCategories)
+                subCategory.DisposeTree();
+        }
+
+        private void CategoryOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "IsExpanded")
+            {
+                var category = (NodeCategoryViewModel)sender;
+                if (category.IsExpanded)
+                {
+                    foreach (var other in SubCategories.Where(other => other != category))
+                    {
+                        other.IsExpanded = false;
+                    }
+                }
+            }
+        }
+
+        private void ItemOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "Visibility")
+                RaisePropertyChanged("Visibility");
         }
 
         protected virtual void Expand()
@@ -246,7 +342,7 @@ namespace Dynamo.Wpf.ViewModels
             IsExpanded = endState;
         }
 
-        private void SubCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -272,9 +368,19 @@ namespace Dynamo.Wpf.ViewModels
 
         private void SyncItems()
         {
+            Items.CollectionChanged -= ItemsOnCollectionChanged;
+
+            foreach (var item in items)
+                item.PropertyChanged -= ItemOnPropertyChanged;
+
             Items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
+
+            Items.CollectionChanged += ItemsOnCollectionChanged;
+
+            foreach (var item in items)
+                item.PropertyChanged += ItemOnPropertyChanged;
         }
 
         private void RemoveFromItems(IEnumerable<ISearchEntryViewModel> oldItems)

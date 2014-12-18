@@ -19,6 +19,11 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(Model.ProduceNode);
         }
 
+        public void Dispose()
+        {
+            Model.PropertyChanged -= ModelOnPropertyChanged;
+        }
+
         private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             switch (propertyChangedEventArgs.PropertyName)
