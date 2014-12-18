@@ -1763,6 +1763,7 @@ namespace Dynamo.ViewModels
                 {
                     EngineController.ImportLibrary(file);
                 }
+                SearchViewModel.SearchAndUpdateResults();
             }
         }
 

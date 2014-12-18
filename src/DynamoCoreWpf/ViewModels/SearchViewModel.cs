@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -135,11 +136,16 @@ namespace Dynamo.ViewModels
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
 
-        public ObservableCollection<RootNodeCategoryViewModel> SearchRootCategories { get; private set; }
-        public ObservableCollection<RootNodeCategoryViewModel> LibraryRootCategories { get;
-            private set; }
+        public ObservableCollection<NodeCategoryViewModel> SearchRootCategories { get; private set; }
 
-        public ObservableCollection<RootNodeCategoryViewModel> BrowserRootCategories
+        public ObservableCollection<NodeCategoryViewModel> LibraryRootCategories
+        {
+            get { return libraryRoot.SubCategories; }
+        }
+
+        private readonly NodeCategoryViewModel libraryRoot = new NodeCategoryViewModel("");
+
+        public ObservableCollection<NodeCategoryViewModel> BrowserRootCategories
         {
             get { return string.IsNullOrWhiteSpace(SearchText) ? LibraryRootCategories : SearchRootCategories; }
         }
@@ -164,8 +170,7 @@ namespace Dynamo.ViewModels
         {
             SelectedIndex = 0;
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>();
-            SearchRootCategories = new ObservableCollection<RootNodeCategoryViewModel>();
-            LibraryRootCategories = new ObservableCollection<RootNodeCategoryViewModel>();
+            SearchRootCategories = new ObservableCollection<NodeCategoryViewModel>();
             Visible = false;
             searchText = "";
 
@@ -173,50 +178,56 @@ namespace Dynamo.ViewModels
             Model.EntryAdded += entry =>
             {
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
-                SearchAndUpdateResults();
             };
-            Model.EntryRemoved += entry =>
-            {
-                RemoveEntry(entry);
-                SearchAndUpdateResults();
-            };
+            Model.EntryRemoved += RemoveEntry;
+            
+            libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
+            LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
+        }
 
-            BrowserRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
+        private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "Visibility")
+                SearchAndUpdateResults();
         }
 
         private static IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
         {
-            return entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
-                element => element.Categories,
-                (name, subs, es) =>
-                    new NodeCategoryViewModel(
-                        name,
-                        es.Select(MakeNodeSearchElementVM),
-                        subs)
-                    {
-                        IsExpanded = expanded
-                    },
-                "")
-                .SubCategories.Select(
-                    cat => new RootNodeCategoryViewModel(cat.Name, cat.Entries, cat.SubCategories));
+            var tempRoot = 
+                entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
+                    element => element.Categories,
+                    (name, subs, es) =>
+                        new NodeCategoryViewModel(name, es.Select(MakeNodeSearchElementVM), subs)
+                        {
+                            IsExpanded = expanded
+                        },
+                    "");
+            var result =
+                tempRoot.SubCategories.Select(
+                    cat =>
+                        new RootNodeCategoryViewModel(cat.Name, cat.Entries, cat.SubCategories)
+                        {
+                            IsExpanded = expanded
+                        });
+            tempRoot.Dispose();
+            return result;
         }
 
         private void RemoveEntry(NodeSearchElement entry)
         {
             var treeStack = new Stack<NodeCategoryViewModel>();
             var nameStack = new Stack<string>(entry.Categories);
-            NodeCategoryViewModel target = null;
+            var target = libraryRoot;
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
-                var categories = target == null
-                    ? BrowserRootCategories.Cast<NodeCategoryViewModel>()
-                    : target.SubCategories;
+                var categories = target.SubCategories;
                 var newTarget = categories.FirstOrDefault(c => c.Name == next);
                 if (newTarget == default(NodeCategoryViewModel))
                 {
                     return;
                 }
+                treeStack.Push(target);
                 target = newTarget;
             }
             var location = target.Entries.Select((e, i) => new { e.Model, i })
@@ -228,11 +239,6 @@ namespace Dynamo.ViewModels
             while (!target.Items.Any() && treeStack.Any())
             {
                 var parent = treeStack.Pop();
-                if (parent == null)
-                {
-                    BrowserRootCategories.Remove((RootNodeCategoryViewModel)target);
-                    return;
-                }
                 parent.SubCategories.Remove(target);
                 target = parent;
             }
@@ -241,32 +247,22 @@ namespace Dynamo.ViewModels
         private void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
         {
             var nameStack = new Stack<string>(categoryNames.Reverse());
-            NodeCategoryViewModel target = null;
+            var target = libraryRoot;
+            bool isRoot = true;
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
-                var isRoot = target == null;
-                var categories = isRoot
-                    ? BrowserRootCategories.Cast<NodeCategoryViewModel>()
-                    : target.SubCategories;
+                var categories = target.SubCategories;
                 var newTarget = categories.FirstOrDefault(c => c.Name == next);
                 if (newTarget == default(NodeCategoryViewModel))
                 {
-                    if (isRoot)
-                    {
-                        var newCategory = new RootNodeCategoryViewModel(next);
-                        BrowserRootCategories.Add(newCategory);
-                        newTarget = newCategory;
-                    }
-                    else
-                    {
-                        newTarget = new NodeCategoryViewModel(next);
-                        target.SubCategories.Add(newTarget);
-                    }
+                    newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
+                    target.SubCategories.Add(newTarget);
                     PlaceInNewCategory(entry, newTarget, nameStack);
                     return;
                 }
                 target = newTarget;
+                isRoot = false;
             }
             target.Entries.Add(entry);
         }
@@ -309,26 +305,33 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            var result = Model.Search(query).Take(MaxNumSearchResults);
-
             // deselect the last selected item
             if (visibleSearchResults.Count > SelectedIndex)
                 visibleSearchResults[SelectedIndex].IsSelected = false;
-
-            // clear visible results list
-            visibleSearchResults.Clear();
 
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
                 return;
 
+            // clear visible results list
+            visibleSearchResults.Clear();
+
+            foreach (var category in SearchRootCategories)
+                category.DisposeTree();
+
             SearchRootCategories.Clear();
 
-            if (!result.Any())
+            if (string.IsNullOrEmpty(query))
                 return;
-            
+
+            var result =
+                Model.Search(query).Where(r => r.IsVisibleInSearch).Take(MaxNumSearchResults).ToList();
+
             // Add top result
-            var firstRes = result.First();
+            var firstRes = result.FirstOrDefault();
+            if (firstRes == null)
+                return; //No results
+
             var topResultCategory = new RootNodeCategoryViewModel("Top Result");
             SearchRootCategories.Add(topResultCategory);
 
@@ -343,8 +346,7 @@ namespace Dynamo.ViewModels
 
             SearchRootCategories.AddRange(CategorizeEntries(result, true));
 
-            visibleSearchResults.AddRange(
-                SearchRootCategories.SelectMany(GetVisibleSearchResults));
+            visibleSearchResults.AddRange(SearchRootCategories.SelectMany(GetVisibleSearchResults));
 
             if (visibleSearchResults.Any())
             {
