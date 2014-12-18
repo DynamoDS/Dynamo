@@ -243,8 +243,10 @@ namespace Analysis.DataTypes
     /// <summary>
     /// A class for storing structured vector analysis data.
     /// </summary>
-    public class VectorAnalysisData : IAnalysisData<Point, Vector>
+    public class VectorAnalysisData : IAnalysisData<Point, Vector>, IGraphicItem
     {
+        private int resultIndex;
+
         /// <summary>
         /// A list of calculation locations.
         /// </summary>
@@ -255,10 +257,12 @@ namespace Analysis.DataTypes
         /// </summary>
         public Dictionary<string, IList<Vector>> Results { get; internal set; }
 
-        protected VectorAnalysisData(IEnumerable<Point> points, Dictionary<string,IList<Vector>> results)
+        protected VectorAnalysisData(IEnumerable<Point> points, Dictionary<string,IList<Vector>> results, int resultIndex)
         {
             CalculationLocations = points;
             Results = results;
+
+            this.resultIndex = resultIndex;
         }
 
         /// <summary>
@@ -273,7 +277,7 @@ namespace Analysis.DataTypes
             }
 
             var results = new Dictionary<string, IList<Vector>>();
-            return new VectorAnalysisData(points, results);
+            return new VectorAnalysisData(points, results, 0);
         }
  
         /// <summary>
@@ -283,7 +287,7 @@ namespace Analysis.DataTypes
         /// <param name="resultNames">A list of result names.</param>
         /// <param name="resultValues">A list of lists of result values.</param>
         public static VectorAnalysisData ByPointsAndResults(
-            IEnumerable<Point> points, IList<string> resultNames, IList<IList<Vector>> resultValues)
+            IEnumerable<Point> points, IList<string> resultNames, IList<IList<Vector>> resultValues, int resultIndex = 0)
         {
 
             if (points == null)
@@ -312,7 +316,7 @@ namespace Analysis.DataTypes
                 results.Add(resultNames[i], resultValues[i]);
             }
 
-            return new VectorAnalysisData(points, results);
+            return new VectorAnalysisData(points, results, resultIndex);
         }
 
         public IList<Vector> GetResultByKey(string key)
@@ -325,6 +329,37 @@ namespace Analysis.DataTypes
             return Results[key];
         }
 
+        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        {
+            // Create vectors 50% gray scaled at the point.
+            if (!Results.Any())
+            {
+                return;
+            }
+
+            var data = Results.ElementAt(resultIndex).Value.Zip(CalculationLocations, (v,p)=>new Tuple<Vector,Point>(v,p));
+
+            foreach (var d in data)
+            {
+                DrawVector(d, package);
+            }
+        }
+
+        private void DrawVector(Tuple<Vector, Point> data, IRenderPackage package)
+        {
+            var p = data.Item2;
+            var v = data.Item1;
+
+            package.PushLineStripVertex(p.X,p.Y,p.Z);
+            package.PushLineStripVertexColor(120,120,120,255);
+            
+            var o = p.Add(v);
+
+            package.PushLineStripVertex(o.X, o.Y, o.Z);
+            package.PushLineStripVertexColor(120, 120, 120, 255);
+
+            package.PushLineStripVertexCount(2);
+        }
     }
 
     /// <summary>
