@@ -15,7 +15,8 @@ namespace Dynamo.Utilities
 
         public void Add(T item)
         {
-            dictionary.Add(item, null);
+            if (!dictionary.Contains(item))
+                dictionary.Add(item, null);
         }
 
         public bool Contains(T item)
