@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using Analysis;
-
 using Autodesk.DesignScript.Geometry;
+
+using DSCore;
 
 using NUnit.Framework;
 
@@ -12,7 +12,7 @@ using TestServices;
 
 using Math = DSCore.Math;
 
-namespace AnalysisTests
+namespace DSCoreNodesTests
 {
     [TestFixture]
     class QuadtreeTests : GeometricTestBase

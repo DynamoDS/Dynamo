@@ -5,22 +5,17 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 
-namespace Analysis
+namespace DSCore
 {
     [IsVisibleInDynamoLibrary(false)]
     public class Quadtree
     {
-        internal Node Root { get; set; }
-
-        private Quadtree()
-        {
-            Root = new Node(UV.ByCoordinates(), UV.ByCoordinates(1, 1));
-        }
+        public Node Root { get; set; }
 
         private Quadtree(IEnumerable<UV> uvs)
         {
             Root = new Node(UV.ByCoordinates(), UV.ByCoordinates(1, 1));
-            uvs.ToList().ForEach(uv=>Root.Insert(uv));
+            uvs.ToList().ForEach(uv => Root.Insert(uv));
         }
 
         /// <summary>
@@ -28,16 +23,19 @@ namespace Analysis
         /// </summary>
         /// <param name="uv">A set of UVs in the (0,0)->(1,1) domain.</param>
         /// <returns>A Quadtree object.</returns>
-        public static Quadtree ByUVs(IList<UV> uvs)
+        public static Quadtree ByUVs(IEnumerable<UV> uvs)
         {
             if (uvs == null)
             {
-                throw new ArgumentNullException("uvs", AnalysisResources.QuadtreeConstructionNullUVSetMessage);   
+                throw new ArgumentNullException(
+                    "uvs",
+                    CoreNodesResources.QuadtreeConstructionNullUVSetMessage);
             }
 
             if (!uvs.Any())
             {
-                throw new ArgumentException(AnalysisResources.QuadtreeConstructionEmptyUVSetMessage);
+                throw new ArgumentException(
+                    CoreNodesResources.QuadtreeConstructionEmptyUVSetMessage);
             }
 
             return new Quadtree(uvs);
@@ -53,19 +51,37 @@ namespace Analysis
         {
             if (center == null)
             {
-                throw new ArgumentNullException("center", AnalysisResources.FindPointsWithinRadiusNullPointMessage);
+                throw new ArgumentNullException(
+                    "center",
+                    CoreNodesResources.FindPointsWithinRadiusNullPointMessage);
             }
 
             if (radius <= 0.0)
             {
-                throw new ArgumentException("radius", AnalysisResources.FindPointsWithinRadiusSearchRadiusMessage);
+                throw new ArgumentException(
+                    "radius",
+                    CoreNodesResources.FindPointsWithinRadiusSearchRadiusMessage);
             }
 
-            return Root.FindNodesWithinRadius(center, radius).Where(n => n.Point != null).Select(n => n.Point).ToList();
+            return Root.FindNodesWithinRadius(center, radius)
+                .Where(n => n.Point != null)
+                .Select(n => n.Point)
+                .ToList();
         }
+
+        public List<UV> FindPointsInRectangle(UVRect rectangle)
+        {
+            return
+                Root.FindNodesIntersectingRectangle(rectangle)
+                    .Where(n => n.Point != null)
+                    .Select(n => n.Point)
+                    .ToList();
+        }
+
     }
 
-    internal class Node
+    [IsVisibleInDynamoLibrary(false)]
+    public class Node
     {
         public Node Parent { get; internal set; }
         public Node NW { get; internal set; }
@@ -317,23 +333,40 @@ namespace Analysis
                 nodes.Add(this);
                 return nodes;
             }
-            else
-            {
-                nodes.AddRange(NW.FindNodesWithinRadius(location, radius));
-                nodes.AddRange(NE.FindNodesWithinRadius(location, radius));
-                nodes.AddRange(SW.FindNodesWithinRadius(location, radius));
-                nodes.AddRange(SE.FindNodesWithinRadius(location, radius));
-            }
+
+            nodes.AddRange(NW.FindNodesWithinRadius(location, radius));
+            nodes.AddRange(NE.FindNodesWithinRadius(location, radius));
+            nodes.AddRange(SW.FindNodesWithinRadius(location, radius));
+            nodes.AddRange(SE.FindNodesWithinRadius(location, radius));
 
             return nodes;
-        } 
+        }
+
+        public List<Node> FindNodesIntersectingRectangle(UVRect rectangle)
+        {
+            var nodes = new List<Node>();
+            if (!Intersects(rectangle)) return nodes;
+
+            if (IsLeafNode)
+            {
+                nodes.Add(this);
+                return nodes;
+            }
+
+            nodes.AddRange(NW.FindNodesIntersectingRectangle(rectangle));
+            nodes.AddRange(NE.FindNodesIntersectingRectangle(rectangle));
+            nodes.AddRange(SW.FindNodesIntersectingRectangle(rectangle));
+            nodes.AddRange(SE.FindNodesIntersectingRectangle(rectangle));
+
+            return nodes;
+        }
 
         private bool Intersects(Circle circle)
         {
             //http://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
 
-            var circleDistX = Math.Abs(circle.CenterPoint.X - Bounds.CenterPoint.U);
-            var circleDistY = Math.Abs(circle.CenterPoint.Y - Bounds.CenterPoint.V);
+            var circleDistX = System.Math.Abs(circle.CenterPoint.X - Bounds.CenterPoint.U);
+            var circleDistY = System.Math.Abs(circle.CenterPoint.Y - Bounds.CenterPoint.V);
 
             if (circleDistX > (Bounds.Width / 2 + circle.Radius)) { return false; }
             if (circleDistY > (Bounds.Height / 2 + circle.Radius)) { return false; }
@@ -341,10 +374,15 @@ namespace Analysis
             if (circleDistX <= (Bounds.Width / 2)) { return true; }
             if (circleDistY <= (Bounds.Height / 2)) { return true; }
 
-            var cornerDistance_sq = Math.Pow(circleDistX - Bounds.Width / 2, 2) +
-                                 Math.Pow(circleDistY - Bounds.Height / 2, 2);
+            var cornerDistance_sq = System.Math.Pow(circleDistX - Bounds.Width / 2, 2) +
+                                 System.Math.Pow(circleDistY - Bounds.Height / 2, 2);
 
-            return (cornerDistance_sq <= Math.Pow(circle.Radius, 2));
+            return (cornerDistance_sq <= System.Math.Pow(circle.Radius, 2));
+        }
+
+        private bool Intersects(UVRect rect)
+        {
+            return Bounds.Intersects(rect);
         }
     }
 
@@ -352,7 +390,8 @@ namespace Analysis
     /// Helper class used to define a Rectangle described
     /// by a minimum and a maximum UV.
     /// </summary>
-    internal class UVRect
+    [IsVisibleInDynamoLibrary(false)]
+    public class UVRect
     {
         public UV Min { get; set; }
         public UV Max { get; set; }
@@ -386,7 +425,8 @@ namespace Analysis
 
         public bool Intersects(UVRect rect)
         {
-            throw new NotImplementedException();
+            return this.Min.U < rect.Max.U && this.Max.U > rect.Min.U && this.Min.V < rect.Max.V
+                && this.Max.V > rect.Min.V;
         }
     }
 

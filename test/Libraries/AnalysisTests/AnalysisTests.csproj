@@ -56,9 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalysisTests.cs" />
-    <Compile Include="ColoredSurfaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuadtreeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">

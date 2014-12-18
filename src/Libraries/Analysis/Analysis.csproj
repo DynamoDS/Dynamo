@@ -52,12 +52,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="ColoredSurface.cs" />
     <Compile Include="DataTypes\Interfaces.cs" />
     <Compile Include="Label.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataTypes\AnalysisDataTypes.cs" />
-    <Compile Include="Quadtree.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Analysis_DynamoCustomization.xml" />
