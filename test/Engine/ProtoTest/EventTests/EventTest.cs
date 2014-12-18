@@ -196,14 +196,13 @@ namespace ProtoTest.EventTests
         }
 
         [Test]
-        [NUnit.Framework.Category("Failure")]
         public void RunDSPropertyChangedTest()
         {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4391
             string code =
 @"class Foo{    x;}f = Foo();f.x = 41;";
             runner.PreStart(code, runconfig);
             PropertyChangedVerifier v = new PropertyChangedVerifier();
+            // ProtoFFI.FFIPropertyChangedMonitor.GetInstance().RegisterDSPropertyChangedHandler("f", "x", v.DSPropertyChanged);
 
             DebugRunner.VMState vms;
             vms = runner.StepOver();

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
+
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
+
 using ProtoCore;
-using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
+
 using CodeBlockNode = ProtoCore.AST.AssociativeAST.CodeBlockNode;
 using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 
@@ -20,7 +17,7 @@ namespace DSCoreNodesUI.Logic
      NodeDescription("Scoped If statement"), IsDesignScriptCompatible]
     public class ScopedIf : ScopedNodeModel
     {
-        public ScopedIf(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public ScopedIf() : base()
         {
             InPortData.Add(new PortData("test", "Test block"));
             InPortData.Add(new PortData("true", "True block"));
@@ -30,10 +27,8 @@ namespace DSCoreNodesUI.Logic
             RegisterAllPorts();
         }
 
-        private List<AssociativeNode> GetAstsForBranch(int branch, List<AssociativeNode> inputAstNodes)
+        private List<AssociativeNode> GetAstsForBranch(int branch, List<AssociativeNode> inputAstNodes, bool verboseLogging, AstBuilder builder)
         {
-            AstBuilder astBuilder = new AstBuilder(this.Workspace.DynamoModel, null);
-
             // Get all upstream nodes and then remove nodes that are not 
             var nodes = GetInScopeNodesForInport(branch, false).Where(n => !(n is Symbol));
             nodes = ScopedNodeModel.GetNodesInTopScope(nodes);
@@ -41,7 +36,7 @@ namespace DSCoreNodesUI.Logic
             // The second parameter, isDeltaExecution, is set to false so that
             // all AST nodes will be added to this IF graph node instead of 
             // adding to the corresponding graph node. 
-            var astNodes = astBuilder.CompileToAstNodes(nodes, false);
+            var astNodes = builder.CompileToAstNodes(nodes, false, verboseLogging);
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes;
         }
@@ -82,7 +77,7 @@ namespace DSCoreNodesUI.Logic
             return AstIdentifierForPreview;
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes, bool verboseLogging, AstBuilder builder)
         {
             // This function will compile IF node to the following format:
             //
@@ -102,8 +97,8 @@ namespace DSCoreNodesUI.Logic
             //     }
             //
 
-            var astsInTrueBranch = GetAstsForBranch(1, inputAstNodes);
-            var astsInFalseBranch = GetAstsForBranch(2, inputAstNodes);
+            var astsInTrueBranch = GetAstsForBranch(1, inputAstNodes, verboseLogging, builder);
+            var astsInFalseBranch = GetAstsForBranch(2, inputAstNodes, verboseLogging, builder);
 
             // if (cond) {
             //     return = [Associative] {...}

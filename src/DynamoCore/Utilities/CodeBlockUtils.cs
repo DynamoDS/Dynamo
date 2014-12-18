@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 
@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
 
 namespace Dynamo.Utilities
 {
@@ -56,10 +55,7 @@ namespace Dynamo.Utilities
                 if (portName.Length > maxLength)
                     portName = portName.Remove(maxLength - 3) + "...";
 
-                inputPorts.Add(new PortData(portName, name)
-                {
-                    Height = Configurations.CodeBlockPortHeightInPixels
-                });
+                inputPorts.Add(new PortData(portName, name));
             }
 
             return inputPorts;
@@ -123,7 +119,7 @@ namespace Dynamo.Utilities
 
             if (!statementVariables.ElementAt(index).Any())
                 return false;
-
+           
             var currentVariables = statementVariables.ElementAt(index);
             for (int stmt = index + 1; stmt < statementCount; stmt++)
             {
@@ -634,5 +630,4 @@ namespace Dynamo.Utilities
         #endregion
 
     }
-
 }

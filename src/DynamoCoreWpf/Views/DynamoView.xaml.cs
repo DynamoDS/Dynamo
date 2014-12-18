@@ -56,11 +56,11 @@ namespace Dynamo.Controls
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.UIDispatcher = this.Dispatcher;
+            this.dynamoViewModel.UIDispatcher = Dispatcher;
 
-            this.nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
+            nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
-            this.DataContext = dynamoViewModel;
+            DataContext = dynamoViewModel;
 
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
 
@@ -69,11 +69,11 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            this.Loaded += DynamoView_Loaded;
-            this.Unloaded += DynamoView_Unloaded;
+            Loaded += DynamoView_Loaded;
+            Unloaded += DynamoView_Unloaded;
 
-            this.SizeChanged += DynamoView_SizeChanged;
-            this.LocationChanged += DynamoView_LocationChanged;
+            SizeChanged += DynamoView_SizeChanged;
+            LocationChanged += DynamoView_LocationChanged;
 
             // Check that preference bounds are actually within one
             // of the available monitors.
@@ -99,26 +99,23 @@ namespace Dynamo.Controls
 
         private void LoadNodeViewCustomizations()
         {
-            this.nodeViewCustomizationLibrary.Add(new CoreNodeViewCustomizations());
-
-            foreach (var assem in DynamoLoader.LoadedAssemblies)
-            {
-                this.nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(assem));
-            }
+            nodeViewCustomizationLibrary.Add(new CoreNodeViewCustomizations());
+            foreach (var assem in dynamoViewModel.Model.Loader.LoadedAssemblies)
+                nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(assem));
         }
 
         private void SubscribeNodeViewCustomizationEvents()
         {
-            this.dynamoViewModel.Model.Loader.AssemblyLoaded += LoaderOnAssemblyLoaded;
-            this.dynamoViewModel.NodeViewReady += ApplyNodeViewCustomization;
+            dynamoViewModel.Model.Loader.AssemblyLoaded += LoaderOnAssemblyLoaded;
+            dynamoViewModel.NodeViewReady += ApplyNodeViewCustomization;
         }
 
         private void UnsubscribeNodeViewCustomizationEvents()
         {
             if (dynamoViewModel == null) return;
 
-            this.dynamoViewModel.Model.Loader.AssemblyLoaded -= LoaderOnAssemblyLoaded;
-            this.dynamoViewModel.NodeViewReady -= ApplyNodeViewCustomization;
+            dynamoViewModel.Model.Loader.AssemblyLoaded -= LoaderOnAssemblyLoaded;
+            dynamoViewModel.NodeViewReady -= ApplyNodeViewCustomization;
         }
 
         private void ApplyNodeViewCustomization(object nodeView, EventArgs args)
@@ -126,13 +123,13 @@ namespace Dynamo.Controls
             var nodeViewImp = nodeView as NodeView;
             if (nodeViewImp != null)
             {
-                this.nodeViewCustomizationLibrary.Apply(nodeViewImp);
+                nodeViewCustomizationLibrary.Apply(nodeViewImp);
             }
         }
 
         private void LoaderOnAssemblyLoaded(DynamoLoader.AssemblyLoadedEventArgs args)
         {
-            this.nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(args.Assembly));
+            nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(args.Assembly));
         }
 
         #endregion
@@ -268,7 +265,7 @@ namespace Dynamo.Controls
             if (DynamoModel.IsTestMode) // No start screen in unit testing.
                 return;
 
-            if (this.startPage == null)
+            if (startPage == null)
             {
                 if (startPageItemsControl.Items.Count > 0)
                 {
@@ -276,8 +273,8 @@ namespace Dynamo.Controls
                     throw new InvalidOperationException(message);
                 }
 
-                this.startPage = new StartPageViewModel(this.dynamoViewModel);
-                startPageItemsControl.Items.Add(this.startPage);
+                startPage = new StartPageViewModel(dynamoViewModel);
+                startPageItemsControl.Items.Add(startPage);
             }
         }
 
@@ -315,7 +312,7 @@ namespace Dynamo.Controls
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this);
 
-            this.WorkspaceTabs.SelectedIndex = 0;
+            WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
             dynamoViewModel.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation += DynamoViewModelRequestViewOperation;
@@ -333,10 +330,10 @@ namespace Dynamo.Controls
             #region Search initialization
 
             var search = new SearchView(
-                this.dynamoViewModel.SearchViewModel,
-                this.dynamoViewModel);
+                dynamoViewModel.SearchViewModel,
+                dynamoViewModel);
             sidebarGrid.Children.Add(search);
-            this.dynamoViewModel.SearchViewModel.Visible = true;
+            dynamoViewModel.SearchViewModel.Visible = true;
 
             #endregion
 
@@ -387,7 +384,7 @@ namespace Dynamo.Controls
             UnsubscribeNodeViewCustomizationEvents();
         }
 
-        private UI.Views.AboutWindow _aboutWindow;
+        private AboutWindow _aboutWindow;
         void DynamoViewModelRequestAboutWindow(DynamoViewModel model)
         {
             if (_aboutWindow == null)
@@ -400,7 +397,7 @@ namespace Dynamo.Controls
                 _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
                 _aboutWindow.Show();
 
-                if (_aboutWindow.IsLoaded && this.IsLoaded) _aboutWindow.Owner = this;
+                if (_aboutWindow.IsLoaded && IsLoaded) _aboutWindow.Owner = this;
             }
 
             _aboutWindow.Focus();
@@ -419,7 +416,7 @@ namespace Dynamo.Controls
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
 
-                if (_pubPkgView.IsLoaded && this.IsLoaded) _pubPkgView.Owner = this;
+                if (_pubPkgView.IsLoaded && IsLoaded) _pubPkgView.Owner = this;
             }
 
             _pubPkgView.Focus();
@@ -445,7 +442,7 @@ namespace Dynamo.Controls
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
 
-                if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
+                if (_searchPkgsView.IsLoaded && IsLoaded) _searchPkgsView.Owner = this;
             }
             
             _searchPkgsView.Focus();
@@ -458,15 +455,16 @@ namespace Dynamo.Controls
             if (_installedPkgsView == null)
             {
                 _installedPkgsView = new InstalledPackagesView(new InstalledPackagesViewModel(dynamoViewModel,
-                    dynamoViewModel.Model.Loader.PackageLoader))
+                    dynamoViewModel.Model.PackageLoader))
                 {
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
+
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
 
-                if (_installedPkgsView.IsLoaded && this.IsLoaded) _installedPkgsView.Owner = this;
+                if (_installedPkgsView.IsLoaded && IsLoaded) _installedPkgsView.Owner = this;
             }
             _installedPkgsView.Focus();
         }
@@ -500,7 +498,7 @@ namespace Dynamo.Controls
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
+            var result = MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -531,7 +529,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestTaskDialog(object sender, TaskDialogEventArgs e)
         {
-            var taskDialog = new Dynamo.UI.Prompts.GenericTaskDialog(e);
+            var taskDialog = new UI.Prompts.GenericTaskDialog(e);
             taskDialog.ShowDialog();
         }
 
@@ -562,7 +560,7 @@ namespace Dynamo.Controls
                                                   Math.Max(1, (int)height),
                                                   96,
                                                   96,
-                                                  System.Windows.Media.PixelFormats.Default);
+                                                  PixelFormats.Default);
 
                 rtb.Render(control);
 
@@ -617,7 +615,15 @@ namespace Dynamo.Controls
 
             do
             {
-                var dialog = new FunctionNamePrompt(dynamoViewModel.Model.SearchModel.Categories)
+                var categorized = 
+                    SearchCategory.CategorizeSearchEntries(
+                        dynamoViewModel.Model.SearchModel.SearchEntries,
+                        entry => entry.Categories);
+
+                var allCategories =
+                    categorized.SubCategories.SelectMany(sub => sub.GetAllCategoryNames());
+
+                var dialog = new FunctionNamePrompt(allCategories)
                 {
                     categoryBox = { Text = e.Category },
                     DescriptionInput = { Text = e.Description },
@@ -651,12 +657,12 @@ namespace Dynamo.Controls
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
-                else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
-                {
-                    error = "A built-in node with the given name already exists.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
-                }
+                //else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
+                //{
+                //    error = "A built-in node with the given name already exists.";
+                //    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
+                //                                   MessageBoxImage.Error);
+                //}
                 else if (dialog.Category.Equals(""))
                 {
                     error = "You must enter a new category or choose one from the existing categories.";
@@ -850,14 +856,14 @@ namespace Dynamo.Controls
                     SamplesMenu.Items.Add(showInFolder);
                 }
 
-                if (sampleFiles.Any()&&this.startPage != null)
+                if (sampleFiles.Any()&&startPage != null)
                 {
                     var firstFilePath=Path.GetDirectoryName(sampleFiles.ToArray()[0]);
                     var rootPath = Path.GetDirectoryName(firstFilePath);
                     var root = new DirectoryInfo(rootPath);
                     var rootProperty = new SampleFileEntry("Samples", "Path");
-                    this.startPage.WalkDirectoryTree(root, rootProperty);
-                    this.startPage.SampleFiles.Add(rootProperty);
+                    startPage.WalkDirectoryTree(root, rootProperty);
+                    startPage.SampleFiles.Add(rootProperty);
                 }
             }
         }
@@ -876,23 +882,20 @@ namespace Dynamo.Controls
         {
             var path = (string)((MenuItem)sender).Tag;
 
-            var workspace = dynamoViewModel.Model.HomeSpace;
+            var workspace = dynamoViewModel.HomeSpace;
             if (workspace.HasUnsavedChanges)
             {
                 if (!dynamoViewModel.AskUserToSaveWorkspaceOrCancel(workspace))
                     return; // User has not saved his/her work.
             }
 
-            // KILLDYNSETTINGS - CanGoHome should live on the ViewModel
-            if (dynamoViewModel.Model.CanGoHome(null))
-                dynamoViewModel.Model.Home(null);
-
+            dynamoViewModel.Model.CurrentWorkspace = dynamoViewModel.HomeSpace;
             dynamoViewModel.OpenCommand.Execute(path);
         }
 
         private void TabControlMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            BindingExpression be = ((MenuItem)sender).GetBindingExpression(MenuItem.HeaderProperty);
+            BindingExpression be = ((MenuItem)sender).GetBindingExpression(HeaderedItemsControl.HeaderProperty);
             WorkspaceViewModel wsvm = (WorkspaceViewModel)be.DataItem;
             WorkspaceTabs.SelectedIndex = dynamoViewModel.Workspaces.IndexOf(wsvm);
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
@@ -1084,7 +1087,7 @@ namespace Dynamo.Controls
 
         private void Button_Click(object sender, EventArgs e)
         {
-            UserControl view = (UserControl)this.sidebarGrid.Children[0];
+            UserControl view = (UserControl)sidebarGrid.Children[0];
             if (view.Visibility == Visibility.Collapsed)
             {
                 view.Width = double.NaN;
@@ -1092,11 +1095,11 @@ namespace Dynamo.Controls
                 view.Height = double.NaN;
                 view.VerticalAlignment = VerticalAlignment.Stretch;
 
-                this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(restoreWidth);
-                this.verticalSplitter.Visibility = Visibility.Visible;
+                mainGrid.ColumnDefinitions[0].Width = new GridLength(restoreWidth);
+                verticalSplitter.Visibility = Visibility.Visible;
                 view.Visibility = Visibility.Visible;
-                this.sidebarGrid.Visibility = Visibility.Visible;
-                this.collapsedSidebar.Visibility = Visibility.Collapsed;
+                sidebarGrid.Visibility = Visibility.Visible;
+                collapsedSidebar.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -1119,18 +1122,18 @@ namespace Dynamo.Controls
 
         private void LibraryClicked(object sender, EventArgs e)
         {
-            restoreWidth = this.sidebarGrid.ActualWidth;
+            restoreWidth = sidebarGrid.ActualWidth;
 
-            this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
-            this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;
-            this.sidebarGrid.Visibility = System.Windows.Visibility.Collapsed;
+            mainGrid.ColumnDefinitions[0].Width = new GridLength(0.0);
+            verticalSplitter.Visibility = Visibility.Collapsed;
+            sidebarGrid.Visibility = Visibility.Collapsed;
 
-            this.horizontalSplitter.Width = double.NaN;
-            UserControl view = (UserControl)this.sidebarGrid.Children[0];
+            horizontalSplitter.Width = double.NaN;
+            UserControl view = (UserControl)sidebarGrid.Children[0];
             view.Visibility = Visibility.Collapsed;
 
-            this.sidebarGrid.Visibility = Visibility.Collapsed;
-            this.collapsedSidebar.Visibility = Visibility.Visible;
+            sidebarGrid.Visibility = Visibility.Collapsed;
+            collapsedSidebar.Visibility = Visibility.Visible;
         }
 
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1188,11 +1191,11 @@ namespace Dynamo.Controls
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                this.Activate();
+                Activate();
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-                if (dynamoViewModel.Model.HomeSpace.HasUnsavedChanges && !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(dynamoViewModel.Model.HomeSpace))
+                if (dynamoViewModel.HomeSpace.HasUnsavedChanges && !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(dynamoViewModel.HomeSpace))
                 {
                     return;
                 }

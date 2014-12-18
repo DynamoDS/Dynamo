@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
+using System.Linq;
 using Dynamo.Nodes;
 using DSCoreNodesUI;
 using ProtoCore.Mirror;
@@ -108,9 +109,9 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1206.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            ViewModel.Model.RunExpression();
-            var add = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
-            Assert.AreEqual(20, add.CachedValue.Data);
+            ViewModel.HomeSpace.Run();
+            var add = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
+            Assert.AreEqual(20, add.GetCachedValueFromEngine(model.EngineController).Data);
         }
 
         [Test, Category("RegressionTests")]
@@ -124,9 +125,9 @@ namespace Dynamo.Tests
 
              // check all the nodes and connectors are loaded
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
 
-            //ViewModel.Model.RunExpression();
+            //ViewModel.HomeSpace.Run();
 
             // Checking Point.X
             AssertPreviewValue("eea90465-db68-4494-a85e-4d7c687b68e6", 0);
@@ -152,9 +153,9 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count());
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue("21780859-f85e-44ff-bedb-bd016ca7398d", 5.706339);
 
@@ -170,9 +171,9 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue("d12c17f4-2f73-42fa-9990-7fe9a723e6a1", 0.00001);
             AssertPreviewValue("d12c17f4-2f73-42fa-9990-7fe9a723e6a1", 0.0000000000000001);
@@ -189,7 +190,7 @@ namespace Dynamo.Tests
             OpenModel(openPath);
 
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count());
 
             //Check the CBN for input and output ports count and for error as well.
             string nodeID = "e378c03e-4aae-4bde-b4c5-f16a6bed358f";
@@ -198,7 +199,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             AssertPreviewValue(nodeID, 1);
 
@@ -226,7 +227,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3468.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         [Test, Category("RegressionTests")]
@@ -237,7 +238,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_2264.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         [Test, Category("RegressionTests")]
@@ -279,9 +280,9 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue("02985f61-2ece-4fe2-b78a-dfb21aa589ff",
                 new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
@@ -467,7 +468,7 @@ namespace Dynamo.Tests
             
             DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\VMFailOnCBN_5173.dyn");
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             
         }

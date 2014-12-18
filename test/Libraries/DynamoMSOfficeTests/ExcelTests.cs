@@ -7,7 +7,6 @@ using System.Linq;
 using DSOffice;
 
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
 
 using NUnit.Framework;
 using ProtoCore.Mirror;
@@ -29,7 +28,7 @@ namespace Dynamo.Tests
             // ensures the preference value change in one test case (if any) does 
             // not get persisted across to the subsequent test case.
             // 
-            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
         }
 
         [TearDown]
@@ -87,7 +86,7 @@ namespace Dynamo.Tests
 
             var timer = new Stopwatch();
             timer.Start();
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             timer.Stop();
             Assert.Less(timer.Elapsed.Milliseconds, 1000); // open in less than 1s
 
@@ -108,7 +107,7 @@ namespace Dynamo.Tests
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetWorksheetsFromExcelWorkbook");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             MirrorData mirror = watch.CachedValue;
             Assert.IsTrue(mirror.IsCollection);
@@ -132,7 +131,7 @@ namespace Dynamo.Tests
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetExcelWorksheetByName");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsNotNull(watch.CachedValue);
         }
@@ -151,7 +150,7 @@ namespace Dynamo.Tests
             var getWorksheet = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetExcelWorksheetByName");
             var readFile = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadExcelFile");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readFile.CachedValue.Class.ClassName == "DSOffice.WorkBook");
             Assert.IsNull(getWorksheet.CachedValue.Data);
@@ -171,7 +170,7 @@ namespace Dynamo.Tests
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -205,7 +204,7 @@ namespace Dynamo.Tests
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -240,7 +239,7 @@ namespace Dynamo.Tests
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -279,7 +278,7 @@ namespace Dynamo.Tests
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -331,7 +330,7 @@ namespace Dynamo.Tests
             // writeNode should have the same data contained in watch
             var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
 
@@ -398,7 +397,7 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(13, ViewModel.CurrentSpace.Nodes.Count);
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -435,7 +434,7 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
             var getWorksheet = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetExcelWorksheetByName");
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             Assert.IsNull(getWorksheet.CachedValue.Data);
         }
 
@@ -447,7 +446,7 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
 
@@ -467,8 +466,8 @@ namespace Dynamo.Tests
 
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
-            var previewNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");                
-            ViewModel.Model.RunExpression();
+            var previewNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(previewNode.CachedValue.IsCollection);
             var list = previewNode.CachedValue.GetElements();
@@ -496,7 +495,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, ViewModel.CurrentSpace.Nodes.Count);
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -530,7 +529,7 @@ namespace Dynamo.Tests
 
             var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
 
@@ -549,7 +548,7 @@ namespace Dynamo.Tests
             var inputStringNode = stringNodes.Where(x => x.Value == "BBB").FirstOrDefault();
             inputStringNode.Value = "AAA";
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
             list = writeNode.CachedValue.GetElements();
@@ -580,7 +579,7 @@ namespace Dynamo.Tests
 
             stringNode.Value = filePath;
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
         }
@@ -612,7 +611,7 @@ namespace Dynamo.Tests
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
         }
 

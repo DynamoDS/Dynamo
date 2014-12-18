@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
@@ -151,7 +149,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (Model == DynamoViewModel.Model.HomeSpace)
+                if (Model == DynamoViewModel.HomeSpace)
                     return "Home";
                 return Model.Name;
             }
@@ -164,17 +162,17 @@ namespace Dynamo.ViewModels
 
         public bool CanEditName
         {
-            get { return Model != DynamoViewModel.Model.HomeSpace; }
+            get { return Model != DynamoViewModel.HomeSpace; }
         }
 
         public bool IsCurrentSpace
         {
-            get { return Model.IsCurrentSpace; }
+            get { return Model == DynamoViewModel.CurrentSpace; }
         }
 
         public bool IsHomeSpace
         {
-            get { return Model == DynamoViewModel.Model.HomeSpace; }
+            get { return Model == DynamoViewModel.HomeSpace; }
         }
 
         public bool HasUnsavedChanges
@@ -268,15 +266,17 @@ namespace Dynamo.ViewModels
             //connector view models are added during connection
             Model.Nodes.CollectionChanged += Nodes_CollectionChanged;
             Model.Notes.CollectionChanged += Notes_CollectionChanged;
-            Model.Connectors.CollectionChanged += Connectors_CollectionChanged;
+            Model.ConnectorAdded += Connectors_ConnectorAdded;
+            Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
 
             DynamoSelection.Instance.Selection.CollectionChanged += this.AlignSelectionCanExecuteChanged;
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
-            Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Connectors));
-            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));           
+            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
+            foreach (var c in Model.Connectors)
+                Connectors_ConnectorAdded(c);
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -287,27 +287,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void Connectors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        void Connectors_ConnectorAdded(ConnectorModel c)
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {
-                        var viewModel = new ConnectorViewModel(this, item as ConnectorModel);
-                        _connectors.Add(viewModel);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    _connectors.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                    {
-                        _connectors.Remove(_connectors.First(x => x.ConnectorModel == item));
-                    }
-                    break;
-            }
+            var viewModel = new ConnectorViewModel(this, c);
+            _connectors.Add(viewModel);
+        }
+
+        void Connectors_ConnectorDeleted(ConnectorModel c)
+        {
+            _connectors.Remove(_connectors.First(x => x.ConnectorModel == c));
         }
 
         void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -606,7 +594,7 @@ namespace Dynamo.ViewModels
             // record their current states before anything gets changed.
             SmartCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
-            Model.RecordModelsForModification(models.ToList());
+            WorkspaceModel.RecordModelsForModification(models.ToList(), Model.UndoRecorder);
 
             var toAlign = DynamoSelection.Instance.Selection.OfType<ILocatable>().ToList();
 
@@ -737,7 +725,7 @@ namespace Dynamo.ViewModels
             else
             {
                 if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
-                    DynamoViewModel.Model.HideWorkspace(Model);
+                    DynamoViewModel.Model.RemoveWorkspace(Model);
             }
         }
 
@@ -861,7 +849,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                var node = DynamoViewModel.Model.Nodes.First(x => x.GUID.ToString() == id.ToString());
+                var node = DynamoViewModel.Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == id.ToString());
 
                 if (node != null)
                 {
@@ -883,7 +871,7 @@ namespace Dynamo.ViewModels
             try
             {
                 var function =
-                    (Function)DynamoViewModel.Model.Nodes.First(x => x is Function && ((Function)x).Definition.FunctionId.ToString() == id.ToString());
+                    (Function)DynamoViewModel.Model.CurrentWorkspace.Nodes.First(x => x is Function && ((Function)x).Definition.FunctionId.ToString() == id.ToString());
 
                 if (function == null) return;
 
@@ -935,7 +923,7 @@ namespace Dynamo.ViewModels
                 models.Add(x, UndoRedoRecorder.UserAction.Modification);
             }
 
-            Model.RecordModelsForModification(new List<ModelBase>(Model.Nodes));
+            WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
             
             // Sugiyama algorithm steps
             graph.RemoveCycles();
@@ -969,7 +957,14 @@ namespace Dynamo.ViewModels
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         internal void CollapseNodes(IEnumerable<NodeModel> selectedNodes)
         {
-            NodeCollapser.Collapse(DynamoViewModel.Model, selectedNodes, this.Model);
+            var args = new FunctionNamePromptEventArgs();
+            DynamoViewModel.Model.OnRequestsFunctionNamePrompt(null, args);
+
+            if (!args.Success)
+                return;
+
+            DynamoViewModel.Model.CustomNodeManager.Collapse(
+                selectedNodes, Model, DynamoModel.IsTestMode, args);
         }
 
         internal void Loaded()

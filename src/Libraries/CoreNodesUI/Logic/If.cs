@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
-using ProtoCore;
+
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
-using CodeBlockNode = ProtoCore.AST.AssociativeAST.CodeBlockNode;
-using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 
 namespace DSCoreNodesUI.Logic
 {
@@ -19,7 +15,7 @@ namespace DSCoreNodesUI.Logic
     [IsDesignScriptCompatible]
     public class If : NodeModel
     {
-        public If(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public If()
         {
             InPortData.Add(new PortData("test", "Test block"));
             InPortData.Add(new PortData("true", "True block"));

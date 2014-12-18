@@ -1,3 +1,5 @@
+using System;
+
 namespace Dynamo.Search.SearchElements
 
 {
@@ -36,13 +38,13 @@ namespace Dynamo.Search.SearchElements
         /// Higher = closer to the top of search results </value>
         public abstract double Weight { get; set; }
 
-        public override void Execute()
+        public virtual void Execute()
         {
             this.OnExecuted();
         }
 
         public delegate void SearchElementHandler(SearchElementBase ele);
-        public event SearchElementHandler Executed;
+        internal event SearchElementHandler Executed;
         protected void OnExecuted()
         {
             if (Executed != null)

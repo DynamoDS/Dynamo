@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using Dynamo.Models;
@@ -12,7 +13,6 @@ namespace Dynamo.Services
     /// </summary>
     internal class Heartbeat
     {
-
         private static Heartbeat instance;
         private const int WARMUP_DELAY_MS = 5000;
         private const int HEARTBEAT_INTERVAL_MS = 60 * 1000;
@@ -20,7 +20,7 @@ namespace Dynamo.Services
         private Thread heartbeatThread;
         private readonly DynamoModel dynamoModel;
 
-        private AutoResetEvent shutdownEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent shutdownEvent = new AutoResetEvent(false);
 
         private Heartbeat(DynamoModel dynamoModel)
         {
@@ -103,12 +103,14 @@ namespace Dynamo.Services
                     InstrumentationLogger.LogPiiInfo("Node-usage", usage);
                     InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
 
-                    string workspace =
-                        dynamoModel.CurrentWorkspace
-                                   .GetStringRepOfWorkspaceSync();
-
-                    InstrumentationLogger.LogPiiInfo("Workspace", workspace);
-
+                    dynamoModel.OnRequestDispatcherInvoke(
+                        () =>
+                        {
+                            string workspace =
+                                dynamoModel.CurrentWorkspace
+                                    .GetStringRepOfWorkspace();
+                            InstrumentationLogger.LogPiiInfo("Workspace", workspace);
+                        });
 
                 }
                 catch (Exception e)
@@ -172,11 +174,10 @@ namespace Dynamo.Services
 
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (dynamoModel == null ||
-                dynamoModel.AllNodes == null)
+            if (dynamoModel == null)
                 return ret;
 
-            foreach (var node in dynamoModel.AllNodes)
+            foreach (var node in dynamoModel.Workspaces.SelectMany(ws => ws.Nodes))
             {
                 string fullName = node.NickName;
                 if (!ret.ContainsKey(fullName))
@@ -193,11 +194,10 @@ namespace Dynamo.Services
         {
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (dynamoModel == null ||
-                dynamoModel.AllNodes == null)
+            if (dynamoModel == null)
                 return ret;
 
-            foreach (var node in dynamoModel.AllNodes)
+            foreach (var node in dynamoModel.Workspaces.SelectMany(ws => ws.Nodes))
             {
                 if (node.State != ElementState.Error)
                     continue;

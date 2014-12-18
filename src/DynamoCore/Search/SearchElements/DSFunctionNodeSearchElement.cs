@@ -4,7 +4,8 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Search.SearchElements
 {
-    public class DSFunctionNodeSearchElement : NodeSearchElement, IEquatable<DSFunctionNodeSearchElement>
+    [Obsolete("No longer used", true)]
+    public class DSFunctionNodeSearchElement : NodeModelSearchElement, IEquatable<DSFunctionNodeSearchElement>
     {
         internal readonly FunctionDescriptor FunctionDescriptor;
         private string _displayString;
@@ -16,7 +17,7 @@ namespace Dynamo.Search.SearchElements
             FunctionDescriptor = functionDescriptorItem;
         }
 
-        public override NodeSearchElement Copy()
+        public override NodeModelSearchElement Copy()
         {
             return new DSFunctionNodeSearchElement(_displayString, FunctionDescriptor);
         }

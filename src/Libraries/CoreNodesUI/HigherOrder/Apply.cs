@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
@@ -14,7 +13,7 @@ namespace DSCoreNodesUI.HigherOrder
     [IsDesignScriptCompatible]
     public class ApplyFunction : VariableInputNode
     {
-        public ApplyFunction(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public ApplyFunction() : base()
         {
             InPortData.Add(new PortData("func", "Function to apply."));
             OutPortData.Add(new PortData("func(args)", "Result of application."));
@@ -70,8 +69,7 @@ namespace DSCoreNodesUI.HigherOrder
     [IsDesignScriptCompatible]
     public class ComposeFunctions : VariableInputNode
     {
-        public ComposeFunctions(WorkspaceModel workspaceModel)
-            : base(workspaceModel)
+        public ComposeFunctions()
         {
             InPortData.Add(new PortData("func0", "Function #0"));
             InPortData.Add(new PortData("func1", "Function #1"));

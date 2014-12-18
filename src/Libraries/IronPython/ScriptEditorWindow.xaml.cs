@@ -1,8 +1,10 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Python;
 using Dynamo.ViewModels;
@@ -18,7 +20,7 @@ namespace DSIronPythonNode
     public partial class ScriptEditorWindow : Window
     {
         private string propertyName = string.Empty;
-        private System.Guid boundNodeId = System.Guid.Empty;
+        private Guid boundNodeId = Guid.Empty;
         private CompletionWindow completionWindow = null;
         private readonly IronPythonCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
@@ -26,32 +28,33 @@ namespace DSIronPythonNode
         public ScriptEditorWindow(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
-            this.completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.Logger);
+            completionProvider = new IronPythonCompletionProvider();
+            completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
 
             InitializeComponent();
             var view = FindUpVisualTree<DynamoView>(this);
-            this.Owner = view;
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            Owner = view;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
         }
 
-        internal void Initialize(System.Guid nodeGuid, string propName, string propValue)
+        internal void Initialize(Guid nodeGuid, string propName, string propValue)
         {
-            this.boundNodeId = nodeGuid;
-            this.propertyName = propName;
+            boundNodeId = nodeGuid;
+            propertyName = propName;
 
             // Register auto-completion callbacks
-            this.editText.TextArea.TextEntering += OnTextAreaTextEntering;
-            this.editText.TextArea.TextEntered += OnTextAreaTextEntered;
+            editText.TextArea.TextEntering += OnTextAreaTextEntering;
+            editText.TextArea.TextEntered += OnTextAreaTextEntered;
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
                         "DSIronPythonNode.Resources." + highlighting);
 
-            this.editText.SyntaxHighlighting = HighlightingLoader.Load(
+            editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
-            this.editText.Text = propValue;
-            this.Closed += OnScriptEditWindowClosed;
+            editText.Text = propValue;
+            Closed += OnScriptEditWindowClosed;
         }
 
         #region Autocomplete Event Handlers
@@ -66,11 +69,11 @@ namespace DSIronPythonNode
                         completionWindow.CompletionList.RequestInsertion(e);
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
-                this.dynamoViewModel.Model.Logger.Log(ex.Message);
-                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+                dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
@@ -80,13 +83,13 @@ namespace DSIronPythonNode
             {
                 if (e.Text == ".")
                 {
-                    var subString = editText.Text.Substring(0, this.editText.CaretOffset);
+                    var subString = editText.Text.Substring(0, editText.CaretOffset);
                     var completions = completionProvider.GetCompletionData(subString);
 
                     if (completions.Length == 0)
                         return;
 
-                    completionWindow = new CompletionWindow(this.editText.TextArea);
+                    completionWindow = new CompletionWindow(editText.TextArea);
                     var data = completionWindow.CompletionList.CompletionData;
 
                     foreach (var completion in completions)
@@ -99,11 +102,11 @@ namespace DSIronPythonNode
                     };
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
-                this.dynamoViewModel.Model.Logger.Log(ex.Message);
-                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+                dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
@@ -113,22 +116,22 @@ namespace DSIronPythonNode
 
         private void OnAcceptClicked(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            DialogResult = true;
         }
 
         private void OnCancelClicked(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
+            DialogResult = false;
         }
 
-        private void OnScriptEditWindowClosed(object sender, System.EventArgs e)
+        private void OnScriptEditWindowClosed(object sender, EventArgs e)
         {
-            if (this.DialogResult.HasValue && (this.DialogResult.Value))
+            if (DialogResult.HasValue && (DialogResult.Value))
             {
                 var command = new DynamoModel.UpdateModelValueCommand(
-                    this.boundNodeId, this.propertyName, this.editText.Text);
+                    boundNodeId, propertyName, editText.Text);
 
-                this.dynamoViewModel.ExecuteCommand(command);
+                dynamoViewModel.ExecuteCommand(command);
             }
         }
 

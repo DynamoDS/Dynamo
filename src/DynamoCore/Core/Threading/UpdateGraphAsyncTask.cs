@@ -1,6 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 using Dynamo.DSEngine;
@@ -19,25 +17,22 @@ namespace Dynamo.Core.Threading
 
         private GraphSyncData graphSyncData;
         private EngineController engineController;
-        private IEnumerable<NodeModel> modifiedNodes;
+        private bool verboseLogging;
 
         internal override TaskPriority Priority
         {
             get { return TaskPriority.AboveNormal; }
         }
 
-        internal IEnumerable<NodeModel> ModifiedNodes
-        {
-            get { return modifiedNodes; }
-        }
+        internal IEnumerable<NodeModel> ModifiedNodes { get; private set; }
 
         #endregion
 
         #region Public Class Operational Methods
 
-        internal UpdateGraphAsyncTask(DynamoScheduler scheduler)
-            : base(scheduler)
+        internal UpdateGraphAsyncTask(IScheduler scheduler, bool verboseLogging1) : base(scheduler)
         {
+            verboseLogging = verboseLogging;
         }
 
         /// <summary>
@@ -62,8 +57,8 @@ namespace Dynamo.Core.Threading
                 engineController = controller;
                 TargetedWorkspace = workspace;
 
-                modifiedNodes = ComputeModifiedNodes(workspace);
-                graphSyncData = engineController.ComputeSyncData(modifiedNodes);
+                ModifiedNodes = ComputeModifiedNodes(workspace);
+                graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes, verboseLogging);
                 return graphSyncData != null;
             }
             catch (Exception)
@@ -98,7 +93,7 @@ namespace Dynamo.Core.Threading
             // restored to warning state when task completion handler sets the 
             // corresponding build/runtime warning on it.
             // 
-            foreach (var modifiedNode in modifiedNodes)
+            foreach (var modifiedNode in ModifiedNodes)
             {
                 modifiedNode.IsUpdated = true;
                 if (modifiedNode.State == ElementState.Warning)
@@ -126,5 +121,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif

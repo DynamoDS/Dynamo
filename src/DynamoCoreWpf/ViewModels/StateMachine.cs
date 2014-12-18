@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Core;
+
+using Dynamo.Nodes;
 using Dynamo.UI;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 using Point = System.Windows.Point;
@@ -132,7 +134,7 @@ namespace Dynamo.ViewModels
 
         internal void BeginConnection(Guid nodeId, int portIndex, PortType portType)
         {
-            bool isInPort = portType == PortType.INPUT;
+            bool isInPort = portType == PortType.Input;
 
             NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
             if (node == null)
@@ -234,7 +236,7 @@ namespace Dynamo.ViewModels
             List<ModelBase> models = DynamoSelection.Instance.Selection.
                 Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
 
-            this.Model.RecordModelsForModification(models);
+            WorkspaceModel.RecordModelsForModification(models, Model.UndoRecorder);
 
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
@@ -714,7 +716,7 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
-                    PortType portType = PortType.INPUT;
+                    PortType portType = PortType.Input;
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
@@ -734,7 +736,7 @@ namespace Dynamo.ViewModels
                     // Check if connection is valid
                     if (owningWorkspace.CheckActiveConnectorCompatibility(portViewModel))
                     {
-                        PortType portType = PortType.INPUT;
+                        PortType portType = PortType.Input;
                         Guid nodeId = portModel.Owner.GUID;
                         int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
@@ -759,7 +761,7 @@ namespace Dynamo.ViewModels
             private void CancelConnection()
             {
                 var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
-                        PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
+                        PortType.Input, DynCmd.MakeConnectionCommand.Mode.Cancel);
 
                 owningWorkspace.DynamoViewModel.ExecuteCommand(command);
             }
@@ -829,25 +831,17 @@ namespace Dynamo.ViewModels
             private void CreateCodeBlockNode(Point cursor)
             {
                 // create node
-                var guid = Guid.NewGuid();
+                var node = new CodeBlockNodeModel(owningWorkspace.DynamoViewModel.Model.LibraryServices);
 
-                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(guid,
-                    "Code Block", cursor.X, cursor.Y, false, true));
+                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(node, cursor.X, cursor.Y, false, true));
 
                 // select node
-                var placedNode = owningWorkspace.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-                if (placedNode != null)
-                {
-                    DynamoSelection.Instance.ClearSelection();
-                    DynamoSelection.Instance.Selection.Add(placedNode);
-                }
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
 
                 //correct node position
-                if (placedNode != null)
-                {
-                    placedNode.X = (int)mouseDownPos.X - 92;
-                    placedNode.Y = (int)mouseDownPos.Y - 31;
-                }
+                node.X = (int)mouseDownPos.X - 92;
+                node.Y = (int)mouseDownPos.Y - 31;
             }
 
             #endregion

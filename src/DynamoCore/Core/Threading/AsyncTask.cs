@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-
-using Dynamo.Services;
 
 namespace Dynamo.Core.Threading
 {
@@ -24,7 +20,7 @@ namespace Dynamo.Core.Threading
         }
     }
 
-    internal abstract class AsyncTask
+    public abstract class AsyncTask
     {
         #region Private Class Data Members
 
@@ -42,7 +38,7 @@ namespace Dynamo.Core.Threading
         /// <summary>
         /// Merge instruction obtained from a call to AsyncTask.CanMergeWith.
         /// </summary>
-        internal enum TaskMergeInstruction
+        public enum TaskMergeInstruction
         {
             /// <summary>
             /// Both the AsyncTask objects in comparison should be kept.
@@ -62,7 +58,7 @@ namespace Dynamo.Core.Threading
             KeepOther
         }
 
-        private readonly DynamoScheduler scheduler;
+        private readonly IScheduler scheduler;
 
         #endregion
 
@@ -104,7 +100,7 @@ namespace Dynamo.Core.Threading
         /// <param name="scheduler">A reference to the DynamoScheduler, this 
         /// parameter cannot be null.</param>
         /// 
-        protected AsyncTask(DynamoScheduler scheduler)
+        protected AsyncTask(IScheduler scheduler)
         {
             if (scheduler == null)
                 throw new ArgumentNullException("scheduler");
@@ -136,10 +132,9 @@ namespace Dynamo.Core.Threading
         /// 
         internal TaskMergeInstruction CanMergeWith(AsyncTask otherTask)
         {
-            if (ReferenceEquals(this, otherTask))
-                return TaskMergeInstruction.KeepBoth; // Both tasks are the same.
-
-            return CanMergeWithCore(otherTask);
+            return ReferenceEquals(this, otherTask)
+                ? TaskMergeInstruction.KeepBoth
+                : CanMergeWithCore(otherTask);
         }
 
         /// <summary>
@@ -156,10 +151,7 @@ namespace Dynamo.Core.Threading
         /// 
         internal int Compare(AsyncTask otherTask)
         {
-            if (ReferenceEquals(this, otherTask))
-                return 0; // Both tasks are the same.
-
-            return CompareCore(otherTask);
+            return ReferenceEquals(this, otherTask) ? 0 : CompareCore(otherTask);
         }
 
         /// <summary>

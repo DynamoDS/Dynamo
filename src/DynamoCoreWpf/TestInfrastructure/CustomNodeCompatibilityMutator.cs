@@ -10,6 +10,8 @@ using Autodesk.DesignScript.Runtime;
 using System.Reflection;
 using DynamoUtilities;
 using Dynamo.Core;
+using Dynamo.DSEngine;
+using Dynamo.Utilities;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -31,7 +33,7 @@ namespace Dynamo.TestInfrastructure
             get { return 1; }
         }
 
-        public override bool RunTest(NodeModel node, StreamWriter writer)
+        public override bool RunTest(NodeModel node, EngineController engine, StreamWriter writer)
         {
             bool pass = false;
 
@@ -50,11 +52,11 @@ namespace Dynamo.TestInfrastructure
                 {
                     DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                     {
-                        Guid guidNumber = Guid.NewGuid();
+                        var newNode = type.GetDefaultConstructor<NodeModel>()();
 
                         DynamoModel.CreateNodeCommand createCommand =
-                            new DynamoModel.CreateNodeCommand(guidNumber, nodeName,
-                                coordinatesX, coordinatesY, false, false);
+                            new DynamoModel.CreateNodeCommand(
+                                newNode, coordinatesX, coordinatesY, false, false);
 
                         DynamoViewModel.ExecuteCommand(createCommand);
                     }));
@@ -63,7 +65,7 @@ namespace Dynamo.TestInfrastructure
                     foreach (ConnectorModel connector in firstNodeConnectors)
                     {
                         Guid guid = connector.Start.Owner.GUID;
-                        Object data = connector.Start.Owner.GetValue(0).Data;
+                        Object data = connector.Start.Owner.GetValue(0, engine).Data;
                         String val = data != null ? data.ToString() : "null";
                         valueMap.Add(guid, val);
                         writer.WriteLine(guid + " :: " + val);
@@ -96,7 +98,7 @@ namespace Dynamo.TestInfrastructure
 
                         DynamoViewModel.ExecuteCommand(runCancel);
                     }));
-                    while (DynamoViewModel.Model.Runner.Running)
+                    while (!DynamoViewModel.HomeSpace.RunEnabled)
                     {
                         Thread.Sleep(10);
                     }
@@ -106,10 +108,9 @@ namespace Dynamo.TestInfrastructure
                     {
                         try
                         {
-                            NodeModel nodeAfterUndo = DynamoViewModel.Model.Nodes.ToList().FirstOrDefault((t) =>
-                            {
-                                return (t.GUID == node.GUID);
-                            });
+                            NodeModel nodeAfterUndo =
+                                DynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(
+                                    (t) => (t.GUID == node.GUID));
 
                             if (nodeAfterUndo != null)
                             {
@@ -117,7 +118,7 @@ namespace Dynamo.TestInfrastructure
                                 foreach (ConnectorModel connector in firstNodeConnectors)
                                 {
                                     Guid guid = connector.Start.Owner.GUID;
-                                    Object data = connector.Start.Owner.GetValue(0).Data;
+                                    Object data = connector.Start.Owner.GetValue(0, engine).Data;
                                     String val = data != null ? data.ToString() : "null";
 
                                     if (valueMap[guid] != val)
@@ -149,17 +150,17 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate(NodeModel node)
         {
-            NodeModel lastNode = DynamoModel.Nodes.ToList().Last();
+            NodeModel lastNode = DynamoModel.CurrentWorkspace.Nodes.Last();
 
             if (lastNode.OutPorts.Count > 0)
             {
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoModel.MakeConnectionCommand connectCmd1 =
-                        new DynamoModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.OUTPUT,
+                        new DynamoModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.Output,
                             DynamoModel.MakeConnectionCommand.Mode.Begin);
                     DynamoModel.MakeConnectionCommand connectCmd2 =
-                        new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.INPUT,
+                        new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.Input,
                             DynamoModel.MakeConnectionCommand.Mode.End);
 
                     DynamoViewModel.ExecuteCommand(connectCmd1);
@@ -171,10 +172,10 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoModel.MakeConnectionCommand connectCmd1 =
-                        new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.OUTPUT,
+                        new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.Output,
                             DynamoModel.MakeConnectionCommand.Mode.Begin);
                     DynamoModel.MakeConnectionCommand connectCmd2 =
-                        new DynamoModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.INPUT,
+                        new DynamoModel.MakeConnectionCommand(lastNode.GUID, 0, PortType.Input,
                             DynamoModel.MakeConnectionCommand.Mode.End);
 
                     DynamoViewModel.ExecuteCommand(connectCmd1);
@@ -322,7 +323,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
 
-                    if (!Nodes.Utilities.IsNodeSubType(t) && 
+                    if (!DynamoLoader.IsNodeSubType(t) && 
                         t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
                         continue;
 
@@ -374,7 +375,7 @@ namespace Dynamo.TestInfrastructure
                     if (attribs.Length > 0 && !isDeprecated && 
                         !isMetaNode && isDSCompatible && !isHidden)
                     {
-                        searchViewModel.Add(t);
+                        //searchViewModel.Add(t);
                         typeName = (attribs[0] as NodeNameAttribute).Name;
                     }
                     else
@@ -382,7 +383,7 @@ namespace Dynamo.TestInfrastructure
 
                     types.Add(t);
 
-                    var data = new TypeLoadData(assembly, t);
+                    var data = new TypeLoadData(t);
 
 
                 }

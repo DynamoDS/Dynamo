@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Data;
 using System.Windows;
-using System.Windows.Input;
+
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -106,7 +105,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (PortType == PortType.INPUT)
+                if (PortType == PortType.Input)
                 {
                     if (_node.InPorts.Count > 1)
                     {
@@ -119,7 +118,7 @@ namespace Dynamo.ViewModels
                     }
                 }
 
-                if (PortType == PortType.OUTPUT)
+                if (PortType == PortType.Output)
                 {
                     if (_node.OutPorts.Count > 1)
                     {

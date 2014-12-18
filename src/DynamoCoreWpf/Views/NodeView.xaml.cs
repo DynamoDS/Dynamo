@@ -47,14 +47,14 @@ namespace Dynamo.Controls
         {
             get
             {
-                if (this.previewControl == null)
+                if (previewControl == null)
                 {
-                    this.previewControl = new PreviewControl(this.ViewModel);
-                    this.previewControl.StateChanged += OnPreviewControlStateChanged;
-                    this.expansionBay.Children.Add(this.previewControl);
+                    previewControl = new PreviewControl(ViewModel);
+                    previewControl.StateChanged += OnPreviewControlStateChanged;
+                    expansionBay.Children.Add(previewControl);
                 }
 
-                return this.previewControl;
+                return previewControl;
             }
         }
 
@@ -62,11 +62,11 @@ namespace Dynamo.Controls
 
         public NodeView()
         {
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
 
             InitializeComponent();
 
@@ -74,10 +74,10 @@ namespace Dynamo.Controls
             Unloaded += OnNodeViewUnloaded;
             inputGrid.Loaded += NodeViewReady;
 
-            this.nodeBorder.SizeChanged += OnSizeChanged;
-            this.DataContextChanged += OnDataContextChanged;
+            nodeBorder.SizeChanged += OnSizeChanged;
+            DataContextChanged += OnDataContextChanged;
 
-            Canvas.SetZIndex(this, 1);
+            Panel.SetZIndex(this, 1);
 
         }
 
@@ -131,8 +131,8 @@ namespace Dynamo.Controls
             // can be sent as a result of DataContext becoming DisconnectedItem too,
             // but ViewModel should not be updated in that case (hence the null-check).
             // 
-            if (null == this.ViewModel)
-                this.ViewModel = e.NewValue as NodeViewModel;
+            if (null == ViewModel)
+                ViewModel = e.NewValue as NodeViewModel;
         }
 
         private void OnNodeViewLoaded(object sender, RoutedEventArgs e)
@@ -189,7 +189,9 @@ namespace Dynamo.Controls
                     return;
                 }
 
-                previewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
+                previewControl.BindToDataSource(
+                    ViewModel.NodeLogic.GetCachedValueFromEngine(
+                        ViewModel.DynamoViewModel.EngineController));
             }));
         }
 
@@ -263,7 +265,7 @@ namespace Dynamo.Controls
             if (nodeViewReadyCalledOnce) return;
 
             nodeViewReadyCalledOnce = true;
-            this.ViewModel.DynamoViewModel.OnNodeViewReady(this);
+            ViewModel.DynamoViewModel.OnNodeViewReady(this);
         }
 
         private Dictionary<UIElement, bool> enabledDict
@@ -319,17 +321,13 @@ namespace Dynamo.Controls
 
             var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
 
-            this.ViewModel.DynamoViewModel.ReturnFocusToSearch();
+            ViewModel.DynamoViewModel.ReturnFocusToSearch();
 
             view.mainGrid.Focus();
 
-            var node = this.ViewModel.NodeModel;
-            if (node.Workspace.Nodes.Contains(node))
-            {
-                Guid nodeGuid = this.ViewModel.NodeModel.GUID;
-                this.ViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
-            }
+            Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
             if (e.ClickCount == 2)
             {
                 if (ViewModel.GotoWorkspaceCommand.CanExecute(null))
@@ -351,9 +349,9 @@ namespace Dynamo.Controls
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Nickname double clicked!");
-                if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute(null))
+                if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
                 {
-                    this.ViewModel.RenameCommand.Execute(null);
+                    ViewModel.RenameCommand.Execute(null);
                 }
                 e.Handled = true;
             }
@@ -363,7 +361,7 @@ namespace Dynamo.Controls
 
         private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
-            previewInnerRect.Visibility = System.Windows.Visibility.Visible;
+            previewInnerRect.Visibility = Visibility.Visible;
             previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
@@ -372,7 +370,9 @@ namespace Dynamo.Controls
             if (PreviewControl.IsHidden)
             {
                 if (PreviewControl.IsDataBound == false)
-                    PreviewControl.BindToDataSource(ViewModel.NodeLogic.CachedValue);
+                    PreviewControl.BindToDataSource(
+                        ViewModel.NodeLogic.GetCachedValueFromEngine(
+                            ViewModel.DynamoViewModel.EngineController));
 
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
@@ -381,7 +381,7 @@ namespace Dynamo.Controls
         private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
         {
             RefreshPreviewIconDisplay();
-            previewInnerRect.Visibility = System.Windows.Visibility.Hidden;
+            previewInnerRect.Visibility = Visibility.Hidden;
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
@@ -407,7 +407,7 @@ namespace Dynamo.Controls
         {
             RefreshPreviewIconDisplay();
 
-            if (this.previewIcon.IsMouseOver)
+            if (previewIcon.IsMouseOver)
             {
                 // The mouse is currently over the preview icon, so if the 
                 // preview control is hidden, bring it into condensed state.
@@ -427,16 +427,16 @@ namespace Dynamo.Controls
 
         private void RefreshPreviewIconDisplay()
         {
-            if (this.previewControl == null)
+            if (previewControl == null)
                 return;
 
-            if (this.previewControl.IsHidden)
+            if (previewControl.IsHidden)
                 previewOuterRect.Fill = FrozenResources.PreviewIconNormalBrush;
-            else if (this.previewControl.IsCondensed)
+            else if (previewControl.IsCondensed)
                 previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
-            else if (this.previewControl.IsExpanded)
+            else if (previewControl.IsExpanded)
                 previewOuterRect.Fill = FrozenResources.PreviewIconPinnedBrush;
-            else if (this.previewControl.IsInTransition)
+            else if (previewControl.IsInTransition)
             {
                 // No changes, those will come after transition is done.
             }

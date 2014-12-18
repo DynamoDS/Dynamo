@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-using Dynamo.Models;
-
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
     public abstract class Integer : BasicInteractive<int>
     {
-        protected Integer(WorkspaceModel workspace) : base(workspace) { }
-
         protected override int DeserializeValue(string val)
         {
             try

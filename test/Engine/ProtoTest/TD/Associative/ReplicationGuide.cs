@@ -180,7 +180,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0001_Replication_Guide_Function_With_2_Arg_15()
         {
             String code =
@@ -194,7 +194,7 @@ namespace ProtoTest.TD.Associative
 
         [Test] //post R1
         [Category("Replication")]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0001_Replication_Guide_Function_With_2_Arg_16()
         {
             String code =
@@ -271,7 +271,7 @@ namespace ProtoTest.TD.Associative
 
         [Test] // post R1
         [Category("Replication")]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0002_Replication_Guide_Function_With_3_Arg_3()
         {
             String code =
@@ -350,7 +350,7 @@ namespace ProtoTest.TD.Associative
 
         [Test] //post R1
         [Category("Replication")]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_4()
         {
             String code =
@@ -390,7 +390,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg_3()
         {
             String code =
@@ -595,7 +595,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T034_Replication_Guides_Not_On_All_Arguments_9()
         {
             String code =
@@ -933,7 +933,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T039_1467423_replication_guide_on_array_11()
         {
             string code =
@@ -1001,7 +1001,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T040_1467488_replication_guide_on_array_slices_6()
         {
             string code =
@@ -1026,7 +1026,7 @@ namespace ProtoTest.TD.Associative
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T040_1467488_replication_guide_on_array_slices_8()
         {
             string code =
@@ -1047,7 +1047,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T041_1467460_replication_guide_not_in_sequence_02()
         {
             string code =
@@ -1058,7 +1058,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T041_1467460_replication_guide_not_in_sequence_03()
         {
             string code =
@@ -1070,7 +1070,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T041_1467460_replication_guide_not_in_sequence_04()
         {
             string code =
@@ -1186,7 +1186,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T042_1467555_cartesion_product_in_dot_operation_1()
         {
             string code =
@@ -1212,7 +1212,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0101_FuncCall_Double_SomeGuides()
         {
             string code =
@@ -1227,7 +1227,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0102_FuncCall_Double_SomeGuides()
         {
             string code =
@@ -1269,7 +1269,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0105_FuncCall_Int_NotAllGuides_NotInSeq()
         {
             string code =
@@ -1324,7 +1324,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0109_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -1335,7 +1335,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0110_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -1346,7 +1346,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0111_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -1370,7 +1370,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0113_FuncCall_Int_SingleAndMultipleGuides_NotInSeq()
         {
             string code =
@@ -1425,7 +1425,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0118_FuncCall_HeterogenousInput_SingleGuides()
         {
             string code =
@@ -1436,7 +1436,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0119_FuncCall_HeterogenousInput_SingleGuides()
         {
             string code =
@@ -1468,7 +1468,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0122_ReplicationGudes_Inside_ClassAndFunctionBody()
         {
             string code =
@@ -1485,7 +1485,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0123_Replication_BuiltinMethods()
         {
             string code =
@@ -1552,7 +1552,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0127_ReplicationGudes_ModifierBlock()
         {
             string code =
@@ -1569,7 +1569,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0128_ReplicationGudes_InlineCondition()
         {
             string code =
@@ -1671,7 +1671,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0136_ReplicationGudes_ArraySlicingScope()
         {
             string code =
@@ -1758,7 +1758,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("Failing")]
         public void T0143_ReplicationGudes_On_Both_Instance_And_Method_Call()
         {
             string code =

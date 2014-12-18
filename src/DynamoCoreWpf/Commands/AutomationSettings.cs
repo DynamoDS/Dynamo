@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Models;
@@ -15,10 +17,10 @@ namespace Dynamo.ViewModels
         internal PlaybackStateChangedEventArgs(string oldCommandTag, string newCommandTag,
             AutomationSettings.State oldState, AutomationSettings.State newState)
         {
-            this.OldState = oldState;
-            this.NewState = newState;
-            this.OldTag = oldCommandTag;
-            this.NewTag = newCommandTag;
+            OldState = oldState;
+            NewState = newState;
+            OldTag = oldCommandTag;
+            NewTag = newCommandTag;
         }
 
         internal string OldTag { get; private set; }
@@ -51,7 +53,7 @@ namespace Dynamo.ViewModels
         /// This is set to "true" by default for recorded command files.
         /// </summary>
         /// 
-        private const string ExitAttribName = "ExitAfterPlayback";
+        private const string EXIT_ATTRIB_NAME = "ExitAfterPlayback";
 
         /// <summary>
         /// This attribute specifies the amount of time in milliseconds that 
@@ -60,7 +62,7 @@ namespace Dynamo.ViewModels
         /// window will not be closed after playback is completed).
         /// </summary>
         /// 
-        private const string PauseAttribName = "PauseAfterPlaybackInMs";
+        private const string PAUSE_ATTRIB_NAME = "PauseAfterPlaybackInMs";
 
         /// <summary>
         /// This attribute specifies the interval between two consecutive 
@@ -68,13 +70,13 @@ namespace Dynamo.ViewModels
         /// command will be executed after this interval elapsed. The default
         /// value for command interval is 20 milliseconds.
         /// </summary>
-        private const string IntervalAttribName = "CommandIntervalInMs";
+        private const string INTERVAL_ATTRIB_NAME = "CommandIntervalInMs";
 
-        private System.Windows.Window mainWindow = null;
-        private DynamoModel owningDynamoModel = null;
-        private DispatcherTimer playbackTimer = null;
-        private List<DynCmd.RecordableCommand> loadedCommands = null;
-        private List<DynCmd.RecordableCommand> recordedCommands = null;
+        private Window mainWindow;
+        private readonly DynamoModel owningDynamoModel;
+        private DispatcherTimer playbackTimer;
+        private List<DynamoModel.RecordableCommand> loadedCommands;
+        private readonly List<DynamoModel.RecordableCommand> recordedCommands;
 
         #endregion
 
@@ -93,12 +95,12 @@ namespace Dynamo.ViewModels
         internal State CurrentState { get; private set; }
         internal Exception PlaybackException { get; private set; }
 
-        internal DynCmd.RecordableCommand PreviousCommand { get; private set; }
-        internal DynCmd.RecordableCommand CurrentCommand { get; private set; }
+        internal DynamoModel.RecordableCommand PreviousCommand { get; private set; }
+        internal DynamoModel.RecordableCommand CurrentCommand { get; private set; }
 
         internal bool IsInPlaybackMode
         {
-            get { return (this.CurrentState != State.Recording); }
+            get { return (CurrentState != State.Recording); }
         }
 
         internal bool CanSaveRecordedCommands
@@ -133,11 +135,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var homeWorkspace = owningDynamoModel.HomeSpace;
-                if (homeWorkspace == null)
-                    return false;
-
-                return homeWorkspace.IsEvaluationPending;
+                return
+                    owningDynamoModel.Workspaces.OfType<HomeWorkspaceModel>()
+                        .Any(hw => hw.IsEvaluationPending);
             }
         }
 
@@ -147,15 +147,15 @@ namespace Dynamo.ViewModels
 
         internal AutomationSettings(DynamoModel dynamoModel, string commandFilePath)
         {
-            this.CommandInterval = 20; // 20ms between two consecutive commands.
-            this.PauseAfterPlayback = 10; // 10ms after playback is done.
-            this.ExitAfterPlayback = true; // Exit Dynamo after playback.
+            CommandInterval = 20; // 20ms between two consecutive commands.
+            PauseAfterPlayback = 10; // 10ms after playback is done.
+            ExitAfterPlayback = true; // Exit Dynamo after playback.
 
-            this.PreviousCommand = null;
-            this.CurrentCommand = null;
+            PreviousCommand = null;
+            CurrentCommand = null;
 
-            this.CurrentState = State.None;
-            this.CommandFileName = string.Empty;
+            CurrentState = State.None;
+            CommandFileName = string.Empty;
             if (LoadCommandFromFile(commandFilePath))
             {
                 ChangeStateInternal(State.Loaded);
@@ -164,41 +164,42 @@ namespace Dynamo.ViewModels
             else
             {
                 ChangeStateInternal(State.Recording);
-                recordedCommands = new List<DynCmd.RecordableCommand>();
+                recordedCommands = new List<DynamoModel.RecordableCommand>();
             }
 
-            this.owningDynamoModel = dynamoModel;
-            if (null == this.owningDynamoModel)
+            owningDynamoModel = dynamoModel;
+            if (null == owningDynamoModel)
                 throw new ArgumentNullException("dynamoModel");
         }
 
-        internal void BeginCommandPlayback(System.Windows.Window mainWindow)
+        internal void BeginCommandPlayback(Window window)
         {
-            if (this.CurrentState != State.Loaded)
+            if (CurrentState != State.Loaded)
                 return; // Not currently in playback mode.
 
-            if (null != this.playbackTimer)
+            if (null != playbackTimer)
             {
                 // Ensure that this method is not called more than once.
                 throw new InvalidOperationException(
                     "Internal error: 'BeginCommandPlayback' called twice");
             }
 
-            this.mainWindow = mainWindow;
-            this.mainWindow.Title = string.Format("{0} [Playing back: {1}]",
-                this.mainWindow.Title, this.CommandFileName);
+            mainWindow = window;
+            mainWindow.Title = string.Format("{0} [Playing back: {1}]",
+                mainWindow.Title, CommandFileName);
 
-            System.Diagnostics.Debug.Assert(null == playbackTimer);
-            playbackTimer = new DispatcherTimer();
-
+            Debug.Assert(null == playbackTimer);
+            playbackTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(CommandInterval)
+            };
             // Serialized commands for playback.
-            playbackTimer.Interval = TimeSpan.FromMilliseconds(CommandInterval);
             playbackTimer.Tick += OnPlaybackTimerTick;
             playbackTimer.Start();
             ChangeStateInternal(State.Playing);
         }
 
-        internal void RecordCommand(DynCmd.RecordableCommand command)
+        internal void RecordCommand(DynamoModel.RecordableCommand command)
         {
             // In the playback mode 'this.recordedCommands' will be 
             // 'null' so that the incoming command will not be recorded.
@@ -228,20 +229,20 @@ namespace Dynamo.ViewModels
 
         internal string SaveRecordedCommands()
         {
-            XmlDocument document = new XmlDocument();
+            var document = new XmlDocument();
             XmlElement commandRoot = document.CreateElement("Commands");
             document.AppendChild(commandRoot);
 
             // Create attributes that applied to the entire recording.
-            XmlElementHelper helper = new XmlElementHelper(commandRoot);
-            helper.SetAttribute(ExitAttribName, ExitAfterPlayback);
-            helper.SetAttribute(PauseAttribName, PauseAfterPlayback);
-            helper.SetAttribute(IntervalAttribName, CommandInterval);
+            var helper = new XmlElementHelper(commandRoot);
+            helper.SetAttribute(EXIT_ATTRIB_NAME, ExitAfterPlayback);
+            helper.SetAttribute(PAUSE_ATTRIB_NAME, PauseAfterPlayback);
+            helper.SetAttribute(INTERVAL_ATTRIB_NAME, CommandInterval);
 
-            foreach (DynCmd.RecordableCommand command in recordedCommands)
+            foreach (DynamoModel.RecordableCommand command in recordedCommands)
                 commandRoot.AppendChild(command.Serialize(document));
 
-            string format = "Commands-{0:yyyyMMdd-hhmmss}.xml";
+            const string format = "Commands-{0:yyyyMMdd-hhmmss}.xml";
             string xmlFileName = string.Format(format, DateTime.Now);
             string xmlFilePath = Path.Combine(Path.GetTempPath(), xmlFileName);
 
@@ -254,12 +255,12 @@ namespace Dynamo.ViewModels
         {
             if (CurrentState != State.Recording)
             {
-                var message = "Method should be called only when recording";
+                const string message = "Method should be called only when recording";
                 throw new InvalidOperationException(message);
             }
 
-            var pausePlaybackCommand = new DynCmd.PausePlaybackCommand(20);
-            this.RecordCommand(pausePlaybackCommand);
+            var pausePlaybackCommand = new DynamoModel.PausePlaybackCommand(20);
+            RecordCommand(pausePlaybackCommand);
             return pausePlaybackCommand.Tag;
         }
 
@@ -283,27 +284,30 @@ namespace Dynamo.ViewModels
             try
             {
                 // Attempt to load the XML from the specified path.
-                XmlDocument document = new XmlDocument();
+                var document = new XmlDocument();
                 document.Load(commandFilePath);
 
                 // Get to the root node of this Xml document.
-                XmlElement commandRoot = document.FirstChild as XmlElement;
-                if (null == commandRoot || (null == commandRoot.ChildNodes))
+                var commandRoot = document.FirstChild as XmlElement;
+                if (null == commandRoot)
                     return false;
 
                 // Read in optional attributes from the command root element.
-                XmlElementHelper helper = new XmlElementHelper(commandRoot);
-                this.ExitAfterPlayback = helper.ReadBoolean(ExitAttribName, true);
-                this.PauseAfterPlayback = helper.ReadInteger(PauseAttribName, 10);
-                this.CommandInterval = helper.ReadInteger(IntervalAttribName, 20);
+                var helper = new XmlElementHelper(commandRoot);
+                ExitAfterPlayback = helper.ReadBoolean(EXIT_ATTRIB_NAME, true);
+                PauseAfterPlayback = helper.ReadInteger(PAUSE_ATTRIB_NAME, 10);
+                CommandInterval = helper.ReadInteger(INTERVAL_ATTRIB_NAME, 20);
 
-                loadedCommands = new List<DynCmd.RecordableCommand>();
-                foreach (XmlNode node in commandRoot.ChildNodes)
+                loadedCommands = new List<DynamoModel.RecordableCommand>();
+                foreach (
+                    DynamoModel.RecordableCommand command in
+                        commandRoot.ChildNodes.Cast<XmlNode>()
+                            .Select(
+                                node => DynamoModel.RecordableCommand.Deserialize(
+                                    node as XmlElement))
+                            .Where(command => null != command))
                 {
-                    DynCmd.RecordableCommand command = null;
-                    command = DynCmd.RecordableCommand.Deserialize(node as XmlElement);
-                    if (null != command)
-                        loadedCommands.Add(command);
+                    loadedCommands.Add(command);
                 }
             }
             catch (Exception)
@@ -324,33 +328,33 @@ namespace Dynamo.ViewModels
         {
             if (pauseDurationInMs <= 0)
             {
-                var msg = "Argument should be greater than zero";
+                const string msg = "Argument should be greater than zero";
                 throw new ArgumentException(msg, "pauseDurationInMs");
             }
 
-            this.playbackTimer.Tick -= OnPlaybackTimerTick;
-            this.playbackTimer.Tick += OnPauseTimerTick;
+            playbackTimer.Tick -= OnPlaybackTimerTick;
+            playbackTimer.Tick += OnPauseTimerTick;
 
             var interval = TimeSpan.FromMilliseconds(pauseDurationInMs);
-            this.playbackTimer.Interval = interval;
-            this.playbackTimer.Start(); // Start pausing timer.
+            playbackTimer.Interval = interval;
+            playbackTimer.Start(); // Start pausing timer.
             ChangeStateInternal(State.Paused);
         }
 
         private void OnPlaybackTimerTick(object sender, EventArgs e)
         {
-            DispatcherTimer timer = sender as DispatcherTimer;
+            var timer = (DispatcherTimer)sender;
             timer.Stop(); // Stop the timer before command completes.
 
             if (loadedCommands.Count <= 0) // There's nothing else for playback.
             {
-                if (this.ExitAfterPlayback == false)
+                if (ExitAfterPlayback == false)
                 {
                     // The playback is done, but the command file indicates that
                     // Dynamo should not be shutdown after the playback, so here
                     // we simply invalidate the timer.
                     // 
-                    this.playbackTimer = null;
+                    playbackTimer = null;
                     ChangeStateInternal(State.Stopped);
                 }
                 else
@@ -360,12 +364,12 @@ namespace Dynamo.ViewModels
                     // reconfigure the callback to a shutdown timer, and then 
                     // change its interval to the duration specified earlier.
                     // 
-                    this.playbackTimer.Tick -= OnPlaybackTimerTick;
-                    this.playbackTimer.Tick += OnShutdownTimerTick;
+                    playbackTimer.Tick -= OnPlaybackTimerTick;
+                    playbackTimer.Tick += OnShutdownTimerTick;
 
                     var interval = TimeSpan.FromMilliseconds(PauseAfterPlayback);
-                    this.playbackTimer.Interval = interval;
-                    this.playbackTimer.Start(); // Start shutdown timer.
+                    playbackTimer.Interval = interval;
+                    playbackTimer.Start(); // Start shutdown timer.
                     ChangeStateInternal(State.ShuttingDown);
                 }
 
@@ -373,16 +377,16 @@ namespace Dynamo.ViewModels
             }
 
             // Remove the first command from the loaded commands.
-            DynCmd.RecordableCommand nextCommand = loadedCommands[0];
+            DynamoModel.RecordableCommand nextCommand = loadedCommands[0];
             loadedCommands.RemoveAt(0);
 
             // Update the cached command references.
-            this.PreviousCommand = this.CurrentCommand;
-            this.CurrentCommand = nextCommand;
+            PreviousCommand = CurrentCommand;
+            CurrentCommand = nextCommand;
 
-            if (nextCommand is DynCmd.PausePlaybackCommand)
+            if (nextCommand is DynamoModel.PausePlaybackCommand)
             {
-                var command = nextCommand as DynCmd.PausePlaybackCommand;
+                var command = nextCommand as DynamoModel.PausePlaybackCommand;
                 PauseCommandPlayback(command.PauseDurationInMs);
                 return;
             }
@@ -394,7 +398,7 @@ namespace Dynamo.ViewModels
                 // before the command execution starts. After the command is done,
                 // the timer is then resumed for the next command in queue.
                 // 
-                this.owningDynamoModel.ExecuteCommand(nextCommand);
+                owningDynamoModel.ExecuteCommand(nextCommand);
             }
             catch (Exception exception)
             {
@@ -405,7 +409,7 @@ namespace Dynamo.ViewModels
                 // realized that there is no more commands waiting.
                 // 
                 loadedCommands.Clear();
-                this.PlaybackException = exception;
+                PlaybackException = exception;
             }
 
             timer.Start();
@@ -413,18 +417,18 @@ namespace Dynamo.ViewModels
 
         private void OnPauseTimerTick(object sender, EventArgs e)
         {
-            this.playbackTimer.Tick -= OnPauseTimerTick;
-            this.playbackTimer.Tick += OnPlaybackTimerTick;
+            playbackTimer.Tick -= OnPauseTimerTick;
+            playbackTimer.Tick += OnPlaybackTimerTick;
 
             var interval = TimeSpan.FromMilliseconds(CommandInterval);
-            this.playbackTimer.Interval = interval;
-            this.playbackTimer.Start(); // Start regular playback timer.
+            playbackTimer.Interval = interval;
+            playbackTimer.Start(); // Start regular playback timer.
             ChangeStateInternal(State.Playing);
         }
 
         private void OnShutdownTimerTick(object sender, EventArgs e)
         {
-            this.playbackTimer.Stop();
+            playbackTimer.Stop();
 
             if (HasPendingEvaluation) // See method for documentation.
             {
@@ -438,7 +442,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            this.playbackTimer = null;
+            playbackTimer = null;
             ChangeStateInternal(State.Stopped);
 
             // This causes the main window to close (and exit application).
@@ -448,23 +452,23 @@ namespace Dynamo.ViewModels
             // then rethrow it here after closing the main window so that 
             // calls like NUnit test cases can properly display the exception.
             // 
-            if (this.PlaybackException != null)
-                throw this.PlaybackException;
+            if (PlaybackException != null)
+                throw PlaybackException;
         }
 
         private void ChangeStateInternal(State playbackState)
         {
-            var os = this.CurrentState;
+            var os = CurrentState;
             var ns = playbackState;
 
-            this.CurrentState = playbackState;
-            if (os != ns && (this.PlaybackStateChanged != null))
+            CurrentState = playbackState;
+            if (os != ns && (PlaybackStateChanged != null))
             {
                 var ot = ((PreviousCommand == null) ? "" : PreviousCommand.Tag);
                 var nt = ((CurrentCommand == null) ? "" : CurrentCommand.Tag);
 
                 var args = new PlaybackStateChangedEventArgs(ot, nt, os, ns);
-                this.PlaybackStateChanged(this, args);
+                PlaybackStateChanged(this, args);
             }
         }
 

@@ -21,9 +21,9 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            var oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            var oldInPort0 = new PortId(newNodeId, 0, PortType.Input);
             var faceInConnector = data.FindFirstConnector(oldInPort0);
-            var oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            var oldInPort1 = new PortId(newNodeId, 1, PortType.Input);
             var crvInConnector = data.FindFirstConnector(oldInPort1);
 
             // probably unnecessary
@@ -48,8 +48,8 @@ namespace Dynamo.Nodes
 
 
             // reconnect output port at 1 to 0
-            var oldXYZOut = new PortId(newNodeId, 1, PortType.OUTPUT);
-            var newXyzOut = new PortId(newNodeId, 0, PortType.OUTPUT);
+            var oldXYZOut = new PortId(newNodeId, 1, PortType.Output);
+            var newXyzOut = new PortId(newNodeId, 0, PortType.Output);
             var xyzConnects = data.FindConnectors(oldXYZOut);
 
             if (xyzConnects != null)
@@ -76,8 +76,8 @@ namespace Dynamo.Nodes
                 data.CreateConnector(newNode, 0, parmAtPt, 1);
 
                 // reconnect remaining output ports to new nodes
-                var newUVOut = new PortId(parmAtPtId, 0, PortType.OUTPUT);
-                var oldUVOut = new PortId(newNodeId, 2, PortType.OUTPUT);
+                var newUVOut = new PortId(parmAtPtId, 0, PortType.Output);
+                var oldUVOut = new PortId(newNodeId, 2, PortType.Output);
 
                 var oldUVConnectors = data.FindConnectors(oldUVOut);
                 if (oldUVConnectors != null)
@@ -103,8 +103,8 @@ namespace Dynamo.Nodes
                 data.CreateConnector(newNode, 0, parmAtPt, 1);
 
                 // reconnect remaining output ports to new nodes
-                var newTOut = new PortId(parmAtPtId, 0, PortType.OUTPUT);
-                var oldTOut = new PortId(newNodeId, 3, PortType.OUTPUT);
+                var newTOut = new PortId(parmAtPtId, 0, PortType.Output);
+                var oldTOut = new PortId(newNodeId, 3, PortType.Output);
 
                 var oldTConnectors = data.FindConnectors(oldTOut);
                 if (oldTConnectors != null)
@@ -130,17 +130,17 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            var oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            var oldInPort0 = new PortId(newNodeId, 0, PortType.Input);
             var connector0 = data.FindFirstConnector(oldInPort0);
-            var oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            var oldInPort1 = new PortId(newNodeId, 1, PortType.Input);
             var connector1 = data.FindFirstConnector(oldInPort1);
 
             data.ReconnectToPort(connector0, oldInPort0);
             data.ReconnectToPort(connector1, oldInPort1);
 
             // reconnect output port at 1 to 0
-            var oldXYZOut = new PortId(newNodeId, 1, PortType.OUTPUT);
-            var newXyzOut = new PortId(newNodeId, 0, PortType.OUTPUT);
+            var oldXYZOut = new PortId(newNodeId, 1, PortType.Output);
+            var newXyzOut = new PortId(newNodeId, 0, PortType.Output);
             var xyzConnects = data.FindConnectors(oldXYZOut);
 
             if (xyzConnects != null)
@@ -167,8 +167,8 @@ namespace Dynamo.Nodes
                 data.CreateConnector(newNode, 0, parmAtPt, 1);
 
                 // reconnect remaining output ports to new nodes
-                var newTOut = new PortId(parmAtPtId, 0, PortType.OUTPUT);
-                var oldTOut = new PortId(newNodeId, 2, PortType.OUTPUT);
+                var newTOut = new PortId(parmAtPtId, 0, PortType.Output);
+                var oldTOut = new PortId(newNodeId, 2, PortType.Output);
 
                 var oldTConnectors = data.FindConnectors(oldTOut);
 
@@ -194,8 +194,8 @@ namespace Dynamo.Nodes
                 data.CreateConnector(newNode, 0, parmAtPt, 1);
 
                 // reconnect remaining output ports to new nodes
-                var newTOut = new PortId(parmAtPtId, 0, PortType.OUTPUT);
-                var oldTOut = new PortId(newNodeId, 3, PortType.OUTPUT);
+                var newTOut = new PortId(parmAtPtId, 0, PortType.Output);
+                var oldTOut = new PortId(newNodeId, 3, PortType.Output);
 
                 var oldTConnectors = data.FindConnectors(oldTOut);
 

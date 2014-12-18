@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-
+using Dynamo.Models;
 using Dynamo.PackageManager;
 
 using Microsoft.Practices.Prism.Commands;
@@ -14,32 +14,32 @@ namespace Dynamo.ViewModels
 {
     public class PackageViewModel : NotificationObject
     {
-        private DynamoViewModel dynamoViewModel;
+        private readonly DynamoViewModel dynamoViewModel;
         public Package Model { get; private set; }
 
         public bool HasAdditionalFiles
         {
-            get { return this.Model.AdditionalFiles.Any(); }
+            get { return Model.AdditionalFiles.Any(); }
         }
 
         public bool HasAdditionalAssemblies
         {
-            get { return this.Model.LoadedAssemblies.Any(x => !x.IsNodeLibrary); }
+            get { return Model.LoadedAssemblies.Any(x => !x.IsNodeLibrary); }
         }
 
         public bool HasNodeLibraries
         {
-            get { return this.Model.LoadedAssemblies.Any(x => x.IsNodeLibrary); }
+            get { return Model.LoadedAssemblies.Any(x => x.IsNodeLibrary); }
         }
 
         public bool HasCustomNodes
         {
-            get { return this.Model.LoadedCustomNodes.Any();  }
+            get { return Model.LoadedCustomNodes.Any();  }
         }
 
         public bool HasAssemblies
         {
-            get { return this.Model.LoadedAssemblies.Any(); }
+            get { return Model.LoadedAssemblies.Any(); }
         }
 
         public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
@@ -55,24 +55,42 @@ namespace Dynamo.ViewModels
         public PackageViewModel(DynamoViewModel dynamoViewModel, Package model)
         {
             this.dynamoViewModel = dynamoViewModel;
-            this.Model = model;
+            Model = model;
 
             ToggleTypesVisibleInManagerCommand = new DelegateCommand(ToggleTypesVisibleInManager, CanToggleTypesVisibleInManager);
             GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
-            PublishNewPackageVersionCommand = new DelegateCommand(PublishNewPackageVersion, CanPublishNewPackageVersion);
-            PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
+            PublishNewPackageVersionCommand = new DelegateCommand(() => PublishNewPackageVersion(DynamoModel.IsTestMode), CanPublishNewPackageVersion);
+            PublishNewPackageCommand = new DelegateCommand(() => PublishNewPackage(DynamoModel.IsTestMode), CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
-            DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
-            UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
-            UnmarkForUninstallationCommand = new DelegateCommand(this.UnmarkForUninstallation, this.CanUnmarkForUninstallation);
-            GoToRootDirectoryCommand = new DelegateCommand(this.GoToRootDirectory, this.CanGoToRootDirectory);
+            DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
+            UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
+            UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
+            GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, CanGoToRootDirectory);
 
-            this.Model.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
-            this.Model.PropertyChanged += ModelOnPropertyChanged;
-            this.dynamoViewModel.Model.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
-            this.dynamoViewModel.Model.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
-            this.dynamoViewModel.Model.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
-            this.dynamoViewModel.Model.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
+            Model.LoadedAssemblies.CollectionChanged += LoadedAssembliesOnCollectionChanged;
+            Model.PropertyChanged += ModelOnPropertyChanged;
+
+            this.dynamoViewModel.Model.WorkspaceAdded += WorkspaceAdded;
+            this.dynamoViewModel.Model.WorkspaceRemoved += WorkspaceRemoved;
+        }
+
+        private void NodeAddedOrRemovedHandler(object _)
+        {
+            UninstallCommand.RaiseCanExecuteChanged();
+        }
+
+        private void WorkspaceAdded(WorkspaceModel ws)
+        {
+            UninstallCommand.RaiseCanExecuteChanged();
+            ws.NodeAdded += NodeAddedOrRemovedHandler;
+            ws.NodeRemoved += NodeAddedOrRemovedHandler;
+        }
+
+        private void WorkspaceRemoved(WorkspaceModel ws)
+        {
+            UninstallCommand.RaiseCanExecuteChanged();
+            ws.NodeAdded -= NodeAddedOrRemovedHandler;
+            ws.NodeRemoved -= NodeAddedOrRemovedHandler;
         }
 
         private void LoadedAssembliesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -86,24 +104,24 @@ namespace Dynamo.ViewModels
         {
             if (propertyChangedEventArgs.PropertyName == "MarkedForUninstall")
             {
-                this.UnmarkForUninstallationCommand.RaiseCanExecuteChanged();
-                this.UninstallCommand.RaiseCanExecuteChanged();
+                UnmarkForUninstallationCommand.RaiseCanExecuteChanged();
+                UninstallCommand.RaiseCanExecuteChanged();
             }
         }
 
         private void UnmarkForUninstallation()
         {
-            this.Model.UnmarkForUninstall( this.dynamoViewModel.Model.PreferenceSettings );
+            Model.UnmarkForUninstall( dynamoViewModel.Model.PreferenceSettings );
         }
 
         private bool CanUnmarkForUninstallation()
         {
-            return this.Model.MarkedForUninstall;
+            return Model.MarkedForUninstall;
         }
 
         private void Uninstall()
         {
-            if (this.Model.LoadedAssemblies.Any())
+            if (Model.LoadedAssemblies.Any())
             {
                 var resAssem =
                     MessageBox.Show("Dynamo and its host application must restart before uninstall takes effect.",
@@ -113,14 +131,14 @@ namespace Dynamo.ViewModels
                 if (resAssem == MessageBoxResult.Cancel) return;
             }
 
-            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Model.Name + "?  This will delete the packages root directory.\n\n"+
+            var res = MessageBox.Show("Are you sure you want to uninstall " + Model.Name + "?  This will delete the packages root directory.\n\n"+
                 " You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
             try
             {
-                var dynModel = this.dynamoViewModel.Model;
-                Model.UninstallCore(dynModel.CustomNodeManager, dynModel.Loader.PackageLoader, dynModel.PreferenceSettings, dynModel.Logger);
+                var dynModel = dynamoViewModel.Model;
+                Model.UninstallCore(dynModel.CustomNodeManager, dynModel.PackageLoader, dynModel.PreferenceSettings);
             }
             catch (Exception)
             {
@@ -130,13 +148,13 @@ namespace Dynamo.ViewModels
 
         private bool CanUninstall()
         {
-            return (!this.Model.InUse(this.dynamoViewModel.Model) || this.Model.LoadedAssemblies.Any()) 
-                && !this.Model.MarkedForUninstall;
+            return (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any()) 
+                && !Model.MarkedForUninstall;
         }
 
         private void GoToRootDirectory()
         {
-            Process.Start(this.Model.RootDirectory);
+            Process.Start(Model.RootDirectory);
         }
 
         private bool CanGoToRootDirectory()
@@ -146,34 +164,34 @@ namespace Dynamo.ViewModels
 
         private void Deprecate()
         {
-            var res = MessageBox.Show("Are you sure you want to deprecate " + this.Model.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.  \n\n You can always undeprecate the package.", "Deprecating Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var res = MessageBox.Show("Are you sure you want to deprecate " + Model.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.  \n\n You can always undeprecate the package.", "Deprecating Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
-            dynamoViewModel.Model.PackageManagerClient.Deprecate(this.Model.Name);
+            dynamoViewModel.Model.PackageManagerClient.Deprecate(Model.Name);
         }
 
         private bool CanDeprecate()
         {
-            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
         private void Undeprecate()
         {
-            var res = MessageBox.Show("Are you sure you want to undeprecate " + this.Model.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.  \n\n You can always re-deprecate the package.", "Removing Package Deprecation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var res = MessageBox.Show("Are you sure you want to undeprecate " + Model.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.  \n\n You can always re-deprecate the package.", "Removing Package Deprecation", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
-            dynamoViewModel.Model.PackageManagerClient.Undeprecate(this.Model.Name);
+            dynamoViewModel.Model.PackageManagerClient.Undeprecate(Model.Name);
         }
 
         private bool CanUndeprecate()
         {
-            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
-        private void PublishNewPackageVersion()
+        private void PublishNewPackageVersion(bool isTestMode)
         {
-            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager);
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, this.Model);
+            Model.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, isTestMode);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
             vm.IsNewVersion = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
@@ -181,13 +199,13 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackageVersion()
         {
-            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
-        private void PublishNewPackage()
+        private void PublishNewPackage(bool isTestMode)
         {
-            this.Model.RefreshCustomNodesFromDirectory(this.dynamoViewModel.Model.CustomNodeManager);
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, this.Model);
+            Model.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, isTestMode);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
             vm.IsNewVersion = false;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
@@ -195,7 +213,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackage()
         {
-            return this.dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
         }
 
         private void GetLatestVersion()
@@ -210,7 +228,7 @@ namespace Dynamo.ViewModels
 
         private void ToggleTypesVisibleInManager()
         {
-            this.Model.TypesVisibleInManager = !this.Model.TypesVisibleInManager;
+            Model.TypesVisibleInManager = !Model.TypesVisibleInManager;
         }
 
         private bool CanToggleTypesVisibleInManager()

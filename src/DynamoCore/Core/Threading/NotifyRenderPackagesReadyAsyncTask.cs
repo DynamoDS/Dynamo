@@ -1,6 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-namespace Dynamo.Core.Threading
+﻿namespace Dynamo.Core.Threading
 {
     /// <summary>
     /// This async task is scheduled after all UpdateRenderPackageAsyncTask are 
@@ -18,7 +16,7 @@ namespace Dynamo.Core.Threading
             get { return TaskPriority.Normal; }
         }
 
-        internal NotifyRenderPackagesReadyAsyncTask(DynamoScheduler scheduler)
+        internal NotifyRenderPackagesReadyAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }
@@ -49,5 +47,3 @@ namespace Dynamo.Core.Threading
         }
     }
 }
-
-#endif

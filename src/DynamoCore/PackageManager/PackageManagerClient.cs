@@ -6,6 +6,7 @@ using System.Security.Authentication;
 using System.Threading.Tasks;
 
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 using Greg;
 using Greg.Requests;
@@ -48,13 +49,15 @@ namespace Dynamo.PackageManager
 
         #region Properties/Fields
 
+        private readonly string rootPkgDir;
+        private readonly CustomNodeManager customNodeManager;
+
         [Obsolete]
         internal readonly static string PackageContainsBinariesConstant = "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
 
         [Obsolete]
         internal readonly static string PackageContainsPythonScriptsConstant = "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
-        private readonly DynamoModel dynamoModel;
 
         public bool HasAuthenticator
         {
@@ -114,11 +117,13 @@ namespace Dynamo.PackageManager
         #endregion
 
         private static readonly string serverUrl = "https://www.dynamopackages.com/";
-
-        public PackageManagerClient(DynamoModel dynamoModel)
+        
+        public PackageManagerClient(string rootPkgDir,  CustomNodeManager customNodeManager)
         {
-            this.dynamoModel = dynamoModel;
-            Client = new Client(null, serverUrl); 
+            this.rootPkgDir = rootPkgDir;
+            this.customNodeManager = customNodeManager;
+
+            Client = new Client(null, "http://www.dynamopackages.com");
         }
 
         //public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
@@ -222,7 +227,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public PackageUploadHandle Publish(Package l, List<string> files, bool isNewVersion)
+        public PackageUploadHandle Publish(Package l, List<string> files, bool isNewVersion, bool isTestMode)
         {
             this.OnRequestAuthentication();
 
@@ -236,14 +241,11 @@ namespace Dynamo.PackageManager
             }
 
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(l));
-            return PublishPackage(isNewVersion, l, files, packageUploadHandle);
+            return PublishPackage(isNewVersion, l, files, packageUploadHandle, isTestMode);
 
         }
 
-        private PackageUploadHandle PublishPackage( bool isNewVersion, 
-                                                    Package l, 
-                                                    List<string> files,
-                                                    PackageUploadHandle packageUploadHandle )
+        private PackageUploadHandle PublishPackage(bool isNewVersion, Package l, List<string> files, PackageUploadHandle packageUploadHandle, bool isTestMode)
         {
             Task.Factory.StartNew(() =>
             {
@@ -252,15 +254,13 @@ namespace Dynamo.PackageManager
                     ResponseBody ret = null;
                     if (isNewVersion)
                     {
-                        var pkg = PackageUploadBuilder.NewPackageVersion(this.dynamoModel, l, files, packageUploadHandle); 
-
+                        var pkg = PackageUploadBuilder.NewPackageVersion(rootPkgDir, customNodeManager, l, files, packageUploadHandle, isTestMode);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
-                        var pkg = PackageUploadBuilder.NewPackage(this.dynamoModel, l, files, packageUploadHandle);
-
+                        var pkg = PackageUploadBuilder.NewPackage(rootPkgDir, customNodeManager, l, files, packageUploadHandle, isTestMode);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = Client.ExecuteAndDeserialize(pkg);
                     }

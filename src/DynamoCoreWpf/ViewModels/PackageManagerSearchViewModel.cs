@@ -9,9 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
-
 using Dynamo.ViewModels;
 
 using Greg.Responses;
@@ -508,7 +506,7 @@ namespace Dynamo.PackageManager
                     }
                 }
 
-                var localPkgs = this.PackageManagerClientViewModel.DynamoViewModel.Model.Loader.PackageLoader.LocalPackages;
+                var localPkgs = this.PackageManagerClientViewModel.DynamoViewModel.Model.PackageLoader.LocalPackages;
 
                 var uninstallsRequiringRestart = new List<Package>();
                 var uninstallRequiringUserModifications = new List<Package>();
@@ -697,8 +695,9 @@ namespace Dynamo.PackageManager
             if (!String.IsNullOrEmpty(query))
             {
                 return
-                    SearchDictionary.Search(query, MaxNumSearchResults)
-                        .Select(x => new PackageManagerSearchElementViewModel(x));
+                    SearchDictionary.Search(query)
+                        .Select(x => new PackageManagerSearchElementViewModel(x))
+                        .Take(MaxNumSearchResults);
             }
 
             // with null query, don't show deprecated packages

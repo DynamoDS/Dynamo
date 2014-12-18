@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI.Commands
 {
@@ -29,12 +30,7 @@ namespace Dynamo.UI.Commands
 
         public bool CanExecute(object parameter)
         {
-            if (_canExecute == null)
-            {
-                return true;
-            }
-
-            return _canExecute(parameter);
+            return _canExecute == null || _canExecute(parameter);
         }
 
         public void Execute(object parameter)

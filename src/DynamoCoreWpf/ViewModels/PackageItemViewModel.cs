@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
-
-using Dynamo.UI.Commands;
 
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -137,7 +134,7 @@ namespace Dynamo.PackageManager.UI
             {
                 if (DependencyType == DependencyType.CustomNode)
                 {
-                    return Definition.WorkspaceModel.Name;
+                    return Definition.DisplayName;
                 }
                 else if (DependencyType == DependencyType.Assembly)
                 {
@@ -173,7 +170,7 @@ namespace Dynamo.PackageManager.UI
                         discoveredDeps.Add(dep);
                         packDep.BuildDependencies(discoveredDeps);
                     }
-                    this.Items.Add(packDep);
+                    Items.Add(packDep);
                 }
             }
         }

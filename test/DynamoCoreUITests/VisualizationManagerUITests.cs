@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 
 using SystemTestServices;
-
+using Dynamo;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -34,7 +34,7 @@ namespace DynamoCoreUITests
             var viz = ViewModel.VisualizationManager;
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
@@ -54,7 +54,7 @@ namespace DynamoCoreUITests
             //model.Open(openPath);
 
             //// run the expression
-            //ViewModel.Model.RunExpression();
+            //ViewModel.HomeSpace.Run();
 
             ////graphics will have been updated at this point
             ////enabled the background preview and ensure that it 
@@ -79,7 +79,7 @@ namespace DynamoCoreUITests
             //Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             //// run the expression
-            //ViewModel.Model.RunExpression();
+            //ViewModel.HomeSpace.Run();
 
             ////adjust the number node's value - currently set to 0..5 to something that makes the XYZ error
             //var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
@@ -102,7 +102,7 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             //we start with all previews disabled
             //the graph is two points feeding into a line
@@ -114,7 +114,7 @@ namespace DynamoCoreUITests
 
             //now flip off the preview on one of the points
             //and ensure that the visualization updates without re-running
-            var p1 = model.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
+            var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
             p1.IsVisible = false;
 
             Assert.AreEqual(1, BackgroundPreview.Points.Count);
@@ -122,7 +122,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
             //flip off the lines node
-            var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.IsVisible = false;
 
             Assert.AreEqual(1, BackgroundPreview.Points.Count);
@@ -147,7 +147,7 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             //we start with all previews disabled
             //the graph is two points feeding into a line
@@ -158,7 +158,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
             //flip off the line node's preview upstream
-            var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.IsUpstreamVisible = false;
 
             Assert.NotNull(model);
@@ -188,19 +188,19 @@ namespace DynamoCoreUITests
             
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             //ensure that the number of visualizations matches the 
             //number of pieces of geometry in the collection
             Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
 
             //adjust the number node's value - currently set to 0..5 (6 elements)
-            var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
+            var numNode = (DoubleInput)model.CurrentWorkspace.Nodes.First(x => x is DoubleInput);
             numNode.Value = "0..10";
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Count);
         }
@@ -217,7 +217,7 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             //ensure the correct representations
 
@@ -228,9 +228,9 @@ namespace DynamoCoreUITests
             Assert.AreEqual(6, BackgroundPreview.Lines.Count / 2);
             
             //delete a conector coming into the lines node
-            var lineNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            var lineNode = model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             var port = lineNode.InPorts.First();
-            port.Disconnect(port.Connectors.First());
+            port.Connectors.First().Delete();
 
             //ensure that the visualization no longer contains
             //the renderables for the line node
@@ -247,11 +247,11 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(BackgroundPreview.Mesh.TriangleIndices.Count > 0);
 
-            model.HomeSpace.HasUnsavedChanges = false;
+            ViewModel.HomeSpace.HasUnsavedChanges = false;
         }
 
         [Test]
@@ -263,7 +263,7 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             //var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
             Assert.AreEqual(36, BackgroundPreview.Mesh.Positions.Count);
@@ -278,7 +278,7 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.AreEqual(2, BackgroundPreview.XAxes.Count);
             Assert.AreEqual(2, BackgroundPreview.YAxes.Count);
@@ -294,7 +294,7 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             //total points are the two strips of points at the top and
             //bottom of the mesh, duplicated 11x2x2 plus the one mesh
@@ -313,19 +313,19 @@ namespace DynamoCoreUITests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.AreEqual(6, BackgroundPreview.Points.Count);
 
             //delete a node and ensure that the renderables are cleaned up
-            var pointNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "0b472626-e18f-404a-bec4-d84ad7f33011");
+            var pointNode = model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == "0b472626-e18f-404a-bec4-d84ad7f33011");
             var modelsToDelete = new List<ModelBase> {pointNode};
             model.DeleteModelInternal(modelsToDelete);
 
-            model.HomeSpace.HasUnsavedChanges = false;
+            ViewModel.HomeSpace.HasUnsavedChanges = false;
 
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
         }
@@ -339,13 +339,13 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             //ensure that we have some visualizations
             Assert.Greater(BackgroundPreview.Points.Count, 0);
 
             //now clear the workspace
-            model.Clear(null);
+            model.ClearCurrentWorkspace();
 
             //ensure that we have no visualizations
             Assert.AreEqual(0, BackgroundPreview.Points.Count);
@@ -354,14 +354,15 @@ namespace DynamoCoreUITests
         [Test]
         public void VisualizationsAreCreatedForCustomNodes()
         {
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Points.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Points.dyf"), true, out info));
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_customNode.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             //ensure that we have some visualizations
             Assert.Greater(BackgroundPreview.Points.Count, 0);
@@ -374,7 +375,7 @@ namespace DynamoCoreUITests
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             //all nodes are set to not preview in the file
             //ensure that we have no visualizations
@@ -394,14 +395,14 @@ namespace DynamoCoreUITests
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
-            Assert.IsTrue(model.AllNodes.All(x => x.DisplayLabels != true));
+            Assert.IsTrue(ViewModel.HomeSpace.Nodes.All(x => x.DisplayLabels != true));
 
-            var cbn = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "fdec3b9b-56ae-4d01-85c2-47b8425e3130") as CodeBlockNodeModel;
+            var cbn = model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == "fdec3b9b-56ae-4d01-85c2-47b8425e3130") as CodeBlockNodeModel;
             Assert.IsNotNull(cbn);
-            cbn.Code = "Point.ByCoordinates(a<1>,a<1>,a<1>);";
+            cbn.SetCodeContent("Point.ByCoordinates(a<1>,a<1>,a<1>);", model.CurrentWorkspace.UndoRecorder);
             
             // run the expression
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
             Assert.AreEqual(4, BackgroundPreview.Points.Count());
 
             //label displayed should be possible now because
@@ -409,12 +410,12 @@ namespace DynamoCoreUITests
             cbn.DisplayLabels = true;
             Assert.AreEqual(BackgroundPreview.Text.Count(), 4);
 
-            cbn.Code = "Point.ByCoordinates(a<1>,a<2>,a<3>);";
+            cbn.SetCodeContent("Point.ByCoordinates(a<1>,a<2>,a<3>);", model.CurrentWorkspace.UndoRecorder);
 
             //change the lacing to cross product 
             //ensure that the labels update to match
             //ptNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
             Assert.AreEqual(64, BackgroundPreview.Points.Count());
             Assert.AreEqual(64, BackgroundPreview.Text.Count());
 
@@ -435,16 +436,16 @@ namespace DynamoCoreUITests
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
-            Assert.IsTrue(model.AllNodes.All(x => x.DisplayLabels != true));
+            Assert.IsTrue(ViewModel.HomeSpace.Nodes.All(x => x.DisplayLabels != true));
 
             // run the expression
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             Assert.AreEqual(6, BackgroundPreview.Lines.Count()/2);
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
-            var crvNode = model.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            var crvNode = model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
@@ -461,7 +462,7 @@ namespace DynamoCoreUITests
             var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\");
             ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "visualize_line_incustom.dyn"));
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             Assert.AreEqual(1, BackgroundPreview.Lines.Count / 2);
 
             // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
@@ -469,9 +470,10 @@ namespace DynamoCoreUITests
             var node = workspace.Nodes.OfType<DSFunction>().First();
 
             List<NodeModel> selectionSet = new List<NodeModel>() { node };
-            NodeCollapser.Collapse(ViewModel.Model,
+            var customWorkspace = model.CustomNodeManager.Collapse(
                 selectionSet.AsEnumerable(),
                 model.CurrentWorkspace,
+                true,
                 new FunctionNamePromptEventArgs
                 {
                     Category = "Testing",
@@ -479,11 +481,9 @@ namespace DynamoCoreUITests
                     Name = "__VisualizationTest__",
                     Success = true
                 });
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             // Switch to custom workspace
-            var customWorkspace = model.Workspaces.Where(w => w is CustomNodeWorkspaceModel).First()
-                                    as CustomNodeWorkspaceModel;
             model.CurrentWorkspace = customWorkspace;
 
             // Select that node
@@ -495,11 +495,11 @@ namespace DynamoCoreUITests
 
         private int GetTotalDrawablesInModel()
         {
-            return ViewModel.Model.Nodes
-                .SelectMany(x=>x.RenderPackages)
-                .Cast<RenderPackage>()
-                .Where(x=>x.IsNotEmpty())
-                .Aggregate(0,(a, b) => a + b.ItemsCount);
+            return
+                ViewModel.Model.CurrentWorkspace.Nodes.SelectMany(x => x.RenderPackages)
+                    .Cast<RenderPackage>()
+                    .Where(x => x.IsNotEmpty())
+                    .Aggregate(0, (a, b) => a + b.ItemsCount);
         }
     }
 }

@@ -22,33 +22,33 @@ namespace Dynamo.PackageManager
                                                          l.SiteUrl, l.RepositoryUrl, l.ContainsBinaries, l.NodeLibraries.Select(x => x.FullName) ); 
         } 
 
-        public static PackageUpload NewPackage(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        public static PackageUpload NewPackage(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
         {
             var header = NewPackageHeader(pkg);
-            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, header, pkg, files, uploadHandle);
+            var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, header, pkg, files, uploadHandle, isTestMode);
             return new PackageUpload(header, zipPath);
         }
 
-        public static PackageVersionUpload NewPackageVersion(DynamoModel dynamoModel, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        public static PackageVersionUpload NewPackageVersion(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
         {
             var header = NewPackageHeader(pkg);
-            var zipPath = DoPackageFileOperationsAndZip(dynamoModel, header, pkg, files, uploadHandle);
+            var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, header, pkg, files, uploadHandle, isTestMode);
             return new PackageVersionUpload(header, zipPath);
         }
 
     #region Utility methods
 
-        private static string DoPackageFileOperationsAndZip(DynamoModel dynamoModel, PackageUploadRequestBody header, Package pkg, List<string> files, PackageUploadHandle uploadHandle)
+        private static string DoPackageFileOperationsAndZip(string rootPkgDir, CustomNodeManager customNodeManager, PackageUploadRequestBody header, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
         {
             uploadHandle.UploadState = PackageUploadHandle.State.Copying;
 
             DirectoryInfo rootDir, dyfDir, binDir, extraDir;
-            FormPackageDirectory(dynamoModel.Loader.PackageLoader.RootPackagesDirectory, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
+            FormPackageDirectory(rootPkgDir, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
             pkg.RootDirectory = rootDir.FullName;
             WritePackageHeader(header, rootDir);
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
             RemoveDyfFiles(files, dyfDir); 
-            RemapCustomNodeFilePaths(dynamoModel.CustomNodeManager, files, dyfDir.FullName);
+            RemapCustomNodeFilePaths(customNodeManager, files, dyfDir.FullName, isTestMode);
 
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
 
@@ -71,20 +71,23 @@ namespace Dynamo.PackageManager
             return zipPath;
         }
 
-        private static void RemapCustomNodeFilePaths( CustomNodeManager customNodeManager, IEnumerable<string> filePaths, string dyfRoot )
+        private static void RemapCustomNodeFilePaths(CustomNodeManager customNodeManager, IEnumerable<string> filePaths, string dyfRoot, bool isTestMode)
         {
-            var defList = filePaths
-                .Where(x => x.EndsWith(".dyf"))
+            var defList = filePaths.Where(x => x.EndsWith(".dyf"))
                 .Select(customNodeManager.GuidFromPath)
-                .Select(customNodeManager.GetFunctionDefinition)
-                .ToList();
-                
-            defList.ForEach( func =>
+                .Select(
+                    id =>
                     {
-                        var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.WorkspaceModel.FileName));
-                        func.WorkspaceModel.FileName = newPath;
-                        customNodeManager.SetNodePath(func.FunctionId, newPath);
-                    });
+                        CustomNodeWorkspaceModel def;
+                        return
+                            new { Success = customNodeManager.TryGetFunctionWorkspace(id, isTestMode, out def), Workspace = def };
+                    }).Where(result => result.Success).Select(result => result.Workspace);
+
+            foreach (var func in defList)
+            {
+                var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.FileName));
+                func.FileName = newPath;
+            }
         }
 
         private static void RemoveDyfFiles(IEnumerable<string> filePaths, DirectoryInfo dyfDir)

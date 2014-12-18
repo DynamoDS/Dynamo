@@ -7,14 +7,11 @@ namespace Dynamo.Models
     public enum ConnectorType { BEZIER, POLYLINE };
 
     public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
-
-    public class ConnectorModel: ModelBase
+    
+    public class ConnectorModel : ModelBase
     {
-
         #region properties
-
-        private readonly WorkspaceModel workspaceModel;
-
+        
         public event ConnectorConnectedHandler Connected;
 
         protected virtual void OnConnected(EventArgs e)
@@ -23,8 +20,8 @@ namespace Dynamo.Models
                 Connected(this, e);
         }
 
-        PortModel pStart;
-        PortModel pEnd;
+        private PortModel pStart;
+        private PortModel pEnd;
 
         public PortModel Start
         {
@@ -44,7 +41,7 @@ namespace Dynamo.Models
         #endregion 
 
         #region constructors
-        
+
         /// <summary>
         /// Factory method to create a connector.  Checks to make sure that the start and end ports are valid, 
         /// otherwise returns null.
@@ -53,42 +50,31 @@ namespace Dynamo.Models
         /// <param name="end">The port where the connector ends</param>
         /// <param name="startIndex"></param>
         /// <param name="endIndex"></param>
-        /// <param name="portType"></param>
+        /// <param name="guid"></param>
         /// <returns>The valid connector model or null if the connector is invalid</returns>
-        internal static ConnectorModel Make(WorkspaceModel workspaceModel, NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
+        internal static ConnectorModel Make(
+            NodeModel start, NodeModel end, int startIndex, int endIndex, Guid? guid = null)
         {
-            if (workspaceModel != null && start != null && end != null && start != end && startIndex >= 0
-                && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex )
+            if (start != null && end != null && start != end && startIndex >= 0
+                && endIndex >= 0 && start.OutPorts.Count > startIndex
+                && end.InPorts.Count > endIndex)
             {
-                return new ConnectorModel(workspaceModel, start, end, startIndex, endIndex, portType);
+                return new ConnectorModel(start, end, startIndex, endIndex, guid ?? Guid.NewGuid());
             }
-            
+
             return null;
         }
 
-        private ConnectorModel(WorkspaceModel workspaceModel, NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
+        private ConnectorModel(
+            NodeModel start, NodeModel end, int startIndex, int endIndex, Guid guid)
         {
-            this.workspaceModel = workspaceModel;
-
+            GUID = guid;
             pStart = start.OutPorts[startIndex];
 
-            PortModel endPort = null;
-
-            if (portType == PortType.INPUT)
-                endPort = end.InPorts[endIndex];
+            PortModel endPort = end.InPorts[endIndex];
 
             pStart.Connect(this);
-            this.Connect(endPort);
-        }
-
-        public static ConnectorModel Make(WorkspaceModel workspace)
-        {
-            return new ConnectorModel(workspace);
-        }
-
-        private ConnectorModel(WorkspaceModel workspace)
-        {
-            this.workspaceModel = workspace;
+            Connect(endPort);
         }
 
         #endregion
@@ -104,14 +90,14 @@ namespace Dynamo.Models
 
             //if the selected connector is also an output connector, return false
             //output ports can't be connected to eachother
-            if (p.PortType == PortType.OUTPUT)
+            if (p.PortType == PortType.Output)
             {
                 return false;
             }
 
             //test if the port that you are connecting to is an input and 
             //already has other connectors
-            if (p.PortType == PortType.INPUT && p.Connectors.Count > 0)
+            if (p.PortType == PortType.Input && p.Connectors.Count > 0)
             {
                 p.Disconnect(p.Connectors[0]);
             }
@@ -143,7 +129,7 @@ namespace Dynamo.Models
 
         }
 
-        public void NotifyConnectedPortsOfDeletion()
+        public void Delete()
         {
             if (pStart != null && pStart.Connectors.Contains(this))
             {
@@ -153,52 +139,63 @@ namespace Dynamo.Models
             {
                 pEnd.Disconnect(this);
             }
+            OnDeleted();
         }
 
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("guid", this.GUID);
-            helper.SetAttribute("start", this.Start.Owner.GUID);
-            helper.SetAttribute("start_index", this.Start.Index);
-            helper.SetAttribute("end", this.End.Owner.GUID);
-            helper.SetAttribute("end_index", this.End.Index);
-            helper.SetAttribute("portType", ((int) this.End.PortType));
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("guid", GUID);
+            helper.SetAttribute("start", Start.Owner.GUID);
+            helper.SetAttribute("start_index", Start.Index);
+            helper.SetAttribute("end", End.Owner.GUID);
+            helper.SetAttribute("end_index", End.Index);
+            //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            XmlElementHelper helper = new XmlElementHelper(element);
+            //This is now handled via NodeGraph.LoadConnectorFromXml
+
+            /*
+            var helper = new XmlElementHelper(element);
 
             // Restore some information from the node attributes.
-            this.GUID = helper.ReadGuid("guid", this.GUID);
+            GUID = helper.ReadGuid("guid", GUID);
             Guid startNodeId = helper.ReadGuid("start");
             int startIndex = helper.ReadInteger("start_index");
             Guid endNodeId = helper.ReadGuid("end");
             int endIndex = helper.ReadInteger("end_index");
-            PortType portType = ((PortType)helper.ReadInteger("portType"));
+            var portType = ((PortType)helper.ReadInteger("portType"));
 
             // Get to the start and end nodes that this connector connects to.
-            NodeModel startNode = workspaceModel.GetModelInternal(startNodeId) as NodeModel;
-            NodeModel endNode = workspaceModel.GetModelInternal(endNodeId) as NodeModel;
+            var startNode = workspaceModel.GetModelInternal(startNodeId) as NodeModel;
+            var endNode = workspaceModel.GetModelInternal(endNodeId) as NodeModel;
 
             pStart = startNode.OutPorts[startIndex];
             PortModel endPort = null;
-            if (portType == PortType.INPUT)
+            if (portType == PortType.Input)
                 endPort = endNode.InPorts[endIndex];
 
             pStart.Connect(this);
-            this.Connect(endPort);
+            Connect(endPort);*/
         }
 
         #endregion
+
+        public event Action Deleted;
+        protected virtual void OnDeleted()
+        {
+            var handler = Deleted;
+            if (handler != null) handler();
+        }
     }
 
     public class InvalidPortException : ApplicationException
     {
-        private string message;
+        private readonly string message;
         public override string Message
         {
             get { return message; }

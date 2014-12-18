@@ -35,7 +35,41 @@ namespace Dynamo.Core.Threading
     public delegate void TaskStateChangedEventHandler(
         DynamoScheduler sender, TaskStateChangedEventArgs e);
 
-    public partial class DynamoScheduler
+    public interface IScheduler 
+    {
+        /// <summary>
+        /// AsyncTask base class calls this to obtain the new time-stamp value.
+        /// </summary>
+        TimeStamp NextTimeStamp { get; }
+
+        /// <summary>
+        /// An ISchedulerThread implementation calls this method so scheduler 
+        /// starts to process the next task in the queue, if there is any. Note 
+        /// that this method is meant to process only one task in queue. The 
+        /// implementation of ISchedulerThread is free to call this method again
+        /// in a fashion that matches its task fetching behavior.
+        /// </summary>
+        /// <param name="waitIfTaskQueueIsEmpty">This parameter is only used if 
+        /// the task queue is empty at the time this method is invoked. When the
+        /// task queue becomes empty, setting this to true will cause this call  
+        /// to block until either the next task becomes available, or when the 
+        /// scheduler is requested to shutdown.</param>
+        /// <returns>This method returns true if the task queue is not empty, or
+        /// false otherwise. Note that this method returns false when scheduler
+        /// begins to shutdown, even when the task queue is not empty.</returns>
+        /// 
+        bool ProcessNextTask(bool waitIfTaskQueueIsEmpty);
+
+        /// <summary>
+        /// Callers of this method create an instance of AsyncTask derived 
+        /// class and call this method to schedule the task for execution.
+        /// </summary>
+        /// <param name="asyncTask">The task to execute asynchronously.</param>
+        /// 
+        void ScheduleForExecution(AsyncTask asyncTask);
+    }
+
+    public partial class DynamoScheduler : IScheduler
     {
         #region Class Events, Properties
 
@@ -52,15 +86,16 @@ namespace Dynamo.Core.Threading
         /// <summary>
         /// AsyncTask base class calls this to obtain the new time-stamp value.
         /// </summary>
-        internal TimeStamp NextTimeStamp { get { return generator.Next; } }
+        public TimeStamp NextTimeStamp { get { return generator.Next; } }
 
         #endregion
 
         #region Public Class Operational Methods
 
-        internal DynamoScheduler(ISchedulerThread schedulerThread)
+        internal DynamoScheduler(ISchedulerThread schedulerThread, bool isTestMode)
         {
             this.schedulerThread = schedulerThread;
+            IsTestMode = isTestMode;
 
             // The host implementation of ISchedulerThread can begin access the 
             // scheduler as soon as this method is invoked. It is important for 
@@ -99,14 +134,14 @@ namespace Dynamo.Core.Threading
         /// </summary>
         /// <param name="asyncTask">The task to execute asynchronously.</param>
         /// 
-        internal void ScheduleForExecution(AsyncTask asyncTask)
+        public void ScheduleForExecution(AsyncTask asyncTask)
         {
             // When an AsyncTask is scheduled for execution during a test, it 
             // executes on the context of the thread that runs the unit test 
             // case (in a regular headless test case this is the unit test 
             // background thread; in a recorded test this is the main ui thread).
             // 
-            if (DynamoModel.IsTestMode)
+            if (IsTestMode)
             {
                 asyncTask.MarkTaskAsScheduled();
                 NotifyTaskStateChanged(asyncTask, TaskState.Scheduled);
@@ -128,6 +163,11 @@ namespace Dynamo.Core.Threading
                 waitHandles[(int)EventIndex.TaskAvailable].Set();
             }
         }
+
+        /// <summary>
+        ///     Flag determining whether or not the scheduler is operating in Test Mode.
+        /// </summary>
+        public bool IsTestMode { get; private set; }
 
         /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 

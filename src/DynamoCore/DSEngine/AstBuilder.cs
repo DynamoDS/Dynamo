@@ -3,7 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Dynamo.Interfaces;
+using Dynamo.Library;
 using Dynamo.Models;
 
 using ProtoCore;
@@ -28,14 +29,12 @@ namespace Dynamo.DSEngine
     /// <summary>
     ///     AstBuilder is a factory class to create different kinds of AST nodes.
     /// </summary>
-    public class AstBuilder
+    public class AstBuilder : LogSourceBase
     {
-        private readonly DynamoModel dynamoModel;
         private readonly IAstNodeContainer nodeContainer;
 
-        public AstBuilder(DynamoModel dynamoModel, IAstNodeContainer nodeContainer)
+        public AstBuilder(IAstNodeContainer nodeContainer)
         {
-            this.dynamoModel = dynamoModel;
             this.nodeContainer = nodeContainer;
         }
 
@@ -96,7 +95,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution)
+        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution, bool verboseLogging)
         {
 
             var inputAstNodes = new List<AssociativeNode>();
@@ -128,7 +127,7 @@ namespace Dynamo.DSEngine
 
             //TODO: This should do something more than just log a generic message. --SJE
             if (node.State == ElementState.Error)
-                dynamoModel.Logger.Log("Error in Node. Not sent for building and compiling");
+                Log("Error in Node. Not sent for building and compiling");
 
             if (isDeltaExecution)
                 OnAstNodeBuilding(node.GUID);
@@ -141,14 +140,14 @@ namespace Dynamo.DSEngine
             var scopedNode = node as ScopedNodeModel;
             IEnumerable<AssociativeNode> astNodes = 
                 scopedNode != null
-                    ? scopedNode.BuildAstInScope(inputAstNodes)
+                    ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
                     : node.BuildAst(inputAstNodes);
             
-            if (dynamoModel.DebugSettings.VerboseLogging)
+            if (verboseLogging)
             {
                 foreach (var n in astNodes)
                 {
-                    dynamoModel.Logger.Log(n.ToString());
+                    Log(n.ToString());
                 }
             }
 
@@ -172,7 +171,7 @@ namespace Dynamo.DSEngine
                         //Register the function node in global scope with Graph Sync data,
                         //so that we don't have a function definition inside the function def
                         //of custom node.
-                        OnAstNodeBuilt(node.GUID, new AssociativeNode[] { item });
+                        OnAstNodeBuilt(node.GUID, new[] { item });
                     }
                     else
                         resultList.Add(item);
@@ -186,7 +185,8 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="isDeltaExecution"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
+        /// <param name="verboseLogging"></param>
+        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
@@ -196,31 +196,14 @@ namespace Dynamo.DSEngine
 
             if (isDeltaExecution)
             {
-                foreach (var node in sortedNodes)
-                {
-                    var scopedNode = node as ScopedNodeModel;
-                    if (scopedNode != null)
-                    {
-                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
-                        scopedNode.RequiresRecalc = dirtyInScopeNodes.Any();
-                        foreach (var dirtyNode in dirtyInScopeNodes)
-                        {
-                            dirtyNode.RequiresRecalc = false;
-                        }
-                    }
-                }
-
-                sortedNodes = sortedNodes.Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
+                sortedNodes = sortedNodes.Where(n => n.ForceReExecuteOfNode);
             }
 
             var result = new List<AssociativeNode>();
 
             foreach (NodeModel node in sortedNodes)
             {
-                _CompileToAstNodes(node, result, isDeltaExecution);
-
-                if (isDeltaExecution)
-                    node.RequiresRecalc = false;
+                _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging);
             }
 
             return result;
@@ -230,20 +213,22 @@ namespace Dynamo.DSEngine
         /// <summary>
         ///     Compiles a collection of Dynamo nodes into a function definition for a custom node.
         /// </summary>
-        /// <param name="def"></param>
+        /// <param name="functionId"></param>
+        /// <param name="returnKeys"></param>
+        /// <param name="functionName"></param>
         /// <param name="funcBody"></param>
         /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
+        /// <param name="verboseLogging"></param>
         public void CompileCustomNodeDefinition(
-            CustomNodeDefinition def,
-            IEnumerable<NodeModel> funcBody,
-            IEnumerable<AssociativeNode> outputNodes,
-            IEnumerable<string> parameters)
+            Guid functionId, IEnumerable<string> returnKeys, string functionName,
+            IEnumerable<NodeModel> funcBody, IEnumerable<AssociativeNode> outputNodes,
+            IEnumerable<TypedParameter> parameters, bool verboseLogging)
         {
-            OnAstNodeBuilding(def.FunctionId);
+            OnAstNodeBuilding(functionId);
 
             var functionBody = new CodeBlockNode();
-            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
+            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false, verboseLogging));
 
             var outputs = outputNodes.ToList();
             if (outputs.Count > 1)
@@ -256,15 +241,15 @@ namespace Dynamo.DSEngine
                  */
 
                 // return array, holds all outputs
-                string rtnName = "__temp_rtn_" + def.FunctionId.ToString().Replace("-", String.Empty); 
+                string rtnName = "__temp_rtn_" + functionId.ToString().Replace("-", String.Empty);
                 functionBody.Body.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(rtnName),
                         AstFactory.BuildExprList(new List<string>())));
 
                 // indexers for each output
-                IEnumerable<AssociativeNode> indexers = def.ReturnKeys != null
-                    ? def.ReturnKeys.Select(AstFactory.BuildStringNode) as IEnumerable<AssociativeNode>
+                IEnumerable<AssociativeNode> indexers = returnKeys != null
+                    ? returnKeys.Select(AstFactory.BuildStringNode) as IEnumerable<AssociativeNode>
                     : Enumerable.Range(0, outputs.Count).Select(AstFactory.BuildIntNode);
 
                 functionBody.Body.AddRange(
@@ -289,18 +274,18 @@ namespace Dynamo.DSEngine
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode
             {
-                Name = def.FunctionName.Replace("-", string.Empty),
+                Name = functionName.Replace("-", string.Empty),
                 Signature =
                     new ArgumentSignatureNode
                     {
                         Arguments =
-                            parameters.Select(param => AstFactory.BuildParamNode(param, allTypes)).ToList()
+                            parameters.Select(param => AstFactory.BuildParamNode(param.Name, allTypes)).ToList()
                     },
                 FunctionBody = functionBody,
                 ReturnType = allTypes
             };
 
-            OnAstNodeBuilt(def.FunctionId, new[] { functionDef });
+            OnAstNodeBuilt(functionId, new[] { functionDef });
         }
 
         /// <summary>
@@ -336,14 +321,14 @@ namespace Dynamo.DSEngine
 
         public class ASTBuiltEventArgs : EventArgs
         {
-            public ASTBuiltEventArgs(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+            public ASTBuiltEventArgs(Guid node, ICollection<AssociativeNode> astNodes)
             {
                 Node = node;
                 AstNodes = astNodes;
             }
 
-            public NodeModel Node { get; private set; }
-            public IEnumerable<AssociativeNode> AstNodes { get; private set; }
+            public Guid Node { get; private set; }
+            public ICollection<AssociativeNode> AstNodes { get; private set; }
         }
 
         private enum MarkFlag

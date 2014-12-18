@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -18,11 +19,11 @@ namespace Dynamo.TestInfrastructure
         {
         }
 
-        public override bool RunTest(NodeModel node, StreamWriter writer)
+        public override bool RunTest(NodeModel node, EngineController engine, StreamWriter writer)
         {
-            bool pass = false;
+            const bool pass = false;
 
-            var nodes = DynamoViewModel.Model.Nodes.ToList();
+            var nodes = DynamoViewModel.Model.CurrentWorkspace.Nodes;
             if (nodes.Count == 0)
                 return pass;
 
@@ -52,7 +53,7 @@ namespace Dynamo.TestInfrastructure
                     new DynamoModel.RunCancelCommand(false, false);
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
-            while (DynamoViewModel.Model.Runner.Running)
+            while (!DynamoViewModel.HomeSpace.RunEnabled)
             {
                 Thread.Sleep(10);
             }
@@ -62,7 +63,7 @@ namespace Dynamo.TestInfrastructure
             {
                 try
                 {
-                    int nodesCountAfterCopying = DynamoViewModel.Model.Nodes.ToList().Count;
+                    int nodesCountAfterCopying = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count;
 
                     if (nodesCountBeforeCopying != nodesCountAfterCopying)
                     {
@@ -91,7 +92,7 @@ namespace Dynamo.TestInfrastructure
             writer.WriteLine("### - test of CopyNode complete");
             writer.Flush();
 
-            return pass = true;
+            return true;
         }
 
         public override int Mutate(NodeModel node)
@@ -103,8 +104,8 @@ namespace Dynamo.TestInfrastructure
 
                 DynamoViewModel.ExecuteCommand(selectNodeCommand);
 
-                DynamoModel.Copy(null);
-                DynamoModel.Paste(null);
+                DynamoModel.Copy();
+                DynamoModel.Paste();
             }));
 
             return 1;

@@ -796,7 +796,7 @@
                     ClipToBounds="True"
                     IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
                 <Canvas.Background>
-                    <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
+                    <SolidColorBrush Color="{Binding ViewingHomespace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
             <controls:Watch3DView x:Name="background_preview"
@@ -1191,7 +1191,7 @@
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
                                                         <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                            <Setter Property="Background" Value="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"/>
+                                                            <Setter Property="Background" Value="{Binding ViewingHomespace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"/>
                                                             <Setter Property="BorderThickness" Value="1,0,1,1"/>
                                                         </DataTrigger>-->
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}"

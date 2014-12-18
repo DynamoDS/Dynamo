@@ -1,6 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-using System;
+﻿using System;
 
 namespace Dynamo.Core.Threading
 {
@@ -20,7 +18,7 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal DelegateBasedAsyncTask(DynamoScheduler scheduler)
+        internal DelegateBasedAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }
@@ -50,5 +48,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif

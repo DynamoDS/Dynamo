@@ -9,9 +9,10 @@ namespace Dynamo.Search.SearchElements
 
     /// <summary>
     /// A search element representing a local node </summary>
-    public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
+    [Obsolete("No longer used.", true)]
+    public class NodeModelSearchElement : SearchElementBase, IEquatable<NodeModelSearchElement>
     {
-        internal readonly string FullName ;
+        internal readonly string FullName;
 
         #region Properties
 
@@ -86,7 +87,7 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description"></param>
         /// <param name="tags"></param>
         /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "")
+        public NodeModelSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "")
         {
             this.Node = null;
             this._name = name;
@@ -97,9 +98,9 @@ namespace Dynamo.Search.SearchElements
             this.FullName = fullName;
         }
 
-        public virtual NodeSearchElement Copy()
+        public virtual NodeModelSearchElement Copy()
         {
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this.FullName);
+            var f = new NodeModelSearchElement(this.Name, this.Description, new List<string>(), this.FullName);
             f.FullCategoryName = this.FullCategoryName;
             return f;
         }
@@ -111,7 +112,7 @@ namespace Dynamo.Search.SearchElements
                 return false;
             }
 
-            return this.Equals(obj as NodeSearchElement);
+            return this.Equals(obj as NodeModelSearchElement);
         }
 
         /// <summary>
@@ -122,7 +123,7 @@ namespace Dynamo.Search.SearchElements
             return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
         }
 
-        public bool Equals(NodeSearchElement other)
+        public bool Equals(NodeModelSearchElement other)
         {
             return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }

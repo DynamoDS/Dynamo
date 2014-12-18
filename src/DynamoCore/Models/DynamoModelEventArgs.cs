@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Dynamo.Utilities;
 
+using ProtoCore.AST.AssociativeAST;
+
 namespace Dynamo.Models
 {
     public class ZoomEventArgs : EventArgs
@@ -123,12 +125,35 @@ namespace Dynamo.Models
 
     public class EvaluationCompletedEventArgs : EventArgs
     {
-        public EvaluationCompletedEventArgs(bool evaluationTookPlace)
+        private readonly IOption<Exception> error;
+
+        public EvaluationCompletedEventArgs(bool evaluationTookPlace, Exception errorMsg = null)
         {
             EvaluationTookPlace = evaluationTookPlace;
+
+            error = errorMsg != null ? Option.Some(errorMsg) : Option.None<Exception>();
         }
 
         public bool EvaluationTookPlace { get; private set; }
+
+        public bool EvaluationSucceeded
+        {
+            get { return !error.HasValue(); }
+        }
+
+        public Exception Error
+        {
+            get
+            {
+                return error.Match(
+                    msg => msg,
+                    () =>
+                    {
+                        throw new InvalidOperationException(
+                            "Evaluation success, no error message recorded.");
+                    });
+            }
+        }
     }
 
     public class DynamoModelUpdateArgs : EventArgs

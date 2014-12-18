@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Dynamo.DSEngine;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
@@ -13,8 +14,6 @@ namespace Dynamo.Models
     /// </summary>
     public class ScopedNodeModel: NodeModel
     {
-        public ScopedNodeModel(WorkspaceModel workspaceModel) : base(workspaceModel) { }
-
         /// <summary>
         /// If all nodes that the node outputs to are in scopes list. I.e.,
         /// </summary>
@@ -182,8 +181,10 @@ namespace Dynamo.Models
         /// compile its children into some scopes.
         /// </summary>
         /// <param name="inputAstNodes"></param>
+        /// <param name="verboseLogging"></param>
+        /// <param name="builder"></param>
         /// <returns></returns>
-        public virtual IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes)
+        public virtual IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes, bool verboseLogging, AstBuilder builder)
         {
             throw new NotImplementedException("BuildOutputAstInScope");
         }
@@ -194,11 +195,13 @@ namespace Dynamo.Models
         /// are satisfied. 
         /// </summary>
         /// <param name="inputAstNodes"></param>
+        /// <param name="verboseLogging"></param>
+        /// <param name="builder"></param>
         /// <returns></returns>
-        internal virtual IEnumerable<AssociativeNode> BuildAstInScope(List<AssociativeNode> inputAstNodes)
+        internal virtual IEnumerable<AssociativeNode> BuildAstInScope(List<AssociativeNode> inputAstNodes, bool verboseLogging, AstBuilder builder)
         {
             OnBuilt();
-            var result = BuildOutputAstInScope(inputAstNodes);
+            var result = BuildOutputAstInScope(inputAstNodes, verboseLogging, builder);
             return result;
         }
     }

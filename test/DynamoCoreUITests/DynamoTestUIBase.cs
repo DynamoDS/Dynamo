@@ -40,7 +40,7 @@ namespace DynamoCoreUITests
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
-            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
@@ -66,7 +66,7 @@ namespace DynamoCoreUITests
         {
             //Ensure that we leave the workspace marked as
             //not having changes.
-            Model.HomeSpace.HasUnsavedChanges = false;
+            ViewModel.HomeSpace.HasUnsavedChanges = false;
 
             if (View.IsLoaded)
                 View.Close();
@@ -132,7 +132,7 @@ namespace DynamoCoreUITests
             EventHandler<EvaluationCompletedEventArgs> markDone = (e, a) => { complete = true;  };
             ViewModel.Model.EvaluationCompleted += markDone;
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             while (!complete)
             {

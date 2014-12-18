@@ -17,7 +17,7 @@ namespace Dynamo.Interfaces
         None
     };
 
-    public interface IModelSelectionHelper<out T>
+    public interface IModelSelectionHelper<out T> : ILogSource
     {
         /// <summary>
         /// Request a selection filtered by a type.
@@ -30,6 +30,6 @@ namespace Dynamo.Interfaces
         /// <returns></returns>
         IEnumerable<T> RequestSelectionOfType(
             string selectionMessage, SelectionType selectionType,
-            SelectionObjectType objectType, ILogger logger);
+            SelectionObjectType objectType);
     }
 }

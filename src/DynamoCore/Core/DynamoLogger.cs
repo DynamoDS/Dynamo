@@ -43,7 +43,7 @@ namespace Dynamo
     {
         private readonly Object guardMutex = new Object();
 
-        private readonly DynamoModel dynamoModel;
+        private readonly DebugSettings debugSettings;
         private string _logPath;
         private string _warning;
         private WarningLevel _warningLevel;
@@ -100,11 +100,11 @@ namespace Dynamo
         /// <summary>
         /// The default constructor.
         /// </summary>
-        public DynamoLogger(DynamoModel dynamoModel, string logDirectory)
+        public DynamoLogger(DebugSettings debugSettings, string logDirectory)
         {
             lock (guardMutex)
             {
-                this.dynamoModel = dynamoModel;
+                this.debugSettings = debugSettings;
                 _isDisposed = false;
 
                 WarningLevel = WarningLevel.Mild;
@@ -135,7 +135,7 @@ namespace Dynamo
             lock (this.guardMutex)
             {
                 //Don't overwhelm the logging system
-                if (dynamoModel.DebugSettings.VerboseLogging)
+                if (debugSettings.VerboseLogging)
                     InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
 
                 switch (level)

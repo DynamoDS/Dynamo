@@ -6,11 +6,9 @@ namespace Dynamo.DSEngine
 {
     public static class NodeToCodeUtils
     {
-        public static string ConvertNodesToCode(DynamoModel dynamoModel, IEnumerable<NodeModel> nodeList)
+        public static string ConvertNodesToCode(AstBuilder astBuilder, IEnumerable<NodeModel> nodeList, bool verboseLogging)
         {
-            var astBuilder = new AstBuilder(dynamoModel, null);
-            var astNodes = astBuilder.CompileToAstNodes(nodeList, false);
-
+            var astNodes = astBuilder.CompileToAstNodes(nodeList, false, verboseLogging);
             var codeGen = new ProtoCore.CodeGenDS(astNodes);
             return codeGen.GenerateCode();
         }

@@ -15,7 +15,7 @@ namespace Dynamo.Tests
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "Custom Rounding");
-            var loader = ViewModel.Model.Loader.PackageLoader;
+            var loader = ViewModel.Model.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             Assert.IsNotNull(pkg);
@@ -26,7 +26,13 @@ namespace Dynamo.Tests
             Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - " 
                 + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
             Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
-            pkg.LoadIntoDynamo(ViewModel.Model.Loader, ViewModel.Model.Logger, ViewModel.Model.EngineController.LibraryServices);
+            pkg.LoadIntoDynamo(
+                ViewModel.Model.Loader,
+                ViewModel.Model.Logger,
+                ViewModel.Model.EngineController.LibraryServices,
+                ViewModel.Model.Context,
+                true,
+                ViewModel.Model.CustomNodeManager);
 
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
         }
@@ -35,7 +41,7 @@ namespace Dynamo.Tests
         public void ScanPackageDirectoryReturnsNullForInvalidDirectory()
         {
             var pkgDir = "";
-            var loader = ViewModel.Model.Loader.PackageLoader;
+            var loader = ViewModel.Model.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
         }
 
@@ -43,8 +49,14 @@ namespace Dynamo.Tests
         [Category("Failure")]
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
-            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger);
-            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings, ViewModel.Model.EngineController.LibraryServices);
+            var loader = new PackageLoader();
+            loader.LoadPackagesIntoDynamo(
+                ViewModel.Model.PreferenceSettings,
+                ViewModel.Model.LibraryServices,
+                ViewModel.Model.Loader,
+                ViewModel.Model.Context,
+                true,
+                ViewModel.Model.CustomNodeManager);
 
             Assert.AreEqual(1, loader.LocalPackages.Count);
         }
@@ -53,8 +65,14 @@ namespace Dynamo.Tests
         public void LoadPackagesReturnsNoPackagesForInvalidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "No directory");
-            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, pkgDir);
-            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings, ViewModel.Model.EngineController.LibraryServices);
+            var loader = new PackageLoader(pkgDir);
+            loader.LoadPackagesIntoDynamo(
+                ViewModel.Model.PreferenceSettings,
+                ViewModel.Model.LibraryServices,
+                ViewModel.Model.Loader,
+                ViewModel.Model.Context,
+                true,
+                ViewModel.Model.CustomNodeManager);
             Assert.AreEqual(0, loader.LocalPackages.Count);
         }
 
@@ -63,17 +81,20 @@ namespace Dynamo.Tests
         {
             //Assert.Inconclusive("Porting : Formula");
 
-            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, PackagesDirectory);
-            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings, ViewModel.Model.EngineController.LibraryServices);
+            var loader = new PackageLoader(PackagesDirectory);
+            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings, ViewModel.Model.LibraryServices, ViewModel.Model.Loader, ViewModel.Model.Context,
+                true,
+                ViewModel.Model.CustomNodeManager);
             var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
 
             foreach (var nodeInfo in pkg.LoadedCustomNodes)
             {
-                var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+                CustomNodeDefinition funcDef;
+                Assert.IsTrue(ViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, true, out funcDef));
                 Assert.IsNotNull(funcDef);
 
-                var foundPkg = loader.GetOwnerPackage(funcDef);
+                var foundPkg = loader.GetOwnerPackage(nodeInfo);
 
                 Assert.IsNotNull(foundPkg);
                 Assert.AreEqual(pkg.Name, foundPkg.Name);
@@ -85,14 +106,18 @@ namespace Dynamo.Tests
         [Test]
         public void GetOwnerPackageReturnsNullForInvalidFunction()
         {
-            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, PackagesDirectory);
+            var loader = new PackageLoader(PackagesDirectory);
 
-            var info = ViewModel.Model.CustomNodeManager.AddFileToPath(
-                Path.Combine(new string[] {GetTestDirectory(), "core", "combine", "combine2.dyf"}));
+            CustomNodeInfo info;
+            Assert.IsTrue(
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(new string[] { GetTestDirectory(), "core", "combine", "combine2.dyf" }),
+                    true,
+                    out info));
 
-            var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(info.Guid);
-            Assert.IsNotNull(funcDef);
-            var foundPkg = loader.GetOwnerPackage(funcDef);
+            CustomNodeDefinition funcDef;
+            Assert.IsTrue(ViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(info.FunctionId, true, out funcDef));
+            var foundPkg = loader.GetOwnerPackage(info);
             Assert.IsNull(foundPkg);
         }
 
