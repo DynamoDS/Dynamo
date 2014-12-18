@@ -43,7 +43,7 @@ namespace Dynamo.Models
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == "Name" || args.PropertyName == "Category" || args.PropertyName == "Description")
+            if (args.PropertyName == /*NXLT*/"Name" || args.PropertyName == /*NXLT*/"Category" || args.PropertyName == /*NXLT*/"Description")
             {
                 HasUnsavedChanges = true;
             }
@@ -156,8 +156,8 @@ namespace Dynamo.Models
             var root = document.DocumentElement;
             if (root == null)
                 return false;
-                
-            root.SetAttribute("ID", guid.ToString());
+
+            root.SetAttribute(/*NXLT*/"ID", guid.ToString());
 
             return true;
         }

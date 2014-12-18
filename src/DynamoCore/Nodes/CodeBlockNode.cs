@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
         private struct Formatting
         {
             public const double InitialMargin = 0;
-            public const string ToolTipForTempVariable = "Statement Output";
+            public const string ToolTipForTempVariable = /*NXLT*/"Statement Output";
         }
 
         #region Public Methods

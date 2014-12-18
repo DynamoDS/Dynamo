@@ -284,7 +284,7 @@ namespace Dynamo.Models
             {
                 Type type = GetType();
                 object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
-                if (type.Namespace == "Dynamo.Nodes" && !type.IsAbstract && attribs.Length > 0
+                if (type.Namespace == /*NXLT*/"Dynamo.Nodes" && !type.IsAbstract && attribs.Length > 0
                     && type.IsSubclassOf(typeof(NodeModel)))
                 {
                     var elCatAttrib = attribs[0] as NodeNameAttribute;
@@ -306,7 +306,7 @@ namespace Dynamo.Models
             {
                 Type type = GetType();
                 object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
-                if (type.Namespace == "Dynamo.Nodes" && !type.IsAbstract && attribs.Length > 0
+                if (type.Namespace == /*NXLT*/"Dynamo.Nodes" && !type.IsAbstract && attribs.Length > 0
                     && type.IsSubclassOf(typeof(NodeModel)))
                 {
                     var elCatAttrib = attribs[0] as NodeCategoryAttribute;
@@ -477,7 +477,7 @@ namespace Dynamo.Models
             object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
             return rtAttribs.Length > 0
                 ? ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription
-                : "No description provided";
+                : /*NXLT*/"No description provided";
         }
 
         /// <summary>
@@ -488,7 +488,7 @@ namespace Dynamo.Models
         public virtual IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
-                throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
+                throw new ArgumentOutOfRangeException(/*NXLT*/"outputIndex",/*NXLT*/@"Index must correspond to an OutPortData index.");
 
             //if (OutPortData.Count == 1)
             //    return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
@@ -513,10 +513,10 @@ namespace Dynamo.Models
             {
                 switch (args.PropertyName)
                 {
-                    case ("OverrideName"):
+                    case (/*NXLT*/"OverrideName"):
                         RaisePropertyChanged(/*NXLT*/"NickName");
                         break;
-                    case ("IsSelected"):
+                    case (/*NXLT*/"IsSelected"):
                         // Synchronize the selected state of any render packages for this node
                         // with the selection state of the node.
                         if (HasRenderPackages)
@@ -652,7 +652,7 @@ namespace Dynamo.Models
             //read port information
             foreach (XmlNode subNode in elNode.ChildNodes)
             {
-                if (subNode.Name == "PortInfo")
+                if (subNode.Name == /*NXLT*/"PortInfo")
                 {
                     int index = int.Parse(subNode.Attributes["index"].Value);
                     portInfoProcessed.Add(index);
@@ -1231,7 +1231,7 @@ namespace Dynamo.Models
 
                     p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                     {
-                        if (args.PropertyName == "UsingDefaultValue")
+                        if (args.PropertyName == /*NXLT*/"UsingDefaultValue")
                             RequiresRecalc = true;
                     };
 
@@ -1368,13 +1368,13 @@ namespace Dynamo.Models
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (name == "NickName")
+            if (name == /*NXLT*/"NickName")
             {
                 NickName = value;
                 return true;
             }
 
-            if (name == "ArgumentLacing")
+            if (name == /*NXLT*/"ArgumentLacing")
             {
                 LacingStrategy strategy = LacingStrategy.Disabled;
                 if (!Enum.TryParse(value, out strategy))
@@ -1395,30 +1395,30 @@ namespace Dynamo.Models
             var helper = new XmlElementHelper(element);
 
             // Set the type attribute
-            helper.SetAttribute("type", GetType().ToString());
-            helper.SetAttribute("guid", GUID);
-            helper.SetAttribute("nickname", NickName);
-            helper.SetAttribute("x", X);
-            helper.SetAttribute("y", Y);
-            helper.SetAttribute("isVisible", IsVisible);
-            helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
-            helper.SetAttribute("lacing", ArgumentLacing.ToString());
+            helper.SetAttribute(/*NXLT*/"type", GetType().ToString());
+            helper.SetAttribute(/*NXLT*/"guid", GUID);
+            helper.SetAttribute(/*NXLT*/"nickname", NickName);
+            helper.SetAttribute(/*NXLT*/"x", X);
+            helper.SetAttribute(/*NXLT*/"y", Y);
+            helper.SetAttribute(/*NXLT*/"isVisible", IsVisible);
+            helper.SetAttribute(/*NXLT*/"isUpstreamVisible", IsUpstreamVisible);
+            helper.SetAttribute(/*NXLT*/"lacing", ArgumentLacing.ToString());
 
             if (context == SaveContext.Undo)
             {
                 // Fix: MAGN-159 (nodes are not editable after undo/redo).
-                helper.SetAttribute("interactionEnabled", interactionEnabled);
-                helper.SetAttribute("nodeState", state.ToString());
+                helper.SetAttribute(/*NXLT*/"interactionEnabled", interactionEnabled);
+                helper.SetAttribute(/*NXLT*/"nodeState", state.ToString());
             }
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
-            GUID = helper.ReadGuid("guid", Guid.NewGuid());
+            GUID = helper.ReadGuid(/*NXLT*/"guid", Guid.NewGuid());
 
             // Resolve node nick name.
-            string nickName = helper.ReadString("nickname", string.Empty);
+            string nickName = helper.ReadString(/*NXLT*/"nickname", string.Empty);
             if (!string.IsNullOrEmpty(nickName))
                 this.nickName = nickName;
             else
@@ -1430,17 +1430,17 @@ namespace Dynamo.Models
                     this.nickName = attrib.Name;
             }
 
-            X = helper.ReadDouble("x", 0.0);
-            Y = helper.ReadDouble("y", 0.0);
-            isVisible = helper.ReadBoolean("isVisible", true);
-            isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
-            argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
+            X = helper.ReadDouble(/*NXLT*/"x", 0.0);
+            Y = helper.ReadDouble(/*NXLT*/"y", 0.0);
+            isVisible = helper.ReadBoolean(/*NXLT*/"isVisible", true);
+            isUpstreamVisible = helper.ReadBoolean(/*NXLT*/"isUpstreamVisible", true);
+            argumentLacing = helper.ReadEnum(/*NXLT*/"lacing", LacingStrategy.Disabled);
 
             if (context == SaveContext.Undo)
             {
                 // Fix: MAGN-159 (nodes are not editable after undo/redo).
-                interactionEnabled = helper.ReadBoolean("interactionEnabled", true);
-                state = helper.ReadEnum("nodeState", ElementState.Active);
+                interactionEnabled = helper.ReadBoolean(/*NXLT*/"interactionEnabled", true);
+                state = helper.ReadEnum(/*NXLT*/"nodeState", ElementState.Active);
 
                 // We only notify property changes in an undo/redo operation. Normal
                 // operations like file loading or copy-paste have the models created
@@ -1730,7 +1730,7 @@ namespace Dynamo.Models
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("PushGraphicItemIntoPackage: " + e);
+                System.Diagnostics.Debug.WriteLine(/*NXLT*/"PushGraphicItemIntoPackage: " + e);
             }
         }
 
@@ -2031,7 +2031,7 @@ namespace Dynamo.Models
         public NodeSearchTagsAttribute(string tagsID, Type resourceType)
         {
             if (resourceType == null)
-                throw new ArgumentNullException("resourceType");
+                throw new ArgumentNullException(/*NXLT*/"resourceType");
 
             var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static);
             if (prop != null && prop.PropertyType == typeof(String))
@@ -2084,7 +2084,7 @@ namespace Dynamo.Models
         public NodeDescriptionAttribute(string descriptionResourceID, Type resourceType)
         {
             if (resourceType == null)
-                throw new ArgumentNullException("resourceType");
+                throw new ArgumentNullException(/*NXLT*/"resourceType");
 
             var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static);
             if (prop != null && prop.PropertyType == typeof(String))

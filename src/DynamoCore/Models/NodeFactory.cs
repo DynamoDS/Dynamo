@@ -128,7 +128,7 @@ namespace Dynamo.Models
                 };
             }
 
-            dynamoModel.Logger.Log("Failed to find CustomNodeDefinition!");
+            dynamoModel.Logger.Log(/*NXLT*/"Failed to find CustomNodeDefinition!");
             return null;
         }
 
@@ -152,7 +152,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                dynamoModel.Logger.Log("Failed to load built-in type");
+                dynamoModel.Logger.Log(/*NXLT*/"Failed to load built-in type");
                 dynamoModel.Logger.Log(ex);
                 return null;
             }
@@ -166,7 +166,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                dynamoModel.Logger.Log("Failed to load built-in type");
+                dynamoModel.Logger.Log(/*NXLT*/"Failed to load built-in type");
                 dynamoModel.Logger.Log(ex);
                 return null;
             }

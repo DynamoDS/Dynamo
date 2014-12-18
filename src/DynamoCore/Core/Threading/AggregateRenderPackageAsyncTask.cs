@@ -75,7 +75,7 @@ namespace Dynamo.Core.Threading
         internal bool Initialize(WorkspaceModel workspaceModel, NodeModel nodeModel)
         {
             if (workspaceModel == null)
-                throw new ArgumentNullException("workspaceModel");
+                throw new ArgumentNullException(/*NXLT*/"workspaceModel");
 
             if (nodeModel == null) // No node is specified, gather all nodes.
             {

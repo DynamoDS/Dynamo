@@ -162,7 +162,7 @@ namespace Dynamo.DSEngine
                 }
                 catch (Exception ex)
                 {
-                    dynamoModel.Logger.Log("Failed to get mirror for variable: " + variableName + "; reason: " +
+                    dynamoModel.Logger.Log(/*NXLT*/"Failed to get mirror for variable: " + variableName + /*NXLT*/"; reason: " +
                                                  ex.Message);
                 }
 
@@ -313,7 +313,7 @@ namespace Dynamo.DSEngine
                 if (graphSyncDataQueue.Count > 0)
                 {
                     throw new InvalidOperationException(
-                        "'graphSyncDataQueue' is not empty");
+                        /*NXLT*/"'graphSyncDataQueue' is not empty");
                 }
 
                 astBuilder.CompileCustomNodeDefinition(def, nodes, outputs, parameters);
@@ -472,7 +472,7 @@ namespace Dynamo.DSEngine
                             if (fatalException == null)
                                 fatalException = e;
 
-                            dynamoModel.Logger.Log("Update graph failed: " + e.Message);
+                            dynamoModel.Logger.Log(/*NXLT*/"Update graph failed: " + e.Message);
                         }
                     }
                 }
