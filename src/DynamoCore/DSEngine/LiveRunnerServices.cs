@@ -49,7 +49,7 @@ namespace Dynamo.DSEngine
             var mirror = liveRunner.InspectNodeValue(var);
 
             if (dynamoModel.DebugSettings.VerboseLogging)
-                dynamoModel.Logger.Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
+                dynamoModel.Logger.Log(/*NXLT*/"LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
 
             return mirror;
 
@@ -62,7 +62,7 @@ namespace Dynamo.DSEngine
         public void UpdateGraph(GraphSyncData graphData)
         {
             if (dynamoModel.DebugSettings.VerboseLogging)
-                dynamoModel.Logger.Log("LRS.UpdateGraph: " + graphData);
+                dynamoModel.Logger.Log(/*NXLT*/"LRS.UpdateGraph: " + graphData);
 
             liveRunner.UpdateGraph(graphData);
         }

@@ -52,15 +52,15 @@ namespace Dynamo.Core.Threading
         internal bool Initialize(CompileCustomNodeParams initParams)
         {
             if (initParams == null)
-                throw new ArgumentNullException("initParams");
+                throw new ArgumentNullException(/*NXLT*/"initParams");
 
             engineController = initParams.EngineController;
             graphSyncData = initParams.SyncData;
 
             if (engineController == null)
-                throw new ArgumentNullException("engineController");
+                throw new ArgumentNullException(/*NXLT*/"engineController");
             if (graphSyncData == null)
-                throw new ArgumentNullException("graphSyncData");
+                throw new ArgumentNullException(/*NXLT*/"graphSyncData");
 
             var added = graphSyncData.AddedSubtrees;
             var deleted = graphSyncData.DeletedSubtrees;
