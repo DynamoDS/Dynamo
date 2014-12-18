@@ -251,7 +251,7 @@ namespace Dynamo.Search
                 category.AddClassToGroup(node);
             }
 
-            // Order found categories by name.            
+            // Order found categories by name.
             _searchRootCategories = new ObservableCollection<SearchCategory>(_searchRootCategories.OrderBy(x => x.Name));
             
             SortSearchCategoriesChildren();
