@@ -44,18 +44,19 @@ namespace Dynamo.Models
         #region events
 
         /// <summary>
-        /// TODO
+        ///     Function that can be used to repsond to a saved workspace.
         /// </summary>
         /// <param name="model"></param>
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
 
         /// <summary>
-        /// TODO
+        ///     Event that is fired when a workspace requests that a Node or Note model is
+        ///     centered.
         /// </summary>
         public event NodeEventHandler RequestNodeCentered;
         
         /// <summary>
-        /// TODO
+        ///     Requests that a Node or Note model should be centered.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -66,14 +67,14 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Function that can be used to respond to a changed workspace Zoom amount.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public delegate void ZoomEventHandler(object sender, EventArgs e);
         
         /// <summary>
-        /// TODO
+        ///     Event that is fired every time the zoom factor of a workspace changes.
         /// </summary>
         public event ZoomEventHandler ZoomChanged;
 
@@ -92,19 +93,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Function that can be used to respond to a "point event"
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public delegate void PointEventHandler(object sender, EventArgs e);
 
         /// <summary>
-        /// TODO
+        ///     Event that is fired every time the position offset of a workspace changes.
         /// </summary>
         public event PointEventHandler CurrentOffsetChanged;
 
         /// <summary>
-        /// Used during open and workspace changes to set the location of the workspace
+        ///     Used during open and workspace changes to set the location of the workspace
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -118,7 +119,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Event that is fired when the workspace is saved.
         /// </summary>
         public event Action WorkspaceSaved;
         protected virtual void OnWorkspaceSaved()
@@ -131,7 +132,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        ///     Event that is fired when a node is added to the workspace.
         /// </summary>
         public event Action<NodeModel> NodeAdded;
         protected virtual void OnNodeAdded(NodeModel obj)
@@ -141,7 +142,17 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Event that is fired when a node is removed from the workspace.
+        /// </summary>
+        public event Action<NodeModel> NodeRemoved;
+        protected virtual void OnNodeRemoved(NodeModel node)
+        {
+            var handler = NodeRemoved;
+            if (handler != null) handler(node);
+        }
+
+        /// <summary>
+        ///     Event that is fired when a connector is added to the workspace.
         /// </summary>
         public event Action<ConnectorModel> ConnectorAdded;
         protected virtual void OnConnectorAdded(ConnectorModel obj)
@@ -157,7 +168,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Event that is fired when a connector is deleted from a workspace.
         /// </summary>
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
@@ -165,9 +176,21 @@ namespace Dynamo.Models
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
         }
+
+        /// <summary>
+        ///     Event that is fired when this workspace is disposed of.
+        /// </summary>
+        public event Action Disposed;
+
         #endregion
 
         #region public properties
+
+        /// <summary>
+        ///     A NodeFactory used by this workspace to create Nodes.
+        /// </summary>
+        //TODO(Steve): This should only live on DynamoModel, not here. It's currently used to instantiate NodeModels during UndoRedo.
+        public readonly NodeFactory NodeFactory;
 
         /// <summary>
         ///     The date of the last save.
@@ -401,16 +424,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
-        /// </summary>
-        public readonly NodeFactory NodeFactory;
-
-        /// <summary>
-        /// TODO
-        /// </summary>
-        public event Action Disposed;
-
-        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <filterpriority>2</filterpriority>
@@ -431,6 +444,9 @@ namespace Dynamo.Models
 
         #region public methods
 
+        /// <summary>
+        ///     Clears this workspace of nodes, notes, and connectors.
+        /// </summary>
         public virtual void Clear()
         {
             Log("Clearing workspace...");
@@ -537,7 +553,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Indicates that this workspace's DesignScript AST has been updated.
         /// </summary>
         public virtual void OnAstUpdated()
         {
@@ -562,13 +578,6 @@ namespace Dynamo.Models
             model.ConnectorAdded -= OnConnectorAdded;
             model.AstUpdated -= OnAstUpdated;
             OnNodeRemoved(model);
-        }
-
-        public event Action<NodeModel> NodeRemoved;
-        protected virtual void OnNodeRemoved(NodeModel node)
-        {
-            var handler = NodeRemoved;
-            if (handler != null) handler(node);
         }
 
         public void AddNote(NoteModel note, bool centered)
@@ -731,7 +740,7 @@ namespace Dynamo.Models
         }
 
         // TODO(Ben): Documentation to come before pull request.
-        // TODO(Steve): This probably belongs on HomeWorkspaceModel.
+        // TODO(Steve): This probably only belongs on HomeWorkspaceModel.
         protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
         {
             if (document.DocumentElement == null)

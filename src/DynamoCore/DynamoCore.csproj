@@ -136,9 +136,9 @@ limitations under the License.
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Nodes\DummyNode.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Search\BrowserRootElement.cs" />
+    <Compile Include="Search\Legacy\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
-    <Compile Include="Search\SearchModel2.cs" />
+    <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Disposable.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
@@ -188,8 +188,7 @@ limitations under the License.
     <Compile Include="Nodes\FunctionCallBase.cs" />
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
-    <Compile Include="Search\BrowserItem.cs" />
-    <Compile Include="Search\SearchModel.cs" />
+    <Compile Include="Search\Legacy\BrowserItem.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
@@ -205,8 +204,6 @@ limitations under the License.
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
-    <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
     <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Services\Heartbeat.cs" />
@@ -234,7 +231,7 @@ limitations under the License.
     <Compile Include="Utilities\TypeExtensions.cs" />
     <Compile Include="Utilities\VersionUtilities.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
-    <Compile Include="Search\BrowserInternalElement.cs" />
+    <Compile Include="Search\Legacy\BrowserInternalElement.cs" />
     <Compile Include="PackageManager\PackageDownloadHandle.cs" />
     <Compile Include="PackageManager\PackageLoader.cs" />
     <Compile Include="Utilities\Extensions.cs" />
@@ -243,10 +240,8 @@ limitations under the License.
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\DynamoLoader.cs" />
     <Compile Include="Utilities\Guid.cs" />
-    <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
-    <Compile Include="Search\SearchElements\NodeModelSearchElement.cs" />
     <Compile Include="PackageManager\PackageManagerSearchElement.cs" />
-    <Compile Include="Search\SearchElements\SearchElementBase.cs" />
+    <Compile Include="Search\Legacy\SearchElements\SearchElementBase.cs" />
     <Compile Include="Nodes\NodeCategories.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\Custom Nodes\Function.cs" />

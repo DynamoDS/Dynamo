@@ -1,65 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
+using Dynamo.Interfaces;
+using Dynamo.Models;
 
 namespace Dynamo.Search.SearchElements
 {
-    [Obsolete("No longer used.", true)]
-    public class CustomNodeSearchElement : NodeModelSearchElement, IEquatable<CustomNodeSearchElement>
+    /// <summary>
+    ///     Search element for custom nodes.
+    /// </summary>
+    public class CustomNodeSearchElement : NodeSearchElement
     {
-        public Guid Guid { get; internal set; }
-
+        private readonly ICustomNodeSource customNodeManager;
+        public Guid ID { get; private set; }
         private string path;
+
+        /// <summary>
+        ///     Path to this custom node in disk, used in the Edit context menu.
+        /// </summary>
         public string Path
         {
             get { return path; }
-            set
+            private set
             {
+                if (value == path) return;
                 path = value;
-                RaisePropertyChanged("Path");
+                OnPropertyChanged("Path");
             }
         }
 
-        public override string Type { get { return "Custom Node"; } }
-
-        public CustomNodeSearchElement(CustomNodeInfo info)
-            : base(info.Name, info.Description, new List<string>())
+        public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
-            Node = null;
+            this.customNodeManager = customNodeManager;
+            SyncWithCustomNodeInfo(info);
+        }
+
+        /// <summary>
+        ///     Updates the properties of this search element.
+        /// </summary>
+        /// <param name="info"></param>
+        public void SyncWithCustomNodeInfo(CustomNodeInfo info)
+        {
+            ID = info.FunctionId;
+            Name = info.Name;
             FullCategoryName = info.Category;
-            Guid = info.FunctionId;
-            path = info.Path;
+            Description = info.Description;
+            Path = info.Path;
         }
 
-        public override NodeModelSearchElement Copy()
+        protected override NodeModel ConstructNewNodeModel()
         {
-            return
-                new CustomNodeSearchElement(new CustomNodeInfo(Guid, Name, FullCategoryName,
-                                                               Description, Path));
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            return Equals(obj as NodeModelSearchElement);
-        }
-
-        public override int GetHashCode()
-        {
-            return Guid.GetHashCode() + Type.GetHashCode() + Name.GetHashCode() + Description.GetHashCode();
-        }
-
-        public bool Equals(CustomNodeSearchElement other)
-        {
-            return other.Guid == Guid;
-        }
-
-        public new bool Equals(NodeModelSearchElement other)
-        {
-            return other is CustomNodeSearchElement && Equals(other as CustomNodeSearchElement);
+            return customNodeManager.CreateCustomNodeInstance(ID);
         }
     }
 }

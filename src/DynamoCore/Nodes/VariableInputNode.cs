@@ -175,7 +175,7 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// TODO
+        ///     Serializes the input count of a VariableInputNode to Xml.
         /// </summary>
         /// <param name="nodeElement"></param>
         /// <param name="amount"></param>

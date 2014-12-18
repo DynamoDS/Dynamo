@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Dynamo.Search
@@ -147,7 +146,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// TODO
+        ///     Removes elements from search, based on separate predicates for values and tags.
         /// </summary>
         /// <param name="valueCondition"></param>
         /// <param name="removeTagCondition"></param>
@@ -198,7 +197,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// TODO
+        ///     Determines if this SearchDictionary contains a specific element.
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>

@@ -71,7 +71,7 @@ namespace Dynamo.Models
         #endregion
 
         /// <summary>
-        /// TODO
+        ///     All CustomNodeDefinitions which this Custom Node depends on.
         /// </summary>
         public IEnumerable<CustomNodeDefinition> CustomNodeDependencies
         {
@@ -86,7 +86,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     The definition of this custom node, based on the current state of this workspace.
         /// </summary>
         public CustomNodeDefinition CustomNodeDefinition
         {
@@ -97,7 +97,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     The information about this custom node, based on the current state of this workspace.
         /// </summary>
         public CustomNodeInfo CustomNodeInfo
         {

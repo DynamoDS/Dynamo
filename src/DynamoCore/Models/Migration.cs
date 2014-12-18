@@ -79,7 +79,8 @@ namespace Dynamo.Models
             new Dictionary<string, Type>();
 
         /// <summary>
-        /// TODO
+        ///     Functions that can be used as a callback in the event a file from a later version of Dynamo
+        ///     is attempting to be loaded.
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="fileVersion"></param>
@@ -88,7 +89,7 @@ namespace Dynamo.Models
         public delegate bool FutureFileCallback(string fileName, Version fileVersion, Version currentVersion);
 
         /// <summary>
-        /// TODO
+        ///     Functions that can be used as a callback in the event an obsolete file is attempted to be loaded.
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="fileVersion"></param>
@@ -109,7 +110,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Adds a new type containing Migration methods into this manager.
         /// </summary>
         /// <param name="t"></param>
         public void AddMigrationType(TypeLoadData t)
@@ -124,7 +125,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Attempts to migrate a workspace to the current version of Dynamo.
         /// </summary>
         /// <param name="workspaceInfo"></param>
         /// <param name="xmlDoc"></param>

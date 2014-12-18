@@ -209,13 +209,11 @@ namespace Dynamo.Models
         /// <param name="recorder"></param>
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
-        //TODO(Steve): Should we accept an UndoRedoRecorder as an argument?
         protected virtual bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             return false; // Base class does not handle this.
         }
 
-        //TODO(Steve): Should we accept an UndoRedoRecorder as an argument?
         protected virtual bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
             return false; // Base class does not handle this.

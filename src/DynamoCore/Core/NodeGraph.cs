@@ -29,11 +29,11 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates and initializes a NodeModel from its Xml representation.
         /// </summary>
-        /// <param name="elNode"></param>
-        /// <param name="context"></param>
-        /// <param name="nodeFactory"></param>
+        /// <param name="elNode">XmlElement for a NodeModel.</param>
+        /// <param name="context">The serialization context for initialization.</param>
+        /// <param name="nodeFactory">A NodeFactory, to be used to create the node.</param>
         /// <returns></returns>
         public static NodeModel LoadNodeFromXml(
             XmlElement elNode, SaveContext context, NodeFactory nodeFactory)
@@ -42,28 +42,21 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates and initializes a ConnectorModel from its Xml representation.
         /// </summary>
-        /// <param name="connEl"></param>
-        /// <param name="nodes"></param>
+        /// <param name="connEl">XmlElement for a ConnectorModel.</param>
+        /// <param name="nodes">Dictionary to be used for looking up a NodeModel by it's Guid.</param>
         /// <param name="connector"></param>
         /// <returns></returns>
         public static bool LoadConnectorFromXml(XmlElement connEl, IDictionary<Guid, NodeModel> nodes, out ConnectorModel connector)
         {
             var helper = new XmlElementHelper(connEl);
 
-            //XmlAttribute guidStartAttrib = connEl.Attributes[0];
-            //XmlAttribute intStartAttrib = connEl.Attributes[1];
-            //XmlAttribute guidEndAttrib = connEl.Attributes[2];
-            //XmlAttribute intEndAttrib = connEl.Attributes[3];
-            //XmlAttribute portTypeAttrib = connEl.Attributes[4];
-
             var guid = helper.ReadGuid("guid", Guid.NewGuid());
             var guidStart = helper.ReadGuid("start");
             var guidEnd = helper.ReadGuid("end");
             int startIndex = helper.ReadInteger("start_index");
             int endIndex = helper.ReadInteger("end_index");
-            //var portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
 
             //find the elements to connect
             NodeModel start;
@@ -96,7 +89,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates and initializes a NoteModel from its Xml representation.
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
@@ -127,10 +120,10 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// TODO
+        ///     Loads NodeModels, ConnectorModels, and NoteModels from an XmlDocument.
         /// </summary>
-        /// <param name="xmlDoc"></param>
-        /// <param name="nodeFactory"></param>
+        /// <param name="xmlDoc">An XmlDocument representing a serialized Dynamo workspace.</param>
+        /// <param name="nodeFactory">A NodeFactory, used to load and instantiate nodes.</param>
         /// <returns></returns>
         public static NodeGraph LoadGraphFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {

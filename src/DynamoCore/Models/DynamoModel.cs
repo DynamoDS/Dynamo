@@ -121,22 +121,22 @@ namespace Dynamo.Models
         #region public properties
 
         /// <summary>
-        /// TODO
+        ///     DesignScript VM EngineController, used for this instance of Dynamo.
         /// </summary>
         public EngineController EngineController { get; set; }
 
         /// <summary>
-        /// TODO
+        ///     Manages all loaded ZeroTouch libraries.
         /// </summary>
         public readonly LibraryServices LibraryServices;
 
         /// <summary>
-        /// TODO
+        ///     Flag specifying whether a shutdown of Dynamo was requested.
         /// </summary>
         public bool ShutdownRequested { get; internal set; }
 
         /// <summary>
-        /// TODO
+        ///     This version of Dynamo.
         /// </summary>
         public string Version
         {
@@ -144,52 +144,53 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     The context that Dynamo is running under.
         /// </summary>
         public readonly string Context;
 
         /// <summary>
-        /// TODO
+        ///     Manages all loaded NodeModel libraries.
         /// </summary>
         public readonly DynamoLoader Loader;
 
         /// <summary>
-        /// TODO
+        ///     Manages loading of packages.
         /// </summary>
         public readonly PackageLoader PackageLoader;
 
         /// <summary>
-        /// TODO
+        ///     Dynamo Package Manager Instance.
         /// </summary>
         public readonly PackageManagerClient PackageManagerClient;
 
         /// <summary>
-        /// TODO
+        ///     Custom Node Manager instance, manages all loaded custom nodes.
         /// </summary>
         public readonly CustomNodeManager CustomNodeManager;
 
         /// <summary>
-        /// TODO
+        ///     The Dynamo Logger, receives and manages all log messages.
         /// </summary>
         public readonly DynamoLogger Logger;
 
         /// <summary>
-        /// TODO
+        ///     The Dynamo Scheduler, handles scheduling of asynchronous tasks on different
+        ///     threads.
         /// </summary>
         public DynamoScheduler Scheduler { get; private set; }
         
         /// <summary>
-        /// TODO
+        ///     The maximum amount of tesselation divisions used for geometry visualization.
         /// </summary>
         public int MaxTesselationDivisions { get; set; }
 
         /// <summary>
-        /// TODO
+        ///     The Dynamo Node Library, complete with Search.
         /// </summary>
         public readonly NodeSearchModel SearchModel;
 
         /// <summary>
-        /// The application version string for analytics reporting APIs
+        ///     The application version string for analytics reporting APIs
         /// </summary>
         internal virtual string AppVersion
         {
@@ -201,27 +202,27 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Debugging settings for this instance of Dynamo.
         /// </summary>
         public readonly DebugSettings DebugSettings;
 
         /// <summary>
-        /// TODO
+        ///     Preference settings for this instance of Dynamo.
         /// </summary>
         public readonly PreferenceSettings PreferenceSettings;
 
         /// <summary>
-        /// TODO
+        ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
         /// </summary>
         public readonly NodeFactory NodeFactory;
 
         /// <summary>
-        /// TODO
+        ///     Migration Manager, upgrades old Dynamo file formats to the current version.
         /// </summary>
         public readonly MigrationManager MigrationManager;
 
         /// <summary>
-        /// TODO
+        ///     The active workspace in Dynamo.
         /// </summary>
         public WorkspaceModel CurrentWorkspace
         {
@@ -237,12 +238,12 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     The copy/paste clipboard.
         /// </summary>
         public ObservableCollection<ModelBase> ClipBoard { get; set; }
 
         /// <summary>
-        /// TODO
+        ///     Specifies whether connectors are displayed in Dynamo.
         /// </summary>
         public bool IsShowingConnectors
         {
@@ -254,7 +255,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Specifies how connectors are displayed in Dynamo.
         /// </summary>
         public ConnectorType ConnectorType
         {
@@ -266,7 +267,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Specifies whether or not Dynamo is in a crash-state.
         /// </summary>
         //TODO(Steve): Determine if this is necessary, we should avoid static fields
         public static bool IsCrashing { get; set; }
@@ -337,7 +338,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Initialization settings for DynamoModel.
         /// </summary>
         public struct StartConfiguration
         {
@@ -717,7 +718,8 @@ namespace Dynamo.Models
         #region engine management
 
         /// <summary>
-        /// TODO
+        ///     Registers (or re-registers) a Custom Node definition with the DesignScript VM,
+        ///     so that instances of the custom node can be evaluated.
         /// </summary>
         /// <param name="definition"></param>
         public void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
@@ -764,7 +766,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Forces an evaluation of the current workspace by resetting the DesignScript VM.
         /// </summary>
         public void ForceRun()
         {
@@ -780,7 +782,7 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
-        /// TODO
+        ///     Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath"></param>
         public void OpenFileFromPath(string xmlPath)
@@ -918,7 +920,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// 
+        ///     Opens an existing custom node workspace.
         /// </summary>
         /// <param name="guid"></param>
         /// <returns></returns>
@@ -935,7 +937,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Adds a node to the current workspace.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="centered"></param>

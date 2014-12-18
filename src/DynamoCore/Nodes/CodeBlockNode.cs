@@ -246,7 +246,6 @@ namespace Dynamo.Nodes
             // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
             // an empty Code Block Node should not be recorded, this method also checks and removes
             // any unwanted recordings
-            //TODO(Steve): Have owning Workspace listen for PropertyChanged("Code"), and delete if Code == ""
             if (value == "")
             {
                 Code = "";

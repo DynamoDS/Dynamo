@@ -71,7 +71,8 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// TODO
+        ///     An event that is fired when new or updated info is available for
+        ///     a custom node.
         /// </summary>
         public event Action<CustomNodeInfo> InfoUpdated;
         protected virtual void OnInfoUpdated(CustomNodeInfo obj)
@@ -81,7 +82,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// TODO
+        ///     An event that is fired when a custom node is removed from Dynamo.
         /// </summary>
         public event Action<Guid> CustomNodeRemoved;
         protected virtual void OnCustomNodeRemoved(Guid functionId)
@@ -94,8 +95,13 @@ namespace Dynamo.Utilities
         ///     Creates a new Custom Node Instance.
         /// </summary>
         /// <param name="id">Identifier referring to a custom node definition.</param>
-        /// <param name="nickname"></param>
-        /// <param name="isTestMode"></param>
+        /// <param name="nickname">
+        ///     Nickname for the custom node to be instantiated, used for error recovery if
+        ///     the given id could not be found.
+        /// </param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
         public Function CreateCustomNodeInstance(
             Guid id, string nickname = null, bool isTestMode = false)
         {
@@ -181,7 +187,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary> 
-        /// Get a function id from a guid assuming that the file is already loaded.
+        ///     Get a function id from a guid assuming that the file is already loaded.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -190,12 +196,8 @@ namespace Dynamo.Utilities
             var pair = NodeInfos.FirstOrDefault(x => x.Value.Path == path);
             return pair.Key;
         }
-        
-        /// <summary>
-        ///     Manually add the CustomNodeDefinition to LoadedNodes, overwriting the existing CustomNodeDefinition
-        /// </summary>
-        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public void SetFunctionDefinition(CustomNodeDefinition def)
+
+        private void SetFunctionDefinition(CustomNodeDefinition def)
         {
             var id = def.FunctionId;
             loadedCustomNodes[id] = def;
@@ -207,10 +209,19 @@ namespace Dynamo.Utilities
             loadedCustomNodes[id] = null;
         }
 
+
         /// <summary>
         ///     Import a dyf file for eventual initialization.  
         /// </summary>
-        /// <returns>null if we failed to get data from the path, otherwise the CustomNodeInfo object for the </returns>
+        /// <param name="file">Path to a custom node file on disk.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="info">
+        ///     If the info was successfully processed, this parameter will be set to
+        ///     it. Otherwise, it will be set to null.
+        /// </param>
+        /// <returns>True on success, false if the file could not be read properly.</returns>
         public bool AddUninitializedCustomNode(string file, bool isTestMode, out CustomNodeInfo info)
         {
             if (TryGetInfoFromPath(file, isTestMode, out info))
@@ -224,7 +235,7 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Attempts to remove all traces of a particular custom node from Dynamo, assuming the node is not in a loaded workspace.
         /// </summary>
-        /// <param name="guid"></param>
+        /// <param name="guid">Custom node identifier.</param>
         public void Remove(Guid guid)
         {
             Uninitialize(guid);
@@ -233,9 +244,11 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// TODO
+        ///     Uninitialized a custom node. The information for the node is still retained, but the next time
+        ///     the node is queried for it's workspace / definition / an instace it will be re-initialized from
+        ///     disk.
         /// </summary>
-        /// <param name="guid"></param>
+        /// <param name="guid">Custom node identifier.</param>
         public bool Uninitialize(Guid guid)
         {
             CustomNodeWorkspaceModel ws;
@@ -251,10 +264,13 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// TODO
+        ///     Scans the given path for custom node files, retaining their information in the manager for later
+        ///     potential initialization.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="isTestMode"></param>
+        /// <param name="path">Path on disk to scan for custom nodes.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
         /// <returns></returns>
         public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode)
         {
@@ -332,7 +348,9 @@ namespace Dynamo.Utilities
         ///     Get the function workspace from a guid
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
-        /// <param name="isTestMode"></param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
         /// <param name="ws"></param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
         public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out CustomNodeWorkspaceModel ws)
@@ -354,8 +372,10 @@ namespace Dynamo.Utilities
         /// <summary>
         ///     Get the function definition from a guid.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="isTestMode"></param>
+        /// <param name="id">Custom node identifier.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
         /// <param name="definition"></param>
         /// <returns></returns>
         public bool TryGetFunctionDefinition(Guid id, bool isTestMode, out CustomNodeDefinition definition)
@@ -416,7 +436,9 @@ namespace Dynamo.Utilities
         ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
-        /// <param name="isTestMode"></param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
         /// <param name="info"></param>
         /// <returns>The custom node info object - null if we failed</returns>
         public bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
@@ -455,11 +477,13 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// TODO
+        ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceHeader.
         /// </summary>
-        /// <param name="xmlDoc"></param>
-        /// <param name="workspaceInfo"></param>
-        /// <param name="isTestMode"></param>
+        /// <param name="xmlDoc">XmlDocument representing the parsed custom node file.</param>
+        /// <param name="workspaceInfo">Workspace header describing the custom node file.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
         /// <param name="workspace"></param>
         /// <returns></returns>
         public bool OpenCustomNodeWorkspace(
@@ -595,13 +619,15 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates a new Custom Node in the manager.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="category"></param>
-        /// <param name="description"></param>
-        /// <param name="functionId"></param>
-        /// <returns></returns>
+        /// <param name="name">Name of the custom node.</param>
+        /// <param name="category">Category for the custom node.</param>
+        /// <param name="description">Description of the custom node.</param>
+        /// <param name="functionId">
+        ///     Optional identifier to be used for the custom node. By default, will make a new unique one.
+        /// </param>
+        /// <returns>Newly created Custom Node Workspace.</returns>
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
@@ -616,20 +642,21 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// TODO
+        ///     Attempts to retrieve information for the given custom node identifier.
         /// </summary>
-        /// <param name="x"></param>
+        /// <param name="id">Custom node identifier.</param>
         /// <param name="info"></param>
-        /// <returns></returns>
-        public bool TryGetNodeInfo(Guid x, out CustomNodeInfo info)
+        /// <returns>Success or failure.</returns>
+        public bool TryGetNodeInfo(Guid id, out CustomNodeInfo info)
         {
-            return NodeInfos.TryGetValue(x, out info);
+            return NodeInfos.TryGetValue(id, out info);
         }
 
         /// <summary>
-        /// TODO
+        ///     Attempts to retrieve information for the given custom node name. If there are multiple
+        ///     custom nodes matching the given name, this method will return any one of them.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">Name of a custom node.</param>
         /// <param name="info"></param>
         /// <returns></returns>
         public bool TryGetNodeInfo(string name, out CustomNodeInfo info)

@@ -2,22 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Design;
 using System.Linq;
-using System.Web.Configuration;
 using System.Xml;
-using ICSharpCode.AvalonEdit.Utils; //TODO(Steve): Replace with .NET ImmutableCollections
+using ICSharpCode.AvalonEdit.Utils;
 
 namespace Dynamo.Utilities
 {
     /// <summary>
-    /// TODO
+    ///     A collection of recursive groupings that have a common key.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IRecursiveGrouping<out T> : IGrouping<T, IRecursiveGrouping<T>> { }
 
     /// <summary>
-    /// TODO
+    ///     A tree that has a tag, leaves, and subtrees.
     /// </summary>
     /// <typeparam name="TNodeTag"></typeparam>
     /// <typeparam name="TLeaf"></typeparam>
@@ -30,6 +28,13 @@ namespace Dynamo.Utilities
 
     public static class ExtensionMethods
     {
+        /// <summary>
+        ///     Gets all the tags of an ITree.
+        /// </summary>
+        /// <typeparam name="TNodeTag"></typeparam>
+        /// <typeparam name="TLeaf"></typeparam>
+        /// <param name="tree"></param>
+        /// <returns></returns>
         public static IEnumerable<TNodeTag> GetAllTags<TNodeTag, TLeaf>(
             this ITree<TNodeTag, TLeaf> tree)
         {
@@ -39,7 +44,9 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// TODO
+        ///     Contructs a tree by recursively grouping elements from a sequence. Essentially, performs
+        ///     a GroupBy operation, and then for each Grouping, performs another GroupBy, assuming there
+        ///     is a GroupBy key available for the sub-group.
         /// </summary>
         /// <typeparam name="TLeaf"></typeparam>
         /// <typeparam name="TNodeKey"></typeparam>
@@ -62,18 +69,31 @@ namespace Dynamo.Utilities
             return GroupByRecursive(query);
         }
 
+        /// <summary>
+        ///     Contructs a tree by recursively grouping elements from a sequence. Essentially, performs
+        ///     a GroupBy operation, and then for each Grouping, performs another GroupBy, assuming there
+        ///     is a GroupBy key available for the sub-group.
+        /// </summary>
+        /// <typeparam name="TNodeTag"></typeparam>
+        /// <typeparam name="TLeaf"></typeparam>
+        /// <param name="entries"></param>
+        /// <param name="categorySelector"></param>
+        /// <param name="rootTag"></param>
+        /// <returns></returns>
         public static ITree<TNodeTag, TLeaf> GroupByRecursive<TNodeTag, TLeaf>(
             this IEnumerable<TLeaf> entries, Func<TLeaf, ICollection<TNodeTag>> categorySelector,
             TNodeTag rootTag)
         {
-            return entries.GroupByRecursive<TLeaf, TNodeTag, _Tree<TNodeTag, TLeaf>>(
+            return entries.GroupByRecursive<TLeaf, TNodeTag, Tree<TNodeTag, TLeaf>>(
                 categorySelector,
-                _Tree<TNodeTag, TLeaf>.Create,
+                Tree<TNodeTag, TLeaf>.Create,
                 rootTag);
         }
 
         /// <summary>
-        /// TODO
+        ///     Contructs a tree by recursively grouping elements from a sequence. Essentially, performs
+        ///     a GroupBy operation, and then for each Grouping, performs another GroupBy, assuming there
+        ///     is a GroupBy key available for the sub-group.
         /// </summary>
         /// <typeparam name="TLeaf"></typeparam>
         /// <typeparam name="TNodeKey"></typeparam>
@@ -92,18 +112,18 @@ namespace Dynamo.Utilities
         
         #region GroupByRecursive helpers
 
-        private sealed class _Tree<TNode, TEntry> : ITree<TNode, TEntry>
+        private sealed class Tree<TNode, TEntry> : ITree<TNode, TEntry>
         {
-            private _Tree(TNode name, IEnumerable<TEntry> entries, IEnumerable<_Tree<TNode, TEntry>> subCategories)
+            private Tree(TNode name, IEnumerable<TEntry> entries, IEnumerable<Tree<TNode, TEntry>> subCategories)
             {
                 SubTrees = subCategories;
                 Leaves = entries;
                 Tag = name;
             }
 
-            public static _Tree<TNode, TEntry> Create(TNode categoryName, IEnumerable<_Tree<TNode, TEntry>> subCategories, IEnumerable<TEntry> entries)
+            public static Tree<TNode, TEntry> Create(TNode categoryName, IEnumerable<Tree<TNode, TEntry>> subCategories, IEnumerable<TEntry> entries)
             {
-                return new _Tree<TNode, TEntry>(categoryName, entries, subCategories);
+                return new Tree<TNode, TEntry>(categoryName, entries, subCategories);
             }
 
             public TNode Tag { get; private set; }
@@ -374,7 +394,7 @@ namespace Dynamo.Utilities
         public static string GetFullName(this Delegate del)
         {
             if (del.Method.DeclaringType == null)
-                throw new ArgumentException("Delegate has no declaring type.", @"del");
+                throw new ArgumentException(@"Delegate has no declaring type.", @"del");
 
             return String.Format("{0}.{1}", del.Method.DeclaringType.FullName, del.Method.Name);
         }

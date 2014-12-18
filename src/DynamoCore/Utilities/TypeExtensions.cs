@@ -10,7 +10,7 @@ namespace Dynamo.Utilities
     public static class TypeExtensions
     {
         /// <summary>
-        /// TODO
+        ///     Fetches custom attributes from a MemberInfo.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="type"></param>
@@ -23,9 +23,10 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates a function that constructs an instance of an object of the given
+        ///     type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The return type of the constructor function.</typeparam>
         /// <returns></returns>
         public static Func<T> GetDefaultConstructor<T>()
         {

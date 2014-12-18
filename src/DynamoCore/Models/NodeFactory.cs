@@ -15,35 +15,36 @@ using Dynamo.Utilities;
 namespace Dynamo.Models
 {
     /// <summary>
-    /// TODO
+    ///     An object which can load a NodeModel from Xml.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface INodeLoader<out T> where T : NodeModel
     {
         /// <summary>
-        /// TODO
+        ///     Create a new NodeModel from its serialized form.
         /// </summary>
-        /// <param name="elNode"></param>
-        /// <param name="context"></param>
+        /// <param name="elNode">Serialized NodeModel</param>
+        /// <param name="context">Serialization context</param>
         /// <returns></returns>
         T CreateNodeFromXml(XmlElement elNode, SaveContext context);
     }
 
     /// <summary>
-    /// TODO
+    ///     An object which can create a new NodeModel.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface INodeFactory<out T> where T : NodeModel
     {
         /// <summary>
-        /// TODO
+        ///     Creates a new NodeModel instance.
         /// </summary>
         /// <returns></returns>
         T CreateNode();
     }
 
     /// <summary>
-    /// TODO
+    ///     Manages factories and loaders for NodeModels. Can use registered factories
+    ///     and loaders to instantiate and load new NodeModels.
     /// </summary>
     public class NodeFactory : LogSourceBase
     {
@@ -57,7 +58,7 @@ namespace Dynamo.Models
             new Dictionary<string, Type>();
 
         /// <summary>
-        /// TODO
+        ///     Adds a node loader to this manager.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="loader"></param>
@@ -67,30 +68,22 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Adds a node loader to this manager, for the given type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="nodeType"></param>
         /// <param name="loader"></param>
-        /// <param name="alsoKnownAs"></param>
-        /// <param name="overwrite"></param>
-        public void AddLoader<T>(Type nodeType, INodeLoader<T> loader, IEnumerable<string> alsoKnownAs = null, bool overwrite = false) where T : NodeModel
+        public void AddLoader<T>(Type nodeType, INodeLoader<T> loader) where T : NodeModel
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
 
             nodeLoaders[nodeType] = loader;
             alsoKnownAsMappings[nodeType.FullName] = nodeType;
-            
-            if (alsoKnownAs != null)
-            {
-                foreach (var name in alsoKnownAs)
-                    AddAlsoKnownAs(nodeType, name, overwrite);
-            }
         }
 
         /// <summary>
-        /// TODO
+        ///     Adds a node factory to this manager.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="loader"></param>
@@ -100,7 +93,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Adds a node factory to this manager, for a given type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="nodeType"></param>
@@ -115,19 +108,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Attempts to create a new factory and loader for a given type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void AddTypeFactoryAndLoader<T>() where T : NodeModel
+        public bool AddTypeFactoryAndLoader<T>() where T : NodeModel
         {
-            AddTypeFactoryAndLoader(typeof(T));
+            return AddTypeFactoryAndLoader(typeof(T));
         }
 
         /// <summary>
-        /// TODO
+        ///     Attempts to create a new factory and loader for a given type.
         /// </summary>
         /// <param name="nodeType"></param>
-        public void AddTypeFactoryAndLoader(Type nodeType)
+        public bool AddTypeFactoryAndLoader(Type nodeType)
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
@@ -137,15 +130,17 @@ namespace Dynamo.Models
                 var loader = new NodeModelTypeLoader(nodeType);
                 AddLoader(nodeType, loader);
                 AddFactory(nodeType, loader); // We don't re-use alsoKnownAs here, they are already registered from AddLoader.
+                return true;
             }
             catch (Exception e)
             {
                 Log(e);
+                return false;
             }
         }
 
         /// <summary>
-        /// TODO
+        ///     Registers a type with another name that it may go by.
         /// </summary>
         /// <param name="realType"></param>
         /// <param name="aka"></param>
@@ -164,7 +159,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Registers a type with other names that it may go by.
         /// </summary>
         /// <param name="realType"></param>
         /// <param name="names"></param>
@@ -277,7 +272,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Given a type name, attempts to get the type associated with that name.
         /// </summary>
         /// <param name="fullyQualifiedName"></param>
         /// <param name="type"></param>
@@ -295,7 +290,8 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates and Loads a new NodeModel from its Serialized form, using the node loaders
+        ///     registered in this factory. If loading fails, a Dummy Node is produced.
         /// </summary>
         /// <param name="elNode"></param>
         /// <param name="context"></param>
@@ -318,7 +314,8 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates a new NodeModel from its typeName, using the node factories registered
+        ///     in this factory.
         /// </summary>
         /// <param name="typeName"></param>
         /// <param name="node"></param>

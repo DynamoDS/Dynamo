@@ -24,7 +24,7 @@ namespace Dynamo.Utilities
         private readonly HashSet<Assembly> loadedAssemblies = new HashSet<Assembly>();
 
         /// <summary>
-        /// TODO
+        ///     All assemblies that have been loaded into Dynamo.
         /// </summary>
         public IEnumerable<Assembly> LoadedAssemblies
         {

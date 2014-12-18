@@ -34,7 +34,7 @@ namespace Dynamo.Models
             OpenFileFromPath(xmlFilePath);
 
             //clear the clipboard to avoid copying between dyns
-            //ClipBoard.Clear(); //TODO(Steve): Make sure this now works
+            //ClipBoard.Clear();
         }
 
         void RunCancelImpl(RunCancelCommand command)

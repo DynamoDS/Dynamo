@@ -564,7 +564,7 @@ namespace Dynamo.Models
         public event Action Disposed;
 
         /// <summary>
-        /// TODO
+        ///     Gets the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
         /// <param name="outPortIndex"></param>
         /// <param name="engine"></param>
@@ -575,7 +575,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Sets the nickname of this node from the attributes on the class definining it.
         /// </summary>
         public void SetNickNameFromAttribute()
         {
@@ -587,11 +587,9 @@ namespace Dynamo.Models
         #region Modification Reporting
 
         /// <summary>
-        /// TODO
+        ///     Event fired when the DesignScript AST produced by this node has changed.
         /// </summary>
         public event Action AstUpdated;
-        
-        //TODO(Steve): This should be protected!
         public virtual void OnAstUpdated()
         {
             var handler = AstUpdated;
@@ -739,7 +737,7 @@ namespace Dynamo.Models
         #region Input and Output Connections
 
         /// <summary>
-        /// TODO
+        ///     Event fired when a new ConnectorModel has been attached to one of this node's inputs.
         /// </summary>
         public event Action<ConnectorModel> ConnectorAdded;
         protected virtual void OnConnectorAdded(ConnectorModel obj)

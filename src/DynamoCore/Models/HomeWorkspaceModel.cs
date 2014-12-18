@@ -175,7 +175,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Clears this workspace of nodes, notes, and connectors.
         /// </summary>
         public override void Clear()
         {
@@ -277,7 +277,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// TODO
+        ///     Flag specifying if this workspace is operating in "test mode".
         /// </summary>
         public bool IsTestMode { get; set; }
 

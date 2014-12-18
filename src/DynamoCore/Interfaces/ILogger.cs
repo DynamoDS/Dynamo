@@ -3,7 +3,7 @@
 namespace Dynamo.Interfaces
 {
     /// <summary>
-    /// TODO
+    ///     Consumes messages to be used for logging.
     /// </summary>
     public interface ILogger
     {
@@ -92,7 +92,7 @@ namespace Dynamo.Interfaces
         #endregion
 
         /// <summary>
-        /// TODO
+        ///     Creates a LogMessage representing a warning.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="severity"></param>
@@ -103,7 +103,7 @@ namespace Dynamo.Interfaces
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates a LogMessage representing an error.
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
@@ -113,7 +113,7 @@ namespace Dynamo.Interfaces
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates a LogMessage representing an error.
         /// </summary>
         /// <param name="exception"></param>
         /// <returns></returns>
@@ -123,7 +123,7 @@ namespace Dynamo.Interfaces
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates a basic LogMessage.
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
@@ -132,6 +132,11 @@ namespace Dynamo.Interfaces
             return new StandardLogMessage(message);
         }
 
+        /// <summary>
+        ///     Logs a LogMessage.
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="message"></param>
         public static void Log(this ILogger logger, ILogMessage message)
         {
             message.Log(logger);
@@ -139,10 +144,13 @@ namespace Dynamo.Interfaces
     }
 
     /// <summary>
-    ///     An object that can log messages.
+    ///     An object that emits log messages.
     /// </summary>
     public interface ILogSource
     {
+        /// <summary>
+        ///     Emits LogMessages.
+        /// </summary>
         event Action<ILogMessage> MessageLogged;
     }
 
@@ -151,6 +159,9 @@ namespace Dynamo.Interfaces
     /// </summary>
     public class LogSourceBase : ILogSource
     {
+        /// <summary>
+        ///     Emits LogMessages.
+        /// </summary>
         public event Action<ILogMessage> MessageLogged;
 
         protected void Log(ILogMessage obj)
@@ -182,6 +193,10 @@ namespace Dynamo.Interfaces
             }
         }
 
+        /// <summary>
+        ///     Class used to convert a LogSourceBase into an ILogger, by dispatching
+        ///     the ILogger methods to the MessageLogged event of ILogSource.
+        /// </summary>
         private class DispatchedLogger : ILogger
         {
             private readonly LogSourceBase source;
@@ -218,7 +233,8 @@ namespace Dynamo.Interfaces
         }
 
         /// <summary>
-        /// TODO
+        ///     Creates an ILogger out of this LogSourceBase; logging to the ILogger
+        ///     will send messages out of the LogMessage event.
         /// </summary>
         /// <returns></returns>
         public ILogger AsLogger()

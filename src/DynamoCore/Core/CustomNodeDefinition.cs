@@ -10,6 +10,9 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo
 {
+    /// <summary>
+    ///     Compiler definition of a Custom Node.
+    /// </summary>
     public class CustomNodeDefinition : IFunctionDescriptor
     {
         public CustomNodeDefinition(
@@ -196,7 +199,7 @@ namespace Dynamo
     }
     
     /// <summary>
-    /// A simple class to keep track of custom nodes.
+    ///     Basic information about a custom node.
     /// </summary>
     public class CustomNodeInfo
     {

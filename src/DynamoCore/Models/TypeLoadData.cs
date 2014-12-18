@@ -20,17 +20,17 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     TODO
+        ///     The type this data is associated with.
         /// </summary>
         public readonly Type Type;
 
         /// <summary>
-        /// TODO
+        ///     Information about why this type is obsolete, if it is actually obsolete.
         /// </summary>
         public readonly string ObsoleteMessage;
 
         /// <summary>
-        /// TODO
+        ///     Specifies whether or not this Type is obsolete.
         /// </summary>
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
@@ -74,42 +74,42 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     TODO
+        ///     Other names this type might go by inside of Dynamo.
         /// </summary>
         public readonly IEnumerable<string> AlsoKnownAs;
 
         /// <summary>
-        ///     TODO
+        ///     Specifies whether or not this type is deprecated by Dynamo.
         /// </summary>
         public readonly bool IsDeprecated;
 
         /// <summary>
-        /// TODO
+        ///     Specifies whether or not this type is considered a "meta node"
         /// </summary>
         public readonly bool IsMetaNode;
 
         /// <summary>
-        /// TODO
+        ///     Specifies whether or not this type is considered "DesignScript compatible"
         /// </summary>
         public readonly bool IsDSCompatible;
         
         /// <summary>
-        /// TODO
+        ///     Specifies whether or not this type should be hidden from users in search.
         /// </summary>
         public readonly bool IsHidden;
         
         /// <summary>
-        /// TODO
+        ///     The Name associated with this type.
         /// </summary>
         public readonly string Name;
 
         /// <summary>
-        /// TODO
+        ///     Search keys that can be used to search for this type.
         /// </summary>
         public readonly IEnumerable<string> SearchKeys;
 
         /// <summary>
-        /// TODO
+        ///     The category of this type, used in search.
         /// </summary>
         public string Category
         {
@@ -124,7 +124,7 @@ namespace Dynamo.Models
         private string category;
 
         /// <summary>
-        /// TODO
+        ///     The description of this type.
         /// </summary>
         public readonly string Description;
     }
