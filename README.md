@@ -30,11 +30,11 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 - Upgraded Excel.Write nodes no longer show as “Unresolved”.
 - View.ExportAsImage will now export views other than default {3d}
 - Dynamo does not conflict with other addins.  Previously, Dynamo would fail to launch in Revit when Unifi, Maxwell, Enum, or Kiwi Bonus Tools or a few other add-in were installed on Revit 2015.
-- Existing Code Block Nodes are no longer affected by name collisions with functions that come from installed packages. For instance, Point.ByCoordinates was affected by a collision with a Point. operation in the popular Rhynamo package and would throw an error saying “Warning: Dereferencing a non-pointer. Dereferencing a non-pointer.” Existing Code Block Nodes and new code block nodes now use unique names for each class.
 - Users can now run Dynamo as an external program for debugging libraries in Visual Studio 
 - Better error messaging in Code Block Nodes
 - modelcurve.bycurve no longer creates duplicate elements when adding to an array
 - Copy/Paste of nodes now maintains lacing setting
+- Many more bug fixes
 
 #### Known Issues
 - Current list of [known issues](https://github.com/DynamoDS/Dynamo/wiki/Known-Issues)
