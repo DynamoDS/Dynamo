@@ -778,7 +778,7 @@ namespace Dynamo.Models
         {
             if (document.DocumentElement == null)
             {
-                var message = "Workspace should have been saved before this";
+                var message = /*NXLT*/"Workspace should have been saved before this";
                 throw new InvalidOperationException(message);
             }
 
