@@ -721,7 +721,7 @@
   </data>
   <data name="StartPageNewFile" xml:space="preserve">
     <value>New</value>
-    <comment>Start page | New</comment>
+    <comment>Start page | New </comment>
   </data>
   <data name="StartPageOpenFile" xml:space="preserve">
     <value>Open</value>
@@ -747,9 +747,7 @@
   </data>
   <data name="StartPageVideoTutorials" xml:space="preserve">
     <value>Video Tutorials</value>
-    <comment>Start page | Link to videos
-Start page | Link to DynamoBIM
-Start page | Link to tutorials</comment>
+    <comment>Start page | Link to videos</comment>
   </data>
   <data name="StartPageVisitDynamoBim" xml:space="preserve">
     <value>Visit www.dynamobim.org</value>
