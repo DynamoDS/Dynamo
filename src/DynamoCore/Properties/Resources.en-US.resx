@@ -254,10 +254,6 @@ If you don't mind, it would be helpful for you to send us your file. That will m
   <data name="UnhandledExceptionInDynamoEngine" xml:space="preserve">
     <value>Unhandled exception in Dynamo engine</value>
   </data>
-  <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command: {0}</value>
-    <comment>ArgumentException</comment>
-  </data>
   <data name="UsageReportingErrorMessage" xml:space="preserve">
     <value>Uh oh...
  We're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.

@@ -414,15 +414,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unknown command: {0}.
-        /// </summary>
-        public static string UnknownCommand {
-            get {
-                return ResourceManager.GetString("UnknownCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Uh oh...
         /// We&apos;re sorry - we tried to save your decisions, but something went wrong. The decision probably hasn&apos;t been saved. This really shouldn&apos;t have happened. Please get in touch via GitHub and send us this information.
         ///You can also try deleting [FILEPATH] and trying again.
