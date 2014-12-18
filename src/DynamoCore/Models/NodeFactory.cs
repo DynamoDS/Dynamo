@@ -73,7 +73,8 @@ namespace Dynamo.Models
         /// <param name="nodeType"></param>
         /// <param name="loader"></param>
         /// <param name="alsoKnownAs"></param>
-        public void AddLoader<T>(Type nodeType, INodeLoader<T> loader, IEnumerable<string> alsoKnownAs=null) where T : NodeModel
+        /// <param name="overwrite"></param>
+        public void AddLoader<T>(Type nodeType, INodeLoader<T> loader, IEnumerable<string> alsoKnownAs = null, bool overwrite = false) where T : NodeModel
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
@@ -84,7 +85,7 @@ namespace Dynamo.Models
             if (alsoKnownAs != null)
             {
                 foreach (var name in alsoKnownAs)
-                    alsoKnownAsMappings[name] = nodeType;
+                    AddAlsoKnownAs(nodeType, name, overwrite);
             }
         }
 
@@ -104,38 +105,29 @@ namespace Dynamo.Models
         /// <typeparam name="T"></typeparam>
         /// <param name="nodeType"></param>
         /// <param name="loader"></param>
-        /// <param name="alsoKnownAs"></param>
-        public void AddFactory<T>(Type nodeType, INodeFactory<T> loader, IEnumerable<string> alsoKnownAs = null) where T : NodeModel
+        public void AddFactory<T>(Type nodeType, INodeFactory<T> loader) where T : NodeModel
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
 
             nodeFactories[nodeType] = loader;
             alsoKnownAsMappings[nodeType.FullName] = nodeType;
-
-            if (alsoKnownAs != null)
-            {
-                foreach (var name in alsoKnownAs)
-                    alsoKnownAsMappings[name] = nodeType;
-            }
         }
 
         /// <summary>
         /// TODO
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="alsoKnownAs"></param>
-        public void AddTypeFactoryAndLoader<T>(IEnumerable<string> alsoKnownAs=null) where T : NodeModel
+        public void AddTypeFactoryAndLoader<T>() where T : NodeModel
         {
-            AddTypeFactoryAndLoader(typeof(T), alsoKnownAs);
+            AddTypeFactoryAndLoader(typeof(T));
         }
 
         /// <summary>
         /// TODO
         /// </summary>
         /// <param name="nodeType"></param>
-        /// <param name="alsoKnownAs"></param>
-        public void AddTypeFactoryAndLoader(Type nodeType, IEnumerable<string> alsoKnownAs=null)
+        public void AddTypeFactoryAndLoader(Type nodeType)
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
                 throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
@@ -143,7 +135,7 @@ namespace Dynamo.Models
             try
             {
                 var loader = new NodeModelTypeLoader(nodeType);
-                AddLoader(nodeType, loader, alsoKnownAs);
+                AddLoader(nodeType, loader);
                 AddFactory(nodeType, loader); // We don't re-use alsoKnownAs here, they are already registered from AddLoader.
             }
             catch (Exception e)
@@ -155,30 +147,35 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
-        /// <param name="aka"></param>
         /// <param name="realType"></param>
+        /// <param name="aka"></param>
         /// <param name="overwrite"></param>
-        public void AddAlsoKnownAs(string aka, Type realType, bool overwrite=false)
+        public void AddAlsoKnownAs(Type realType, string aka, bool overwrite = false)
         {
             Type old;
             if (!overwrite && alsoKnownAsMappings.TryGetValue(aka, out old) && old != realType)
-                throw new InvalidOperationException(string.Format("There already exists an AlsoKnownAs mapping for {0}.", aka));
+            {
+                Log(
+                    new InvalidOperationException(
+                        string.Format("There already exists an AlsoKnownAs mapping for {0}.", aka)));
+                return;
+            }
             alsoKnownAsMappings[aka] = realType;
         }
 
         /// <summary>
         /// TODO
         /// </summary>
-        /// <param name="names"></param>
         /// <param name="realType"></param>
+        /// <param name="names"></param>
         /// <param name="overwrite"></param>
-        public void AddAlsoKnownAs(IEnumerable<string> names, Type realType, bool overwrite=false)
+        public void AddAlsoKnownAs(Type realType, IEnumerable<string> names, bool overwrite = false)
         {
             foreach (var aka in names)
-                AddAlsoKnownAs(aka, realType, overwrite);
+                AddAlsoKnownAs(realType, aka, overwrite);
         }
 
-        private class NodeModelTypeLoader : INodeLoader<NodeModel>, INodeFactory<NodeModel>
+        private sealed class NodeModelTypeLoader : INodeLoader<NodeModel>, INodeFactory<NodeModel>
         {
             private readonly Func<NodeModel> constructor;
 

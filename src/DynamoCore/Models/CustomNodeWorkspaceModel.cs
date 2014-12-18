@@ -150,7 +150,7 @@ namespace Dynamo.Models
         }
         private string description;
 
-        protected override void OnAstUpdated()
+        public override void OnAstUpdated()
         {
             base.OnAstUpdated();
             HasUnsavedChanges = true;

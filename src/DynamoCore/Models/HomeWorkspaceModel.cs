@@ -141,7 +141,7 @@ namespace Dynamo.Models
             OnAstUpdated();
         }
 
-        protected override void OnAstUpdated()
+        public override void OnAstUpdated()
         {
             base.OnAstUpdated();
 
@@ -211,6 +211,9 @@ namespace Dynamo.Models
                     node.ForceReExecuteOfNode = true;
                 OnAstUpdated();
             }
+
+            if (DynamicRunEnabled)
+                Run();
         }
 
         /// <summary>

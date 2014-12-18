@@ -575,12 +575,15 @@ namespace Dynamo.Models
             var cbnLoader = new CodeBlockNodeLoader(LibraryServices);
             NodeFactory.AddLoader(cbnData.Type, cbnLoader);
             NodeFactory.AddFactory(cbnData.Type, cbnLoader);
-            NodeFactory.AddAlsoKnownAs(cbnData.AlsoKnownAs, cbnData.Type);
+            NodeFactory.AddAlsoKnownAs(cbnData.Type, cbnData.AlsoKnownAs);
 
-            NodeFactory.AddTypeFactoryAndLoader(dummyData.Type, dummyData.AlsoKnownAs);
+            NodeFactory.AddTypeFactoryAndLoader(dummyData.Type);
+            NodeFactory.AddAlsoKnownAs(dummyData.Type, dummyData.AlsoKnownAs);
 
-            NodeFactory.AddTypeFactoryAndLoader(symbolData.Type, symbolData.AlsoKnownAs);
-            NodeFactory.AddTypeFactoryAndLoader(outputData.Type, outputData.AlsoKnownAs);
+            NodeFactory.AddTypeFactoryAndLoader(symbolData.Type);
+            NodeFactory.AddAlsoKnownAs(symbolData.Type, symbolData.AlsoKnownAs);
+            NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
+            NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
             SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
 
@@ -616,8 +619,17 @@ namespace Dynamo.Models
             // Load NodeModels
             foreach (var type in modelTypes)
             {
-                NodeFactory.AddTypeFactoryAndLoader(type.Type, type.AlsoKnownAs);
-                AddNodeTypeToSearch(type);
+                // Protect ourselves from exceptions thrown by malformed third party nodes.
+                try
+                {
+                    NodeFactory.AddTypeFactoryAndLoader(type.Type);
+                    NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
+                    AddNodeTypeToSearch(type);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e);
+                }
             }
 
             // Load migrations
@@ -731,7 +743,7 @@ namespace Dynamo.Models
                 workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
         }
 
-        private void ResetEngineInternal()
+        protected void ResetEngineInternal()
         {
             if (EngineController != null)
             {

@@ -362,6 +362,7 @@ namespace Dynamo.Nodes
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
+            ForceReExecuteOfNode = true;
             OnAstUpdated();
             
             ClearRuntimeError();

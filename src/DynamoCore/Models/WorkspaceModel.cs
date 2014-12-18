@@ -539,7 +539,7 @@ namespace Dynamo.Models
         /// <summary>
         /// TODO
         /// </summary>
-        protected virtual void OnAstUpdated()
+        public virtual void OnAstUpdated()
         {
 
         }

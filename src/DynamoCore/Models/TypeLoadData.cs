@@ -43,10 +43,6 @@ namespace Dynamo.Models
                 Type.GetCustomAttributes<ObsoleteAttribute>(true)
                     .Select(x => string.IsNullOrEmpty(x.Message) ? "Obsolete" : x.Message));
 
-            AlsoKnownAs = 
-                Type.GetCustomAttributes<AlsoKnownAsAttribute>(false)
-                    .SelectMany(aka => aka.Values);
-
             IsDeprecated = Type.GetCustomAttributes<NodeDeprecatedAttribute>(true).Any();
             IsMetaNode = Type.GetCustomAttributes<IsMetaNodeAttribute>(false).Any();
             IsDSCompatible = Type.GetCustomAttributes<IsDesignScriptCompatibleAttribute>(false).Any();
@@ -60,6 +56,11 @@ namespace Dynamo.Models
             }
             else
                 Name = Type.Name;
+
+            AlsoKnownAs =
+                Type.GetCustomAttributes<AlsoKnownAsAttribute>(false)
+                    .SelectMany(aka => aka.Values)
+                    .Concat(Name.AsSingleton());
 
             SearchKeys = Type.GetCustomAttributes<NodeSearchTagsAttribute>(false).SelectMany(x => x.Tags);
             Category =

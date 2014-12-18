@@ -1188,6 +1188,8 @@ namespace Dynamo.Models
                 ConnectInput(data, outData, startPort.Owner);
                 startPort.Owner.ConnectOutput(outData, data, this);
                 OnConnectorAdded(connector);
+                ForceReExecuteOfNode = true;
+                OnAstUpdated();
             }
         }
 

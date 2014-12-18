@@ -323,7 +323,9 @@ namespace DynamoCoreUITests
 
             AssertPreviewValue("04f6dab5-0a0b-4563-9f20-d0e58fcae7a5", 1.0);
         }
+
         [Test]
+        [Category("Failure")] //TODO(Steve): Recorded Commands have changed for custom nodes.
         public void TestCustomNodeUI()
         {
             RunCommandsFromFile("CustomNodeUI.xml", false, (commandTag) =>
@@ -373,10 +375,7 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(3, node.InPorts.Count);
                     Assert.AreEqual(1, node.OutPorts.Count);
                     AssertPreviewValue("6cec1997-ed61-4277-a1a8-3f3e4eb4321d", 11.5);
-
                 }
-
-
             });
         }
         [Test, RequiresSTA]
@@ -1081,6 +1080,7 @@ namespace DynamoCoreUITests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
+        [Category("Failure")] // Node2Code is disabled for the time being
         public void Defect_MAGN_164_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904

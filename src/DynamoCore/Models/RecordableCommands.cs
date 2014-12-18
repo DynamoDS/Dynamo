@@ -516,8 +516,20 @@ namespace Dynamo.Models
                 helper.SetAttribute("DefaultPosition", DefaultPosition);
                 helper.SetAttribute("TransformCoordinates", TransformCoordinates);
 
-                var nodeElement = Node.Serialize(element.OwnerDocument, SaveContext.File);
-                element.AppendChild(nodeElement);
+                if (Node != null)
+                {
+                    var nodeElement = Node.Serialize(element.OwnerDocument, SaveContext.File);
+                    element.AppendChild(nodeElement);
+                }
+                else if (NodeXml != null)
+                {
+                    element.AppendChild(NodeXml);
+                }
+                else
+                {
+                    helper.SetAttribute("NodeId", NodeId);
+                    helper.SetAttribute("NodeName", Name);
+                }
             }
 
             #endregion
