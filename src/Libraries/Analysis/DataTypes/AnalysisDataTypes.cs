@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
+
+using DSCore;
 
 namespace Analysis.DataTypes
 {
     /// <summary>
     /// A class for storing structured surface analysis data.
     /// </summary>
-    public class SurfaceAnalysisData : ISurfaceAnalysisData<UV, double>
+    public class SurfaceAnalysisData : ISurfaceAnalysisData<UV, double>, IGraphicItem
     {
+        private int resultIndex;
+        private Color[,] colorMap ;
+        private const int COLOR_MAP_WIDTH = 100;
+        private const int COLOR_MAP_HEIGHT = 100;
+
         /// <summary>
         /// The surface which contains the calculation locations.
         /// </summary>
@@ -37,11 +47,16 @@ namespace Analysis.DataTypes
         }
 
         protected SurfaceAnalysisData(
-            Surface surface, IEnumerable<UV> calculationLocations, Dictionary<string,IList<double>> results)
+            Surface surface, IEnumerable<UV> calculationLocations, Dictionary<string,IList<double>> results, int resultIndex)
         {
             Surface = surface;
-            CalculationLocations = CullCalculationLocations(surface, calculationLocations);
+            //CalculationLocations = CullCalculationLocations(surface, calculationLocations);
+            CalculationLocations = calculationLocations;
             Results = results;
+
+            this.resultIndex = resultIndex;
+            colorMap = CreateColorMap();
+            
         }
 
         /// <summary>
@@ -69,7 +84,7 @@ namespace Analysis.DataTypes
             return new SurfaceAnalysisData(
                 surface,
                 points,
-                new Dictionary<string, IList<double>>());
+                new Dictionary<string, IList<double>>(), 0);
         }
 
         /// <summary>
@@ -77,9 +92,10 @@ namespace Analysis.DataTypes
         /// </summary>
         /// <param name="surface">The surface which contains the calculation locations.</param>
         /// <param name="points">A list of UV calculation locations on the surface.</param>
-        /// <param name="resultNames">A list of result names.</param>
-        /// <param name="resultValues">A list of lists of result values.</param>
-        public static SurfaceAnalysisData BySurfacePointsAndResults(Surface surface, IEnumerable<UV> points, IList<string> resultNames, IList<IList<double>> resultValues)
+        /// <param name="names">A list of result names.</param>
+        /// <param name="values">A list of lists of result values.</param>
+        /// <param name="resultIndex">The index of the results to visualize.</param>
+        public static SurfaceAnalysisData BySurfacePointsAndResults(Surface surface, IEnumerable<UV> points, IList<string> names, IList<IList<double>> values, int resultIndex = 0)
         {
             if (surface == null)
             {
@@ -96,28 +112,33 @@ namespace Analysis.DataTypes
                 throw new ArgumentException("The specified points list does not contain any points.");
             }
 
-            if (resultNames == null)
+            if (names == null)
             {
                 throw new ArgumentNullException("resultNames");
             }
 
-            if (resultValues == null)
+            if (values == null)
             {
                 throw new ArgumentNullException("resultValues");
             }
 
-            if (resultNames.Count != resultValues.Count)
+            if (names.Count != values.Count)
             {
                 throw new ArgumentException("The number of result names and result values must match.");
             }
 
-            var results = new Dictionary<string, IList<double>>();
-            for (var i = 0; i < resultNames.Count; i++)
+            if (resultIndex > values.Count() - 1 || resultIndex < 0)
             {
-                results.Add(resultNames[i], resultValues[i]);
+                throw new ArgumentException("You must specify a results index no larger than the number of available results.");
             }
 
-            return new SurfaceAnalysisData(surface, points, results);
+            var results = new Dictionary<string, IList<double>>();
+            for (var i = 0; i < names.Count; i++)
+            {
+                results.Add(names[i], values[i]);
+            }
+
+            return new SurfaceAnalysisData(surface, points, results, resultIndex);
         }
 
         #region private methods
@@ -143,7 +164,80 @@ namespace Analysis.DataTypes
             return pts;
         }
 
+        private Color[,] CreateColorMap()
+        {
+            // Find the minimum and the maximum for results
+            var values = Results.ElementAt(resultIndex).Value;
+            var max = values.Max();
+            var min = values.Min();
+
+            // Build some colors for a range
+            var c1 = Color.ByARGB(255, 255, 0, 0);
+            var c2 = Color.ByARGB(255, 255, 255, 0);
+            var c3 = Color.ByARGB(255, 0, 0, 255);
+            var colors = new[] { c1, c2, c3 };
+            var parameters = new[] { 0.0, 0.5, 1.0 };
+
+            var colorRange = ColorRange1D.ByColorsAndParameters(colors, parameters);
+            var analysisColors = values.Select(v => colorRange.GetColorAtParameter((v - min) / (max - min))).ToList();
+            var colorRange2D = ColorRange2D.ByColorsAndParameters(analysisColors, CalculationLocations.ToList());
+            return colorRange2D.CreateColorMap(COLOR_MAP_WIDTH, COLOR_MAP_HEIGHT);
+        }
+
         #endregion
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        {
+            if (!Results.Any())
+            {
+                return;
+            }
+
+            var sw = new Stopwatch();
+            sw.Start();
+
+            // Use ASM's tesselation routine to tesselate
+            // the surface. 
+            Surface.Tessellate(package, tol, maxGridLines);
+
+            DebugTime(sw, "Ellapsed for tessellation.");
+
+            int colorCount = 0;
+
+            for (int i = 0; i < package.TriangleVertices.Count; i += 3)
+            {
+                var vx = package.TriangleVertices[i];
+                var vy = package.TriangleVertices[i + 1];
+                var vz = package.TriangleVertices[i + 2];
+
+                // Get the triangle vertex
+                var v = Point.ByCoordinates(vx, vy, vz);
+                var uv = Surface.UVParameterAtPoint(v);
+
+                var uu = (int)(uv.U*(COLOR_MAP_WIDTH-1));
+                var vv = (int)(uv.V*(COLOR_MAP_HEIGHT-1));
+                var color = colorMap[uu,vv];
+
+                package.TriangleVertexColors[colorCount] = color.Red;
+                package.TriangleVertexColors[colorCount + 1] = color.Green;
+                package.TriangleVertexColors[colorCount + 2] = color.Blue;
+                package.TriangleVertexColors[colorCount + 3] = color.Alpha;
+
+                colorCount += 4;
+            }
+
+            DebugTime(sw, "Ellapsed for setting colors on mesh.");
+            sw.Stop();
+        }
+
+        private static void DebugTime(Stopwatch sw, string message)
+        {
+            sw.Stop();
+            Debug.WriteLine("{0}:{1}", sw.Elapsed, message);
+            sw.Reset();
+            sw.Start();
+        }
     }
 
     /// <summary>
@@ -230,6 +324,7 @@ namespace Analysis.DataTypes
 
             return Results[key];
         }
+
     }
 
     /// <summary>
@@ -314,5 +409,6 @@ namespace Analysis.DataTypes
 
             return Results[key];
         }
+
     }
 }
