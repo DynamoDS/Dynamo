@@ -568,9 +568,8 @@ namespace Dynamo.Nodes
             InstrumentationLogger.LogPiiInfo("ObsoleteFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            var summary = "Your file cannot be opened";
-            var description = string.Format("Your file '{0}' of version '{1}' cannot " +
-                "be opened by this version of Dynamo ({2})", fullFilePath, fileVersion, currVersion);
+            var summary = Properties.Resources.CannotOpenFile;
+            var description = string.Format(Properties.Resources.IncompatibleOfFileAndDynamo, fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new TaskDialogEventArgs(
@@ -598,15 +597,8 @@ namespace Dynamo.Nodes
                 InstrumentationLogger.LogException(exception);
             }
 
-            var summary = "Unhandled exception in Dynamo engine";
-            var description = "The virtual machine that powers Dynamo is " +
-                "experiencing some unexpected errors internally and is likely " +
-                "having great difficulties pulling itself together. It is " +
-                "recommended that you save your work now and reload the file. " +
-                "Giving the Dynamo VM a new lease of life can potentially make " +
-                "it feel happier and behave better.\n\n" +
-                "If you don't mind, it would be helpful for you to send us your " +
-                "file. That will make it quicker for us to get these issues fixed.";
+            var summary = Properties.Resources.UnhandledExceptionInDynamoEngine;
+            var description = Properties.Resources.DisplayEnigineFailureMessageDescription;
 
             if (exception is ProtoCore.Exceptions.HeapCorruptionException)
             {
@@ -618,8 +610,8 @@ namespace Dynamo.Nodes
                 new Uri(imageUri, UriKind.Relative),
                 "Unhandled exception", summary, description);
 
-            args.AddRightAlignedButton((int)Utilities.ButtonId.Submit, "Submit Bug To Github");
-            args.AddRightAlignedButton((int)Utilities.ButtonId.OK, "Arrrrg, ok");
+            args.AddRightAlignedButton((int)Utilities.ButtonId.Submit, Properties.Resources.SubmitBugToGithub);
+            args.AddRightAlignedButton((int)Utilities.ButtonId.OK, Properties.Resources.ButtonOK);
             args.Exception = exception;
 
             dynamoModel.OnRequestTaskDialog(null, args);
@@ -656,19 +648,18 @@ namespace Dynamo.Nodes
             InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            var summary = "Your file may not open correctly";
-            var description = string.Format("Your file '{0}' was created in future version '{1}' and may not " +
-                "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
+            var summary = Properties.Resources.FileNotOpenedCorrectly;
+            var description = string.Format(Properties.Resources.IncorrectVersionToOpenFile, fullFilePath, fileVersion, currVersion);
 
             var imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 "Future File", summary, description);
             args.ClickedButtonId = (int)Utilities.ButtonId.Cancel;
-            
-            args.AddRightAlignedButton((int)Utilities.ButtonId.Cancel, "Cancel");
-            args.AddRightAlignedButton((int)Utilities.ButtonId.DownloadLatest, "Download latest version");
-            args.AddRightAlignedButton((int)Utilities.ButtonId.Proceed, "Proceed anyway");
+
+            args.AddRightAlignedButton((int)Utilities.ButtonId.Cancel, Properties.Resources.CancelButton);
+            args.AddRightAlignedButton((int)Utilities.ButtonId.DownloadLatest, Properties.Resources.ButtonDownloadLastest);
+            args.AddRightAlignedButton((int)Utilities.ButtonId.Proceed, Properties.Resources.ButtonProcess);
             
             dynamoModel.OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)Utilities.ButtonId.DownloadLatest)

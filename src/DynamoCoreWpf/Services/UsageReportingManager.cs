@@ -68,7 +68,7 @@ namespace Dynamo.Services
                 {
                     DynamoModel.IsCrashing = true;
                     string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Properties.Resources.UsageReportingErrorMessage, filePath));
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace Dynamo.Services
                 {
                     DynamoModel.IsCrashing = true;
                     string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Properties.Resources.UsageReportingErrorMessage, filePath));
                 }
             }
 
