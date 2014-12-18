@@ -9,7 +9,6 @@ namespace Dynamo.Search
     class CategoryBuilder
     {
         private ObservableCollection<BrowserRootElement> rootCategories;
-        private NotifyCollectionChangedEventHandler rootCategoriesCollectionChanged;
         private SearchModel searchModel;
         private bool isAddons;
 
@@ -18,24 +17,11 @@ namespace Dynamo.Search
             get { return rootCategories; }
         }
 
-        internal NotifyCollectionChangedEventHandler RootCategoriesCollectionChanged
+        public event NotifyCollectionChangedEventHandler RootCategoriesCollectionChanged;
+        public void OnRootCategoriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            get { return rootCategoriesCollectionChanged; }
-            set
-            {
-                if (rootCategories == null)
-                    return;
-
-                if (value == null)
-                {
-                    rootCategories.CollectionChanged -= rootCategoriesCollectionChanged;
-                    rootCategoriesCollectionChanged = null;
-                    return;
-                }
-
-                rootCategoriesCollectionChanged = value;
-                rootCategories.CollectionChanged += rootCategoriesCollectionChanged;
-            }
+            if (RootCategoriesCollectionChanged != null)
+                RootCategoriesCollectionChanged(sender, e);
         }
 
         internal CategoryBuilder(SearchModel searchModel, bool isAddons)
@@ -47,9 +33,9 @@ namespace Dynamo.Search
 
         internal void SortCategoryItems()
         {
-            rootCategories.CollectionChanged -= RootCategoriesCollectionChanged;
+            rootCategories.CollectionChanged -= OnRootCategoriesCollectionChanged;
             rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.OrderBy(x => x.Name));
-            rootCategories.CollectionChanged += RootCategoriesCollectionChanged;
+            rootCategories.CollectionChanged += OnRootCategoriesCollectionChanged;
         }
 
         internal void SortCategoryChildren()
@@ -59,9 +45,9 @@ namespace Dynamo.Search
 
         internal void RemoveEmptyCategories()
         {
-            rootCategories.CollectionChanged -= RootCategoriesCollectionChanged;
+            rootCategories.CollectionChanged -= OnRootCategoriesCollectionChanged;
             rootCategories = new ObservableCollection<BrowserRootElement>(rootCategories.Where(x => x.Items.Any()));
-            rootCategories.CollectionChanged += RootCategoriesCollectionChanged;
+            rootCategories.CollectionChanged += OnRootCategoriesCollectionChanged;
         }
 
         internal void RemoveEmptyRootCategory(string categoryName)

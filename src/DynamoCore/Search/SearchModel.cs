@@ -92,10 +92,10 @@ namespace Dynamo.Search
             get { return browserCategoriesBuilder.RootCategories; }
         }
 
-        public NotifyCollectionChangedEventHandler BrowserRootCategoriesCollectionChanged
+        public event NotifyCollectionChangedEventHandler BrowserRootCategoriesCollectionChanged
         {
-            get { return browserCategoriesBuilder.RootCategoriesCollectionChanged; }
-            set { browserCategoriesBuilder.RootCategoriesCollectionChanged = value; }
+            add { browserCategoriesBuilder.RootCategoriesCollectionChanged += value; }
+            remove { browserCategoriesBuilder.RootCategoriesCollectionChanged -= value; }
         }
 
         /// <summary>

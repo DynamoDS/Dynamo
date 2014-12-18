@@ -203,7 +203,7 @@ namespace Dynamo.ViewModels
                 BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
             }
 
-            this.Model.BrowserRootCategoriesCollectionChanged = BrowserRootCategoriesOnCollectionChanged;
+            this.Model.BrowserRootCategoriesCollectionChanged += BrowserRootCategoriesOnCollectionChanged;
 
             this.SortCategoryChildren();
         }
