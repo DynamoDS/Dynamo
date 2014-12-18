@@ -1760,9 +1760,8 @@ namespace Dynamo.ViewModels
             if (result == DialogResult.OK)
             {
                 foreach (var file in openFileDialog.FileNames)
-                {
                     EngineController.ImportLibrary(file);
-                }
+                SearchViewModel.SearchAndUpdateResults();
             }
         }
 

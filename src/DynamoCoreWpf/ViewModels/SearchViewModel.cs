@@ -173,12 +173,12 @@ namespace Dynamo.ViewModels
             Model.EntryAdded += entry =>
             {
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
-                SearchAndUpdateResults();
+                //SearchAndUpdateResults();
             };
             Model.EntryRemoved += entry =>
             {
                 RemoveEntry(entry);
-                SearchAndUpdateResults();
+                //SearchAndUpdateResults();
             };
 
             BrowserRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
@@ -315,12 +315,12 @@ namespace Dynamo.ViewModels
             if (visibleSearchResults.Count > SelectedIndex)
                 visibleSearchResults[SelectedIndex].IsSelected = false;
 
-            // clear visible results list
-            visibleSearchResults.Clear();
-
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
                 return;
+
+            // clear visible results list
+            visibleSearchResults.Clear();
 
             SearchRootCategories.Clear();
 
