@@ -365,7 +365,7 @@ namespace Dynamo.Models
             get { return ((null != undoRecorder) && undoRecorder.CanRedo); }
         }
 
-        //TODO(Steve): This probably isn't needed inside of WorkspaceModel
+        //TODO(Steve): This probably isn't needed inside of WorkspaceModel -- MAGN-5714
         internal Version WorkspaceVersion { get; set; }
 
         public double CenterX
@@ -740,7 +740,7 @@ namespace Dynamo.Models
         }
 
         // TODO(Ben): Documentation to come before pull request.
-        // TODO(Steve): This probably only belongs on HomeWorkspaceModel.
+        // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715
         protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
         {
             if (document.DocumentElement == null)
