@@ -33,6 +33,7 @@ namespace Dynamo.Nodes
             set
             {
                 Value = _value;
+                RequiresRecalc = true;
                 RaisePropertyChanged("Value");
             }
         }
