@@ -256,6 +256,9 @@ limitations under the License.
     <Compile Include="Nodes\Custom Nodes\Function.cs" />
     <Compile Include="Models\NodeModel.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
+    <Compile Include="Models\NodeLoaders\CodeBlockNodeLoader.cs" />
+    <Compile Include="Models\NodeLoaders\CustomNodeLoader.cs" />
+    <Compile Include="Models\NodeLoaders\ZeroTouchNodeLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
