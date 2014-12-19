@@ -12,39 +12,39 @@ namespace DSCoreNodesUI.Input
     /// </summary>
     public abstract class SliderBase : DSCoreNodesUI.Double
     {
-        private double _max;
+        private double max;
         public double Max
         {
-            get { return _max; }
+            get { return max; }
             set
             {
-                _max = value;
-                if (_max <= Value)
-                    Value = _max;
+                max = value;
+                if (max <= Value)
+                    Value = max;
                 RaisePropertyChanged("Max");
             }
         }
 
-        private double _min;
+        private double min;
         public double Min
         {
-            get { return _min; }
+            get { return min; }
             set
             {
-                _min = value;
-                if (_min >= Value)
-                    Value = _min;
+                min = value;
+                if (min >= Value)
+                    Value = min;
                 RaisePropertyChanged("Min");
             }
         }
 
-        private double _step;
+        private double step;
         public double Step
         {
-            get { return _step; }
+            get { return step; }
             set
             {
-                _step = value;
+                step = value;
                 RaisePropertyChanged("Step");
             }
         }
@@ -144,50 +144,48 @@ namespace DSCoreNodesUI.Input
         {
             base.SerializeCore(element, context); // Base implementation must be called.
 
-            if (context == SaveContext.Undo)
-            {
-                var xmlDocument = element.OwnerDocument;
-                XmlElement subNode = xmlDocument.CreateElement("Range");
-                subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-                subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-                subNode.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
-                element.AppendChild(subNode);
-            }
+            if (context != SaveContext.Undo) return;
+
+            var xmlDocument = element.OwnerDocument;
+            XmlElement subNode = xmlDocument.CreateElement("Range");
+            subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
+            subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            subNode.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
+            element.AppendChild(subNode);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
 
-            if (context == SaveContext.Undo)
+            if (context != SaveContext.Undo) return;
+
+            foreach (XmlNode subNode in element.ChildNodes)
             {
-                foreach (XmlNode subNode in element.ChildNodes)
+                if (!subNode.Name.Equals("Range"))
+                    continue;
+                if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
+                    continue;
+
+                double min = Min;
+                double max = Max;
+                double step = Step;
+
+                foreach (XmlAttribute attr in subNode.Attributes)
                 {
-                    if (!subNode.Name.Equals("Range"))
-                        continue;
-                    if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
-                        continue;
-
-                    double min = Min;
-                    double max = Max;
-                    double step = Step;
-
-                    foreach (XmlAttribute attr in subNode.Attributes)
-                    {
-                        if (attr.Name.Equals("min"))
-                            min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
-                            max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("step"))
-                            step = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                    }
-
-                    Min = min;
-                    Max = max;
-                    Step = step;
-
-                    break;
+                    if (attr.Name.Equals("min"))
+                        min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                    else if (attr.Name.Equals("max"))
+                        max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                    else if (attr.Name.Equals("step"))
+                        step = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                 }
+
+                Min = min;
+                Max = max;
+                Step = step;
+
+                break;
             }
         }
 
