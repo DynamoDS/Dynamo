@@ -38,7 +38,6 @@ namespace Dynamo.Models
         private string toolTipText = "";
         private bool saveResult;
         private string description;
-        private const string FailureString = "Node evaluation failed";
 
         // Data caching related class members. There are multiple parties at
         // play when it comes to caching MirrorData for a NodeModel, this value
@@ -55,7 +54,7 @@ namespace Dynamo.Models
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
 
-        private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
+        private List<IRenderPackage> renderPackages = new List<IRenderPackage>();
 
         #endregion
 
@@ -75,14 +74,14 @@ namespace Dynamo.Models
             {
                 lock (RenderPackagesMutex)
                 {
-                    return _renderPackages; 
+                    return renderPackages; 
                 }
             }
             set
             {
                 lock (RenderPackagesMutex)
                 {
-                    _renderPackages = value;
+                    renderPackages = value;
                 }
                 RaisePropertyChanged("RenderPackages");
             }
@@ -499,7 +498,7 @@ namespace Dynamo.Models
 
         protected NodeModel(WorkspaceModel workspaceModel)
         {
-            this.Workspace = workspaceModel;
+            Workspace = workspaceModel;
 
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
@@ -715,7 +714,7 @@ namespace Dynamo.Models
                 // 
                 // The return value of function %nodeAstFailed() is always 
                 // null.
-                var errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
+                const string errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
                 var fullMsg = String.Format(errorMsg, e.Message);
                 this.NotifyAstBuildBroken(fullMsg);
 
@@ -1595,7 +1594,7 @@ namespace Dynamo.Models
             // 
             lock (RenderPackagesMutex)
             {
-                _renderPackages.Clear();
+                renderPackages.Clear();
                 HasRenderPackages = false;
             }
 
@@ -1646,9 +1645,9 @@ namespace Dynamo.Models
             lock (RenderPackagesMutex)
             {
                 var task = asyncTask as UpdateRenderPackageAsyncTask;
-                _renderPackages.Clear();
-                _renderPackages.AddRange(task.RenderPackages);
-                HasRenderPackages = _renderPackages.Any();
+                renderPackages.Clear();
+                renderPackages.AddRange(task.RenderPackages);
+                HasRenderPackages = renderPackages.Any();
             }
         }
 

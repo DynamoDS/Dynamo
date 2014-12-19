@@ -40,7 +40,7 @@ namespace DynamoCoreUITests
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
-            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
@@ -110,7 +110,7 @@ namespace DynamoCoreUITests
         /// Open a file from the Dynamo test directory
         /// </summary>
         /// <param name="pathInTestsDir">A relative path from the test directory</param>
-        public void Open(string pathInTestsDir)
+        public virtual void Open(string pathInTestsDir)
         {
             string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
             ViewModel.OpenCommand.Execute(openPath);
@@ -122,15 +122,10 @@ namespace DynamoCoreUITests
             Run();
         }
 
-        public void AssertWhenDispatcherDone(Action action)
-        {
-            View.Dispatcher.Invoke(DispatcherPriority.SystemIdle, action);
-        }
-
         /// <summary>
         /// Run the current workspace.  Doesn't return until 
         /// </summary>
-        public void Run()
+        public virtual void Run()
         {
             var complete = false;
 

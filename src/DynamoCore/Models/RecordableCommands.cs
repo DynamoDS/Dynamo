@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using Dynamo.Utilities;
 
@@ -98,7 +96,6 @@ namespace Dynamo.Models
             /// <returns>Returns the reconstructed RecordableCommand object. If a 
             /// RecordableCommand cannot be reconstructed, this method throws a 
             /// relevant exception.</returns>
-            /// 
             internal static RecordableCommand Deserialize(XmlElement element)
             {
                 if (string.IsNullOrEmpty(element.Name))
@@ -246,7 +243,7 @@ namespace Dynamo.Models
 
             internal static PausePlaybackCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 var pauseDurationInMs = helper.ReadInteger("PauseDurationInMs");
                 return new PausePlaybackCommand(pauseDurationInMs);
             }
@@ -269,7 +266,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("Tag", Tag);
                 helper.SetAttribute("PauseDurationInMs", PauseDurationInMs);
             }
@@ -305,13 +302,13 @@ namespace Dynamo.Models
 
             internal static OpenFileCommand DeserializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 string xmlFilePath = helper.ReadString("XmlFilePath");
                 if (File.Exists(xmlFilePath) == false)
                 {
                     // Try to find the file right next to the command XML file.
                     string xmlFileName = Path.GetFileName(xmlFilePath);
-                    Uri uri = new Uri(element.OwnerDocument.BaseURI);
+                    var uri = new Uri(element.OwnerDocument.BaseURI);
                     string directory = Path.GetDirectoryName(uri.AbsolutePath);
                     xmlFilePath = Path.Combine(directory, xmlFileName);
 
@@ -321,7 +318,7 @@ namespace Dynamo.Models
 
                     if (File.Exists(xmlFilePath) == false) // When all else fail.
                     {
-                        var message = "Target file cannot be found!";
+                        const string message = "Target file cannot be found!";
                         throw new FileNotFoundException(message, xmlFileName);
                     }
                 }
@@ -346,7 +343,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("XmlFilePath", XmlFilePath);
             }
 
@@ -389,7 +386,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("ShowErrors", ShowErrors);
                 helper.SetAttribute("CancelRun", CancelRun);
             }
@@ -425,7 +422,7 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
             }
 
         }
