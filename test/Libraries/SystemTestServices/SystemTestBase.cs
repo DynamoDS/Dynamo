@@ -66,7 +66,7 @@ namespace SystemTestServices
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
-            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             StartDynamo();
         }
