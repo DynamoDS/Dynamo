@@ -558,7 +558,6 @@ namespace Dynamo.Nodes
                 return;
 
             double prevPortBottom = 0.0;
-            var map = CodeBlockUtils.MapLogicalToVisualLineIndices(this.code);
             foreach (var def in allDefs)
             {
                 // Map the given logical line index to its corresponding visual 
@@ -567,14 +566,13 @@ namespace Dynamo.Nodes
                 // have to remove one from the line index.
                 // 
                 var logicalIndex = def.Value - 1;
-                var visualIndex = map.ElementAt(logicalIndex);
-
+            
                 string tooltip = def.Key;
                 if (tempVariables.Contains(def.Key))
                     tooltip = Formatting.ToolTipForTempVariable;
 
                 double portCoordsY = Formatting.InitialMargin;
-                portCoordsY += visualIndex * Configurations.CodeBlockPortHeightInPixels;
+                portCoordsY += logicalIndex * Configurations.CodeBlockPortHeightInPixels;
 
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
