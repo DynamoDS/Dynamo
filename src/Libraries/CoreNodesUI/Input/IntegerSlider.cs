@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
             get { return _value; }
             set
             {
-                Value = _value;
+                _value = value;
                 RequiresRecalc = true;
                 RaisePropertyChanged("Value");
             }
