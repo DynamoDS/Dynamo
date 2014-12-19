@@ -457,7 +457,6 @@ namespace Dynamo.ViewModels
         ///     return the empty string.
         /// </summary>
         /// <returns>The string cleaved of everything </returns>
-        // TODO(Steve): This looks really inefficient
         public static string RemoveLastPartOfText(string text)
         {
             while (true)

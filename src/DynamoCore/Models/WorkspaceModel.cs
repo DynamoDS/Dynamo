@@ -189,7 +189,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     A NodeFactory used by this workspace to create Nodes.
         /// </summary>
-        //TODO(Steve): This should only live on DynamoModel, not here. It's currently used to instantiate NodeModels during UndoRedo.
+        //TODO(Steve): This should only live on DynamoModel, not here. It's currently used to instantiate NodeModels during UndoRedo. -- MAGN-5713
         public readonly NodeFactory NodeFactory;
 
         /// <summary>
@@ -1195,8 +1195,8 @@ namespace Dynamo.Models
             if (null != foundModel)
                 return foundModel;
 
-            throw new ArgumentException(string.Format(
-                "Unhandled model type: {0}", helper.ReadString("type")));
+            throw new ArgumentException(
+                string.Format("Unhandled model type: {0}", helper.ReadString("type", modelData.Name)));
         }
 
         internal ModelBase GetModelInternal(Guid modelGuid)

@@ -89,7 +89,7 @@ namespace Dynamo.Models
 
         #region events
 
-        //TODO(Steve): Model should not have to worry about UI thread synchronization
+        //TODO(Steve): Model should not have to worry about UI thread synchronization -- MAGN-5709
 
         /// <summary>
         ///     Called by nodes for behavior that they want to dispatch on the UI thread
@@ -474,7 +474,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Is this node being applied partially, resulting in a partial function?
         /// </summary>
-        public bool IsPartiallyApplied //TODO(Steve): Move to Graph level
+        public bool IsPartiallyApplied //TODO(Steve): Move to Graph level -- MAGN-5710
         {
             get { return !Enumerable.Range(0, InPortData.Count).All(HasInput); }
         }
@@ -952,7 +952,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="portModel"> The portModel whose height is to be found</param>
         /// <returns> Returns the offset of the given port from the top of the ports </returns>
-        //TODO(Steve): This kind of UI calculation should probably live on the VM...
+        //TODO(Steve): This kind of UI calculation should probably live on the VM. -- MAGN-5711
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;

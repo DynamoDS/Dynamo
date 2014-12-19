@@ -269,7 +269,6 @@ namespace Dynamo.Models
         /// <summary>
         ///     Specifies whether or not Dynamo is in a crash-state.
         /// </summary>
-        //TODO(Steve): Determine if this is necessary, we should avoid static fields
         public static bool IsCrashing { get; set; }
 
         /// <summary>
@@ -947,11 +946,11 @@ namespace Dynamo.Models
         {
             CurrentWorkspace.AddNode(node, centered);
             
-            //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection.
+            //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection -- MAGN-5707
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(node);
 
-            //TODO(Steve): Make sure we're not missing something with TransformCoordinates...
+            //TODO(Steve): Make sure we're not missing something with TransformCoordinates. -- MAGN-5708
         }
         
         /// <summary>

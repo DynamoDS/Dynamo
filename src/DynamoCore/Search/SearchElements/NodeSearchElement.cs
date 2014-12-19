@@ -23,7 +23,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         ///     Specified whether or not this entry should appear in search.
         /// </summary>
-        //TODO(Steve): This should exist only on the ViewModel
+        //TODO(Steve): This should exist only on the ViewModel -- MAGN-5716
         public bool IsVisibleInSearch
         {
             get { return isVisibleInSearch; }

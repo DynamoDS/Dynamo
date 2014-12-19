@@ -85,7 +85,7 @@ namespace Dynamo.Models
                 logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
-                //TODO(Steve): Need a better way to handle this kind of thing...
+                //TODO(Steve): Need a better way to handle this kind of thing. -- MAGN-5712
                 if (isTestMode)
                     throw; // Rethrow for NUnit.
 
