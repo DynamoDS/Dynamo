@@ -35,7 +35,7 @@ namespace ProtoCore.DSASM
         public ProtoCore.AST.Node DefaultExpression;
     }
 
-    [System.Diagnostics.DebuggerDisplay("{name}, procId={procId}, classScope={classScope}")]
+    [System.Diagnostics.DebuggerDisplay(/*NXLT*/"{name}, procId={procId}, classScope={classScope}")]
     public class ProcedureNode
     {
         public string name;                         // Name of the procedure

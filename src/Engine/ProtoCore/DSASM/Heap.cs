@@ -297,7 +297,7 @@ namespace ProtoCore.DSASM
             if (!heapElement.Active)
             {
 #if HEAP_VERIFICATION
-                throw new Exception("Memory corrupted: Access dead memory (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
+                throw new Exception(/*NXLT*/"Memory corrupted: Access dead memory (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
 #endif
             }
 
@@ -478,7 +478,7 @@ namespace ProtoCore.DSASM
 
 
         #region Reference counting APIs
-        [Conditional("GC_REFERENCE_COUNTING")]
+        [Conditional(/*NXLT*/"GC_REFERENCE_COUNTING")]
         public void IncRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -495,7 +495,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        [Conditional("GC_REFERENCE_COUNTING")]
+        [Conditional(/*NXLT*/"GC_REFERENCE_COUNTING")]
         public void DecRefCount(StackValue sv)
         {
             if (!sv.IsReferenceType)
@@ -511,12 +511,12 @@ namespace ProtoCore.DSASM
             else
             {
 #if HEAP_VERIFICATION
-                throw new Exception("Memory corrupted: Decrease reference count to negative (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
+                throw new Exception(/*NXLT*/"Memory corrupted: Decrease reference count to negative (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
 #endif
             }
         }
-    
-        [Conditional("GC_REFERENCE_COUNTING")]
+
+        [Conditional(/*NXLT*/"GC_REFERENCE_COUNTING")]
         public void GCRelease(StackValue[] ptrList, Executive exe)
         {
             for (int n = 0; n < ptrList.Length; ++n)
@@ -531,7 +531,7 @@ namespace ProtoCore.DSASM
                 if (ptr < 0 || ptr >= heapElements.Count)
                 {
 #if HEAP_VERIFICATION
-                    throw new Exception("Memory corrupted: Release invalid pointer (7364B8C2-FF34-4C67-8DFE-5DFA678BF50D).");
+                    throw new Exception(/*NXLT*/"Memory corrupted: Release invalid pointer (7364B8C2-FF34-4C67-8DFE-5DFA678BF50D).");
 #else
                     continue;
 #endif
@@ -541,7 +541,7 @@ namespace ProtoCore.DSASM
                 if (!hs.Active)
                 {
 #if HEAP_VERIFICATION
-                    throw new Exception("Memory corrupted: Release dead memory (7F70A6A1-FE99-476E-BE8B-CA7615EE1A3B).");
+                    throw new Exception(/*NXLT*/"Memory corrupted: Release dead memory (7F70A6A1-FE99-476E-BE8B-CA7615EE1A3B).");
 #else
                     continue;
 #endif
@@ -636,13 +636,13 @@ namespace ProtoCore.DSASM
         /// Throws an exception if the heap is corrupted
         /// </summary>
         /// <param name="core"></param>
-        [Conditional("GC_REFERENCE_COUNTING")]
+        [Conditional(/*NXLT*/"GC_REFERENCE_COUNTING")]
         public void Verify()
         {
             // Check the integrity of the heap memory layout
             if (IsHeapCyclic())
             {
-                throw new ProtoCore.Exceptions.HeapCorruptionException("Heap contains cyclic pointers.");
+                throw new ProtoCore.Exceptions.HeapCorruptionException(/*NXLT*/"Heap contains cyclic pointers.");
             }
         }
         #endregion

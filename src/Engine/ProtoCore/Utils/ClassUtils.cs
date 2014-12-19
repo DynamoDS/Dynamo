@@ -25,7 +25,7 @@ namespace ProtoCore.Utils
             ClassNode target = cn;
             while (target.baseList.Count > 0)
             {
-                Validity.Assert(target.baseList.Count == 1, "Multiple Inheritence not yet supported, {F5DDC58D-F721-4319-854A-622175AC43F8}");
+                Validity.Assert(target.baseList.Count == 1, /*NXLT*/"Multiple Inheritence not yet supported, {F5DDC58D-F721-4319-854A-622175AC43F8}");
                 ret.Add(target.baseList[0]);
 
                 target = core.ClassTable.ClassNodes[target.baseList[0]];

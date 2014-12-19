@@ -118,7 +118,7 @@ public class Buffer {
 			}
 
 			if (value < 0 || value > fileLen) {
-				throw new FatalError("buffer out of bounds access, position: " + value);
+                throw new FatalError(/*NXLT*/"buffer out of bounds access, position: " + value);
 			}
 
 			if (value >= bufStart && value < bufStart + bufLen) { // already in buffer
@@ -267,7 +267,7 @@ public class Scanner {
 			buffer = new Buffer(stream, false);
 			Init();
 		} catch (IOException) {
-			throw new FatalError("Cannot open file " + fileName);
+            throw new FatalError(/*NXLT*/"Cannot open file " + fileName);
 		}
 	}
 	
@@ -284,7 +284,7 @@ public class Scanner {
 			NextCh(); int ch1 = ch;
 			NextCh(); int ch2 = ch;
 			if (ch1 != 0xBB || ch2 != 0xBF) {
-				throw new FatalError(String.Format("illegal byte order mark: EF {0,2:X} {1,2:X}", ch1, ch2));
+                throw new FatalError(String.Format(/*NXLT*/"illegal byte order mark: EF {0,2:X} {1,2:X}", ch1, ch2));
 			}
 			buffer = new UTF8Buffer(buffer); col = 0; charPos = -1;
 			NextCh();
@@ -323,36 +323,36 @@ public class Scanner {
 
 	void CheckLiteral() {
 		switch (t.val) {
-			case "native": t.kind = 23; break;
-			case "class": t.kind = 24; break;
-			case "constructor": t.kind = 25; break;
-			case "def": t.kind = 26; break;
-			case "external": t.kind = 27; break;
-			case "extends": t.kind = 28; break;
-			case "__heap": t.kind = 29; break;
-			case "if": t.kind = 30; break;
-			case "elseif": t.kind = 31; break;
-			case "else": t.kind = 32; break;
-			case "while": t.kind = 33; break;
-			case "for": t.kind = 34; break;
-			case "import": t.kind = 35; break;
-			case "prefix": t.kind = 36; break;
-			case "from": t.kind = 37; break;
-			case "break": t.kind = 38; break;
-			case "continue": t.kind = 39; break;
-			case "static": t.kind = 40; break;
-			case "local": t.kind = 41; break;
-			case "true": t.kind = 42; break;
-			case "false": t.kind = 43; break;
-			case "null": t.kind = 44; break;
-			case "L": t.kind = 45; break;
-			case "throw": t.kind = 46; break;
-			case "public": t.kind = 52; break;
-			case "private": t.kind = 53; break;
-			case "protected": t.kind = 54; break;
-			case "try": t.kind = 57; break;
-			case "catch": t.kind = 58; break;
-			case "in": t.kind = 71; break;
+			case /*NXLT*/"native": t.kind = 23; break;
+			case /*NXLT*/"class": t.kind = 24; break;
+			case /*NXLT*/"constructor": t.kind = 25; break;
+			case /*NXLT*/"def": t.kind = 26; break;
+			case /*NXLT*/"external": t.kind = 27; break;
+			case /*NXLT*/"extends": t.kind = 28; break;
+			case /*NXLT*/"__heap": t.kind = 29; break;
+			case /*NXLT*/"if": t.kind = 30; break;
+			case /*NXLT*/"elseif": t.kind = 31; break;
+			case /*NXLT*/"else": t.kind = 32; break;
+			case /*NXLT*/"while": t.kind = 33; break;
+			case /*NXLT*/"for": t.kind = 34; break;
+			case /*NXLT*/"import": t.kind = 35; break;
+			case /*NXLT*/"prefix": t.kind = 36; break;
+			case /*NXLT*/"from": t.kind = 37; break;
+			case /*NXLT*/"break": t.kind = 38; break;
+			case /*NXLT*/"continue": t.kind = 39; break;
+			case /*NXLT*/"static": t.kind = 40; break;
+			case /*NXLT*/"local": t.kind = 41; break;
+			case /*NXLT*/"true": t.kind = 42; break;
+			case /*NXLT*/"false": t.kind = 43; break;
+			case /*NXLT*/"null": t.kind = 44; break;
+			case /*NXLT*/"L": t.kind = 45; break;
+			case /*NXLT*/"throw": t.kind = 46; break;
+			case /*NXLT*/"public": t.kind = 52; break;
+			case /*NXLT*/"private": t.kind = 53; break;
+			case /*NXLT*/"protected": t.kind = 54; break;
+			case /*NXLT*/"try": t.kind = 57; break;
+			case /*NXLT*/"catch": t.kind = 58; break;
+			case /*NXLT*/"in": t.kind = 71; break;
 			default: break;
 		}
 	}

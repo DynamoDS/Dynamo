@@ -140,7 +140,7 @@ public class Errors {
 		string s;
 		switch (n) {
 -->errors
-			default: s = "error " + n; break;
+			default: s = /*NXLT*/"error " + n; break;
 		}
 		// errorStream.WriteLine(errMsgFormat, line, col, s);
 		core.BuildStatus.LogSyntaxError(s, core.CurrentDSFileName, line, col);

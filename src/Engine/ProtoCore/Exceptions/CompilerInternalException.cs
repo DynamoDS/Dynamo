@@ -18,7 +18,7 @@ namespace ProtoCore.Exceptions
     public class HeapCorruptionException : Exception
     {
         public HeapCorruptionException(String message)
-            : base("Heap Corruption Exception: " + message)
+            : base(/*NXLT*/"Heap Corruption Exception: " + message)
         {
         }
     }

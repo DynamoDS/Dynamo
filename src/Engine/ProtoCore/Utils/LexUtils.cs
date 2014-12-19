@@ -17,8 +17,8 @@ namespace ProtoCore.Utils
             keywords.Add(ProtoCore.DSASM.kw.options);
 
             List<string> options = new List<string>();
-            options.Add("fingerprint");
-            options.Add("version");
+            options.Add(/*NXLT*/"fingerprint");
+            options.Add(/*NXLT*/"version");
 
             StringBuilder outputBuffer = new StringBuilder();
             char token;
@@ -144,12 +144,12 @@ namespace ProtoCore.Utils
                                         }
                                     }
                                     else
-                                        throw new Exception("keyword exception");
+                                        throw new Exception(/*NXLT*/"keyword exception");
 
 
                                 }
                                 else
-                                    throw new Exception("keyword exception");
+                                    throw new Exception(/*NXLT*/"keyword exception");
                             }
                         }
                         if (keywords.Contains(keyword.ToString().ToLower().Trim()))
@@ -161,7 +161,7 @@ namespace ProtoCore.Utils
                             } while (token == '\r' || token == '\n' || token == ' ' || token == '\t');
 
                             if (token != '{')
-                                throw new Exception("Language block opening parenthesis expected.");
+                                throw new Exception(/*NXLT*/"Language block opening parenthesis expected.");
                            
                             curlyCounterStack.Add(1);
                             outputBuffer.Append("<#");

@@ -134,7 +134,7 @@ namespace ProtoFFI
                         impNode = node;
                 }
                 if (impNode == null)
-                    impNode = new ImportNode() { ModuleName="ExternalContext", CodeNode = new ProtoCore.AST.AssociativeAST.CodeBlockNode() };
+                    impNode = new ImportNode() { ModuleName =/*NXLT*/"ExternalContext", CodeNode = new ProtoCore.AST.AssociativeAST.CodeBlockNode() };
                 impNode.CodeNode.Body.Add(ContextDataMethodCallNode(item.Value));
             }
             return impNode;
