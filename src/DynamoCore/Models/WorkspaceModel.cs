@@ -597,13 +597,7 @@ namespace Dynamo.Models
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
 
-            if (centerNote)
-            {
-                var args = new ModelEventArgs(noteModel, true);
-                OnRequestNodeCentered(this, args);
-            }
-
-            Notes.Add(noteModel);
+            AddNote(noteModel, centerNote);
             return noteModel;
         }
 

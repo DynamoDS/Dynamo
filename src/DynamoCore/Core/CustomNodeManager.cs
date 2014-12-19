@@ -24,6 +24,7 @@ namespace Dynamo.Utilities
         }
 
         #region Fields and properties
+
         private readonly OrderedSet<Guid> loadOrder = new OrderedSet<Guid>();
 
         private readonly Dictionary<Guid, CustomNodeDefinition> loadedCustomNodes =
@@ -31,6 +32,9 @@ namespace Dynamo.Utilities
 
         private readonly Dictionary<Guid, CustomNodeWorkspaceModel> loadedWorkspaceModels =
             new Dictionary<Guid, CustomNodeWorkspaceModel>();
+
+        private readonly NodeFactory nodeFactory;
+        private readonly MigrationManager migrationManager;
 
         /// <summary>
         ///     CustomNodeDefinitions for all loaded custom nodes, in load order.
@@ -44,8 +48,7 @@ namespace Dynamo.Utilities
         ///     Registry of all NodeInfos corresponding to discovered custom nodes. These
         ///     custom nodes are not all necessarily initialized.
         /// </summary>
-        public readonly ObservableDictionary<Guid, CustomNodeInfo> NodeInfos =
-            new ObservableDictionary<Guid, CustomNodeInfo>();
+        public readonly Dictionary<Guid, CustomNodeInfo> NodeInfos = new Dictionary<Guid, CustomNodeInfo>();
 
         /// <summary>
         ///     All loaded custom node workspaces.
@@ -54,9 +57,6 @@ namespace Dynamo.Utilities
         {
             get { return loadedWorkspaceModels.Values; }
         }
-
-        private readonly NodeFactory nodeFactory;
-        private readonly MigrationManager migrationManager;
 
         #endregion
 
@@ -203,7 +203,7 @@ namespace Dynamo.Utilities
             loadedCustomNodes[id] = def;
             loadOrder.Add(id);
         }
-
+        
         private void SetPreloadFunctionDefinition(Guid id)
         {
             loadedCustomNodes[id] = null;
@@ -309,39 +309,6 @@ namespace Dynamo.Utilities
         {
             NodeInfos[newInfo.FunctionId] = newInfo;
             OnInfoUpdated(newInfo);
-        }
-
-        /// <summary>
-        ///     Stores the path and function definition without initializing node
-        /// </summary>
-        /// <param name="id">The unique id for the node.</param>
-        /// <param name="path">The path for the node.</param>
-        public void SetNodePath(Guid id, string path)
-        {
-            CustomNodeInfo nodeInfo;
-            if (TryGetNodeInfo(id, out nodeInfo))
-            {
-                nodeInfo.Path = path;
-                OnInfoUpdated(nodeInfo);
-            }
-        }
-
-        /// <summary>
-        ///     Stores the path and function definition without initializing node
-        /// </summary>
-        /// <param name="id">The unique id for the node.</param>
-        /// <param name="path"></param>
-        /// <returns>The path to the node or null if it wasn't found.</returns>
-        public bool TryGetNodePath(Guid id, out string path)
-        {
-            CustomNodeInfo nodeInfo;
-            if (TryGetNodeInfo(id, out nodeInfo))
-            {
-                path = nodeInfo.Path;
-                return true;
-            }
-            path = null;
-            return false;
         }
 
         /// <summary>

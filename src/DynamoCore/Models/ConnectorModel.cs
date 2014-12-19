@@ -5,39 +5,14 @@ using Dynamo.Utilities;
 namespace Dynamo.Models
 {
     public enum ConnectorType { BEZIER, POLYLINE };
-
-    public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
     
     public class ConnectorModel : ModelBase
     {
         #region properties
-        
-        public event ConnectorConnectedHandler Connected;
 
-        protected virtual void OnConnected(EventArgs e)
-        {
-            if (Connected != null)
-                Connected(this, e);
-        }
+        public PortModel Start { get; private set; }
+        public PortModel End { get; private set; }
 
-        private PortModel pStart;
-        private PortModel pEnd;
-
-        public PortModel Start
-        {
-            get { return pStart; }
-            set { pStart = value; }
-        }
-
-        public PortModel End
-        {
-            get { return pEnd; }
-            set
-            {
-                pEnd = value;
-            }
-        }
-        
         #endregion 
 
         #region constructors
@@ -69,30 +44,30 @@ namespace Dynamo.Models
             NodeModel start, NodeModel end, int startIndex, int endIndex, Guid guid)
         {
             GUID = guid;
-            pStart = start.OutPorts[startIndex];
+            Start = start.OutPorts[startIndex];
 
             PortModel endPort = end.InPorts[endIndex];
 
-            pStart.Connect(this);
+            Start.Connect(this);
             Connect(endPort);
         }
 
         #endregion
-        
-        public bool Connect(PortModel p)
+
+        private void Connect(PortModel p)
         {
             //test if the port that you are connecting too is not the start port or the end port
             //of the current connector
-            if (p.Equals(pStart) || p.Equals(pEnd))
+            if (p.Equals(Start) || p.Equals(End))
             {
-                return false;
+                return;
             }
 
             //if the selected connector is also an output connector, return false
             //output ports can't be connected to eachother
             if (p.PortType == PortType.Output)
             {
-                return false;
+                return;
             }
 
             //test if the port that you are connecting to is an input and 
@@ -103,41 +78,25 @@ namespace Dynamo.Models
             }
 
             //turn the line solid
-            pEnd = p;
+            End = p;
 
-            if (pEnd != null)
+            if (End != null)
             {
                 p.Connect(this);
             }
 
-            return true;
+            return;
         }
-
-        public void Disconnect(PortModel p)
-        {
-            if (p.Equals(pStart))
-            {
-                pStart = null;
-            }
-
-            if (p.Equals(pEnd))
-            {
-                pEnd = null;
-            }
-
-            p.Disconnect(this);
-
-        }
-
+        
         public void Delete()
         {
-            if (pStart != null && pStart.Connectors.Contains(this))
+            if (Start != null && Start.Connectors.Contains(this))
             {
-                pStart.Disconnect(this);
+                Start.Disconnect(this);
             }
-            if (pEnd != null && pEnd.Connectors.Contains(this))
+            if (End != null && End.Connectors.Contains(this))
             {
-                pEnd.Disconnect(this);
+                End.Disconnect(this);
             }
             OnDeleted();
         }

@@ -92,6 +92,29 @@ namespace Dynamo.Models
         //TODO(Steve): Model should not have to worry about UI thread synchronization -- MAGN-5709
 
         /// <summary>
+        ///     Fired when this NodeModel is disposed.
+        /// </summary>
+        public event Action Disposed;
+
+        public event EventHandler BlockingStarted;
+        public virtual void OnBlockingStarted(EventArgs e)
+        {
+            if (BlockingStarted != null)
+            {
+                BlockingStarted(this, e);
+            }
+        }
+
+        public event EventHandler BlockingEnded;
+        public virtual void OnBlockingEnded(EventArgs e)
+        {
+            if (BlockingEnded != null)
+            {
+                BlockingEnded(this, e);
+            }
+        }
+
+        /// <summary>
         ///     Called by nodes for behavior that they want to dispatch on the UI thread
         ///     Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
         /// </summary>
@@ -557,11 +580,6 @@ namespace Dynamo.Models
             if (handler != null)
                 handler();
         }
-
-        /// <summary>
-        ///     Fired when this NodeModel is disposed.
-        /// </summary>
-        public event Action Disposed;
 
         /// <summary>
         ///     Gets the most recent value of this node stored in an EngineController that has evaluated it.
@@ -1627,24 +1645,6 @@ namespace Dynamo.Models
         }
 
         #endregion
-
-        public event EventHandler BlockingStarted;
-        public virtual void OnBlockingStarted(EventArgs e)
-        {
-            if (BlockingStarted != null)
-            {
-                BlockingStarted(this, e);
-            }
-        }
-
-        public event EventHandler BlockingEnded;
-        public virtual void OnBlockingEnded(EventArgs e)
-        {
-            if (BlockingEnded != null)
-            {
-                BlockingEnded(this, e);
-            }
-        }
 
         public bool ShouldDisplayPreview
         {

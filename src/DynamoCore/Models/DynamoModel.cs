@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
 
@@ -109,6 +110,11 @@ namespace Dynamo.Models
             }
         }
         private static bool isTestMode;
+
+        /// <summary>
+        ///     Specifies whether or not Dynamo is in a crash-state.
+        /// </summary>
+        public static bool IsCrashing { get; set; }
 
         /// <summary>
         /// Setting this flag enables creation of an XML in following format that records 
@@ -265,11 +271,6 @@ namespace Dynamo.Models
                 PreferenceSettings.ConnectorType = value;
             }
         }
-
-        /// <summary>
-        ///     Specifies whether or not Dynamo is in a crash-state.
-        /// </summary>
-        public static bool IsCrashing { get; set; }
 
         /// <summary>
         ///     The collection of visible workspaces in Dynamo
@@ -447,7 +448,7 @@ namespace Dynamo.Models
 
             ResetEngineInternal();
 
-            InitializeCurrentWorkspace();
+            AddHomeWorkspace();
 
             UpdateManager.UpdateManager.CheckForProductUpdate();
 
@@ -666,20 +667,6 @@ namespace Dynamo.Models
                 InstrumentationLogger.Start(this);
         }
 
-        private void InitializeCurrentWorkspace()
-        {
-            var defaultWorkspace = new HomeWorkspaceModel(
-                EngineController,
-                Scheduler,
-                NodeFactory,
-                DebugSettings.VerboseLogging,
-                IsTestMode);
-
-            RegisterHomeWorkspace(defaultWorkspace);
-            AddWorkspace(defaultWorkspace);
-            CurrentWorkspace = defaultWorkspace;
-        }
-
         private static void InitializePreferences(IPreferences preferences)
         {
             BaseUnit.LengthUnit = preferences.LengthUnit;
@@ -723,7 +710,7 @@ namespace Dynamo.Models
         ///     so that instances of the custom node can be evaluated.
         /// </summary>
         /// <param name="definition"></param>
-        public void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
+        private void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
         {
             EngineController.GenerateGraphSyncDataForCustomNode(
                 Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Nodes),
@@ -905,6 +892,20 @@ namespace Dynamo.Models
         #endregion
 
         #region public methods
+
+        public void AddHomeWorkspace()
+        {
+            var defaultWorkspace = new HomeWorkspaceModel(
+                EngineController,
+                Scheduler,
+                NodeFactory,
+                DebugSettings.VerboseLogging,
+                IsTestMode);
+
+            RegisterHomeWorkspace(defaultWorkspace);
+            AddWorkspace(defaultWorkspace);
+            CurrentWorkspace = defaultWorkspace;
+        }
         
         /// <summary>
         ///     Remove a workspace from the dynamo model.
