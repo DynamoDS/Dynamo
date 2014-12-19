@@ -123,7 +123,19 @@ namespace DSCoreNodesUI.Input
 
                 case NumericFormat.Integer:
                     int i = 0;
-                    int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out i);
+                    if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out i))
+                        return i;
+                    var integerValue = value.ToString(CultureInfo.InvariantCulture);
+                    if (integerValue.Length <= 1) return i;
+                    var start = integerValue[0] == '-' ? 1 : 0;
+                    for (var val = start; i < integerValue.Length; i++)
+                    {
+                        if (!char.IsDigit(integerValue[val]))
+                        {
+                            return 0;
+                        }
+                    }
+                    i = start == 0 ? int.MaxValue : int.MinValue;
                     return i;
             }
 

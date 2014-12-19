@@ -23,7 +23,6 @@ namespace DSCoreNodesUI
                     RequiresRecalc = !Equals(value, null);
                     RaisePropertyChanged("Value");
                 }               
-                
             }
         }
 
