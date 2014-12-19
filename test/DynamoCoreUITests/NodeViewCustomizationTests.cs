@@ -1,26 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using DSCore.File;
-using DSCoreNodesUI;
-using DSIronPythonNode;
+
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.UI.Controls;
+
 using DynamoCoreUITests.Utility;
 using NUnit.Framework;
 using Dynamo.Utilities;
-using UnitsUI;
 
 namespace DynamoCoreUITests
 {
     public class NodeViewCustomizationTests : DynamoTestUIBase
     {
+        // adapted from: http://stackoverflow.com/questions/9336165/correct-method-for-using-the-wpf-dispatcher-in-unit-tests
+        private static class DispatcherUtil
+        {
+            /// <summary>
+            /// Force the Dispatcher to empty it's queue
+            /// </summary>
+            [SecurityPermissionAttribute(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+            public static void DoEvents()
+            {
+                DispatcherFrame frame = new DispatcherFrame();
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
+                    new DispatcherOperationCallback(ExitFrame), frame);
+                Dispatcher.PushFrame(frame);
+            }
+
+            /// <summary>
+            /// Helper method for DispatcherUtil
+            /// </summary>
+            /// <param name="frame"></param>
+            /// <returns></returns>
+            private static object ExitFrame(object frame)
+            {
+                ((DispatcherFrame)frame).Continue = false;
+                return null;
+            }
+        }
+
         public NodeView NodeViewOf<T>() where T : NodeModel
         {
             var nodeViews = View.NodeViewsInFirstWorkspace();
@@ -37,6 +60,20 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, nodeViewsOfType.Count(), "Expected a single NodeView with guid: " + guid);
 
             return nodeViewsOfType.First();
+        }
+
+        public override void Open(string path)
+        {
+            base.Open(path);
+
+            DispatcherUtil.DoEvents();
+        }
+
+        public override void Run()
+        {
+            base.Run();
+
+            DispatcherUtil.DoEvents();
         }
 
         [Test]
@@ -92,7 +129,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewWithGuid("8820644a-ba01-4118-8f04-26ebf58c11cc"); // NodeViewOf<DoubleSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
-            Assert.AreEqual(1.0, element.Value, 1e-6);
+            Assert.AreEqual(1.0, element.slider.Value, 1e-6);
         }
 
         [Test]
@@ -103,7 +140,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewWithGuid("d0fa1feb-ec0e-4cee-a86a-34077f5a870a"); // NodeViewOf<IntegerSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
-            Assert.AreEqual(41, element.Value, 1e-6);
+            Assert.AreEqual(41, element.slider.Value, 1e-6);
         }
 
         [Test]
@@ -214,13 +251,8 @@ namespace DynamoCoreUITests
             var tree = nodeView.ChildrenOfType<WatchTree>();
             Assert.AreEqual(1, tree.Count());
 
-            Action assert = () =>
-            {
-                var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
-                Assert.AreEqual(8, items.Count());
-            };
-
-            AssertWhenDispatcherDone(assert);
+            var items = tree.First().treeView1.ChildrenOfType<TextBlock>();
+            Assert.AreEqual(8, items.Count());
         }
 
         [Test]
@@ -236,13 +268,8 @@ namespace DynamoCoreUITests
 
             var img = imgs.First();
 
-            Action assert = () =>
-            {
-                Assert.Greater(img.ActualWidth, 10);
-                Assert.Greater(img.ActualHeight, 10);
-            };
-
-            AssertWhenDispatcherDone(assert);
+            Assert.Greater(img.ActualWidth, 10);
+            Assert.Greater(img.ActualHeight, 10);
         }
 
         [Test]
@@ -258,8 +285,7 @@ namespace DynamoCoreUITests
 
             var watch3DView = watch3ds.First();
 
-            Action assert = () => Assert.AreEqual(1, watch3DView.Points.Count);
-            AssertWhenDispatcherDone(assert);
+            Assert.AreEqual(1, watch3DView.Points.Count);
             
         }
 
