@@ -24,6 +24,20 @@ namespace Dynamo.Nodes
             Value = 0;
         }
 
+        //Value property has to be changed for over flow condition
+        //So instead of having it in modelbase, this property is defined here.
+        private int _value;
+        public new int Value
+        {
+            get { return _value; }
+            set
+            {
+                Value = _value;
+                RaisePropertyChanged("Value");
+            }
+        }
+            
+
         private int _max;
         public int Max
         {
@@ -61,6 +75,14 @@ namespace Dynamo.Nodes
             {
                 case "Value":
                     Value = ((int)converter.ConvertBack(value, typeof(int), null, null));
+                     if (Value >= Max)
+                    {
+                        this.Max = Value;
+                    }
+                    if (Value <= Min)
+                    {
+                        this.Min = Value;
+                    }
                     return true; // UpdateValueCore handled.
                 case "Max":
                     Max = ((int)converter.ConvertBack(value, typeof(int), null, null));
