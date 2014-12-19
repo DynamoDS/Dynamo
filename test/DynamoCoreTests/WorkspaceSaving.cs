@@ -7,6 +7,7 @@ using System.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;

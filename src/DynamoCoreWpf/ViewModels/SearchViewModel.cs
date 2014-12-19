@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 

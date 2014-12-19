@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using NUnit.Framework;
 
 namespace Dynamo.Tests

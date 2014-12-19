@@ -131,6 +131,15 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="Search\Interfaces\ISearchCategory.cs" />
+    <Compile Include="Search\Interfaces\ISearchEntry.cs" />
+    <Compile Include="Search\NodeSearchModel.cs" />
+    <Compile Include="Search\SearchElements\CodeBlockNodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\NodeModelSearchElement.cs" />
+    <Compile Include="Search\SearchElements\NodeModelSearchElementBase.cs" />
+    <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
     <Compile Include="Utilities\OrderedSet.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
@@ -138,7 +147,7 @@ limitations under the License.
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Search\Legacy\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
-    <Compile Include="Search\SearchModel.cs" />
+    <Compile Include="Search\SearchLibrary.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Disposable.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
@@ -315,6 +324,7 @@ limitations under the License.
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"

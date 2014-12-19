@@ -23,7 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-
+using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
 
 using Executive = ProtoAssociative.Executive;
@@ -570,8 +570,10 @@ namespace Dynamo.Models
             var outputData = new TypeLoadData(typeof(Output));
 
             var ztLoader = new ZeroTouchNodeLoader(LibraryServices);
-            NodeFactory.AddLoader(dsFuncData.Type, ztLoader, dsFuncData.AlsoKnownAs);
-            NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader, dsVarArgFuncData.AlsoKnownAs);
+            NodeFactory.AddLoader(dsFuncData.Type, ztLoader);
+            NodeFactory.AddAlsoKnownAs(dsFuncData.Type, dsFuncData.AlsoKnownAs);
+            NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader);
+            NodeFactory.AddAlsoKnownAs(dsVarArgFuncData.Type, dsVarArgFuncData.AlsoKnownAs);
             
             var cbnLoader = new CodeBlockNodeLoader(LibraryServices);
             NodeFactory.AddLoader(cbnData.Type, cbnLoader);

@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
 
-using Dynamo.Search;
-
+using Dynamo.Search.SearchElements;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 

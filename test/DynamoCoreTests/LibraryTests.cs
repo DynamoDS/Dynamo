@@ -5,6 +5,7 @@ using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
