@@ -20,10 +20,10 @@ namespace DSCoreNodesUI
                 if (Equals(_value, null) || !_value.Equals(value))
                 {
                     _value = value;
-                    RequiresRecalc = !Equals(value, null);                   
-                }
-                //If the value exceeds the limit (overflow) UI has to be updated with MAX / MIN value
-                RaisePropertyChanged("Value");
+                    RequiresRecalc = !Equals(value, null);
+                    RaisePropertyChanged("Value");
+                }               
+                
             }
         }
 

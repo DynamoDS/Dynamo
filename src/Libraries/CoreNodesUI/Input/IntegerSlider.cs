@@ -24,6 +24,23 @@ namespace Dynamo.Nodes
             Value = 0;
         }
 
+        //If the value exceeds the limit (overflow) UI has to be updated with MAX / MIN value
+        //So,overriding the value from Basic Interactive.
+        private int _value;
+        public new int Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+                RequiresRecalc = !Equals(value, null);          
+                RaisePropertyChanged("Value");
+            }
+        }
+
         private int _max;
         public int Max
         {
