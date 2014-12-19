@@ -1,4 +1,8 @@
-﻿using Dynamo.UI;
+﻿using System.Globalization;
+using System.Windows;
+using System.Windows.Media;
+
+using Dynamo.UI;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
