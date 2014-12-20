@@ -191,7 +191,7 @@ namespace Dynamo.Controls
             this.ShowShadows = false;
             
             // setup lighting            
-            this.AmbientLightColor = new Color4(0.1f, 0.1f, 0.1f, 1.0f);
+            this.AmbientLightColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
             this.DirectionalLightColor = SharpDX.Color.White;
             this.DirectionalLightDirection = new Vector3(-0.5f, -1, 0);
