@@ -36,12 +36,11 @@ namespace DynamoCoreUITests
             // run the expression
             ViewModel.Model.RunExpression();
 
-            Assert.AreEqual(0, BackgroundPreview.Points.Positions.Count);
-            Assert.AreEqual(0, BackgroundPreview.Lines.Positions.Count);
-            //Assert.AreEqual(0, BackgroundPreview.Mesh.Positions.Count);
-            //Assert.AreEqual(0, BackgroundPreview.XAxes.Positions.Count);
-            //Assert.AreEqual(0, BackgroundPreview.YAxes.Positions.Count);
-            //Assert.AreEqual(0, BackgroundPreview.ZAxes.Positions.Count);
+            // All collections will be null if there
+            // is nothing to visualize
+            Assert.Null(BackgroundPreview.Points);
+            Assert.Null(BackgroundPreview.Lines);
+            Assert.Null(BackgroundPreview.Mesh);
         }
 
         [Test, Category("Failure")]
@@ -126,8 +125,8 @@ namespace DynamoCoreUITests
             l1.IsVisible = false;
 
             Assert.AreEqual(1, BackgroundPreview.Points.Positions.Count);
-            Assert.AreEqual(0, BackgroundPreview.Lines.Positions.Count);
-            Assert.AreEqual(0, BackgroundPreview.MeshCount);
+            Assert.Null(BackgroundPreview.Lines);
+            Assert.Null(BackgroundPreview.Mesh);
 
             //flip those back on and ensure the visualization returns
             p1.IsVisible = true;
@@ -135,7 +134,7 @@ namespace DynamoCoreUITests
 
             Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
-            Assert.AreEqual(0, BackgroundPreview.MeshCount);
+            Assert.Null(BackgroundPreview.Mesh);
         }
 
         [Test, Category("Failure")]
@@ -155,7 +154,7 @@ namespace DynamoCoreUITests
             //ensure that visulations match our expectations
             Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
-            Assert.AreEqual(0, BackgroundPreview.MeshCount);
+            Assert.Null(BackgroundPreview.Mesh);
 
             //flip off the line node's preview upstream
             var l1 = model.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
@@ -175,7 +174,7 @@ namespace DynamoCoreUITests
             var watch3DNodeView = nodeViews.First();
             var watchView = watch3DNodeView.ChildrenOfType<Watch3DView>().First();
 
-            Assert.AreEqual(0, watchView.Points.Positions.Count);
+            Assert.Null(watchView.Points);
         }
 
         [Test]
@@ -328,7 +327,7 @@ namespace DynamoCoreUITests
 
             model.HomeSpace.HasUnsavedChanges = false;
 
-            Assert.AreEqual(0, BackgroundPreview.Points.Positions.Count);
+            Assert.Null(BackgroundPreview.Points);
         }
 
         [Test]
@@ -349,7 +348,7 @@ namespace DynamoCoreUITests
             model.Clear(null);
 
             //ensure that we have no visualizations
-            Assert.AreEqual(0, BackgroundPreview.Points.Positions.Count);
+            Assert.Null(BackgroundPreview.Points);
         }
 
         [Test]
@@ -379,7 +378,7 @@ namespace DynamoCoreUITests
 
             //all nodes are set to not preview in the file
             //ensure that we have no visualizations
-            Assert.AreEqual(0, BackgroundPreview.Lines.Positions.Count);
+            Assert.Null(BackgroundPreview.Lines);
         }
 
         [Test]
@@ -463,7 +462,7 @@ namespace DynamoCoreUITests
             var examplePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\");
             ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "visualize_line_incustom.dyn"));
             ViewModel.Model.RunExpression();
-            Assert.AreEqual(1, BackgroundPreview.Lines.Lines.Count() / 2);
+            Assert.AreEqual(1, BackgroundPreview.Lines.Positions.Count / 2);
 
             // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
             var workspace = model.CurrentWorkspace;
@@ -491,7 +490,9 @@ namespace DynamoCoreUITests
             DynamoSelection.Instance.Selection.Add(node);
 
             // No preview in the background
-            Assert.AreEqual(0, BackgroundPreview.Lines.Lines.Count());
+            Assert.Null(BackgroundPreview.Points);
+            Assert.Null(BackgroundPreview.Lines);
+            Assert.Null(BackgroundPreview.Mesh);
         }
 
         private int GetTotalDrawablesInModel()
