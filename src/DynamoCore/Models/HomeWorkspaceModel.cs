@@ -24,9 +24,7 @@ namespace Dynamo.Models
             // shutting down so we check that shutdown has not been requested.
             if (DynamoModel.DynamicRunEnabled && !DynamoModel.ShutdownRequested)
             {
-                //Action run = () => DynamoModel.RunExpression();
-                //Dispatcher.CurrentDispatcher.Invoke(run);
-                DynamoModel.RunExpression();
+                DynamoModel.OnRequestDispatcherBeginInvoke(() => DynamoModel.RunExpression());
             }
         }
     }
