@@ -7,6 +7,7 @@
              xmlns:sdx="clr-namespace:SharpDX;assembly=SharpDX" 
              xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:h="http://helix-toolkit.org/wpf"
              Name="topControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -90,27 +91,18 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
-        <hx:Viewport3DX 
+        <hx:Viewport3DX Focusable="True"
             Name="watch_view"
-            ShowViewCube="false" 
-            UseDefaultGestures="True"  
+            ZoomExtentsWhenLoaded="False"
+            ShowViewCube="False" 
+            CameraRotationMode="Turntable"
+            IsHitTestVisible="True"
+            MouseLeftButtonDown="Watch_view_OnMouseDown" 
             ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}"
             RenderTechnique="{Binding RenderTechnique}"
             Camera="{Binding Camera}" 
-            IsHitTestVisible="True"
-            IsShadowMappingEnabled="{Binding ShowShadows}">
-            <hx:Viewport3DX.InputBindings>
-                <KeyBinding Key="B" Command="hx:ViewportCommands.BackView"/>
-                <KeyBinding Key="F" Command="hx:ViewportCommands.FrontView"/>
-                <KeyBinding Key="U" Command="hx:ViewportCommands.TopView"/>
-                <KeyBinding Key="D" Command="hx:ViewportCommands.BottomView"/>
-                <KeyBinding Key="L" Command="hx:ViewportCommands.LeftView"/>
-                <KeyBinding Key="R" Command="hx:ViewportCommands.RightView"/>
-                <KeyBinding Gesture="Control+E" Command="hx:ViewportCommands.ZoomExtents"/>
-                <MouseBinding Gesture="LeftClick" Command="hx:ViewportCommands.Rotate"/>
-                <MouseBinding Gesture="WheelClick" Command="hx:ViewportCommands.Zoom"/>
-                <MouseBinding Gesture="MiddleClick" Command="hx:ViewportCommands.Pan"/>
-            </hx:Viewport3DX.InputBindings>
+            IsShadowMappingEnabled="{Binding ShowShadows}" UseDefaultGestures="False" >
+
             <hx:ShadowMap3D x:Name="shadowMap" Resolution="{Binding ShadowMapResolution}" />
             <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
             <hx:DirectionalLight3D Name="key" Color="{Binding DirectionalLightColor}" Direction = "{Binding DirectionalLightDirection}"/>

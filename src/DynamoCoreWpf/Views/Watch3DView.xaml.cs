@@ -235,6 +235,30 @@ namespace Dynamo.Controls
             MouseRightButtonUp += view_MouseRightButtonUp;
             PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
 
+            watch_view.InputBindings.Add(new KeyBinding(ViewportCommands.ZoomExtents, Key.E, ModifierKeys.Control));
+            watch_view.InputBindings.Add(
+                new MouseBinding(
+                    ViewportCommands.ZoomExtents, new MouseGesture(MouseAction.LeftDoubleClick, ModifierKeys.Control)));
+            watch_view.InputBindings.Add(
+                new MouseBinding(ViewportCommands.Rotate, new MouseGesture(MouseAction.RightClick, ModifierKeys.None)));
+            watch_view.InputBindings.Add(
+                new MouseBinding(ViewportCommands.Zoom, new MouseGesture(MouseAction.RightClick, ModifierKeys.Control)));
+            watch_view.InputBindings.Add(
+                new MouseBinding(ViewportCommands.Pan, new MouseGesture(MouseAction.MiddleClick)));
+            watch_view.InputBindings.Add(
+                new MouseBinding(
+                    ViewportCommands.ChangeFieldOfView, new MouseGesture(MouseAction.RightClick, ModifierKeys.Alt)));
+            watch_view.InputBindings.Add(
+                new MouseBinding(
+                    ViewportCommands.ZoomRectangle,
+                    new MouseGesture(MouseAction.RightClick, ModifierKeys.Control | ModifierKeys.Shift)));
+            watch_view.InputBindings.Add(
+                new MouseBinding(
+                    ViewportCommands.SetTarget, new MouseGesture(MouseAction.RightDoubleClick, ModifierKeys.Control)));
+            watch_view.InputBindings.Add(
+                new MouseBinding(
+                    ViewportCommands.Reset, new MouseGesture(MouseAction.MiddleDoubleClick, ModifierKeys.Control)));
+
             var vm = DataContext as IWatchViewModel;
             
             //check this for null so the designer can load the preview
