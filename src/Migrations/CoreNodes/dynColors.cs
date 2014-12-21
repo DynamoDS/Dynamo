@@ -7,33 +7,33 @@ namespace Dynamo.Nodes
 {
     class ColorBrightness : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Color.Brightness", "Color.Brightness@DSColor");
+            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"Color.Brightness", /*NXLT*/"Color.Brightness@DSColor");
         }
     }
 
     class ColorSaturation : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Color.Saturation", "Color.Saturation@DSColor");
+            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"Color.Saturation", /*NXLT*/"Color.Saturation@DSColor");
         }
     }
 
     class Color : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
-                "Color.ByARGB", "Color.ByARGB@int,int,int,int");
+            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
+                /*NXLT*/"Color.ByARGB", /*NXLT*/"Color.ByARGB@int,int,int,int");
 
             migrationData.AppendNode(newNode);
 
@@ -47,20 +47,20 @@ namespace Dynamo.Nodes
 
     class ColorComponents : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Color.Components",
-                "Color.Components@DSColor");
+            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"Color.Components",
+                /*NXLT*/"Color.Components@DSColor");
         }
     }
 
     class ColorHue : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Color.Hue", "Color.Hue@DSColor");
+            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"Color.Hue", /*NXLT*/"Color.Hue@DSColor");
         }
     }
 
@@ -80,12 +80,12 @@ namespace Dynamo.Nodes
             return migrationData;
         }
 
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(MigrationManager.CloneAndChangeName(
-                data.MigratedNodes.ElementAt(0), "DSCoreNodesUI.ColorRange", "Color Range"));
+                data.MigratedNodes.ElementAt(0), /*NXLT*/"DSCoreNodesUI.ColorRange", "Color Range"));
 
             return migrationData;
         }

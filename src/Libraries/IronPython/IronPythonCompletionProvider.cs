@@ -72,19 +72,19 @@ namespace Dynamo.Python
         /// <summary>
         /// A bunch of regexes for use in introspaction
         /// </summary>
-        public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s*)+)";
-        public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";   
-        public static string doubleQuoteStringRegex = "(\"[^\"]*\")";
-        public static string singleQuoteStringRegex = "(\'[^\']*\')";
-        public static string arrayRegex = "(\\[.*\\])";
-        public static string spacesOrNone = @"(\s*)";
-        public static string atLeastOneSpaceRegex = @"(\s+)";
-        public static string equals = @"(=)";
-        public static string dictRegex = "({.*})";
-        public static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
-        public static string intRegex = @"([-+]?\d+)[\s\n]*$";
-        public static string basicImportRegex = @"(import)";
-        public static string fromImportRegex = @"^(from)";
+        public static string commaDelimitedVariableNamesRegex = /*NXLT*/@"(([0-9a-zA-Z_]+,?\s*)+)";
+        public static string variableName = /*NXLT*/@"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
+        public static string doubleQuoteStringRegex = /*NXLT*/"(\"[^\"]*\")";
+        public static string singleQuoteStringRegex = /*NXLT*/"(\'[^\']*\')";
+        public static string arrayRegex = /*NXLT*/"(\\[.*\\])";
+        public static string spacesOrNone = /*NXLT*/@"(\s*)";
+        public static string atLeastOneSpaceRegex = /*NXLT*/@"(\s+)";
+        public static string equals = /*NXLT*/@"(=)";
+        public static string dictRegex = /*NXLT*/"({.*})";
+        public static string doubleRegex = /*NXLT*/@"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
+        public static string intRegex = /*NXLT*/@"([-+]?\d+)[\s\n]*$";
+        public static string basicImportRegex = /*NXLT*/@"(import)";
+        public static string fromImportRegex = /*NXLT*/@"^(from)";
 
 #endregion
 
@@ -110,14 +110,14 @@ namespace Dynamo.Python
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            if (assemblies.Any(x => x.FullName.Contains("RevitAPI")) && assemblies.Any(x => x.FullName.Contains("RevitAPIUI")))
+            if (assemblies.Any(x => x.FullName.Contains(/*NXLT*/"RevitAPI")) && assemblies.Any(x => x.FullName.Contains(/*NXLT*/"RevitAPIUI")))
             {
                 try
                 {
-                    scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(scope);
+                    scope.Engine.CreateScriptSourceFromString(/*NXLT*/"import clr\n", SourceCodeKind.Statements).Execute(scope);
 
                     var revitImports =
-                        "clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
+                        /*NXLT*/"clr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
 
                     scope.Engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(scope);
                 }
@@ -127,14 +127,14 @@ namespace Dynamo.Python
                 }
             }
 
-            if (assemblies.Any(x => x.FullName.Contains("ProtoGeometry")))
+            if (assemblies.Any(x => x.FullName.Contains(/*NXLT*/"ProtoGeometry")))
             {
                 try
                 {
-                    scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(scope);
+                    scope.Engine.CreateScriptSourceFromString(/*NXLT*/"import clr\n", SourceCodeKind.Statements).Execute(scope);
 
                     var libGImports =
-                        "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n";
+                        /*NXLT*/"import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n";
 
                     scope.Engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(scope);
                 }
@@ -289,9 +289,9 @@ namespace Dynamo.Python
             foreach (MethodInfo methodInfoItem in methodInfo)
             {
                 if ((methodInfoItem.IsPublic)
-                    && (methodInfoItem.Name.IndexOf("get_") != 0) && (methodInfoItem.Name.IndexOf("set_") != 0)
-                    && (methodInfoItem.Name.IndexOf("add_") != 0) && (methodInfoItem.Name.IndexOf("remove_") != 0)
-                    && (methodInfoItem.Name.IndexOf("__") != 0))
+                    && (methodInfoItem.Name.IndexOf(/*NXLT*/"get_") != 0) && (methodInfoItem.Name.IndexOf(/*NXLT*/"set_") != 0)
+                    && (methodInfoItem.Name.IndexOf(/*NXLT*/"add_") != 0) && (methodInfoItem.Name.IndexOf(/*NXLT*/"remove_") != 0)
+                    && (methodInfoItem.Name.IndexOf(/*NXLT*/"__") != 0))
                 {
                     if (!completionsList.ContainsKey(methodInfoItem.Name))
                         completionsList.Add(methodInfoItem.Name, IronPythonCompletionData.CompletionType.METHOD);
@@ -414,8 +414,8 @@ namespace Dynamo.Python
                     //var des = _engine.Operations.GetDocumentation(value);
 
                     string docCommand = "";
-                    if (isInstance) docCommand = "type(" + stub + ")" + "." + item + ".__doc__";
-                    else docCommand = stub + "." + item + ".__doc__";
+                    if (isInstance) docCommand = /*NXLT*/"type(" + stub + ")" + "." + item + /*NXLT*/".__doc__";
+                    else docCommand = stub + "." + item + /*NXLT*/".__doc__";
                     object value = engine.CreateScriptSourceFromString(docCommand, SourceCodeKind.Expression).Execute(scope);
 
                     if (!String.IsNullOrEmpty((string)value))
@@ -476,7 +476,7 @@ namespace Dynamo.Python
                 return VariableTypes[name];
             }
 
-            string tryGetType = name + ".GetType()";
+            string tryGetType = name + /*NXLT*/".GetType()";
             dynamic type = null;
             try
             {
@@ -502,7 +502,7 @@ namespace Dynamo.Python
                 // from lib import *
 
             var matches = Regex.Matches(code, fromImportRegex + atLeastOneSpaceRegex + variableName +
-                            atLeastOneSpaceRegex + basicImportRegex + atLeastOneSpaceRegex + @"\*$", RegexOptions.Multiline);
+                            atLeastOneSpaceRegex + basicImportRegex + atLeastOneSpaceRegex + /*NXLT*/@"\*$", RegexOptions.Multiline);
 
             var importMatches = new Dictionary<string, string>();
 
@@ -647,7 +647,7 @@ namespace Dynamo.Python
             // regex to collection
             var variables = new Dictionary<string, Tuple<string, int, Type>>();
 
-            var variableStatements = Regex.Matches(code, variableName + spacesOrNone + equals + spacesOrNone + @"(.*)", RegexOptions.Multiline);
+            var variableStatements = Regex.Matches(code, variableName + spacesOrNone + equals + spacesOrNone + /*NXLT*/@"(.*)", RegexOptions.Multiline);
 
             for (var i = 0; i < variableStatements.Count; i++)
             {
@@ -656,7 +656,7 @@ namespace Dynamo.Python
                 var currentIndex = variableStatements[i].Index;
 
                 // check if matches typename(blabla) - in this case its a type we need to look up
-                var typeStringMatches = Regex.Matches(typeString, @"^(.*)\(.*\)$", RegexOptions.Singleline);
+                var typeStringMatches = Regex.Matches(typeString, /*NXLT*/@"^(.*)\(.*\)$", RegexOptions.Singleline);
                 if (typeStringMatches.Count > 0)
                 {
                     typeString = typeStringMatches[0].Groups[1].Value.Trim();

@@ -321,16 +321,16 @@ namespace DSCore
         ///     Extracts the individual components of a TimeSpan.
         /// </summary>
         /// <param name="timeSpan">A TimeSpan.</param>
-        [MultiReturn("days", "hours", "minutes", "seconds", "milliseconds")]
+        [MultiReturn(/*NXLT*/"days", "hours", "minutes", "seconds", "milliseconds")]
         public static Dictionary<string, int> Components(System.TimeSpan timeSpan)
         {
             return new Dictionary<string, int>
             {
-                { "days", timeSpan.Days },
-                { "hours", timeSpan.Hours },
-                { "minutes", timeSpan.Minutes },
-                { "seconds", timeSpan.Seconds },
-                { "milliseconds", timeSpan.Milliseconds }
+                { /*NXLT*/"days", timeSpan.Days },
+                { /*NXLT*/"hours", timeSpan.Hours },
+                { /*NXLT*/"minutes", timeSpan.Minutes },
+                { /*NXLT*/"seconds", timeSpan.Seconds },
+                { /*NXLT*/"milliseconds", timeSpan.Milliseconds }
             };
         }
 

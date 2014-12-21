@@ -38,12 +38,12 @@ namespace Dynamo.Python
                 var assembly = Assembly.GetExecutingAssembly();
 
                 TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
-                TypeToIcon.Add(CompletionType.METHOD, GetBitmapImage(assembly, "method.png"));
-                TypeToIcon.Add(CompletionType.NAMESPACE, GetBitmapImage(assembly, @"namespace.png"));
-                TypeToIcon.Add(CompletionType.FIELD, GetBitmapImage(assembly, @"field.png"));
-                TypeToIcon.Add(CompletionType.CLASS, GetBitmapImage(assembly, @"class.png"));
-                TypeToIcon.Add(CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png"));
-                TypeToIcon.Add(CompletionType.ENUM, GetBitmapImage(assembly, @"property.png"));
+                TypeToIcon.Add(CompletionType.METHOD, GetBitmapImage(assembly, /*NXLT*/"method.png"));
+                TypeToIcon.Add(CompletionType.NAMESPACE, GetBitmapImage(assembly, /*NXLT*/@"namespace.png"));
+                TypeToIcon.Add(CompletionType.FIELD, GetBitmapImage(assembly, /*NXLT*/@"field.png"));
+                TypeToIcon.Add(CompletionType.CLASS, GetBitmapImage(assembly, /*NXLT*/@"class.png"));
+                TypeToIcon.Add(CompletionType.PROPERTY, GetBitmapImage(assembly, /*NXLT*/@"property.png"));
+                TypeToIcon.Add(CompletionType.ENUM, GetBitmapImage(assembly, /*NXLT*/@"property.png"));
             }
 
             this._image = TypeToIcon[type];
@@ -96,7 +96,7 @@ namespace Dynamo.Python
 
         private BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
         {
-            var name = string.Format(@"DSIronPythonNode.Resources.{0}", resourceFileName);
+            var name = string.Format(/*NXLT*/@"DSIronPythonNode.Resources.{0}", resourceFileName);
 
             var bitmapImage = new BitmapImage();
 

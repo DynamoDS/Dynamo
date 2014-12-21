@@ -57,7 +57,7 @@ namespace DSCoreNodesUI.Logic
                     AstFactory.BuildBooleanNode(true)
                 };
 
-                rhs = AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
+                rhs = AstFactory.BuildFunctionCall(/*NXLT*/"_SingleFunctionObject", inputParams);
             }
             else
             {

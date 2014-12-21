@@ -43,9 +43,9 @@ namespace DSIronPythonNode
             this.editText.TextArea.TextEntering += OnTextAreaTextEntering;
             this.editText.TextArea.TextEntered += OnTextAreaTextEntered;
 
-            const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
+            const string highlighting = /*NXLT*/"ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
-                        "DSIronPythonNode.Resources." + highlighting);
+                /*NXLT*/"DSIronPythonNode.Resources." + highlighting);
 
             this.editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);

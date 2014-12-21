@@ -122,10 +122,10 @@ namespace DSCore
         {
             return new Dictionary<string, byte>
             {
-                {"a", c.color.A}, 
-                {"r", c.color.R},
-                {"g", c.color.G},
-                {"b", c.color.B}, 
+                {/*NXLT*/"a", c.color.A}, 
+                {/*NXLT*/"r", c.color.R},
+                {/*NXLT*/"g", c.color.G},
+                {/*NXLT*/"b", c.color.B}, 
             };
         }
 
@@ -149,7 +149,7 @@ namespace DSCore
 
         public override string ToString()
         {
-            return string.Format("Color: Red={0}, Green={1}, Blue={2}, Alpha={3}", Red, Green, Blue, Alpha);
+            return string.Format(/*NXLT*/"Color: Red={0}, Green={1}, Blue={2}, Alpha={3}", Red, Green, Blue, Alpha);
         }
 
         [IsVisibleInDynamoLibrary(false)]

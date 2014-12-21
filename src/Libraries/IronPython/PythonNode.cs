@@ -51,7 +51,7 @@ namespace DSIronPythonNode
         private void EditScriptContent()
         {
             var editWindow = new ScriptEditorWindow(dynamoViewModel);
-            editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
+            editWindow.Initialize(model.GUID, /*NXLT*/"ScriptContent", model.Script);
             bool? acceptChanged = editWindow.ShowDialog();
             if (acceptChanged.HasValue && acceptChanged.Value)
             {
@@ -70,7 +70,7 @@ namespace DSIronPythonNode
 
         protected override string GetInputName(int index)
         {
-            return string.Format("IN[{0}]", index);
+            return string.Format(/*NXLT*/"IN[{0}]", index);
         }
 
         protected override string GetInputTooltip(int index)
@@ -155,7 +155,7 @@ namespace DSIronPythonNode
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (name == "ScriptContent")
+            if (name == /*NXLT*/"ScriptContent")
             {
                 script = value;
                 return true;
@@ -182,7 +182,7 @@ namespace DSIronPythonNode
             base.LoadNode(nodeElement);
 
             var scriptNode =
-                nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "Script");
+                nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == /*NXLT*/"Script");
             
             if (scriptNode != null)
             {
@@ -205,7 +205,7 @@ namespace DSIronPythonNode
         {
             base.DeserializeCore(element, context);
             var helper = new XmlElementHelper(element);
-            var script = helper.ReadString("Script", string.Empty);
+            var script = helper.ReadString(/*NXLT*/"Script", string.Empty);
             this.script = script;
         }
 

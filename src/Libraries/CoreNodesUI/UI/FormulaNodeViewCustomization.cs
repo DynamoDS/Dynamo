@@ -25,7 +25,7 @@ namespace DSCoreNodesUI
             Grid.SetRow(tb, 0);
 
             tb.DataContext = model;
-            tb.BindToProperty(new Binding("FormulaString")
+            tb.BindToProperty(new Binding(/*NXLT*/"FormulaString")
             {
                 Mode = BindingMode.TwoWay,
                 NotifyOnValidationError = false,

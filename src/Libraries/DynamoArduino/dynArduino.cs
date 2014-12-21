@@ -84,7 +84,7 @@ namespace Dynamo.Nodes
                 if (Port.IsOpen)
                     Port.Close();
             }
-            Port = new SerialPort { BaudRate = 9600, NewLine = "\r\n", DtrEnable = true };
+            Port = new SerialPort { BaudRate = 9600, NewLine = /*NXLT*/"\r\n", DtrEnable = true };
         }
 
         public override void Cleanup()
@@ -224,7 +224,7 @@ namespace Dynamo.Nodes
         private void WriteDataToArduino(string dataLine)
         {
 
-            dataLine = dataLine + "\r\n"; //termination
+            dataLine = dataLine + /*NXLT*/"\r\n"; //termination
             port.WriteLine(dataLine);
 
         }

@@ -7,7 +7,7 @@ namespace Dynamo.Nodes
 {
     public class ArcStartMiddleEnd : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Arc.ByThreePoints",
@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
 
     public class ArcCenter : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             // This migration assumes that the first input of the old node is
@@ -75,7 +75,7 @@ namespace Dynamo.Nodes
 
     public class BestFitArc : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "ProtoGeometry.dll", "Arc.ByBestFitThroughPoints", "Arc.ByBestFitThroughPoints@Point[]");

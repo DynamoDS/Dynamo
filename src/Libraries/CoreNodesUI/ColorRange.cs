@@ -11,7 +11,7 @@ namespace DSCoreNodesUI
 {
     [IsDesignScriptCompatible]
     [NodeName(/*NXLT*/"Color Range")]
-    [NodeCategory("Core.Color.Create")]
+    [NodeCategory(/*NXLT*/"Core.Color.Create")]
     [NodeDescription(/*NXLT*/"ColorRangeDescription",typeof(Properties.Resources))]
     public class ColorRange : NodeModel
     {
@@ -37,7 +37,7 @@ namespace DSCoreNodesUI
 
         void ColorRange_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != "IsUpdated")
+            if (e.PropertyName != /*NXLT*/"IsUpdated")
                 return;
 
             if (InPorts.Any(x => x.Connectors.Count == 0))

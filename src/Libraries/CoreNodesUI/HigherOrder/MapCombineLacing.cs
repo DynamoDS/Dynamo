@@ -32,11 +32,11 @@ namespace DSCore
                     GetAstIdentifierForOutputIndex(0),
                     IsPartiallyApplied
                         ? AstFactory.BuildFunctionObject(
-                            "__Map",
+                            /*NXLT*/"__Map",
                             2,
                             new[] { 0, 1 }.Where(HasConnectedInput).Select(x => 1 - x),
                             Enumerable.Reverse(inputAstNodes).ToList())
-                        : AstFactory.BuildFunctionCall("__Map", Enumerable.Reverse(inputAstNodes).ToList()))
+                        : AstFactory.BuildFunctionCall(/*NXLT*/"__Map", Enumerable.Reverse(inputAstNodes).ToList()))
             };
         }
     }
@@ -93,7 +93,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "__Combine",
+                        /*NXLT*/"__Combine",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -119,7 +119,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "__ForEach",
+                        /*NXLT*/"__ForEach",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -145,7 +145,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "__LaceShortest",
+                        /*NXLT*/"__LaceShortest",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -171,7 +171,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "__LaceLongest",
+                        /*NXLT*/"__LaceLongest",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -198,7 +198,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "__CartesianProduct",
+                        /*NXLT*/"__CartesianProduct",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -306,18 +306,18 @@ namespace DSCore
 
         private void UpdateReductorPort()
         {
-            if (InPortData.Count > 6) 
-                reductorPort.NickName = "f(x1, x2, ... xN, a)";
+            if (InPortData.Count > 6)
+                reductorPort.NickName = /*NXLT*/"f(x1, x2, ... xN, a)";
             else
             {
-                if (InPortData.Count == 3) 
-                    reductorPort.NickName = "f(x, a)";
+                if (InPortData.Count == 3)
+                    reductorPort.NickName = /*NXLT*/"f(x, a)";
                 else
                 {
-                    reductorPort.NickName = "f("
+                    reductorPort.NickName = /*NXLT*/"f("
                         + string.Join(
                             ", ",
-                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
+                            Enumerable.Range(0, InPortData.Count - 2).Select(x => /*NXLT*/"x" + (x + 1)))
                         + ", a)";
                 }
             }
@@ -346,7 +346,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "__Reduce",
+                        /*NXLT*/"__Reduce",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -394,17 +394,17 @@ namespace DSCore
         private void UpdateReductorPort()
         {
             if (InPortData.Count > 6)
-                reductorPort.NickName = "f(x1, x2, ... xN, a)";
+                reductorPort.NickName = /*NXLT*/"f(x1, x2, ... xN, a)";
             else
             {
                 if (InPortData.Count == 3)
-                    reductorPort.NickName = "f(x, a)";
+                    reductorPort.NickName = /*NXLT*/"f(x, a)";
                 else
                 {
-                    reductorPort.NickName = "f("
+                    reductorPort.NickName = /*NXLT*/"f("
                         + string.Join(
                             ", ",
-                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
+                            Enumerable.Range(0, InPortData.Count - 2).Select(x => /*NXLT*/"x" + (x + 1)))
                         + ", a)";
                 }
             }
@@ -433,7 +433,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "__Scan",
+                        /*NXLT*/"__Scan",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -464,12 +464,12 @@ namespace DSCore
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {
-            var packedId = "__temp" + GUID.ToString().Replace("-", "");
+            var packedId = /*NXLT*/"__temp" + GUID.ToString().Replace("-", "");
             return new[]
             {
                 AstFactory.BuildAssignment(
                     AstFactory.BuildIdentifier(packedId),
-                    AstFactory.BuildFunctionCall("__Filter", inputAstNodes)),
+                    AstFactory.BuildFunctionCall(/*NXLT*/"__Filter", inputAstNodes)),
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     new IdentifierNode(packedId)
@@ -510,7 +510,7 @@ namespace DSCore
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall("__Replace", inputAstNodes))
+                    AstFactory.BuildFunctionCall(/*NXLT*/"__Replace", inputAstNodes))
             };
         }
     }

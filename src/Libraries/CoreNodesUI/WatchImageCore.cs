@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
     [NodeName(/*NXLT*/"Watch Image")]
     [NodeDescription(/*NXLT*/"WatchImageDescription", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeSearchTags("WatchImageSearchTags", typeof(Resources))]
+    [NodeSearchTags(/*NXLT*/"WatchImageSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class WatchImageCore : NodeModel
     {

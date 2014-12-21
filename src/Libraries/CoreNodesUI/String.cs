@@ -42,7 +42,7 @@ namespace DSCoreNodesUI.StringNodes
                     AstFactory.BuildBooleanNode(true)
                 };
 
-                rhs = AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
+                rhs = AstFactory.BuildFunctionCall(/*NXLT*/"_SingleFunctionObject", inputParams);
             }
             else
             {
@@ -58,13 +58,13 @@ namespace DSCoreNodesUI.StringNodes
 
     [NodeName(/*NXLT*/"String from Object")]
     [NodeDescription(/*NXLT*/"StringfromObjectDescription", typeof(Properties.Resources))]
-    [NodeCategory("Core.String.Actions")]
-    [NodeSearchTags("FromObjectSearchTags", typeof(Properties.Resources))]
+    [NodeCategory(/*NXLT*/"Core.String.Actions")]
+    [NodeSearchTags(/*NXLT*/"FromObjectSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class FromObject: ToStringNodeBase 
     {
         public FromObject(WorkspaceModel workspace)
-            : base(workspace, "__ToStringFromObject")
+            : base(workspace, /*NXLT*/"__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData(/*NXLT*/"obj", Resources.FromObjectPortDataObjToolTip));
@@ -75,13 +75,13 @@ namespace DSCoreNodesUI.StringNodes
 
     [NodeName(/*NXLT*/"String from Array")]
     [NodeDescription(/*NXLT*/"StringfromArrayDescription", typeof(Properties.Resources))]
-    [NodeCategory("Core.String.Actions")]
-    [NodeSearchTags("FromArraySearchTags", typeof(Properties.Resources))]
+    [NodeCategory(/*NXLT*/"Core.String.Actions")]
+    [NodeSearchTags(/*NXLT*/"FromArraySearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class FromArray : ToStringNodeBase 
     {
         public FromArray(WorkspaceModel workspace)
-            : base(workspace, "__ToStringFromArray")
+            : base(workspace, /*NXLT*/"__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData(/*NXLT*/"arr", Resources.FromArrayPortDataArrayToolTip));

@@ -65,7 +65,7 @@ namespace DSCoreNodesUI
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (name == "FormulaString")
+            if (name == /*NXLT*/"FormulaString")
             {
                 FormulaString = value;
                 return true; // UpdateValueCore handled.
@@ -76,7 +76,7 @@ namespace DSCoreNodesUI
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            var formStringNode = xmlDoc.CreateElement("FormulaText");
+            var formStringNode = xmlDoc.CreateElement(/*NXLT*/"FormulaText");
             formStringNode.InnerText = FormulaString;
             nodeElement.AppendChild(formStringNode);
         }
@@ -85,7 +85,7 @@ namespace DSCoreNodesUI
         {
             if (nodeElement.Attributes != null)
             {
-                var formulaAttr = nodeElement.Attributes["formula"];
+                var formulaAttr = nodeElement.Attributes[/*NXLT*/"formula"];
                 if (formulaAttr != null)
                 {
                     FormulaString = formulaAttr.Value;
@@ -93,7 +93,7 @@ namespace DSCoreNodesUI
                 }
             }
 
-            var formStringNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(childNode => childNode.Name == "FormulaText");
+            var formStringNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(childNode => childNode.Name == /*NXLT*/"FormulaText");
             FormulaString = formStringNode != null 
                 ? formStringNode.InnerText 
                 : nodeElement.InnerText;
@@ -107,7 +107,7 @@ namespace DSCoreNodesUI
             if (context == SaveContext.Undo)
             {
                 var helper = new XmlElementHelper(element);
-                helper.SetAttribute("formulaString", FormulaString);
+                helper.SetAttribute(/*NXLT*/"formulaString", FormulaString);
             }
         }
 
@@ -118,7 +118,7 @@ namespace DSCoreNodesUI
             if (context == SaveContext.Undo)
             {
                 var helper = new XmlElementHelper(element);
-                FormulaString = helper.ReadString("formulaString");
+                FormulaString = helper.ReadString(/*NXLT*/"formulaString");
             }
         }
 
@@ -144,8 +144,8 @@ namespace DSCoreNodesUI
             {
                 e = new Expression(
                     FormulaString.ToLower()
-                        .Replace(" and ", "+").Replace("&&", "+")
-                        .Replace(" or ", "+").Replace("||", "+"), 
+                        .Replace(/*NXLT*/" and ", /*NXLT*/"+").Replace(/*NXLT*/"&&", /*NXLT*/"+")
+                        .Replace(/*NXLT*/" or ", /*NXLT*/"+").Replace(/*NXLT*/"||", /*NXLT*/"+"), 
                     EvaluateOptions.IgnoreCase);
             }
             catch (Exception ex)
@@ -216,7 +216,7 @@ namespace DSCoreNodesUI
 
             var functionDef = new FunctionDefinitionNode
             {
-                Name = "__formula_" + GUID.ToString().Replace("-", string.Empty),
+                Name = /*NXLT*/"__formula_" + GUID.ToString().Replace("-", string.Empty),
                 Signature =
                     new ArgumentSignatureNode
                     {

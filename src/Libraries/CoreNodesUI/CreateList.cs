@@ -64,8 +64,8 @@ namespace DSCoreNodesUI
                 var arguments = AstFactory.BuildExprList(inputAstNodes);
                 var functionNode = new IdentifierListNode
                 {
-                    LeftNode = new IdentifierNode("DSCore.List"),
-                    RightNode = new IdentifierNode("__Create")
+                    LeftNode = new IdentifierNode(/*NXLT*/"DSCore.List"),
+                    RightNode = new IdentifierNode(/*NXLT*/"__Create")
                 };
                 var inputParams = new List<AssociativeNode>
                 {
@@ -80,7 +80,7 @@ namespace DSCoreNodesUI
                 {
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
-                        AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams))
+                        AstFactory.BuildFunctionCall(/*NXLT*/"_SingleFunctionObject", inputParams))
                 };
             }
 
