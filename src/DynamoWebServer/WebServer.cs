@@ -119,13 +119,6 @@ namespace DynamoWebServer
 
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
-            // Close connection if not from localhost
-            if (!session.RemoteEndPoint.Address.Equals(IPAddress.Loopback))
-            {
-                session.Close();
-                return;
-            }
-
             messageHandler.SessionId = session.SessionID;
 
             ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID, true);
