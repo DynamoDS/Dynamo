@@ -54,11 +54,11 @@
     </Compile>
     <Compile Include="Interfaces.cs" />
     <Compile Include="Label.cs" />
-    <Compile Include="PointAnalysisData.cs" />
+    <Compile Include="PointData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SurfaceAnalysisData.cs" />
+    <Compile Include="SurfaceData.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="VectorAnalysisData.cs" />
+    <Compile Include="VectorData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Analysis_DynamoCustomization.xml" />

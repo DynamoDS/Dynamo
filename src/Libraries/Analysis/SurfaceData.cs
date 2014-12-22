@@ -14,9 +14,8 @@ namespace Analysis
     /// <summary>
     /// A class for storing structured surface analysis data.
     /// </summary>
-    public class SurfaceAnalysisData : ISurfaceAnalysisData<UV, double>, IGraphicItem
+    public class SurfaceData : ISurfaceData<UV, double>, IGraphicItem
     {
-        private int valueIndex;
         private Color[,] colorMap ;
         private const int COLOR_MAP_WIDTH = 100;
         private const int COLOR_MAP_HEIGHT = 100;
@@ -29,39 +28,22 @@ namespace Analysis
         /// <summary>
         /// A list of UV locations on the surface.
         /// </summary>
-        public IEnumerable<UV> CalculationLocations { get; set; }
+        public IEnumerable<UV> ValueLocations { get; internal set; }
 
         /// <summary>
         /// A dictionary of lists of doubles.
         /// </summary>
-        public Dictionary<string, IList<double>> Values { get; set; }
+        public IList<double> Values { get; internal set; }
 
-        /// <summary>
-        /// Get the collection of values corresponding to a key.
-        /// </summary>
-        /// <param name="key">The name of the value set.</param>
-        /// <returns>A list of doubles.</returns>
-        public IList<double> GetValuesByKey(string key)
-        {
-            if (!Values.ContainsKey(key))
-            {
-                throw new Exception("The requested result collection does not exist.");
-            }
-
-            return Values[key];
-        }
-
-        protected SurfaceAnalysisData(
-            Surface surface, IEnumerable<UV> calculationLocations, Dictionary<string, IList<double>> values, int valueIndex)
+        protected SurfaceData(
+            Surface surface, IEnumerable<UV> valueLocations, IList<double> values)
         {
             Surface = surface;
             //CalculationLocations = CullCalculationLocations(surface, calculationLocations);
-            CalculationLocations = calculationLocations;
+            ValueLocations = valueLocations;
             Values = values;
 
-            this.valueIndex = valueIndex;
             colorMap = CreateColorMap();
-            
         }
 
         /// <summary>
@@ -69,7 +51,8 @@ namespace Analysis
         /// </summary>
         /// <param name="surface">The surface which contains the locations.</param>
         /// <param name="uvs">A list of UV locations on the surface.</param>
-        public static SurfaceAnalysisData BySurfaceAndPoints(Surface surface, IEnumerable<UV> uvs)
+        /// <param name="values">A list of double values.</param>
+        public static SurfaceData BySurfacePointsAndValues(Surface surface, IEnumerable<UV> uvs, IList<double> values)
         {
             if (surface == null)
             {
@@ -78,72 +61,30 @@ namespace Analysis
 
             if (uvs == null)
             {
-                throw new ArgumentNullException("points");
+                throw new ArgumentNullException("uvs");
             }
 
             if (!uvs.Any())
             {
-                throw new ArgumentException("The specified points list does not contain any points.");    
-            }
-
-            return new SurfaceAnalysisData(
-                surface,
-                uvs,
-                new Dictionary<string, IList<double>>(), 0);
-        }
-
-        /// <summary>
-        /// Create a SurfaceAnalysisData object.
-        /// </summary>
-        /// <param name="surface">The surface which contains the locations.</param>
-        /// <param name="uvs">A list of UV locations on the surface.</param>
-        /// <param name="names">A list of value set names.</param>
-        /// <param name="values">A list of lists of double values.</param>
-        /// <param name="valueIndex">The index of the value set to visualize.</param>
-        public static SurfaceAnalysisData BySurfacePointsAndValues(Surface surface, IEnumerable<UV> uvs, IList<string> names, IList<IList<double>> values, int valueIndex = 0)
-        {
-            if (surface == null)
-            {
-                throw new ArgumentNullException("surface");
-            }
-
-            if (uvs == null)
-            {
-                throw new ArgumentNullException("points");
-            }
-
-            if (!uvs.Any())
-            {
-                throw new ArgumentException("The specified points list does not contain any points.");
-            }
-
-            if (names == null)
-            {
-                throw new ArgumentNullException("resultNames");
+                throw new ArgumentException(AnalysisResources.EmptyUVsMessage);
             }
 
             if (values == null)
             {
-                throw new ArgumentNullException("resultValues");
+                throw new ArgumentNullException("values");
             }
 
-            if (names.Count != values.Count)
+            if (!values.Any())
             {
-                throw new ArgumentException("The number of result names and result values must match.");
+                throw new ArgumentException("values", AnalysisResources.EmptyValuesMessage);
             }
 
-            if (valueIndex > values.Count() - 1 || valueIndex < 0)
+            if (uvs.Count() != values.Count)
             {
-                throw new ArgumentException("You must specify a results index no larger than the number of available results.");
+                throw new ArgumentException(AnalysisResources.InputsNotEquivalentMessage);
             }
 
-            var results = new Dictionary<string, IList<double>>();
-            for (var i = 0; i < names.Count; i++)
-            {
-                results.Add(names[i], values[i]);
-            }
-
-            return new SurfaceAnalysisData(surface, uvs, results, valueIndex);
+            return new SurfaceData(surface, uvs, values);
         }
 
         #region private methods
@@ -172,14 +113,13 @@ namespace Analysis
         private Color[,] CreateColorMap()
         {
             // Find the minimum and the maximum for results
-            var values = Values.ElementAt(valueIndex).Value;
-            var max = values.Max();
-            var min = values.Min();
+            var max = Values.Max();
+            var min = Values.Min();
 
             var colorRange = Utils.CreateAnalyticalColorRange();
 
-            var analysisColors = values.Select(v => colorRange.GetColorAtParameter((v - min) / (max - min))).ToList();
-            var colorRange2D = ColorRange2D.ByColorsAndParameters(analysisColors, CalculationLocations.ToList());
+            var analysisColors = Values.Select(v => colorRange.GetColorAtParameter((v - min) / (max - min))).ToList();
+            var colorRange2D = ColorRange2D.ByColorsAndParameters(analysisColors, ValueLocations.ToList());
             return colorRange2D.CreateColorMap(COLOR_MAP_WIDTH, COLOR_MAP_HEIGHT);
         }
 
@@ -188,7 +128,7 @@ namespace Analysis
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
-            if (!Values.Any() || valueIndex > Values.Count - 1)
+            if (!Values.Any())
             {
                 return;
             }

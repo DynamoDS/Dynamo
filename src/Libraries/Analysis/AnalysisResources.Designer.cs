@@ -61,29 +61,47 @@ namespace Analysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The number of colors and the number of locations specified must be equal..
+        ///   Looks up a localized string similar to There are no colors specified..
         /// </summary>
-        internal static string ColoredSurfaceConstructionColorsAndUVsMessage {
+        internal static string EmptyColorsMessage {
             get {
-                return ResourceManager.GetString("ColoredSurfaceConstructionColorsAndUVsMessage", resourceCulture);
+                return ResourceManager.GetString("EmptyColorsMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no colors specified..
+        ///   Looks up a localized string similar to There are no points specified..
         /// </summary>
-        internal static string ColoredSurfaceConstructionNoColorsMessage {
+        internal static string EmptyPointsMessage {
             get {
-                return ResourceManager.GetString("ColoredSurfaceConstructionNoColorsMessage", resourceCulture);
+                return ResourceManager.GetString("EmptyPointsMessage", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to There are no UVs specified..
         /// </summary>
-        internal static string ColoredSurfaceConstructionNoUVsMessage {
+        internal static string EmptyUVsMessage {
             get {
-                return ResourceManager.GetString("ColoredSurfaceConstructionNoUVsMessage", resourceCulture);
+                return ResourceManager.GetString("EmptyUVsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no values specified..
+        /// </summary>
+        internal static string EmptyValuesMessage {
+            get {
+                return ResourceManager.GetString("EmptyValuesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must supply an equivalent number of points and values..
+        /// </summary>
+        internal static string InputsNotEquivalentMessage {
+            get {
+                return ResourceManager.GetString("InputsNotEquivalentMessage", resourceCulture);
             }
         }
     }

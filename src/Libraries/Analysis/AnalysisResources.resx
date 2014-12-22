@@ -117,13 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ColoredSurfaceConstructionColorsAndUVsMessage" xml:space="preserve">
-    <value>The number of colors and the number of locations specified must be equal.</value>
-  </data>
-  <data name="ColoredSurfaceConstructionNoColorsMessage" xml:space="preserve">
+  <data name="EmptyColorsMessage" xml:space="preserve">
     <value>There are no colors specified.</value>
   </data>
-  <data name="ColoredSurfaceConstructionNoUVsMessage" xml:space="preserve">
+  <data name="EmptyPointsMessage" xml:space="preserve">
+    <value>There are no points specified.</value>
+  </data>
+  <data name="EmptyUVsMessage" xml:space="preserve">
     <value>There are no UVs specified.</value>
+  </data>
+  <data name="EmptyValuesMessage" xml:space="preserve">
+    <value>There are no values specified.</value>
+  </data>
+  <data name="InputsNotEquivalentMessage" xml:space="preserve">
+    <value>You must supply an equivalent number of points and values.</value>
   </data>
 </root>

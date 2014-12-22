@@ -5,23 +5,20 @@ using Autodesk.DesignScript.Geometry;
 
 namespace Analysis
 {
-    public interface IAnalysisData<TLocation, TValue>
+    public interface IStructuredData<TLocation, TValue>
     {
         /// <summary>
         /// A collection of calculation locations.
         /// </summary>
-        IEnumerable<TLocation> CalculationLocations { get; }
+        IEnumerable<TLocation> ValueLocations { get; }
 
         /// <summary>
-        /// A dictionary of calculation results for
-        /// each calculation location.
+        /// A list of values corresponding to each location.
         /// </summary>
-        Dictionary<string, IList<TValue>> Values { get; }
-
-        IList<TValue> GetValuesByKey(string key);
+        IList<TValue> Values { get; } 
     }
 
-    public interface ISurfaceAnalysisData<TLocation, TValue> : IAnalysisData<TLocation, TValue>
+    public interface ISurfaceData<TLocation, TValue> : IStructuredData<TLocation, TValue>
     {
         /// <summary>
         /// The analysis surface.
@@ -29,7 +26,7 @@ namespace Analysis
         Surface Surface { get; }
     }
 
-    public interface ICurveAnalysisData<TLocation, TValue> : IAnalysisData<TLocation, TValue>
+    public interface ICurveData<TLocation, TValue> : IStructuredData<TLocation, TValue>
     {
         /// <summary>
         /// The analysis curve.
@@ -46,6 +43,6 @@ namespace Analysis
     {
         event EventHandler AnalysisCompleted;
         void Analyze(bool parallel);
-        IEnumerable<IAnalysisData<TLocation, TValue>> Values { get; }
+        IEnumerable<IStructuredData<TLocation, TValue>> Values { get; }
     }
 }
