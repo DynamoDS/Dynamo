@@ -45,12 +45,10 @@ IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015 (
 	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015\nodes\%OPT_Language% %cwd%\temp\bin\Revit_2015\nodes\%OPT_Language% *.dll *.xml
 )
 
-robocopy %cwd%\..\..\ %cwd%\Extra\%OPT_Language% README.md
-cd %cwd%\Extra\%OPT_Language%
-del README.txt
+robocopy %cwd%\..\..\ %cwd%\temp\bin\%OPT_Language% README.md
+pushd %cwd%\temp\bin\%OPT_Language%\
 rename README.md README.txt
-
-cd ..
+popd 
 
 robocopy %cwd%\..\..\doc\distrib\dynamo_packages %cwd%\temp\dynamo_packages /e
 robocopy %cwd%\..\..\doc\distrib\migration_nodes %cwd%\temp\definitions /e
@@ -58,4 +56,3 @@ robocopy %cwd%\..\..\doc\distrib\Samples %cwd%\temp\Samples /s
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss
 rmdir /Q /S %cwd%\temp
-rmdir /Q /S %cwd%\Extra\%OPT_Language%
