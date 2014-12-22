@@ -76,17 +76,6 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf">
-      <HintPath>..\..\extern\Helix3D\NET40\Helix3D_SharpDX\HelixToolkit.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="HelixToolkit.Wpf.SharpDX">
-      <HintPath>..\..\extern\Helix3D\NET40\Helix3D_SharpDX\HelixToolkit.Wpf.SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=4.1.0.7916, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
@@ -104,9 +93,6 @@ limitations under the License.
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX">
-      <HintPath>..\..\extern\Helix3D\NET40\Helix3D_SharpDX\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

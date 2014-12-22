@@ -15,14 +15,13 @@ using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.DSEngine;
 using Dynamo.ViewModels;
-using HelixToolkit.Wpf;
+
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
 using SharpDX;
 
-using Material = System.Windows.Media.Media3D.Material;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Point = System.Windows.Point;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
@@ -61,11 +60,6 @@ namespace Dynamo.Controls
         #endregion
 
         #region public properties
-
-        public Material MeshMaterial
-        {
-            get { return Materials.White; }
-        }
 
         public LineGeometry3D Grid
         {

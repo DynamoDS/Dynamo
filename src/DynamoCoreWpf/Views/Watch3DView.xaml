@@ -7,7 +7,6 @@
              xmlns:sdx="clr-namespace:SharpDX;assembly=SharpDX" 
              xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:h="http://helix-toolkit.org/wpf"
              Name="topControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
