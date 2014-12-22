@@ -196,7 +196,8 @@
             </Grid.ColumnDefinitions>
 
             <uicontrols:HeaderStrip x:Name="primaryHeaderStrip"
-                                    Margin="16,0,0,10" />
+                                    Margin="16,0,0,10"
+                                    HorizontalAlignment="Left" />
 
             <!--<Button Margin="16,0,0,10"
                     Background="#393939"
@@ -232,16 +233,9 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Border Padding="0,10,0,10"
-                    Grid.Row="2"
-                    Grid.ColumnSpan="2">
-                <Border.Visibility>
-                    <Binding Path="IsSecondaryHeaderLeftVisible"
-                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                </Border.Visibility>
-                <StackPanel Orientation="Horizontal"
-                            Margin="16,0,0,0">
-                    <Button Tag="Action"
+
+
+            <!--<Button Tag="Action"
                             Margin="0,0,16,0"
                             Content="{Binding SecondaryHeaderLeftText}"
                             Click="OnHeaderButtonClick">
@@ -260,9 +254,9 @@
                             <Binding Path="IsSecondaryHeaderRightVisible"
                                      Converter="{StaticResource LeftSecondaryHeaderStyleConverter}" />
                         </Button.Style>
-                    </Button>
+                    </Button>-->
 
-                    <Button Tag="Query"
+            <!--<Button Tag="Query"
                             Style="{StaticResource SecondaryHeaderButtonStyle}"
                             Content="{Binding SecondaryHeaderRightText}"
                             Click="OnHeaderButtonClick">
@@ -277,9 +271,16 @@
                                 <Binding Path="IsSecondaryHeaderRightVisible" />
                             </MultiBinding>
                         </Button.Background>
-                    </Button>
-                </StackPanel>
-            </Border>
+                    </Button>-->
+            <uicontrols:HeaderStrip x:Name="secondaryHeaderStrip"
+                                    Grid.Row="2"
+                                    Margin="16,10,0,10"
+                                    HorizontalAlignment="Left">
+                <uicontrols:HeaderStrip.Visibility>
+                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                </uicontrols:HeaderStrip.Visibility>
+            </uicontrols:HeaderStrip>
             <ListBox x:Name="secondaryMembers"
                      Grid.Row="3"
                      Grid.ColumnSpan="2"

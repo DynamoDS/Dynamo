@@ -40,7 +40,8 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public List<HeaderStripItem> primaryHeaderStrip { get; private set; }
+        public List<HeaderStripItem> PrimaryHeaderStrip { get; private set; }
+        public List<HeaderStripItem> SecondaryHeaderStrip { get; private set; }
 
         public string PrimaryHeaderText { get; set; }
         public string SecondaryHeaderLeftText { get; set; }
@@ -114,7 +115,8 @@ namespace Dynamo.Wpf.ViewModels
             createMembers = new List<BrowserInternalElement>();
             actionMembers = new List<BrowserInternalElement>();
             queryMembers = new List<BrowserInternalElement>();
-            primaryHeaderStrip = new List<HeaderStripItem>();
+            PrimaryHeaderStrip = new List<HeaderStripItem>();
+            SecondaryHeaderStrip = new List<HeaderStripItem>();
         }
 
         public void PopulateMemberCollections(BrowserItem element)
@@ -122,7 +124,8 @@ namespace Dynamo.Wpf.ViewModels
             createMembers.Clear();
             actionMembers.Clear();
             queryMembers.Clear();
-            primaryHeaderStrip.Clear();
+            PrimaryHeaderStrip.Clear();
+            SecondaryHeaderStrip.Clear();
 
             foreach (var subElement in element.Items)
             {
@@ -150,14 +153,29 @@ namespace Dynamo.Wpf.ViewModels
                 }
             }
 
-            string headerStripText;
+            string headerStripText = string.Empty;
             if (createMembers.Any())
+            {
                 headerStripText = Configurations.HeaderCreate;
-            else if (actionMembers.Any())
-                headerStripText = Configurations.HeaderAction;
-            else headerStripText = Configurations.HeaderQuery;
+            }
 
-            primaryHeaderStrip.Add(new HeaderStripItem() { Text = headerStripText });
+            if (actionMembers.Any())
+            {
+                if (string.IsNullOrEmpty(headerStripText))
+                    headerStripText = Configurations.HeaderAction;
+                else
+                    SecondaryHeaderStrip.Add(new HeaderStripItem() { Text = Configurations.HeaderAction });
+            }
+
+            if (queryMembers.Any())
+            {
+                if (string.IsNullOrEmpty(headerStripText))
+                    headerStripText = Configurations.HeaderQuery;
+                else
+                    SecondaryHeaderStrip.Add(new HeaderStripItem() { Text = Configurations.HeaderQuery });
+            }
+
+            PrimaryHeaderStrip.Add(new HeaderStripItem() { Text = headerStripText });
         }
     }
 }

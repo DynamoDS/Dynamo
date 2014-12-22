@@ -12,7 +12,7 @@ namespace Dynamo.UI.Controls
     {
         #region Event
 
-        public event EventHandler HeaderActivated;
+        public event RoutedEventHandler HeaderActivated;
         private void OnHeaderActivated(object source, RoutedEventArgs e)
         {
             if (HeaderActivated != null)

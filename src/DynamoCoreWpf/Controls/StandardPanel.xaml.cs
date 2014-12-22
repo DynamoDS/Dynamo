@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,30 +36,28 @@ namespace Dynamo.UI.Controls
         public StandardPanel()
         {
             InitializeComponent();
+
+            secondaryHeaderStrip.HeaderActivated += OnHeaderButtonClick;
         }
 
         private void OnHeaderButtonClick(object sender, RoutedEventArgs e)
         {
             // In this cases at addCetgoryList will be situated not more one
             // list. We don't need switch between lists.
-            if (!areAllListsPresented)
-                return;
+            //if (!areAllListsPresented)
+            //    return;
 
-            var senderTag = (sender as FrameworkElement).Tag.ToString();
-
-            // User clicked on selected header. No need to change ItemsSource.
-            if (senderTag == castedDataContext.CurrentDisplayMode.ToString())
-                return;
-
-            if (senderTag == QueryHeaderTag)
-            {
-                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
-                secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
-            }
-            else
+            var selectedItem = (sender as FrameworkElement).DataContext as HeaderStripItem;
+            if (selectedItem.Text == Configurations.HeaderAction)
             {
                 castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Action;
                 secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
+            }
+
+            if (selectedItem.Text == Configurations.HeaderQuery)
+            {
+                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
+                secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
 
             TruncateSecondaryMembers();
@@ -121,7 +120,9 @@ namespace Dynamo.UI.Controls
 
             areAllListsPresented = hasCreateMembers && hasActionMembers && hasQueryMembers;
 
-            primaryHeaderStrip.HeadersList = castedDataContext.primaryHeaderStrip;
+            primaryHeaderStrip.HeadersList = castedDataContext.PrimaryHeaderStrip;
+            secondaryHeaderStrip.HeadersList = castedDataContext.SecondaryHeaderStrip;
+            secondaryHeaderStrip.HeaderActivated += OnHeaderButtonClick;
 
             // Hide all headers by default.
             castedDataContext.IsPrimaryHeaderVisible = false;

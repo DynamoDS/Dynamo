@@ -79,7 +79,8 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate>
-                                    <Button Style="{StaticResource SecondaryHeaderButtonStyle}"
+                                    <Button Margin="0,0,16,0"
+                                            Style="{StaticResource SecondaryHeaderButtonStyle}"
                                             Content="{Binding Text}"
                                             Click="OnHeaderButtonClick">
                                         <Button.Background>
