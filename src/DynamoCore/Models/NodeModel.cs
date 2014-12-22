@@ -713,7 +713,7 @@ namespace Dynamo.Models
                 // 
                 // The return value of function %nodeAstFailed() is always 
                 // null.
-                var errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
+                var errorMsg = Properties.Resources.NodeProblemEncountered;
                 var fullMsg = String.Format(errorMsg, e.Message);
                 this.NotifyAstBuildBroken(fullMsg);
 

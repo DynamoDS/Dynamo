@@ -576,7 +576,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception e)
             {
-                this.dynamoModel.Logger.Log(/*NXLT*/"ERROR: The header for the custom node at " + path + /*NXLT*/" failed to load.  It will be left out of search.");
+                this.dynamoModel.Logger.Log(String.Format(Properties.Resources.FailedToLoadHeader,path));
                 this.dynamoModel.Logger.Log(e.ToString());
                 category = "";
                 guid = Guid.Empty;
@@ -686,7 +686,7 @@ namespace Dynamo.Utilities
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = string.Format(
-                            /*NXLT*/"Original file '{0}' gets backed up at '{1}'",
+                            Properties.Resources.FileBackUpLocation,
                             Path.GetFileName(xmlPath), backupPath);
 
                         dynamoModel.Logger.Log(message);
@@ -707,7 +707,7 @@ namespace Dynamo.Utilities
                 #endregion
 
                 //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
-                this.dynamoModel.Logger.Log(/*NXLT*/"Loading node definition for \"" + funName + /*NXLT*/"\" from: " + xmlPath);
+                this.dynamoModel.Logger.Log(String.Format(Properties.Resources.LoadingNodeDefinition,funName,xmlPath));
 
                 var ws = new CustomNodeWorkspaceModel(dynamoModel,
                     funName, category.Length > 0
@@ -907,7 +907,7 @@ namespace Dynamo.Utilities
                     }
                     catch
                     {
-                        dynamoModel.WriteToLog(string.Format(/*NXLT*/"ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
+                        dynamoModel.WriteToLog(string.Format(Properties.Resources.CreatingConnectorError, start.NickName, end.NickName));
                     }
                 }
 
@@ -949,7 +949,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                dynamoModel.WriteToLog(/*NXLT*/"There was an error opening the workbench.");
+                dynamoModel.WriteToLog(Properties.Resources.OpenWorkbenchError);
                 dynamoModel.WriteToLog(ex);
 
                 if (DynamoModel.IsTestMode)

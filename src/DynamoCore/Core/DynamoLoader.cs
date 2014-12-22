@@ -302,17 +302,17 @@ namespace Dynamo.Utilities
             }
             catch (Exception e)
             {
-                dynamoModel.Logger.Log(/*NXLT*/"Could not load types.");
+                dynamoModel.Logger.Log(Properties.Resources.CouldNotLoadTypes);
                 dynamoModel.Logger.Log(e);
                 if (e is ReflectionTypeLoadException)
                 {
                     var typeLoadException = e as ReflectionTypeLoadException;
                     Exception[] loaderExceptions = typeLoadException.LoaderExceptions;
-                    dynamoModel.Logger.Log(/*NXLT*/"Dll Load Exception: " + loaderExceptions[0]);
+                    dynamoModel.Logger.Log(Properties.Resources.DllLoadException + loaderExceptions[0]);
                     dynamoModel.Logger.Log(loaderExceptions[0].ToString());
                     if (loaderExceptions.Count() > 1)
                     {
-                        dynamoModel.Logger.Log(/*NXLT*/"Dll Load Exception: " + loaderExceptions[1]);
+                        dynamoModel.Logger.Log(Properties.Resources.DllLoadException + loaderExceptions[1]);
                         dynamoModel.Logger.Log(loaderExceptions[1].ToString());
                     }
                 }

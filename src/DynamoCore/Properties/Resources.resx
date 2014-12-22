@@ -261,4 +261,37 @@ You can also try deleting [FILEPATH] and trying again.
 Depending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.
 Sorry about that.</value>
   </data>
+  <data name="CouldNotLoadTypes" xml:space="preserve">
+    <value>Could not load types.</value>
+  </data>
+  <data name="CreatingConnectorError" xml:space="preserve">
+    <value>ERROR : Could not create connector between {0} and {1}.</value>
+  </data>
+  <data name="DllLoadException" xml:space="preserve">
+    <value>Dll Load Exception:</value>
+  </data>
+  <data name="ElapsedWhenLoadingXml" xml:space="preserve">
+    <value>{0} elapsed for loading xml.</value>
+  </data>
+  <data name="EvaluationComleted" xml:space="preserve">
+    <value>Evaluation completed in {0}</value>
+  </data>
+  <data name="FailedToLoadHeader" xml:space="preserve">
+    <value>ERROR: The header for the custom node at {0} failed to load.  It will be left out of search.</value>
+  </data>
+  <data name="FileBackUpLocation" xml:space="preserve">
+    <value>Original file '{0}' gets backed up at '{1}'</value>
+  </data>
+  <data name="LoadingNodeDefinition" xml:space="preserve">
+    <value>Loading node definition for "{0}" from: {1}</value>
+  </data>
+  <data name="NodeProblemEncountered" xml:space="preserve">
+    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}</value>
+  </data>
+  <data name="OpeningHomeWorkspace" xml:space="preserve">
+    <value>Opening home workspace {0}...</value>
+  </data>
+  <data name="OpenWorkbenchError" xml:space="preserve">
+    <value>There was an error opening the workbench.</value>
+  </data>
 </root>

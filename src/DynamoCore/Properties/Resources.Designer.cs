@@ -151,6 +151,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not load types..
+        /// </summary>
+        public static string CouldNotLoadTypes {
+            get {
+                return ResourceManager.GetString("CouldNotLoadTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ERROR : Could not create connector between {0} and {1}..
+        /// </summary>
+        public static string CreatingConnectorError {
+            get {
+                return ResourceManager.GetString("CreatingConnectorError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
         public static string CustomNodeDesciption {
@@ -167,6 +185,51 @@ namespace Dynamo.Properties {
         public static string DisplayEnigineFailureMessageDescription {
             get {
                 return ResourceManager.GetString("DisplayEnigineFailureMessageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dll Load Exception:.
+        /// </summary>
+        public static string DllLoadException {
+            get {
+                return ResourceManager.GetString("DllLoadException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} elapsed for loading xml..
+        /// </summary>
+        public static string ElapsedWhenLoadingXml {
+            get {
+                return ResourceManager.GetString("ElapsedWhenLoadingXml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Evaluation completed in {0}.
+        /// </summary>
+        public static string EvaluationComleted {
+            get {
+                return ResourceManager.GetString("EvaluationComleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ERROR: The header for the custom node at {0} failed to load.  It will be left out of search..
+        /// </summary>
+        public static string FailedToLoadHeader {
+            get {
+                return ResourceManager.GetString("FailedToLoadHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
+        /// </summary>
+        public static string FileBackUpLocation {
+            get {
+                return ResourceManager.GetString("FileBackUpLocation", resourceCulture);
             }
         }
         
@@ -225,6 +288,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading node definition for &quot;{0}&quot; from: {1}.
+        /// </summary>
+        public static string LoadingNodeDefinition {
+            get {
+                return ResourceManager.GetString("LoadingNodeDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}.
+        /// </summary>
+        public static string NodeProblemEncountered {
+            get {
+                return ResourceManager.GetString("NodeProblemEncountered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a number..
         /// </summary>
         public static string NumberNodeDescription {
@@ -275,6 +356,24 @@ namespace Dynamo.Properties {
         public static string NumberRangePortDataStepToolTip {
             get {
                 return ResourceManager.GetString("NumberRangePortDataStepToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opening home workspace {0}....
+        /// </summary>
+        public static string OpeningHomeWorkspace {
+            get {
+                return ResourceManager.GetString("OpeningHomeWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error opening the workbench..
+        /// </summary>
+        public static string OpenWorkbenchError {
+            get {
+                return ResourceManager.GetString("OpenWorkbenchError", resourceCulture);
             }
         }
         

@@ -68,7 +68,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                dynamoModel.Logger.Log(/*NXLT*/"There was an error opening the workbench.");
+                dynamoModel.Logger.Log(Properties.Resources.OpenWorkbenchError);
                 dynamoModel.Logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 

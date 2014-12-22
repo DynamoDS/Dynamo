@@ -651,7 +651,7 @@ namespace Dynamo.Models
                         InstrumentationLogger.LogAnonymousTimedEvent(/*NXLT*/"Perf",
                             e.Task.GetType().Name, executionTimeSpan);
 
-                        Logger.Log(/*NXLT*/"Evaluation completed in " + executionTimeSpan);
+                        Logger.Log(String.Format(Properties.Resources.EvaluationComleted,executionTimeSpan));
                         ExecutionEvents.OnGraphPostExecution();
                     }
                     break;
@@ -974,7 +974,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public bool OpenWorkspace(string xmlPath)
         {
-            Logger.Log(/*NXLT*/"Opening home workspace " + xmlPath + "...");
+            Logger.Log(String.Format(Properties.Resources.OpeningHomeWorkspace, xmlPath));
 
             CleanWorkbench();
             MigrationManager.ResetIdentifierIndex();
@@ -991,7 +991,7 @@ namespace Dynamo.Models
                 xmlDoc.Load(xmlPath);
 
                 TimeSpan previousElapsed = sw.Elapsed;
-                Logger.Log(String.Format(/*NXLT*/"{0} elapsed for loading xml.", sw.Elapsed));
+                Logger.Log(String.Format(Properties.Resources.ElapsedWhenLoadingXml, sw.Elapsed));
 
                 double cx = 0;
                 double cy = 0;
@@ -1049,7 +1049,7 @@ namespace Dynamo.Models
                     if (!IsTestMode && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = String.Format(
-                            /*NXLT*/"Original file '{0}' gets backed up at '{1}'",
+                            Properties.Resources.FileBackUpLocation,
                             Path.GetFileName(xmlPath), backupPath);
 
                         Logger.Log(message);
@@ -1318,7 +1318,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                Logger.Log(/*NXLT*/"There was an error opening the workbench.");
+                Logger.Log(Properties.Resources.OpenWorkbenchError);
                 Logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();

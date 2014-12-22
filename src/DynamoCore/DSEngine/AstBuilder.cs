@@ -360,7 +360,6 @@ namespace Dynamo.DSEngine
             public const string VarPrefix = /*NXLT*/@"var_";
             public const string ShortVarPrefix = /*NXLT*/@"t_";
             public const string CustomNodeReturnVariable = /*NXLT*/@"%arr";
-            public const string AstBuildBrokenMessage = /*NXLT*/"Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}";
         }
     }
 }
