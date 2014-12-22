@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 
+using Autodesk.DesignScript.Interfaces;
+
 using Dynamo.DSEngine;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
@@ -765,7 +767,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private static Color4 GetColor(RenderPackage p, int color_idx)
+        private static Color4 GetColor(IRenderPackage p, int color_idx)
         {
             var color = new Color4(1,1,1,1);
 
@@ -775,7 +777,7 @@ namespace Dynamo.Controls
                 (float)(p.TriangleVertexColors[color_idx] / 255.0),
                 (float)(p.TriangleVertexColors[color_idx + 1] / 255.0),
                 (float)(p.TriangleVertexColors[color_idx + 2] / 255.0),
-                1);
+                (float)(p.TriangleVertexColors[color_idx + 3] / 255.0));
             }
            
             return color;
