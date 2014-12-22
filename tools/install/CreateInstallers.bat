@@ -57,4 +57,4 @@ robocopy %cwd%\..\..\doc\distrib\migration_nodes %cwd%\temp\definitions /e
 robocopy %cwd%\..\..\doc\distrib\Samples %cwd%\temp\Samples /s
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss
-REM rmdir /Q /S %cwd%\temp
+rmdir /Q /S %cwd%\temp
