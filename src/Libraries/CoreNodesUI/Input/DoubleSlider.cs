@@ -4,49 +4,109 @@ using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
 
-using Dynamo.Controls;
+using DSCoreNodesUI.Input;
+
 using Dynamo.Models;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Double Slider")]
+    [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces double values.")]
+    [NodeDescription("A slider that produces numeric values.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    public class DoubleSlider : DSCoreNodesUI.Double
+    [NodeSearchTags(new[] { "double", "number", "float", "integer", "slider" })]
+    public class DoubleSlider : DSCoreNodesUI.Double, ISlider<double>
     {
-        public DoubleSlider(WorkspaceModel workspace) : base(workspace)
+        private double max;
+        private double min;
+        private double step;
+
+        public DoubleSlider(WorkspaceModel workspace)
+            : base(workspace)
         {
-            Value = 0;
             Min = 0;
             Max = 100;
+            Step = 0.01;
+            Value = 0;
         }
 
-        private double _max;
         public double Max
         {
-            get { return _max; }
+            get { return max; }
             set
             {
-                _max = value;
-                if (_max < Value)
-                    Value = _max;
+                max = value; 
                 RaisePropertyChanged("Max");
             }
         }
 
-        private double _min;
         public double Min
         {
-            get { return _min; }
+            get { return min; }
             set
             {
-                _min = value;
-                if (_min > Value)
-                    Value = _min;
+                min = value; 
                 RaisePropertyChanged("Min");
             }
+        }
+
+        public double Step
+        {
+            get { return step; }
+            set
+            {
+                step = value; 
+                RaisePropertyChanged("Step");
+            }
+        }
+
+        protected override bool ShouldDisplayPreviewCore
+        {
+            get { return false; }
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            switch (name)
+            {
+                case "Min":
+                case "MinText":
+                    Min = SliderViewModel<double>.ConvertStringToDouble(value);
+                    if (Min > Max)
+                    {
+                        Max = Min;
+                        Value = Max;
+                    }
+                    return true; // UpdateValueCore handled.
+                case "Max":
+                case "MaxText":
+                    Max = SliderViewModel<double>.ConvertStringToDouble(value);
+                    if (Max < Min)
+                    {
+                        Min = Max;
+                        Value = Min;
+                    }
+                    return true; // UpdateValueCore handled.
+                case "Value":
+                case "ValueText":
+                    Value = SliderViewModel<double>.ConvertStringToDouble(value);
+                    if (Value >= Max)
+                    {
+                        this.Max = Value;
+                    }
+                    if (Value <= Min)
+                    {
+                        this.Min = Value;
+                    }
+                    return true; // UpdateValueCore handled.
+                case "Step":
+                case "StepText":
+                    Step = SliderViewModel<double>.ConvertStringToDouble(value);
+                    return true;
+            }
+
+            return base.UpdateValueCore(name, value);
         }
 
         #region Load/Save
@@ -58,6 +118,7 @@ namespace Dynamo.Nodes
             XmlElement outEl = xmlDoc.CreateElement("Range");
             outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
             outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
@@ -70,24 +131,17 @@ namespace Dynamo.Nodes
                 if (!subNode.Name.Equals("Range"))
                     continue;
 
-                double min = Min;
-                double max = Max;
+                if (subNode.Attributes == null) continue;
 
-                if (subNode.Attributes != null)
+                foreach (XmlAttribute attr in subNode.Attributes)
                 {
-                    foreach (XmlAttribute attr in subNode.Attributes)
-                    {
-                        if (attr.Name.Equals("min"))
-                            min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
-                            max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("value"))
-                            Value = Convert.ToDouble(subNode.InnerText, CultureInfo.InvariantCulture);
-                    }
+                    if (attr.Name.Equals("min"))
+                        Min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                    else if (attr.Name.Equals("max"))
+                        Max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                    else if (attr.Name.Equals("step"))
+                        Step = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                 }
-
-                Min = min;
-                Max = max;
             }
         }
 
@@ -99,82 +153,43 @@ namespace Dynamo.Nodes
         {
             base.SerializeCore(element, context); // Base implementation must be called.
 
-            if (context == SaveContext.Undo)
-            {
-                var xmlDocument = element.OwnerDocument;
-                XmlElement subNode = xmlDocument.CreateElement("Range");
-                subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-                subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-                element.AppendChild(subNode);
-            }
+            if (context != SaveContext.Undo) return;
+
+            var xmlDocument = element.OwnerDocument;
+            XmlElement subNode = xmlDocument.CreateElement("Range");
+            subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
+            subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            subNode.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
+            element.AppendChild(subNode);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
 
-            if (context == SaveContext.Undo)
+            if (context != SaveContext.Undo) return;
+
+            foreach (XmlNode subNode in element.ChildNodes)
             {
-                foreach (XmlNode subNode in element.ChildNodes)
+                if (!subNode.Name.Equals("Range"))
+                    continue;
+                if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
+                    continue;
+
+                foreach (XmlAttribute attr in subNode.Attributes)
                 {
-                    if (!subNode.Name.Equals("Range"))
-                        continue;
-                    if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
-                        continue;
-
-                    double min = this.Min;
-                    double max = this.Max;
-
-                    foreach (XmlAttribute attr in subNode.Attributes)
-                    {
-                        if (attr.Name.Equals("min"))
-                            min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
-                            max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                    }
-
-                    this.Min = min;
-                    this.Max = max;
-                    break;
+                    if (attr.Name.Equals("min"))
+                        Min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                    else if (attr.Name.Equals("max"))
+                        Max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                    else if (attr.Name.Equals("step"))
+                        Step = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                 }
+
+                break;
             }
         }
 
         #endregion
-
-        protected override bool UpdateValueCore(string name, string value)
-        {
-            var converter = new DoubleDisplay();
-            switch (name)
-            {
-                case "Min":
-                    Min = ((double)converter.ConvertBack(value, typeof(double), null, null));
-                    return true; // UpdateValueCore handled.
-                case "Max":
-                    Max = ((double)converter.ConvertBack(value, typeof(double), null, null));
-                    return true; // UpdateValueCore handled.
-                case "Value":
-                    Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
-                    if (Value >= Max)
-                    {
-                        this.Max = Value;
-                    }
-                    if (Value <= Min)
-                    {
-                        this.Min = Value;
-                    }
-                    return true; // UpdateValueCore handled.
-            }
-
-            return base.UpdateValueCore(name, value);
-        }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
-        }
     }
 }
