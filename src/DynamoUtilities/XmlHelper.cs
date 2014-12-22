@@ -10,7 +10,7 @@ namespace DynamoUtilities
                 return null;
 
             var document = new XmlDocument();
-            document.InsertBefore(document.CreateXmlDeclaration("1.0", "UTF-8", null), document.DocumentElement);
+            document.InsertBefore(document.CreateXmlDeclaration(/*NXLT*/"1.0", /*NXLT*/"UTF-8", null), document.DocumentElement);
             document.AppendChild(document.CreateElement(rootName));
 
             return document;

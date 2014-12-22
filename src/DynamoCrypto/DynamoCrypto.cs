@@ -31,7 +31,7 @@ namespace DynamoCrypto
 
                 if (dsa == null)
                 {
-                    Console.WriteLine("There was an error getting the private key from the certificate.");
+                    Console.WriteLine(/*NXLT*/"There was an error getting the private key from the certificate.");
                     return null;
                 }
 
@@ -40,7 +40,7 @@ namespace DynamoCrypto
             }
             else
             {
-                Console.WriteLine("The certificate does not contain a private key.");
+                Console.WriteLine(/*NXLT*/"The certificate does not contain a private key.");
                 return null;
             }
 
@@ -60,7 +60,7 @@ namespace DynamoCrypto
 
             if (dsa == null)
             {
-                Console.WriteLine("There was an error getting the public key from the certificate.");
+                Console.WriteLine(/*NXLT*/"There was an error getting the public key from the certificate.");
                 return null;
             }
 
@@ -82,7 +82,7 @@ namespace DynamoCrypto
             {
                 if (privateBlob.Length == 0)
                 {
-                    throw new Exception("The specified private key is invalid.");
+                    throw new Exception(/*NXLT*/"The specified private key is invalid.");
                 }
 
                 byte[] hash = null;
@@ -97,7 +97,7 @@ namespace DynamoCrypto
                 var dsa = new DSACryptoServiceProvider();
                 dsa.ImportCspBlob(privateBlob);
                 var rsaFormatter = new DSASignatureFormatter(dsa);
-                rsaFormatter.SetHashAlgorithm("SHA1");
+                rsaFormatter.SetHashAlgorithm(/*NXLT*/"SHA1");
 
                 // Create a signature based on the private key
                 byte[] signature = rsaFormatter.CreateSignature(hash);
@@ -140,7 +140,7 @@ namespace DynamoCrypto
                 dsa.ImportCspBlob(publicBlob);
 
                 var dsaDeformatter = new DSASignatureDeformatter(dsa);
-                dsaDeformatter.SetHashAlgorithm("SHA1");
+                dsaDeformatter.SetHashAlgorithm(/*NXLT*/"SHA1");
 
                 // Read the signature file
                 byte[] signature = File.ReadAllBytes(signatureFilePath);
@@ -148,7 +148,7 @@ namespace DynamoCrypto
                 // Verify the signature against the hash of the installer
                 verified = dsaDeformatter.VerifySignature(hash, signature);
 
-                Console.WriteLine("File verified: {0}", verified);
+                Console.WriteLine(/*NXLT*/"File verified: {0}", verified);
             }
             catch (Exception e)
             {
@@ -176,7 +176,7 @@ namespace DynamoCrypto
             X509Certificate2 cer = null;
             if (cers.Count == 0)
             {
-                Console.WriteLine("The certificate could not be found in the certificate store.");
+                Console.WriteLine(/*NXLT*/"The certificate could not be found in the certificate store.");
                 return null;
             }
 
