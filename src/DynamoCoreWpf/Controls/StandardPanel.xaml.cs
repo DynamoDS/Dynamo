@@ -121,6 +121,8 @@ namespace Dynamo.UI.Controls
 
             areAllListsPresented = hasCreateMembers && hasActionMembers && hasQueryMembers;
 
+            primaryHeaderStrip.HeadersList = castedDataContext.primaryHeaderStrip;
+
             // Hide all headers by default.
             castedDataContext.IsPrimaryHeaderVisible = false;
             castedDataContext.IsSecondaryHeaderLeftVisible = false;

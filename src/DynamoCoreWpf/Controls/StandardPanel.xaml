@@ -195,7 +195,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <uicontrols:HeaderStrip />
+            <uicontrols:HeaderStrip x:Name="primaryHeaderStrip"
+                                    Margin="16,0,0,10" />
 
             <!--<Button Margin="16,0,0,10"
                     Background="#393939"

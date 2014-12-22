@@ -1,21 +1,42 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Linq;
 using System.Windows.Data;
-using System;
 using System.Windows.Media;
 
 namespace Dynamo.UI.Controls
 {
     public partial class HeaderStrip : UserControl
     {
+        #region Event
+
+        public event EventHandler HeaderActivated;
+        private void OnHeaderActivated(object source, RoutedEventArgs e)
+        {
+            if (HeaderActivated != null)
+                HeaderActivated(source, e);
+        }
+
+        #endregion
+
         #region Properties
 
         public IEnumerable<HeaderStripItem> HeadersList
         {
-            get { return (IEnumerable<HeaderStripItem>)GetValue(HeadersListProperty); }
-            set { SetValue(HeadersListProperty, value); }
+            get
+            {
+                return (IEnumerable<HeaderStripItem>)GetValue(HeadersListProperty);
+            }
+            set
+            {
+                if (value == null)
+                    return;
+
+                SetValue(HeadersListProperty, value);
+                SelectedItem = value.FirstOrDefault();
+            }
         }
 
         public HeaderStripItem SelectedItem
@@ -40,14 +61,24 @@ namespace Dynamo.UI.Controls
 
         public HeaderStrip()
         {
-            HeaderStripItem item1 = new HeaderStripItem() { Index = 12, Text = "CRE_A_TE1" };
-            HeaderStripItem item2 = new HeaderStripItem() { Index = 12, Text = "CRE_A_TE2" };
-            HeadersList = new List<HeaderStripItem> { item1, item2 };
-            SelectedItem = HeadersList.First();
+            //HeaderStripItem item1 = new HeaderStripItem() { Index = 12, Text = "CRE_A_TE1" };
+            //HeaderStripItem item2 = new HeaderStripItem() { Index = 12, Text = "CRE_A_TE2" };
+            //HeadersList = new List<HeaderStripItem> { item1, item2 };
+            //SelectedItem = HeadersList.First();
 
             InitializeComponent();
 
             this.DataContext = this;
+        }
+
+        private void OnHeaderButtonClick(object sender, RoutedEventArgs e)
+        {
+            var clickedStripItem = (sender as Button).DataContext as HeaderStripItem;
+            if (clickedStripItem != SelectedItem)
+            {
+                SelectedItem = clickedStripItem;
+                OnHeaderActivated(sender, e);
+            }
         }
     }
 }
@@ -72,7 +103,7 @@ namespace Dynamo.Controls
 
         public object[] ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

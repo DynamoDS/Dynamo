@@ -80,7 +80,8 @@
                             <Setter.Value>
                                 <ControlTemplate>
                                     <Button Style="{StaticResource SecondaryHeaderButtonStyle}"
-                                            Content="{Binding Text}">
+                                            Content="{Binding Text}"
+                                            Click="OnHeaderButtonClick">
                                         <Button.Background>
                                             <MultiBinding Converter="{StaticResource SelectedItemToActiveConverter}">
                                                 <Binding />

@@ -3,6 +3,7 @@ using System.Linq;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -38,6 +39,8 @@ namespace Dynamo.Wpf.ViewModels
                 return createMembers.Any() || actionMembers.Any() || queryMembers.Any();
             }
         }
+
+        public List<HeaderStripItem> primaryHeaderStrip { get; private set; }
 
         public string PrimaryHeaderText { get; set; }
         public string SecondaryHeaderLeftText { get; set; }
@@ -111,6 +114,7 @@ namespace Dynamo.Wpf.ViewModels
             createMembers = new List<BrowserInternalElement>();
             actionMembers = new List<BrowserInternalElement>();
             queryMembers = new List<BrowserInternalElement>();
+            primaryHeaderStrip = new List<HeaderStripItem>();
         }
 
         public void PopulateMemberCollections(BrowserItem element)
@@ -118,6 +122,7 @@ namespace Dynamo.Wpf.ViewModels
             createMembers.Clear();
             actionMembers.Clear();
             queryMembers.Clear();
+            primaryHeaderStrip.Clear();
 
             foreach (var subElement in element.Items)
             {
@@ -144,6 +149,15 @@ namespace Dynamo.Wpf.ViewModels
                         break;
                 }
             }
+
+            string headerStripText;
+            if (createMembers.Any())
+                headerStripText = Configurations.HeaderCreate;
+            else if (actionMembers.Any())
+                headerStripText = Configurations.HeaderAction;
+            else headerStripText = Configurations.HeaderQuery;
+
+            primaryHeaderStrip.Add(new HeaderStripItem() { Text = headerStripText });
         }
     }
 }
