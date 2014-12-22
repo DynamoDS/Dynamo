@@ -195,7 +195,9 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Button Margin="16,0,0,10"
+            <uicontrols:HeaderStrip />
+
+            <!--<Button Margin="16,0,0,10"
                     Background="#393939"
                     Style="{StaticResource PrimaryHeaderButtonStyle}"
                     Content="{Binding PrimaryHeaderText}">
@@ -203,7 +205,7 @@
                     <Binding Path="IsPrimaryHeaderVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </Button.Visibility>
-            </Button>
+            </Button>-->
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
                      Grid.ColumnSpan="2"

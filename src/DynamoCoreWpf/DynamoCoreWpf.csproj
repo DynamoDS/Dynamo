@@ -77,6 +77,7 @@
     <Compile Include="Controls\HeaderStrip.xaml.cs">
       <DependentUpon>HeaderStrip.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\HeaderStripItem.cs" />
     <Compile Include="Controls\StandardPanel.xaml.cs">
       <DependentUpon>StandardPanel.xaml</DependentUpon>
     </Compile>
@@ -85,6 +86,7 @@
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
+    <Compile Include="UI\HeaderTemplateSelector.cs" />
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
