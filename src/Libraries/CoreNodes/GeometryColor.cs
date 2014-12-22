@@ -8,18 +8,18 @@ using Geometry = Autodesk.DesignScript.Geometry.Geometry;
 
 namespace DSCore
 {
-    public class ColoredGeometry : IGraphicItem
+    public class ColoredGeometry :  IGraphicItem
     {
-        internal IList<Geometry> geometry;
-        internal IList<Color> colors;
+        internal Geometry geometry;
+        internal Color color;
 
-        private ColoredGeometry(IList<Geometry> geometry, IList<Color> color)
+        private ColoredGeometry(Geometry geometry, Color color)
         {
             this.geometry = geometry;
-            this.colors = color;
+            this.color = color;
         }
 
-        public static ColoredGeometry Color(IList<Geometry> geometry, IList<Color> color)
+        public static ColoredGeometry ByGeometryAndColor(Geometry geometry, Color color)
         {
             if (geometry == null)
             {
@@ -31,11 +31,6 @@ namespace DSCore
                 throw new ArgumentNullException("color");
             }
 
-            if (geometry.Count != color.Count)
-            {
-                throw new Exception("You must supply an equivalent number of pieces of geometry and colors.");
-            }
-
             return new ColoredGeometry(geometry, color);
         }
 
@@ -44,23 +39,20 @@ namespace DSCore
         {
             var color_idx = 0;
             
-            foreach (var geom in geometry)
-            {
-                // As you add more data to the render package, you need
-                // to keep track of the index where this coloration will 
-                // start from.
-                var lineStripStartIndex = package.LineStripVertexColors.Count;
-                var pointVertexStartIndex = package.PointVertexColors.Count;
-                var triangleVertexStartIndex = package.TriangleVertexColors.Count;
+            // As you add more data to the render package, you need
+            // to keep track of the index where this coloration will 
+            // start from.
+            var lineStripStartIndex = package.LineStripVertexColors.Count;
+            var pointVertexStartIndex = package.PointVertexColors.Count;
+            var triangleVertexStartIndex = package.TriangleVertexColors.Count;
 
-                geom.Tessellate(package, tol, maxGridLines);
+            geometry.Tessellate(package, tol, maxGridLines);
 
-                SetColorOnArray(package.LineStripVertexColors, colors[color_idx], lineStripStartIndex);
-                SetColorOnArray(package.PointVertexColors, colors[color_idx], pointVertexStartIndex);
-                SetColorOnArray(package.TriangleVertexColors, colors[color_idx], triangleVertexStartIndex);
-                color_idx++;
-            }
-        }
+            SetColorOnArray(package.LineStripVertexColors, color, lineStripStartIndex);
+            SetColorOnArray(package.PointVertexColors, color, pointVertexStartIndex);
+            SetColorOnArray(package.TriangleVertexColors, color, triangleVertexStartIndex);
+            color_idx++;
+    }
 
         private void SetColorOnArray(IList<byte> array, Color color, int startIndex)
         {

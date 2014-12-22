@@ -183,7 +183,7 @@ namespace DSCore
             num[2] += (start.Green * d1)    + (end.Green * d2);
             num[3] += (start.Blue * d1)     + (end.Blue * d2);
 
-            return ByARGB(255,
+            return ByARGB((int)(num[0] / (d1 + d2)),
                 (int)(num[1] / (d1 + d2)),
                 (int)(num[2] / (d1 + d2)),
                 (int)(num[3] / (d1 + d2)));
@@ -212,7 +212,7 @@ namespace DSCore
                 totalArea += a;
             }
 
-            return ByARGB(255,
+            return ByARGB((int)(num[0] / totalArea),
                 (int)(num[1] / totalArea),
                 (int)(num[2] / totalArea),
                 (int)(num[3] / totalArea));
@@ -330,6 +330,7 @@ namespace DSCore
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class ColorRange1D
     {
         private IList<Color.IndexedColor1D> indexedColors; 
@@ -434,6 +435,7 @@ namespace DSCore
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public class ColorRange2D
     {
         private Quadtree quadtree;
