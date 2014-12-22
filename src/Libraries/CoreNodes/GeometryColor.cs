@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 
@@ -37,8 +38,6 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
-            var color_idx = 0;
-            
             // As you add more data to the render package, you need
             // to keep track of the index where this coloration will 
             // start from.
@@ -51,7 +50,28 @@ namespace DSCore
             SetColorOnArray(package.LineStripVertexColors, color, lineStripStartIndex);
             SetColorOnArray(package.PointVertexColors, color, pointVertexStartIndex);
             SetColorOnArray(package.TriangleVertexColors, color, triangleVertexStartIndex);
-            color_idx++;
+
+            var surf = geometry as Surface;
+            if (surf != null)
+            {
+                surf.PerimeterCurves().ForEach(
+                        e =>
+                            e.Tessellate(
+                                package,
+                                tol,
+                                maxGridLines));
+            }
+
+            var solid = geometry as Solid;
+            if (solid != null)
+            {
+                solid.Edges.ForEach(
+                        e =>
+                            e.CurveGeometry.Tessellate(
+                                package,
+                                tol,
+                                maxGridLines));
+            }
     }
 
         private void SetColorOnArray(IList<byte> array, Color color, int startIndex)

@@ -1,4 +1,5 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
+﻿using Autodesk.DesignScript.Geometry;
+#if ENABLE_DYNAMO_SCHEDULER
 using System;
 using System.Collections;
 using System.Linq;
@@ -143,8 +144,29 @@ namespace Dynamo.Core.Threading
 
                     try
                     {
-                        graphicItem.Tessellate(package, tol: -1.0,
-                            maxGridLines: maxTesselationDivisions);
+                        graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
+
+                        var surf = graphicItem as Surface;
+                        if (surf != null)
+                        {
+                            surf.PerimeterCurves().ForEach(
+                                    e =>
+                                        e.Tessellate(
+                                            package,
+                                            -1.0,
+                                            maxTesselationDivisions));
+                        }
+
+                        var solid = graphicItem as Solid;
+                        if (solid != null)
+                        {
+                            solid.Edges.ForEach(
+                                    e =>
+                                        e.CurveGeometry.Tessellate(
+                                            package,
+                                            -1.0,
+                                            maxTesselationDivisions));
+                        }
                     }
                     catch (Exception e)
                     {
