@@ -30,21 +30,23 @@ robocopy %cwd%\..\..\extern\LibG_219 %cwd%\temp\bin\LibG_219
 robocopy %cwd%\..\..\extern\LibG_220 %cwd%\temp\bin\LibG_220
 
 REM Localized resource assemblies
+for %%L in (en-US, de-DE, ja-JP) do (
+    robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%%L %cwd%\temp\bin\%%L License.rtf
+    robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%%L %cwd%\temp\bin\%%L *.dll *.xml
+    robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\nodes\%%L %cwd%\temp\bin\nodes\%%L *.dll *.xml
+
+    IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 (
+        robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014\%%L %cwd%\temp\bin\Revit_2014\%%L *.dll *.xml -XF *Tests.dll
+        robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014\nodes\%%L %cwd%\temp\bin\Revit_2014\nodes\%%L *.dll *.xml
+    )
+
+    IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015 (
+        robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015\%%L %cwd%\temp\bin\Revit_2015\%%L *.dll *.xml -XF *Tests.dll
+        robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015\nodes\%%L %cwd%\temp\bin\Revit_2015\nodes\%%L *.dll *.xml
+    )
+)
+
 set OPT_Language=en-US
-robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%OPT_Language% %cwd%\temp\bin\%OPT_Language% License.rtf
-robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%OPT_Language% %cwd%\temp\bin\%OPT_Language% *.dll *.xml
-robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\nodes\%OPT_Language% %cwd%\temp\bin\nodes\%OPT_Language% *.dll *.xml
-
-IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 (
-	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014\%OPT_Language% %cwd%\temp\bin\Revit_2014\%OPT_Language% *.dll *.xml -XF *Tests.dll
-	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014\nodes\%OPT_Language% %cwd%\temp\bin\Revit_2014\nodes\%OPT_Language% *.dll *.xml
-)
-
-IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015 (
-	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015\%OPT_Language% %cwd%\temp\bin\Revit_2015\%OPT_Language% *.dll *.xml -XF *Tests.dll
-	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2015\nodes\%OPT_Language% %cwd%\temp\bin\Revit_2015\nodes\%OPT_Language% *.dll *.xml
-)
-
 robocopy %cwd%\..\..\ %cwd%\temp\bin\%OPT_Language% README.md
 pushd %cwd%\temp\bin\%OPT_Language%\
 rename README.md README.txt
@@ -55,4 +57,4 @@ robocopy %cwd%\..\..\doc\distrib\migration_nodes %cwd%\temp\definitions /e
 robocopy %cwd%\..\..\doc\distrib\Samples %cwd%\temp\Samples /s
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss
-rmdir /Q /S %cwd%\temp
+REM rmdir /Q /S %cwd%\temp
