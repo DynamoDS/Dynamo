@@ -1761,38 +1761,6 @@ namespace Dynamo.Controls
         }
     }
 
-    /// This converter modifies TextBlock Background depending on DisplayMode.
-    /// To know for which TextBlock the converter works the parameter used.
-    /// Converter is used on StandardPanel.
-    public class DisplayModeToBackgroundConverter : IMultiValueConverter
-    {
-        public SolidColorBrush NormalColor { get; set; }
-        public SolidColorBrush ActiveColor { get; set; }
-
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (values.Length != 2 && parameter == null)
-                return new ArgumentException();
-
-            var isSecondaryHeaderRightVisible = (bool)values[1];
-            // If only left header is presented, it should be selected.
-            if (!isSecondaryHeaderRightVisible)
-                return ActiveColor;
-
-            var displayMode = (ClassInformationViewModel.DisplayMode)values[0];
-
-            if (displayMode.ToString() == parameter.ToString())
-                return ActiveColor;
-
-            return NormalColor;
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     /// The converter switches between LibraryView and LibrarySearchView
     /// using SearchViewModel.ViewMode as value, the View as parameter.
     /// Converter is used on LibraryConatiner.
@@ -2061,26 +2029,5 @@ namespace Dynamo.Controls
         {
             throw new NotImplementedException();
         }
-    }
-
-    // This converter is used to style left secondary header of StandardPanel control.
-    // value specifies is visible right secondary header.
-    public class LeftSecondaryHeaderStyleConverter : IValueConverter
-    {
-        public Style PrimaryHeaderStyle { get; set; }
-        public Style SecondaryHeaderStyle { get; set; }
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if ((bool)value)
-                return SecondaryHeaderStyle;
-            else
-                return PrimaryHeaderStyle;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    }        
 }

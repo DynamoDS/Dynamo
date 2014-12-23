@@ -14,9 +14,6 @@
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
-        <controls:DisplayModeToBackgroundConverter x:Key="DisplayModeToBackgroundConverter"
-                                                   NormalColor="Transparent"
-                                                   ActiveColor="#393939" />
         <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
                                           TrueBrush="#333333"
                                           FalseBrush="#272727" />
@@ -102,9 +99,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <!--REMOVE-->
-        <controls:LeftSecondaryHeaderStyleConverter x:Key="LeftSecondaryHeaderStyleConverter" />
     </UserControl.Resources>
     <UserControl.Visibility>
         <Binding Path="ClassDetailsVisibility"

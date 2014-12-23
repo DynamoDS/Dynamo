@@ -15,20 +15,7 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class StandardPanel : UserControl
     {
-        #region Constants
-
-        private const string CreateHeaderText = "CREATE";
-        private const string QueryHeaderText = "QUERY";
-        private const string ActionHeaderText = "ACTIONS";
-        private const string ActionHeaderTag = "Action";
-        private const string QueryHeaderTag = "Query";
         private const int TruncatedMembersCount = 5;
-
-        #endregion
-
-        // Specifies if all Lists (CreateMembers, QueryMembers and ActionMembers) are not empty
-        // and should be presented on StandardPanel.
-        private bool areAllListsPresented;
         private ClassInformationViewModel castedDataContext;
 
         public bool FocusItemOnSelection { get; set; }
@@ -42,11 +29,6 @@ namespace Dynamo.UI.Controls
 
         private void OnHeaderButtonClick(object sender, RoutedEventArgs e)
         {
-            // In this cases at addCetgoryList will be situated not more one
-            // list. We don't need switch between lists.
-            //if (!areAllListsPresented)
-            //    return;
-
             var selectedItem = (sender as FrameworkElement).DataContext as HeaderStripItem;
             if (selectedItem.Text == Configurations.HeaderAction)
             {
@@ -118,8 +100,6 @@ namespace Dynamo.UI.Controls
             bool hasActionMembers = castedDataContext.ActionMembers.Any();
             bool hasQueryMembers = castedDataContext.QueryMembers.Any();
 
-            areAllListsPresented = hasCreateMembers && hasActionMembers && hasQueryMembers;
-
             primaryHeaderStrip.HeadersList = castedDataContext.PrimaryHeaderStrip;
             secondaryHeaderStrip.HeadersList = castedDataContext.SecondaryHeaderStrip;
 
@@ -136,9 +116,9 @@ namespace Dynamo.UI.Controls
                 if (hasActionMembers)
                 {
                     // "Action" members available.
-                    secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
-
                     castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Action;
+
+                    secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
                 }
                 else if (hasQueryMembers)
                 {

@@ -130,14 +130,7 @@ namespace Dynamo.Wpf.ViewModels
 
             foreach (var subElement in element.Items)
             {
-                var nodeSearchEle = subElement as NodeSearchElement;
-                // nodeSearchEle is null means that our subelement 
-                // is not a leaf of nodes tree.
-                // Normally we shouldn't have this situation.
-                // TODO: discuss with product management.
-                if (nodeSearchEle == null)
-                    continue;
-
+                var nodeSearchEle = subElement as NodeSearchElement;                
                 switch (nodeSearchEle.Group)
                 {
                     case SearchElementGroup.Create:
