@@ -556,7 +556,7 @@
                           ScrollViewer.CanContentScroll="False"
                           Background="#343434"
                           BorderThickness="0"
-                          ItemsSource="{Binding Model.SearchRootCategories}"
+                          ItemsSource="{Binding SearchRootCategories}"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                           SelectionMode="Single"
                           KeyDown="OnCategoryKeyDown">
@@ -761,7 +761,7 @@
                 Click="OnNoMatchFoundButtonClick">
             <Button.Visibility>
                 <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
-                    <Binding Path="Model.SearchRootCategories.Count" />
+                    <Binding Path="SearchRootCategories.Count" />
                     <Binding Path="SearchAddonsVisibility" />
                     <Binding Path="SearchText" />
                 </MultiBinding>
