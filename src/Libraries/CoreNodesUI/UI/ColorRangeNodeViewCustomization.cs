@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -53,9 +54,18 @@ namespace DSCoreNodesUI
                         new List<Color>{DSCore.Color.ByARGB(255, 192, 192, 192)} : 
                         startMirror.GetData().GetElements().Select(e=>e.Data).Cast<Color>();
 
-                    values = endMirror == null ? 
-                        new List<double>{0.0} : 
-                        endMirror.GetData().GetElements().Select(e => e.Data).Cast<double>();
+                    try
+                    {
+                        values =
+                            endMirror.GetData()
+                                .GetElements()
+                                .Select(e => e.Data)
+                                .Select(d=>Convert.ToDouble(d,CultureInfo.InvariantCulture));
+                    }
+                    catch
+                    {
+                        values = new List<double> { 0.0 };
+                    }
 
                     WriteableBitmap bmp = CompleteColorScale(colors.ToList(), values.ToList());
                     drawPlane.Source = bmp;
