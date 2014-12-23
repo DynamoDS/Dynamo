@@ -1,5 +1,4 @@
-﻿
-namespace Dynamo.Core.Threading
+﻿namespace Dynamo.Core.Threading
 {
     /// <summary>
     /// This async task is scheduled after all UpdateRenderPackageAsyncTask are 

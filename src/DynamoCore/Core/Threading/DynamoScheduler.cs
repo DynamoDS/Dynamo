@@ -35,7 +35,7 @@ namespace Dynamo.Core.Threading
     public delegate void TaskStateChangedEventHandler(
         DynamoScheduler sender, TaskStateChangedEventArgs e);
 
-    public interface IScheduler
+    public interface IScheduler 
     {
         /// <summary>
         /// AsyncTask base class calls this to obtain the new time-stamp value.

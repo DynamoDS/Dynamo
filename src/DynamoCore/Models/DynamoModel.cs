@@ -127,7 +127,12 @@ namespace Dynamo.Models
         public CustomNodeManager CustomNodeManager { get; private set; }
         public DynamoLogger Logger { get; private set; }
         public DynamoRunner Runner { get; protected set; }
-        public SearchModel SearchModel { get; private set; }
+
+        /// <summary>
+        ///     The Dynamo Node Library, complete with Search.
+        /// </summary>
+        public NodeSearchModel SearchModel { get; private set; }
+
         public DebugSettings DebugSettings { get; private set; }
         public EngineController EngineController { get; private set; }
         public PreferenceSettings PreferenceSettings { get; private set; }
@@ -356,7 +361,7 @@ namespace Dynamo.Models
 
             UpdateManager.UpdateManager.CheckForProductUpdate();
 
-            SearchModel = new SearchModel(this);
+            SearchModel = new NodeSearchModel();
 
             InitializeCurrentWorkspace();
 
@@ -781,13 +786,13 @@ namespace Dynamo.Models
             // load custom node
             var manager = CustomNodeManager;
             var info = manager.AddFileToPath(workspaceHeader.FileName);
-            var funcDef = manager.GetFunctionDefinition(info.Guid);
+            var funcDef = manager.GetFunctionDefinition(info.FunctionId);
             if (funcDef == null) // Fail to load custom function.
                 return;
 
             if (funcDef.IsProxy && info != null)
             {
-                funcDef = manager.ReloadFunctionDefintion(info.Guid);
+                funcDef = manager.ReloadFunctionDefintion(info.FunctionId);
                 if (funcDef == null)
                 {
                     return;
