@@ -461,6 +461,14 @@ namespace DynamoWebServer.Messages
             {
                 data = (node as StringInput).Value;
             }
+            else if (node is Symbol)
+            {
+                data = (node as Symbol).InputSymbol;
+            }
+            else if (node is Output)
+            {
+                data = (node as Output).Symbol;
+            }
 
             return data;
         }
