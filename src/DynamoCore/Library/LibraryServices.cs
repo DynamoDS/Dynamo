@@ -6,6 +6,7 @@ using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
+using Dynamo.Utilities;
 using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
@@ -468,35 +469,23 @@ namespace Dynamo.DSEngine
         {
             var args = GetBinaryFuncArgs();
 
-            var functions = new List<FunctionDescriptor>
+            var ops = new[]
             {
-                new FunctionDescriptor(Op.GetOpFunction(Operator.add), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.sub), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.mul), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.div), args, FunctionType.GenericFunction),
-
-                //add new operators
-                new FunctionDescriptor(Op.GetOpFunction(Operator.eq), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.ge), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.gt), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.mod), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.le), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.lt), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.and), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.or), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.nq), args, FunctionType.GenericFunction),
-                /*
-                new FunctionDescriptor(Op.GetOpFunction(Operator.assign), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.bitwiseand), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.bitwiseor), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.bitwisexor), args, FunctionType.GenericFunction),
-                */
-
-                new FunctionDescriptor(
-                    Op.GetUnaryOpFunction(UnaryOperator.Not),
-                    GetUnaryFuncArgs(),
-                    FunctionType.GenericFunction),
+                Op.GetOpFunction(Operator.add), Op.GetOpFunction(Operator.sub), Op.GetOpFunction(Operator.mul),
+                Op.GetOpFunction(Operator.div), Op.GetOpFunction(Operator.eq), Op.GetOpFunction(Operator.ge),
+                Op.GetOpFunction(Operator.gt), Op.GetOpFunction(Operator.mod), Op.GetOpFunction(Operator.le),
+                Op.GetOpFunction(Operator.lt), Op.GetOpFunction(Operator.and), Op.GetOpFunction(Operator.or),
+                Op.GetOpFunction(Operator.nq),
             };
+
+            var functions =
+                ops.Select(op => new FunctionDescriptor(op, args, FunctionType.GenericFunction, false))
+                    .Concat(
+                        new FunctionDescriptor(
+                            Op.GetUnaryOpFunction(UnaryOperator.Not),
+                            GetUnaryFuncArgs(),
+                            FunctionType.GenericFunction,
+                            false).AsSingleton());
 
             AddBuiltinFunctions(functions);
         }
