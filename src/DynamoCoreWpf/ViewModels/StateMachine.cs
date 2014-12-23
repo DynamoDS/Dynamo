@@ -167,11 +167,19 @@ namespace Dynamo.ViewModels
             this.SetActiveConnector(null);
         }
 
-        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM)
+        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM, bool isSnapping = true)
         {
             // Check if required ports exist
             if (this.activeConnector == null || portVM == null)
                 return false;
+
+            //By default the ports will be in snapping mode. But if the connection is not completed,
+            //then on mouse leave, the cursor should be pointed as arcselect instead of arcadd.             
+            if (!isSnapping)
+            {
+                CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+                return false;
+            }
 
             PortModel srcPortM = this.activeConnector.ActiveStartPort;
             PortModel desPortM = portVM.PortModel;

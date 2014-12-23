@@ -29,7 +29,7 @@ namespace Dynamo.Tests
             // ensures the preference value change in one test case (if any) does 
             // not get persisted across to the subsequent test case.
             // 
-            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
         }
 
         [TearDown]
