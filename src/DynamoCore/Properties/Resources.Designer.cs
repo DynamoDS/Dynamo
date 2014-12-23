@@ -61,6 +61,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bad identifier syntax: &quot;{0}&quot;.
+        /// </summary>
+        public static string BadIdentifierSyntax {
+            get {
+                return ResourceManager.GetString("BadIdentifierSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bad range syntax: not of format \&quot;start..end[..(increment|#count)]\&quot;.
+        /// </summary>
+        public static string BadRangeSyntax {
+            get {
+                return ResourceManager.GetString("BadRangeSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Build sublists from a list using DesignScript range syntax..
         /// </summary>
         public static string BuildSublistsDescription {
@@ -106,11 +124,29 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t have 0 step..
+        /// </summary>
+        public static string CannotHave0Step {
+            get {
+                return ResourceManager.GetString("CannotHave0Step", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your file cannot be opened.
         /// </summary>
         public static string CannotOpenFile {
             get {
                 return ResourceManager.GetString("CannotOpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clearing workflow....
+        /// </summary>
+        public static string ClearingWorkflow {
+            get {
+                return ResourceManager.GetString("ClearingWorkflow", resourceCulture);
             }
         }
         
@@ -147,6 +183,33 @@ namespace Dynamo.Properties {
         public static string ComposeFunctionPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("ComposeFunctionPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not compress file.  Is the file in use?.
+        /// </summary>
+        public static string CouldNotCompressFile {
+            get {
+                return ResourceManager.GetString("CouldNotCompressFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t get the latest build from S3.
+        /// </summary>
+        public static string CouldNotGetLatestBuild {
+            get {
+                return ResourceManager.GetString("CouldNotGetLatestBuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t get update data from {0}.
+        /// </summary>
+        public static string CouldNotGetUpdateData {
+            get {
+                return ResourceManager.GetString("CouldNotGetUpdateData", resourceCulture);
             }
         }
         
@@ -198,6 +261,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A duplicate of the package called {0} was found at {1}.  Ignoring it..
+        /// </summary>
+        public static string DulicatedPackage {
+            get {
+                return ResourceManager.GetString("DulicatedPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo is up to date..
+        /// </summary>
+        public static string DynamoUpToDate {
+            get {
+                return ResourceManager.GetString("DynamoUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} elapsed for loading xml..
         /// </summary>
         public static string ElapsedWhenLoadingXml {
@@ -216,11 +297,47 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exception encountered scanning the package directory at {0}.
+        /// </summary>
+        public static string ExceptionEncountered {
+            get {
+                return ResourceManager.GetString("ExceptionEncountered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load {0}\n, Exception: {1}.
+        /// </summary>
+        public static string FailedToLoad {
+            get {
+                return ResourceManager.GetString("FailedToLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load custom node: {0}.  Replacing with proxy custom node..
+        /// </summary>
+        public static string FailedToLoadCustomNode {
+            get {
+                return ResourceManager.GetString("FailedToLoadCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ERROR: The header for the custom node at {0} failed to load.  It will be left out of search..
         /// </summary>
         public static string FailedToLoadHeader {
             get {
                 return ResourceManager.GetString("FailedToLoadHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save {0}\n, Exception: {1}.
+        /// </summary>
+        public static string FailedToSave {
+            get {
+                return ResourceManager.GetString("FailedToSave", resourceCulture);
             }
         }
         
@@ -248,6 +365,15 @@ namespace Dynamo.Properties {
         public static string FunctionNodeDescription {
             get {
                 return ResourceManager.GetString("FunctionNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No identifiers found..
+        /// </summary>
+        public static string IdentifiersNotFound {
+            get {
+                return ResourceManager.GetString("IdentifiersNotFound", resourceCulture);
             }
         }
         
@@ -288,6 +414,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The start or end of a range is greater than the number of available elements in the list..
+        /// </summary>
+        public static string InvalidStartOrEndOfRange {
+            get {
+                return ResourceManager.GetString("InvalidStartOrEndOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading node definition for &quot;{0}&quot; from: {1}.
         /// </summary>
         public static string LoadingNodeDefinition {
@@ -297,11 +432,29 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} contains a package with a malformed header.  Ignoring it..
+        /// </summary>
+        public static string MalformedHeaderPackage {
+            get {
+                return ResourceManager.GetString("MalformedHeaderPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}.
         /// </summary>
         public static string NodeProblemEncountered {
             get {
                 return ResourceManager.GetString("NodeProblemEncountered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} contains a package without a header.  Ignoring it..
+        /// </summary>
+        public static string NoHeaderPackage {
+            get {
+                return ResourceManager.GetString("NoHeaderPackage", resourceCulture);
             }
         }
         
@@ -387,6 +540,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package was found to be empty and was not installed..
+        /// </summary>
+        public static string PackageEmpty {
+            get {
+                return ResourceManager.GetString("PackageEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The package is too large!  The package must be less than 15 MB!.
+        /// </summary>
+        public static string PackageTooLarge {
+            get {
+                return ResourceManager.GetString("PackageTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified file path is not recognizable as a stable or a daily build.
+        /// </summary>
+        public static string PathNotRegconizableAsStableOrDailyBuild {
+            get {
+                return ResourceManager.GetString("PathNotRegconizableAsStableOrDailyBuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to function output.
         /// </summary>
         public static string PortDataFunctionOutputToolTip {
@@ -459,6 +639,51 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Range end could not be parsed..
+        /// </summary>
+        public static string RangeEndCouldNotBeParsed {
+            get {
+                return ResourceManager.GetString("RangeEndCouldNotBeParsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot use range or approx. identifier on increment field when one has already been used to specify a count..
+        /// </summary>
+        public static string RangeOrApprIdentifierAlrUsed {
+            get {
+                return ResourceManager.GetString("RangeOrApprIdentifierAlrUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Range step could not be parsed..
+        /// </summary>
+        public static string RangeStepCouldNotBeParsed {
+            get {
+                return ResourceManager.GetString("RangeStepCouldNotBeParsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Range values must be greater than zero..
+        /// </summary>
+        public static string RangeValuesGreaterThanZero {
+            get {
+                return ResourceManager.GetString("RangeValuesGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requesting version update info....
+        /// </summary>
+        public static string RequestingVersionUpdate {
+            get {
+                return ResourceManager.GetString("RequestingVersionUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a string..
         /// </summary>
         public static string StringNodeDescription {
@@ -513,6 +738,42 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update available: {0}.
+        /// </summary>
+        public static string UpdateAvailable {
+            get {
+                return ResourceManager.GetString("UpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update download complete..
+        /// </summary>
+        public static string UpdateDownloadComplete {
+            get {
+                return ResourceManager.GetString("UpdateDownloadComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update download progress: {0}%.
+        /// </summary>
+        public static string UpdateDownloadProgress {
+            get {
+                return ResourceManager.GetString("UpdateDownloadProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update download started....
+        /// </summary>
+        public static string UpdateDownloadStarted {
+            get {
+                return ResourceManager.GetString("UpdateDownloadStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uh oh...
         /// We&apos;re sorry - we tried to save your decisions, but something went wrong. The decision probably hasn&apos;t been saved. This really shouldn&apos;t have happened. Please get in touch via GitHub and send us this information.
         ///You can also try deleting [FILEPATH] and trying again.
@@ -522,6 +783,15 @@ namespace Dynamo.Properties {
         public static string UsageReportingErrorMessage {
             get {
                 return ResourceManager.GetString("UsageReportingErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workbench could not be opened..
+        /// </summary>
+        public static string WorkbenchNotOpen {
+            get {
+                return ResourceManager.GetString("WorkbenchNotOpen", resourceCulture);
             }
         }
     }

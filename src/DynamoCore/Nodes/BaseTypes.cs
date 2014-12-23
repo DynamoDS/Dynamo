@@ -815,7 +815,10 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
-                            throw new Exception(/*NXLT*/"Range " + (valueRange.Length > 2 ? "step" : "end") + /*NXLT*/"could not be parsed.");
+                            if (valueRange.Length > 2)
+                                throw new Exception(Properties.Resources.RangeStepCouldNotBeParsed);
+                            else
+                                throw new Exception(Properties.Resources.RangeEndCouldNotBeParsed);
                         }
                     }
                 }
@@ -831,17 +834,17 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
-                            throw new Exception(/*NXLT*/"Range end could not be parsed.");
+                            throw new Exception(Properties.Resources.RangeEndCouldNotBeParsed);
                         }
                     }
                 }
 
                 if (start < 0 || end < 0 || step <= 0)
-                    throw new Exception(/*NXLT*/"Range values must be greater than zero.");
+                    throw new Exception(Properties.Resources.RangeValuesGreaterThanZero);
 
                 //if any values are greater than the length of the list - fail
                 if (start >= maxVal || end >= maxVal)
-                    throw new Exception(/*NXLT*/"The start or end of a range is greater than the number of available elements in the list.");
+                    throw new Exception(Properties.Resources.InvalidStartOrEndOfRange);
 
                 ranges.Add(Tuple.Create(start, end, step));
             }
@@ -1392,10 +1395,10 @@ namespace Dynamo.Nodes
                         StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
 
                     if (rangeIdentifiers.Length > 3)
-                        throw new Exception(/*NXLT*/"Bad range syntax: not of format \"start..end[..(increment|#count)]\"");
+                        throw new Exception(Properties.Resources.BadRangeSyntax);
 
                     if (rangeIdentifiers.Length == 0)
-                        throw new Exception(/*NXLT*/"No identifiers found.");
+                        throw new Exception(Properties.Resources.IdentifiersNotFound);
 
                     IDoubleInputToken startToken = ParseToken(rangeIdentifiers[0], idSet, identifiers);
 
@@ -1409,7 +1412,7 @@ namespace Dynamo.Nodes
                             if (rangeIdentifiers.Length > 2)
                             {
                                 if (rangeIdentifiers[2].StartsWith("#") || rangeIdentifiers[2].StartsWith("~"))
-                                    throw new Exception(/*NXLT*/"Cannot use range or approx. identifier on increment field when one has already been used to specify a count.");
+                                    throw new Exception(Properties.Resources.RangeOrApprIdentifierAlrUsed);
                                 return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
                             }
 
@@ -1481,7 +1484,7 @@ namespace Dynamo.Nodes
                 return new IdentifierToken(tokenId);
             }
 
-            throw new Exception(/*NXLT*/"Bad identifier syntax: \"" + id + "\"");
+            throw new Exception(String.Format(Properties.Resources.BadIdentifierSyntax, id));
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -1593,7 +1596,7 @@ namespace Dynamo.Nodes
                     var step = _step.GetValue(idLookup);
 
                     if (step == 0)
-                        throw new Exception(/*NXLT*/"Can't have 0 step.");
+                        throw new Exception(Properties.Resources.CannotHave0Step);
 
                     var start = _start.GetValue(idLookup);
                     var count = (int)_count.GetValue(idLookup);
@@ -1667,7 +1670,7 @@ namespace Dynamo.Nodes
                     var step = _convert(_step.GetValue(idLookup));
 
                     if (step == 0)
-                        throw new Exception(/*NXLT*/"Can't have 0 step.");
+                        throw new Exception(Properties.Resources.CannotHave0Step);
 
                     var start = _convert(_start.GetValue(idLookup));
                     var end = _convert(_end.GetValue(idLookup));

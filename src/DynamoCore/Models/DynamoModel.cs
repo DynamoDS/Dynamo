@@ -754,11 +754,11 @@ namespace Dynamo.Models
         {
             if (!OpenDefinition(xmlPath))
             {
-                Logger.Log(/*NXLT*/"Workbench could not be opened.");
+                Logger.Log(Properties.Resources.WorkbenchNotOpen);
 
                 if (Logger != null)
                 {
-                    WriteToLog(/*NXLT*/"Workbench could not be opened.");
+                    WriteToLog(Properties.Resources.WorkbenchNotOpen);
                     WriteToLog(xmlPath);
                 }
             }
@@ -839,7 +839,7 @@ namespace Dynamo.Models
 
         internal void CleanWorkbench()
         {
-            Logger.Log(/*NXLT*/"Clearing workflow...");
+            Logger.Log(Properties.Resources.ClearingWorkflow);
 
             //Copy locally
             List<NodeModel> elements = Nodes.ToList();

@@ -224,7 +224,7 @@ namespace Dynamo.Nodes
                 IsProxy = true
             };
 
-            string userMsg = /*NXLT*/"Failed to load custom node: " + nickname + /*NXLT*/".  Replacing with proxy custom node.";
+            string userMsg = String.Format(Properties.Resources.FailedToLoadCustomNode, nickname);
 
             this.dynamoModel.Logger.Log(userMsg);
 

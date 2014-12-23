@@ -79,11 +79,11 @@ namespace Dynamo.PackageManager
                 {
                     discoveredPkg = Package.FromJson(headerPath, this.logger);
                     if (discoveredPkg == null)
-                        throw new Exception(headerPath + /*NXLT*/" contains a package with a malformed header.  Ignoring it.");
+                        throw new Exception(String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
                 {
-                    throw new Exception(headerPath + /*NXLT*/" contains a package without a header.  Ignoring it.");
+                    throw new Exception(String.Format(Properties.Resources.NoHeaderPackage,headerPath));
                 }
 
                 // prevent duplicates
@@ -94,13 +94,12 @@ namespace Dynamo.PackageManager
                 }
                 else
                 {
-                    throw new Exception(/*NXLT*/"A duplicate of the package called " + discoveredPkg.Name +
-                        /*NXLT*/" was found at " + discoveredPkg.RootDirectory + /*NXLT*/".  Ignoring it.");
+                    throw new Exception(String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
                 }
             }
             catch (Exception e)
             {
-                this.logger.Log(/*NXLT*/"Exception encountered scanning the package directory at " + this.RootPackagesDirectory);
+                this.logger.Log(String.Format(Properties.Resources.ExceptionEncountered, this.RootPackagesDirectory));
                 this.logger.Log(e.GetType() + ": " + e.Message);
             }
 
