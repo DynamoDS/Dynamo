@@ -39,7 +39,7 @@ namespace Revit.Elements
             Autodesk.Revit.DB.CurtainGrid grid = null;
             if (host is Autodesk.Revit.DB.Wall)
             {
-               hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
+               hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host, true));
             }
             else
             {
@@ -390,7 +390,7 @@ namespace Revit.Elements
 
          //var hostingGrid = CurtainGrid.ByElement(UnknownElement.FromExisting(host));
 
-         var mullions = Mullion.ByElement(UnknownElement.FromExisting(host));//hostingGrid.GetMullions();
+         var mullions = Mullion.ByElement(UnknownElement.FromExisting(host, true));//hostingGrid.GetMullions();
          int numberMullions = mullions.Length;
          var result = new List<Mullion>();
 

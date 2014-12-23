@@ -1,4 +1,7 @@
 ﻿using System.Linq;
+
+using Autodesk.Revit.DB;
+
 using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
@@ -6,6 +9,9 @@ using RevitServices.Persistence;
 using RevitTestServices;
 
 using RTF.Framework;
+
+using Family = Revit.Elements.Family;
+using FamilySymbol = Revit.Elements.FamilySymbol;
 
 namespace RevitNodesTests.Elements
 {
@@ -108,6 +114,30 @@ namespace RevitNodesTests.Elements
         {
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             Assert.NotNull(ele);
+        }
+
+        [Test, TestModel(@".\UnknownElements.rvt")]
+        public void UnknownElementsHaveCorrectOwnership()
+        {
+            // At the time of the creation of this test, we did not
+            // have a wrapper for the roof type so it is "unknown". 
+            // We attempt to wrap that element by id here, and verify
+            // that the ownership is set correctly.
+
+            var roof = DocumentManager.Instance.ElementsOfType<RoofBase>().FirstOrDefault();
+            Assert.NotNull(roof);
+
+            var el = ElementSelector.ByElementId(roof.Id.IntegerValue);
+            Assert.NotNull(el);
+            Assert.True(el.IsRevitOwned);
+
+            // Dispose the element wrapper and ensure that the element
+            // remains in the document.
+
+            el.Dispose();
+
+            roof = DocumentManager.Instance.ElementsOfType<RoofBase>().FirstOrDefault();
+            Assert.NotNull(roof);
         }
 
         [Test, Ignore]
