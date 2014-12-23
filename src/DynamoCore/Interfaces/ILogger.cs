@@ -153,6 +153,56 @@ namespace Dynamo.Interfaces
         /// </summary>
         event Action<ILogMessage> MessageLogged;
     }
+    
+    /// <summary>
+    ///     Utility methods for ILogSource.
+    /// </summary>
+    public static class LogSource
+    {
+        public static ILogger AsLogger(Action<ILogMessage> eventInvoker)
+        {
+            return new DispatchedLogger(eventInvoker);
+        }
+
+        /// <summary>
+        ///     Class used to convert a LogSourceBase into an ILogger, by dispatching
+        ///     the ILogger methods to the MessageLogged event of ILogSource.
+        /// </summary>
+        private class DispatchedLogger : ILogger
+        {
+            private readonly Action<ILogMessage> eventInvoker;
+
+            public DispatchedLogger(Action<ILogMessage> eventInvoker)
+            {
+                this.eventInvoker = eventInvoker;
+            }
+
+            public void Log(string message)
+            {
+                eventInvoker(LogMessage.Info(message));
+            }
+
+            public void Log(string tag, string message)
+            {
+                Log(string.Format("{0}:{1}", tag, message));
+            }
+
+            public void LogError(string error)
+            {
+               eventInvoker(LogMessage.Error(error));
+            }
+
+            public void LogWarning(string warning, WarningLevel level)
+            {
+                eventInvoker(LogMessage.Warning(warning, level));
+            }
+
+            public void Log(Exception e)
+            {
+                eventInvoker(LogMessage.Error(e));
+            }
+        }
+    }
 
     /// <summary>
     ///     An object that can log messages.
@@ -194,52 +244,13 @@ namespace Dynamo.Interfaces
         }
 
         /// <summary>
-        ///     Class used to convert a LogSourceBase into an ILogger, by dispatching
-        ///     the ILogger methods to the MessageLogged event of ILogSource.
-        /// </summary>
-        private class DispatchedLogger : ILogger
-        {
-            private readonly LogSourceBase source;
-
-            public DispatchedLogger(LogSourceBase source)
-            {
-                this.source = source;
-            }
-
-            public void Log(string message)
-            {
-                source.Log(message);
-            }
-
-            public void Log(string tag, string message)
-            {
-                Log(string.Format("{0}:{1}", tag, message));
-            }
-
-            public void LogError(string error)
-            {
-               source.Log(error, WarningLevel.Error);
-            }
-
-            public void LogWarning(string warning, WarningLevel level)
-            {
-                source.Log(warning, level);
-            }
-
-            public void Log(Exception e)
-            {
-                source.Log(e);
-            }
-        }
-
-        /// <summary>
         ///     Creates an ILogger out of this LogSourceBase; logging to the ILogger
         ///     will send messages out of the LogMessage event.
         /// </summary>
         /// <returns></returns>
         public ILogger AsLogger()
         {
-            return new DispatchedLogger(this);
+            return AsLogger(msg => Log(msg));
         }
     }
 }
