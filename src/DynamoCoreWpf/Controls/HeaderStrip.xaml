@@ -13,7 +13,7 @@
                                                 NormalColor="Transparent"
                                                 ActiveColor="#393939" />
 
-        <Style x:Key="SecondaryMembersTextBlock"
+        <Style x:Key="HeaderTextBlockStyle"
                TargetType="{x:Type TextBlock}">
             <Setter Property="VerticalAlignment"
                     Value="Center" />
@@ -22,7 +22,7 @@
             <Setter Property="FontSize"
                     Value="9" />
         </Style>
-        <Style x:Key="SecondaryHeaderButtonStyle"
+        <Style x:Key="HeaderListButtonStyle"
                TargetType="{x:Type Button}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -34,7 +34,7 @@
                                 CornerRadius="2"
                                 Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
                             <TextBlock x:Name="text"
-                                       Style="{StaticResource SecondaryMembersTextBlock}"
+                                       Style="{StaticResource HeaderTextBlockStyle}"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
                             </TextBlock>
                         </Border>
@@ -65,7 +65,7 @@
                     Padding="8,3,8,3"
                     Background="#393939">
                 <TextBlock x:Name="text"
-                           Style="{StaticResource SecondaryMembersTextBlock}"
+                           Style="{StaticResource HeaderTextBlockStyle}"
                            Text="{Binding SelectedItem.Text, ElementName=HeaderStripControl}">
                 </TextBlock>
             </Border>
@@ -80,7 +80,7 @@
                             <Setter.Value>
                                 <ControlTemplate>
                                     <Button Margin="0,0,16,0"
-                                            Style="{StaticResource SecondaryHeaderButtonStyle}"
+                                            Style="{StaticResource HeaderListButtonStyle}"
                                             Content="{Binding Text}"
                                             Click="OnHeaderButtonClick">
                                         <Button.Background>

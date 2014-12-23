@@ -43,13 +43,6 @@ namespace Dynamo.Wpf.ViewModels
         public List<HeaderStripItem> PrimaryHeaderStrip { get; private set; }
         public List<HeaderStripItem> SecondaryHeaderStrip { get; private set; }
 
-        public string PrimaryHeaderText { get; set; }
-        public string SecondaryHeaderLeftText { get; set; }
-        public string SecondaryHeaderRightText { get; set; }
-        public bool IsPrimaryHeaderVisible { get; set; }
-        public bool IsSecondaryHeaderLeftVisible { get; set; }
-        public bool IsSecondaryHeaderRightVisible { get; set; }
-
         public enum DisplayMode { None, Query, Action };
 
         /// <summary>
@@ -68,6 +61,14 @@ namespace Dynamo.Wpf.ViewModels
             {
                 currentDisplayMode = value;
                 RaisePropertyChanged("CurrentDisplayMode");
+            }
+        }
+
+        public bool AreSecondaryHeadersVisible
+        {
+            get
+            {
+                return SecondaryHeaderStrip.Any();
             }
         }
 
