@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -157,9 +156,14 @@ namespace Dynamo.ViewModels
         }
 
         public Typeface RegularTypeface { get; private set; }
-        
+
         public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;
             private set; }
+
+        public ObservableCollection<SearchCategory> SearchRootCategories
+        {
+            get { return Model.SearchRootCategories; }
+        }
 
         public SearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
@@ -199,7 +203,7 @@ namespace Dynamo.ViewModels
                 BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
             }
 
-            this.Model.BrowserRootCategories.CollectionChanged += BrowserRootCategoriesOnCollectionChanged;
+            this.Model.BrowserRootCategoriesCollectionChanged += BrowserRootCategoriesOnCollectionChanged;
 
             this.SortCategoryChildren();
         }
@@ -278,7 +282,7 @@ namespace Dynamo.ViewModels
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
 
             RaisePropertyChanged("SearchAddonsVisibility");
-            RaisePropertyChanged("Model");
+            RaisePropertyChanged("SearchRootCategories");
 
             // SearchResults doesn't used everywhere.
             // It is populated for making connected tests as successful.

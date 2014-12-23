@@ -13,6 +13,7 @@ using Dynamo.DSEngine;
 using System.Xml;
 using DynamoUtilities;
 using Dynamo.UI;
+using System.Collections.Specialized;
 
 namespace Dynamo.Search
 {
@@ -89,6 +90,12 @@ namespace Dynamo.Search
         public ObservableCollection<BrowserRootElement> BrowserRootCategories
         {
             get { return browserCategoriesBuilder.RootCategories; }
+        }
+
+        public event NotifyCollectionChangedEventHandler BrowserRootCategoriesCollectionChanged
+        {
+            add { browserCategoriesBuilder.RootCategoriesCollectionChanged += value; }
+            remove { browserCategoriesBuilder.RootCategoriesCollectionChanged -= value; }
         }
 
         /// <summary>
@@ -246,6 +253,7 @@ namespace Dynamo.Search
 
             // Order found categories by name.
             _searchRootCategories = new ObservableCollection<SearchCategory>(_searchRootCategories.OrderBy(x => x.Name));
+            
             SortSearchCategoriesChildren();
         }
 
