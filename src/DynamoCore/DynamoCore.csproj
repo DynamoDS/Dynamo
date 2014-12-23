@@ -125,7 +125,6 @@ limitations under the License.
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
-    <Compile Include="Search\BrowserRootElement.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\ImmutableStack.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />

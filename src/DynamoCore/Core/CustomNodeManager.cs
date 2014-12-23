@@ -17,27 +17,6 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
-    /// <summary>
-    /// A simple class to keep track of custom nodes.
-    /// </summary>
-    public class CustomNodeInfo
-    {
-        public CustomNodeInfo(Guid functionId, string name, string category, string description, string path)
-        {
-            FunctionId = functionId;
-            Name = name;
-            Category = category;
-            Description = description;
-            Path = path;
-        }
-
-        public Guid FunctionId { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public string Path { get; set; }
-    }
-
     public delegate void DefinitionLoadHandler(CustomNodeDefinition def);
 
     /// <summary>
