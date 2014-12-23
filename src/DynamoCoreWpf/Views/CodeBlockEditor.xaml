@@ -8,9 +8,9 @@
              d:DesignHeight="300"
              d:DesignWidth="300">
     <UserControl.Resources>
-        
+
     </UserControl.Resources>
-  
+
     <Grid>
         <Border BorderBrush="#aaa"
                 BorderThickness="1,0,1,0"
@@ -23,9 +23,8 @@
                                    Padding="3 0 3 0"
                                    Background="#88FFFFFF"
                                    MaxWidth="677"
-                                   ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto"
-                                   
-                                   />
+                                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                   HorizontalScrollBarVisibility="Auto" />
         </Border>
         <TextBlock x:Name="WatermarkLabel"
                    Text="Your code goes here"
