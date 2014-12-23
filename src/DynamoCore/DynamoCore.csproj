@@ -193,6 +193,7 @@ limitations under the License.
     <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\MigrationReport.cs" />
+    <Compile Include="Utilities\Option.cs" />
     <Compile Include="Utilities\Point2D.cs" />
     <Compile Include="Utilities\Rect2D.cs" />
     <Compile Include="Utilities\Thickness.cs" />
