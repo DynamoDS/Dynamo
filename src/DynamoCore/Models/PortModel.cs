@@ -13,7 +13,7 @@ namespace Dynamo.Models
     /// </summary>
     public delegate void PortConnectedHandler(object sender, EventArgs e);
     public delegate void PortDisconnectedHandler(object sender, EventArgs e);
-    public enum PortType { INPUT, OUTPUT };
+    public enum PortType { Input, Output };
 
     public class PortModel : ModelBase
     {
@@ -100,7 +100,7 @@ namespace Dynamo.Models
             {
                 if (Owner != null)
                 {
-                    if (PortType == PortType.INPUT)
+                    if (PortType == PortType.Input)
                     {
                         return Owner.InPortData[Index].ToolTipString;
                     }
@@ -117,7 +117,7 @@ namespace Dynamo.Models
         {
             get
             {
-                if (PortType == PortType.INPUT && Owner != null)
+                if (PortType == PortType.Input && Owner != null)
                 {
                     var port = Owner.InPortData[Index];
                     if (port.HasDefaultValue)
@@ -143,9 +143,9 @@ namespace Dynamo.Models
                 double offset = owner.GetPortVerticalOffset(this);
                 double y = owner.Y + headerHeight + 5 + halfHeight + offset;
 
-                if (portType == PortType.INPUT)
+                if (portType == PortType.Input)
                     return new Point2D(owner.X, y);
-                else if (portType == PortType.OUTPUT)
+                else if (portType == PortType.Output)
                     return new Point2D(owner.X + owner.Width, y);
 
                 return new Point2D();

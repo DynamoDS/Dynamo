@@ -538,7 +538,7 @@ namespace Dynamo.Views
                 var dependencyObject = ElementUnderMouseCursor(mouse);
                 PortViewModel pvm = PortFromHitTestResult(dependencyObject);
 
-                if (null != pvm && (pvm.PortType == PortType.INPUT))
+                if (null != pvm && (pvm.PortType == PortType.Input))
                     this.Cursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
                 else
                     this.Cursor = null;

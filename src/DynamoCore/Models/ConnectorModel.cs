@@ -74,7 +74,7 @@ namespace Dynamo.Models
 
             PortModel endPort = null;
 
-            if (portType == PortType.INPUT)
+            if (portType == PortType.Input)
                 endPort = end.InPorts[endIndex];
 
             pStart.Connect(this);
@@ -104,14 +104,14 @@ namespace Dynamo.Models
 
             //if the selected connector is also an output connector, return false
             //output ports can't be connected to eachother
-            if (p.PortType == PortType.OUTPUT)
+            if (p.PortType == PortType.Output)
             {
                 return false;
             }
 
             //test if the port that you are connecting to is an input and 
             //already has other connectors
-            if (p.PortType == PortType.INPUT && p.Connectors.Count > 0)
+            if (p.PortType == PortType.Input && p.Connectors.Count > 0)
             {
                 p.Disconnect(p.Connectors[0]);
             }
@@ -186,7 +186,7 @@ namespace Dynamo.Models
 
             pStart = startNode.OutPorts[startIndex];
             PortModel endPort = null;
-            if (portType == PortType.INPUT)
+            if (portType == PortType.Input)
                 endPort = endNode.InPorts[endIndex];
 
             pStart.Connect(this);

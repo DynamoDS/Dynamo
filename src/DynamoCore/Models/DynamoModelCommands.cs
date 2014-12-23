@@ -122,7 +122,7 @@ namespace Dynamo.Models
 
         void BeginConnection(Guid nodeId, int portIndex, PortType portType)
         {
-            bool isInPort = portType == PortType.INPUT;
+            bool isInPort = portType == PortType.Input;
 
             NodeModel node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
             if (node == null)
@@ -153,7 +153,7 @@ namespace Dynamo.Models
 
         void EndConnection(Guid nodeId, int portIndex, PortType portType)
         {
-            bool isInPort = portType == PortType.INPUT;
+            bool isInPort = portType == PortType.Input;
 
             NodeModel node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
             if (node == null)
@@ -163,7 +163,7 @@ namespace Dynamo.Models
             ConnectorModel connectorToRemove = null;
 
             // Remove connector if one already exists
-            if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
+            if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.Input)
             {
                 connectorToRemove = portModel.Connectors[0];
                 CurrentWorkspace.Connectors.Remove(connectorToRemove);
@@ -175,7 +175,7 @@ namespace Dynamo.Models
             // We could either connect from an input port to an output port, or 
             // another way around (in which case we swap first and second ports).
             PortModel firstPort, second;
-            if (portModel.PortType != PortType.INPUT)
+            if (portModel.PortType != PortType.Input)
             {
                 firstPort = portModel;
                 second = activeStartPort;
@@ -188,7 +188,7 @@ namespace Dynamo.Models
             }
 
             ConnectorModel newConnectorModel = CurrentWorkspace.AddConnection(firstPort.Owner,
-                second.Owner, firstPort.Index, second.Index, PortType.INPUT);
+                second.Owner, firstPort.Index, second.Index, PortType.Input);
 
             // Record the creation of connector in the undo recorder.
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();

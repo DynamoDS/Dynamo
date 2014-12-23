@@ -156,10 +156,10 @@ namespace Dynamo.TestInfrastructure
                         //make connection
                         DynamoModel.MakeConnectionCommand connToStart1 =
                             new DynamoModel.MakeConnectionCommand(guidNumber, outPortIndex, 
-                                PortType.OUTPUT, DynamoModel.MakeConnectionCommand.Mode.Begin);
+                                PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin);
                         DynamoModel.MakeConnectionCommand connToStart2 =
                             new DynamoModel.MakeConnectionCommand(node.GUID, inPortIndex, 
-                                PortType.INPUT, DynamoModel.MakeConnectionCommand.Mode.End);
+                                PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End);
 
                         //create connections
                         DynamoViewModel.ExecuteCommand(connToStart1);

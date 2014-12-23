@@ -1029,18 +1029,18 @@ namespace Dynamo.Models
             int index = inPorts.IndexOf(portModel);
             if (-1 != index)
             {
-                portType = PortType.INPUT;
+                portType = PortType.Input;
                 return index;
             }
 
             index = outPorts.IndexOf(portModel);
             if (-1 != index)
             {
-                portType = PortType.OUTPUT;
+                portType = PortType.Output;
                 return index;
             }
 
-            portType = PortType.INPUT;
+            portType = PortType.Input;
             return -1; // No port found.
         }
 
@@ -1063,13 +1063,13 @@ namespace Dynamo.Models
 
             double portHeight = portModel.Height;
 
-            if (portType == PortType.INPUT)
+            if (portType == PortType.Input)
             {
                 for (int i = 0; i < index; i++)
                     verticalOffset += inPorts[i].MarginThickness.Top + portHeight;
                 verticalOffset += inPorts[index].MarginThickness.Top;
             }
-            else if (portType == PortType.OUTPUT)
+            else if (portType == PortType.Output)
             {
                 for (int i = 0; i < index; i++)
                     verticalOffset += outPorts[i].MarginThickness.Top + portHeight;
@@ -1092,7 +1092,7 @@ namespace Dynamo.Models
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                PortModel port = AddPort(PortType.INPUT, pd, count);
+                PortModel port = AddPort(PortType.Input, pd, count);
                 
                 //MVVM: AddPort now returns a port model. You can't set the data context here.
                 //port.DataContext = this;
@@ -1130,7 +1130,7 @@ namespace Dynamo.Models
                 //add a port for each input
                 //distribute the ports along the 
                 //edges of the icon
-                PortModel port = AddPort(PortType.OUTPUT, pd, count);
+                PortModel port = AddPort(PortType.Output, pd, count);
 
                 //MVVM : don't set the data context in the model
                 //port.DataContext = this;
@@ -1202,7 +1202,7 @@ namespace Dynamo.Models
             PortModel p;
             switch (portType)
             {
-                case PortType.INPUT:
+                case PortType.Input:
                     if (inPorts.Count > index)
                     {
                         p = inPorts[index];
@@ -1241,7 +1241,7 @@ namespace Dynamo.Models
                    
                     return p;
 
-                case PortType.OUTPUT:
+                case PortType.Output:
                     if (outPorts.Count > index)
                     {
                         p = outPorts[index];
@@ -1274,7 +1274,7 @@ namespace Dynamo.Models
             ValidateConnections();
 
             var port = (PortModel)sender;
-            if (port.PortType == PortType.INPUT)
+            if (port.PortType == PortType.Input)
             {
                 int data = InPorts.IndexOf(port);
                 PortModel startPort = port.Connectors[0].Start;
@@ -1289,7 +1289,7 @@ namespace Dynamo.Models
             ValidateConnections();
 
             var port = (PortModel)sender;
-            if (port.PortType == PortType.INPUT)
+            if (port.PortType == PortType.Input)
             {
                 int data = InPorts.IndexOf(port);
                 PortModel startPort = port.Connectors[0].Start;

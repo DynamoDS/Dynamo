@@ -132,7 +132,7 @@ namespace Dynamo.ViewModels
 
         internal void BeginConnection(Guid nodeId, int portIndex, PortType portType)
         {
-            bool isInPort = portType == PortType.INPUT;
+            bool isInPort = portType == PortType.Input;
 
             NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
             if (node == null)
@@ -722,7 +722,7 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
-                    PortType portType = PortType.INPUT;
+                    PortType portType = PortType.Input;
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
@@ -742,7 +742,7 @@ namespace Dynamo.ViewModels
                     // Check if connection is valid
                     if (owningWorkspace.CheckActiveConnectorCompatibility(portViewModel))
                     {
-                        PortType portType = PortType.INPUT;
+                        PortType portType = PortType.Input;
                         Guid nodeId = portModel.Owner.GUID;
                         int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
@@ -767,7 +767,7 @@ namespace Dynamo.ViewModels
             private void CancelConnection()
             {
                 var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
-                        PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
+                        PortType.Input, DynCmd.MakeConnectionCommand.Mode.Cancel);
 
                 owningWorkspace.DynamoViewModel.ExecuteCommand(command);
             }
