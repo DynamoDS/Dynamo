@@ -341,7 +341,7 @@ namespace Dynamo.Models
 
 #if ENABLE_DYNAMO_SCHEDULER
             var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
-            scheduler = new DynamoScheduler(thread);
+            scheduler = new DynamoScheduler(thread, IsTestMode);
             scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 #endif
 

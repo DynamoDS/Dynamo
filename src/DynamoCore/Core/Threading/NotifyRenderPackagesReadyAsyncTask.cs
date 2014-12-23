@@ -1,5 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
+﻿
 namespace Dynamo.Core.Threading
 {
     /// <summary>
@@ -18,7 +17,7 @@ namespace Dynamo.Core.Threading
             get { return TaskPriority.Normal; }
         }
 
-        internal NotifyRenderPackagesReadyAsyncTask(DynamoScheduler scheduler)
+        internal NotifyRenderPackagesReadyAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }
@@ -49,5 +48,3 @@ namespace Dynamo.Core.Threading
         }
     }
 }
-
-#endif
