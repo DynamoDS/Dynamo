@@ -24,11 +24,11 @@ namespace Dynamo.Core.Threading
         }
     }
 
-    internal abstract class AsyncTask
+    public abstract class AsyncTask
     {
         #region Private Class Data Members
 
-        internal enum TaskPriority
+        public enum TaskPriority
         {
             Critical,
             Highest,
@@ -42,7 +42,7 @@ namespace Dynamo.Core.Threading
         /// <summary>
         /// Merge instruction obtained from a call to AsyncTask.CanMergeWith.
         /// </summary>
-        internal enum TaskMergeInstruction
+        public enum TaskMergeInstruction
         {
             /// <summary>
             /// Both the AsyncTask objects in comparison should be kept.

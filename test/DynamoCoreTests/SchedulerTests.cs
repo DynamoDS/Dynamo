@@ -448,7 +448,7 @@ namespace Dynamo
         [Category("UnitTests")]
         public void TimeStampGenerator00()
         {
-            var scheduler = new DynamoScheduler(new SampleSchedulerThread());
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), true);
             Assert.AreEqual(1024, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1025, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1026, scheduler.NextTimeStamp.Identifier);
@@ -478,7 +478,7 @@ namespace Dynamo
             }
 
             // Start all time-stamp grabbers "at one go".
-            var scheduler = new DynamoScheduler(new SampleSchedulerThread());
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), true);
             Parallel.For(0, EventCount, ((index) =>
             {
                 grabbers[index].GrabTimeStamp(scheduler);
@@ -562,7 +562,7 @@ namespace Dynamo
             Assert.IsFalse(schedulerThread.Initialized);
             Assert.IsFalse(schedulerThread.Destroyed);
 
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, true);
             Assert.IsTrue(schedulerThread.Initialized);
             Assert.IsFalse(schedulerThread.Destroyed);
 
@@ -579,7 +579,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing00()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, true);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -625,7 +625,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing01()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, true);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -671,7 +671,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing02()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, true);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -717,7 +717,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing03()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, true);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -749,7 +749,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing04()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, true);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -783,7 +783,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing05()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, true);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -817,7 +817,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing06()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, true);
 
             schedulerThread.GetSchedulerToProcessTasks();
             Assert.Pass("Scheduler thread successfully exits");
@@ -832,7 +832,7 @@ namespace Dynamo
         {
             var observer = new TaskEventObserver();
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, true);
             scheduler.TaskStateChanged += observer.OnTaskStateChanged;
 
             // Start scheduling a bunch of tasks.
