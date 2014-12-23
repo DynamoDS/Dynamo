@@ -1,6 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 
@@ -59,7 +57,7 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal UpdateRenderPackageAsyncTask(DynamoScheduler scheduler)
+        internal UpdateRenderPackageAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
             nodeGuid = Guid.Empty;
@@ -235,5 +233,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif

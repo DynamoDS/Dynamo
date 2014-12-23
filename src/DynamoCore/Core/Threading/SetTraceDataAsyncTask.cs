@@ -1,6 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,7 +17,7 @@ namespace Dynamo.Core.Threading
             get { return TaskPriority.Highest; }
         }
 
-        internal SetTraceDataAsyncTask(DynamoScheduler scheduler)
+        internal SetTraceDataAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }
@@ -70,5 +68,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif
