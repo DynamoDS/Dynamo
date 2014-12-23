@@ -7,6 +7,7 @@ using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
@@ -264,7 +265,7 @@ namespace Dynamo
 
         #region Custom Node Management
 
-        public bool AddToSearch(SearchModel search)
+        public bool AddToSearch(NodeSearchModel search)
         {
             return
                 search.Add(new CustomNodeInfo(  FunctionId, 

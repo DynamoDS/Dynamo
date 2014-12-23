@@ -22,16 +22,16 @@ namespace Dynamo.Utilities
     /// </summary>
     public class CustomNodeInfo
     {
-        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
+        public CustomNodeInfo(Guid functionId, string name, string category, string description, string path)
         {
-            Guid = guid;
+            FunctionId = functionId;
             Name = name;
             Category = category;
             Description = description;
             Path = path;
         }
 
-        public Guid Guid { get; set; }
+        public Guid FunctionId { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
         public string Description { get; set; }
@@ -176,7 +176,7 @@ namespace Dynamo.Utilities
         public bool RemoveTypesLoadedFromFolder(string path)
         {
 
-            var guidsToRemove = GetInfosFromFolder(path).Select(x => x.Guid);
+            var guidsToRemove = GetInfosFromFolder(path).Select(x => x.FunctionId);
             guidsToRemove.ToList().ForEach(RemoveFromDynamo);
 
             return guidsToRemove.Any();
@@ -205,7 +205,7 @@ namespace Dynamo.Utilities
             var nodeInfo = Remove(guid);
 
             // remove from search
-            dynamoModel.SearchModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
+            dynamoModel.SearchModel.RemoveNodeAndEmptyParentCategory(nodeInfo.FunctionId);
             dynamoModel.SearchModel.OnRequestSync();
 
             // remove from fscheme environment
@@ -263,14 +263,14 @@ namespace Dynamo.Utilities
         /// <param name="path">The path for the node.</param>
         public void SetNodeInfo(CustomNodeInfo newInfo)
         {
-            var nodeInfo = GetNodeInfo(newInfo.Guid);
+            var nodeInfo = GetNodeInfo(newInfo.FunctionId);
             if (nodeInfo == null)
             {
-                NodeInfos.Add(newInfo.Guid, newInfo);
+                NodeInfos.Add(newInfo.FunctionId, newInfo);
             }
             else
             {
-                NodeInfos[newInfo.Guid] = newInfo;
+                NodeInfos[newInfo.FunctionId] = newInfo;
             }
         }
 
@@ -416,7 +416,7 @@ namespace Dynamo.Utilities
         public bool IsInitialized(string name)
         {
             var info = GetNodeInfo(name);
-            return info != null && IsInitialized(info.Guid);
+            return info != null && IsInitialized(info.FunctionId);
         }
 
         /// <summary>
@@ -435,7 +435,7 @@ namespace Dynamo.Utilities
         /// <returns>False if the name doesn't exist in this</returns>
         public Guid GetGuidFromName(string name)
         {
-            return !Contains(name) ? Guid.Empty : GetNodeInfo(name).Guid;
+            return !Contains(name) ? Guid.Empty : GetNodeInfo(name).FunctionId;
         }
 
         /// <summary>
@@ -1001,7 +1001,7 @@ namespace Dynamo.Utilities
 
         public void Refactor(CustomNodeInfo nodeInfo)
         {
-            Refactor(nodeInfo.Guid, nodeInfo.Name, nodeInfo.Category, nodeInfo.Description);
+            Refactor(nodeInfo.FunctionId, nodeInfo.Name, nodeInfo.Category, nodeInfo.Description);
         }
 
         /// <summary>
@@ -1026,7 +1026,7 @@ namespace Dynamo.Utilities
                            x.NickName = newName;
                        });
 
-            dynamoModel.SearchModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
+            dynamoModel.SearchModel.RemoveNodeAndEmptyParentCategory(nodeInfo.FunctionId);
 
             nodeInfo.Name = newName;
             nodeInfo.Category = newCategory;
@@ -1044,7 +1044,7 @@ namespace Dynamo.Utilities
         internal ObservableDictionary<string, Guid> GetAllNodeNames()
         {
             var dict = new ObservableDictionary<string, Guid>();
-            NodeInfos.Select(info => new KeyValuePair<string, Guid>(info.Value.Name, info.Value.Guid))
+            NodeInfos.Select(info => new KeyValuePair<string, Guid>(info.Value.Name, info.Value.FunctionId))
                 .ToList()
                 .ForEach(dict.Add);
             return dict;
