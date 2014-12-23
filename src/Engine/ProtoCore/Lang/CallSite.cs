@@ -76,11 +76,11 @@ namespace ProtoCore
             {
                 SingleRunTraceData srtd = new SingleRunTraceData();
 
-                bool hasData = info.GetBoolean(marker + objectID + "_HasData");
+                bool hasData = info.GetBoolean(marker + objectID + /*NXLT*/"_HasData");
 
                 if (hasData)
                 {
-                    Byte[] data = Convert.FromBase64String(info.GetString(marker + objectID + "_Data"));
+                    Byte[] data = Convert.FromBase64String(info.GetString(marker + objectID + /*NXLT*/"_Data"));
 
 
                     IFormatter formatter = new SoapFormatter();
@@ -89,12 +89,12 @@ namespace ProtoCore
                     srtd.Data = (ISerializable) formatter.Deserialize(s);
                 }
 
-                bool hasNestedData = info.GetBoolean(marker + objectID + "_HasNestedData");
+                bool hasNestedData = info.GetBoolean(marker + objectID + /*NXLT*/"_HasNestedData");
 
                 if (hasNestedData)
                 {
-                    
-                    int nestedDataCount = info.GetInt32(marker + objectID + "_NestedDataCount");
+
+                    int nestedDataCount = info.GetInt32(marker + objectID + /*NXLT*/"_NestedDataCount");
 
                     if (nestedDataCount > 0)
                         srtd.NestedData = new List<SingleRunTraceData>();
@@ -113,7 +113,7 @@ namespace ProtoCore
 
             internal void GetObjectData(SerializationInfo info, StreamingContext context, int objectID, string marker)
             {
-                info.AddValue(marker + objectID + "_HasData", HasData);
+                info.AddValue(marker + objectID + /*NXLT*/"_HasData", HasData);
 
                 if (HasData)
                 {
@@ -122,16 +122,16 @@ namespace ProtoCore
                     {
                         IFormatter formatter = new SoapFormatter();
                         formatter.Serialize(s, Data);
-                        info.AddValue(marker + objectID + "_Data", Convert.ToBase64String(s.ToArray()));
+                        info.AddValue(marker + objectID + /*NXLT*/"_Data", Convert.ToBase64String(s.ToArray()));
                     }
                 }
 
-                info.AddValue(marker + objectID + "_HasNestedData", HasNestedData);
+                info.AddValue(marker + objectID + /*NXLT*/"_HasNestedData", HasNestedData);
 
                 if (HasNestedData)
                 {
                     //Recursive Serialise
-                    info.AddValue(marker + objectID + "_NestedDataCount", NestedData.Count);
+                    info.AddValue(marker + objectID + /*NXLT*/"_NestedDataCount", NestedData.Count);
 
                     for (int i = 0; i < NestedData.Count; i++)
                         NestedData[i].GetObjectData(info, context, i, marker + objectID + "-");
@@ -242,11 +242,11 @@ namespace ProtoCore
             {
                 TraceData = new List<SingleRunTraceData>();
 
-                int noElements = info.GetInt32("NumberOfElements");
+                int noElements = info.GetInt32(/*NXLT*/"NumberOfElements");
                 for (int i = 0; i < noElements; i++)
                 {
                     SingleRunTraceData srtd = SingleRunTraceData.DeserialseFromData(
-                        info, context, i, "Base-");
+                        info, context, i, /*NXLT*/"Base-");
                     TraceData.Add(srtd);
                 }
 
@@ -257,10 +257,10 @@ namespace ProtoCore
             /// </summary>
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
-                info.AddValue("NumberOfElements", TraceData.Count);
+                info.AddValue(/*NXLT*/"NumberOfElements", TraceData.Count);
                 for (int i = 0; i < TraceData.Count; i++)
                 {
-                    TraceData[i].GetObjectData(info, context, i, "Base-");
+                    TraceData[i].GetObjectData(info, context, i, /*NXLT*/"Base-");
                 }
 
             }
@@ -331,7 +331,7 @@ namespace ProtoCore
 
             if (execMode == ExecutionMode.Parallel)
                 throw new CompilerInternalException(
-                    "Parrallel Mode is not yet implemented {46F83CBB-9D37-444F-BA43-5E662784B1B3}");
+                    /*NXLT*/"Parrallel Mode is not yet implemented {46F83CBB-9D37-444F-BA43-5E662784B1B3}");
 
             // Found preloaded trace data, reconstruct the instances from there.
             if (!string.IsNullOrEmpty(serializedTraceData))
@@ -518,14 +518,14 @@ namespace ProtoCore
             #region First Case: Replicate only according to the replication guides
 
             {
-                log.AppendLine("Case 1: Exact Match");
+                log.AppendLine(/*NXLT*/"Case 1: Exact Match");
 
                 FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, replicationControl,
                                                                 stackFrame,
                                                                 core, log);
                 if (fep != null)
                 {
-                    //log.AppendLine("Resolution completed in " + sw.ElapsedMilliseconds + "ms");
+                    //log.AppendLine(/*NXLT*/"Resolution completed in " + sw.ElapsedMilliseconds + "ms");
                     if (core.Options.DumpFunctionResolverLogic)
                         core.DSExecutable.EventSink.PrintMessage(log.ToString());
 
@@ -541,7 +541,7 @@ namespace ProtoCore
             #region Case 2: Replication with no type cast
 
             {
-                log.AppendLine("Case 2: Beginning Auto-replication, no casts");
+                log.AppendLine(/*NXLT*/"Case 2: Beginning Auto-replication, no casts");
 
                 //Build the possible ways in which we might replicate
                 List<List<ReplicationInstruction>> replicationTrials =
@@ -552,7 +552,7 @@ namespace ProtoCore
                 {
                     ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
 
-                    log.AppendLine("Attempting replication control: " + rc);
+                    log.AppendLine(/*NXLT*/"Attempting replication control: " + rc);
 
                     List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
                                                                                               rc.Instructions, core);
@@ -566,14 +566,14 @@ namespace ProtoCore
                     if (resolutionFailures > 0)
                         continue;
 
-                    log.AppendLine("Resolution succeeded against FEP Cluster");
+                    log.AppendLine(/*NXLT*/"Resolution succeeded against FEP Cluster");
                     foreach (FunctionEndPoint fep in lookups.Keys)
-                        log.AppendLine("\t - " + fep);
+                        log.AppendLine(/*NXLT*/"\t - " + fep);
 
                     List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
                     feps.AddRange(lookups.Keys);
 
-                    //log.AppendLine("Resolution completed in " + sw.ElapsedMilliseconds + "ms");
+                    //log.AppendLine(/*NXLT*/"Resolution completed in " + sw.ElapsedMilliseconds + "ms");
                     if (core.Options.DumpFunctionResolverLogic)
                         core.DSExecutable.EventSink.PrintMessage(log.ToString());
 
@@ -590,7 +590,7 @@ namespace ProtoCore
             #region Case 3: Match with type conversion, but no array promotion
 
             {
-                log.AppendLine("Case 3: Type conversion");
+                log.AppendLine(/*NXLT*/"Case 3: Type conversion");
 
 
                 Dictionary<FunctionEndPoint, int> candidatesWithDistances =
@@ -608,7 +608,7 @@ namespace ProtoCore
 
                 if (compliantTarget != null)
                 {
-                    log.AppendLine("Resolution Succeeded: " + compliantTarget);
+                    log.AppendLine(/*NXLT*/"Resolution Succeeded: " + compliantTarget);
 
                     if (core.Options.DumpFunctionResolverLogic)
                         core.DSExecutable.EventSink.PrintMessage(log.ToString());
@@ -623,7 +623,7 @@ namespace ProtoCore
 
             #region Case 4: Match with type conversion and replication
 
-            log.AppendLine("Case 4: Replication + Type conversion");
+            log.AppendLine(/*NXLT*/"Case 4: Replication + Type conversion");
             {
                 if (arguments.Any(arg => arg.IsArray))
                 {
@@ -636,7 +636,7 @@ namespace ProtoCore
                     {
                         ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
 
-                        log.AppendLine("Attempting replication control: " + rc);
+                        log.AppendLine(/*NXLT*/"Attempting replication control: " + rc);
 
                         //@TODO: THis should use the proper reducer?
 
@@ -655,7 +655,7 @@ namespace ProtoCore
 
                         if (compliantTarget != null)
                         {
-                            log.AppendLine("Resolution Succeeded: " + compliantTarget);
+                            log.AppendLine(/*NXLT*/"Resolution Succeeded: " + compliantTarget);
 
                             if (core.Options.DumpFunctionResolverLogic)
                                 core.DSExecutable.EventSink.PrintMessage(log.ToString());
@@ -672,7 +672,7 @@ namespace ProtoCore
 
             #region Case 5: Match with type conversion, replication and array promotion
 
-            log.AppendLine("Case 5: Replication + Type conversion + Array promotion");
+            log.AppendLine(/*NXLT*/"Case 5: Replication + Type conversion + Array promotion");
             {
                 //Build the possible ways in which we might replicate
                 List<List<ReplicationInstruction>> replicationTrials =
@@ -688,7 +688,7 @@ namespace ProtoCore
                 {
                     ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
 
-                    log.AppendLine("Attempting replication control: " + rc);
+                    log.AppendLine(/*NXLT*/"Attempting replication control: " + rc);
 
                     //@TODO: THis should use the proper reducer?
 
@@ -708,7 +708,7 @@ namespace ProtoCore
 
                     if (compliantTarget != null)
                     {
-                        log.AppendLine("Resolution Succeeded: " + compliantTarget);
+                        log.AppendLine(/*NXLT*/"Resolution Succeeded: " + compliantTarget);
 
                         if (core.Options.DumpFunctionResolverLogic)
                             core.DSExecutable.EventSink.PrintMessage(log.ToString());
@@ -772,7 +772,7 @@ namespace ProtoCore
                                                           ReplicationControl replicationControl, StackFrame stackFrame,
                                                           Core core, StringBuilder log)
         {
-            log.AppendLine("Attempting Dispatch with ---- RC: " + replicationControl);
+            log.AppendLine(/*NXLT*/"Attempting Dispatch with ---- RC: " + replicationControl);
 
             //Exact match
             List<FunctionEndPoint> exactTypeMatchingCandindates =
@@ -786,7 +786,7 @@ namespace ProtoCore
                 {
                     //Exact match
                     fep = exactTypeMatchingCandindates[0];
-                    log.AppendLine("1 exact match found - FEP selected" + fep);
+                    log.AppendLine(/*NXLT*/"1 exact match found - FEP selected" + fep);
                 }
                 else
                 {
@@ -795,7 +795,7 @@ namespace ProtoCore
                                                 core,
                                                 exactTypeMatchingCandindates, arguments);
 
-                    log.AppendLine(exactTypeMatchingCandindates.Count + "exact matches found - FEP selected" + fep);
+                    log.AppendLine(exactTypeMatchingCandindates.Count + /*NXLT*/"exact matches found - FEP selected" + fep);
                 }
             }
 
@@ -835,7 +835,7 @@ namespace ProtoCore
         {
             StackValue svThisPtr = stackFrame.ThisPtr;
             Validity.Assert(svThisPtr.IsPointer,
-                            "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
+                            /*NXLT*/"this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
             int typeID = svThisPtr.metaData.type;
 
@@ -857,7 +857,7 @@ namespace ProtoCore
             while (core.ClassTable.ClassNodes[typeID].baseList.Count > 0)
             {
                 Validity.Assert(core.ClassTable.ClassNodes[typeID].baseList.Count == 1,
-                                "Multiple inheritence not yet supported {B93D8D7F-AB4D-4412-8483-33DE739C0ADA}");
+                                /*NXLT*/"Multiple inheritence not yet supported {B93D8D7F-AB4D-4412-8483-33DE739C0ADA}");
 
                 typeID = core.ClassTable.ClassNodes[typeID].baseList[0];
 
@@ -898,7 +898,7 @@ namespace ProtoCore
             }
 
             Validity.Assert(indeciesOfSmallest.Count > 0,
-                            "Couldn't find a fep when there should have been multiple: {EB589F55-F36B-404A-91DC-8D0EDC527E72}");
+                            /*NXLT*/"Couldn't find a fep when there should have been multiple: {EB589F55-F36B-404A-91DC-8D0EDC527E72}");
 
             if (indeciesOfSmallest.Count == 1)
                 return feps[indeciesOfSmallest[0]];
@@ -909,12 +909,12 @@ namespace ProtoCore
                 //If this has failed, we have multiple feps, which can't be distiquished by class hiearchy. Emit a warning and select one
                 StringBuilder possibleFuncs = new StringBuilder();
                 possibleFuncs.Append(
-                    "Couldn't decide which function to execute. Please provide more specific type information. Possible functions were: ");
+                    /*NXLT*/"Couldn't decide which function to execute. Please provide more specific type information. Possible functions were: ");
                 foreach (FunctionEndPoint fep in feps)
                     possibleFuncs.AppendLine("\t" + fep.ToString());
 
 
-                possibleFuncs.AppendLine("Error code: {DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}");
+                possibleFuncs.AppendLine(/*NXLT*/"Error code: {DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}");
 
                 core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
             }
@@ -1160,7 +1160,7 @@ namespace ProtoCore
 
             StringBuilder log = new StringBuilder();
 
-            log.AppendLine("Method name: " + methodName);
+            log.AppendLine(/*NXLT*/"Method name: " + methodName);
 
             #region Get Function Group
 
@@ -1170,8 +1170,8 @@ namespace ProtoCore
 
             if (funcGroup == null)
             {
-                log.AppendLine("Function group not located");
-                log.AppendLine("Resolution failed in: " + sw.ElapsedMilliseconds);
+                log.AppendLine(/*NXLT*/"Function group not located");
+                log.AppendLine(/*NXLT*/"Resolution failed in: " + sw.ElapsedMilliseconds);
 
                 if (core.Options.DumpFunctionResolverLogic)
                     core.DSExecutable.EventSink.PrintMessage(log.ToString());
@@ -1197,7 +1197,7 @@ namespace ProtoCore
                 return ReportMethodNotAccessible(core);
 
             //If we got here then the function group got resolved
-            log.AppendLine("Function group resolved: " + funcGroup);
+            log.AppendLine(/*NXLT*/"Function group resolved: " + funcGroup);
 
             #endregion
 
@@ -1211,7 +1211,7 @@ namespace ProtoCore
             ReplicationControl replicationControl =
                 Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
 
-            log.AppendLine("Replication guides processed to: " + replicationControl);
+            log.AppendLine(/*NXLT*/"Replication guides processed to: " + replicationControl);
 
             //Get the fep that are resolved
             List<FunctionEndPoint> resolvesFeps;
@@ -1227,7 +1227,7 @@ namespace ProtoCore
 
             if (resolvesFeps.Count == 0)
             {
-                log.AppendLine("Resolution Failed");
+                log.AppendLine(/*NXLT*/"Resolution Failed");
 
                 if (core.Options.DumpFunctionResolverLogic)
                     core.DSExecutable.EventSink.PrintMessage(log.ToString());
@@ -1363,7 +1363,7 @@ namespace ProtoCore
             SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             if (core.Options.ExecutionMode == ExecutionMode.Parallel)
-                throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
+                throw new NotImplementedException(/*NXLT*/"Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
 
 
             //Recursion base case
@@ -1871,7 +1871,7 @@ namespace ProtoCore
         public static StackValue PerformReturnTypeCoerce(ProcedureNode procNode, Core core, StackValue ret)
         {
             Validity.Assert(procNode != null,
-                            "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
+                            /*NXLT*/"Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
 
 
             //Now cast ret into the return type

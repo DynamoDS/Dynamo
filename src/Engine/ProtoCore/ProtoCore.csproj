@@ -185,7 +185,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="StringConstantsOLD.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="Utils\ArrayUtils.cs" />
     <Compile Include="Utils\ClassUtils.cs" />

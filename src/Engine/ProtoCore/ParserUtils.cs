@@ -37,7 +37,7 @@ namespace ProtoCore.Utils
 
         public static List<string> GetLHSatAssignment(string line, int equalIndex)
         {
-            var spaceNormalizationRule = new Regex(@"([^\S]+)");
+            var spaceNormalizationRule = new Regex(/*NXLT*/@"([^\S]+)");
 
             // the line could have multiple program statements separated by ';'
             var programStatements = line.Split(';');
@@ -57,9 +57,9 @@ namespace ProtoCore.Utils
                 {
                     identifier = identifier.Trim();
 
-                    if (identifier.StartsWith(@"//"))
+                    if (identifier.StartsWith(/*NXLT*/@"//"))
                         continue;
-                    else if (identifier.Equals("return"))
+                    else if (identifier.Equals(/*NXLT*/"return"))
                         continue;
 
                     identifier = spaceNormalizationRule.Replace(identifier, string.Empty);

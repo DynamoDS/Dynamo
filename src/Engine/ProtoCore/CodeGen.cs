@@ -87,7 +87,7 @@ namespace ProtoCore
         // parse the string in "en-US" format (because that's how the parser is 
         // made to recognize floating point numbers.
         // 
-        protected CultureInfo cultureInfo = new CultureInfo("en-US");
+        protected CultureInfo cultureInfo = new CultureInfo(/*NXLT*/"en-US");
 
 
         // Contains the list of Nodes in an identifier list
@@ -137,11 +137,11 @@ namespace ProtoCore
                     string path = "";
                     if (core.Options.LibPath == null)
                     {
-                        path += core.Options.RootModulePathName + "ASM";
+                        path += core.Options.RootModulePathName + /*NXLT*/"ASM";
                     }
                     else
                     {
-                        path = Path.Combine(core.Options.LibPath, Path.GetFileNameWithoutExtension(core.Options.RootModulePathName) + ".dsASM");
+                        path = Path.Combine(core.Options.LibPath, Path.GetFileNameWithoutExtension(core.Options.RootModulePathName) + /*NXLT*/".dsASM");
                     }
 
                     core.AsmOutput = new StreamWriter(File.Open(path, FileMode.Create));
@@ -207,11 +207,11 @@ namespace ProtoCore
 
             // Build the unique ID for a callsite 
             string callsiteIdentifier =
-                procName + 
-                "_InClassDecl" + globalClassIndex + 
-                "_InFunctionScope" + globalProcIndex + 
-                "_Instance" + functionCallInstance.ToString() + 
-                "_" + graphNode.guid.ToString();
+                procName +
+                /*NXLT*/"_InClassDecl" + globalClassIndex +
+                /*NXLT*/"_InFunctionScope" + globalProcIndex +
+                /*NXLT*/"_Instance" + functionCallInstance.ToString() +
+                /*NXLT*/"_" + graphNode.guid.ToString();
 
             // TODO Jun: Address this in MAGN-3774
             // The current limitation is retrieving the cached trace data for multiple callsites in a single CBN
@@ -345,7 +345,7 @@ namespace ProtoCore
             if (dumpByteCode && !isAssocOperator && !core.Options.DumpOperatorToMethodByteCode)
             {
                 for (int i = 0; i < core.AsmOutputIdents; ++i)
-                    core.AsmOutput.Write("\t");
+                    core.AsmOutput.Write(/*NXLT*/"\t");
                 core.AsmOutput.Write(message);
             }
             
@@ -355,7 +355,7 @@ namespace ProtoCore
             if (dumpByteCode && !isAssocOperator && !core.Options.DumpOperatorToMethodByteCode)
             {
                 core.AsmOutput.Write(function);
-                core.AsmOutput.Write("{\n");
+                core.AsmOutput.Write(/*NXLT*/"{\n");
                 core.AsmOutputIdents++;
             }
         }
@@ -366,8 +366,8 @@ namespace ProtoCore
             {
                 core.AsmOutputIdents--;
                 for (int i = 0; i < core.AsmOutputIdents; ++i)
-                    core.AsmOutput.Write("\t");
-                core.AsmOutput.Write("}\n\n");
+                    core.AsmOutput.Write(/*NXLT*/"\t");
+                core.AsmOutput.Write(/*NXLT*/"}\n\n");
             }
         }
 
@@ -377,9 +377,9 @@ namespace ProtoCore
             {
                 if (dumpByteCode && !isAssocOperator)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
+                    var str = string.Format(/*NXLT*/"[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
+                        core.AsmOutput.Write(/*NXLT*/"\t");
                     core.AsmOutput.Write(str);
                 }
             }
@@ -387,9 +387,9 @@ namespace ProtoCore
             {
                 if (dumpByteCode)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
+                    var str = string.Format(/*NXLT*/"[{0}.{1}.{2}]{3}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
+                        core.AsmOutput.Write(/*NXLT*/"\t");
                     core.AsmOutput.Write(str);
                 }
             }
@@ -400,9 +400,9 @@ namespace ProtoCore
             {
                 if (dumpByteCode && !isAssocOperator)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
+                    var str = string.Format(/*NXLT*/"[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
+                        core.AsmOutput.Write(/*NXLT*/"\t");
                     core.AsmOutput.Write(str);
                 }
             }
@@ -410,9 +410,9 @@ namespace ProtoCore
             {
                 if (dumpByteCode)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
+                    var str = string.Format(/*NXLT*/"[{0}.{1}.{2}]{3} {4}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
+                        core.AsmOutput.Write(/*NXLT*/"\t");
                     core.AsmOutput.Write(str);
                 }
             }
@@ -423,9 +423,9 @@ namespace ProtoCore
             {
                 if (dumpByteCode && !isAssocOperator)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
+                    var str = string.Format(/*NXLT*/"[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
+                        core.AsmOutput.Write(/*NXLT*/"\t");
                     core.AsmOutput.Write(str);
                 }
             }
@@ -433,9 +433,9 @@ namespace ProtoCore
             {
                 if (dumpByteCode)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
+                    var str = string.Format(/*NXLT*/"[{0}.{1}.{2}]{3} {4} {5}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
+                        core.AsmOutput.Write(/*NXLT*/"\t");
                     core.AsmOutput.Write(str);
                 }
             }
@@ -446,9 +446,9 @@ namespace ProtoCore
             {
                 if (dumpByteCode && !isAssocOperator)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
+                    var str = string.Format(/*NXLT*/"[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
+                        core.AsmOutput.Write(/*NXLT*/"\t");
                     core.AsmOutput.Write(str);
                 }
             }
@@ -456,9 +456,9 @@ namespace ProtoCore
             {
                 if (dumpByteCode)
                 {
-                    var str = string.Format("[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
+                    var str = string.Format(/*NXLT*/"[{0}.{1}.{2}]{3} {4} {5} {6}\n", codeBlock.language == Language.kAssociative ? "a" : "i", codeBlock.codeBlockId, pc, instr, op1, op2, op3);
                     for (int i = 0; i < core.AsmOutputIdents; ++i)
-                        core.AsmOutput.Write("\t");
+                        core.AsmOutput.Write(/*NXLT*/"\t");
                     core.AsmOutput.Write(str);
                 }
             }
@@ -472,7 +472,7 @@ namespace ProtoCore
 
         protected string GetConstructBlockName(string construct)
         {
-            string desc = "blockname";
+            string desc = /*NXLT*/"blockname";
             return blockScope.ToString() + "_" + construct + "_" + desc;
         }
 
@@ -810,7 +810,7 @@ namespace ProtoCore
                 dynamic bnode = node;
                 if (ProtoCore.DSASM.Operator.dot != bnode.Optr)
                 {
-                    string message = "The left hand side of an operation can only contain an indirection operator '.' (48D67B9B)";
+                    string message = /*NXLT*/"The left hand side of an operation can only contain an indirection operator '.' (48D67B9B)";
                     buildStatus.LogSemanticError(message, core.CurrentDSFileName, bnode.line, bnode.col);
                     throw new BuildHaltException(message);
                 }
@@ -895,7 +895,7 @@ namespace ProtoCore
                             {
                                 callOnClass = true;
 
-                                EmitInstrConsole(ProtoCore.DSASM.kw.push, 0 + "[dim]");
+                                EmitInstrConsole(ProtoCore.DSASM.kw.push, 0 + /*NXLT*/"[dim]");
                                 StackValue dynamicOpdim = StackValue.BuildArrayDimension(0);
                                 EmitPush(dynamicOpdim);
 
@@ -940,11 +940,11 @@ namespace ProtoCore
                             {
                                 dim = DfsEmitArrayIndexHeap(identnode.ArrayDimensions, graphNode);
                             }
-                            EmitInstrConsole(ProtoCore.DSASM.kw.push, dim + "[dim]");
+                            EmitInstrConsole(ProtoCore.DSASM.kw.push, dim + /*NXLT*/"[dim]");
                             StackValue dynamicOpdim = StackValue.BuildArrayDimension(dim);
                             EmitPush(dynamicOpdim);
 
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + "[dynamic]");
+                            EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + /*NXLT*/"[dynamic]");
                             StackValue dynamicOp = StackValue.BuildDynamic(core.DynamicVariableTable.variableTable.Count - 1);
                             EmitPushm(dynamicOp, symbolnode == null ? globalClassIndex : symbolnode.classScope, DSASM.Constants.kInvalidIndex);
 
@@ -1048,7 +1048,7 @@ namespace ProtoCore
 
                     // TODO Jun: Performance. 
                     // Is it faster to have a 'push' specific to arrays to prevent pushing dimension for push instruction?
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, dimensions + "[dim]");
+                    EmitInstrConsole(ProtoCore.DSASM.kw.push, dimensions + /*NXLT*/"[dim]");
                     StackValue opdim = StackValue.BuildArrayDimension(dimensions);
                     EmitPush(opdim);
 
@@ -1064,7 +1064,7 @@ namespace ProtoCore
                         DSASM.DyanmicVariableNode dynamicVariableNode = new DSASM.DyanmicVariableNode(identnode.Name, globalProcIndex, globalClassIndex);
                         core.DynamicVariableTable.variableTable.Add(dynamicVariableNode);
                         StackValue dynamicOp = StackValue.BuildDynamic(core.DynamicVariableTable.variableTable.Count - 1);
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + "[dynamic]");
+                        EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + /*NXLT*/"[dynamic]");
                         EmitPushm(dynamicOp, symbolnode == null ? globalClassIndex : symbolnode.classScope, runtimeIndex);
                     }
                     depth = depth + 1;
@@ -1114,7 +1114,7 @@ namespace ProtoCore
             }
             else
             {
-                string message = "The left side of operator '.' must be an identifier. (B9AEA3A6)";
+                string message = /*NXLT*/"The left side of operator '.' must be an identifier. (B9AEA3A6)";
                 buildStatus.LogSemanticError(message, core.CurrentDSFileName, node.line, node.col);
                 throw new BuildHaltException(message);
             }
@@ -1587,7 +1587,7 @@ namespace ProtoCore
         protected void EmitJmp(int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
-            EmitInstrConsole(ProtoCore.DSASM.kw.jmp, " L1(" + L1 + ")");
+            EmitInstrConsole(ProtoCore.DSASM.kw.jmp, /*NXLT*/" L1(" + L1 + /*NXLT*/")");
 
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.JMP;
@@ -1682,7 +1682,7 @@ namespace ProtoCore
         protected void EmitCJmp(int L1, int L2, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex, 
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
-            EmitInstrConsole(ProtoCore.DSASM.kw.cjmp, ProtoCore.DSASM.kw.regCX + " L1(" + L1 + ") L2(" + L2 + ")");
+            EmitInstrConsole(ProtoCore.DSASM.kw.cjmp, ProtoCore.DSASM.kw.regCX + /*NXLT*/" L1(" + L1 + /*NXLT*/") L2(" + L2 + /*NXLT*/")");
 
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.CJMP;
@@ -2134,7 +2134,7 @@ namespace ProtoCore
             }
             else
             {
-                throw new InvalidDataException("The input node is not a IntNode");
+                throw new InvalidDataException(/*NXLT*/"The input node is not a IntNode");
             }
 
             if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.kTypeInt, inferedType.UID))
@@ -2152,7 +2152,7 @@ namespace ProtoCore
                     int replicationGuides = 0;
                     
                     // Push the number of guides
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
+                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + /*NXLT*/"[guide]");
                     StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
                     EmitPush(opNumGuides);
                 }
@@ -2240,7 +2240,7 @@ namespace ProtoCore
             if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
             {
                 int replicationGuides = 0;
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + /*NXLT*/"[guide]");
                 StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
                 EmitPush(opNumGuides);
 
@@ -2317,7 +2317,7 @@ namespace ProtoCore
             }
             else
             {
-                throw new InvalidDataException("The input node is not DoubleNode");
+                throw new InvalidDataException(/*NXLT*/"The input node is not DoubleNode");
             }
 
             if (!enforceTypeCheck || core.TypeSystem.IsHigherRank((int)PrimitiveType.kTypeDouble, inferedType.UID))
@@ -2333,7 +2333,7 @@ namespace ProtoCore
                     int replicationGuides = 0;
 
                     // Push the number of guides
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + "[guide]");
+                    EmitInstrConsole(ProtoCore.DSASM.kw.push, replicationGuides + /*NXLT*/"[guide]");
                     StackValue opNumGuides = StackValue.BuildReplicationGuide(replicationGuides);
                     EmitPush(opNumGuides);
                 }
@@ -2405,7 +2405,7 @@ namespace ProtoCore
             }
             else
             {
-                throw new InvalidDataException("The input node is not a BooleanNode");
+                throw new InvalidDataException(/*NXLT*/"The input node is not a BooleanNode");
             }
 
             // We need to get inferedType for boolean variable so that we can perform type check

@@ -28,9 +28,9 @@ namespace ProtoCore.Utils
         public VariableLine(string variable, int line)
         {
             if (line < 0)
-                throw new ArgumentException("Argument cannot be negative", "line");
+                throw new ArgumentException(/*NXLT*/"Argument cannot be negative", "line");
             if (string.IsNullOrEmpty(variable))
-                throw new ArgumentException("Invalid variable name", "variable");
+                throw new ArgumentException(/*NXLT*/"Invalid variable name", "variable");
 
             this.variable = variable;
             this.line = line;
@@ -39,7 +39,7 @@ namespace ProtoCore.Utils
         public VariableLine(int line) // Only used for NUnit purposes (with temp names).
         {
             if (line < 0)
-                throw new ArgumentException("Argument cannot be negative", "line");
+                throw new ArgumentException(/*NXLT*/"Argument cannot be negative", "line");
 
             this.variable = string.Empty; // In NUnit temp names are ignored.
             this.line = line;
@@ -237,7 +237,7 @@ namespace ProtoCore.Utils
             core.IsParsingCodeBlockNode = false;
 
             int blockId;
-            string importStatement = @"import (""" + assemblyPath + @""");";
+            string importStatement = /*NXLT*/@"import (""" + assemblyPath + @""");";
 
             core.ResetForPrecompilation();
             var status = PreCompile(importStatement, core, null, out blockId);
@@ -342,7 +342,7 @@ namespace ProtoCore.Utils
             if (expression == null)
                 return astNodes;
 
-            expression = expression.Replace("\r\n", "\n");
+            expression = expression.Replace(/*NXLT*/"\r\n", /*NXLT*/"\n");
 
             try
             {

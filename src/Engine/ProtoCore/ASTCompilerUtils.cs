@@ -56,7 +56,7 @@ namespace ProtoCore
         private static FunctionDotCallNode CreateEntityNode(long hostInstancePtr, Core core)
         {
             FunctionCallNode fNode = new FunctionCallNode();
-            fNode.Function = new IdentifierNode("FromObject");
+            fNode.Function = new IdentifierNode(/*NXLT*/"FromObject");
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> listArgs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             listArgs.Add(new ProtoCore.AST.AssociativeAST.IntNode(hostInstancePtr));
             fNode.FormalArguments = listArgs;
@@ -70,7 +70,7 @@ namespace ProtoCore
         private static BinaryExpressionNode CreateAssignmentNode(AssociativeNode rhsNode)
         {
 
-            IdentifierNode lhs = new IdentifierNode(string.Format("tVar_{0}", staticVariableIndex++));
+            IdentifierNode lhs = new IdentifierNode(string.Format(/*NXLT*/"tVar_{0}", staticVariableIndex++));
             BinaryExpressionNode bNode = new BinaryExpressionNode(lhs, rhsNode, ProtoCore.DSASM.Operator.assign);
             return bNode;
         }

@@ -35,7 +35,7 @@ namespace ProtoFFI
 
         static CLRModuleType()
         {
-            mDisposeMethod = typeof(CLRModuleType).GetMethod("Dispose", BindingFlags.Static | BindingFlags.NonPublic);
+            mDisposeMethod = typeof(CLRModuleType).GetMethod(/*NXLT*/"Dispose", BindingFlags.Static | BindingFlags.NonPublic);
         }
         #endregion
 
@@ -62,7 +62,7 @@ namespace ProtoFFI
                         //Now check that a type with same name is not imported.
                         Type otherType;
                         if (mTypeNames.TryGetValue(mtype.FullName, out otherType))
-                            throw new InvalidOperationException(string.Format("Can't import {0}, {1} is already imported as {2}, namespace support needed.", type.FullName, type.Name, otherType.FullName));
+                            throw new InvalidOperationException(string.Format(/*NXLT*/"Can't import {0}, {1} is already imported as {2}, namespace support needed.", type.FullName, type.Name, otherType.FullName));
 
                         mTypes.Add(type, mtype);
                         mTypeNames.Add(mtype.FullName, type);
@@ -279,7 +279,7 @@ namespace ProtoFFI
         private ClassDeclNode ParseEnumType(Type type, string alias)
         {
             //TODO: For now Enum can't be suppressed.
-            Validity.Assert(type.IsEnum, "Non enum type is being imported as enum!!");
+            Validity.Assert(type.IsEnum, /*NXLT*/"Non enum type is being imported as enum!!");
 
             string classname = alias;
             if (classname == null | classname == string.Empty)
@@ -320,7 +320,7 @@ namespace ProtoFFI
 
         private ClassDeclNode ParseSystemType(Type type, string alias)
         {
-            Validity.Assert(!SupressesImport(type), "Supressed type is being imported!!");
+            Validity.Assert(!SupressesImport(type), /*NXLT*/"Supressed type is being imported!!");
 
             string classname = alias;
             if (classname == null | classname == string.Empty)
@@ -519,13 +519,13 @@ namespace ProtoFFI
             if (null == m || !m.IsSpecialName)
                 return false;
 
-            return m.Name.StartsWith("op_");
+            return m.Name.StartsWith(/*NXLT*/"op_");
         }
 
         private bool isDisposeMethod(MethodInfo m)
         {
             ParameterInfo[] ps = m.GetParameters();
-            if ((ps == null || ps.Length == 0) && m.Name == "Dispose")
+            if ((ps == null || ps.Length == 0) && m.Name == /*NXLT*/"Dispose")
                 return true;
             return false;
         }
@@ -681,7 +681,7 @@ namespace ProtoFFI
             {
                 //case for named constructor. Must return a pointer type
                 if (!Object.Equals(method.ReturnType, CLRType))
-                    throw new InvalidOperationException("Unexpected type for constructor {0D28FC00-F8F4-4049-AD1F-BBC34A68073F}");
+                    throw new InvalidOperationException(/*NXLT*/"Unexpected type for constructor {0D28FC00-F8F4-4049-AD1F-BBC34A68073F}");
 
                 retype = ProtoCoreType;
                 ConstructorDefinitionNode node = ParsedNamedConstructor(method, method.Name, retype);
@@ -695,11 +695,11 @@ namespace ProtoFFI
 
             if (isOperator)
             {
-                func.Name = string.Format("{0}{1}", prefix, GetDSOperatorName(method.Name));
+                func.Name = string.Format(/*NXLT*/"{0}{1}", prefix, GetDSOperatorName(method.Name));
             }
             else
             {
-                func.Name = string.Format("{0}{1}", prefix, method.Name);
+                func.Name = string.Format(/*NXLT*/"{0}{1}", prefix, method.Name);
             }
             func.Pattern = null;
             func.Signature = ParseArgumentSignature(method);
@@ -730,31 +730,31 @@ namespace ProtoFFI
         {
             switch (methodName)
             {
-                case "op_Addition":
+                case /*NXLT*/"op_Addition":
                     return Operator.add.ToString();
-                case "op_Subtraction":
+                case /*NXLT*/"op_Subtraction":
                     return Operator.sub.ToString();
-                case "op_Multiply":
+                case /*NXLT*/"op_Multiply":
                     return Operator.mul.ToString();
-                case "op_Division":
+                case /*NXLT*/"op_Division":
                     return Operator.div.ToString();
-                case "op_Modulus":
+                case /*NXLT*/"op_Modulus":
                     return Operator.mod.ToString();
-                case "op_LogicalAnd":
+                case /*NXLT*/"op_LogicalAnd":
                     return Operator.and.ToString();
-                case "op_LogicalOr":
+                case /*NXLT*/"op_LogicalOr":
                     return Operator.or.ToString();
-                case "op_Equality":
+                case /*NXLT*/"op_Equality":
                     return Operator.eq.ToString();
-                case "op_GreaterThan":
+                case /*NXLT*/"op_GreaterThan":
                     return Operator.gt.ToString();
-                case "op_LessThan":
+                case /*NXLT*/"op_LessThan":
                     return Operator.lt.ToString();
-                case "op_Inequality":
+                case /*NXLT*/"op_Inequality":
                     return Operator.nq.ToString();
-                case "op_GreaterThanOrEqual":
+                case /*NXLT*/"op_GreaterThanOrEqual":
                     return Operator.ge.ToString();
-                case "op_LessThanOrEqual":
+                case /*NXLT*/"op_LessThanOrEqual":
                     return Operator.le.ToString();
                 default:
                     return methodName;
@@ -945,7 +945,7 @@ namespace ProtoFFI
                 return pointers;
             }
 
-            throw new KeyNotFoundException(string.Format("Function definition for {0}.{1}, not found", className, name));
+            throw new KeyNotFoundException(string.Format(/*NXLT*/"Function definition for {0}.{1}, not found", className, name));
         }
 
         private bool ClassFilter(Type type, object criteria)
@@ -1023,7 +1023,7 @@ namespace ProtoFFI
                 node.Body.Add(item.ClassNode);
             }
 
-            string ffidump = Environment.GetEnvironmentVariable("FFIDUMP");
+            string ffidump = Environment.GetEnvironmentVariable(/*NXLT*/"FFIDUMP");
             if (string.Compare(ffidump, "1") == 0)
             {
                 System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -1032,7 +1032,7 @@ namespace ProtoFFI
                     sb.Append(item.ToString());
                     sb.AppendLine();
                 }
-                using (System.IO.FileStream fs = new System.IO.FileStream(string.Format("{0}.ds", this.Name), System.IO.FileMode.Create))
+                using (System.IO.FileStream fs = new System.IO.FileStream(string.Format(/*NXLT*/"{0}.ds", this.Name), System.IO.FileMode.Create))
                 {
                     byte[] bytes = System.Text.Encoding.ASCII.GetBytes(sb.ToString());
                     fs.Write(bytes, 0, bytes.Length);
@@ -1103,7 +1103,7 @@ namespace ProtoFFI
             Type[] types = GetTypes(string.Empty);
             foreach (var item in types)
             {
-                if ("Configuration" == CLRObjectMarshler.GetCategory(item))
+                if (/*NXLT*/"Configuration" == CLRObjectMarshler.GetCategory(item))
                     return item;
             }
             return null;
@@ -1179,7 +1179,7 @@ namespace ProtoFFI
                     //This probably wasn't a .NET dll
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
+                    throw new System.Exception(string.Format(/*NXLT*/"Dynamo can only import .NET DLLs. Failed to load library: {0}.", name));
                 }
 
                 catch (System.Exception exception)
@@ -1189,7 +1189,7 @@ namespace ProtoFFI
                     // 
                     System.Diagnostics.Debug.WriteLine(exception.Message);
                     System.Diagnostics.Debug.WriteLine(exception.StackTrace);
-                    throw new System.Exception(string.Format("Fail to load library: {0}.", name));
+                    throw new System.Exception(string.Format(/*NXLT*/"Fail to load library: {0}.", name));
                 }
             }
 
@@ -1219,7 +1219,7 @@ namespace ProtoFFI
         public FFIClassAttributes(Type type)
         {
             if (type == null)
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(/*NXLT*/"type");
 
             attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             foreach (var attr in attributes)
@@ -1259,7 +1259,7 @@ namespace ProtoFFI
         public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
         {
             if (method == null)
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException(/*NXLT*/"method");
 
             FFIClassAttributes baseAttributes = null;
             Type type = method.DeclaringType;

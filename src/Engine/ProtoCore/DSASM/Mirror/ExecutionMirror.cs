@@ -14,7 +14,7 @@ namespace ProtoCore.DSASM.Mirror
     public class SymbolNotFoundException: Exception
     {
         public SymbolNotFoundException(string symbolName)
-            : base("Cannot find symbol: " + symbolName)
+            : base(/*NXLT*/"Cannot find symbol: " + symbolName)
         {
             this.SymbolName = symbolName;
         }
@@ -40,7 +40,7 @@ namespace ProtoCore.DSASM.Mirror
         /// <param name="exec"></param>
         public ExecutionMirror(ProtoCore.DSASM.Executive exec, ProtoCore.Core coreObj)
         {
-            Validity.Assert(exec != null, "Can't mirror a null executive");
+            Validity.Assert(exec != null, /*NXLT*/"Can't mirror a null executive");
 
             core = coreObj;
             MirrorTarget = exec;
@@ -289,7 +289,7 @@ namespace ProtoCore.DSASM.Mirror
                         return (string.Format("{0}{{{1}}}", classnode.name, classtrace.ToString()));
                     else
                     {
-                        string tempstr =  (string.Format("{0}({1})", classnode.name, classtrace.ToString()));
+                        string tempstr = (string.Format(/*NXLT*/"{0}({1})", classnode.name, classtrace.ToString()));
                         return tempstr;
                     }
 
@@ -537,7 +537,7 @@ namespace ProtoCore.DSASM.Mirror
                 {
                     if (classnode.symbols.symbolList[index].arraySizeList != null)
                     {
-                        throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
+                        throw new NotImplementedException(/*NXLT*/"{C5877FF2-968D-444C-897F-FE83650D5201}");
                     }
                     symbol = classnode.symbols.symbolList[index];
                     return index;
@@ -612,7 +612,7 @@ namespace ProtoCore.DSASM.Mirror
                 {
                     if (exe.runtimeSymbols[searchBlock.codeBlockId].symbolList[index].arraySizeList != null)
                     {
-                        throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
+                        throw new NotImplementedException(/*NXLT*/"{C5877FF2-968D-444C-897F-FE83650D5201}");
                     }
                     block = searchBlock.codeBlockId;
                     symbol = exe.runtimeSymbols[searchBlock.codeBlockId].symbolList[index];
@@ -644,7 +644,7 @@ namespace ProtoCore.DSASM.Mirror
             }
             throw new NameNotFoundException { Name = name };
 
-            //throw new NotImplementedException("{F5ACC95F-AEC9-486D-BC82-FF2CB26E7E6A}"); //@TODO(Luke): Replace this with a symbol lookup exception
+            //throw new NotImplementedException(/*NXLT*/"{F5ACC95F-AEC9-486D-BC82-FF2CB26E7E6A}"); //@TODO(Luke): Replace this with a symbol lookup exception
         }
 
         public string GetType(string name)
@@ -786,7 +786,7 @@ namespace ProtoCore.DSASM.Mirror
                 var symbol = exe.runtimeSymbols[block].symbolList[index];
                 if (symbol.arraySizeList != null)
                 {
-                    throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
+                    throw new NotImplementedException(/*NXLT*/"{C5877FF2-968D-444C-897F-FE83650D5201}");
                 }
 
                 Obj retVal = Unpack(MirrorTarget.rmem.GetSymbolValue(symbol), MirrorTarget.rmem.Heap, core);
@@ -1048,7 +1048,7 @@ namespace ProtoCore.DSASM.Mirror
                     //Q(Luke): This seems to imply that the LHS is an array index?
                     if (exe.runtimeSymbols[block].symbolList[index].arraySizeList != null)
                     {
-                        throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5202}");
+                        throw new NotImplementedException(/*NXLT*/"{C5877FF2-968D-444C-897F-FE83650D5202}");
                     }
 
                     SymbolNode symNode = exe.runtimeSymbols[block].symbolList[index];
@@ -1074,19 +1074,19 @@ namespace ProtoCore.DSASM.Mirror
                     var symbol = exe.runtimeSymbols[block].symbolList[index];
                     if (symbol.arraySizeList != null)
                     {
-                        throw new NotImplementedException("{C5877FF2-968D-444C-897F-FE83650D5201}");
+                        throw new NotImplementedException(/*NXLT*/"{C5877FF2-968D-444C-897F-FE83650D5201}");
                     }
 
                     return MirrorTarget.rmem.GetSymbolValue(symbol);
                 }
             }
-            throw new NotImplementedException("{F5ACC95F-AEC9-486D-BC82-FF2CB26E7E6A}"); //@TODO(Luke): Replace this with a symbol lookup exception
+            throw new NotImplementedException(/*NXLT*/"{F5ACC95F-AEC9-486D-BC82-FF2CB26E7E6A}"); //@TODO(Luke): Replace this with a symbol lookup exception
         }
 
         public string GetFirstNameFromValue(StackValue v)
         {
             if (!v.IsPointer)
-                throw new ArgumentException("SV to highlight must be a pointer");
+                throw new ArgumentException(/*NXLT*/"SV to highlight must be a pointer");
 
             ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
 
@@ -1239,7 +1239,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 default:
                     {
-                        throw new NotImplementedException(string.Format("unknown datatype {0}", val.optype.ToString()));
+                        throw new NotImplementedException(string.Format(/*NXLT*/"unknown datatype {0}", val.optype.ToString()));
                     }
             }
 
@@ -1351,7 +1351,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 default:
                     {
-                        throw new NotImplementedException(string.Format("unknown datatype {0}", val.optype.ToString()));
+                        throw new NotImplementedException(string.Format(/*NXLT*/"unknown datatype {0}", val.optype.ToString()));
                     }
             }
 
@@ -1503,7 +1503,7 @@ namespace ProtoCore.DSASM.Mirror
                     }
                     else
                     {
-                        throw new NotImplementedException("Test comparison not implemented: {EBAFAE6C-BCBF-42B8-B99C-49CFF989F0F0}");
+                        throw new NotImplementedException(/*NXLT*/"Test comparison not implemented: {EBAFAE6C-BCBF-42B8-B99C-49CFF989F0F0}");
                     }
                 }
                 else

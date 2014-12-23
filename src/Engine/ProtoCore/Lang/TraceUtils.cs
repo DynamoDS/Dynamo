@@ -16,7 +16,7 @@ namespace ProtoCore.Lang
 //Luke: This is deliberately inconsistent, it is not supposed to be in widespread use, to work around a defiency
 //in the TLS implementation.
 //TODO(Luke): Replace this with an attribute lookup
-        internal const string __TEMP_REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
+        internal const string __TEMP_REVIT_TRACE_ID = /*NXLT*/"{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
 // ReSharper restore InconsistentNaming
         
 

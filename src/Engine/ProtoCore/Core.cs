@@ -55,8 +55,8 @@ namespace ProtoCore
             public FEventSink(string fileName)
             {
                 stream = new FileStream(fileName + ".log", FileMode.Create, FileAccess.Write, FileShare.Read);
-                BeginDocument += p => StreamUtil.AddText(stream, "Begin Document: " + p);
-                EndDocument += p => StreamUtil.AddText(stream, "End Document: " + p);
+                BeginDocument += p => StreamUtil.AddText(stream, /*NXLT*/"Begin Document: " + p);
+                EndDocument += p => StreamUtil.AddText(stream, /*NXLT*/"End Document: " + p);
                 PrintMessage += p => StreamUtil.AddText(stream, p);
             }
 
@@ -168,8 +168,8 @@ namespace ProtoCore
 
             // defaults to 6 decimal places
             //
-            FormatToPrintFloatingPoints = "F6";
-            RootCustomPropertyFilterPathName = @"C:\arxapiharness\Bin\AcDesignScript\CustomPropertyFilter.txt";
+            FormatToPrintFloatingPoints = /*NXLT*/"F6";
+            RootCustomPropertyFilterPathName = /*NXLT*/@"C:\arxapiharness\Bin\AcDesignScript\CustomPropertyFilter.txt";
             CompileToLib = false;
             AssocOperatorAsMethod = true;
 
@@ -1263,7 +1263,7 @@ namespace ProtoCore
         public void ResetDeltaCompileFromSnapshot(List<CodeBlockCompilationSnapshot> snapShots)
         {
             if (snapShots == null)
-                throw new ArgumentNullException("snapshots");
+                throw new ArgumentNullException(/*NXLT*/"snapshots");
 
             foreach (var snapShot in snapShots)
             {
@@ -1487,7 +1487,7 @@ namespace ProtoCore
             GetTraceDataForNodes(IEnumerable<Guid> nodeGuids)
         {
             if (nodeGuids == null)
-                throw new ArgumentNullException("nodeGuids");
+                throw new ArgumentNullException(/*NXLT*/"nodeGuids");
 
             var nodeDataPairs = new Dictionary<Guid, List<string>>();
 
@@ -1548,7 +1548,7 @@ namespace ProtoCore
         GetCallsitesForNodes(IEnumerable<Guid> nodeGuids)
         {
             if (nodeGuids == null)
-                throw new ArgumentNullException("nodeGuids");
+                throw new ArgumentNullException(/*NXLT*/"nodeGuids");
 
             var nodeMap = new Dictionary<Guid, List<CallSite>>();
 
@@ -1761,7 +1761,7 @@ namespace ProtoCore
                 int stackIndex = CodeBlockList[globalBlock].symbolTable.IndexOf(global.Key);
 
                 if (global.Value.GetType() != typeof(Double) && global.Value.GetType() != typeof(Int32))
-                    throw new NotImplementedException("Context that's aren't double are not yet supported @TODO: Jun,Sharad,Luke ASAP");
+                    throw new NotImplementedException(/*NXLT*/"Context that's aren't double are not yet supported @TODO: Jun,Sharad,Luke ASAP");
 
                 double dValue = Convert.ToDouble(global.Value);
                 StackValue svData = StackValue.BuildDouble(dValue);
@@ -2318,7 +2318,7 @@ namespace ProtoCore
         {
             if (this.cancellationPending)
             {
-                var message = "Cancellation cannot be requested twice";
+                var message = /*NXLT*/"Cancellation cannot be requested twice";
                 throw new InvalidOperationException(message);
             }
 

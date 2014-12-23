@@ -22,7 +22,7 @@ namespace ProtoCore.Utils
         public static ClassNode GetGreatestCommonSubclassForArray(StackValue array, Core core)
         {
             if (!array.IsArray)
-                throw new ArgumentException("The stack value provided was not an array");
+                throw new ArgumentException(/*NXLT*/"The stack value provided was not an array");
 
             Dictionary<ClassNode, int> typeStats = GetTypeStatisticsForArray(array, core);
 
@@ -284,7 +284,7 @@ namespace ProtoCore.Utils
 
             if (!array.IsArray)
                 return 0;
-            //throw new ArgumentException("The stack value provided was not an array");
+            //throw new ArgumentException(/*NXLT*/"The stack value provided was not an array");
 
             int ret = 1;
 

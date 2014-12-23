@@ -138,14 +138,14 @@ namespace ProtoCore
             if (string.IsNullOrEmpty(message.FilePath))
             {
                 // Type: Message
-                string formatWithoutFile = "{0}: {1}";
+                string formatWithoutFile = /*NXLT*/"{0}: {1}";
                 FileStream.WriteLine(string.Format(formatWithoutFile,
                     message.Type.ToString(), message.Message));
             }
             else
             {
                 // Type: Message (File - Line, Column)
-                string formatWithFile = "{0}: {1} ({2} - line: {3}, col: {4})";
+                string formatWithFile = /*NXLT*/"{0}: {1} ({2} - line: {3}, col: {4})";
                 FileStream.WriteLine(string.Format(formatWithFile,
                     message.Type.ToString(), message.Message,
                     message.FilePath, message.Line, message.Column));
@@ -186,14 +186,14 @@ namespace ProtoCore
             if (string.IsNullOrEmpty(message.FilePath))
             {
                 // Type: Message
-                string formatWithoutFile = "{0}: {1}";
+                string formatWithoutFile = /*NXLT*/"{0}: {1}";
                 TextStream.WriteLine(string.Format(formatWithoutFile,
                     message.Type.ToString(), message.Message));
             }
             else
             {
                 // Type: Message (File - Line, Column)
-                string formatWithFile = "{0}: {1} ({2} - line: {3}, col: {4})";
+                string formatWithFile = /*NXLT*/"{0}: {1} ({2} - line: {3}, col: {4})";
                 TextStream.WriteLine(string.Format(formatWithFile,
                     message.Type.ToString(), message.Message,
                     message.FilePath, message.Line, message.Column));
@@ -223,14 +223,14 @@ namespace ProtoCore
             if (string.IsNullOrEmpty(message.FilePath))
             {
                 // Type: Message
-                string formatWithoutFile = "{0}: {1}";
+                string formatWithoutFile = /*NXLT*/"{0}: {1}";
                 System.Console.WriteLine(string.Format(formatWithoutFile,
                     message.Type.ToString(), message.Message));
             }
             else
             {
                 // Type: Message (File - Line, Column)
-                string formatWithFile = "{0}: {1} ({2} - line: {3}, col: {4})";
+                string formatWithFile = /*NXLT*/"{0}: {1} ({2} - line: {3}, col: {4})";
                 System.Console.WriteLine(string.Format(formatWithFile,
                     message.Type.ToString(), message.Message,
                     message.FilePath, message.Line, message.Column));
@@ -268,7 +268,7 @@ namespace ProtoCore
             if (string.IsNullOrEmpty(message.FilePath))
             {
                 // Type: Message
-                string formatWithoutFile = "{0}: {1}";
+                string formatWithoutFile = /*NXLT*/"{0}: {1}";
 
                 //System.IO.StreamWriter logFile = new System.IO.StreamWriter("c:\\test.txt");
                 if (null != core.ExecutionLog)
@@ -282,7 +282,7 @@ namespace ProtoCore
                 // Type: Message (File - Line, Column)
                 if (null != core.ExecutionLog)
                 {
-                    string formatWithFile = "{0}: {1} ({2} - line: {3}, col: {4})";
+                    string formatWithFile = /*NXLT*/"{0}: {1} ({2} - line: {3}, col: {4})";
                     core.ExecutionLog.WriteLine(string.Format(formatWithFile,
                         message.Type.ToString(), message.Message,
                         message.FilePath, message.Line, message.Column));
@@ -465,7 +465,7 @@ namespace ProtoCore
         {
             if (logErrors)
             {
-                var message = string.Format("{0}({1},{2}) Error:{3}", fileName, line, col, msg);
+                var message = string.Format(/*NXLT*/"{0}({1},{2}) Error:{3}", fileName, line, col, msg);
                 System.Console.WriteLine(message);
             }
 
@@ -501,7 +501,7 @@ namespace ProtoCore
         {
             if (logErrors)
             {
-                System.Console.WriteLine("{0}({1},{2}) Error:{3}", fileName, line, col, msg);
+                System.Console.WriteLine(/*NXLT*/"{0}({1},{2}) Error:{3}", fileName, line, col, msg);
             }
 
             if (core.Options.IsDeltaExecution)
@@ -592,7 +592,7 @@ namespace ProtoCore
 
             if (LogWarnings)
             {
-                System.Console.WriteLine("{0}({1},{2}) Warning:{3}", fileName, line, col, message);
+                System.Console.WriteLine(/*NXLT*/"{0}({1},{2}) Warning:{3}", fileName, line, col, message);
 
                 OutputMessage outputmessage = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), fileName, line, col);
                 if (MessageHandler != null)

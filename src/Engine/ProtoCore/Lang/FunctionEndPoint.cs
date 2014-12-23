@@ -98,7 +98,7 @@ namespace ProtoCore
                         ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(formalParameters[i], core);
 
                         if (commonBaseType == null)
-                            throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported("Array with no common superclass not yet supported: {0C644179-14F5-4172-8EF8-A2F3739901B2}");
+                            throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(/*NXLT*/"Array with no common superclass not yet supported: {0C644179-14F5-4172-8EF8-A2F3739901B2}");
 
                         cn = commonBaseType; //From now on perform tests on the commmon base type
                     }

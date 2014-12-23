@@ -135,7 +135,7 @@ namespace ProtoCore.Lang
                         break;
                     }
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kIsHomogeneous:
-                    //throw new NotImplementedException("LC urgent fix");
+                    //throw new NotImplementedException(/*NXLT*/"LC urgent fix");
                     ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.IsHomogeneous(formalParameters[0], interpreter));
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kSum:
@@ -500,7 +500,7 @@ namespace ProtoCore.Lang
                     ret = StackValue.Null;
                     break;
                 default:
-                    throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
+                    throw new ProtoCore.Exceptions.CompilerInternalException(/*NXLT*/"Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
             }
 
             GCUtils.GCRetain(ret, core);
@@ -1272,7 +1272,7 @@ namespace ProtoCore.Lang
         internal static StackValue Difference(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime, ProtoCore.Runtime.Context context)
         {
             if((Rank(sv1, runtime)!=1)||(Rank(sv2, runtime)!=1)){
-                Console.WriteLine("Warning: Both arguments were expected to be one-dimensional array type!");
+                Console.WriteLine(/*NXLT*/"Warning: Both arguments were expected to be one-dimensional array type!");
                 return DSASM.StackValue.Null;
             }
             if ((!sv1.IsArray) || (!sv1.IsArray))
@@ -1315,7 +1315,7 @@ namespace ProtoCore.Lang
         {
             if ((Rank(sv1, runtime) != 1) || (Rank(sv2, runtime) != 1))
             {
-                Console.WriteLine("Warning: Both arguments were expected to be one-dimensional array type!");
+                Console.WriteLine(/*NXLT*/"Warning: Both arguments were expected to be one-dimensional array type!");
                 return DSASM.StackValue.Null;
             }
             if ((!sv1.IsArray) || (!sv1.IsArray))
@@ -1673,7 +1673,7 @@ namespace ProtoCore.Lang
             List<StackValue> svList = new List<StackValue>();
             int index = 0;
 
-            if (typeString == "array")
+            if (typeString == /*NXLT*/"array")
                 typeString = ProtoCore.DSDefinitions.Keyword.Array;
             int type = runtime.runtime.Core.TypeSystem.GetType(typeString);
 
@@ -1832,7 +1832,7 @@ namespace ProtoCore.Lang
         //Sort & SortWithMode
         internal static StackValue Sort(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
-            //throw new NotImplementedException("LC urgent fix");
+            //throw new NotImplementedException(/*NXLT*/"LC urgent fix");
             return SortWithMode(sv, DSASM.StackValue.BuildBoolean(true), runtime);
         }
     
@@ -1856,7 +1856,7 @@ namespace ProtoCore.Lang
         //SortIndexByValue & SortIndexByValueWithMode
         internal static StackValue SortIndexByValue(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
-            //throw new NotImplementedException("LC Urgent");
+            //throw new NotImplementedException(/*NXLT*/"LC Urgent");
             return SortIndexByValueWithMode(sv, DSASM.StackValue.BuildBoolean(true), runtime);
         }
         internal static StackValue SortIndexByValueWithMode(StackValue sv, StackValue mode, ProtoCore.DSASM.Interpreter runtime)
