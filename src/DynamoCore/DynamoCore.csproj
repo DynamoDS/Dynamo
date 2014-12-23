@@ -109,6 +109,7 @@ limitations under the License.
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Search\BrowserRootElement.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
+    <Compile Include="Utilities\ImmutableStack.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
