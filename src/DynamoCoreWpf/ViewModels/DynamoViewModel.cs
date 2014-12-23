@@ -273,6 +273,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public int LeftSidebarWidth
+        {
+            get
+            {
+                return model.PreferenceSettings.LeftSidebarWidth;
+            }
+            set
+            {
+                model.PreferenceSettings.LeftSidebarWidth = value;
+                RaisePropertyChanged("LeftSidebarWidth");
+            }
+        }
+
         public bool IsShowingConnectors
         {
             get

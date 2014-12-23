@@ -10,7 +10,6 @@ using DynamoUnits;
 
 using DynamoUtilities;
 
-
 namespace Dynamo
 {
     /// <summary>
@@ -22,7 +21,7 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DYNAMO_TEST_PATH = null;
-        const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
+        private const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
         private LengthUnit _lengthUnit;
         private AreaUnit _areaUnit;
         private VolumeUnit _volumeUnit;
@@ -37,6 +36,7 @@ namespace Dynamo
         public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 
+        public int LeftSidebarWidth { get; set; }
         public int ConsoleHeight { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
@@ -113,7 +113,7 @@ namespace Dynamo
                 }
                 else
                 {
-                    lastUpdateDownloadPath = value; 
+                    lastUpdateDownloadPath = value;
                 }
             }
         }
@@ -128,6 +128,7 @@ namespace Dynamo
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;
+            LeftSidebarWidth = 304;
             ConsoleHeight = 0;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
@@ -150,7 +151,7 @@ namespace Dynamo
         {
             try
             {
-                var serializer = new XmlSerializer(typeof (PreferenceSettings));
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
                 using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
                     serializer.Serialize(fs, this);
@@ -163,7 +164,7 @@ namespace Dynamo
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }
-            
+
             return false;
         }
 
@@ -173,7 +174,7 @@ namespace Dynamo
         /// <returns>Whether file is saved or error occurred.</returns>
         public bool Save()
         {
-            if ( DYNAMO_TEST_PATH == null )
+            if (DYNAMO_TEST_PATH == null)
                 // Save in User Directory Path
                 return Save(GetSettingsFilePath());
             else
@@ -207,10 +208,10 @@ namespace Dynamo
                 }
             }
             catch (Exception) { }
-            
+
             return settings;
         }
-        
+
         /// <summary>
         /// Return PreferenceSettings from Default XML path
         /// </summary>
@@ -220,7 +221,7 @@ namespace Dynamo
         /// </returns>
         public static PreferenceSettings Load()
         {
-            if ( DYNAMO_TEST_PATH == null )
+            if (DYNAMO_TEST_PATH == null)
                 // Save in User Directory Path
                 return Load(GetSettingsFilePath());
             else
