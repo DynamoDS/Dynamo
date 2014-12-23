@@ -678,7 +678,7 @@ namespace Dynamo.Tests
         public void TestDoubleSliderInput()
         {
             var model = ViewModel.Model;
-            model.CurrentWorkspace.AddNode(400, 0, "Double Slider");
+            model.CurrentWorkspace.AddNode(400, 0, "Number Slider");
 
             var numNode = ViewModel.Model.Nodes[0] as DoubleSlider;
             numNode.X = 400; //To check if NodeModel base Serialization method is being called
