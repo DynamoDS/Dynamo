@@ -45,12 +45,12 @@ namespace Dynamo
 
     class SampleSchedulerThread : ISchedulerThread
     {
-        private DynamoScheduler scheduler;
+        private IScheduler scheduler;
 
         internal bool Initialized { get; private set; }
         internal bool Destroyed { get; private set; }
 
-        public void Initialize(DynamoScheduler owningScheduler)
+        public void Initialize(IScheduler owningScheduler)
         {
             scheduler = owningScheduler;
             Initialized = true;
@@ -1268,7 +1268,7 @@ namespace Dynamo
             var task = new FakeQueryMirrorDataAsyncTask(
                 new QueryMirrorDataParams()
                 {
-                    DynamoScheduler = dynamoModel.Scheduler,
+                    Scheduler = dynamoModel.Scheduler,
                     EngineController = dynamoModel.EngineController,
                     VariableName = variableName
                 });
