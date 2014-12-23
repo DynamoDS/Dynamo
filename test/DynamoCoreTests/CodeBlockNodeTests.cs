@@ -601,6 +601,27 @@ b = c[w][x][y][z];";
             Assert.AreEqual("a = 1;\nb = 2;", after);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TextFormat_CurlyBraces_SemiColonAddedAutomatically()
+        {
+            var before = "{1,2,3}";
+            var after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("{1,2,3};", after);
+
+            before = "{1,2,3};";
+            after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("{1,2,3};", after);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TextFormat_SingleLineComment_NoSemiColonAdded()
+        {
+            var before = "//comment";
+            var after = CodeBlockUtils.FormatUserText(before);
+            Assert.AreEqual("//comment", after);
+        }
 
         [Test]
         [Category("UnitTests")]
@@ -744,115 +765,6 @@ b = c[w][x][y][z];";
 
             // The last line will display an output port as long as it defines variable.
             Assert.IsTrue(CodeBlockUtils.DoesStatementRequireOutputPort(svs, 2));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestMapLogicalToVisualLineIndices00()
-        {
-            var firstResult = CodeBlockUtils.MapLogicalToVisualLineIndices(null);
-            Assert.IsNotNull(firstResult);
-            Assert.AreEqual(0, firstResult.Count());
-
-            var secondResult = CodeBlockUtils.MapLogicalToVisualLineIndices("");
-            Assert.IsNotNull(secondResult);
-            Assert.AreEqual(0, secondResult.Count());
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestMapLogicalToVisualLineIndices01()
-        {
-            var code = "point = Point.ByCoordinates(1, 2, 3);";
-            var maps = CodeBlockUtils.MapLogicalToVisualLineIndices(code);
-
-            Assert.IsNotNull(maps);
-            Assert.AreEqual(1, maps.Count());
-            Assert.AreEqual(0, maps.ElementAt(0));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestMapLogicalToVisualLineIndices02()
-        {
-            var code = "start = Point.ByCoordinates(1, 2, 3);\n" +
-                "end = Point.ByCoordinates(10, 20, 30);";
-
-            var maps = CodeBlockUtils.MapLogicalToVisualLineIndices(code);
-
-            Assert.IsNotNull(maps);
-            Assert.AreEqual(2, maps.Count());
-            Assert.AreEqual(0, maps.ElementAt(0));
-            Assert.AreEqual(1, maps.ElementAt(1));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestMapLogicalToVisualLineIndices03()
-        {
-            var code = "firstLine = Line.ByStartPointEndPoint(" +
-                "Point.ByCoordinates(0, 0, 0), " +
-                "Point.ByCoordinates(10, 20, 30));\n" +
-                "\n" +
-                "secondLine = Line.ByStartPointEndPoint(" +
-                "Point.ByCoordinates(10, 20, 30), " +
-                "Point.ByCoordinates(40, 50, 60));\n";
-
-            var maps = CodeBlockUtils.MapLogicalToVisualLineIndices(code);
-
-            Assert.IsNotNull(maps);
-            Assert.AreEqual(4, maps.Count()); // Note the empty last line.
-            Assert.AreEqual(0, maps.ElementAt(0));
-            Assert.AreEqual(2, maps.ElementAt(1));
-            Assert.AreEqual(3, maps.ElementAt(2));
-            Assert.AreEqual(5, maps.ElementAt(3));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestMapLogicalToVisualLineIndices04()
-        {
-            var code = "firstLine = Line.ByStartPointEndPoint(" +
-                "Point.ByCoordinatesinates(0, 0, 0), " +
-                "Point.ByCoordinatesinates(10, 20, 30));\n" +
-                "\n" +
-                "xCoordinates0 = 10;\n" +
-                "yCoordinates0 = 20;\n" +
-                "zCoordinates0 = 30;\n" +
-                "\n" +
-                "\n" +
-                "xCoordinates1 = 40;\n" +
-                "yCoordinates1 = 50;\n" +
-                "zCoordinates1 = 60;\n" +
-                "\n" +
-                "secondLine = Line.ByStartPointEndPoint(" +
-                "Point.ByCoordinatesinates(xCoordinates0, yCoordinates0, zCoordinates0), " +
-                "Point.ByCoordinatesinates(xCoordinates1, yCoordinates1, zCoordinates1));\n" +
-                "\n" +
-                "\n" +
-                "sp = firstLine.StartPoint;\n" +
-                "ep = firstLine.EndPoint;\n";
-
-            var maps = CodeBlockUtils.MapLogicalToVisualLineIndices(code);
-
-            Assert.IsNotNull(maps);
-            Assert.AreEqual(17, maps.Count()); // Note the empty last line.
-            Assert.AreEqual(0, maps.ElementAt(0));
-            Assert.AreEqual(2, maps.ElementAt(1));
-            Assert.AreEqual(3, maps.ElementAt(2));
-            Assert.AreEqual(4, maps.ElementAt(3));
-            Assert.AreEqual(5, maps.ElementAt(4));
-            Assert.AreEqual(6, maps.ElementAt(5));
-            Assert.AreEqual(7, maps.ElementAt(6));
-            Assert.AreEqual(8, maps.ElementAt(7));
-            Assert.AreEqual(9, maps.ElementAt(8));
-            Assert.AreEqual(10, maps.ElementAt(9));
-            Assert.AreEqual(11, maps.ElementAt(10));
-            Assert.AreEqual(12, maps.ElementAt(11));
-            Assert.AreEqual(15, maps.ElementAt(12));
-            Assert.AreEqual(16, maps.ElementAt(13));
-            Assert.AreEqual(17, maps.ElementAt(14));
-            Assert.AreEqual(18, maps.ElementAt(15));
         }
 
         #endregion

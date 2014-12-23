@@ -156,8 +156,6 @@ namespace Dynamo.UI
         #region CodeBlockNode
 
         public static readonly int CBNMaxPortNameLength = 24;
-        public static readonly double CBNMaxTextBoxWidth = 500;
-        public static readonly double CBNFontSize = 15;
         public static readonly string HighlightingFile =
             "DesignScript.Resources.SyntaxHighlighting.xshd";
 
