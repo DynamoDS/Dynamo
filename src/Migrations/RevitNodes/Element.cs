@@ -12,7 +12,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll", "Element.Geometry", "Element.Geometry@Element");
+            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll", /*NXLT*/"Element.Geometry", /*NXLT*/"Element.Geometry@Element");
         }
     }
 

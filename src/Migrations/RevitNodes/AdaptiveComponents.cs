@@ -8,8 +8,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "AdaptiveComponent.ByPoints", "AdaptiveComponent.ByPoints@Point[],FamilySymbol");
+            return MigrateToDsFunction(data, /*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"AdaptiveComponent.ByPoints", /*NXLT*/"AdaptiveComponent.ByPoints@Point[],FamilySymbol");
         }
     }
 
@@ -18,8 +18,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "AdaptiveComponent.ByPoints", "AdaptiveComponent.ByPoints@Point[],FamilySymbol");
+            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"AdaptiveComponent.ByPoints", /*NXLT*/"AdaptiveComponent.ByPoints@Point[],FamilySymbol");
         }
     }
 
@@ -28,9 +28,9 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "AdaptiveComponent.ByParametersOnFace",
-                "AdaptiveComponent.ByParametersOnFace@double[][],Face,FamilySymbol");
+            return MigrateToDsFunction(data, /*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"AdaptiveComponent.ByParametersOnFace",
+                /*NXLT*/"AdaptiveComponent.ByParametersOnFace@double[][],Face,FamilySymbol");
         }
     }
 
@@ -39,9 +39,9 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "AdaptiveComponent.ByParametersOnCurveReference",
-                "AdaptiveComponent.ByParametersOnCurveReference@double[],CurveReference,FamilySymbol");
+            return MigrateToDsFunction(data, /*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"AdaptiveComponent.ByParametersOnCurveReference",
+                /*NXLT*/"AdaptiveComponent.ByParametersOnCurveReference@double[],CurveReference,FamilySymbol");
         }
     }
 }

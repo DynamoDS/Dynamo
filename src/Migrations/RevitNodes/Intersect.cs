@@ -16,8 +16,8 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Geometry.Intersect", "Geometry.Intersect@Geometry");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Geometry.Intersect", /*NXLT*/"Geometry.Intersect@Geometry");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -65,9 +65,9 @@ namespace Dynamo.Nodes
 
                 // get the parameter as a vector
                 var parmAtPt = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0, "ProtoGeometry.dll",
-                    "Surface.UVParameterAtPoint",
-                    "Surface.UVParameterAtPoint@Point");
+                    data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                    /*NXLT*/"Surface.UVParameterAtPoint",
+                    /*NXLT*/"Surface.UVParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);
                 var parmAtPtId = MigrationManager.GetGuidFromXmlElement(parmAtPt);
 
@@ -92,9 +92,9 @@ namespace Dynamo.Nodes
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0, "ProtoGeometry.dll",
-                    "Curve.ParameterAtPoint",
-                    "Curve.ParameterAtPoint@Point");
+                    data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                    /*NXLT*/"Curve.ParameterAtPoint",
+                    /*NXLT*/"Curve.ParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);
                 var parmAtPtId = MigrationManager.GetGuidFromXmlElement(parmAtPt);
 
@@ -125,8 +125,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Geometry.Intersect", "Geometry.Intersect@Geometry");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Geometry.Intersect", /*NXLT*/"Geometry.Intersect@Geometry");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -156,9 +156,9 @@ namespace Dynamo.Nodes
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0, "ProtoGeometry.dll",
-                    "Curve.ParameterAtPoint",
-                    "Curve.ParameterAtPoint@Point");
+                    data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                    /*NXLT*/"Curve.ParameterAtPoint",
+                    /*NXLT*/"Curve.ParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);
                 var parmAtPtId = MigrationManager.GetGuidFromXmlElement(parmAtPt);
 
@@ -183,9 +183,9 @@ namespace Dynamo.Nodes
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0, "ProtoGeometry.dll",
-                    "Curve.ParameterAtPoint",
-                    "Curve.ParameterAtPoint@Point");
+                    data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                    /*NXLT*/"Curve.ParameterAtPoint",
+                    /*NXLT*/"Curve.ParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);
                 var parmAtPtId = MigrationManager.GetGuidFromXmlElement(parmAtPt);
 
@@ -211,8 +211,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll",
-                "Geometry.Intersect", "Geometry.Intersect@Geometry");
+            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Geometry.Intersect", /*NXLT*/"Geometry.Intersect@Geometry");
         }
     }
 
@@ -221,8 +221,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll",
-                "Geometry.Intersect", "Geometry.Intersect@Geometry");
+            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Geometry.Intersect", /*NXLT*/"Geometry.Intersect@Geometry");
         }
     }
 }

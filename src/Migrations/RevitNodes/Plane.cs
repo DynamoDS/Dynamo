@@ -15,15 +15,15 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Plane.ByOriginNormal", "Plane.ByOriginNormal@Point,Vector");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Plane.ByOriginNormal", /*NXLT*/"Plane.ByOriginNormal@Point,Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             //append asVector Node
             XmlElement pointAsVector0 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "ProtoGeometry.dll",
-                "Point.AsVector", "Point.AsVector");
+                data.Document, oldNode, 1,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Point.AsVector", /*NXLT*/"Point.AsVector");
             migrationData.AppendNode(pointAsVector0);
             string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
 
@@ -50,13 +50,13 @@ namespace Dynamo.Nodes
             // Create DSFunction nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "CoordinateSystem.XYPlane", "CoordinateSystem.XYPlane");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"CoordinateSystem.XYPlane", /*NXLT*/"CoordinateSystem.XYPlane");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            var csNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0, "ProtoGeometry.dll",
-                "CoordinateSystem.Identity", "CoordinateSystem.Identity");
+            var csNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"CoordinateSystem.Identity", /*NXLT*/"CoordinateSystem.Identity");
             migrationData.AppendNode(csNode);
             string csNodeId = MigrationManager.GetGuidFromXmlElement(csNode);
 
@@ -77,13 +77,13 @@ namespace Dynamo.Nodes
             // Create DSFunction nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "CoordinateSystem.ZXPlane", "CoordinateSystem.ZXPlane");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"CoordinateSystem.ZXPlane", /*NXLT*/"CoordinateSystem.ZXPlane");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            var csNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0, "ProtoGeometry.dll",
-                "CoordinateSystem.Identity", "CoordinateSystem.Identity");
+            var csNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"CoordinateSystem.Identity", /*NXLT*/"CoordinateSystem.Identity");
             migrationData.AppendNode(csNode);
             string csNodeId = MigrationManager.GetGuidFromXmlElement(csNode);
 
@@ -104,13 +104,13 @@ namespace Dynamo.Nodes
             // Create DSFunction nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "CoordinateSystem.YZPlane", "CoordinateSystem.YZPlane");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"CoordinateSystem.YZPlane", /*NXLT*/"CoordinateSystem.YZPlane");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            var csNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0, "ProtoGeometry.dll",
-                "CoordinateSystem.Identity", "CoordinateSystem.Identity");
+            var csNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"CoordinateSystem.Identity", /*NXLT*/"CoordinateSystem.Identity");
             migrationData.AppendNode(csNode);
             string csNodeId = MigrationManager.GetGuidFromXmlElement(csNode);
 
@@ -126,8 +126,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "SketchPlane.ByPlane", "SketchPlane.ByPlane@Plane");
+            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"SketchPlane.ByPlane", /*NXLT*/"SketchPlane.ByPlane@Plane");
         }
     }
 
@@ -157,8 +157,8 @@ namespace Dynamo.Nodes
             {
                 // When only the first output port is utilized, migrate directly
                 var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-                MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                    "Plane.ByBestFitThroughPoints", "Plane.ByBestFitThroughPoints");
+                MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                    /*NXLT*/"Plane.ByBestFitThroughPoints", /*NXLT*/"Plane.ByBestFitThroughPoints");
                 migrationData.AppendNode(newNode);
             }
 
@@ -171,8 +171,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "ReferencePlane.Plane", "ReferencePlane.Plane");
+            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"ReferencePlane.Plane", /*NXLT*/"ReferencePlane.Plane");
         }
     }
 }

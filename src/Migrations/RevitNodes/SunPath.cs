@@ -18,13 +18,13 @@ namespace Dynamo.Nodes
             // Create nodes
 
             XmlElement sunPathNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSRevitNodesUI.SunPathDirection", "SunPath Direction");
+                oldNode, /*NXLT*/"DSRevitNodesUI.SunPathDirection", "SunPath Direction");
             sunPathNode.SetAttribute("guid", Guid.NewGuid().ToString());
             sunPathNode.SetAttribute("x", (Convert.ToDouble(oldNode.GetAttribute("x")) - 230).ToString());
 
             var vectorAsPoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(vectorAsPoint, "ProtoGeometry.dll",
-                "Vector.AsPoint", "Vector.AsPoint");
+            MigrationManager.SetFunctionSignature(vectorAsPoint,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Vector.AsPoint", /*NXLT*/"Vector.AsPoint");
             
             migrationData.AppendNode(sunPathNode);
             migrationData.AppendNode(vectorAsPoint);
@@ -43,8 +43,8 @@ namespace Dynamo.Nodes
 
             var sunSettingNode = MigrationManager.CloneAndChangeName(
                 oldNode,
-                "DSRevitNodesUI.SunSettings",
-                "SunSettings.Current");
+                /*NXLT*/"DSRevitNodesUI.SunSettings",
+                /*NXLT*/"SunSettings.Current");
             var sunSettingsNodeId = Guid.NewGuid().ToString();
             sunSettingNode.SetAttribute("guid", sunSettingsNodeId);
             migrationData.AppendNode(sunSettingNode);
@@ -52,9 +52,9 @@ namespace Dynamo.Nodes
             var sunPathNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(
                 sunPathNode,
-                "RevitNodes.dll",
-                "SunSettings.SunDirection",
-                "SunSettings.SunDirection@var");
+               /*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"SunSettings.SunDirection",
+                /*NXLT*/"SunSettings.SunDirection@var");
             migrationData.AppendNode(sunPathNode);
 
             migrationData.CreateConnector(sunSettingNode, 0, sunPathNode, 0);
@@ -81,7 +81,7 @@ namespace DSRevitNodesUI
 {
     public class SunPathDirection : MigrationNode
     {
-        [NodeMigration(from: "0.7.0.0", to: "0.7.3.0")]
+        [NodeMigration(from: /*NXLT*/"0.7.0.0", to: /*NXLT*/"0.7.3.0")]
         public static NodeMigrationData Migrate_0700_to_0730(NodeMigrationData data)
         {
             return Dynamo.Nodes.SunPathDirection.Migrate_0700_to_0730(data);

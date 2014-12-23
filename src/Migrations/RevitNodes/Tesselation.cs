@@ -14,9 +14,9 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "Tessellation.dll",
-                "Voronoi.ByParametersOnSurface",
-                "Voronoi.ByParametersOnSurface@IEnumerable<UV>,Surface");
+            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"Tessellation.dll",
+                /*NXLT*/"Voronoi.ByParametersOnSurface",
+                /*NXLT*/"Voronoi.ByParametersOnSurface@IEnumerable<UV>,Surface");
             newNode.SetAttribute("lacing", "Shortest");
             migrationData.AppendNode(newNode);
 
@@ -33,9 +33,9 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "Tessellation.dll",
-                "Delaunay.ByParametersOnSurface",
-                "Delaunay.ByParametersOnSurface@IEnumerable<UV>,Surface");
+            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"Tessellation.dll",
+                /*NXLT*/"Delaunay.ByParametersOnSurface",
+                /*NXLT*/"Delaunay.ByParametersOnSurface@IEnumerable<UV>,Surface");
             newNode.SetAttribute("lacing", "Shortest");
             migrationData.AppendNode(newNode);
 
@@ -52,9 +52,9 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "Tessellation.dll",
-                "ConvexHull.ByPoints",
-                "ConvexHull.ByPoints@IEnumerable<Point>");
+            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"Tessellation.dll",
+                /*NXLT*/"ConvexHull.ByPoints",
+                /*NXLT*/"ConvexHull.ByPoints@IEnumerable<Point>");
             newNode.SetAttribute("lacing", "Shortest");
             migrationData.AppendNode(newNode);
 
@@ -71,9 +71,9 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "Tessellation.dll",
-                "Delaunay.ByPoints",
-                "Delaunay.ByPoints@IEnumerable<Point>");
+            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"Tessellation.dll",
+                /*NXLT*/"Delaunay.ByPoints",
+                /*NXLT*/"Delaunay.ByPoints@IEnumerable<Point>");
             newNode.SetAttribute("lacing", "Shortest");
             migrationData.AppendNode(newNode);
 

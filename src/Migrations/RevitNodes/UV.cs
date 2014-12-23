@@ -10,8 +10,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "UV.ByCoordinates",
-                "UV.ByCoordinates@double,double");
+            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"UV.ByCoordinates",
+                /*NXLT*/"UV.ByCoordinates@double,double");
         }
     }
 
@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            codeBlockNode.SetAttribute("CodeText", "{{min.U,min.V},{max.U,max.V}};");
+            codeBlockNode.SetAttribute("CodeText", /*NXLT*/"{{min.U,min.V},{max.U,max.V}};");
             codeBlockNode.SetAttribute("nickname", "UV Domain");
 
             migrationData.AppendNode(codeBlockNode);
@@ -65,13 +65,13 @@ namespace Dynamo.Nodes
 
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
                 data.Document, oldNode, 0,
-                "domain[0][0]..domain[1][0]..#ucount+1;\n" +
-                "domain[0][1]..domain[1][1]..#vcount+1;");
+                /*NXLT*/"domain[0][0]..domain[1][0]..#ucount+1;\n" +
+                /*NXLT*/"domain[0][1]..domain[1][1]..#vcount+1;");
             migrationData.AppendNode(codeBlockNode);
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
             XmlElement uvNode = MigrationManager.CreateFunctionNode(data.Document, oldNode, 1,
-                "ProtoGeometry.dll", "UV.ByCoordinates", "UV.ByCoordinates@double,double");
+                /*NXLT*/"ProtoGeometry.dll", /*NXLT*/"UV.ByCoordinates", /*NXLT*/"UV.ByCoordinates@double,double");
             uvNode.SetAttribute("lacing", "CrossProduct");
             migrationData.AppendNode(uvNode);
 
@@ -127,8 +127,8 @@ namespace Dynamo.Nodes
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
             XmlElement uvNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(uvNode, "ProtoGeometry.dll",
-                "UV.ByCoordinates", "UV.ByCoordinates@double,double");
+            MigrationManager.SetFunctionSignature(uvNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"UV.ByCoordinates", /*NXLT*/"UV.ByCoordinates@double,double");
             uvNode.SetAttribute("lacing", "Longest");
             migrationData.AppendNode(uvNode);
 

@@ -27,7 +27,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(MigrationManager.CloneAndChangeName(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.DSAnalysisResultSelection", "Select Analysis Results"));
+                data.MigratedNodes.ElementAt(0), /*NXLT*/"Dynamo.Nodes.DSAnalysisResultSelection", /*NXLT*/"Select Analysis Results"));
 
             return migrationData;
         }

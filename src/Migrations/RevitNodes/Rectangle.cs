@@ -8,7 +8,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Rectangle.ByWidthHeight",
+            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll", "Rectangle.ByWidthHeight",
                 "Rectangle.ByWidthHeight@Autodesk.DesignScript.Geometry.CoordinateSystem,double,double");
         }
     }

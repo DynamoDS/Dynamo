@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = CloneAndChangeType(
-                oldNode, "Dynamo.Nodes.Function");
+                oldNode, /*NXLT*/"Dynamo.Nodes.Function");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)

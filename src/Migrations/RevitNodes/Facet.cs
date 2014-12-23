@@ -12,9 +12,9 @@ namespace Dynamo.Nodes
         {
             return MigrateToDsFunction(
                 data,
-                "ProtoGeometry.dll",
-                "Surface.ByPerimeterPoints",
-                "Surface.ByPerimeterPoints@Point[]");
+               /*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Surface.ByPerimeterPoints",
+                /*NXLT*/"Surface.ByPerimeterPoints@Point[]");
         }
     }
 

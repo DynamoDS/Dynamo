@@ -13,7 +13,7 @@ namespace Dynamo.Nodes
             var migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSRevitNodesUI.FamilyInstanceParameters", "Get Family Parameter");
+                oldNode, /*NXLT*/"DSRevitNodesUI.FamilyInstanceParameters", "Get Family Parameter");
             migrationData.AppendNode(newNode);
             
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -34,8 +34,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
-                "FamilyInstance.ByPoint", "FamilyInstance.ByPoint@FamilySymbol,Point");
+            MigrationManager.SetFunctionSignature(dsRevitNode,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"FamilyInstance.ByPoint", /*NXLT*/"FamilyInstance.ByPoint@FamilySymbol,Point");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -68,9 +68,9 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-             MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
-                 "FamilyInstance.ByPointAndLevel", 
-                 "FamilyInstance.ByPointAndLevel@FamilySymbol,Point,Level");
+             MigrationManager.SetFunctionSignature(dsRevitNode,/*NXLT*/"RevitNodes.dll",
+                 /*NXLT*/"FamilyInstance.ByPointAndLevel",
+                 /*NXLT*/"FamilyInstance.ByPointAndLevel@FamilySymbol,Point,Level");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -102,8 +102,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "Element.Curves", "Element.Curves");
+            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"Element.Curves", /*NXLT*/"Element.Curves");
         }
     }
 
@@ -112,7 +112,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll", "Element.SetParameterByName", "Element.SetParameterByName@string,object");
+            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll", /*NXLT*/"Element.SetParameterByName", /*NXLT*/"Element.SetParameterByName@string,object");
         }
     }
 
@@ -121,8 +121,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "Element.GetParameterValueByName", "Element.GetParameterValueByName@string");
+            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"Element.GetParameterValueByName", /*NXLT*/"Element.GetParameterValueByName@string");
         }
     }
 
@@ -131,8 +131,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "RevitNodes.dll",
-                "FamilyInstance.Location", "FamilyInstance.Location");
+            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"FamilyInstance.Location", /*NXLT*/"FamilyInstance.Location");
         }
     }
 
@@ -150,20 +150,20 @@ namespace Dynamo.Nodes
             string codeText = ""; int num = 1;
             foreach (XmlElement childNode in oldNode.ChildNodes)
             {
-                if (childNode.Name == "Output")
+                if (childNode.Name == /*NXLT*/"Output")
                 {
-                    codeText += "element.GetParameterValueByName(param" + num++ + ");";
+                    codeText += /*NXLT*/"element.GetParameterValueByName(param" + num++ + ");";
                     if (num > 1)
-                        codeText += "\n";
+                        codeText += /*NXLT*/"\n";
                 }
             }
 
             // To avoid empty CBN
             if (codeText == "")
-                codeText = "element;";
+                codeText = /*NXLT*/"element;";
 
-            codeBlockNode.SetAttribute("CodeText", codeText);
-            codeBlockNode.SetAttribute("nickname", "Get Parameters");
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText", codeText);
+            codeBlockNode.SetAttribute(/*NXLT*/"nickname", "Get Parameters");
 
             migrationData.AppendNode(codeBlockNode);
             return migrationData;

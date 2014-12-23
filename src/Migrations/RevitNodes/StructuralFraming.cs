@@ -14,7 +14,7 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSRevitNodesUI.StructuralFramingTypes", "Structural Framing Types");
+                oldNode, /*NXLT*/"DSRevitNodesUI.StructuralFramingTypes", "Structural Framing Types");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -35,9 +35,9 @@ namespace Dynamo.Nodes
 
             // Create DSFunction node
             XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
-                "StructuralFraming.ByCurveLevelUpVectorAndType",
-                "StructuralFraming.ByCurveLevelUpVectorAndType@Curve,Level,Vector,StructuralType,FamilySymbol");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"StructuralFraming.ByCurveLevelUpVectorAndType",
+                /*NXLT*/"StructuralFraming.ByCurveLevelUpVectorAndType@Curve,Level,Vector,StructuralType,FamilySymbol");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -48,15 +48,15 @@ namespace Dynamo.Nodes
             string oneId = MigrationManager.GetGuidFromXmlElement(one);
 
             XmlElement level = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "RevitNodes.dll",
-                "Level.ByElevation", "Level.ByElevation@double");
+                data.Document, oldNode, 1,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"Level.ByElevation", /*NXLT*/"Level.ByElevation@double");
             migrationData.AppendNode(level);
             string levelId = MigrationManager.GetGuidFromXmlElement(level);
 
             // Assume that structural framing created by 0.6.3 is always Beam
             XmlElement beam = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2, "RevitNodes.dll",
-                "StructuralType.Beam", "StructuralType.Beam");
+                data.Document, oldNode, 2,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"StructuralType.Beam", /*NXLT*/"StructuralType.Beam");
             migrationData.AppendNode(beam);
             string beamId = MigrationManager.GetGuidFromXmlElement(beam);
 
