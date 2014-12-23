@@ -1532,7 +1532,7 @@ namespace Dynamo.Models
             var scheduler = Workspace.DynamoModel.Scheduler;
             var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams()
             {
-                DynamoScheduler = scheduler,
+                Scheduler = scheduler,
                 EngineController = Workspace.DynamoModel.EngineController,
                 VariableName = variableName
             });
