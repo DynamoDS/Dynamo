@@ -136,24 +136,24 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.ExecuteCommand(createNodeNumber1);
 
                 DynamoModel.MakeConnectionCommand connToStart1 =
-                    new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.OUTPUT,
+                    new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.Output,
                         DynamoModel.MakeConnectionCommand.Mode.Begin);
                 DynamoModel.MakeConnectionCommand connToStart2 =
-                    new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.INPUT,
+                    new DynamoModel.MakeConnectionCommand(node.GUID, 0, PortType.Input,
                         DynamoModel.MakeConnectionCommand.Mode.End);
 
                 DynamoModel.MakeConnectionCommand connToAmount1 =
-                    new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.OUTPUT,
+                    new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.Output,
                         DynamoModel.MakeConnectionCommand.Mode.Begin);
                 DynamoModel.MakeConnectionCommand connToAmount2 =
-                    new DynamoModel.MakeConnectionCommand(node.GUID, 1, PortType.INPUT,
+                    new DynamoModel.MakeConnectionCommand(node.GUID, 1, PortType.Input,
                         DynamoModel.MakeConnectionCommand.Mode.End);
 
                 DynamoModel.MakeConnectionCommand connToStep1 =
-                    new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.OUTPUT,
+                    new DynamoModel.MakeConnectionCommand(guidNumber, 0, PortType.Output,
                         DynamoModel.MakeConnectionCommand.Mode.Begin);
                 DynamoModel.MakeConnectionCommand connToStep2 =
-                    new DynamoModel.MakeConnectionCommand(node.GUID, 2, PortType.INPUT,
+                    new DynamoModel.MakeConnectionCommand(node.GUID, 2, PortType.Input,
                         DynamoModel.MakeConnectionCommand.Mode.End);
 
                 DynamoViewModel.ExecuteCommand(connToStart1); //"Number" with "Number Sequence" on Start

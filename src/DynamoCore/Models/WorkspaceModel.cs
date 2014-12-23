@@ -537,7 +537,7 @@ namespace Dynamo.Models
             DynamoModel.OnNodeAdded(node);
         }
 
-        public ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType = PortType.INPUT )
+        public ConnectorModel AddConnection(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType = PortType.Input )
         {
             try
             {
@@ -746,7 +746,7 @@ namespace Dynamo.Models
                             connector.SetAttribute("end", c.End.Owner.GUID.ToString());
                             connector.SetAttribute("end_index", c.End.Index.ToString());
 
-                            if (c.End.PortType == PortType.INPUT)
+                            if (c.End.PortType == PortType.Input)
                                 connector.SetAttribute("portType", "0");
                         }
                     }

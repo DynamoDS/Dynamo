@@ -256,10 +256,10 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
                 {
                     DynamoModel.MakeConnectionCommand connToAnother1 =
-                        new DynamoModel.MakeConnectionCommand(numberGuid, 0, PortType.OUTPUT, 
+                        new DynamoModel.MakeConnectionCommand(numberGuid, 0, PortType.Output, 
                             DynamoModel.MakeConnectionCommand.Mode.Begin);
                     DynamoModel.MakeConnectionCommand connToAnother2 =
-                        new DynamoModel.MakeConnectionCommand(output.GUID, 0, PortType.INPUT, 
+                        new DynamoModel.MakeConnectionCommand(output.GUID, 0, PortType.Input, 
                             DynamoModel.MakeConnectionCommand.Mode.End);
 
                     DynamoViewModel.ExecuteCommand(connToAnother1);

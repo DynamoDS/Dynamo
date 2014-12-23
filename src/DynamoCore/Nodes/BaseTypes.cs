@@ -898,8 +898,8 @@ namespace Dynamo.Nodes
             // Update connectors
             for (int idx = 0; true; idx++)
             {
-                PortId oldInPort = new PortId(newNodeId, idx + 2, PortType.INPUT);
-                PortId newInPort = new PortId(codeBlockNodeId, idx, PortType.INPUT);
+                PortId oldInPort = new PortId(newNodeId, idx + 2, PortType.Input);
+                PortId newInPort = new PortId(codeBlockNodeId, idx, PortType.Input);
                 XmlElement connector = data.FindFirstConnector(oldInPort);
 
                 if (connector == null)
@@ -908,8 +908,8 @@ namespace Dynamo.Nodes
                 data.ReconnectToPort(connector, newInPort);
             }
 
-            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.Input);
+            PortId newInPort2 = new PortId(newNodeId, 2, PortType.Input);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
             data.ReconnectToPort(connector1, newInPort2);
