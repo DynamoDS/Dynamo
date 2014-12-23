@@ -30,7 +30,7 @@ namespace Revit.Elements
 
         public static UnknownElement Wrap(Autodesk.Revit.DB.Element element, bool isRevitOwned)
         {
-            return UnknownElement.FromExisting(element);
+            return UnknownElement.FromExisting(element, isRevitOwned);
         }
 
         public static AbstractFamilyInstance Wrap(Autodesk.Revit.DB.FamilyInstance ele, bool isRevitOwned)
@@ -169,7 +169,7 @@ namespace Revit.Elements
             else
             {
                 // unknown type of plan view, just wrap as unknown
-                return UnknownElement.FromExisting(view);
+                return UnknownElement.FromExisting(view, true);
             }
         }
 
