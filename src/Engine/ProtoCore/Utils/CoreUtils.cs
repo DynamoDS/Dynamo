@@ -801,6 +801,17 @@ namespace ProtoCore.Utils
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Given a partial class name, get assembly to which the class belongs
+        /// </summary>
+        /// <param name="classTable"> class table in Core </param>
+        /// <param name="partialName"> partial class name </param>
+        /// <returns> assembly to which the class belongs </returns>
+        public static string GetAssemblyFromClassName(ClassTable classTable, string partialName)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// Find all partial class (Identifier/Identifier lists) by performing a DFS traversal on input AST node

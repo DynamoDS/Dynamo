@@ -10,10 +10,13 @@ namespace ProtoCore.Namespace
 
     public class ElementRewriter
     {
-        private ElementResolver elementResolver;
+        private readonly ElementResolver elementResolver;
 
         private ElementRewriter(ElementResolver elementResolver)
         {
+            if(elementResolver == null)
+                elementResolver = new ElementResolver();
+
             this.elementResolver = elementResolver;
         }
 
@@ -55,8 +58,9 @@ namespace ProtoCore.Namespace
                     // If namespace resolution map does not contain entry for partial name, 
                     // back up on compiler to resolve the namespace from partial name
                     resolvedName = ProtoCore.Utils.CoreUtils.GetResolvedClassName(classTable, partialName);
+                    string assemblyName = ProtoCore.Utils.CoreUtils.GetAssemblyFromClassName(classTable, partialName);
 
-                    elementResolver.AddToResolutionMap(partialName, resolvedName);
+                    elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
                     RewriteASTWithResolvedName(ref astNode, partialName, resolvedName);
                 }
             }

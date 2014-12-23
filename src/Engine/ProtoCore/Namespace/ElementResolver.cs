@@ -12,51 +12,56 @@ namespace ProtoCore.Namespace
     /// </summary>
     public class ElementResolver
     {
-        private Dictionary<string, string> resolutionMap;
+        private Dictionary<string, KeyValuePair<string, string>> resolutionMap;
 
         /// <summary>
         /// Maintains a lookup table of partial class identifiers vs. 
-        /// fully qualified class identifier names
+        /// fully qualified class identifier names and assembly name
         /// </summary>
-        public Dictionary<string, string> ResolutionMap
+        public Dictionary<string, KeyValuePair<string, string>> ResolutionMap
         {
             get { return resolutionMap; }
         }
 
         #region public constructors and methods
-        
-        public ElementResolver(string[] namespaceLookupMap)
+
+        public ElementResolver()
         {
-            resolutionMap = new Dictionary<string, string>();
-            InitializeNamespaceResolutionMap(namespaceLookupMap);
+            resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
+        }
+
+        public ElementResolver(Dictionary<string, KeyValuePair<string, string>> namespaceLookupMap)
+        {
+            resolutionMap = namespaceLookupMap;
         }
 
         public string LookupResolvedName(string partialName)
         {
-            string resolvedName = string.Empty;
+            KeyValuePair<string, string> resolvedName;
 
             resolutionMap.TryGetValue(partialName, out resolvedName);
             
-            return resolvedName;
+            return resolvedName.Key;
         }
 
-        public void AddToResolutionMap(string partialName, string resolvedName)
+        public string LookupAssemblyName(string partialName)
         {
-            resolutionMap.Add(partialName, resolvedName);
+            KeyValuePair<string, string> resolvedName;
+
+            resolutionMap.TryGetValue(partialName, out resolvedName);
+
+            return resolvedName.Value;
+        }
+
+        public void AddToResolutionMap(string partialName, string resolvedName, string assemblyName)
+        {
+            var kvp = new KeyValuePair<string, string>(resolvedName, assemblyName);
+            resolutionMap.Add(partialName, kvp);
         }
 
         
         #endregion
 
-        #region private methods
-
-        // Initialize ResolutionMap from lookup table of strings
-        private void InitializeNamespaceResolutionMap(string[] namespaceLookupMap)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 
 }

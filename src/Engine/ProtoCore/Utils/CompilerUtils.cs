@@ -310,8 +310,7 @@ namespace ProtoCore.Utils
                 // partial classnames with their fully qualified names in ASTs
                 // before passing them for pre-compilation. If partial class is not found in map, 
                 // update Resolution map in elementResolver with fully resolved name from compiler.
-                if (elementResolver != null)
-                    ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, elementResolver, ref codeblock);
+                ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, elementResolver, ref codeblock);
 
                 buildStatus = PreCompile(string.Empty, core, codeblock, out blockId);
 

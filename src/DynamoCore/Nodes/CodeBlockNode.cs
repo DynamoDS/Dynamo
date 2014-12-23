@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -37,7 +38,7 @@ namespace Dynamo.Nodes
         }
 
         private readonly DynamoLogger logger;
-        private ElementResolver elementResolver = null;
+        private ElementResolver elementResolver;
 
         private struct Formatting
         {
@@ -236,9 +237,11 @@ namespace Dynamo.Nodes
             base.SaveNode(xmlDoc, nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
             helper.SetAttribute("CodeText", code);
-
-            // TODO: Serialize elementResolver as strings of partial class name vs. fully resolved name
             helper.SetAttribute("ShouldFocus", shouldFocus);
+
+
+            // Serialize elementResolver as strings of partial class name vs. fully resolved name
+            SerializeElementResolver(nodeElement);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -246,9 +249,10 @@ namespace Dynamo.Nodes
             base.LoadNode(nodeElement);
             var helper = new XmlElementHelper(nodeElement as XmlElement);
             code = helper.ReadString("CodeText");
-            
-            // TODO: Lookup namespace resolution map if available and initialize 
-            // new instance of ElementResolver
+
+            // Lookup namespace resolution map if available and initialize new instance of ElementResolver
+            DeserializeElementResolver(nodeElement as XmlElement);
+
             ProcessCodeDirect();
             shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
@@ -368,6 +372,51 @@ namespace Dynamo.Nodes
         #endregion
 
         #region Private Methods
+
+        private void SerializeElementResolver(XmlElement nodeElement)
+        {
+            if (elementResolver == null)
+                return;
+
+            var xmlDoc = nodeElement.OwnerDocument;
+            Debug.Assert(xmlDoc != null);
+
+            var mapElement = xmlDoc.CreateElement("NamespaceResolutionMap");
+
+            foreach (var element in elementResolver.ResolutionMap)
+            {
+                var resolverElement = xmlDoc.CreateElement("ClassMap");
+                
+                resolverElement.SetAttribute("partialName", element.Key);
+                resolverElement.SetAttribute("resolvedName", element.Value.Key);
+                resolverElement.SetAttribute("assemblyName", element.Value.Value);
+
+                mapElement.AppendChild(resolverElement);
+            }
+            nodeElement.AppendChild(mapElement);
+        }
+
+        private void DeserializeElementResolver(XmlElement nodeElement)
+        {
+            var nodes = nodeElement.GetElementsByTagName("NamespaceResolutionMap");
+            
+            if (nodes.Count == 0)
+            {
+                // no namespace resolution map information exists in the DYN file
+                return;
+            }
+
+            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
+            foreach (XmlNode child in nodes[0].ChildNodes)
+            {
+                XmlAttribute pName = child.Attributes["partialName"];
+                XmlAttribute rName = child.Attributes["resolvedName"];
+                XmlAttribute aName = child.Attributes["assemblyName"];
+                var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
+                resolutionMap.Add(pName.Value, kvp);
+            }
+            elementResolver = new ElementResolver(resolutionMap);
+        }
 
         internal void ProcessCodeDirect()
         {
