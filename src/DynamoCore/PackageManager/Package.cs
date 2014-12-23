@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web.UI.WebControls;
 
+using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -16,13 +13,22 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
 
-using Microsoft.Practices.Prism;
-using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 using String = System.String;
 
 namespace Dynamo.PackageManager
 {
+    public class PackageAssembly
+    {
+        public bool IsNodeLibrary { get; set; }
+        public Assembly Assembly { get; set; }
+
+        public string Name
+        {
+            get { return Assembly.GetName().Name; }
+        }
+    }
+
     public class Package : NotificationObject
     {
 

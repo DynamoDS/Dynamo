@@ -1,0 +1,26 @@
+<Workspace Version="0.7.5.3365" X="259.879088163217" Y="-21.5409375129473" zoom="0.579373994271777" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="ed970d46-4fe0-4640-b13b-0fe313f94fe4" nickname="Watch" x="768.205984065817" y="73.4459756794047" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="6edc4c28-15ef-4d60-af6d-6ed829871973" nickname="Watch 3D" x="786.986009225054" y="233.965992452229" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="230" height="389">
+        <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.WatchImageCore type="Dynamo.Nodes.WatchImageCore" guid="cf3ed4fb-f0a2-4dfe-89c1-11e8bbcfe80d" nickname="Watch Image" x="823.505997357627" y="738.617285739639" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="73a18382-e41c-4c10-83b7-9a5fb04e5449" nickname="Image.ReadFromFile" x="512.518956320911" y="747.00309433041" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.Image.ReadFromFile@var" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="84509ca2-09bc-4294-82a0-3844021c1a65" nickname="Code Block" x="315.286051157114" y="250.671976518046" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(0,0);" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="b4fc5d9a-4c5a-4dba-b7a0-b2e1d8876d33" nickname="Code Block" x="351.230088057328" y="57.2879899363054" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{1,2,3};" ShouldFocus="false" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="c3543240-7c54-4ed0-aac2-01ccb6d5ce8c" nickname="File Path" x="-59.2302863602432" y="733.729063245387" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>../../../test/UI/Bricks.PNG</System.String>
+    </DSCore.File.Filename>
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="aea33285-bd50-4311-bac5-91941a5d26d2" nickname="File.FromPath" x="289.421883045283" y="738.907065761311" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="73a18382-e41c-4c10-83b7-9a5fb04e5449" start_index="0" end="cf3ed4fb-f0a2-4dfe-89c1-11e8bbcfe80d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="84509ca2-09bc-4294-82a0-3844021c1a65" start_index="0" end="6edc4c28-15ef-4d60-af6d-6ed829871973" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b4fc5d9a-4c5a-4dba-b7a0-b2e1d8876d33" start_index="0" end="ed970d46-4fe0-4640-b13b-0fe313f94fe4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c3543240-7c54-4ed0-aac2-01ccb6d5ce8c" start_index="0" end="aea33285-bd50-4311-bac5-91941a5d26d2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aea33285-bd50-4311-bac5-91941a5d26d2" start_index="0" end="73a18382-e41c-4c10-83b7-9a5fb04e5449" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

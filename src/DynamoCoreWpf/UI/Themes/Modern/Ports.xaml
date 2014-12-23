@@ -1,0 +1,149 @@
+﻿<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore"
+                      xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
+                      xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
+                      xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                      xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf"
+                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+
+    <!-- Templates
+        
+    Use this to add color resources:
+    ==========================================
+    <Color x:Key="ColorKey" >#FFFFFFAE</Color>
+    
+    You can use this to create a style for a button, just change the TargetType or add 
+    other control separated by commas and add setter nodes to change properties:
+    ==========================================
+    <Style x:Key="SimpleStyle" TargetType="Button">
+        <Setter Property="Background" Value="Red" />
+    </Style>
+        
+    -->
+
+    <!-- Add your resources here -->
+
+    <ResourceDictionary.MergedDictionaries>
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
+      
+        <Grid Name="mainGrid"
+              Background="Transparent"
+              IsHitTestVisible="True"
+              Margin="{Binding Path=MarginThickness}"
+              Height="{Binding Path=Height}"
+             >
+
+            <interactivity:Interaction.Triggers>
+                <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                    <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
+                </views:HandlingEventTrigger>
+            </interactivity:Interaction.Triggers>
+
+            <Grid.ContextMenu>
+                <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <MenuItem Header="Use Default Value"
+                              IsCheckable="True"
+                              IsEnabled="{Binding Path=DefaultValueEnabled, Mode=TwoWay}"
+                              IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}" />
+                </ContextMenu>
+            </Grid.ContextMenu>
+
+            <Grid.Width>
+                <Binding Path="ActualWidth"
+                         RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}" />
+            </Grid.Width>
+
+            <Grid.ToolTip>
+                <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}"
+                         Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <Grid>
+                        <TextBlock Text="{Binding Path=ToolTipContent}"></TextBlock>
+                    </Grid>
+                </dynui:DynamoToolTip>
+            </Grid.ToolTip>
+
+            <!--
+                We could have changed the Grid opacity directly here but didn't
+                The reason is that if the opacity of the Grid is modified, the 
+                internal text box will also appear semi-transparent. This is why an 
+                intermediary Border is required just for mouse-over highlighting.
+            -->
+            
+            <!--
+               Port is contained in another rectangle to ensure that hit area is extended outside the grid.
+               Minimum Width is specified on the rectangle, rather than the grid. Otherwise, if the port's width is less than
+               the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case 
+               as no mouse events are generated.This happens only for codeblock node. 
+            -->
+            <Rectangle Fill="Transparent"                                      
+                       SnapsToDevicePixels="True"
+                       MinWidth="26"                       
+                       IsHitTestVisible="True"                      
+                       Margin ="{Binding Path=PortModel, Converter={StaticResource SnapRegionMarginConverter}}">              
+                <interactivity:Interaction.Triggers>
+                    <views:HandlingEventTrigger EventName="MouseEnter">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeave">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                </interactivity:Interaction.Triggers>               
+            </Rectangle>
+            <Rectangle Name="highlightOverlay"
+                       Fill="White"
+                       MinWidth="26"
+                       Margin="0,0,0,1"
+                       IsHitTestVisible="True">
+                <interactivity:Interaction.Triggers>
+                    <views:HandlingEventTrigger EventName="MouseEnter">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeave">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>                   
+                </interactivity:Interaction.Triggers>
+                <Rectangle.Style>
+                    <Style TargetType="{x:Type Rectangle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Opacity"
+                                        Value="1.0"></Setter>                               
+                            </Trigger>
+                            <Trigger Property="IsMouseOver"
+                                     Value="False">
+                                <Setter Property="Opacity"
+                                        Value="0.5"></Setter>
+                               
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            
+            <TextBlock Name="portNameTb"
+                       Width="Auto"
+                       Style="{StaticResource SZoomFadeText}"
+                       Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter} }"
+                       VerticalAlignment="Center"
+                       FontSize="13"
+                       FontFamily="{StaticResource OpenSansRegular}"
+                       Padding="6,7,6,7"
+                       IsHitTestVisible="False"
+                       Background="{x:Null}"
+                       Foreground="#555555">
+            </TextBlock>
+
+        </Grid>
+    
+    </DataTemplate>
+
+</ResourceDictionary>

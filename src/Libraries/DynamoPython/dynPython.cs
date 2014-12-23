@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
-using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -44,12 +43,106 @@ namespace Dynamo.Nodes
         }
     }
 
+    // not sure why this is still around...
+    public abstract class VariableInput : NodeModel
+    {
+        public VariableInput(WorkspaceModel ws)
+            : base(ws)
+        {
+        }
+
+        protected abstract string GetInputRootName();
+        protected abstract string GetTooltipRootName();
+
+        protected virtual int GetInputNameIndex()
+        {
+            return InPortData.Count;
+        }
+
+        protected internal virtual void RemoveInput()
+        {
+            var count = InPortData.Count;
+            if (count > 0)
+            {
+                InPortData.RemoveAt(count - 1);
+            }
+        }
+
+        protected internal virtual void AddInput()
+        {
+            var idx = GetInputNameIndex();
+            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx));
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            int i = InPortData.Count;
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (i > 0)
+                {
+                    i--;
+                    continue;
+                }
+
+                if (subNode.Name == "Input")
+                {
+                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, ""));
+                }
+            }
+            RegisterAllPorts();
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            XmlDocument xmlDoc = element.OwnerDocument;
+            foreach (var inport in InPortData)
+            {
+                XmlElement input = xmlDoc.CreateElement("Input");
+                input.SetAttribute("name", inport.NickName);
+                element.AppendChild(input);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                //Reads in the new number of ports required from the data stored in the Xml Element
+                //during Serialize (nextLength). Changes the current In Port Data to match the
+                //required size by adding or removing port data.
+                int currLength = InPortData.Count;
+                XmlNodeList inNodes = element.SelectNodes("Input");
+                int nextLength = inNodes.Count;
+                if (nextLength > currLength)
+                {
+                    for (; currLength < nextLength; currLength++)
+                    {
+                        XmlNode subNode = inNodes.Item(currLength);
+                        string nickName = subNode.Attributes["name"].Value;
+                        InPortData.Add(new PortData(nickName, ""));
+                    }
+                }
+                else if (nextLength < currLength)
+                    InPortData.RemoveRange(nextLength, currLength - nextLength);
+
+                RegisterAllPorts();
+            }
+        }
+
+        #endregion
+    }
+
     [NodeName("LEGACY Python Script With Variable Number of Inputs")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
     [NodeDescription("Runs an embedded IronPython script")]
     public class PythonVarIn : VariableInput
     {
-        
         // implement methods from variableinput
         public PythonVarIn(WorkspaceModel ws) : base(ws) { }
 
@@ -62,7 +155,6 @@ namespace Dynamo.Nodes
         {
             return "Input";
         }
-
 
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)

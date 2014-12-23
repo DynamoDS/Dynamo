@@ -292,9 +292,12 @@ namespace ProtoScript.Runners
 
             // Get the VM graphnodes associated with the astList
             List<GraphNode> deltaGraphNodeList = ProtoCore.AssociativeEngine.Utils.GetGraphNodesFromAST(core.DSExecutable, astList);
-
+            
             // Get the reachable VM graphnodes  given the modified graphnode list
             List<GraphNode> reachableNodes = EstimateReachableGraphNodes(core, deltaGraphNodeList);
+
+            // Append the modified nodes(deltaGraphNodeList) into the reachable list as they are also going to be executed when run
+            reachableNodes.AddRange(deltaGraphNodeList);
 
             // Get the list of guid's of the ASTs
             foreach (GraphNode graphnode in reachableNodes)

@@ -668,7 +668,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.AddNode(16, 32, "Add");
             NodeModel locatable = ViewModel.Model.Nodes[0];
 
-            Point startPoint = new Point(8, 64);
+            var startPoint = new Point2D(8, 64);
             var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);
 
             // Initial node position.
@@ -676,7 +676,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(32, locatable.Y);
 
             // Move the mouse cursor to move node.
-            dn.Update(new Point(-16, 72));
+            dn.Update(new Point2D(-16, 72));
             Assert.AreEqual(-8, locatable.X);
             Assert.AreEqual(40, locatable.Y);
         }

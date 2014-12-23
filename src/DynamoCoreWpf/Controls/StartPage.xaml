@@ -1,0 +1,231 @@
+﻿<UserControl x:Class="Dynamo.UI.Controls.StartPageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:l="clr-namespace:Dynamo.UI.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             mc:Ignorable="d"
+             d:DesignWidth="640"
+             d:DesignHeight="480"
+             Margin="0,-1,0,0">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Name="startPageGrid"
+          Background="White"
+          AllowDrop="True"
+          Drop="StartPage_OnDrop">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="21"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!-- Begin top part (i.e. the "Start" tab) -->
+
+        <Border Background="#232323"
+                BorderThickness="0,1,0,1"
+                BorderBrush="#404040" />
+        <Border Background="#353535"
+                BorderThickness="1,0,1,1"
+                BorderBrush="#404040"
+                Width="200"
+                HorizontalAlignment="Left" />
+
+        <StackPanel Orientation="Horizontal">
+
+            <TextBlock Margin="8,0,0,0"
+                       FontSize="11"
+                       Width="172"
+                       FontFamily="{StaticResource OpenSansRegular}"
+                       Text="Start"
+                       Foreground="#888888"
+                       VerticalAlignment="Center" />
+
+            <Image Width="16"
+                   Height="16"
+                   MouseLeftButtonUp="OnCloseStartPageClicked">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="False">
+                                <Setter Property="Source"
+                                        Value="/DynamoCoreWpf;component/UI/Images/closetab_normal.png" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Source"
+                                        Value="/DynamoCoreWpf;component/UI/Images/closetab_hover.png" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+
+        </StackPanel>
+
+        <!-- Begin Dynamo logo -->
+
+        <Image Grid.Row="1"
+               Width="250"
+               Margin="0,32,0,32"
+               HorizontalAlignment="Center"
+               Source="/DynamoCoreWpf;component/UI/Images/StartPage/dynamo-logo.png" />
+
+        <!-- Begin inner grid control for all other list boxes -->
+
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                      HorizontalAlignment="Stretch"
+                      Grid.Row="2">
+
+            <Grid Name="innerGrid"
+                  HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="285"></ColumnDefinition>
+                    <ColumnDefinition Width="110"></ColumnDefinition>
+                    <ColumnDefinition Width="285"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left rows of list boxes -->
+
+                <StackPanel Name="leftPanel"
+                            Grid.Column="0"
+                            Orientation="Vertical">
+
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="FILES"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#3395a2"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
+
+                    <ListBox Name="filesListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
+
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="RECENT"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#62895b"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
+
+                    <ListBox Name="recentListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
+
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="SAMPLES"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#5e8f80"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
+
+                    <TreeView x:Name="sampleFileTreeView"
+                              Background="#FFFFFF"
+                              Grid.Row="3"
+                              Grid.ColumnSpan="2"
+                              BorderThickness="0"
+                              FontSize="15"
+                              ItemContainerStyle="{StaticResource StartPageTreeViewItem}"
+                              Style="{StaticResource StartPageTreeView}">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type l:SampleFileEntry}"
+                                                      ItemsSource="{Binding Path=Children}">
+                                <TextBlock Text="{Binding Path=FileName}"
+                                           MouseLeftButtonUp="OnSampleFileSelected"
+                                           Cursor="Hand" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+
+                    <Label FontFamily="{StaticResource OpenSansRegular}"
+                           Margin="0,0,12,0"
+                           HorizontalAlignment="Left"
+                           Style="{StaticResource StartPageLabel}"
+                           MouseLeftButtonUp="ShowSamplesInFolder" />
+
+                </StackPanel>
+
+                <!-- Right rows of list boxes -->
+
+                <StackPanel Name="rightPanel"
+                            Grid.Column="2"
+                            Orientation="Vertical">
+
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="ASK"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#a55553"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
+
+                    <ListBox Name="askListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
+
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="REFERENCE"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#6f4c76"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
+
+                    <ListBox Name="referenceListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
+
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="CODE"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#4b9dbf"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
+
+                    <ListBox Name="codeListBox"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged">
+                    </ListBox>
+
+                </StackPanel>
+
+            </Grid>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

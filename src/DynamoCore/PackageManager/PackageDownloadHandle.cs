@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 
-using Dynamo.ViewModels;
+using Dynamo.Core;
+using Dynamo.Models;
 
 using DynamoUtilities;
 
 using Greg.Responses;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
 {
@@ -41,19 +41,11 @@ namespace Dynamo.PackageManager
         private string _versionName;
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
-        private readonly DynamoViewModel dynamoViewModel;
-
-        public PackageDownloadHandle(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header, PackageVersion version)
+        public PackageDownloadHandle(Greg.Responses.PackageHeader header, PackageVersion version)
         {
-            this.dynamoViewModel = dynamoViewModel;
             this.Header = header;
             this.DownloadPath = "";
             this.VersionName = version.version;
-        }
-
-        public void Start()
-        {
-            dynamoViewModel.PackageManagerClientViewModel.DownloadAndInstall(this);
         }
 
         public void Error(string errorString)
@@ -74,7 +66,7 @@ namespace Dynamo.PackageManager
             return DynamoPathManager.Instance.Packages + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
         }
 
-        public bool Extract( out Package pkg )
+        public bool Extract( DynamoModel dynamoModel, out Package pkg )
         {
             this.DownloadState = State.Installing;
 

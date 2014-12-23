@@ -543,7 +543,7 @@ public Node root { get; set; }
         if (File.Exists(filePath))
             return filePath;
 
-        SemErr(@"Cannot import file: '" + fileName + @"': No such file or directory");
+        SemErr(String.Format(StringConstants.noSuchFileOrDirectoryToImport,fileName));
         return null;
     }
 
@@ -866,9 +866,9 @@ public Node root { get; set; }
 			
 		}
 		if (la.val == "if")
-		  SynErr("'"+la.val+ @"' statement can only be used in imperative language block, consider using an inline conditional instead?"); 
+            SynErr(String.Format(StringConstants.useInlineConditional, la.val)); 
 		if ((la.val == "for")||(la.val == "while"))
-		  SynErr("'"+la.val+ @"' statement can only be used in imperative language block."); 
+            SynErr(String.Format(StringConstants.validForImperativeBlockOnly, la.val));  
 		codeBlockNode = codeblock;
 		
 		// We look ahead (la) here instead of looking at the current token (t)
@@ -904,7 +904,7 @@ public Node root { get; set; }
 			Expect(1);
 		}
 		if (la.kind != _endline)
-		  SynErr("';' is expected."); 
+		  SynErr(StringConstants.semiColonExpected); 
 		
 		Expect(21);
 		if (moduleName == null) {
@@ -941,7 +941,7 @@ public Node root { get; set; }
 
 	void Associative_Statement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		while (!(StartOf(2))) {SynErr(76); Get();}
-		if (!IsFullClosure()) SynErr(@"')' expected - Imcomplete Closure"); 
+		if (!IsFullClosure()) SynErr(StringConstants.closeBracketExpected); 
 		node = null; 
 		if (IsNonAssignmentStatement()) {
 			Associative_NonAssignmentStatement(out node);
@@ -960,14 +960,14 @@ public Node root { get; set; }
 		} else if (la.kind == 38) {
 			Get();
 			if (la.val != ";")
-			   SynErr("';' is expected.");  
+			   SynErr(StringConstants.semiColonExpected);  
 			
 			Expect(21);
 			node = new ProtoCore.AST.AssociativeAST.BreakNode(); 
 		} else if (la.kind == 39) {
 			Get();
 			if (la.val != ";")
-			   SynErr("';' is expected.");  
+			   SynErr(StringConstants.semiColonExpected);  
 			
 			Expect(21);
 			node = new ProtoCore.AST.AssociativeAST.ContinueNode(); 
@@ -979,7 +979,7 @@ public Node root { get; set; }
 				Expect(21);
 			} else {
 				if (la.val != ";")
-				   SynErr("';' is expected.");  
+				   SynErr(StringConstants.semiColonExpected);  
 				
 				Get();
 			}
@@ -1062,7 +1062,7 @@ public Node root { get; set; }
 		isInClass = true;
 		if (IsKeyWord(t.val, true))
 		{
-		    errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		    errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		
 		if (la.kind == 28) {
@@ -1110,7 +1110,7 @@ public Node root { get; set; }
 					Associative_vardecl(out varnode, access, isStatic, attributes);
 					classnode.varlist.Add(varnode); 
 					if (la.val != ";")
-					   SynErr("';' is expected.");  
+					   SynErr(StringConstants.semiColonExpected);  
 					
 					Expect(21);
 					NodeUtils.SetNodeEndLocation(varnode, t); 
@@ -1148,7 +1148,7 @@ public Node root { get; set; }
 		node = expressionNode;
 		
 		if (la.val != ";")
-		   SynErr("';' is expected.");  
+		   SynErr(StringConstants.semiColonExpected);  
 		
 		Expect(21);
 		NodeUtils.SetNodeEndLocation(node, t); 
@@ -1187,7 +1187,7 @@ public Node root { get; set; }
 		}
 		
 		if (la.val != ";")
-		   SynErr("';' is expected.");  
+		   SynErr(StringConstants.semiColonExpected);  
 		
 		Expect(21);
 		NodeUtils.SetNodeEndLocation(node, t); 
@@ -1264,8 +1264,8 @@ public Node root { get; set; }
 				NodeUtils.SetNodeStartLocation(mstack, t);
 				
 				Associative_Expression(out rightNode);
-				if (la.val == "=") 
-				   SynErr("Syntax Error: invalid symbol '" + la.val + "'. (Did you mean to use Modifier Stack \" => \")"); 
+				if (la.val == "=")
+                    SynErr(String.Format(StringConstants.invalidSymbol, la.val));
 				
 				ProtoCore.AST.AssociativeAST.IdentifierNode identifier = null;
 				
@@ -1284,7 +1284,7 @@ public Node root { get; set; }
 				Node elementNode = mstack.AddElementNode(expressionNode, identifier);
 				
 				if (la.val != ";")
-				   SynErr("';' is expected.");  
+				   SynErr(StringConstants.semiColonExpected);  
 				
 				while (!(la.kind == 0 || la.kind == 21)) {SynErr(84); Get();}
 				Expect(21);
@@ -1303,8 +1303,8 @@ public Node root { get; set; }
 						
 					}
 					Associative_Expression(out rightNode);
-					if (la.val == "=") 
-					   SynErr("Syntax Error: invalid symbol '" + la.val + "'. (Did you mean to use Modifier Stack \" => \")"); 
+					if (la.val == "=")
+                        SynErr(String.Format(StringConstants.invalidSymbol, la.val));
 					
 					identifier = null;
 					
@@ -1337,7 +1337,7 @@ public Node root { get; set; }
 					elementNode = mstack.AddElementNode(expressionNode, identifier);
 					
 					if (la.val != ";")
-					   SynErr("';' is expected.");  
+					   SynErr(StringConstants.semiColonExpected);  
 					
 					while (!(la.kind == 0 || la.kind == 21)) {SynErr(85); Get();}
 					Expect(21);
@@ -1378,7 +1378,7 @@ public Node root { get; set; }
 				   expressionNode.RightNode.Name = leftVar;
 				
 				if (la.kind != _endline)
-				  SynErr("';' is expected."); 
+				  SynErr(StringConstants.semiColonExpected); 
 				
 				Expect(21);
 				NodeUtils.SetNodeEndLocation(expressionNode, t); node = expressionNode; 
@@ -1422,7 +1422,7 @@ public Node root { get; set; }
 		}
 		else {
 		   langblock.codeblock.language = ProtoCore.Language.kInvalid;
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?", t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.invalidLanguageBlockIdentifier, t.val));
 		}
 		
 		while (WeakSeparator(49,5,6) ) {
@@ -1511,10 +1511,10 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Associative_Expression(out expression);
 		throwNode.expression = expression; 
 		if (la.val != ";")
-		   SynErr("';' is expected.");  
+		   SynErr(StringConstants.semiColonExpected);  
 		
 		if (la.val != ";")
-		   SynErr("';' is expected.");  
+		   SynErr(StringConstants.semiColonExpected);  
 		
 		Expect(21);
 		node = throwNode; 
@@ -1536,9 +1536,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			if (null != node) nodelist.Add(node); 
 		}
 		if (la.val == "if")
-		   SynErr("'"+la.val+ @"' statement can only be used in imperative language block, consider using inline conditional instead?"); 
+           SynErr(String.Format(StringConstants.useInlineConditional, la.val)); 
 		if ((la.val == "for")||(la.val == "while"))
-		   SynErr("'"+la.val+ @"' statement can only be used in imperative language block. "); 
+            SynErr(String.Format(StringConstants.validForImperativeBlockOnly, la.val)); 
 		
 	}
 
@@ -1597,7 +1597,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		NodeUtils.SetNodeLocation(varDeclNode, t);
 		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
@@ -1718,7 +1718,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			ctorName = t.val; 
 			if (IsKeyWord(ctorName, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, can't be used as constructor name", t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCannotBeUsedAsConstructorName, t.val));
 			}
 			
 		}
@@ -1732,7 +1732,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = null; 
 		if (la.val != "base")
 		{
-		   SynErr("'base' is expected here to call base constructor.");  
+		   SynErr(StringConstants.baseIsExpectedToCallBaseConstructor);  
 		}
 		else
 		{
@@ -1768,12 +1768,12 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (!disableKwCheck && IsKeyWord(t.val, false, false))
 		{
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
 		if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
 		{
-		   SynErr("Return statement is invalid. Do you mean: return = " + la.val + " ?"); 
+            SynErr(String.Format(StringConstants.invalidReturnStatement, la.val)); 
 		}
 		
 		var = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val, (ProtoCore.PrimitiveType)ltype);
@@ -1794,7 +1794,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 
 	void Associative_Arguments(out List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodes) {
 		Expect(10);
-		if (!IsFullClosure()) SynErr(@"')' expected - Imcomplete Closure"); 
+        if (!IsFullClosure()) SynErr(StringConstants.closeBracketExpected); 
 		nodes = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); 
 		if (StartOf(4)) {
 			ProtoCore.AST.AssociativeAST.AssociativeNode t; 
@@ -1822,7 +1822,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		methodName = t.val; 
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
 		returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
@@ -1861,7 +1861,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		functionBody.Body =body;
 		funcBody = functionBody; 
 		if (la.val != ";")
-		   SynErr("';' is expected.");  
+		   SynErr(StringConstants.semiColonExpected);  
 		
 		Expect(21);
 	}
@@ -1941,7 +1941,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
@@ -2091,7 +2091,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var typedVar = new ProtoCore.AST.AssociativeAST.TypedIdentifierNode();
 			typedVar.Name = typedVar.Value = t.val;
@@ -2141,7 +2141,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var identNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 			identNode.Name = identNode.Value = t.val;
@@ -2156,7 +2156,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var typedVar = new ProtoCore.AST.AssociativeAST.TypedIdentifierNode();
 			typedVar.Name = typedVar.Value = t.val;
@@ -2594,7 +2594,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		
 		catchFilterNode.var =  ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
@@ -2769,7 +2769,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		node = null; 
 		Expect(5);
 		if (t.val.Length <= 2) {
-		   errors.SemErr(t.line, t.col, "Empty character literal.");
+		   errors.SemErr(t.line, t.col, StringConstants.emptyCharacterLiteral);
 		}
 		
 		node = new ProtoCore.AST.AssociativeAST.CharNode() 
@@ -2833,7 +2833,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		} else if (IsFunctionCall()) {
 			if (isLeft)
 			{
-			  errors.SemErr(la.line, la.col, "function call is not allowed at the left hand side of an assignment");
+			  errors.SemErr(la.line, la.col, StringConstants.functionCallCannotBeAtLeftSide);
 			} 
 			
 			Associative_FunctionCall(out node);
@@ -3099,14 +3099,14 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		} else if (la.kind == 38) {
 			Get();
 			if (la.kind != _endline)
-			SynErr("';' is expected.");
+			SynErr(StringConstants.semiColonExpected);
 			
 			Expect(21);
 			node = new ProtoCore.AST.ImperativeAST.BreakNode(); NodeUtils.SetNodeLocation(node, t); 
 		} else if (la.kind == 39) {
 			Get();
 			if (la.kind != _endline)
-			   SynErr("';' is expected.");
+			   SynErr(StringConstants.semiColonExpected);
 			
 			Expect(21);
 			node = new ProtoCore.AST.ImperativeAST.ContinueNode(); NodeUtils.SetNodeLocation(node, t); 
@@ -3115,12 +3115,12 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		} else if (StartOf(4)) {
 			Imperative_expr(out node);
 			if (la.kind != _endline)
-			   SynErr("';' is expected.");
+			   SynErr(StringConstants.semiColonExpected);
 			
 			Expect(21);
 		} else if (la.kind == 21) {
 			if (la.kind != _endline)
-			   SynErr("';' is expected.");
+			   SynErr(StringConstants.semiColonExpected);
 			
 			Get();
 		} else SynErr(109);
@@ -3149,7 +3149,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		funcDecl.Name = t.val; NodeUtils.SetNodeEndLocation(funcDecl, t); 
 		if (IsKeyWord(t.val, true))
 		{
-		    errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		    errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		
 		if (la.kind == 51) {
@@ -3197,8 +3197,8 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		   langblock.codeblock.language = ProtoCore.Language.kAssociative; 
 		}
 		else {
-		   langblock.codeblock.language = ProtoCore.Language.kInvalid; 
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?", t.val));
+		   langblock.codeblock.language = ProtoCore.Language.kInvalid;
+           errors.SemErr(t.line, t.col, String.Format(StringConstants.invalidLanguageBlockIdentifier, t.val));
 		}
 		
 		while (WeakSeparator(49,5,6) ) {
@@ -3423,7 +3423,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Imperative_expr(out expression);
 		throwNode.expression = expression; 
 		if (la.kind != _endline)
-		   SynErr("';' is expected.");
+		   SynErr(StringConstants.semiColonExpected);
 		
 		Expect(21);
 		node = throwNode; 
@@ -3468,7 +3468,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			} else if (StartOf(4)) {
 				Imperative_expr(out rhsNode);
 				if (la.kind != _endline)
-				   SynErr("';' is expected.");
+				   SynErr(StringConstants.semiColonExpected);
 				
 				Expect(21);
 			} else if (la.kind == 8) {
@@ -3508,7 +3508,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var typedVar = new ProtoCore.AST.ImperativeAST.TypedIdentifierNode();
 			typedVar.Name = typedVar.Value = t.val;
@@ -3558,7 +3558,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var identNode = new ProtoCore.AST.ImperativeAST.IdentifierNode();
 			identNode.Name = identNode.Value = t.val;
@@ -3573,7 +3573,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Expect(1);
 			if (IsKeyWord(t.val, true))
 			{
-			   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+			   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 			}
 			var typedVar = new ProtoCore.AST.ImperativeAST.TypedIdentifierNode();
 			typedVar.Name = typedVar.Value = t.val;
@@ -3655,12 +3655,12 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (!disableKwCheck && IsKeyWord(t.val, false, false))
 		{
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
 		if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
 		{
-		   SynErr("Return statement is invalid. Do you mean: return = " + la.val + " ?"); 
+            SynErr(String.Format(StringConstants.invalidReturnStatement, la.val)); 
 		}        
 		var = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
 		NodeUtils.SetNodeLocation(var, t);
@@ -4127,7 +4127,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		node = null; 
 		Expect(5);
 		if (t.val.Length <= 2) {
-		   errors.SemErr(t.line, t.col, "Empty character literal.");
+		   errors.SemErr(t.line, t.col, StringConstants.emptyCharacterLiteral);
 		}
 		
 		node = new ProtoCore.AST.ImperativeAST.CharNode() 
@@ -4274,7 +4274,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		tNode = BuildImperativeIdentifier(t.val);
 		NodeUtils.SetNodeLocation(tNode, t);
@@ -4407,7 +4407,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		
 		
 		if (la.kind != _endline)
-		   SynErr("';' is expected.");
+		   SynErr(StringConstants.semiColonExpected);
 		
 		Expect(21);
 	}
@@ -4427,7 +4427,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(1);
 		if (IsKeyWord(t.val, true))
 		{
-		   errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+		   errors.SemErr(t.line, t.col, String.Format(StringConstants.keywordCantBeUsedAsIdentifier, t.val));
 		}
 		
 		catchFilterNode.var =  BuildImperativeIdentifier(t.val);

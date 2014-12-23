@@ -1,0 +1,84 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="Dynamo.UI.Views.AboutWindow"
+    xmlns:ui="clr-namespace:Dynamo.UI"
+    xmlns:views="clr-namespace:Dynamo.UI.Views"
+    x:Name="Dynamo" Title="About Dynamo"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="SingleBorderWindow"
+    ResizeMode="NoResize"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+    d:DataContext="{d:DesignInstance viewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
+    mc:Ignorable="d" 
+    Height="350" 
+    Width="500" 
+    Style="{DynamicResource DynamoWindowStyle}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid x:Name="LayoutRoot">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid Grid.Column="0" x:Name="ContentGrid" Margin="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="160"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="1">
+                <StackPanel VerticalAlignment="Stretch">
+                    <TextBox Name ="VersionNumber" 
+                             Background="Transparent" 
+                             Foreground="#888888" 
+                             BorderThickness="0" 
+                             FontSize="14" 
+                             FontFamily="{StaticResource OpenSansRegular}" 
+                             Margin="0,0,8,0" 
+                             Text="{Binding Version, Mode=OneWay}" 
+                             PreviewMouseDown="OnPreviewMouseDown"
+                             IsReadOnly="True" 
+                             IsReadOnlyCaretVisible="False"
+                             HorizontalAlignment="Center"/>
+                    <TextBlock x:Name ="UpdateInfo" 
+                               FontSize="12" 
+                               FontFamily="{StaticResource OpenSansRegular}" 
+                               Foreground="#00bb00"
+                               PreviewMouseDown="OnPreviewMouseDown"
+                               HorizontalAlignment="Center">
+                        <Run Foreground="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableBrushConverter}}" 
+                             Text="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
+                             ConverterParameter=DataContext, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+            <Button Grid.Row="2" Content="Dynamo Website" Click="OnClickLink" Style="{StaticResource STextButton}"/>
+            <Image Grid.Column="0" Grid.Row="0" Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png" Height="128" Width="128"/>
+        </Grid>
+        <ScrollViewer Grid.Column="1" Background="#363636" Padding="25">
+            <views:RichTextFile File="{Binding LicenseFile}" 
+                                IsReadOnly="True" 
+                                IsEnabled="True"
+                                IsDocumentEnabled="True" 
+                                FontSize="10" 
+                                Foreground="#888888" 
+                                Background="Transparent" 
+                                OpenLinksInBrowser="True" 
+                                BorderThickness="0"/>
+        </ScrollViewer>
+    </Grid>
+</Window>

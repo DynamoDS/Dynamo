@@ -651,7 +651,7 @@ namespace ProtoCore.DSASM
                 var symbols = symbolTable.GetAllSymbols(name);
                 if (symbols.Count > 1)
                 {
-                    string message = string.Format(BuildData.WarningMessage.kMultipleSymbolFound, name, "");
+                    string message = string.Format(StringConstants.kMultipleSymbolFound, name, "");
                     foreach (var symbol in symbols)
                     {
                         message += ", " + symbol.FullName;

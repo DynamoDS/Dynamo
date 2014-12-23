@@ -11,12 +11,54 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 
 using ProtoCore.AST.AssociativeAST;
 using Autodesk.DesignScript.Runtime;
 
 namespace DSIronPythonNode
 {
+    public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
+    {
+        private DynamoViewModel dynamoViewModel;
+        private PythonNode model;
+
+        public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
+        {
+            base.CustomizeView(nodeModel, nodeView);
+
+            this.model = nodeModel;
+            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+
+            var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
+            nodeView.MainContextMenu.Items.Add(editWindowItem);
+            editWindowItem.Click += delegate { EditScriptContent(); };
+            nodeView.UpdateLayout();
+
+            nodeView.MouseDown += view_MouseDown;
+        }
+
+        private void view_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount >= 2)
+            {
+                EditScriptContent();
+                e.Handled = true;
+            }
+        }
+
+        private void EditScriptContent()
+        {
+            var editWindow = new ScriptEditorWindow(dynamoViewModel);
+            editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
+            bool? acceptChanged = editWindow.ShowDialog();
+            if (acceptChanged.HasValue && acceptChanged.Value)
+            {
+                model.RequiresRecalc = true;
+            }
+        }
+    }
+
     public abstract class PythonNodeBase : VariableInputNode
     {
         protected PythonNodeBase(WorkspaceModel workspace) : base(workspace)
@@ -70,7 +112,6 @@ namespace DSIronPythonNode
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
-
         public PythonNode(WorkspaceModel workspace) : base(workspace)
         {
             script = "import clr\nclr.AddReference('ProtoGeometry')\n"
@@ -86,8 +127,6 @@ namespace DSIronPythonNode
         }
 
         private string script;
-        private DynamoViewModel dynamoViewModel;
-
         public string Script
         {
             get { return script; }
@@ -98,40 +137,6 @@ namespace DSIronPythonNode
                     script = value;
                     RaisePropertyChanged("Script");
                 }
-            }
-        }
-
-        public override void SetupCustomUIElements(dynNodeView view)
-        {
-            this.dynamoViewModel = view.ViewModel.DynamoViewModel;
-
-            base.SetupCustomUIElements(view);
-
-            var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
-            view.MainContextMenu.Items.Add(editWindowItem);
-            editWindowItem.Click += delegate { EditScriptContent(); };
-            view.UpdateLayout();
-
-            view.MouseDown += view_MouseDown;
-        }
-
-        private void view_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount >= 2)
-            {
-                EditScriptContent();
-                e.Handled = true;
-            }
-        }
-
-        private void EditScriptContent()
-        {
-            var editWindow = new ScriptEditorWindow(dynamoViewModel);
-            editWindow.Initialize(GUID, "ScriptContent", Script);
-            bool? acceptChanged = editWindow.ShowDialog();
-            if (acceptChanged.HasValue && acceptChanged.Value)
-            {
-                RequiresRecalc = true;
             }
         }
 

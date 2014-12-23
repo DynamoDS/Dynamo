@@ -1,0 +1,28 @@
+﻿<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
+                      xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf" 
+                      xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
+                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+    </ResourceDictionary.MergedDictionaries>
+    
+    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
+        <controls:NodeView></controls:NodeView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
+        <nodes:NoteView></nodes:NoteView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:InfoBubbleViewModel}">
+        <controls:InfoBubbleView></controls:InfoBubbleView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:EndlessGridViewModel}">
+        <controls:EndlessGrid></controls:EndlessGrid>
+    </DataTemplate>
+
+</ResourceDictionary>

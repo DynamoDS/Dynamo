@@ -15,9 +15,6 @@ using Dynamo.UI;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
-using Binding = System.Windows.Data.Binding;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using TextBox = System.Windows.Controls.TextBox;
 
 namespace DSCore.File
 {
@@ -32,53 +29,6 @@ namespace DSCore.File
 
             Value = "";
         }
-
-        public override void SetupCustomUIElements(dynNodeView view)
-        {
-            //add a button to the inputGrid on the dynElement
-            var readFileButton = new DynamoNodeButton
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top,
-                Height = Configurations.PortHeightInPixels
-            };
-
-            readFileButton.Click += readFileButton_Click;
-            readFileButton.Content = "Browse...";
-            readFileButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            readFileButton.VerticalAlignment = VerticalAlignment.Center;
-
-            var tb = new TextBox
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
-                IsReadOnly = true,
-                IsReadOnlyCaretVisible = false,
-                Margin = new Thickness(0, 5, 0, 5)
-            };
-
-            tb.TextChanged += delegate { 
-                tb.ScrollToHorizontalOffset(double.PositiveInfinity); 
-                view.ViewModel.DynamoViewModel.ReturnFocusToSearch(); 
-            };
-
-            var sp = new StackPanel();
-            sp.Children.Add(readFileButton);
-            sp.Children.Add(tb);
-            view.inputGrid.Children.Add(sp);
-
-            tb.DataContext = this;
-            var bindingVal = new Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new FilePathDisplayConverter()
-            };
-            tb.SetBinding(TextBox.TextProperty, bindingVal);
-        }
-
-        protected abstract void readFileButton_Click(object sender, RoutedEventArgs e);
     }
 
     [NodeName("File Path")]
@@ -90,25 +40,14 @@ namespace DSCore.File
     {
         public Filename(WorkspaceModel workspace) : base(workspace, "Filename") { }
 
-        protected override void readFileButton_Click(object sender, RoutedEventArgs e)
+        protected override bool ShouldDisplayPreviewCore
         {
-            var openDialog = new OpenFileDialog
+            get
             {
-                CheckFileExists = false
-            };
-
-            if (openDialog.ShowDialog() == DialogResult.OK)
-            {
-                Value = openDialog.FileName;
+                return false; // Previews are not shown for this node type.
             }
         }
-
-        protected override bool ShouldDisplayPreviewCore()
-        {
-            return false; // Previews are not shown for this node type.
-        }
     }
-
 
     [NodeName("Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
@@ -119,20 +58,12 @@ namespace DSCore.File
     {
         public Directory(WorkspaceModel workspace) : base(workspace, "Directory") { }
 
-        protected override void readFileButton_Click(object sender, RoutedEventArgs e)
+        protected override bool ShouldDisplayPreviewCore
         {
-            var openDialog = new FolderBrowserDialog
+            get
             {
-                ShowNewFolderButton = true
-            };
-
-            if (openDialog.ShowDialog() == DialogResult.OK)
-                Value = openDialog.SelectedPath;
-        }
-
-        protected override bool ShouldDisplayPreviewCore()
-        {
-            return false; // Previews are not shown for this node type.
+                return false; // Previews are not shown for this node type.
+            }
         }
     }
 
@@ -149,7 +80,8 @@ namespace DSCore.File
         private IEnumerable<IDisposable> registrations = Enumerable.Empty<IDisposable>();
         private readonly Func<string, T> func;
 
-        protected FileSystemObject(WorkspaceModel workspaceModel, Func<string, T> func) : base(workspaceModel)
+        protected FileSystemObject(WorkspaceModel workspaceModel, Func<string, T> func)
+            : base(workspaceModel)
         {
             this.func = func;
         }
@@ -184,7 +116,7 @@ namespace DSCore.File
             base.OnBuilt();
             DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
         }
-        
+
         private void DataBridgeCallback(object data)
         {
             StopWatching();
@@ -240,7 +172,7 @@ namespace DSCore.File
             // Data does not match expected type, skip
             return Enumerable.Empty<IDisposable>();
         }
-        
+
         private static IEnumerable<TItem> Singleton<TItem>(TItem x)
         {
             yield return x;
@@ -254,7 +186,8 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
     {
-        public FileObject(WorkspaceModel workspaceModel) : base(workspaceModel, IO.File.FromPath)
+        public FileObject(WorkspaceModel workspaceModel)
+            : base(workspaceModel, IO.File.FromPath)
         {
             InPortData.Add(new PortData("path", "Path to the file."));
             OutPortData.Add(new PortData("file", "File object"));
@@ -263,7 +196,7 @@ namespace DSCore.File
 
         protected override IDisposable WatchFileSystemObject(FileInfo path)
         {
-            var dir = 
+            var dir =
                 path.Directory ?? new DirectoryInfo(System.IO.Directory.GetCurrentDirectory());
 
             var watcher = new FileSystemWatcher(dir.FullName, path.Name) { EnableRaisingEvents = true };
@@ -275,7 +208,8 @@ namespace DSCore.File
         {
             private readonly FileSystemWatcher watcher;
 
-            public FileObjectDisposable(FileSystemWatcher watcher, NodeModel node) : base(node)
+            public FileObjectDisposable(FileSystemWatcher watcher, NodeModel node)
+                : base(node)
             {
                 this.watcher = watcher;
 
@@ -306,7 +240,8 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
     {
-        public DirectoryObject(WorkspaceModel workspaceModel) : base(workspaceModel, IO.Directory.FromPath)
+        public DirectoryObject(WorkspaceModel workspaceModel)
+            : base(workspaceModel, IO.Directory.FromPath)
         {
             InPortData.Add(new PortData("path", "Path to the directory."));
             OutPortData.Add(new PortData("directory", "Directory object."));
@@ -323,7 +258,8 @@ namespace DSCore.File
         {
             private readonly FileSystemWatcher watcher;
 
-            public DirectoryObjectDisposable(FileSystemWatcher watcher, NodeModel node) : base(node)
+            public DirectoryObjectDisposable(FileSystemWatcher watcher, NodeModel node)
+                : base(node)
             {
                 this.watcher = watcher;
 

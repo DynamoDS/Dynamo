@@ -8,20 +8,18 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using System.Windows.Threading;
 using System.Xml;
 
 using DSNodeServices;
 
 using Dynamo.Core;
+using Dynamo.UI;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Services;
-using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -30,13 +28,10 @@ using DynamoUnits;
 
 using DynamoUtilities;
 
-using Microsoft.Practices.Prism;
-
 using Enum = System.Enum;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
 
-using Dynamo.ViewModels;
 using Dynamo.DSEngine;
 
 using Double = System.Double;
@@ -47,6 +42,7 @@ namespace Dynamo.Models
     {
         #region Events
 
+        public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
         public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
         {
@@ -351,7 +347,6 @@ namespace Dynamo.Models
             bool isTestMode = configuration.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
-            UsageReportingManager.Instance.InitializeCore(this);
 
             Runner = runner;
             Context = context;
@@ -498,7 +493,6 @@ namespace Dynamo.Models
             Logger.Dispose();
 
             DynamoSelection.DestroyInstance();
-            UsageReportingManager.DestroyInstance();
 
             InstrumentationLogger.End();
 
@@ -825,9 +819,6 @@ namespace Dynamo.Models
         {
             Loader.LoadCustomNodes();
 
-            this.SearchModel.RemoveEmptyCategories();
-            this.SearchModel.SortCategoryChildren();
-
             Logger.Log("Welcome to Dynamo!");
         }
 
@@ -866,7 +857,7 @@ namespace Dynamo.Models
             }
 
             var vm = this.Workspaces.First(x => x == ws);
-            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
+            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(workspaceHeader.X, workspaceHeader.Y)));
 
             this.CurrentWorkspace = ws;
         }
@@ -1133,7 +1124,7 @@ namespace Dynamo.Models
                 CurrentWorkspace.Zoom = zoom;
 
                 var vm = this.Workspaces.First(x => x == CurrentWorkspace);
-                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(cx, cy)));
+                vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(cx, cy)));
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
@@ -1363,22 +1354,7 @@ namespace Dynamo.Models
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
 
-                // We don't want to put this action into Dispatcher's queue 
-                // in test mode because it would never get a chance to execute.
-                // As Dispatcher is a static object, DynamoModel instance will 
-                // be referenced by Dispatcher until nunit finishes all test 
-                // cases. 
-                if (!IsTestMode)
-                {
-                    // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-                    Dispatcher.CurrentDispatcher.BeginInvoke(
-                        DispatcherPriority.Background,
-                        new Action(() =>
-                        {
-                            sw.Stop();
-                            Logger.Log(String.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
-                        }));
-                }
+                sw.Stop();
 
                 #endregion
 
@@ -1459,17 +1435,14 @@ namespace Dynamo.Models
 
             foreach (ISelectable sel in DynamoSelection.Instance.Selection)
             {
-                //MVVM : selection and clipboard now hold view model objects
-                //UIElement el = sel as UIElement;
-                ModelBase el = sel as ModelBase;
+                var el = sel as ModelBase;
                 if (el != null)
                 {
                     if (!this.ClipBoard.Contains(el))
                     {
                         this.ClipBoard.Add(el);
 
-                        //dynNodeView n = el as dynNodeView;
-                        NodeModel n = el as NodeModel;
+                        var n = el as NodeModel;
                         if (n != null)
                         {
                             var connectors = n.InPorts.ToList().SelectMany(x => x.Connectors)
@@ -1507,7 +1480,7 @@ namespace Dynamo.Models
 
             var connectors = this.ClipBoard.OfType<ConnectorModel>();
 
-            foreach (NodeModel node in nodes)
+            foreach (var node in nodes)
             {
                 //create a new guid for us to use
                 Guid newGuid = Guid.NewGuid();
@@ -1517,12 +1490,10 @@ namespace Dynamo.Models
 
                 if (node is Function)
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
-#if USE_DSENGINE
                 else if (node is DSFunction)
                     nodeName = ((node as DSFunction).Controller.MangledName);
                 else if (node is DSVarArgFunction)
                     nodeName = ((node as DSVarArgFunction).Controller.MangledName);
-#endif
                 
                 var xmlDoc = new XmlDocument();
 

@@ -3,8 +3,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 
 using Dynamo.Core;
-using Dynamo.UI.Prompts;
-using Dynamo.ViewModels;
 
 namespace Dynamo.Models
 {
@@ -248,6 +246,21 @@ namespace Dynamo.Models
                 RequestTaskDialog(sender, args);
         }
 
+        internal delegate void VoidHandler();
+        internal event VoidHandler RequestDownloadDynamo;
+        internal void OnRequestDownloadDynamo()
+        {
+            if (RequestDownloadDynamo != null)
+                RequestDownloadDynamo();
+        }
+
+        internal event VoidHandler RequestBugReport;
+        internal void OnRequestBugReport()
+        {
+            if (RequestBugReport != null)
+                RequestBugReport();
+        }
+
         /// <summary>
         /// An event triggered when a single graph evaluation completes.
         /// </summary>
@@ -274,13 +287,4 @@ namespace Dynamo.Models
         #endregion
     }
 
-    public class EvaluationCompletedEventArgs : EventArgs
-    {
-        public EvaluationCompletedEventArgs(bool evaluationTookPlace)
-        {
-            EvaluationTookPlace = evaluationTookPlace;
-        }
-
-        public bool EvaluationTookPlace { get; private set; }
-    }
 }

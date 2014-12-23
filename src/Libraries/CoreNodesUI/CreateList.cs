@@ -4,10 +4,20 @@ using System.Linq;
 using System.Text;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Wpf;
+
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
+    public class CreateListNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<CreateList>
+    {
+        public void CustomizeView(CreateList model, Dynamo.Controls.NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
+        }
+    }
+
     [NodeName("List.Create")]
     [NodeDescription("Makes a new list out of the given inputs")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]

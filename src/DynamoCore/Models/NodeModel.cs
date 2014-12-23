@@ -4,12 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Windows;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
-using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Controls;
+
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
@@ -17,7 +14,6 @@ using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -27,7 +23,7 @@ using ProtoCore.DSASM;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase, IBlockingModel
+    public abstract class NodeModel : ModelBase
     {
         #region private members
 
@@ -43,7 +39,6 @@ namespace Dynamo.Models
         private string toolTipText = "";
         private bool saveResult;
         private string description;
-        private const string FailureString = "Node evaluation failed";
 
         // Data caching related class members. There are multiple parties at
         // play when it comes to caching MirrorData for a NodeModel, this value
@@ -60,7 +55,7 @@ namespace Dynamo.Models
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
 
-        private List<IRenderPackage> _renderPackages = new List<IRenderPackage>();
+        private List<IRenderPackage> renderPackages = new List<IRenderPackage>();
 
         #endregion
 
@@ -80,14 +75,14 @@ namespace Dynamo.Models
             {
                 lock (RenderPackagesMutex)
                 {
-                    return _renderPackages; 
+                    return renderPackages; 
                 }
             }
             set
             {
                 lock (RenderPackagesMutex)
                 {
-                    _renderPackages = value;
+                    renderPackages = value;
                 }
                 RaisePropertyChanged("RenderPackages");
             }
@@ -514,7 +509,7 @@ namespace Dynamo.Models
 
         protected NodeModel(WorkspaceModel workspaceModel)
         {
-            this.Workspace = workspaceModel;
+            Workspace = workspaceModel;
 
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
@@ -726,7 +721,7 @@ namespace Dynamo.Models
                 // 
                 // The return value of function %nodeAstFailed() is always 
                 // null.
-                var errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
+                const string errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
                 var fullMsg = String.Format(errorMsg, e.Message);
                 this.NotifyAstBuildBroken(fullMsg);
 
@@ -907,50 +902,6 @@ namespace Dynamo.Models
 
         #region UI Framework
 
-        /// <summary>
-        ///     Called back from the view to enable users to setup their own view elements
-        /// </summary>
-        /// <param name="view"></param>
-        internal void InitializeUI(dynamic view)
-        {
-            //Runtime dispatch
-            (this as dynamic).SetupCustomUIElements(view);
-        }
-
-        /// <summary>
-        /// Used as a catch-all if runtime dispatch for UI initialization is unimplemented.
-        /// </summary>
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
-        private void SetupCustomUIElements(object view) { }
-
-        /// <summary>
-        /// As hacky as the name sounds, this method is used to retrieve the 
-        /// "DynamoViewModel" from a given "MenuItem" object. The reason it is
-        /// needed boils down to the fact that we still do "SetupCustomUIElements"
-        /// at the "NodeModel" level. This method will be removed when we 
-        /// eventually refactor "SetupCustomUIElements" out into view layer.
-        /// </summary>
-        /// <param name="menuItem">The MenuItem from which DynamoViewModel is to 
-        /// be retrieved.</param>
-        /// <returns>Returns the corresponding DynamoViewModel retrieved from the 
-        /// given MenuItem.</returns>
-        /// 
-        protected DynamoViewModel GetDynamoViewModelFromMenuItem(MenuItem menuItem)
-        {
-            if (menuItem == null || (menuItem.Tag == null))
-                throw new ArgumentNullException("menuItem");
-
-            var dynamoViewModel = menuItem.Tag as DynamoViewModel;
-            if (dynamoViewModel == null)
-            {
-                const string message = "MenuItem.Tag is not DynamoViewModel";
-                throw new ArgumentException(message);
-            }
-
-            return dynamoViewModel;
-        }
-
         private void ClearTooltipText()
         {
             ToolTipText = "";
@@ -1000,11 +951,6 @@ namespace Dynamo.Models
 
         #region Interaction
 
-        internal void DisableInteraction()
-        {
-            State = ElementState.Dead;
-            InteractionEnabled = false;
-        }
 
         internal void EnableInteraction()
         {
@@ -1638,7 +1584,7 @@ namespace Dynamo.Models
             // 
             lock (RenderPackagesMutex)
             {
-                _renderPackages.Clear();
+                renderPackages.Clear();
                 HasRenderPackages = false;
             }
 
@@ -1689,9 +1635,9 @@ namespace Dynamo.Models
             lock (RenderPackagesMutex)
             {
                 var task = asyncTask as UpdateRenderPackageAsyncTask;
-                _renderPackages.Clear();
-                _renderPackages.AddRange(task.RenderPackages);
-                HasRenderPackages = _renderPackages.Any();
+                renderPackages.Clear();
+                renderPackages.AddRange(task.RenderPackages);
+                HasRenderPackages = renderPackages.Any();
             }
         }
 
@@ -1993,18 +1939,24 @@ namespace Dynamo.Models
             }
         }
 
-        public bool ShouldDisplayPreview()
+        public bool ShouldDisplayPreview
         {
-            // Previews are only shown in Home Workspace.
-            if (!(this.Workspace is HomeWorkspaceModel))
-                return false;
+            get
+            {
+                // Previews are only shown in Home Workspace.
+                if (!(this.Workspace is HomeWorkspaceModel))
+                    return false;
 
-            return this.ShouldDisplayPreviewCore();
+                return this.ShouldDisplayPreviewCore;
+            }
         }
 
-        protected virtual bool ShouldDisplayPreviewCore()
+        protected virtual bool ShouldDisplayPreviewCore
         {
-            return true; // Default implementation: always show preview.
+            get
+            {
+                return true; // Default implementation: always show preview.
+            } 
         }
       
     }

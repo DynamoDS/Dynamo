@@ -2,11 +2,10 @@
 using System.IO;
 using System.Text;
 
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
-
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {

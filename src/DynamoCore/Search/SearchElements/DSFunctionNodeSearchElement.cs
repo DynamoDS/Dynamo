@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.DSEngine;
 
 namespace Dynamo.Search.SearchElements

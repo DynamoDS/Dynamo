@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="Dynamo.UI.Controls.CodeBlockEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        
+    </UserControl.Resources>
+  
+    <Grid>
+        <Border BorderBrush="#aaa"
+                BorderThickness="1,0,1,0"
+                VerticalAlignment="Top">
+            <avalonedit:TextEditor x:Name="InnerTextEditor"
+                                   FontSize="15px"
+                                   FontFamily="Consolas"
+                                   WordWrap="True"
+                                   Foreground="#444"
+                                   Padding="3 0 3 0"
+                                   Background="#88FFFFFF"
+                                   MaxWidth="500"
+                                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                   
+                                   />
+        </Border>
+        <TextBlock x:Name="WatermarkLabel"
+                   Text="Your code goes here"
+                   Foreground="#777777"
+                   FontFamily="Consolas"
+                   FontSize="14.67px"
+                   Padding="3 0 3 0"
+                   Margin="3 0 3 0"
+                   IsHitTestVisible="False">
+        </TextBlock>
+    </Grid>
+</UserControl>
