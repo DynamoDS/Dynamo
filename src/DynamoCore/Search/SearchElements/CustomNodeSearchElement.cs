@@ -1,65 +1,55 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using Dynamo.Utilities;
+﻿using System;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Utilities;
 
-//namespace Dynamo.Search.SearchElements
-//{
-//    public class CustomNodeSearchElement : NodeSearchElement, IEquatable<CustomNodeSearchElement>
-//    {
-//        public Guid Guid { get; internal set; }
+namespace Dynamo.Search.SearchElements
+{
+    /// <summary>
+    ///     Search element for custom nodes.
+    /// </summary>
+    public class CustomNodeSearchElement : NodeSearchElement
+    {
+        private readonly ICustomNodeSource customNodeManager;
+        public Guid ID { get; private set; }
+        private string path;
 
-//        private string _path;
-//        public string Path
-//        {
-//            get { return _path; }
-//            set
-//            {
-//                _path = value;
-//                RaisePropertyChanged("Path");
-//            }
-//        }
+        /// <summary>
+        ///     Path to this custom node in disk, used in the Edit context menu.
+        /// </summary>
+        public string Path
+        {
+            get { return path; }
+            private set
+            {
+                if (value == path) return;
+                path = value;
+                OnPropertyChanged("Path");
+            }
+        }
 
-//        public override string Type { get { return "Custom Node"; } }
+        public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
+        {
+            this.customNodeManager = customNodeManager;
+            SyncWithCustomNodeInfo(info);
+        }
 
-//        public CustomNodeSearchElement(CustomNodeInfo info)
-//            : base(info.Name, info.Description, new List<string>())
-//        {
-//            this.Node = null;
-//            this.FullCategoryName = info.Category;
-//            this.Guid = info.Guid;
-//            this._path = info.Path;
-//        }
+        /// <summary>
+        ///     Updates the properties of this search element.
+        /// </summary>
+        /// <param name="info"></param>
+        public void SyncWithCustomNodeInfo(CustomNodeInfo info)
+        {
+            ID = info.FunctionId;
+            Name = info.Name;
+            FullCategoryName = info.Category;
+            Description = info.Description;
+            Path = info.Path;
+        }
 
-//        public override NodeSearchElement Copy()
-//        {
-//            return
-//                new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name, this.FullCategoryName,
-//                                                               this.Description, this.Path));
-//        }
-
-//        public override bool Equals(object obj)
-//        {
-//            if (obj == null || GetType() != obj.GetType())
-//            {
-//                return false;
-//            }
-
-//            return this.Equals(obj as NodeSearchElement);
-//        }
-
-//        public override int GetHashCode()
-//        {
-//            return this.Guid.GetHashCode() + this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
-//        }
-
-//        public bool Equals(CustomNodeSearchElement other)
-//        {
-//            return other.Guid == this.Guid;
-//        }
-
-//        public new bool Equals(NodeSearchElement other)
-//        {
-//            return other is CustomNodeSearchElement && this.Equals(other as CustomNodeSearchElement);
-//        }
-//    }
-//}
+        protected override NodeModel ConstructNewNodeModel()
+        {
+            return customNodeManager.CreateCustomNodeInstance(ID);
+        }
+    }
+}

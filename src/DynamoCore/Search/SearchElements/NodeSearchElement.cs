@@ -1,131 +1,169 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using Dynamo.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using Dynamo.Annotations;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Search.Interfaces;
 
-//using String = System.String;
+namespace Dynamo.Search.SearchElements
+{
+    /// <summary>
+    ///     Base class for all Dynamo Node search elements.
+    /// </summary>
+    public abstract class NodeSearchElement : INotifyPropertyChanged, ISearchEntry, ISource<NodeModel>
+    {
+        private readonly HashSet<string> keywords = new HashSet<string>();
+        private string fullCategoryName;
+        private string description;
+        private string name;
+        private bool isVisibleInSearch = true;
 
-//namespace Dynamo.Search.SearchElements
-//{
+        /// <summary>
+        ///     Specified whether or not this entry should appear in search.
+        /// </summary>
+        //TODO(Steve): This should exist only on the ViewModel -- MAGN-5716
+        public bool IsVisibleInSearch
+        {
+            get { return isVisibleInSearch; }
+            set
+            {
+                if (value.Equals(isVisibleInSearch)) return;
+                isVisibleInSearch = value;
+                OnPropertyChanged("IsVisibleInSearch");
+            }
+        }
 
-//    /// <summary>
-//    /// A search element representing a local node </summary>
-//    public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
-//    {
-//        internal readonly string FullName ;
+        /// <summary>
+        ///     List of nested categories this search element is contained in.
+        /// </summary>
+        public ICollection<string> Categories
+        {
+            get { return SplitCategoryName(FullCategoryName).ToList(); }
+        }
 
-//        #region Properties
+        public const char CATEGORY_DELIMITER = '.';
 
-//        /// <summary>
-//        /// Node property </summary>
-//        /// <value>
-//        /// The node used to instantiate this object </value>
-//        public NodeModel Node { get; internal set; }
+        /// <summary>
+        ///     Split a category name into individual category names splitting be DEFAULT_DELIMITER
+        /// </summary>
+        /// <param name="categoryName">The name</param>
+        /// <returns>A list of output</returns>
+        public static IEnumerable<string> SplitCategoryName(string categoryName)
+        {
+            if (String.IsNullOrEmpty(categoryName))
+                return Enumerable.Empty<string>();
 
-//        /// <summary>
-//        /// Type property </summary>
-//        /// <value>
-//        /// A string describing the type of object </value>
-//        private string _type;
-//        public override string Type { get { return _type; } }
+            return
+                categoryName.Split(CATEGORY_DELIMITER)
+                    .Where(x => x != CATEGORY_DELIMITER.ToString() && !String.IsNullOrEmpty(x));
+        }
 
-//        /// <summary>
-//        /// Name property </summary>
-//        /// <value>
-//        /// The name of the node </value>
-//        private string _name;
-//        public override string Name { get { return _name; } }
+        /// <summary>
+        ///     The category name of this node.
+        /// </summary>
+        public string FullCategoryName
+        {
+            get { return fullCategoryName; }
+            set
+            {
+                if (value == fullCategoryName) return;
+                fullCategoryName = value;
+                OnPropertyChanged("FullCategoryName");
+                OnPropertyChanged("Categories");
+            }
+        }
 
-//        /// <summary>
-//        /// Description property </summary>
-//        /// <value>
-//        /// A string describing what the node does</value>
-//        private string _description;
-//        public override string Description { get { return _description; } }
+        /// <summary>
+        ///     The name of this entry in search.
+        /// </summary>
+        string ISearchEntry.Name 
+        {
+            get { return FullCategoryName + "." + Name; }
+        }
 
-//        private bool _searchable = true;
-//        public override bool Searchable { get { return _searchable; } }
+        /// <summary>
+        ///     The name of this entry as it appears in the library.
+        /// </summary>
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                if (value == name) return;
+                name = value;
+                OnPropertyChanged("Name");
+            }
+        }
 
-//        public void SetSearchable(bool s)
-//        {
-//            _searchable = s;
-//        }
+        /// <summary>
+        ///     The search weight of this entry.
+        /// </summary>
+        public double Weight = 1;
 
-//        /// <summary>
-//        /// Weight property </summary>
-//        /// <value>
-//        /// Number defining the relative importance of the element in search.  Higher weight means closer to the top. </value>
-//        public override sealed double Weight { get; set; }
+        /// <summary>
+        ///     Collection of keywords which can be used to search for this element.
+        /// </summary>
+        public ICollection<string> SearchKeywords
+        {
+            get { return keywords; }
+        }
 
-//        /// <summary>
-//        /// Keywords property </summary>
-//        /// <value>
-//        /// Joined set of keywords </value>
-//        public override sealed string Keywords { get; set; }
+        /// <summary>
+        ///     Description of the node.
+        /// </summary>
+        public string Description
+        {
+            get { return description; }
+            set
+            {
+                if (value == description) return;
+                description = value;
+                OnPropertyChanged("Description");
+            }
+        }
 
-//        /// <summary>
-//        /// Whether the description of this node should be visible or not
-//        /// </summary>
-//        private bool _descriptionVisibility = false;
-//        public bool DescriptionVisibility
-//        {
-//            get { return _descriptionVisibility; }
-//            set
-//            {
-//                _descriptionVisibility = value;
-//                RaisePropertyChanged("DescriptionVisibility");
-//            }
-//        }
+        /// <summary>
+        ///     Event fired when this search element produces a new NodeModel. This typically
+        ///     happens when it is selected in the library by the user.
+        /// </summary>
+        public event Action<NodeModel> ItemProduced;
+        protected virtual void OnItemProduced(NodeModel obj)
+        {
+            var handler = ItemProduced;
+            if (handler != null) handler(obj);
+        }
+        
+        /// <summary>
+        ///     Creates a new NodeModel to be inserted into the current Dynamo workspace.
+        /// </summary>
+        /// <returns></returns>
+        protected abstract NodeModel ConstructNewNodeModel();
 
-//        #endregion
+        /// <summary>
+        ///     Produces a new Node, via the ItemProduced event.
+        /// </summary>
+        public void ProduceNode()
+        {
+            OnItemProduced(ConstructNewNodeModel());
+        }
 
-//        /// <summary>
-//        ///     The class constructor - use this constructor for built-in types\
-//        ///     that are not yet loaded.
-//        /// </summary>
-//        /// <param name="name"></param>
-//        /// <param name="description"></param>
-//        /// <param name="tags"></param>
-//        /// <param name="fullName"></param>
-//        public NodeSearchElement(string name, string description, IEnumerable<string> tags, string fullName = "")
-//        {
-//            this.Node = null;
-//            this._name = name;
-//            this.Weight = 1;
-//            this.Keywords = String.Join(" ", tags);
-//            this._type = "Node";
-//            this._description = description;
-//            this.FullName = fullName;
-//        }
+        ICollection<string> ISearchEntry.SearchTags
+        {
+            get
+            {
+                return SearchKeywords.ToList();
+            }
+        }
 
-//        public virtual NodeSearchElement Copy()
-//        {
-//            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(), this.FullName);
-//            f.FullCategoryName = this.FullCategoryName;
-//            return f;
-//        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-//        public override bool Equals(object obj)
-//        {
-//            if (obj == null || GetType() != obj.GetType())
-//            {
-//                return false;
-//            }
-
-//            return this.Equals(obj as NodeSearchElement);
-//        }
-
-//        /// <summary>
-//        /// Overriding equals, we need to override hashcode </summary>
-//        /// <returns> A unique hashcode for the object </returns>
-//        public override int GetHashCode()
-//        {
-//            return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
-//        }
-
-//        public bool Equals(NodeSearchElement other)
-//        {
-//            return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
-//        }
-//    }
-
-//}
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+}

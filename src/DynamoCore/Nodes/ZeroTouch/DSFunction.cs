@@ -253,7 +253,7 @@ namespace Dynamo.Nodes
         {
             AssociativeNode rhs;
 
-            string function = Definition.Name;
+            string function = Definition.FunctionName;
 
             switch (Definition.Type)
             {
@@ -264,7 +264,7 @@ namespace Dynamo.Nodes
                         var functionNode = new IdentifierListNode
                         {
                             LeftNode = new IdentifierNode(Definition.ClassName),
-                            RightNode = new IdentifierNode(Definition.Name)
+                            RightNode = new IdentifierNode(Definition.FunctionName)
                         };
                         rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
                     }
@@ -273,7 +273,7 @@ namespace Dynamo.Nodes
                         model.AppendReplicationGuides(inputAstNodes);
                         rhs = AstFactory.BuildFunctionCall(
                             Definition.ClassName,
-                            Definition.Name,
+                            Definition.FunctionName,
                             inputAstNodes);
                     }
                     break;
@@ -283,7 +283,7 @@ namespace Dynamo.Nodes
                     var staticProp = new IdentifierListNode
                     {
                         LeftNode = new IdentifierNode(Definition.ClassName),
-                        RightNode = new IdentifierNode(Definition.Name)
+                        RightNode = new IdentifierNode(Definition.FunctionName)
                     };
                     rhs = staticProp;
                     break;
@@ -296,7 +296,7 @@ namespace Dynamo.Nodes
                         var functionNode = new IdentifierListNode
                         {
                             LeftNode = new IdentifierNode(Definition.ClassName),
-                            RightNode = new IdentifierNode(Definition.Name)
+                            RightNode = new IdentifierNode(Definition.FunctionName)
                         };
                         rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
                     }
@@ -311,7 +311,7 @@ namespace Dynamo.Nodes
                                 var insProp = new IdentifierListNode
                                 {
                                     LeftNode = inputAstNodes[0],
-                                    RightNode = new IdentifierNode(Definition.Name)
+                                    RightNode = new IdentifierNode(Definition.FunctionName)
                                 };
                                 rhs = insProp;
                             }
@@ -326,7 +326,7 @@ namespace Dynamo.Nodes
                         var functionNode = new IdentifierListNode
                         {
                             LeftNode = new IdentifierNode(Definition.ClassName),
-                            RightNode = new IdentifierNode(Definition.Name)
+                            RightNode = new IdentifierNode(Definition.FunctionName)
                         };
                         rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
                     }

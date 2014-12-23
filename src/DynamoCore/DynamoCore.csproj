@@ -110,23 +110,23 @@ limitations under the License.
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="SearchNew\Interfaces\ISearchCategory.cs" />
-    <Compile Include="SearchNew\Interfaces\ISearchEntry.cs" />
-    <Compile Include="SearchNew\Legacy\BrowserInternalElement.cs" />
-    <Compile Include="SearchNew\Legacy\BrowserItem.cs" />
-    <Compile Include="SearchNew\Legacy\BrowserRootElement.cs" />
-    <Compile Include="SearchNew\Legacy\SearchElements\SearchElementBase.cs" />
-    <Compile Include="SearchNew\NodeSearchModel.cs" />
-    <Compile Include="SearchNew\SearchDictionary.cs" />
-    <Compile Include="SearchNew\SearchElements\CodeBlockNodeSearchElement.cs" />
-    <Compile Include="SearchNew\SearchElements\CustomNodeSearchElement.cs" />
-    <Compile Include="SearchNew\SearchElements\NodeModelSearchElement.cs" />
-    <Compile Include="SearchNew\SearchElements\NodeModelSearchElementBase.cs" />
-    <Compile Include="SearchNew\SearchElements\NodeSearchElement.cs" />
-    <Compile Include="SearchNew\SearchElements\ZeroTouchSearchElement.cs" />
-    <Compile Include="SearchNew\SearchLibrary.cs" />
-    <Compile Include="Search\BrowserRootElement.cs" />
+    <Compile Include="Search\Interfaces\ISearchCategory.cs" />
+    <Compile Include="Search\Interfaces\ISearchEntry.cs" />
+    <Compile Include="Search\Legacy\BrowserInternalElement.cs" />
+    <Compile Include="Search\Legacy\BrowserItem.cs" />
+    <Compile Include="Search\Legacy\BrowserRootElement.cs" />
+    <Compile Include="Search\Legacy\SearchElements\SearchElementBase.cs" />
+    <Compile Include="Search\NodeSearchModel.cs" />
+    <Compile Include="Search\SearchDictionary.cs" />
+    <Compile Include="Search\SearchElements\CodeBlockNodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\NodeModelSearchElement.cs" />
+    <Compile Include="Search\SearchElements\NodeModelSearchElementBase.cs" />
+    <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
+    <Compile Include="Search\SearchLibrary.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
+    <Compile Include="Utilities\ImmutableStack.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
@@ -173,8 +173,6 @@ limitations under the License.
     <Compile Include="Nodes\FunctionCallBase.cs" />
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
-    <Compile Include="Search\BrowserItem.cs" />
-    <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
@@ -190,8 +188,6 @@ limitations under the License.
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
-    <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
     <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Services\Heartbeat.cs" />
@@ -210,6 +206,7 @@ limitations under the License.
     <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\MigrationReport.cs" />
+    <Compile Include="Utilities\Option.cs" />
     <Compile Include="Utilities\Point2D.cs" />
     <Compile Include="Utilities\Rect2D.cs" />
     <Compile Include="Utilities\Thickness.cs" />
@@ -217,7 +214,6 @@ limitations under the License.
     <Compile Include="Utilities\TypeExtensions.cs" />
     <Compile Include="Utilities\VersionUtilities.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
-    <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="PackageManager\PackageDownloadHandle.cs" />
     <Compile Include="PackageManager\PackageLoader.cs" />
     <Compile Include="Utilities\Extensions.cs" />
@@ -227,10 +223,7 @@ limitations under the License.
     <Compile Include="Core\DynamoLoader.cs" />
     <Compile Include="Core\NodeCollapser.cs" />
     <Compile Include="Utilities\Guid.cs" />
-    <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
-    <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="PackageManager\PackageManagerSearchElement.cs" />
-    <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Nodes\BaseTypes.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\Files.cs" />
@@ -250,7 +243,6 @@ limitations under the License.
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Search\SearchDictionary.cs" />
     <Compile Include="DSEngine\RenderPackage.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
