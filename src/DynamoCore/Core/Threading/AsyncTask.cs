@@ -24,7 +24,7 @@ namespace Dynamo.Core.Threading
     {
         #region Private Class Data Members
 
-        public enum TaskPriority
+        internal enum TaskPriority
         {
             Critical,
             Highest,
