@@ -530,6 +530,12 @@ namespace Dynamo.UI.Views
             // that means we have to move to first class/method button.
             if (e.Key == Key.Down)
             {
+                if (topResultListBox.IsMouseOver)
+                {
+                    e.Handled = true;
+                    return;
+                }
+
                 //Unselect top result.
                 if (e.OriginalSource is ListBox)
                     (e.OriginalSource as ListBox).UnselectAll();
@@ -605,13 +611,12 @@ namespace Dynamo.UI.Views
             if ((DataContext as SearchViewModel).CurrentMode !=
                 Dynamo.ViewModels.SearchViewModel.ViewMode.LibrarySearchView)
             {
-                libraryToolTipPopup.DataContext = null;
+                libraryToolTipPopup.SetDataContext(null, true);
                 UpdateHighlightedItem(null);
                 return;
             }
             if (sender is ListBox)
             {
-                var topResultListBox = sender as ListBox;
                 topResultListBox.SelectedIndex = 0;
                 libraryToolTipPopup.PlacementTarget = topResultListBox;
                 libraryToolTipPopup.SetDataContext(topResultListBox.SelectedItem);
@@ -620,5 +625,17 @@ namespace Dynamo.UI.Views
 
         #endregion
 
+        private void OnTopResultMouseEnter(object sender, MouseEventArgs e)
+        {
+            UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
+            libraryToolTipPopup.PlacementTarget = topResultListBox;
+            libraryToolTipPopup.SetDataContext(topResultListBox.SelectedItem);
+        }
+
+        private void OnTopResultMouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as ListBox).UnselectAll();
+            libraryToolTipPopup.SetDataContext(null);
+        }
     }
 }
