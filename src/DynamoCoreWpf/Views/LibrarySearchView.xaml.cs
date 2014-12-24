@@ -634,7 +634,7 @@ namespace Dynamo.UI.Views
 
         private void OnTopResultMouseLeave(object sender, MouseEventArgs e)
         {
-            (sender as ListBox).UnselectAll();
+            UpdateHighlightedItem(null);
             libraryToolTipPopup.SetDataContext(null);
         }
     }
