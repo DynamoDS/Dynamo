@@ -390,11 +390,36 @@ namespace Dynamo.UI.Views
             }
         }
 
+        private ListBoxItem FindFirstVisibleCategory(FrameworkElement librarySearchViewElement)
+        {
+            var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
+
+            int index = 1;
+            while (firstCategory != null &&
+                !WpfUtilities.ChildOfType<Expander>(firstCategory, string.Empty).IsExpanded)
+            {
+                firstCategory = FindChildListItemByIndex(librarySearchViewElement, "CategoryListView", index);
+            }
+
+            return firstCategory;
+        }
+
         private ListBoxItem FindFirstChildListItem(FrameworkElement parent, string listName)
         {
             var list = WpfUtilities.ChildOfType<ListBox>(parent, listName);
             var generator = list.ItemContainerGenerator;
             return generator.ContainerFromIndex(0) as ListBoxItem;
+        }
+
+        private ListBoxItem FindChildListItemByIndex(FrameworkElement parent, string listName, int index)
+        {
+            var list = WpfUtilities.ChildOfType<ListBox>(parent, listName);
+            var generator = list.ItemContainerGenerator;
+
+            if (index < list.Items.Count)
+                return generator.ContainerFromIndex(index) as ListBoxItem;
+            else
+                return null;
         }
 
         /// <summary>
@@ -503,7 +528,12 @@ namespace Dynamo.UI.Views
                 if (e.OriginalSource is ListBox)
                     (e.OriginalSource as ListBox).UnselectAll();
 
-                var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
+                var firstCategory = FindFirstVisibleCategory(librarySearchViewElement);
+                if (firstCategory == null)
+                {
+                    e.Handled = true;
+                    return;
+                }
 #if SEARCH_SHOW_CLASSES
                 var firstCategoryContent = firstCategory.Content as SearchCategory;
                 // If classes presented, set focus on the first class button.
