@@ -250,7 +250,7 @@ namespace Dynamo.Interfaces
         /// <returns></returns>
         public ILogger AsLogger()
         {
-            return AsLogger(msg => Log(msg));
+            return LogSource.AsLogger(msg => Log(msg));
         }
     }
 }
