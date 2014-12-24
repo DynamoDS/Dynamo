@@ -399,6 +399,7 @@ namespace Dynamo.UI.Views
                 !WpfUtilities.ChildOfType<Expander>(firstCategory, string.Empty).IsExpanded)
             {
                 firstCategory = FindChildListItemByIndex(librarySearchViewElement, "CategoryListView", index);
+                index++;
             }
 
             return firstCategory;
@@ -416,7 +417,7 @@ namespace Dynamo.UI.Views
             var list = WpfUtilities.ChildOfType<ListBox>(parent, listName);
             var generator = list.ItemContainerGenerator;
 
-            if (index < list.Items.Count)
+            if (0 <= index && index < list.Items.Count)
                 return generator.ContainerFromIndex(index) as ListBoxItem;
             else
                 return null;
@@ -471,7 +472,12 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            var nextSelectedCategory = GetListItemByIndex(categoryListView, categoryIndex);
+            var nextSelectedCategory = GetVisibleCategory(categoryListView, categoryIndex, e.Key);
+            if (nextSelectedCategory == null)
+            {
+                e.Handled = e.Key == Key.Down;
+                return;
+            }
 
             if (e.Key == Key.Up)
             {
@@ -556,6 +562,31 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
+        private ListBoxItem GetVisibleCategory(ListBox parent, int startIndex, Key key)
+        {
+            if (parent.Equals(null)) return null;
+
+            var index = startIndex;
+            var generator = parent.ItemContainerGenerator;
+            var category = generator.ContainerFromIndex(index) as ListBoxItem;
+
+            while (category != null &&
+                !WpfUtilities.ChildOfType<Expander>(category, string.Empty).IsExpanded)
+            {
+                if (key == Key.Down)
+                    index++;
+                if (key == Key.Up)
+                    index--;
+
+                if (0 <= index && index < parent.Items.Count)
+                    category = generator.ContainerFromIndex(index) as ListBoxItem;
+                else
+                    category = null;
+            }
+
+            return category;
+        }
+
         private ListBoxItem GetListItemByIndex(ListBox parent, int index)
         {
             if (parent.Equals(null)) return null;
@@ -566,7 +597,6 @@ namespace Dynamo.UI.Views
 
             return null;
         }
-
 
         // Everytime, when top result is updated, we have to select one first item.
         private void OnTopResultTargetUpdated(object sender, DataTransferEventArgs e)
