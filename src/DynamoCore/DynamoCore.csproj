@@ -84,11 +84,6 @@ limitations under the License.
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
@@ -102,23 +97,9 @@ limitations under the License.
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Reactive.Core">
-      <HintPath>..\packages\Rx-Core.2.2.5\lib\net40\System.Reactive.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Reactive.Interfaces">
       <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net40\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="System.Reactive.Linq">
-      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net40\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net40\System.Reactive.PlatformServices.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
@@ -231,7 +212,6 @@ limitations under the License.
     <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\MigrationReport.cs" />
-    <Compile Include="Utilities\ObservableExtensions.cs" />
     <Compile Include="Utilities\Option.cs" />
     <Compile Include="Utilities\Point2D.cs" />
     <Compile Include="Utilities\Rect2D.cs" />
@@ -279,7 +259,6 @@ limitations under the License.
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -287,10 +266,6 @@ limitations under the License.
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoCrypto\DynamoCrypto.csproj">
-      <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
-      <Name>DynamoCrypto</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Engine\ProtoAssociative\ProtoAssociative.csproj">
       <Project>{7318d5e5-9d15-4abe-8a51-92f58d4f0b85}</Project>
       <Name>ProtoAssociative</Name>
