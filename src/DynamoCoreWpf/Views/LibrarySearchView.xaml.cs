@@ -1,7 +1,11 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -134,8 +138,7 @@ namespace Dynamo.UI.Views
 
         private void OnListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
-            UpdateHighlightedItem(null);
-            ShowTooltip(sender);
+            UpdateHighlightedItem(sender as ListBoxItem);
         }
 
         private void OnListBoxItemGotFocus(object sender, RoutedEventArgs e)
@@ -145,13 +148,14 @@ namespace Dynamo.UI.Views
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            UpdateHighlightedItem(null);
             libraryToolTipPopup.SetDataContext(null);
         }
 
         private void OnListBoxItemLostFocus(object sender, RoutedEventArgs e)
         {
             // Hide tooltip immediately.
-            libraryToolTipPopup.DataContext = null;
+            libraryToolTipPopup.SetDataContext(null, true);
         }
 
         private void ShowTooltip(object sender)
@@ -179,16 +183,16 @@ namespace Dynamo.UI.Views
                 return;
 
             // Unselect old value.
-            if (HighlightedItem is ListBoxItem)
-                (HighlightedItem as ListBoxItem).IsSelected = false;
+            if (HighlightedItem != null)
+                HighlightedItem.IsSelected = false;
 
             HighlightedItem = newItem;
 
             // Select new value.
-            if (HighlightedItem is ListBoxItem)
+            if (HighlightedItem != null)
             {
-                (HighlightedItem as ListBoxItem).IsSelected = true;
-                ShowTooltip(HighlightedItem as ListBoxItem);
+                HighlightedItem.IsSelected = true;
+                ShowTooltip(HighlightedItem);
             }
         }
 
@@ -244,6 +248,13 @@ namespace Dynamo.UI.Views
         // This event is used to move inside members.
         private void OnMembersListBoxKeyDown(object sender, KeyEventArgs e)
         {
+            // For hovered by mouse item do not navigate.
+            if (HighlightedItem.IsMouseOver)
+            {
+                e.Handled = true;
+                return;
+            }
+
             var selectedMember = HighlightedItem.DataContext as BrowserInternalElement;
             var membersListBox = sender as ListBox;
             var members = membersListBox.Items;
@@ -614,17 +625,27 @@ namespace Dynamo.UI.Views
         {
             // If we turn to regular view, we have to hide tooltip immediately.
             if ((DataContext as SearchViewModel).CurrentMode !=
-                Dynamo.ViewModels.SearchViewModel.ViewMode.LibrarySearchView)
+                SearchViewModel.ViewMode.LibrarySearchView)
             {
                 libraryToolTipPopup.SetDataContext(null, true);
                 UpdateHighlightedItem(null);
                 return;
             }
-            if (sender is ListBox)
+
+            // Update highlighted item when the ItemContainerGenerator is ready.
+            topResultListBox.ItemContainerGenerator.StatusChanged += OnTopResultListBoxIcgStatusChanged;
+        }
+
+        private void OnTopResultListBoxIcgStatusChanged(object sender, EventArgs e)
+        {
+            if (topResultListBox.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
             {
-                topResultListBox.SelectedIndex = 0;
-                libraryToolTipPopup.PlacementTarget = topResultListBox;
-                libraryToolTipPopup.SetDataContext(topResultListBox.SelectedItem);
+                topResultListBox.ItemContainerGenerator.StatusChanged -= OnTopResultListBoxIcgStatusChanged;
+                Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
+                    }),
+                    DispatcherPriority.Input);
             }
         }
 
@@ -633,8 +654,6 @@ namespace Dynamo.UI.Views
         private void OnTopResultMouseEnter(object sender, MouseEventArgs e)
         {
             UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
-            libraryToolTipPopup.PlacementTarget = topResultListBox;
-            libraryToolTipPopup.SetDataContext(topResultListBox.SelectedItem);
         }
 
         private void OnTopResultMouseLeave(object sender, MouseEventArgs e)
@@ -643,7 +662,24 @@ namespace Dynamo.UI.Views
             libraryToolTipPopup.SetDataContext(null);
         }
 
-        private void OnCategoryExpanderCollapseExpand(object sender, RoutedEventArgs e)
+        private void OnCategoryExpanderCollapsed(object sender, RoutedEventArgs e)
+        {
+            SearchTextBox.Focus();
+
+            if (HighlightedItem == null)
+                return;
+
+            var categoryToCollapse = (sender as Expander).DataContext as SearchCategory;
+            var element = HighlightedItem.DataContext as NodeSearchElement;
+            // When member belongs to collapsed category HighlightedItem should be set to null.
+            if (categoryToCollapse.MemberGroups.Any(mg => mg.Members.Contains(element)))
+            {
+                UpdateHighlightedItem(null);
+                libraryToolTipPopup.SetDataContext(null, true);
+            }
+        }
+
+        private void OnCategoryExpanderExpanded(object sender, RoutedEventArgs e)
         {
             SearchTextBox.Focus();
         }
