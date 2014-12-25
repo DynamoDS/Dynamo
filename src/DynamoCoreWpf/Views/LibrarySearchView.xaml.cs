@@ -200,7 +200,10 @@ namespace Dynamo.UI.Views
             PresentationSource target;
             // For the first time set top result as HighlightedItem. 
             if (HighlightedItem == null)
+            {
+                UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
                 HighlightedItem = GetSelectedListBoxItem(topResultListBox);
+            }
             if (HighlightedItem == null) return;
 
             target = PresentationSource.FromVisual(HighlightedItem);
