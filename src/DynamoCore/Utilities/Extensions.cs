@@ -57,22 +57,15 @@ namespace Dynamo.Utilities
             this IEnumerable<TLeaf> allLeaves, Func<TLeaf, ICollection<TNodeKey>> keySelector)
         {
             var query =
-                // For each leaf we're grouping...
                 allLeaves.Select(
                     x =>
-                        // ...generate a KeyValuePair...
                         new KeyValuePair<TLeaf, ImmutableStack<TNodeKey>>(
-                            // ...with the leaf as the key...
                             x,
-                            // ...and a stack of tree-node tags ("category names") as the value.
                             keySelector(x)
-                                .Reverse()  // reverse so that it is not-reversed on the stack.
-                                .Aggregate( // initialize the stack
+                                .Reverse()
+                                .Aggregate(
                                     ImmutableStack<TNodeKey>.Empty,
                                     (keys, key) => keys.Push(key))));
-                                    
-            // Now that we have our leaves associated with the nested trees they'll be placed in,
-            // we can group them.
             return GroupByRecursive(query);
         }
 
@@ -138,34 +131,22 @@ namespace Dynamo.Utilities
             public IEnumerable<ITree<TNode, TEntry>> SubTrees { get; private set; }
         }
 
-        private static TTree GroupByRecursive<TLeaf, TNodeKey, TTree>(
+
+        private static V GroupByRecursive<TLeaf, TNodeKey, V>(
             IEnumerable<IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>> grouped,
-            Func<TNodeKey, IEnumerable<TTree>, IEnumerable<TLeaf>, TTree> grouper, TNodeKey rootKey)
+            Func<TNodeKey, IEnumerable<V>, IEnumerable<TLeaf>, V> grouper, TNodeKey rootKey)
         {
-            // This function takes a sequence that has already been recursively grouped, and turns
-            // it into a user-defined tree structure.
-            
             var leaves = new List<TLeaf>();
-            var subTrees = new List<TTree>();
+            var subCategories = new List<V>();
 
             foreach (var grouping in grouped)
             {
-                // Resharper complains when accessing a foreach variable inside of a lambda, so
-                // we copy locally.
                 IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>> grouping1 = grouping;
-                
                 grouping.Key
-                    // If the key is a TNodeKey, indicating that the grouping represents a sub-tree,
-                    // we recurse on the contents of the sub-tree.
                     .SelectLeft(categoryName => GroupByRecursive(grouping1, grouper, categoryName))
-                    
-                    // Now we have either an IEnumerable<TTree>, or an IEnumerable<TLeaf>. If it's
-                    // the former, add it to the sub-tree collection. If the latter, add to the
-                    // leaves collection.
-                    .Match(subTrees.Add, leaves.AddRange);
+                    .Match(subCategories.Add, leaves.AddRange);
             }
 
-            // Now that we have all the leaves and sub-trees, create the instance of the tree.
             return grouper(rootKey, subCategories, leaves);
         }
 
@@ -173,44 +154,27 @@ namespace Dynamo.Utilities
             <TLeaf, TNodeKey>(IEnumerable<KeyValuePair<TLeaf, ImmutableStack<TNodeKey>>> entries)
         {
             return
-                // We group the key value pairs of leaves and tree-node tags based on the node-tag at the
-                // top of the stack.
                 entries.GroupBy(
-                    // If there's a node-tag on the stack, use that. Otherwise, use nothing. We use an option
-                    // type as the key to encode that there's either something or nothing.
                     entry => entry.Value.IsEmpty ? Option.None<TNodeKey>() : Option.Some(entry.Value.Peek()))
-                    
-                    // For each grouping...
                     .Select(
                         g =>
                             g.Key.Match(
-                                // ...if the grouping is a sub-tree (key is Some<TNodeKey>)...
                                 key =>
-                                    // ...create a new RecursiveGrouping...
                                     new RecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>(
-                                        // ...with the key being the tree-tag (to indicate that it's a sub-tree)
                                         Either.Left<TNodeKey, IEnumerable<TLeaf>>(key),
-                                        // ...and the contents being the contents of grouping "g", grouped
-                                        // recursively.
                                         GroupByRecursive(
                                             g.Select(
                                                 kv =>
-                                                    // Here, we pop the top node-tag off the stack, since it was
-                                                    // already used for this node of the tree.
                                                     new KeyValuePair<TLeaf, ImmutableStack<TNodeKey>>(
-                                                        kv.Key,
-                                                        kv.Value.Pop())))),
-                                // If the grouping is not a sub-tree (key is None<TNodeKey>), then we have a
-                                // collection of leaves.
+                                                    kv.Key,
+                                                    kv.Value.Pop())))),
                                 () =>
-                                    // Create a new RecursiveGrouping...
                                     new RecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>(
-                                        // ...with the key being the collection of leaves (it's not a sub-tree
-                                        // so we don't have a TNodeKey to use)...
                                         Either.Right<TNodeKey, IEnumerable<TLeaf>>(g.Select(x => x.Key)),
-                                        // ...and the contents being empty, since this isn't a sub-tree and so
-                                        // there are no children.
-                                        Enumerable.Empty<IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>>())));
+                                        Enumerable
+                                            .Empty<
+                                                IRecursiveGrouping<
+                                                    IEither<TNodeKey, IEnumerable<TLeaf>>>>())));
         }
 
         private class RecursiveGrouping<T> : IRecursiveGrouping<T>
