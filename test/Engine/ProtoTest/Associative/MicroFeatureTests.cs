@@ -150,7 +150,7 @@ temp = test(1, 2);
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         [Category("Class")]
         public void TestClasses01()
         {
@@ -1162,7 +1162,7 @@ r2 = ContainsKey(a, true);
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestDictionary22()
         {
             // Test builtin functions RemoveKey() for array

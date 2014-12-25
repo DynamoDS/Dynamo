@@ -266,7 +266,7 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestDictionaryMarshalling_DStoCS_CStoDS()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4035

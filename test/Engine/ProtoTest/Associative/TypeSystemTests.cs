@@ -233,7 +233,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestIntSetOnArrayStructure()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668

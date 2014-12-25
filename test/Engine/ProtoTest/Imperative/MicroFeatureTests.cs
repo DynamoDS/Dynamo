@@ -967,7 +967,7 @@ class VisibilityAttribute
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestStringOperations()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4118
@@ -1006,7 +1006,7 @@ class VisibilityAttribute
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestStringTypeConversion()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4119

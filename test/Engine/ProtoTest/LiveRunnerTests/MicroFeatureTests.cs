@@ -1845,7 +1845,7 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestFunctionOverloadRedefinitionOnUnmodifiedNode02()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4229
@@ -2512,7 +2512,7 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestCodeblockModification08()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4160
@@ -2876,7 +2876,7 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestCodeBlockDeleteLine01()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4159
@@ -3081,7 +3081,7 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failing")]
+        [Category("Failure")]
         public void TestCachingSSA02()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4158
