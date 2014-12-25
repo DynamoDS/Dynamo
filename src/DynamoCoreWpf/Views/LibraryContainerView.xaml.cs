@@ -79,6 +79,8 @@ namespace Dynamo.Search
 
             this.viewModel.RequestFocusSearch += OnSearchViewModelRequestFocusSearch;
             this.viewModel.RequestReturnFocusToSearch += OnSearchViewModelRequestReturnFocusToSearch;
+
+            this.librarySearchView.SearchTextBox = SearchTextBox;
         }
 
         private void OnSearchViewMouseLeave(object sender, MouseEventArgs e)

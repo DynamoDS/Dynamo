@@ -572,7 +572,9 @@
                             <Expander Header="{Binding Path=Name}"
                                       OverridesDefaultStyle="True"
                                       Template="{StaticResource CategoryExpanderTemplate}"
-                                      IsExpanded="True">
+                                      IsExpanded="True"
+                                      Expanded="OnCategoryExpanderCollapseExpand"
+                                      Collapsed="OnCategoryExpanderCollapseExpand">
                                 <StackPanel Orientation="Vertical"
                                             KeyDown="OnCategoryContentKeyDown">
 

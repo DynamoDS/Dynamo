@@ -16,6 +16,8 @@ namespace Dynamo.UI.Views
     {
         private ListBoxItem HighlightedItem;
 
+        public UIElement SearchTextBox;
+
         public LibrarySearchView()
         {
             InitializeComponent();
@@ -639,6 +641,11 @@ namespace Dynamo.UI.Views
         {
             UpdateHighlightedItem(null);
             libraryToolTipPopup.SetDataContext(null);
+        }
+
+        private void OnCategoryExpanderCollapseExpand(object sender, RoutedEventArgs e)
+        {
+            SearchTextBox.Focus();
         }
     }
 }
