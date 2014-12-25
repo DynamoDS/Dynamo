@@ -208,7 +208,6 @@ namespace Dynamo.UI.Views
             if (HighlightedItem == null)
             {
                 UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
-                HighlightedItem = GetSelectedListBoxItem(topResultListBox);
             }
             if (HighlightedItem == null) return;
 
@@ -395,7 +394,7 @@ namespace Dynamo.UI.Views
 
                 // Otherwise user pressed down, we have to move to first member button.
                 var memberGroupsListBox = WpfUtilities.ChildOfType<ListBox>(searchCategoryElement, "MemberGroupsListBox");
-                var listItem = FindFirstChildListItem(memberGroupsListBox, "MembersListBox");
+                var listItem = FindChildListItemByIndex(memberGroupsListBox, "MembersListBox");
                 if (listItem != null)
                 {
                     UpdateHighlightedItem(listItem);
@@ -408,7 +407,7 @@ namespace Dynamo.UI.Views
 
         private ListBoxItem FindFirstVisibleCategory(FrameworkElement librarySearchViewElement)
         {
-            var firstCategory = FindFirstChildListItem(librarySearchViewElement, "CategoryListView");
+            var firstCategory = FindChildListItemByIndex(librarySearchViewElement, "CategoryListView");
 
             int index = 1;
             while (firstCategory != null &&
@@ -421,18 +420,10 @@ namespace Dynamo.UI.Views
             return firstCategory;
         }
 
-        private ListBoxItem FindFirstChildListItem(FrameworkElement parent, string listName)
+        private ListBoxItem FindChildListItemByIndex(FrameworkElement parent, string listName, int index = 0)
         {
             var list = WpfUtilities.ChildOfType<ListBox>(parent, listName);
             var generator = list.ItemContainerGenerator;
-            return generator.ContainerFromIndex(0) as ListBoxItem;
-        }
-
-        private ListBoxItem FindChildListItemByIndex(FrameworkElement parent, string listName, int index)
-        {
-            var list = WpfUtilities.ChildOfType<ListBox>(parent, listName);
-            var generator = list.ItemContainerGenerator;
-
             if (0 <= index && index < list.Items.Count)
                 return generator.ContainerFromIndex(index) as ListBoxItem;
             else
@@ -520,8 +511,8 @@ namespace Dynamo.UI.Views
                 }
 #else
                 // If there are no classes, then focus on first method.
-                var memberGroupsList = FindFirstChildListItem(nextSelectedCategory, "MemberGroupsListBox");
-                UpdateHighlightedItem(FindFirstChildListItem(memberGroupsList, "MembersListBox"));
+                var memberGroupsList = FindChildListItemByIndex(nextSelectedCategory, "MemberGroupsListBox");
+                UpdateHighlightedItem(FindChildListItemByIndex(memberGroupsList, "MembersListBox"));
 #endif
             }
             e.Handled = true;
@@ -573,12 +564,12 @@ namespace Dynamo.UI.Views
                 }
 #endif
                 // Otherwise, set selection on the first method button.
-                var firstMemberGroup = FindFirstChildListItem(firstCategory, "MemberGroupsListBox");
-                UpdateHighlightedItem(FindFirstChildListItem(firstMemberGroup, "MembersListBox"));
+                var firstMemberGroup = FindChildListItemByIndex(firstCategory, "MemberGroupsListBox");
+                UpdateHighlightedItem(FindChildListItemByIndex(firstMemberGroup, "MembersListBox"));
             }
             else // Otherwise, Up was pressed. So, we have to move to top result.
             {
-                UpdateHighlightedItem(FindFirstChildListItem(this, "topResultListBox"));
+                UpdateHighlightedItem(FindChildListItemByIndex(this, "topResultListBox"));
             }
 
             e.Handled = true;
