@@ -87,7 +87,7 @@ namespace Dynamo.Utilities
         /// <param name="categorySelector"></param>
         /// <param name="rootTag"></param>
         /// <returns></returns>
-        public static ITree<TNodeTag, TLeaf> GroupByRecursive<TNodeTag, TLeaf>(
+        public static ITree<TNodeTag, TLeaf> ToTree<TNodeTag, TLeaf>(
             this IEnumerable<TLeaf> entries, Func<TLeaf, ICollection<TNodeTag>> categorySelector,
             TNodeTag rootTag)
         {
@@ -166,7 +166,7 @@ namespace Dynamo.Utilities
             }
 
             // Now that we have all the leaves and sub-trees, create the instance of the tree.
-            return grouper(rootKey, subCategories, leaves);
+            return grouper(rootKey, subTrees, leaves);
         }
 
         private static IEnumerable<IRecursiveGrouping<IEither<TNodeKey, IEnumerable<TLeaf>>>> GroupByRecursive
