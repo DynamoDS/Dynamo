@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.Core;
+
+using Dynamo.Nodes;
 using Dynamo.UI;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 using Point = System.Windows.Point;
@@ -167,19 +169,11 @@ namespace Dynamo.ViewModels
             this.SetActiveConnector(null);
         }
 
-        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM, bool isSnapping = true)
+        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM)
         {
             // Check if required ports exist
             if (this.activeConnector == null || portVM == null)
                 return false;
-
-            //By default the ports will be in snapping mode. But if the connection is not completed,
-            //then on mouse leave, the cursor should be pointed as arcselect instead of arcadd.             
-            if (!isSnapping)
-            {
-                CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-                return false;
-            }
 
             PortModel srcPortM = this.activeConnector.ActiveStartPort;
             PortModel desPortM = portVM.PortModel;
@@ -242,7 +236,7 @@ namespace Dynamo.ViewModels
             List<ModelBase> models = DynamoSelection.Instance.Selection.
                 Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
 
-            this.Model.RecordModelsForModification(models);
+            WorkspaceModel.RecordModelsForModification(models, Model.UndoRecorder);
 
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
@@ -837,25 +831,17 @@ namespace Dynamo.ViewModels
             private void CreateCodeBlockNode(Point cursor)
             {
                 // create node
-                var guid = Guid.NewGuid();
+                var node = new CodeBlockNodeModel(owningWorkspace.DynamoViewModel.Model.LibraryServices);
 
-                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(guid,
-                    "Code Block", cursor.X, cursor.Y, false, true));
+                owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(node, cursor.X, cursor.Y, false, true));
 
                 // select node
-                var placedNode = owningWorkspace.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-                if (placedNode != null)
-                {
-                    DynamoSelection.Instance.ClearSelection();
-                    DynamoSelection.Instance.Selection.Add(placedNode);
-                }
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
 
                 //correct node position
-                if (placedNode != null)
-                {
-                    placedNode.X = (int)mouseDownPos.X - 92;
-                    placedNode.Y = (int)mouseDownPos.Y - 31;
-                }
+                node.X = (int)mouseDownPos.X - 92;
+                node.Y = (int)mouseDownPos.Y - 31;
             }
 
             #endregion

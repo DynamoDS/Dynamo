@@ -8,19 +8,23 @@ namespace DSCoreNodesUI
 {
     public abstract class BasicInteractive<T> : NodeModel
     {
-        private T _value;
+        private T value;
         public T Value
         {
             get
             {
-                return _value;
+                return value;
             }
             set
             {
-                if (Equals(_value, null) || !_value.Equals(value))
+                if (Equals(this.value, null) || !this.value.Equals(value))
                 {
-                    _value = value;
-                    RequiresRecalc = !Equals(value, null);
+                    this.value = value;
+                    if (!Equals(value, null))
+                    {
+                        ForceReExecuteOfNode = true;
+                        OnAstUpdated();
+                    }
                     RaisePropertyChanged("Value");
                 }
             }
@@ -31,32 +35,11 @@ namespace DSCoreNodesUI
         protected abstract T DeserializeValue(string val);
         protected abstract string SerializeValue();
 
-        protected BasicInteractive(WorkspaceModel workspace)
-            : base(workspace)
+        protected BasicInteractive()
         {
             Type type = typeof(T);
             OutPortData.Add(new PortData("", type.Name));
             RegisterAllPorts();
-        }
-
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
-            outEl.InnerText = SerializeValue();
-            nodeElement.AppendChild(outEl);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            foreach (
-                XmlNode subNode in
-                    nodeElement.ChildNodes.Cast<XmlNode>()
-                               .Where(subNode => subNode.Name.Equals(typeof(T).FullName)))
-            {
-// ReSharper disable once PossibleNullReferenceException
-                Value = DeserializeValue(subNode.InnerText);
-            }
         }
 
         public override string PrintExpression()
@@ -70,27 +53,24 @@ namespace DSCoreNodesUI
         {
             base.SerializeCore(element, context); // Base implementation must be called
 
-            if (context == SaveContext.Undo)
-            {
-                var xmlDocument = element.OwnerDocument;
-                var subNode = xmlDocument.CreateElement(typeof(T).FullName);
-                subNode.InnerText = SerializeValue();
-                element.AppendChild(subNode);
-            }
+            var xmlDocument = element.OwnerDocument;
+            var subNode = xmlDocument.CreateElement(typeof(T).FullName);
+            subNode.InnerText = SerializeValue();
+            element.AppendChild(subNode);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context); // Base implementation must be called
+            base.DeserializeCore(nodeElement, context); // Base implementation must be called
 
-            if (context == SaveContext.Undo)
+            foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>()
+                .Where(subNode => subNode.Name.Equals(typeof(T).FullName)))
             {
-                foreach (XmlNode subNode in element.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name.Equals(typeof(T).FullName)))
-                {
-                    // ReSharper disable once PossibleNullReferenceException
-                    Value = DeserializeValue(subNode.InnerText);
-                }
+                var attrs = subNode.Attributes;
+
+                Value = attrs != null && attrs["value"] != null
+                    ? DeserializeValue(attrs["value"].Value) //Legacy behavior
+                    : DeserializeValue(subNode.InnerText);
             }
         }
 

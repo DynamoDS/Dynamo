@@ -6,10 +6,10 @@ using System.Diagnostics;
 
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
+using Dynamo.DSEngine;
 using Dynamo.UI;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -22,6 +22,7 @@ using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
+using DynamoUtilities;
 
 namespace Dynamo.ViewModels
 {
@@ -70,10 +71,10 @@ namespace Dynamo.ViewModels
 
         public bool RunEnabled
         {
-            get { return model.RunEnabled; }
+            get { return HomeSpace.RunEnabled; }
             set
             {
-                model.RunEnabled = value;
+                HomeSpace.RunEnabled = value;
             }
         }
 
@@ -96,21 +97,31 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return model.DynamicRunEnabled; //selecting debug now toggles this on/off
+                return HomeSpace.DynamicRunEnabled; //selecting debug now toggles this on/off
             }
             set
             {
-                model.DynamicRunEnabled = value;
+                HomeSpace.DynamicRunEnabled = value;
                 RaisePropertyChanged("DynamicRunEnabled");
             }
         }
 
         public bool ViewingHomespace
         {
-            get { return model.CurrentWorkspace == model.HomeSpace; }
+            get { return model.CurrentWorkspace == HomeSpace; }
         }
 
         public bool IsAbleToGoHome { get; set; }
+
+        public HomeWorkspaceModel HomeSpace
+        {
+            get
+            {
+                return model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            }
+        }
+
+        public EngineController EngineController { get { return Model.EngineController; } }
 
         public WorkspaceModel CurrentSpace
         {
@@ -214,11 +225,6 @@ namespace Dynamo.ViewModels
         {
             // This is directly opposite of "WatchPreviewHitTest".
             get { return (!WatchEscapeIsDown && (!CanNavigateBackground)); }
-        }
-
-        public bool IsHomeSpace
-        {
-            get { return model.CurrentWorkspace == model.HomeSpace; }
         }
 
         public bool FullscreenWatchShowing
@@ -431,7 +437,6 @@ namespace Dynamo.ViewModels
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
             IVisualizationManager vizManager, string commandFilePath)
         {
-            
             // initialize core data structures
             this.model = dynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;
@@ -448,9 +453,14 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
-            workspaces.Add(new WorkspaceViewModel(model.HomeSpace, this));
-            model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
+            var homespace = new WorkspaceViewModel(model.CurrentWorkspace, this);
+            workspaces.Add(homespace);
 
+            model.CurrentWorkspace.PropertyChanged += CurrentWorkspace_PropertyChanged;
+
+            model.WorkspaceAdded += WorkspaceAdded;
+            model.WorkspaceRemoved += WorkspaceRemoved;
+            
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
@@ -493,7 +503,8 @@ namespace Dynamo.ViewModels
             UnsubscribeLoggerEvents();
             UnsubscribeModelCleaningUpEvent();
 
-            model.Workspaces.CollectionChanged -= Workspaces_CollectionChanged;
+            model.WorkspaceAdded -= WorkspaceAdded;
+            model.WorkspaceRemoved -= WorkspaceRemoved;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
         }
@@ -531,12 +542,14 @@ namespace Dynamo.ViewModels
 
         private void SubscribeModelUiEvents()
         {
+            CodeBlockUtils.RequestLogicalToVisualLineIndexMap += VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
             model.RequestBugReport += ReportABug;
             model.RequestDownloadDynamo += DownloadDynamo;
         }
 
         private void UnsubscribeModelUiEvents()
         {
+            CodeBlockUtils.RequestLogicalToVisualLineIndexMap -= VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
             model.RequestBugReport -= ReportABug;
             model.RequestDownloadDynamo -= DownloadDynamo;
         }
@@ -681,12 +694,12 @@ namespace Dynamo.ViewModels
 
         public void DisplayFunction(object parameters)
         {
-            Model.CustomNodeManager.GetFunctionDefinition((Guid)parameters);
+            Model.OpenCustomNodeWorkspace((Guid)parameters);
         }
 
         internal bool CanDisplayFunction(object parameters)
         {
-            return Model.CustomNodes.Any(x => x.Value == (Guid)parameters);
+            return Model.CustomNodeManager.Contains((Guid)parameters);
         }
 
         public static void ReportABug(object parameter)
@@ -778,7 +791,7 @@ namespace Dynamo.ViewModels
         {
             if (e.PropertyName == "CurrentWorkspace")
             {
-                IsAbleToGoHome = model.CurrentWorkspace != model.HomeSpace;
+                IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
                 RaisePropertyChanged("IsAbleToGoHome");
                 RaisePropertyChanged("CurrentSpace");
                 RaisePropertyChanged("BackgroundColor");
@@ -786,11 +799,14 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ViewingHomespace");
                 if (this.PublishCurrentWorkspaceCommand != null)
                     this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged("IsHomeSpace");
                 RaisePropertyChanged("IsPanning");
                 RaisePropertyChanged("IsOrbiting");
             }
-            else if (e.PropertyName == "RunEnabled")
+        }
+
+        void CurrentWorkspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "RunEnabled")
                 RaisePropertyChanged("RunEnabled");
         }
 
@@ -853,27 +869,23 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
-
-        /// <summary>
-        /// Responds to change in the model's workspaces collection, creating or deleting workspace model views.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Workspaces_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        
+        private void WorkspaceAdded(WorkspaceModel item)
         {
-            switch (e.Action)
+            var newVm = new WorkspaceViewModel(item, this);
+            if (item is HomeWorkspaceModel)
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                        workspaces.Add(new WorkspaceViewModel(item as WorkspaceModel, this));
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                        workspaces.Remove(workspaces.ToList().First(x => x.Model == item));
-                    break;
+                Model.RemoveWorkspace(HomeSpace);
+                Model.ResetEngine();
+                workspaces.Insert(0, newVm);
             }
+            else
+                workspaces.Add(newVm);
+        }
 
-            RaisePropertyChanged("Workspaces");
+        private void WorkspaceRemoved(WorkspaceModel item)
+        {
+            workspaces.Remove(workspaces.First(x => x.Model == item));
         }
 
         internal void AddToRecentFiles(string path)
@@ -901,7 +913,7 @@ namespace Dynamo.ViewModels
             };
 
             string ext, fltr;
-            if (workspace == model.HomeSpace)
+            if (workspace == HomeSpace)
             {
                 ext = ".dyn";
                 fltr = "Dynamo Workspace (*.dyn)|*.dyn";
@@ -955,9 +967,9 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         private void ShowOpenDialogAndOpenResult(object parameter)
         {
-            if (Model.HomeSpace.HasUnsavedChanges)
+            if (HomeSpace.HasUnsavedChanges)
             {
-                if (!AskUserToSaveWorkspaceOrCancel(Model.HomeSpace))
+                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
                     return;
             }
 
@@ -1047,7 +1059,7 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path);
+            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerCore);
         }
 
         public virtual bool RunInDebug
@@ -1080,7 +1092,7 @@ namespace Dynamo.ViewModels
             // crash sould always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save();
+                workspace.Save(EngineController.LiveRunnerCore);
                 return true;
             }
             else
@@ -1091,7 +1103,7 @@ namespace Dynamo.ViewModels
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName);
+                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerCore);
                     return true;
                 }
             }
@@ -1133,36 +1145,19 @@ namespace Dynamo.ViewModels
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void FocusCustomNodeWorkspace(CustomNodeDefinition symbol)
+        internal void FocusCustomNodeWorkspace(Guid symbol)
         {
             if (symbol == null)
             {
                 throw new Exception("There is a null function definition for this node.");
             }
 
-            if (model.CurrentWorkspace is CustomNodeWorkspaceModel)
+            if (model.OpenCustomNodeWorkspace(symbol))
             {
-                var customNodeWorkspace = model.CurrentWorkspace as CustomNodeWorkspaceModel;
-                if (customNodeWorkspace.CustomNodeDefinition.FunctionId
-                    == symbol.WorkspaceModel.CustomNodeDefinition.FunctionId)
-                {
-                    return;
-                }
+                //set the zoom and offsets events
+                CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
+                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));   
             }
-
-            var newWs = symbol.WorkspaceModel;
-
-            if (!this.model.Workspaces.Contains(newWs))
-                this.model.Workspaces.Add(newWs);
-
-            CurrentSpaceViewModel.CancelActiveState();
-
-            model.CurrentWorkspace = newWs;
-
-            //set the zoom and offsets events
-            var vm = this.Model.Workspaces.First(x => x == newWs);
-            vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(newWs.X, newWs.Y)));
-            vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
         }
 
         internal void ShowElement(NodeModel e)
@@ -1170,23 +1165,22 @@ namespace Dynamo.ViewModels
             if (DynamicRunEnabled)
                 return;
 
-            if (!model.Nodes.Contains(e))
+            if (!model.CurrentWorkspace.Nodes.Contains(e))
             {
-                if (model.HomeSpace != null && model.HomeSpace.Nodes.Contains(e))
+                if (HomeSpace != null && HomeSpace.Nodes.Contains(e))
                 {
                     //Show the homespace
-                    model.ViewHomeWorkspace();
+                    model.CurrentWorkspace = HomeSpace;
                 }
                 else
                 {
-                    foreach (CustomNodeDefinition funcDef in 
-                        model.CustomNodeManager.GetLoadedDefinitions())
+                    foreach (
+                        var customNodeWorkspace in
+                            model.CustomNodeManager.LoadedWorkspaces.Where(
+                                customNodeWorkspace => customNodeWorkspace.Nodes.Contains(e)))
                     {
-                        if (funcDef.WorkspaceModel.Nodes.Contains(e))
-                        {
-                            FocusCustomNodeWorkspace(funcDef);
-                            break;
-                        }
+                        FocusCustomNodeWorkspace(customNodeWorkspace.CustomNodeId);
+                        break;
                     }
                 }
             }
@@ -1260,10 +1254,9 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
-            else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel && 
-                model.CustomNodeManager.SearchPath.Any())
+            else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
-                _fileDialog.InitialDirectory = model.CustomNodeManager.SearchPath[0];
+                _fileDialog.InitialDirectory = DynamoPathManager.Instance.UserDefinitions;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -1316,7 +1309,7 @@ namespace Dynamo.ViewModels
         {
             if (parameter is Guid && model.CustomNodeManager.Contains((Guid)parameter))
             {
-                FocusCustomNodeWorkspace(model.CustomNodeManager.GetFunctionDefinition((Guid)parameter));
+                FocusCustomNodeWorkspace((Guid)parameter);
             }
         }
 
@@ -1360,6 +1353,16 @@ namespace Dynamo.ViewModels
         internal bool CanGoHomeView(object parameter)
         {
             return true;
+        }
+
+        public void GoHome(object _)
+        {
+            model.CurrentWorkspace = HomeSpace;
+        }
+
+        public bool CanGoHome(object _)
+        {
+            return ViewingHomespace;
         }
 
         public void SelectAll(object parameter)
@@ -1415,11 +1418,11 @@ namespace Dynamo.ViewModels
         {
             // if the workspace is unsaved, prompt to save
             // otherwise overwrite the home workspace with new workspace
-            if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
+            if (!HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(HomeSpace))
             {
-                Model.CurrentWorkspace = this.Model.HomeSpace;
+                Model.CurrentWorkspace = HomeSpace;
 
-                model.Clear(null);
+                model.ClearCurrentWorkspace();
                 return true;
             }
 
@@ -1758,8 +1761,9 @@ namespace Dynamo.ViewModels
             {
                 foreach (var file in openFileDialog.FileNames)
                 {
-                    model.EngineController.ImportLibrary(file);
+                    EngineController.ImportLibrary(file);
                 }
+                SearchViewModel.SearchAndUpdateResults();
             }
         }
 
@@ -1846,7 +1850,7 @@ namespace Dynamo.ViewModels
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                STLExport.ExportToSTL(this.Model, _fileDialog.FileName, model.HomeSpace.Name);
+                STLExport.ExportToSTL(this.Model, _fileDialog.FileName, HomeSpace.Name);
             }
         }
 

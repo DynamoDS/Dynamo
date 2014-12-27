@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Xml;
 
 using Dynamo.UI;
@@ -22,7 +23,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Event triggered when a port is connected.
         /// </summary>
-        public event PortConnectedHandler PortConnected;
+        public event Action<ConnectorModel> PortConnected;
 
         /// <summary>
         /// Event triggered when a port is disconnected.
@@ -98,18 +99,11 @@ namespace Dynamo.Models
         {
             get
             {
-                if (Owner != null)
-                {
-                    if (PortType == PortType.Input)
-                    {
-                        return Owner.InPortData[Index].ToolTipString;
-                    }
-                    else
-                    {
-                        return Owner.OutPortData[Index].ToolTipString;
-                    }
-                }
-                return "";
+                return Owner != null
+                    ? (PortType == PortType.Input
+                        ? Owner.InPortData[Index].ToolTipString
+                        : Owner.OutPortData[Index].ToolTipString)
+                    : "";
             }
         }
 
@@ -143,10 +137,13 @@ namespace Dynamo.Models
                 double offset = owner.GetPortVerticalOffset(this);
                 double y = owner.Y + headerHeight + 5 + halfHeight + offset;
 
-                if (portType == PortType.Input)
-                    return new Point2D(owner.X, y);
-                else if (portType == PortType.Output)
-                    return new Point2D(owner.X + owner.Width, y);
+                switch (portType)
+                {
+                    case PortType.Input:
+                        return new Point2D(owner.X, y);
+                    case PortType.Output:
+                        return new Point2D(owner.X + owner.Width, y);
+                }
 
                 return new Point2D();
             }
@@ -160,7 +157,7 @@ namespace Dynamo.Models
             get { return usingDefaultValue; }
             set
             {
-                usingDefaultValue = value;
+                usingDefaultValue = value; 
                 RaisePropertyChanged("UsingDefaultValue");
             }
         }
@@ -204,11 +201,8 @@ namespace Dynamo.Models
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
-           
-            if (data.Height == 0)
-                this.Height = Configurations.PortHeightInPixels;
-            else
-                this.Height = data.Height;
+
+            Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }
 
         /// <summary>
@@ -222,8 +216,7 @@ namespace Dynamo.Models
             while (Connectors.Any())
             {
                 ConnectorModel connector = Connectors[0];
-                Owner.Workspace.Connectors.Remove(connector);
-                connector.NotifyConnectedPortsOfDeletion();
+                connector.Delete();
             }
         }
 
@@ -232,7 +225,7 @@ namespace Dynamo.Models
             connectors.Add(connector);
 
             //throw the event for a connection
-            OnPortConnected(EventArgs.Empty);
+            OnPortConnected(connector);
 
             IsConnected = true;
         }
@@ -241,15 +234,12 @@ namespace Dynamo.Models
         {
             if (!connectors.Contains(connector))
                 return;
-
+            
             //throw the event for a connection
             OnPortDisconnected(EventArgs.Empty);
 
-            //also trigger the model's connector deletion
-            owner.Workspace.DynamoModel.OnConnectorDeleted(connector);
-
             connectors.Remove(connector);
-
+            
             //don't set back to white if
             //there are still connectors on this port
             if (connectors.Count == 0)
@@ -263,11 +253,11 @@ namespace Dynamo.Models
         /// <summary>
         /// Called when a port is connected.
         /// </summary>
-        /// <param name="e"></param>
-        protected virtual void OnPortConnected(EventArgs e)
+        /// <param name="connector"></param>
+        protected virtual void OnPortConnected(ConnectorModel connector)
         {
             if (PortConnected != null)
-                PortConnected(this, e);
+                PortConnected(connector);
         }
 
         /// <summary>
@@ -288,7 +278,7 @@ namespace Dynamo.Models
             throw new NotImplementedException();
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             // We are not deserializing the ports.
             throw new NotImplementedException();
@@ -317,7 +307,7 @@ namespace Dynamo.Models
             Height = 0;
         }
 
-        public bool HasDefaultValue
+        public bool HasDefaultValue 
         {
             get
             {

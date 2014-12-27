@@ -132,22 +132,22 @@ namespace Dynamo.Views
 
         private void LoadCursorState()
         {
-            cursorSet = new Dictionary<CursorState, string>();
-
-            cursorSet.Add(CursorState.ArcAdding, "arc_add.cur");
-            cursorSet.Add(CursorState.ArcRemoving, "arc_remove.cur");
-            cursorSet.Add(CursorState.UsualPointer, "pointer.cur");
-            cursorSet.Add(CursorState.RectangularSelection, "rectangular_selection.cur");
-            cursorSet.Add(CursorState.ResizeDiagonal, "resize_diagonal.cur");
-            cursorSet.Add(CursorState.ResizeHorizontal, "resize_horizontal.cur");
-            cursorSet.Add(CursorState.ResizeVertical, "resize_vertical.cur");
-            cursorSet.Add(CursorState.Pan, "hand_pan.cur");
-            cursorSet.Add(CursorState.ActivePan, "hand_pan_active.cur");
-            cursorSet.Add(CursorState.NodeExpansion, "expand.cur");
-            cursorSet.Add(CursorState.NodeCondensation, "condense.cur");
-            cursorSet.Add(CursorState.ArcRemoving, "arc_remove.cur");
-            cursorSet.Add(CursorState.LibraryClick, "hand.cur");
-
+            cursorSet = new Dictionary<CursorState, string>
+            {
+                { CursorState.ArcAdding, "arc_add.cur" },
+                { CursorState.ArcRemoving, "arc_remove.cur" },
+                { CursorState.UsualPointer, "pointer.cur" },
+                { CursorState.RectangularSelection, "rectangular_selection.cur" },
+                { CursorState.ResizeDiagonal, "resize_diagonal.cur" },
+                { CursorState.ResizeHorizontal, "resize_horizontal.cur" },
+                { CursorState.ResizeVertical, "resize_vertical.cur" },
+                { CursorState.Pan, "hand_pan.cur" },
+                { CursorState.ActivePan, "hand_pan_active.cur" },
+                { CursorState.NodeExpansion, "expand.cur" },
+                { CursorState.NodeCondensation, "condense.cur" },
+                { CursorState.ArcRemoving, "arc_remove.cur" },
+                { CursorState.LibraryClick, "hand.cur" }
+            };
         }
 
         void OnSelectionCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -208,13 +208,15 @@ namespace Dynamo.Views
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
         {
+            var customNodeWs = workspace as CustomNodeWorkspaceModel;
+            if (customNodeWs != null)
+            {
+                // copy these strings
+                var newName = customNodeWs.Name.Substring(0);
+                var newCategory = customNodeWs.Category.Substring(0);
+                var newDescription = customNodeWs.Description.Substring(0);
 
-            // copy these strings
-            var newName = workspace.Name.Substring(0);
-            var newCategory = workspace.Category.Substring(0);
-            var newDescription = workspace.Description.Substring(0);
-
-            var args = new FunctionNamePromptEventArgs
+                var args = new FunctionNamePromptEventArgs
                 {
                     Name = newName,
                     Description = newDescription,
@@ -222,19 +224,15 @@ namespace Dynamo.Views
                     CanEditName = false
                 };
 
-            this.ViewModel.DynamoViewModel.Model.OnRequestsFunctionNamePrompt(this, args);
+                this.ViewModel.DynamoViewModel.Model.OnRequestsFunctionNamePrompt(this, args);
 
-            if (args.Success)
-            {
-                if (workspace is CustomNodeWorkspaceModel)
+                if (args.Success)
                 {
-                    var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
-                    this.ViewModel.DynamoViewModel.Model.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                    customNodeWs.SetInfo(
+                        args.CanEditName ? args.Name : workspace.Name,
+                        args.Category,
+                        args.Description);
                 }
-
-                if (args.CanEditName) workspace.Name = args.Name;
-                workspace.Description = args.Description;
-                workspace.Category = args.Category;
             }
         }
 

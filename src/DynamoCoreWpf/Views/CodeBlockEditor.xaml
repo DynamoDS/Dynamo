@@ -4,13 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
     <UserControl.Resources>
-
+        
     </UserControl.Resources>
-
+  
     <Grid>
         <Border BorderBrush="#aaa"
                 BorderThickness="1,0,1,0"
@@ -18,13 +19,14 @@
             <avalonedit:TextEditor x:Name="InnerTextEditor"
                                    FontSize="15px"
                                    FontFamily="Consolas"
-                                   WordWrap="False"
+                                   WordWrap="True"
                                    Foreground="#444"
                                    Padding="3 0 3 0"
                                    Background="#88FFFFFF"
-                                   MaxWidth="677"
+                                   MaxWidth="500"
                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                   HorizontalScrollBarVisibility="Auto" />
+                                   
+                                   />
         </Border>
         <TextBlock x:Name="WatermarkLabel"
                    Text="Your code goes here"

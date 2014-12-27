@@ -11,9 +11,10 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.ViewModels;
+
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
-using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
@@ -27,7 +28,7 @@ namespace Dynamo.Search
 
         public SearchView(SearchViewModel searchViewModel, DynamoViewModel dynamoViewModel)
         {
-            this.viewModel = searchViewModel;
+            viewModel = searchViewModel;
             this.dynamoViewModel = dynamoViewModel;
 
             InitializeComponent();
@@ -48,23 +49,23 @@ namespace Dynamo.Search
 
         private void OnSearchViewUnloaded(object sender, EventArgs e)
         {
-            this.viewModel.RequestFocusSearch -= OnSearchViewModelRequestFocusSearch;
-            this.viewModel.RequestReturnFocusToSearch -= OnSearchViewModelRequestReturnFocusToSearch;
+            viewModel.RequestFocusSearch -= OnSearchViewModelRequestFocusSearch;
+            viewModel.RequestReturnFocusToSearch -= OnSearchViewModelRequestReturnFocusToSearch;
         }
 
         private void OnSearchViewLoaded(object sender, RoutedEventArgs e)
         {
-            DataContext = this.viewModel;
+            DataContext = viewModel;
 
-            this.MouseEnter += OnSearchViewMouseEnter;
-            this.MouseLeave += OnSearchViewMouseLeave;
+            MouseEnter += OnSearchViewMouseEnter;
+            MouseLeave += OnSearchViewMouseLeave;
 
             PreviewKeyDown += KeyHandler;
-            this.SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
-            this.SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
+            SearchTextBox.PreviewKeyDown += OnSearchBoxPreviewKeyDown;
+            SearchTextBox.KeyDown += OnSearchBoxKeyDown;
 
-            this.viewModel.RequestFocusSearch += OnSearchViewModelRequestFocusSearch;
-            this.viewModel.RequestReturnFocusToSearch += OnSearchViewModelRequestReturnFocusToSearch;
+            viewModel.RequestFocusSearch += OnSearchViewModelRequestFocusSearch;
+            viewModel.RequestReturnFocusToSearch += OnSearchViewModelRequestReturnFocusToSearch;
         }
 
         private void OnSearchViewMouseLeave(object sender, MouseEventArgs e)
@@ -132,7 +133,7 @@ namespace Dynamo.Search
                     if (DynamoSelection.Instance.Selection.Count > 0)
                     {
                         e.Handled = true;
-                        this.dynamoViewModel.DeleteCommand.Execute(null);
+                        dynamoViewModel.DeleteCommand.Execute(null);
                     }
 
                     //if there are no nodes being selected, the delete key should 
@@ -195,7 +196,7 @@ namespace Dynamo.Search
 
         private void OnSearchViewModelRequestReturnFocusToSearch(object sender, EventArgs e)
         {
-            if (this.Visibility != Visibility.Collapsed)
+            if (Visibility != Visibility.Collapsed)
                 Keyboard.Focus(SearchTextBox);
             else
                 MoveFocusToNextUIElement();
@@ -222,7 +223,7 @@ namespace Dynamo.Search
             if (binding != null)
                 binding.UpdateSource();
 
-            this.viewModel.SearchCommand.Execute(null);
+            viewModel.SearchCommand.Execute(null);
         }
 
         // Not used anywhere.
@@ -235,17 +236,17 @@ namespace Dynamo.Search
         public void ListBoxItem_Click(object sender, RoutedEventArgs e)
         {
             ((ListBoxItem) sender).IsSelected = true;
-            Keyboard.Focus(this.SearchTextBox);
+            Keyboard.Focus(SearchTextBox);
         }
 
         // Not used anywhere.
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             ((SearchViewModel) DataContext).RemoveLastPartOfSearchText();
-            Keyboard.Focus(this.SearchTextBox);
+            Keyboard.Focus(SearchTextBox);
         }
 
-        private void OnTreeViewScrollViewerPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        private void OnTreeViewScrollViewerPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
@@ -262,7 +263,7 @@ namespace Dynamo.Search
             //    dynamoModel.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
             //   this.Visibility = Visibility.Collapsed;
             //}
-            this.dynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+            dynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
         }
 
         private void OnLibraryExpanderMouseEnter(object sender, MouseEventArgs e)
@@ -278,7 +279,7 @@ namespace Dynamo.Search
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
             collapsestate.Source = new BitmapImage(collapsestateSource);
             
-            this.Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
+            Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
         }
 
         private void OnLibraryExpanderMouseLeave(object sender, MouseEventArgs e)
@@ -292,7 +293,7 @@ namespace Dynamo.Search
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
             
-            this.Cursor = null;
+            Cursor = null;
         }
 
         private void OnSearchTextBoxGridMouseEnter(object sender, MouseEventArgs e)
@@ -318,12 +319,13 @@ namespace Dynamo.Search
             Keyboard.Focus(SearchTextBox);
         }
 
+
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
             if (menuItem != null)
             {
-                var element = menuItem.DataContext as CustomNodeSearchElement;
+                var element = menuItem.DataContext as CustomNodeSearchElementViewModel;
                 if (element != null)
                 {
                     if (dynamoViewModel.OpenCommand.CanExecute(element.Path))

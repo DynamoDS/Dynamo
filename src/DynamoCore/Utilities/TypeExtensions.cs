@@ -16,7 +16,7 @@ namespace Dynamo.Utilities
         /// <param name="type"></param>
         /// <param name="inherit"></param>
         /// <returns></returns>
-        public static IEnumerable<T> GetCustomAttributes<T>(this MemberInfo type, bool inherit)
+        public static IEnumerable<T> GetCustomAttributes<T>(this MemberInfo type, bool inherit) 
             where T : Attribute
         {
             return type.GetCustomAttributes(inherit).OfType<T>();

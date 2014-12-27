@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
+
 using Dynamo.Models;
 
 namespace Dynamo.Core
@@ -36,7 +38,7 @@ namespace Dynamo.Core
         /// UndoRedoRecorder calls this method to request a model to be created.
         /// </summary>
         /// <param name="modelData">The xml data from which the corresponding 
-        /// model can be re-created from.</param>
+        ///     model can be re-created from.</param>
         void CreateModel(XmlElement modelData);
 
         /// <summary>
@@ -66,11 +68,11 @@ namespace Dynamo.Core
         private const string UserActionAttrib = "UserAction";
         private const string ActionGroup = "ActionGroup";
 
-        private IUndoRedoRecorderClient undoClient = null;
-        private XmlDocument document = new XmlDocument();
-        private XmlElement currentActionGroup = null;
-        private Stack<XmlElement> undoStack = null;
-        private Stack<XmlElement> redoStack = null;
+        private readonly IUndoRedoRecorderClient undoClient;
+        private readonly XmlDocument document = new XmlDocument();
+        private XmlElement currentActionGroup;
+        private readonly Stack<XmlElement> undoStack;
+        private readonly Stack<XmlElement> redoStack;
 
         #endregion
 
@@ -365,19 +367,16 @@ namespace Dynamo.Core
             // cannot iterate over correctly. So here we make a duplicated copy
             // instead.
             // 
-            List<XmlNode> actions = new List<XmlNode>();
-            foreach (XmlNode element in actionGroup.ChildNodes)
-                actions.Add(element);
+            var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
             // In undo scenario, user actions are undone in the reversed order 
             // that they were done (due to inter-dependencies among components).
             // 
             for (int index = actions.Count - 1; index >= 0; index--)
             {
-                XmlElement element = actions[index] as XmlElement;
+                var element = actions[index] as XmlElement;
                 XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
-                UserAction modelActionType;
-                modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+                var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
                 switch (modelActionType)
                 {
                     // Before undo takes place (to delete the model), the most 
@@ -411,17 +410,14 @@ namespace Dynamo.Core
             XmlElement newGroup = document.CreateElement(ActionGroup);
 
             // See "UndoActionGroup" above for details why this duplicate.
-            List<XmlNode> actions = new List<XmlNode>();
-            foreach (XmlNode element in actionGroup.ChildNodes)
-                actions.Add(element);
+            var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
             // Redo operation is the reversed of undo operation, naturally.
             for (int index = actions.Count - 1; index >= 0; index--)
             {
-                XmlElement element = actions[index] as XmlElement;
+                var element = actions[index] as XmlElement;
                 XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
-                UserAction modelActionType;
-                modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+                var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
                 switch (modelActionType)
                 {
                     case UserAction.Creation:

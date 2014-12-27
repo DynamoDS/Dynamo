@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -76,6 +76,7 @@
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
     <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\VisualCodeBlockUtils.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
@@ -129,9 +130,7 @@
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Converters.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\DoubleInputCustomization.cs" />
     <Compile Include="Controls\DragCanvas.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\DropDrownBaseNodeViewCustomization.cs" />
     <Compile Include="Controls\DynamoNodeButton.cs" />
     <Compile Include="Controls\DynamoTextBox.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\FunctionNodeViewCustomization.cs" />
@@ -162,7 +161,6 @@
     <Compile Include="ViewModels\BrowserRootElementViewModel.cs" />
     <Compile Include="ViewModels\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\StateMachine.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\SublistsViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
@@ -253,7 +251,6 @@
     <Compile Include="VisualizationManager\octree\Vector3d.cs" />
     <Compile Include="VisualizationManager\octree\Vector3f.cs" />
     <Compile Include="VisualizationManager\RenderDescription.cs" />
-    <Compile Include="VisualizationManager\RenderManager.cs" />
     <Compile Include="VisualizationManager\STLExport.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />

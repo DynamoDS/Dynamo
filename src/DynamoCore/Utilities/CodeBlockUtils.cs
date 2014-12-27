@@ -1,4 +1,8 @@
-﻿using Dynamo.UI;
+﻿﻿using System.Globalization;
+using System.Windows;
+using System.Windows.Media;
+
+using Dynamo.UI;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -7,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
 
 namespace Dynamo.Utilities
 {
@@ -52,10 +55,7 @@ namespace Dynamo.Utilities
                 if (portName.Length > maxLength)
                     portName = portName.Remove(maxLength - 3) + "...";
 
-                inputPorts.Add(new PortData(portName, name)
-                {
-                    Height = Configurations.CodeBlockPortHeightInPixels
-                });
+                inputPorts.Add(new PortData(portName, name));
             }
 
             return inputPorts;
@@ -119,7 +119,7 @@ namespace Dynamo.Utilities
 
             if (!statementVariables.ElementAt(index).Any())
                 return false;
-
+           
             var currentVariables = statementVariables.ElementAt(index);
             for (int stmt = index + 1; stmt < statementCount; stmt++)
             {
@@ -132,6 +132,65 @@ namespace Dynamo.Utilities
             }
 
             return true;
+        }
+
+        public delegate IEnumerable<int> LogicalToVisualLineIndexMapDelegate(string text);
+        public static event LogicalToVisualLineIndexMapDelegate RequestLogicalToVisualLineIndexMap;
+        private static IEnumerable<int> OnRequestLogicalToVisualLineIndexMap(string text)
+        {
+            if (RequestLogicalToVisualLineIndexMap != null)
+            {
+                return RequestLogicalToVisualLineIndexMap(text);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Call this method to map logical lines in the given text input to their
+        /// corresponding visual line index. Due to wrapping behavior, a long line
+        /// may be wrapped into more than one line due to width constraint. For an
+        /// example:
+        /// 
+        ///     0 This is a longer line that will be wrapped around to next line
+        ///     1 This is a shorter line
+        /// 
+        /// The wrapped results will be as follow:
+        /// 
+        ///     0 This is a longer line that will 
+        ///       be wrapped around to next line
+        ///     1 This is a shorter line
+        /// 
+        /// The resulting array will be:
+        /// 
+        ///     result = { 0, 2 }
+        /// 
+        /// It means that the first logical line (with index 0) will be mapped to 
+        /// line 0 visually; the second logical line (with index 1) will be mapped 
+        /// to line 2 visually.
+        /// 
+        /// </summary>
+        /// <param name="text">The input text for the mapping.</param>
+        /// <returns>Returns a list of visual line indices. For an example, if the 
+        /// result is { 0, 6, 27 }, then the first logical line (index 0) is mapped 
+        /// to visual line with index 0; second logical line (index 1) is mapped to 
+        /// visual line with index 6; third logical line (index 2) is mapped to 
+        /// visual line with index 27.</returns>
+        /// 
+        public static IEnumerable<int> MapLogicalToVisualLineIndices(string text)
+        {
+            var logicalToVisualLines = new List<int>();
+            if (string.IsNullOrEmpty(text))
+                return logicalToVisualLines;
+
+            text = NormalizeLineBreaks(text);
+
+            if (RequestLogicalToVisualLineIndexMap == null)
+            {
+                throw new InvalidOperationException("MapLogicalToVisualLineIndices requires a registered LogicalToVisualLineIndexMapDelegate!");
+            }
+
+            return OnRequestLogicalToVisualLineIndexMap(text);
         }
 
         /// <summary>
@@ -571,5 +630,4 @@ namespace Dynamo.Utilities
         #endregion
 
     }
-
 }

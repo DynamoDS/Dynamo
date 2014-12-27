@@ -3,6 +3,7 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
@@ -13,12 +14,35 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Controller for nodes that act as function calls.
     /// </summary>
-    public abstract class FunctionCallNodeController
+    public abstract class FunctionCallNodeController<T> : LogSourceBase 
+        where T : IFunctionDescriptor
     {
+        //private T definition;
+
         /// <summary>
         ///     A FunctionDescriptor describing the function that this controller will call.
         /// </summary>
-        public IFunctionDescriptor Definition { get; protected set; }
+        public T Definition { get; set; 
+            //get { return definition; }
+            //protected set
+            //{
+            //    OnDefinitionChanging();
+            //    definition = value;
+            //    OnDefinitionChanged();
+            //}
+        }
+
+        //public event Action DefinitionChanged;
+        //protected virtual void OnDefinitionChanged()
+        //{
+        //    var handler = DefinitionChanged;
+        //    if (handler != null) handler();
+        //}
+
+        //protected virtual void OnDefinitionChanging()
+        //{
+            
+        //}
 
         /// <summary>
         ///     NickName for nodes using this controller, based on the underlying FunctionDescriptor.
@@ -36,7 +60,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public virtual IEnumerable<string> ReturnKeys { get { return Definition.ReturnKeys; } }
 
-        protected FunctionCallNodeController(IFunctionDescriptor def)
+        protected FunctionCallNodeController(T def)
         {
             Definition = def;
         }
@@ -161,17 +185,7 @@ namespace Dynamo.Nodes
         /// <param name="model">Node to produce a function application for.</param>
         /// <param name="inputAstNodes">Arguments to the function application.</param>
         protected abstract AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes);
-
-        /// <summary>
-        ///     Writes Controller information to a node's XML.
-        /// </summary>
-        public virtual void SaveNode(XmlDocument xmlDocument, XmlElement xmlElement, SaveContext saveContext) { }
-
-        /// <summary>
-        ///     Loads Controller information from a node's XML.
-        /// </summary>
-        public virtual void LoadNode(XmlNode xmlNode) { }
-
+        
         /// <summary>
         ///     Deserializes Controller information from XML.
         /// </summary>

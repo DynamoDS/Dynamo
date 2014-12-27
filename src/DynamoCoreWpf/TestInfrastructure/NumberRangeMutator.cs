@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using System.IO;
 using System.Threading;
+using Dynamo.DSEngine;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -29,7 +30,7 @@ namespace Dynamo.TestInfrastructure
             return type;
         }
 
-        public override bool RunTest(NodeModel node, StreamWriter writer)
+        public override bool RunTest(NodeModel node, EngineController engine, StreamWriter writer)
         {
             bool pass = false;
 
@@ -42,7 +43,7 @@ namespace Dynamo.TestInfrastructure
                     Guid guid = connector.Start.Owner.GUID;
                     if (!valueMap.ContainsKey(guid))
                     {
-                        Object data = connector.Start.Owner.GetValue(0).Data;
+                        Object data = connector.Start.Owner.GetValue(0, engine).Data;
                         String val = data != null ? data.ToString() : "null";
                         valueMap.Add(guid, val);
                         writer.WriteLine(guid + " :: " + val);
@@ -77,7 +78,7 @@ namespace Dynamo.TestInfrastructure
 
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
-            while (DynamoViewModel.Model.Runner.Running)
+            while (!DynamoViewModel.HomeSpace.RunEnabled)
             {
                 Thread.Sleep(10);
             }
@@ -91,7 +92,7 @@ namespace Dynamo.TestInfrastructure
                     foreach (ConnectorModel connector in firstNodeConnectors)
                     {
                         String valmap = valueMap[connector.Start.Owner.GUID].ToString();
-                        Object data = connector.Start.Owner.GetValue(0).Data;
+                        Object data = connector.Start.Owner.GetValue(0, engine).Data;
                         String nodeVal = data != null ? data.ToString() : "null";
 
                         if (valmap != nodeVal)
@@ -128,9 +129,9 @@ namespace Dynamo.TestInfrastructure
                 double coordinatesX = 120;
                 double coordinatesY = 180;
 
-                DynamoModel.CreateNodeCommand createNodeCmd1 =
-                    new DynamoModel.CreateNodeCommand(guidNumber, "Number", coordinatesX,
-                        coordinatesY, false, true);
+                DynamoModel.CreateNodeCommand createNodeCmd1 = null;
+                    //new DynamoModel.AddNodeCommand(guidNumber, "Number", coordinatesX,
+                    //    coordinatesY, false, true);
 
                 DynamoViewModel.ExecuteCommand(createNodeCmd1);
 

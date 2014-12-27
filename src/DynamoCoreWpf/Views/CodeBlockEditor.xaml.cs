@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Dynamo.Nodes;
+﻿using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views;
@@ -16,6 +15,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
+using Dynamo.Models;
+using ICSharpCode.AvalonEdit.Rendering;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
@@ -25,11 +26,11 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class CodeBlockEditor : UserControl
     {
-        private readonly NodeViewModel nodeViewModel;
-        private readonly DynamoViewModel dynamoViewModel;
-        private readonly CodeBlockNodeModel nodeModel;
-        private CompletionWindow completionWindow;
-        private CodeBlockMethodInsightWindow insightWindow;
+        private NodeViewModel nodeViewModel;
+        private DynamoViewModel dynamoViewModel;
+        private CodeBlockNodeModel nodeModel = null;
+        private CompletionWindow completionWindow = null;
+        private CodeBlockMethodInsightWindow insightWindow = null;
 
         internal CodeBlockEditor(DynamoViewModel dynamoViewModel)
         {
@@ -47,30 +48,31 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
 
             this.nodeViewModel = nodeViewModel;
-            dynamoViewModel = nodeViewModel.DynamoViewModel;
-            DataContext = nodeViewModel.NodeModel;
-            nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
+            this.dynamoViewModel = nodeViewModel.DynamoViewModel;
+            this.DataContext = nodeViewModel.NodeModel;
+            this.nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
 
             // Register text editing events            
-            InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
-            InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
+            this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
+            this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
 
             // the code block should not be in focus upon undo/redo actions on node
-            if (nodeModel.ShouldFocus)
+            if (this.nodeModel.ShouldFocus)
             {
-                Loaded += (obj, args) => InnerTextEditor.TextArea.Focus();
+                this.Loaded += (obj, args) => this.InnerTextEditor.TextArea.Focus();
             }
 
             // Register auto-completion callbacks
-            InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
-            InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
+            this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
+            this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
             InitializeSyntaxHighlighter();
         }
 
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
-            var engineController = dynamoViewModel.Model.EngineController;
+            var engineController =
+                dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.GetCompletionsOnType(code, stringToComplete).
                 Select(x => new CodeBlockCompletionData(x));
@@ -78,7 +80,7 @@ namespace Dynamo.UI.Controls
 
         internal IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
         {
-            var engineController = dynamoViewModel.Model.EngineController;
+            var engineController = dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid).
                 Select(x => new CodeBlockCompletionData(x));
@@ -86,7 +88,7 @@ namespace Dynamo.UI.Controls
 
         internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
-            var engineController = dynamoViewModel.Model.EngineController;
+            var engineController = dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix).
                 Select(x => new CodeBlockInsightItem(x));
@@ -119,7 +121,7 @@ namespace Dynamo.UI.Controls
             }
             set
             {
-                InnerTextEditor.Text = value;
+                this.InnerTextEditor.Text = value;
             }
         }
         #endregion
@@ -141,12 +143,11 @@ namespace Dynamo.UI.Controls
             var stream = GetType().Assembly.GetManifestResourceStream(
                 "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
 
-            Debug.Assert(stream != null);
-            InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
+            this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(stream), HighlightingManager.Instance);
 
             // Highlighting Digits
-            var rules = InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
+            var rules = this.InnerTextEditor.SyntaxHighlighting.MainRuleSet.Rules;
 
             rules.Add(CodeBlockEditorUtils.CreateDigitRule());
             rules.Add(CreateClassHighlightRule());
@@ -156,15 +157,13 @@ namespace Dynamo.UI.Controls
         private HighlightingRule CreateClassHighlightRule()
         {
             Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
-            var classHighlightRule = new HighlightingRule
+            var classHighlightRule = new HighlightingRule();
+            classHighlightRule.Color = new HighlightingColor()
             {
-                Color = new HighlightingColor
-                {
-                    Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
-                }
+                Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
             };
 
-            var engineController = dynamoViewModel.Model.EngineController;
+            var engineController = dynamoViewModel.EngineController;
 
             var wordList = engineController.CodeCompletionServices.GetClasses();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
@@ -176,15 +175,13 @@ namespace Dynamo.UI.Controls
         private HighlightingRule CreateMethodHighlightRule()
         {
             Color color = (Color)ColorConverter.ConvertFromString("#417693");
-            var methodHighlightRule = new HighlightingRule
+            var methodHighlightRule = new HighlightingRule();
+            methodHighlightRule.Color = new HighlightingColor()
             {
-                Color = new HighlightingColor
-                {
-                    Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
-                }
+                Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
             };
 
-            var engineController = dynamoViewModel.Model.EngineController;
+            var engineController = dynamoViewModel.EngineController;
 
             var wordList = engineController.CodeCompletionServices.GetGlobals();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
@@ -219,11 +216,11 @@ namespace Dynamo.UI.Controls
                     }
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
-                dynamoViewModel.Model.Logger.Log(ex.Message);
-                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(ex.Message);
+                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
@@ -231,8 +228,8 @@ namespace Dynamo.UI.Controls
         {
             try
             {
-                int startPos = InnerTextEditor.CaretOffset;
-                var code = InnerTextEditor.Text.Substring(0, startPos);
+                int startPos = this.InnerTextEditor.CaretOffset;
+                var code = this.InnerTextEditor.Text.Substring(0, startPos);
 
                 if (e.Text == ".")
                 {
@@ -241,7 +238,7 @@ namespace Dynamo.UI.Controls
 
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code).Trim('.');
 
-                    var completions = GetCompletionData(code, stringToComplete);
+                    var completions = this.GetCompletionData(code, stringToComplete);
 
                     if (!completions.Any())
                         return;
@@ -258,7 +255,7 @@ namespace Dynamo.UI.Controls
                     string functionPrefix;
                     CodeCompletionParser.GetFunctionToComplete(code, out functionName, out functionPrefix);
 
-                    var insightItems = GetFunctionSignatures(code, functionName, functionPrefix);
+                    var insightItems = this.GetFunctionSignatures(code, functionName, functionPrefix);
 
                     ShowInsightWindow(insightItems);
                 }
@@ -281,7 +278,7 @@ namespace Dynamo.UI.Controls
                     // complete global methods (builtins), all classes, symbols local to codeblock node
                     string stringToComplete = CodeCompletionParser.GetStringToComplete(code);
 
-                    var completions = SearchCompletions(stringToComplete, nodeModel.GUID);
+                    var completions = this.SearchCompletions(stringToComplete, nodeModel.GUID);
 
                     if (!completions.Any())
                         return;
@@ -289,11 +286,11 @@ namespace Dynamo.UI.Controls
                     ShowCompletionWindow(completions, completeWhenTyping: true);
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
-                dynamoViewModel.Model.Logger.Log(ex.Message);
-                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(ex.Message);
+                this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
@@ -309,11 +306,9 @@ namespace Dynamo.UI.Controls
             {
                 completionWindow.Close();
             }
-            completionWindow = new CompletionWindow(InnerTextEditor.TextArea)
-            {
-                AllowsTransparency = true,
-                SizeToContent = SizeToContent.WidthAndHeight
-            };
+            completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
+            completionWindow.AllowsTransparency = true;
+            completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
 
             if (completeWhenTyping)
             {
@@ -350,7 +345,7 @@ namespace Dynamo.UI.Controls
             {
                 insightWindow.Close();
             }
-            insightWindow = new CodeBlockMethodInsightWindow(InnerTextEditor.TextArea);
+            insightWindow = new CodeBlockMethodInsightWindow(this.InnerTextEditor.TextArea);
             foreach (var item in items)
             {
                 insightWindow.Items.Add(item);
@@ -382,10 +377,10 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
-            InnerTextEditor.TextArea.ClearSelection();
-            nodeViewModel.DynamoViewModel.ExecuteCommand(
+            this.InnerTextEditor.TextArea.ClearSelection();
+            this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.UpdateModelValueCommand(
-                       nodeViewModel.NodeModel.GUID, "Code", InnerTextEditor.Text));           
+                       this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));           
         }
 
         void InnerTextEditor_TextChanged(object sender, EventArgs e)
@@ -411,19 +406,19 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            var text = InnerTextEditor.Text;
+            var text = this.InnerTextEditor.Text;
             var cb = DataContext as CodeBlockNodeModel;
           
             if (cb == null || cb.Code != null && text.Equals(cb.Code))
                 OnRequestReturnFocusToSearch();
             else
-                InnerTextEditor.Text = (DataContext as CodeBlockNodeModel).Code;
+                this.InnerTextEditor.Text = (DataContext as CodeBlockNodeModel).Code;
 
             //Delete the empty code block node on esc press
             if (text == "")
             {
-                nodeViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.DeleteModelCommand(nodeViewModel.NodeModel.GUID));             
+                this.nodeViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.DeleteModelCommand(this.nodeViewModel.NodeModel.GUID));             
             }
         }
         #endregion

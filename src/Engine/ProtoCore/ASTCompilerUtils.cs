@@ -7,7 +7,7 @@ using ProtoCore.Utils;
 using ProtoCore.AST.AssociativeAST;
 using System.Globalization;
 
-namespace ProtoCore.Utils
+namespace ProtoCore
 {
     public class ASTCompilerUtils
     {

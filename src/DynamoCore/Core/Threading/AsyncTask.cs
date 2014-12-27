@@ -132,10 +132,9 @@ namespace Dynamo.Core.Threading
         /// 
         internal TaskMergeInstruction CanMergeWith(AsyncTask otherTask)
         {
-            if (ReferenceEquals(this, otherTask))
-                return TaskMergeInstruction.KeepBoth; // Both tasks are the same.
-
-            return CanMergeWithCore(otherTask);
+            return ReferenceEquals(this, otherTask)
+                ? TaskMergeInstruction.KeepBoth
+                : CanMergeWithCore(otherTask);
         }
 
         /// <summary>
@@ -152,10 +151,7 @@ namespace Dynamo.Core.Threading
         /// 
         internal int Compare(AsyncTask otherTask)
         {
-            if (ReferenceEquals(this, otherTask))
-                return 0; // Both tasks are the same.
-
-            return CompareCore(otherTask);
+            return ReferenceEquals(this, otherTask) ? 0 : CompareCore(otherTask);
         }
 
         /// <summary>

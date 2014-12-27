@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading;
+using Dynamo.DSEngine;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -18,7 +19,7 @@ namespace Dynamo.TestInfrastructure
         {
         }
 
-        public override bool RunTest(NodeModel node, StreamWriter writer)
+        public override bool RunTest(NodeModel node, EngineController engine, StreamWriter writer)
         {
             bool pass = false;
 
@@ -56,7 +57,7 @@ namespace Dynamo.TestInfrastructure
 
             Thread.Sleep(100);
 
-            List<NodeModel> nodesAfterMutate = DynamoViewModel.Model.Nodes;
+            IList<NodeModel> nodesAfterMutate = DynamoViewModel.Model.CurrentWorkspace.Nodes;
 
             if (nodesAfterMutate.Contains(node))
             {
@@ -80,7 +81,7 @@ namespace Dynamo.TestInfrastructure
             }
             Thread.Sleep(100);
 
-            List<NodeModel> nodesAfterUndo = DynamoViewModel.Model.Nodes;
+            IList<NodeModel> nodesAfterUndo = DynamoViewModel.Model.CurrentWorkspace.Nodes;
 
             NodeModel nodeAfterUndo = nodesAfterUndo.FirstOrDefault(t => t.GUID.Equals(node.GUID));
 

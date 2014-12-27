@@ -11,7 +11,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 
 using System.Windows;
-using GraphLayout;
+
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -31,7 +31,6 @@ namespace Dynamo.ViewModels
         #region events
         public event SnapInputEventHandler SnapInputEvent;        
         #endregion
-
 
         #region private members
 
@@ -167,7 +166,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsInteractionEnabled
         {
-            get { return nodeLogic.InteractionEnabled; }
+            get { return true; }
         }
 
         public bool IsVisible
@@ -203,7 +202,7 @@ namespace Dynamo.ViewModels
 
         public bool IsPreviewInsetVisible
         {
-            get { return nodeLogic.ShouldDisplayPreview; }
+            get { return WorkspaceViewModel.Model is HomeWorkspaceModel && nodeLogic.ShouldDisplayPreview; }
         }
 
         public bool ShouldShowGlyphBar
@@ -310,7 +309,7 @@ namespace Dynamo.ViewModels
             this.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             this.DynamoViewModel.Model.DebugSettings.PropertyChanged += DebugSettings_PropertyChanged;
 
-            ErrorBubble = new InfoBubbleViewModel(this.DynamoViewModel);
+            ErrorBubble = new InfoBubbleViewModel(DynamoViewModel);
             UpdateBubbleContent();
 
             //Do a one time setup of the initial ports on the node
@@ -321,7 +320,7 @@ namespace Dynamo.ViewModels
 
             if (IsDebugBuild)
             {
-                DynamoViewModel.Model.EngineController.AstBuilt += EngineController_AstBuilt;
+                DynamoViewModel.EngineController.AstBuilt += EngineController_AstBuilt;
             }
         }
 
@@ -341,10 +340,10 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         void EngineController_AstBuilt(object sender, AstBuilder.ASTBuiltEventArgs e)
         {
-            if (e.Node == nodeLogic)
+            if (e.Node == nodeLogic.GUID)
             {
                 var sb = new StringBuilder();
-                sb.AppendLine(string.Format("{0} AST:", e.Node.GUID));
+                sb.AppendLine(string.Format("{0} AST:", e.Node));
 
                 foreach (var assocNode in e.AstNodes)
                 {
@@ -481,7 +480,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                if (!DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(ErrorBubble))
+                if (!WorkspaceViewModel.Errors.Contains(ErrorBubble))
                     return;
 
                 var topLeft = new Point(NodeModel.X, NodeModel.Y);
@@ -565,7 +564,7 @@ namespace Dynamo.ViewModels
         {
             var f = (nodeLogic as Function);
             if(f!= null)
-                DynamoViewModel.FocusCustomNodeWorkspace(f.Definition);
+                DynamoViewModel.FocusCustomNodeWorkspace(f.Definition.FunctionId);
         }
 
         private bool CanViewCustomNodeWorkspace(object parameter)
@@ -718,7 +717,7 @@ namespace Dynamo.ViewModels
         {
             // Record the state of this node before changes.
             DynamoModel dynamo = DynamoViewModel.Model;
-            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+            WorkspaceModel.RecordModelForModification(nodeLogic, dynamo.CurrentWorkspace.UndoRecorder);
 
             nodeLogic.IsVisible = !nodeLogic.IsVisible;
 
@@ -731,7 +730,7 @@ namespace Dynamo.ViewModels
         {
             // Record the state of this node before changes.
             DynamoModel dynamo = DynamoViewModel.Model;
-            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+            WorkspaceModel.RecordModelForModification(nodeLogic, dynamo.CurrentWorkspace.UndoRecorder);
 
             nodeLogic.IsUpstreamVisible = !nodeLogic.IsUpstreamVisible;
 
@@ -752,7 +751,7 @@ namespace Dynamo.ViewModels
 
         private void ValidateConnections(object parameter)
         {
-            nodeLogic.ValidateConnections();
+            DynamoViewModel.Model.OnRequestDispatcherBeginInvoke(nodeLogic.ValidateConnections);
         }
 
         private bool CanValidateConnections(object parameter)
