@@ -1,11 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using System.Globalization;
+﻿using System.Globalization;
 
 using Dynamo.Core;
 
 namespace DSCoreNodesUI.Input
 {
+    public enum NumericFormat{Double, Integer}
+
     /// <summary>
     /// The SliderViewModel acts as the converter
     /// for numeric sliders. By using a view model
@@ -13,62 +13,64 @@ namespace DSCoreNodesUI.Input
     /// we can do conditional conversion based on the 
     /// context in which the conversion happens.
     /// </summary>
-    public class SliderViewModel<T> : NotificationObject where T: IComparable<T>
+    public class SliderViewModel : NotificationObject
     {
-        private ISlider<T> model;
+        private NumericFormat format;
+        private SliderBase model;
 
         public string MaxText
         {
-            get { return ConvertNumberToString(model.Max); }
+            get { return ConvertToString(format, model.Max); }
         }
 
         public string MinText
         {
-            get { return ConvertNumberToString(model.Min); }
+            get { return ConvertToString(format, model.Min); }
         }
 
         public string StepText
         {
-            get { return ConvertNumberToString(model.Step); }
+            get { return ConvertToString(format, model.Step); }
         }
 
         public string ValueText
         {
-            get { return ConvertNumberToString(model.Value); }
+            get { return ConvertToString(format, model.Value); }
         }
 
-        public T Max
+        public double Max
         {
             get { return model.Max; }
         }
 
-        public T Min
+        public double Min
         {
             get { return model.Min; }
         }
 
-        public T Step
+        public double Step
         {
             get { return model.Step; }
         }
 
-        public T Value
+        public double Value
         {
             get { return model.Value; }
             set
             {
-                if (value.CompareTo(model.Max) == 1)
+                if (value >= model.Max)
                     model.Max = value;
 
-                if (value.CompareTo(model.Min) == -1)
+                if (value <= model.Min)
                     model.Min = value;
 
                 model.Value = value;
             }
         }
 
-        public SliderViewModel(ISlider<T> sliderBaseModel)
+        public SliderViewModel(NumericFormat format, SliderBase sliderBaseModel)
         {
+            this.format = format;
             model = sliderBaseModel;
             model.PropertyChanged += model_PropertyChanged;
         }
@@ -97,23 +99,35 @@ namespace DSCoreNodesUI.Input
             }
         }
 
-        internal static string ConvertNumberToString(T value)
+        internal static string ConvertToString(NumericFormat format, double value)
         {
-            return Convert.ToString(value, CultureInfo.InvariantCulture);
+            switch (format)
+            {
+                case NumericFormat.Double:
+                    return value.ToString("0.000", CultureInfo.InvariantCulture);
+                case NumericFormat.Integer:
+                    return value.ToString("0", CultureInfo.InvariantCulture);
+            }
+
+            return "0.0";
         }
 
-        internal static double ConvertStringToDouble(string value)
+        internal static double ConvertToDouble(NumericFormat format, string value)
         {
-            double result = 0.0;
-            System.Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
-            return result;
-        }
+            switch (format)
+            {
+                case NumericFormat.Double:
+                    double d = 0.0;
+                    double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out d);
+                    return d;
 
-        internal static int ConvertStringToInt(string value)
-        {
-            int result = 0;
-            System.Int32.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
-            return result;
+                case NumericFormat.Integer:
+                    int i = 0;
+                    int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out i);
+                    return i;
+            }
+
+            return 0.0;
         }
     }
 }
