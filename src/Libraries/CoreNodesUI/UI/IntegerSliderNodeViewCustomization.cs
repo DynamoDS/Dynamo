@@ -11,7 +11,7 @@ namespace Dynamo.Nodes
         {
             var slider = new UI.Controls.DynamoSlider(model, nodeView)
             {
-                DataContext = new SliderViewModel<int>(model)
+                DataContext = new SliderViewModel(NumericFormat.Integer, model)
             };
 
             nodeView.inputGrid.Children.Add(slider);
