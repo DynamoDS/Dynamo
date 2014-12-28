@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Threading;
+
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
-using Dynamo.Nodes;
 
 namespace Dynamo.Models
 {
