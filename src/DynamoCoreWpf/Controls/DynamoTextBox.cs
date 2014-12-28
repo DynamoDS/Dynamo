@@ -278,13 +278,11 @@ namespace Dynamo.Nodes
         {
             base.OnThumbDragStarted(e);
             WorkspaceModel.RecordModelForModification(nodeModel, recorder);
-            (nodeModel as IBlockingModel).OnBlockingStarted(EventArgs.Empty);
         }
 
         protected override void OnThumbDragCompleted(DragCompletedEventArgs e)
         {
             base.OnThumbDragCompleted(e);
-            (nodeModel as IBlockingModel).OnBlockingEnded(EventArgs.Empty);
             nodeModel.OnAstUpdated();
         }
 
