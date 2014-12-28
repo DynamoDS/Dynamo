@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Threading;
+
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
-using Dynamo.Nodes;
 
 namespace Dynamo.Models
 {
@@ -51,9 +50,6 @@ namespace Dynamo.Models
 
             ResetEngine(engine);
 
-            runExpressionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
-            runExpressionTimer.Tick += OnRunExpression;
-
             IsTestMode = isTestMode;
         }
 
@@ -65,9 +61,8 @@ namespace Dynamo.Models
                 EngineController.MessageLogged -= Log;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
             }
-            runExpressionTimer.Stop();
-            runExpressionTimer.Tick -= OnRunExpression;
         }
+
         /// <summary>
         /// This does not belong here, period. It is here simply because there is 
         /// currently no better place to put it. A DYN file is loaded by DynamoModel,
@@ -103,22 +98,14 @@ namespace Dynamo.Models
         }
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
-        private readonly DispatcherTimer runExpressionTimer;
         private bool runEnabled;
 
         internal bool IsEvaluationPending
         {
             get
             {
-                return runExpressionTimer != null && runExpressionTimer.IsEnabled;
+                return false;
             }
-        }
-
-        private void OnRunExpression(object sender, EventArgs e)
-        {
-// ReSharper disable once PossibleNullReferenceException
-            (sender as DispatcherTimer).Stop();
-            Run();
         }
 
         protected override void OnNodeRemoved(NodeModel node)
@@ -150,28 +137,8 @@ namespace Dynamo.Models
             // shutting down so we check that shutdown has not been requested.
             if (DynamicRunEnabled && EngineController != null)
             {
-                // This dispatch timer is to avoid updating graph too frequently.
-                // It happens when we are modifying a bunch of connections in 
-                // a short time frame. E.g., when we delete some nodes with a 
-                // bunch of connections, each deletion of connection will call 
-                // RequestSync(). Or, when we are modifying the content in a code 
-                // block. 
-                // 
-                // Each time when RequestSync() is called, runExpressionTimer will
-                // be reset and until no RequestSync events flood in, the updating
-                // of graph will get executed. 
-                //
-                // We use DispatcherTimer so that the update of graph happens on
-                // the main UI thread.
-                runExpressionTimer.Stop();
-                runExpressionTimer.Start(); // reset timer
+                Run();
             }
-        }
-
-        protected override void ResetWorkspaceCore()
-        {
-            runExpressionTimer.Stop();
-            base.ResetWorkspaceCore();
         }
 
         /// <summary>
