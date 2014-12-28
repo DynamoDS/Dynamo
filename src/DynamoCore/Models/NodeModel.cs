@@ -9,7 +9,6 @@ using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.Core;
 using Dynamo.Core.Threading;
-using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
@@ -23,7 +22,7 @@ using ProtoCore.DSASM;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase, IBlockingModel, IDisposable
+    public abstract class NodeModel : ModelBase, IDisposable
     {
         #region private members
 

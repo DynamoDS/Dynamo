@@ -150,7 +150,6 @@ limitations under the License.
     <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
-    <Compile Include="Interfaces\IBlockingModel.cs" />
     <Compile Include="Interfaces\ICleanup.cs" />
     <Compile Include="Interfaces\ISchedulerThread.cs" />
     <Compile Include="Library\DocumentationServices.cs" />
