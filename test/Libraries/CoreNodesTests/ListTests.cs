@@ -337,7 +337,7 @@ namespace DSCoreNodesTests
         {
             var list = new List<int> { 0, 1, 3 };
             Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.InsertItemAtIndex(2, list, 2));
-            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.InsertItemAtIndex(2, list, -2));
+            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.InsertItemAtIndex(2, list, -1));
         }
         
         [Test]
