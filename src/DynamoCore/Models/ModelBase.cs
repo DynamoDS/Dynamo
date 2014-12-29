@@ -2,6 +2,7 @@
 using System.Xml;
 
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 
@@ -9,10 +10,10 @@ namespace Dynamo.Models
 {
     public enum SaveContext { File, Copy, Undo };
 
-    public abstract class ModelBase : NotificationObject, ISelectable, ILocatable
+    public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
     {
         private Guid guid;
-        private bool isSelected = false;
+        private bool isSelected;
         private double x;
         private double y;
         private double height = 100;
@@ -172,9 +173,9 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        public bool UpdateValue(string name, string value)
+        public bool UpdateValue(string name, string value, UndoRedoRecorder recorder)
         {
-            return this.UpdateValueCore(name, value);
+            return UpdateValueCore(name, value, recorder);
         }
 
         /// <summary>
@@ -183,12 +184,12 @@ namespace Dynamo.Models
         /// sends this event when clicked.
         /// </summary>
         /// <param name="eventName">The name of the event.</param>
+        /// <param name="recorder"></param>
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
-        /// 
-        public bool HandleModelEvent(string eventName)
+        public bool HandleModelEvent(string eventName, UndoRedoRecorder recorder)
         {
-            return this.HandleModelEventCore(eventName);
+            return HandleModelEventCore(eventName, recorder);
         }
 
         /// <summary>
@@ -205,15 +206,15 @@ namespace Dynamo.Models
         /// from DynamoTextBox after user commits it. Overridden methods then use 
         /// a specific IValueConverter to turn this string into another data type 
         /// that it expects.</param>
+        /// <param name="recorder"></param>
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
-        /// 
-        protected virtual bool UpdateValueCore(string name, string value)
+        protected virtual bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             return false; // Base class does not handle this.
         }
 
-        protected virtual bool HandleModelEventCore(string eventName)
+        protected virtual bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
             return false; // Base class does not handle this.
         }
@@ -224,20 +225,48 @@ namespace Dynamo.Models
 
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
-            string typeName = this.GetType().ToString();
+            string typeName = GetType().ToString();
             XmlElement element = xmlDocument.CreateElement(typeName);
-            this.SerializeCore(element, context);
+            SerializeCore(element, context);
             return element;
         }
 
         public void Deserialize(XmlElement element, SaveContext context)
         {
-            this.DeserializeCore(element, context);
+            DeserializeCore(element, context);
         }
 
         protected abstract void SerializeCore(XmlElement element, SaveContext context);
-        protected abstract void DeserializeCore(XmlElement element, SaveContext context);
+        protected abstract void DeserializeCore(XmlElement nodeElement, SaveContext context);
 
+        #endregion
+
+        #region ILogSource implementation
+        public event Action<ILogMessage> MessageLogged;
+
+        protected void Log(ILogMessage obj)
+        {
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
+        }
+
+        protected void Log(string msg)
+        {
+            Log(LogMessage.Info(msg));
+        }
+
+        protected void Log(string msg, WarningLevel severity)
+        {
+            switch (severity)
+            {
+                case WarningLevel.Error:
+                    Log(LogMessage.Error(msg));
+                    break;
+                default:
+                    Log(LogMessage.Warning(msg, severity));
+                    break;
+            }
+        }
         #endregion
     }
 

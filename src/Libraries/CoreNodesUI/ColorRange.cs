@@ -25,8 +25,7 @@ namespace DSCoreNodesUI
                 RequestChangeColorRange(sender, e);
         }
 
-        public ColorRange(WorkspaceModel workspace)
-            : base(workspace)
+        public ColorRange()
         {
             InPortData.Add(new PortData("colors", "A list of colors to include in the range."));
             InPortData.Add(new PortData("indices", "A list of values between 0.0 and 1.0 which position the colors along the range."));
@@ -35,9 +34,12 @@ namespace DSCoreNodesUI
 
             RegisterAllPorts();
 
-            this.PropertyChanged += ColorRange_PropertyChanged;
 
             ArgumentLacing = LacingStrategy.Disabled;
+
+            this.PropertyChanged += ColorRange_PropertyChanged; 
+            
+            ShouldDisplayPreviewCore = false;
         }
 
         void ColorRange_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -115,4 +117,5 @@ namespace DSCoreNodesUI
     //        };
     //    }
     //}
+
 }

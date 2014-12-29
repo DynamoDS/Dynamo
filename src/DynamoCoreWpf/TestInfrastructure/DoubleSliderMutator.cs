@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 
@@ -27,7 +28,7 @@ namespace Dynamo.TestInfrastructure
             return type;
         }
 
-        public override bool RunTest(NodeModel node, StreamWriter writer)
+        public override bool RunTest(NodeModel node, EngineController engine, StreamWriter writer)
         {
             bool pass = false;
 
@@ -35,7 +36,7 @@ namespace Dynamo.TestInfrastructure
             if (node.OutPorts.Count > 0)
             {
                 Guid guid = node.GUID;
-                Object data = node.GetValue(0).Data;
+                Object data = node.GetValue(0, engine).Data;
                 String val = data != null ? data.ToString() : "null";
                 valueMap.Add(guid, val);
                 writer.WriteLine(guid + " :: " + val);
@@ -74,7 +75,7 @@ namespace Dynamo.TestInfrastructure
             }));
             Thread.Sleep(10);
 
-            while (DynamoViewModel.Model.Runner.Running)
+            while (!DynamoViewModel.HomeSpace.RunEnabled)
             {
                 Thread.Sleep(10);
             }
@@ -89,7 +90,7 @@ namespace Dynamo.TestInfrastructure
                 try
                 {
                     String valmap = valueMap[node.GUID].ToString();
-                    Object data = node.GetValue(0).Data;
+                    Object data = node.GetValue(0, engine).Data;
                     String nodeVal = data != null ? data.ToString() : "null";
 
                     if (valmap != nodeVal)

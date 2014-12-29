@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
@@ -91,7 +92,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("SnowPeashooter.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
             Assert.AreEqual("12.34", number.Value);
@@ -136,11 +137,9 @@ namespace DynamoCoreUITests
             bool transfPos = randomizer.Next(2) == 0;
 
             var cmdOne = new DynamoModel.CreateNodeCommand(
-                nodeId, name, x, y, defaultPos, transfPos);
+                null, x, y, defaultPos, transfPos);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
-            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
-            Assert.AreEqual(cmdOne.NodeName, cmdTwo.NodeName);
             Assert.AreEqual(cmdOne.X, cmdTwo.X, 0.000001);
             Assert.AreEqual(cmdOne.Y, cmdTwo.Y, 0.000001);
             Assert.AreEqual(cmdOne.DefaultPosition, cmdTwo.DefaultPosition);
@@ -309,14 +308,14 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
             // 1 custom node + 1 number node
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
             Assert.AreEqual(2, workspace.Nodes.Count);
 
             var customWorkspace = workspaces[1];
             Assert.IsNotNull(customWorkspace);
 
             // 1 inputs + 1 output 
-            Assert.AreEqual(1, customWorkspace.Connectors.Count);
+            Assert.AreEqual(1, customWorkspace.Connectors.Count());
             Assert.AreEqual(2, customWorkspace.Nodes.Count);
 
             var node = customWorkspace.Nodes[0];
@@ -324,7 +323,9 @@ namespace DynamoCoreUITests
 
             AssertPreviewValue("04f6dab5-0a0b-4563-9f20-d0e58fcae7a5", 1.0);
         }
+
         [Test]
+        [Category("Failure")] //TODO(Steve): Recorded Commands have changed for custom nodes.
         public void TestCustomNodeUI()
         {
             RunCommandsFromFile("CustomNodeUI.xml", false, (commandTag) =>
@@ -337,14 +338,14 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(3, workspace.Nodes.Count);
 
                     var customWorkspace = workspaces[1];
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
-                    Assert.AreEqual(3, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(3, customWorkspace.Connectors.Count());
                     Assert.AreEqual(4, customWorkspace.Nodes.Count);
 
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
@@ -361,23 +362,20 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
-                    Assert.AreEqual(3, workspace.Connectors.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
                     Assert.AreEqual(4, workspace.Nodes.Count);
 
                     var customWorkspace = workspaces[1];
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
-                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count());
                     Assert.AreEqual(1, customWorkspace.Nodes.Count);
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
                     Assert.AreEqual(3, node.InPorts.Count);
                     Assert.AreEqual(1, node.OutPorts.Count);
                     AssertPreviewValue("6cec1997-ed61-4277-a1a8-3f3e4eb4321d", 11.5);
-
                 }
-
-
             });
         }
         [Test, RequiresSTA]
@@ -391,7 +389,7 @@ namespace DynamoCoreUITests
                 //So the process is separated into two steps. At the second step. the button status is checked.
                 if (commandTag == "OpenFile")
                 {
-                    ViewModel.Model.RunEnabled = false;
+                    ViewModel.HomeSpace.RunEnabled = false;
                 }
                 else if (commandTag == "CheckButtonIsDisabled")
                 {
@@ -411,13 +409,13 @@ namespace DynamoCoreUITests
                 {
                     Assert.IsNotNull(workspaces);
                     Assert.AreEqual(2, workspaces.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(1, workspace.Nodes.Count);
 
                     var customWorkspace = workspaces[1];
                     Assert.IsNotNull(customWorkspace);
 
-                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count());
                     Assert.AreEqual(1, customWorkspace.Nodes.Count);
 
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
@@ -431,11 +429,11 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(2, workspaces.Count);
 
 
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(1, workspace.Nodes.Count);
                     var customWorkspace = workspaces[1];
                     Assert.IsNotNull(customWorkspace);
-                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count());
                     Assert.AreEqual(1, customWorkspace.Nodes.Count);
 
 
@@ -459,14 +457,14 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
                     Assert.AreEqual(2, workspace.Nodes.Count);
 
                     var customWorkspace = workspaces[1];
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
-                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count());
                     Assert.AreEqual(3, customWorkspace.Nodes.Count);
 
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
@@ -481,14 +479,14 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
                     Assert.AreEqual(2, workspace.Nodes.Count);
 
                     var customWorkspace = workspaces[1];
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
-                    Assert.AreEqual(2, customWorkspace.Connectors.Count);
+                    Assert.AreEqual(2, customWorkspace.Connectors.Count());
                     Assert.AreEqual(3, customWorkspace.Nodes.Count);
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
                     Assert.AreEqual(2, node.InPorts.Count);
@@ -536,7 +534,7 @@ namespace DynamoCoreUITests
         public void TestModifyPythonNodes()
         {
             RunCommandsFromFile("ModifyPythonNodes.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
             Assert.AreEqual(2, workspace.Nodes.Count);
 
             var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as PythonNode;
@@ -550,7 +548,7 @@ namespace DynamoCoreUITests
         public void TestModifyPythonNodesUndo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndo.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
             Assert.AreEqual(2, workspace.Nodes.Count);
 
             var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as PythonNode;
@@ -564,7 +562,7 @@ namespace DynamoCoreUITests
         public void TestModifyPythonNodesUndoRedo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
             Assert.AreEqual(2, workspace.Nodes.Count);
 
             var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as PythonNode;
@@ -583,14 +581,14 @@ namespace DynamoCoreUITests
             Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
 
             // 1 custom node + 3 number nodes + 1 watch node
-            Assert.AreEqual(4, workspace.Connectors.Count);
+            Assert.AreEqual(4, workspace.Connectors.Count());
             Assert.AreEqual(5, workspace.Nodes.Count);
 
             var customWorkspace = workspaces[1];
             Assert.IsNotNull(customWorkspace);
 
             // 3 inputs + 1 output + 1 addition + 1 multiplication
-            Assert.AreEqual(5, customWorkspace.Connectors.Count);
+            Assert.AreEqual(5, customWorkspace.Connectors.Count());
             Assert.AreEqual(6, customWorkspace.Nodes.Count);
 
             AssertPreviewValue("345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493", 36.0);
@@ -683,7 +681,8 @@ namespace DynamoCoreUITests
             {
                 foreach (var customNode in this.customNodesToBeLoaded)
                 {
-                    if (ViewModel.Model.CustomNodeManager.AddFileToPath(customNode) == null)
+                    CustomNodeInfo info;
+                    if (!ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(customNode, true, out info))
                     {
                         throw new System.IO.FileFormatException(string.Format(
                             "Failed to load custom node: {0}", customNode));
@@ -797,7 +796,7 @@ namespace DynamoCoreUITests
             //Check the connections
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(connectors);
-            Assert.AreEqual(2, connectors.Count);
+            Assert.AreEqual(2, connectors.Count());
         }
 
         /// <summary>
@@ -843,10 +842,10 @@ namespace DynamoCoreUITests
             Assert.AreEqual(4, cbn.OutPorts.Count);
 
             //Check starting point of connector
-            Assert.AreEqual(0, cbn.OutPorts[0].Connectors.Count);
-            Assert.AreEqual(1, cbn.OutPorts[1].Connectors.Count);
-            Assert.AreEqual(0, cbn.OutPorts[2].Connectors.Count);
-            Assert.AreEqual(1, cbn.OutPorts[3].Connectors.Count);
+            Assert.AreEqual(0, cbn.OutPorts[0].Connectors.Count());
+            Assert.AreEqual(1, cbn.OutPorts[1].Connectors.Count());
+            Assert.AreEqual(0, cbn.OutPorts[2].Connectors.Count());
+            Assert.AreEqual(1, cbn.OutPorts[3].Connectors.Count());
 
             //CheckEnding point
             Assert.AreEqual(1, cbn.OutPorts[1].Connectors[0].End.Index);
@@ -871,7 +870,7 @@ namespace DynamoCoreUITests
             //Check the connectors
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(connectors);
-            Assert.AreEqual(0, connectors.Count);
+            Assert.AreEqual(0, connectors.Count());
 
             //Check the CBN
             var cbn = GetNode("8950950f-78f3-4d81-8181-c574ad84bb1d") as CodeBlockNodeModel;
@@ -899,7 +898,7 @@ namespace DynamoCoreUITests
             ////Check the connectors
             //var connectors = workspaceViewModel.Connectors;
             //Assert.NotNull(connectors);
-            //Assert.AreEqual(2, connectors.Count);
+            //Assert.AreEqual(2, Connectors.Count());
 
             ////Check that there is no CBN
             //var cbn = GetNode("37fade4a-e7ad-43ae-8b6f-27dacb17c1c5") as CodeBlockNodeModel;
@@ -932,7 +931,7 @@ namespace DynamoCoreUITests
             //Check the connectors
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(connectors);
-            Assert.AreEqual(0, connectors.Count);
+            Assert.AreEqual(0, connectors.Count());
 
             //Check the CBN
             var cbn = GetNode("8950950f-78f3-4d81-8181-c574ad84bb1d") as CodeBlockNodeModel;
@@ -948,7 +947,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("TestDeleteCommands_DS.xml");
             Assert.AreEqual(4, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
 
             // This dictionary maps each of the node GUIDs, to a Boolean 
             // flag indicating that if the node exists or deleted.
@@ -969,7 +968,7 @@ namespace DynamoCoreUITests
         public void TestUndoRedoNodesAndConnections_DS()
         {
             RunCommandsFromFile("TestUndoRedoNodesAndConnection_DS.xml");
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
 
             // This dictionary maps each of the node GUIDs, to a Boolean 
             // flag indicating that if the node exists or deleted.
@@ -987,7 +986,7 @@ namespace DynamoCoreUITests
         public void TestUpdateNodeCaptions_DS()
         {
             RunCommandsFromFile("TestUpdateNodeCaptions_DS.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
             Assert.AreEqual(2, workspace.Nodes.Count);
 
             var cbn = GetNode("5cf9dff2-4a3e-428a-a98a-60d0de0d323e") as CodeBlockNodeModel;
@@ -1072,7 +1071,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_159.xml", true);
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
 
@@ -1081,13 +1080,14 @@ namespace DynamoCoreUITests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
+        [Category("Failure")] // Node2Code is disabled for the time being
         public void Defect_MAGN_164_DS()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
             RunCommandsFromFile("Defect_MAGN_164_DS.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("60158259-4d9a-4bc0-b80c-aea9a90c2b57") as CodeBlockNodeModel;
@@ -1109,7 +1109,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_190_DS.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("55cf8f57-5eff-4e0b-b547-3d6cb26bc236") as CodeBlockNodeModel;
@@ -1132,7 +1132,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_225_DS.xml");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
 
         }
 
@@ -1144,7 +1144,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_397_DS.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
         [Test, RequiresSTA]
@@ -1172,7 +1172,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_429_DS.xml");
 
             Assert.AreEqual(0, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
         }
 
@@ -1198,7 +1198,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_491_DS.xml");
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(connectors);
-            Assert.AreEqual(2, connectors.Count);
+            Assert.AreEqual(2, connectors.Count());
             Assert.AreEqual(3, workspace.Nodes.Count);
 
             // Get to the only two connectors in the session.
@@ -1223,7 +1223,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_520_DS.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
         [Test, RequiresSTA]
@@ -1236,7 +1236,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_520_WithCrossSelection.xml");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
         [Test, RequiresSTA]
@@ -1247,7 +1247,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_581_DS.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
         }
 
         [Test, RequiresSTA]
@@ -1274,7 +1274,7 @@ namespace DynamoCoreUITests
             // The third undo operation should not crash.
             RunCommandsFromFile("Defect_MAGN_775.xml");
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
         [Test, RequiresSTA]
@@ -1290,7 +1290,7 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(nodes);
             Assert.AreEqual(2, nodes.Count);
-            Assert.AreEqual(2, connectors.Count);
+            Assert.AreEqual(2, connectors.Count());
 
             //Check the CBN
             var cbn = GetNode("5dd0c52b-aa33-4db0-bbe6-e653c1b2a73a") as CodeBlockNodeModel;
@@ -1312,7 +1312,7 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(nodes);
             Assert.AreEqual(1, nodes.Count);
-            Assert.AreEqual(0, connectors.Count);
+            Assert.AreEqual(0, connectors.Count());
 
             //Check the CBN
             var cbn = GetNode("a344e085-a6fa-4d43-ac27-692fb102ba6d") as CodeBlockNodeModel;
@@ -1345,7 +1345,7 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(nodes);
             Assert.AreEqual(1, nodes.Count);
-            Assert.AreEqual(0, connectors.Count);
+            Assert.AreEqual(0, connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("8bc43138-d655-40f6-973e-614f1695874c") as CodeBlockNodeModel;
@@ -1376,7 +1376,7 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(nodes);
             Assert.AreEqual(2, nodes.Count);
-            Assert.AreEqual(2, connectors.Count);
+            Assert.AreEqual(2, connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("c9929987-69c8-42bd-9cda-04ef90d029cb") as CodeBlockNodeModel;
@@ -1408,7 +1408,7 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(nodes);
             Assert.AreEqual(2, nodes.Count);
-            Assert.AreEqual(2, connectors.Count);
+            Assert.AreEqual(2, connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("88295180-7478-4c70-af15-cdac34835abf") as CodeBlockNodeModel;
@@ -1441,7 +1441,7 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(nodes);
             Assert.AreEqual(1, nodes.Count);
-            Assert.AreEqual(0, connectors.Count);
+            Assert.AreEqual(0, connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("08cdbdea-a025-4cc6-a449-66896cdfa319") as CodeBlockNodeModel;
@@ -1474,7 +1474,7 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(nodes);
             Assert.AreEqual(1, nodes.Count);
-            Assert.AreEqual(0, connectors.Count);
+            Assert.AreEqual(0, connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("9b225999-1803-4627-b319-d32ccbea33ef") as CodeBlockNodeModel;
@@ -1504,7 +1504,7 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(nodes);
             Assert.AreEqual(1, nodes.Count);
-            Assert.AreEqual(0, connectors.Count);
+            Assert.AreEqual(0, connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("623aa74b-bf03-4169-98d9-bee76feb1f3b") as CodeBlockNodeModel;
@@ -1543,7 +1543,7 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(nodes);
             Assert.AreEqual(1, nodes.Count);
-            Assert.AreEqual(0, connectors.Count);
+            Assert.AreEqual(0, connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("32542274-9e86-4ac6-8288-3f3ac8d6e906") as CodeBlockNodeModel;
@@ -1564,7 +1564,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_613.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("3c7c3458-70be-4588-b162-b1099cf30ebc") as CodeBlockNodeModel;
@@ -1586,7 +1586,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_904.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("3a379c45-d128-467b-a530-2b741d330dc4") as CodeBlockNodeModel;
@@ -1611,7 +1611,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_830.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("4b2b7966-a24c-44fe-b2f0-9aed54b72319") as CodeBlockNodeModel;
@@ -1636,7 +1636,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_803.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("09eb3645-f5e9-4186-8543-2195e7740eb2") as CodeBlockNodeModel;
@@ -1692,7 +1692,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_902.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
 
             ////Check the CBN for input and output ports count
             //var cbn = GetNode("09eb3645-f5e9-4186-8543-2195e7740eb2") as CodeBlockNodeModel;
@@ -1714,7 +1714,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_422.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("0a79dc3a-a37c-40a0-a631-eae730e8d3e2") as CodeBlockNodeModel;
@@ -1739,7 +1739,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_422_1.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
             var cbn = GetNode("811be42d-b44b-434a-ad6f-ae2c8d5309b1") as CodeBlockNodeModel;
@@ -1764,7 +1764,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Function_redef01.xml");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
 
             var cbn = GetNode("babc4816-96e6-495c-8489-7a650d1bfb25") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -1790,7 +1790,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Function_redef02.xml");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
 
             AssertValue("d_0ce2353ce5d6445f83b72db7e3861ce0", 1);
             AssertValue("p_c9827e41855647f68e9d6c600a2e45ee", 0);
@@ -1813,7 +1813,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Function_redef03.xml");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
 
             AssertValue("c_f34e01e225e446349eb8e815e8ee580d", 0);
             AssertValue("d_f34e01e225e446349eb8e815e8ee580d", 1);
@@ -1926,7 +1926,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_1412_CreateList.xml");
             Assert.AreEqual(4, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
@@ -1936,7 +1936,7 @@ namespace DynamoCoreUITests
 
             RunCommandsFromFile("Defect_MAGN_1344_PythonEditor.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
@@ -2028,7 +2028,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
 
                     AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", 10);
                 }
@@ -2038,7 +2038,7 @@ namespace DynamoCoreUITests
                 }
                 else if (commandTag == "Point10")
                 {
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
                     AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", 10);
                 }
                 else if (commandTag == "Point--5")
@@ -2063,7 +2063,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(1, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     NodeModel nodeModel = workspace.NodeFromWorkspace("45d600d2-3b29-4c9f-898f-d51683534557");
                     Assert.AreEqual(ElementState.Error, nodeModel.State);
@@ -2092,7 +2092,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(3, workspace.Connectors.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
 
                     NodeModel nodeModel = workspace.NodeFromWorkspace("3d9904f8-8a44-4eea-b629-2849b7571a89");
                     Assert.AreEqual(ElementState.Warning, nodeModel.State);
@@ -2101,7 +2101,7 @@ namespace DynamoCoreUITests
                 else if (commandTag == "WithCorrectInput")
                 {
                     Assert.AreEqual(4, workspace.Nodes.Count);
-                    Assert.AreEqual(4, workspace.Connectors.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count());
 
                     NodeModel nodeModel = workspace.NodeFromWorkspace("3d9904f8-8a44-4eea-b629-2849b7571a89");
                     Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
@@ -2126,7 +2126,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
 
                     AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 10);
 
@@ -2139,7 +2139,7 @@ namespace DynamoCoreUITests
 
             Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
 
-            Assert.IsNotNull(nodeModel.CachedValue.Data);
+            Assert.IsNotNull(nodeModel.GetCachedValueFromEngine(ViewModel.Model.EngineController).Data);
 
             AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 11);
 
@@ -2157,7 +2157,7 @@ namespace DynamoCoreUITests
 
                 if (commandTag == "Start")
                 {
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
                     Assert.AreEqual(2, workspace.Nodes.Count);
 
                     var node1 = GetNode("37da4958-1b88-408b-b09d-3deba0ba3835");
@@ -2204,7 +2204,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
 
                     AssertPreviewValue("d480bc8e-4a77-44ea-ab07-52070ec6a5b6", 6);
 
@@ -2234,7 +2234,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_2528.xml", true);
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for error
             var cbn = GetNode("10f928da-a6ef-4235-b84b-883f66e26017") as CodeBlockNodeModel;
@@ -2258,7 +2258,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(1, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 0, 2 });
                 }
@@ -2326,7 +2326,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150", new int[] { 5 });
                 }
@@ -2334,7 +2334,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(3, workspace.Connectors.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150",
                         new int[] { 5, 5, 5 });
@@ -2343,7 +2343,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(4, workspace.Nodes.Count);
-                    Assert.AreEqual(5, workspace.Connectors.Count);
+                    Assert.AreEqual(5, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150",
                         new int[] { 5, 5, 5, 6, 7 });
@@ -2352,7 +2352,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(4, workspace.Nodes.Count);
-                    Assert.AreEqual(4, workspace.Connectors.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150",
                         new int[] { 5, 5, 5, 6 });
@@ -2362,7 +2362,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(4, workspace.Nodes.Count);
-                    Assert.AreEqual(3, workspace.Connectors.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150",
                         new int[] { 5, 5, 5 });
@@ -2384,7 +2384,7 @@ namespace DynamoCoreUITests
 
             // check for number of Nodes and Connectors
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
 
             // Only in the UI it is showing {6, null}, but still this test make sense to add for 
             // tracking regression, if we get different output after undo/redo.
@@ -2407,7 +2407,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(7, workspace.Nodes.Count);
-                    Assert.AreEqual(13, workspace.Connectors.Count);
+                    Assert.AreEqual(13, workspace.Connectors.Count());
 
                     AssertPreviewValue("ae25b50c-c644-440e-861b-0824c14b7632",
                         new int[] { 2, 3, 8, 9 });
@@ -2436,7 +2436,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_2563.xml", true);
 
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Connectors.Count());
 
 
             NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
@@ -2459,7 +2459,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(6, workspace.Nodes.Count);
-                    Assert.AreEqual(5, workspace.Connectors.Count);
+                    Assert.AreEqual(5, workspace.Connectors.Count());
 
                     AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 15);
                 }
@@ -2467,7 +2467,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(6, workspace.Nodes.Count);
-                    Assert.AreEqual(4, workspace.Connectors.Count);
+                    Assert.AreEqual(4, workspace.Connectors.Count());
 
                     AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 10);
                 }
@@ -2475,7 +2475,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(6, workspace.Nodes.Count);
-                    Assert.AreEqual(5, workspace.Connectors.Count);
+                    Assert.AreEqual(5, workspace.Connectors.Count());
 
                     AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 15);
                 }
@@ -2498,7 +2498,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
@@ -2509,7 +2509,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
@@ -2535,7 +2535,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
 
                     AssertPreviewValue("55b87e32-7279-49bf-982c-91d06b349439",
                         new int[] { 0, 1, 2, 3 });
@@ -2544,7 +2544,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("bc2c4de8-43a1-4b36-b0d6-309423664089");
@@ -2557,7 +2557,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("bc2c4de8-43a1-4b36-b0d6-309423664089");
@@ -2584,7 +2584,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
 
                     AssertPreviewValue("bdfcf8ef-11fa-4881-9b65-73ca99bb2b58", 0);
                 }
@@ -2592,7 +2592,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(1, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("6e2644dc-3336-4a87-a97f-12b2aab14a6b");
@@ -2623,7 +2623,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
 
                     AssertPreviewValue("826ba392-b385-4960-89cc-c076c3abffb0",
                         new int[] { 0, 1, 2, 3 });
@@ -2636,7 +2636,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("826ba392-b385-4960-89cc-c076c3abffb0");
@@ -2670,7 +2670,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(3, workspace.Connectors.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
 
                     AssertPreviewValue("3df462b5-d4e6-4c28-9d1c-9bf6099ba77a",
                         new int[] { 1, 2, 1, 2 });
@@ -2683,14 +2683,14 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
                 }
 
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(3, workspace.Connectors.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
 
                     AssertPreviewValue("3df462b5-d4e6-4c28-9d1c-9bf6099ba77a",
                         new int[] { 1, 2, 1, 2 });
@@ -2720,7 +2720,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(1, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -2732,7 +2732,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(1, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -2765,7 +2765,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(1, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -2777,7 +2777,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -2792,7 +2792,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -2807,7 +2807,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(1, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     // check preview value of CBN
                     AssertPreviewValue("8dd1d732-f5d7-42d9-aadb-c960ac5d868e", false);
@@ -2817,7 +2817,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -2850,7 +2850,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -2864,7 +2864,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
@@ -2891,12 +2891,12 @@ namespace DynamoCoreUITests
                 {
                     AssertNullValues();
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, ViewModel.Model.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.HomeSpace.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, ViewModel.Model.Runner.Running);
+                    Assert.AreEqual(true, ViewModel.HomeSpace.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
                 {
@@ -2921,12 +2921,12 @@ namespace DynamoCoreUITests
                 {
                     AssertNullValues();
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, ViewModel.Model.Runner.Running);
+                    Assert.AreEqual(false, ViewModel.HomeSpace.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, ViewModel.Model.Runner.Running);
+                    Assert.AreEqual(true, ViewModel.HomeSpace.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
                 {
@@ -2963,7 +2963,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports and Warning should be there on CBN.
                     Assert.AreEqual(ElementState.Warning, cbn.State);
@@ -2975,7 +2975,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports and now there should be warning.
                     Assert.AreEqual(ElementState.Warning, cbn.State);
@@ -3005,7 +3005,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports and Warning should be there on CBN.
                     Assert.AreEqual(ElementState.Warning, cbn.State);
@@ -3017,7 +3017,7 @@ namespace DynamoCoreUITests
                 {
                     // check for number of Nodes and Connectors
                     Assert.AreEqual(2, workspace.Nodes.Count);
-                    Assert.AreEqual(1, workspace.Connectors.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports and now there should be warning.
                     Assert.AreNotEqual(ElementState.Warning, cbn.State);
@@ -3082,7 +3082,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_159.xml", true);
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             AssertPreviewValue("045decd1-7454-4b85-b92e-d59d35f31ab2", 8);
         }
@@ -3096,7 +3096,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_160.xml");
 
             //Assert.AreEqual(1, workspace.Nodes.Count);
-            //Assert.AreEqual(0, workspace.Connectors.Count);
+            //Assert.AreEqual(0, workspace.Connectors.Count());
 
             //var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
             //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
@@ -3111,7 +3111,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_164.xml", true);
 
             Assert.AreEqual(1, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
             AssertPreviewValue("56e07af9-6a16-4f61-a673-54e33a8556d8", 0);
         }
@@ -3124,7 +3124,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_190.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
 
         }
 
@@ -3150,7 +3150,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_397.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
         }
 
         [Test]
@@ -3161,7 +3161,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_429.xml");
 
             Assert.AreEqual(0, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
 
         }
 
@@ -3185,7 +3185,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect-MAGN-491.xml");
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(connectors);
-            Assert.AreEqual(2, connectors.Count);
+            Assert.AreEqual(2, connectors.Count());
 
             // Get to the only two connectors in the session.
             ConnectorViewModel firstConnector = connectors[0];
@@ -3208,7 +3208,7 @@ namespace DynamoCoreUITests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
             RunCommandsFromFile("Defect_MAGN_520.xml", true);
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
             AssertPreviewValue("41f52d8e-1a88-4f09-a2f1-f14e61d81f2c", 4);
         }
 
@@ -3220,7 +3220,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_520_WithCrossSelection.xml");
 
             Assert.AreEqual(3, workspace.Nodes.Count);
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
         [Test]
@@ -3233,7 +3233,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_57.xml");
 
             Assert.AreEqual(7, workspace.Nodes.Count);
-            Assert.AreEqual(5, workspace.Connectors.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count());
 
         }
 
@@ -3245,7 +3245,7 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("Defect_MAGN_581.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count());
         }
 
         [Test]
@@ -3254,14 +3254,14 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("ShiftSelectAllNode.xml");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
-            Assert.AreEqual(4, workspace.Connectors.Count);
+            Assert.AreEqual(4, workspace.Connectors.Count());
         }
 
         [Test]
         public void TestCreateConnectors()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
-            Assert.AreEqual(4, workspace.Connectors.Count);
+            Assert.AreEqual(4, workspace.Connectors.Count());
         }
 
         [Test]
@@ -3284,7 +3284,7 @@ namespace DynamoCoreUITests
         {
             RunCommandsFromFile("CreateAndDeleteNodes.xml");
             Assert.AreEqual(4, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
 
             // This dictionary maps each of the node GUIDs, to a Boolean 
             // flag indicating that if the node exists or deleted.
@@ -3305,7 +3305,7 @@ namespace DynamoCoreUITests
         public void TestUndoRedoNodesAndConnections()
         {
             RunCommandsFromFile("UndoRedoNodesAndConnections.xml");
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
 
             // This dictionary maps each of the node GUIDs, to a Boolean 
             // flag indicating that if the node exists or deleted.
@@ -3323,7 +3323,7 @@ namespace DynamoCoreUITests
         public void TestUpdateNodeCaptions()
         {
             RunCommandsFromFile("UpdateNodeCaptions.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count());
             Assert.AreEqual(1, workspace.Notes.Count);
             Assert.AreEqual(2, workspace.Nodes.Count);
 
@@ -3343,7 +3343,7 @@ namespace DynamoCoreUITests
         public void TestUpdateNodeContents()
         {
             RunCommandsFromFile("UpdateNodeContents.xml", true);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
             Assert.AreEqual(3, workspace.Nodes.Count);
 
             var number = GetNode("31f48bb5-4bdf-4066-b343-5df0f6f4337f") as DoubleInput;
@@ -3372,7 +3372,7 @@ namespace DynamoCoreUITests
         public void TestVerifyRuntimeValues()
         {
             RunCommandsFromFile("VerifyRuntimeValues.xml", true);
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count());
             Assert.AreEqual(3, workspace.Nodes.Count);
 
             AssertPreviewValue("9182323d-a4fd-40eb-905b-8ec415d17926", 69.12);

@@ -93,7 +93,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\WatchLiterals.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             ViewModel.Model.PreferenceSettings.NumberFormat = "f0";
 
@@ -124,7 +124,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\Watch1DCollections.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             ViewModel.Model.PreferenceSettings.NumberFormat = "f0";
 
@@ -157,7 +157,7 @@ namespace Dynamo.Tests
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
@@ -173,7 +173,7 @@ namespace Dynamo.Tests
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchFunctionPointer.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var watchNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>();
             foreach (var watchNode in watchNodes)
@@ -193,7 +193,7 @@ namespace Dynamo.Tests
             
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject_2.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -28,7 +29,7 @@ namespace DSCoreNodesUI
                 Height = Configurations.PortHeightInPixels * 3
             };
 
-            var dm = model.Workspace.DynamoModel;
+            var dm = nodeView.ViewModel.DynamoViewModel.Model;
 
             nodeView.inputGrid.Children.Add(drawPlane);
 

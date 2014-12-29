@@ -543,16 +543,16 @@
                 </Style>
 
                 <Style TargetType="{x:Type TreeViewItem}"
-                       d:DataContext="{d:DesignInstance viewModels:BrowserItemViewModel }">
+                       d:DataContext="{d:DesignInstance viewModels:NodeCategoryViewModel }">
                     <Setter Property="Focusable"
                             Value="False"></Setter>
                     <Setter Property="IsExpanded"
-                            Value="{Binding Model.IsExpanded, Mode=OneWay}"></Setter>
+                            Value="{Binding IsExpanded, Mode=OneWay}"></Setter>
                     <Setter Property="IsSelected"
-                            Value="{Binding Model.IsSelected}"></Setter>
+                            Value="{Binding IsSelected}"></Setter>
                     <Setter Property="Visibility">
                         <Setter.Value>
-                            <Binding Path="Model.Visibility"
+                            <Binding Path="Visibility"
                                      Converter="{StaticResource BooleanToVisibilityConverter}"
                                      ConverterParameter="Collapse" />
                         </Setter.Value>
@@ -560,7 +560,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                                <Button Command="{Binding ToggleIsExpandedCommand}">
+                                <Button Command="{Binding ClickedCommand}">
                                     <Button.Focusable>False</Button.Focusable>
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
@@ -605,7 +605,7 @@
                                                                   IsHitTestVisible="False"
                                                                   Style="{StaticResource ExpandCollapseToggleStyle}"
                                                                   ClickMode="Press"
-                                                                  IsChecked="{Binding Model.IsExpanded, Mode=OneWay}" />
+                                                                  IsChecked="{Binding IsExpanded, Mode=OneWay}" />
 
                                                     <Border Margin="5,0,5,0"
                                                             Name="NodeName"
@@ -717,7 +717,7 @@
                                         <Grid>
                                             <TextBlock TextWrapping="Wrap"
                                                        MaxWidth="320"
-                                                       Text="{Binding Path=Model.Description}"></TextBlock>
+                                                       Text="{Binding Path=Description}"></TextBlock>
                                         </Grid>
                                     </dynui:DynamoToolTip>
                                 </Setter.Value>
@@ -750,7 +750,7 @@
 
                 <TreeView.Resources>
 
-                    <HierarchicalDataTemplate DataType="{x:Type viewModels:BrowserRootElementViewModel}"
+                    <HierarchicalDataTemplate DataType="{x:Type viewModels:RootNodeCategoryViewModel}"
                                               ItemsSource="{Binding Path=Items}">
 
                         <Border Height="30"
@@ -758,40 +758,40 @@
                                 BorderBrush="#2F2F2F">
                             <TextBlock Foreground="#DDD"
                                        FontSize="13"
-                                       Text="{Binding Path=Model.Name}"
+                                       Text="{Binding Path=Name}"
                                        VerticalAlignment="Center" />
                         </Border>
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type viewModels:BrowserInternalElementViewModel}"
+                    <HierarchicalDataTemplate DataType="{x:Type viewModels:NodeCategoryViewModel}"
                                               ItemsSource="{Binding Path=Items}">
 
                         <Border Height="30">
                             <TextBlock Foreground="#DDD"
                                        FontSize="13"
-                                       Text="{Binding Path=Model.Name}"
+                                       Text="{Binding Path=Name}"
                                        VerticalAlignment="Center" />
                         </Border>
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type viewModels:NodeSearchElementViewModel}">
+                    <DataTemplate DataType="{x:Type viewModels:NodeSearchElementViewModel}">
 
                         <StackPanel Orientation="Horizontal">
 
                             <Border Height="30">
                                 <TextBlock Foreground="#DDD"
                                            FontSize="13"
-                                           Text="{Binding Path=Model.Name}"
+                                           Text="{Binding Path=Name}"
                                            VerticalAlignment="Center" />
                             </Border>
 
                         </StackPanel>
 
-                    </HierarchicalDataTemplate>
+                    </DataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type viewModels:CustomNodeSearchElementViewModel}">
+                    <DataTemplate DataType="{x:Type viewModels:CustomNodeSearchElementViewModel}">
 
                         <StackPanel Orientation="Horizontal">
 
@@ -810,7 +810,7 @@
                             <Border Height="30">
                                 <TextBlock Foreground="#DDD"
                                            FontSize="13"
-                                           Text="{Binding Path=Model.Name}"
+                                           Text="{Binding Path=Name}"
                                            VerticalAlignment="Center" />
                             </Border>
 
@@ -825,7 +825,7 @@
 
                         </StackPanel>
 
-                    </HierarchicalDataTemplate>
+                    </DataTemplate>
 
                 </TreeView.Resources>
 

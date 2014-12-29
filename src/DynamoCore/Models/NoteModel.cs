@@ -1,12 +1,12 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
+
+using Dynamo.Core;
 using Dynamo.Utilities;
 namespace Dynamo.Models
 {
-    public class NoteModel:ModelBase
+    public class NoteModel : ModelBase
     {
-
-        private readonly WorkspaceModel workspaceModel;
-
         private string text;
         public string Text
         {
@@ -18,24 +18,23 @@ namespace Dynamo.Models
             }
         }
 
-        public NoteModel(WorkspaceModel workspace, double x, double y)
+        public NoteModel(double x, double y, string text, Guid guid)
         {
-            this.workspaceModel = workspace;
             X = x;
             Y = y;
+            Text = text;
+            GUID = guid;
         }
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name == "Text")
-            {
-                Text = value;
-                return true;
-            }
-
-            return base.UpdateValueCore(name, value);
+            if (name != "Text") 
+                return base.UpdateValueCore(name, value, recorder);
+            
+            Text = value;
+            return true;
         }
 
         #endregion
@@ -51,9 +50,9 @@ namespace Dynamo.Models
             helper.SetAttribute("y", Y);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var helper = new XmlElementHelper(element);
+            var helper = new XmlElementHelper(nodeElement);
             GUID = helper.ReadGuid("guid", GUID);
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);

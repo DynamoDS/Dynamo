@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -56,9 +56,8 @@
     <Reference Include="RestSharp">
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Helix3D\NET40\Helix3D_SharpDX\SharpDX.dll</HintPath>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\extern\Helix3D\NET40\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -131,9 +130,7 @@
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Converters.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\DoubleInputCustomization.cs" />
     <Compile Include="Controls\DragCanvas.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\DropDrownBaseNodeViewCustomization.cs" />
     <Compile Include="Controls\DynamoNodeButton.cs" />
     <Compile Include="Controls\DynamoTextBox.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\FunctionNodeViewCustomization.cs" />
@@ -164,7 +161,6 @@
     <Compile Include="ViewModels\BrowserRootElementViewModel.cs" />
     <Compile Include="ViewModels\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\StateMachine.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\SublistsViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
@@ -254,7 +250,6 @@
     <Compile Include="VisualizationManager\octree\Point3f.cs" />
     <Compile Include="VisualizationManager\octree\Vector3d.cs" />
     <Compile Include="VisualizationManager\octree\Vector3f.cs" />
-    <Compile Include="VisualizationManager\RenderManager.cs" />
     <Compile Include="VisualizationManager\STLExport.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>

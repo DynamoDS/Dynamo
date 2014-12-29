@@ -12,6 +12,7 @@ using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -147,9 +148,9 @@ namespace Dynamo.Nodes
         #region public properties
 
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
-        
+
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
-        
+
         public DelegateCommand ToggleCanNavigateBackgroundCommand
         {
             get
@@ -157,9 +158,9 @@ namespace Dynamo.Nodes
                 return this.ViewModel.ToggleCanNavigateBackgroundCommand;
             }
         }
-        
+
         public bool WatchIsResizable { get; set; }
-        
+
         public bool IsBackgroundPreview { get { return false; } }
 
         public bool CanNavigateBackground
@@ -180,14 +181,14 @@ namespace Dynamo.Nodes
         public IVisualizationManager VisualizationManager
         {
             get { return ViewModel.VisualizationManager; }
-            
+
         }
 
         #endregion
 
         #region constructors
 
-        public Watch3D(WorkspaceModel workspace) : base(workspace)
+        public Watch3D()
         {
             InPortData.Add(new PortData("", "Incoming geometry objects."));
             OutPortData.Add(new PortData("", "Watch contents, passed through"));
@@ -204,15 +205,17 @@ namespace Dynamo.Nodes
             WatchHeight = 200;
             CameraPosition = new Point3D(10, 10, 10);
             LookDirection = new Vector3D(-1, -1, -1);
+
+            ShouldDisplayPreviewCore = false;
         }
 
         #endregion
 
         #region public methods
 
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
@@ -253,11 +256,11 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.SaveNode(xmlDoc, nodeElement, context);
-            
-            var viewElement = xmlDoc.CreateElement("view");
+            base.SerializeCore(nodeElement, context);
+
+            var viewElement = nodeElement.OwnerDocument.CreateElement("view");
             nodeElement.AppendChild(viewElement);
             var viewHelper = new XmlElementHelper(viewElement);
 
@@ -267,7 +270,7 @@ namespace Dynamo.Nodes
             // the view stores the latest position
             OnRequestUpdateLatestCameraPosition();
 
-            var camElement = xmlDoc.CreateElement("camera");
+            var camElement = nodeElement.OwnerDocument.CreateElement("camera");
             viewElement.AppendChild(camElement);
             var camHelper = new XmlElementHelper(camElement);
 
@@ -279,9 +282,9 @@ namespace Dynamo.Nodes
             camHelper.SetAttribute("look_z", LookDirection.Z);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.LoadNode(nodeElement);
+            base.DeserializeCore(nodeElement, context);
             try
             {
                 foreach (XmlNode node in nodeElement.ChildNodes)
@@ -307,40 +310,22 @@ namespace Dynamo.Nodes
                         }
                     }
                 }
-                
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                this.Workspace.DynamoModel.Logger.Log(ex);
-                this.Workspace.DynamoModel.Logger.Log("View attributes could not be read from the file.");
+                Log(LogMessage.Error(ex));
+                Log("View attributes could not be read from the file.");
             }
-            
+
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
-        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
+        protected override void RequestVisualUpdateAsyncCore(
+            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
-            return; // No visualization update is required for this node type.
+            // No visualization update is required for this node type.
         }
 
-#else
-
-        public override void UpdateRenderPackage(int maxTessDivisions)
-        {
-            //do nothing
-            //a watch should not draw its outputs
-        }
-
-#endif
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
-        }
 
         #region IWatchViewModel interface
 

@@ -10,6 +10,48 @@ namespace Dynamo.Utilities
     public static class TypeExtensions
     {
         /// <summary>
+        ///     Fetches custom attributes from a MemberInfo.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> GetCustomAttributes<T>(this MemberInfo type, bool inherit) 
+            where T : Attribute
+        {
+            return type.GetCustomAttributes(inherit).OfType<T>();
+        }
+
+        /// <summary>
+        ///     Creates a function that constructs an instance of an object of the given
+        ///     type.
+        /// </summary>
+        /// <typeparam name="T">The return type of the constructor function.</typeparam>
+        /// <returns></returns>
+        public static Func<T> GetDefaultConstructor<T>()
+        {
+            return Expression.Lambda<Func<T>>(Expression.New(typeof(T))).Compile();
+        }
+
+        /// <summary>
+        ///     Creates a function that constructs an instance of an object of the given
+        ///     type.
+        /// </summary>
+        /// <typeparam name="T">The return type of the constructor function.</typeparam>
+        /// <param name="type">The type to create a constructor for.</param>
+        public static Func<T> GetDefaultConstructor<T>(this Type type)
+        {
+            if (!type.IsSubclassOf(typeof(T)))
+            {
+                var msg = string.Format(
+                    @"Cannot make constructor returning a ""{0}"" given type ""{1}""",
+                    typeof(T).FullName,
+                    type.FullName);
+                throw new ArgumentException(msg, "type");
+            }
+            return Expression.Lambda<Func<T>>(Expression.New(type)).Compile();
+        }
+        /// <summary>
         /// Returns an instance of the <paramref name="type"/> on which the method is invoked.
         /// </summary>
         /// <param name="type">The type on which the method was invoked.</param>

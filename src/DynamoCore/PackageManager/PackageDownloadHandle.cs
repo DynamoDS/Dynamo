@@ -53,8 +53,8 @@ namespace Dynamo.PackageManager
             this.DownloadState = State.Error;
             this.ErrorString = errorString;
         }
-        
-        public void Done( string filePath )
+
+        public void Done(string filePath)
         {
             this.DownloadState = State.Downloaded;
             this.DownloadPath = filePath;
@@ -63,10 +63,10 @@ namespace Dynamo.PackageManager
         private string BuildInstallDirectoryString()
         {
             // <user>/appdata/roaming/packages/package_name
-            return DynamoPathManager.Instance.Packages + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
+            return DynamoPathManager.Instance.Packages + @"\" + this.Name.Replace("/", "_").Replace(@"\", "_");
         }
 
-        public bool Extract( DynamoModel dynamoModel, out Package pkg )
+        public bool Extract(DynamoModel dynamoModel, out Package pkg)
         {
             this.DownloadState = State.Installing;
 
@@ -76,7 +76,7 @@ namespace Dynamo.PackageManager
             {
                 throw new Exception("The package was found to be empty and was not installed.");
             }
-            
+
             var installedPath = BuildInstallDirectoryString();
             Directory.CreateDirectory(installedPath);
 

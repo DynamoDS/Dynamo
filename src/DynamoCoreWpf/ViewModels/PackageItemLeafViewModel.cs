@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Dynamo.PackageManager.UI
+﻿namespace Dynamo.PackageManager.UI
 {
     public class PackageItemLeafViewModel : PackageItemInternalViewModel
     {
