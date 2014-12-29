@@ -1,10 +1,8 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Shapes;
 
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Models;
 
 namespace Dynamo.UI.Controls
@@ -15,14 +13,12 @@ namespace Dynamo.UI.Controls
     public partial class DynamoSlider : UserControl
     {
         readonly NodeModel nodeModel;
-        //private readonly UndoRedoRecorder recorder;
 
-        public DynamoSlider(NodeModel model, NodeView nodeUI)//, UndoRedoRecorder undoRecorder)
+        public DynamoSlider(NodeModel model, NodeView nodeUI)
         {
             InitializeComponent();
 
             nodeModel = model;
-            //recorder = undoRecorder;
 
             slider.PreviewMouseUp += delegate
             {
@@ -40,7 +36,7 @@ namespace Dynamo.UI.Controls
 
         private void Slider_OnDragCompleted(object sender, DragCompletedEventArgs e)
         {
-            //nodeModel.OnAstUpdated();
+            nodeModel.OnAstUpdated();
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)

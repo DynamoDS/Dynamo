@@ -63,6 +63,8 @@ namespace DSCoreNodesUI.Input
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
+            WorkspaceModel.RecordModelForModification(this, recorder);
+
             switch (name)
             {
                 case "Min":
