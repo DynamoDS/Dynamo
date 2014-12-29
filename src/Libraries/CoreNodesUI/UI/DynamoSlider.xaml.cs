@@ -15,7 +15,7 @@ namespace Dynamo.UI.Controls
     public partial class DynamoSlider : UserControl
     {
         readonly NodeModel nodeModel;
-        private readonly UndoRedoRecorder recorder;
+        //private readonly UndoRedoRecorder recorder;
 
         public DynamoSlider(NodeModel model, NodeView nodeUI)//, UndoRedoRecorder undoRecorder)
         {
@@ -45,9 +45,9 @@ namespace Dynamo.UI.Controls
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            base.OnPreviewMouseLeftButtonDown(e);
-            if (e.OriginalSource is Rectangle)
-                WorkspaceModel.RecordModelForModification(nodeModel, recorder);
+            //base.OnPreviewMouseLeftButtonDown(e);
+            //if (e.OriginalSource is Rectangle)
+            //    WorkspaceModel.RecordModelForModification(nodeModel, recorder);
         }
         
         #endregion
