@@ -629,23 +629,14 @@ namespace Dynamo.PackageManager
 
             this.SearchText = query;
 
-            var t = Search(query);
+            var results = Search(query);
 
-            var currentResults = this.SearchResults;
+            this.ClearSearchResults();
 
-            // stop WPF from listening to the changes that we're about
-            // to perform
-            this.SearchResults = null;
-
-            currentResults.Clear();
-            foreach (var result in t)
+            foreach (var result in results)
             {
-                currentResults.Add(result);
+                this.AddToSearchResults(result);
             }
-
-            // cause WPF to rebind--but only once instead of once for
-            // each ele
-            SearchResults = currentResults;
 
             SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
         }
