@@ -469,7 +469,7 @@ namespace Dynamo.UI.Controls
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Note that you can have more than one file.
-                var homespace = dynamoViewModel.Model.HomeSpace;
+                var homespace = dynamoViewModel.HomeSpace;
                 if (homespace.HasUnsavedChanges && 
                     !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(homespace))
                 {

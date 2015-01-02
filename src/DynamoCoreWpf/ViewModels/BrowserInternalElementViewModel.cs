@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Dynamo.Search;
+﻿using Dynamo.Search;
 
 namespace Dynamo.Wpf.ViewModels
 {

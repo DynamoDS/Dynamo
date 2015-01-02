@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
@@ -38,6 +37,11 @@ namespace Dynamo.ViewModels
         #region Properties/Fields
 
         /// <summary>
+        ///     Maximum number of items to show in search.
+        /// </summary>
+        public int MaxNumSearchResults { get; set; }
+
+        /// <summary>
         ///     Indicates whether the node browser is visible or not
         /// </summary>
         private bool browserVisibility = true;
@@ -61,6 +65,7 @@ namespace Dynamo.ViewModels
             {
                 searchText = value;
                 RaisePropertyChanged("SearchText");
+                RaisePropertyChanged("BrowserRootCategories");
             }
         }
 
@@ -79,10 +84,10 @@ namespace Dynamo.ViewModels
                 if (selectedIndex != value)
                 {
                     if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].Model.IsSelected = false;
+                        visibleSearchResults[selectedIndex].IsSelected = false;
                     selectedIndex = value;
                     if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].Model.IsSelected = true;
+                        visibleSearchResults[selectedIndex].IsSelected = true;
                     RaisePropertyChanged("SelectedIndex");
                 }
             }
@@ -111,18 +116,19 @@ namespace Dynamo.ViewModels
         /// <value>
         ///     This property is observed by SearchView to see the search results
         /// </value>
-        public ObservableCollection<SearchElementBaseViewModel> SearchResults { get; private set; }
+        public ObservableCollection<NodeSearchElementViewModel> SearchResults { get; private set; }
 
         /// <summary>
         /// A category representing the "Top Result"
         /// </summary>
-        private BrowserRootElementViewModel topResult;
+        //private RootNodeCategoryViewModel topResult;
 
         /// <summary>
         ///     An ordered list representing all of the visible items in the browser.
         ///     This is used to manage up-down navigation through the menu.
         /// </summary>
-        private List<BrowserItemViewModel> visibleSearchResults = new List<BrowserItemViewModel>();
+        private readonly List<NodeSearchElementViewModel> visibleSearchResults =
+            new List<NodeSearchElementViewModel>();
 
         private bool searchScrollBarVisibility = true;
         public bool SearchScrollBarVisibility
@@ -130,20 +136,33 @@ namespace Dynamo.ViewModels
             get { return searchScrollBarVisibility; }
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
-        
-        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;
-            private set; }
-        public SearchModel Model { get; private set; }
-        private readonly DynamoViewModel dynamoViewModel;
 
+        public ObservableCollection<NodeCategoryViewModel> SearchRootCategories { get; private set; }
+
+        public ObservableCollection<NodeCategoryViewModel> LibraryRootCategories
+        {
+            get { return libraryRoot.SubCategories; }
+        }
+
+        private readonly NodeCategoryViewModel libraryRoot = new NodeCategoryViewModel("");
+
+        public ObservableCollection<NodeCategoryViewModel> BrowserRootCategories
+        {
+            get { return string.IsNullOrWhiteSpace(SearchText) ? LibraryRootCategories : SearchRootCategories; }
+        }
+
+        public NodeSearchModel Model { get; private set; }
+        private readonly DynamoViewModel dynamoViewModel;
         #endregion
 
         #region Initialization
 
-        internal SearchViewModel(DynamoViewModel dynamoViewModel, SearchModel Model)
+        internal SearchViewModel(DynamoViewModel dynamoViewModel, NodeSearchModel model)
         {
-            this.Model = Model;
+            Model = model;
             this.dynamoViewModel = dynamoViewModel;
+
+            MaxNumSearchResults = 15;
 
             InitializeCore();
         }
@@ -151,74 +170,123 @@ namespace Dynamo.ViewModels
         private void InitializeCore()
         {
             SelectedIndex = 0;
-            SearchResults = new ObservableCollection<SearchElementBaseViewModel>();
-            BrowserRootCategories = new ObservableCollection<BrowserRootElementViewModel>();
+            SearchResults = new ObservableCollection<NodeSearchElementViewModel>();
+            SearchRootCategories = new ObservableCollection<NodeCategoryViewModel>();
             Visible = false;
             searchText = "";
 
-            topResult =
-                BrowserItemViewModel.Wrap(this.Model.AddRootCategoryToStart("Top Result")) as
-                    BrowserRootElementViewModel;
-            
-            this.Model.RequestSync += ModelOnRequestSync;
-            this.Model.Executed += ExecuteElement;
-
-            this.Model.RemoveEmptyCategories();
-
-            foreach (BrowserRootElement item in this.Model.BrowserRootCategories)
+            // When Library changes, sync up
+            Model.EntryAdded += entry =>
             {
-                BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
-            }
-
-            this.Model.BrowserRootCategories.CollectionChanged += BrowserRootCategoriesOnCollectionChanged;
-
-            this.SortCategoryChildren();
+                InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
+            };
+            Model.EntryRemoved += RemoveEntry;
+            
+            libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
+            LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
         }
 
-        /// <summary>
-        /// Helper method for synchronization of the Model observable collections
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BrowserRootCategoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            switch (e.Action)
+            if (propertyChangedEventArgs.PropertyName == "Visibility")
+                SearchAndUpdateResults();
+        }
+
+        private static IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
+        {
+            var tempRoot = 
+                entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
+                    element => element.Categories,
+                    (name, subs, es) =>
+                        new NodeCategoryViewModel(name, es.Select(MakeNodeSearchElementVM), subs)
+                        {
+                            IsExpanded = expanded
+                        },
+                    "");
+            var result =
+                tempRoot.SubCategories.Select(
+                    cat =>
+                        new RootNodeCategoryViewModel(cat.Name, cat.Entries, cat.SubCategories)
+                        {
+                            IsExpanded = expanded
+                        });
+            tempRoot.Dispose();
+            return result;
+        }
+
+        private void RemoveEntry(NodeSearchElement entry)
+        {
+            var treeStack = new Stack<NodeCategoryViewModel>();
+            var nameStack = new Stack<string>(entry.Categories);
+            var target = libraryRoot;
+            while (nameStack.Any())
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (BrowserRootElement item in e.NewItems.OfType<BrowserRootElement>())
-                    {
-                        BrowserRootCategories.Add(BrowserItemViewModel.WrapExplicit(item));
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    BrowserRootCategories.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                    {
-                        var vm = BrowserRootCategories.First(x => x.Model == item);
-                        BrowserRootCategories.Remove(vm);
-                    }
-                    break;
+                var next = nameStack.Pop();
+                var categories = target.SubCategories;
+                var newTarget = categories.FirstOrDefault(c => c.Name == next);
+                if (newTarget == default(NodeCategoryViewModel))
+                {
+                    return;
+                }
+                treeStack.Push(target);
+                target = newTarget;
             }
+            var location = target.Entries.Select((e, i) => new { e.Model, i })
+                .FirstOrDefault(x => entry == x.Model);
+            if (location == null)
+                return;
+            target.Entries.RemoveAt(location.i);
+
+            while (!target.Items.Any() && treeStack.Any())
+            {
+                var parent = treeStack.Pop();
+                parent.SubCategories.Remove(target);
+                target = parent;
+            }
+        }
+
+        private void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
+        {
+            var nameStack = new Stack<string>(categoryNames.Reverse());
+            var target = libraryRoot;
+            bool isRoot = true;
+            while (nameStack.Any())
+            {
+                var next = nameStack.Pop();
+                var categories = target.SubCategories;
+                var newTarget = categories.FirstOrDefault(c => c.Name == next);
+                if (newTarget == default(NodeCategoryViewModel))
+                {
+                    newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
+                    target.SubCategories.Add(newTarget);
+                    PlaceInNewCategory(entry, newTarget, nameStack);
+                    return;
+                }
+                target = newTarget;
+                isRoot = false;
+            }
+            target.Entries.Add(entry);
+        }
+
+        private static void PlaceInNewCategory(
+            NodeSearchElementViewModel entry, NodeCategoryViewModel target,
+            IEnumerable<string> categoryNames)
+        {
+            var newTargets =
+                categoryNames.Select(name => new NodeCategoryViewModel(name));
+
+            foreach (var newTarget in newTargets)
+            {
+                target.SubCategories.Add(newTarget);
+                target = newTarget;
+            }
+
+            target.Entries.Add(entry);
         }
 
         #endregion
 
         #region Search
-
-        internal void SortCategoryChildren()
-        {
-            foreach (var item in this.BrowserRootCategories)
-            {
-                item.RecursivelySort();
-            }
-        }
-
-        private void ModelOnRequestSync(object sender, EventArgs eventArgs)
-        {
-            this.SearchAndUpdateResults();
-        }
 
         /// <summary>
         ///     Performs a search using the internal SearcText as the query and
@@ -226,7 +294,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SearchAndUpdateResults()
         {
-            this.SearchAndUpdateResults(SearchText);
+            SearchAndUpdateResults(SearchText);
         }
 
         /// <summary>
@@ -238,119 +306,104 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            var result = this.Model.Search(query).ToList();
-
-            // Remove old execute handler from old top result
-            if (topResult.Items.Any() && topResult.Items.First() is NodeSearchElementViewModel)
-            {
-                var oldTopResult = topResult.Items.First() as NodeSearchElementViewModel;
-                oldTopResult.Model.Executed -= this.ExecuteElement;
-            }
-
             // deselect the last selected item
             if (visibleSearchResults.Count > SelectedIndex)
-            {
-                visibleSearchResults[SelectedIndex].Model.IsSelected = false;
-            }
+                visibleSearchResults[SelectedIndex].IsSelected = false;
+
+            // if the search query is empty, go back to the default treeview
+            if (string.IsNullOrEmpty(query))
+                return;
 
             // clear visible results list
             visibleSearchResults.Clear();
 
-            // if the search query is empty, go back to the default treeview
+            foreach (var category in SearchRootCategories)
+                category.DisposeTree();
+
+            SearchRootCategories.Clear();
+
             if (string.IsNullOrEmpty(query))
-            {
-                foreach (var ele in this.Model.BrowserRootCategories)
-                {
-                    ele.CollapseToLeaves();
-                    ele.SetVisibilityToLeaves(true);
-                }
-
-                // hide the top result
-                topResult.Model.Visibility = false;
                 return;
-            }
 
-            // otherwise, first collapse all
-            foreach (var root in this.Model.BrowserRootCategories)
-            {
-                root.CollapseToLeaves();
-                root.SetVisibilityToLeaves(false);
-            }
+            var result =
+                Model.Search(query).Where(r => r.IsVisibleInSearch).Take(MaxNumSearchResults).ToList();
 
-            // if there are any results, add the top result 
-            if (result.Any() && result.ElementAt(0) is NodeSearchElement)
-            {
-                topResult.Model.Items.Clear();
+            // Add top result
+            var firstRes = result.FirstOrDefault();
+            if (firstRes == null)
+                return; //No results
 
-                var firstRes = (result.ElementAt(0) as NodeSearchElement);
+            var topResultCategory = new RootNodeCategoryViewModel("Top Result");
+            SearchRootCategories.Add(topResultCategory);
 
-                var copy = firstRes.Copy();
-                copy.Executed += this.ExecuteElement;
+            var copy = MakeNodeSearchElementVM(firstRes);
+            var catName = MakeShortCategoryString(firstRes.FullCategoryName);
 
-                var catName = MakeShortCategoryString(firstRes.FullCategoryName);
+            var breadCrumb = new NodeCategoryViewModel(catName) { IsExpanded = true };
+            breadCrumb.Entries.Add(copy);
+            topResultCategory.SubCategories.Add(breadCrumb);
+            topResultCategory.Visibility = true;
+            topResultCategory.IsExpanded = true;
 
-                var breadCrumb = new BrowserInternalElement(catName, topResult.Model);
-                breadCrumb.AddChild(copy);
-                topResult.Model.AddChild(breadCrumb);
+            SearchRootCategories.AddRange(CategorizeEntries(result, true));
 
-                topResult.Model.SetVisibilityToLeaves(true);
-                copy.ExpandToRoot();
-            }
-
-            // for all of the other results, show them in their category
-            foreach (var ele in result)
-            {
-                ele.Visibility = true;
-                ele.ExpandToRoot();
-            }
-
-            // create an ordered list of visible search results
-            var baseBrowserItem = new BrowserRootElement("root");
-            foreach (var root in Model.BrowserRootCategories)
-            {
-                baseBrowserItem.Items.Add(root);
-            }
-
-            var vl = new List<BrowserItem>();
-            baseBrowserItem.GetVisibleLeaves(ref vl);
-
-            this.visibleSearchResults = vl.Select(BrowserItemViewModel.Wrap).ToList();
+            visibleSearchResults.AddRange(SearchRootCategories.SelectMany(GetVisibleSearchResults));
 
             if (visibleSearchResults.Any())
             {
-                this.SelectedIndex = 0;
-                visibleSearchResults[0].Model.IsSelected = true;
+                SelectedIndex = 0;
+                visibleSearchResults[0].IsSelected = true;
             }
 
             SearchResults.Clear();
-
-            foreach (var x in visibleSearchResults.OfType<NodeSearchElementViewModel>())
-            {
+            foreach (var x in visibleSearchResults)
                 SearchResults.Add(x);
+        }
+
+        private static IEnumerable<NodeSearchElementViewModel> GetVisibleSearchResults(NodeCategoryViewModel category)
+        {
+            foreach (var item in category.Items)
+            {
+                var sub = item as NodeCategoryViewModel;
+                if (sub != null)
+                {
+                    foreach (var visible in GetVisibleSearchResults(sub))
+                        yield return visible;
+                }
+                else
+                    yield return (NodeSearchElementViewModel)item;
             }
+        }
+
+        private static NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
+        {
+            var element = entry as CustomNodeSearchElement;
+            return element != null
+                ? new CustomNodeSearchElementViewModel(element)
+                : new NodeSearchElementViewModel(entry);
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
         {
             var catName = fullCategoryName.Replace(".", " > ");
 
+            if (catName.Length <= 50) 
+                return catName;
+
             // if the category name is too long, we strip off the interior categories
-            if (catName.Length > 50)
+            var s = catName.Split('>').Select(x => x.Trim()).ToList();
+            if (s.Count() <= 4) 
+                return catName;
+            
+            s = new List<string>
             {
-                var s = catName.Split('>').Select(x => x.Trim()).ToList();
-                if (s.Count() > 4)
-                {
-                    s = new List<string>()
-                                        {
-                                            s[0],
-                                            "...",
-                                            s[s.Count - 3],
-                                            s[s.Count - 2],
-                                            s[s.Count - 1]
-                                        };
-                    catName = String.Join(" > ", s);
-                }
-            }
+                s[0],
+                "...",
+                s[s.Count - 3],
+                s[s.Count - 2],
+                s[s.Count - 1]
+            };
+            catName = string.Join(" > ", s);
 
             return catName;
         }
@@ -406,25 +459,23 @@ namespace Dynamo.ViewModels
         /// <returns>The string cleaved of everything </returns>
         public static string RemoveLastPartOfText(string text)
         {
-            if (string.IsNullOrEmpty(text))
-                return text;
-
-            var matches = Regex.Matches(text, Regex.Escape("."));
-
-            // no period
-            if (matches.Count == 0)
+            while (true)
             {
-                return "";
-            }
+                if (string.IsNullOrEmpty(text))
+                    return text;
 
-            // if period is in last position, remove that period and recurse
-            if (matches[matches.Count - 1].Index + 1 == text.Length)
-            {
-                return RemoveLastPartOfText(text.Substring(0, text.Length - 1));
-            }
+                var matches = Regex.Matches(text, Regex.Escape("."));
 
-            // remove to the last period
-            return text.Substring(0, matches[matches.Count - 1].Index + 2);
+                // no period
+                if (matches.Count == 0)
+                    return "";
+
+                if (matches[matches.Count - 1].Index + 1 != text.Length)
+                    return text.Substring(0, matches[matches.Count - 1].Index + 2);
+                
+                // if period is in last position, remove that period and recurse
+                text = text.Substring(0, text.Length - 1);
+            }
         }
 
         /// <summary>
@@ -459,70 +510,7 @@ namespace Dynamo.ViewModels
             if (visibleSearchResults.Count <= SelectedIndex)
                 return;
 
-            if (!(visibleSearchResults[SelectedIndex].Model is SearchElementBase)) return;
-
-            ExecuteElement(visibleSearchResults[SelectedIndex].Model as SearchElementBase);
-        }
-
-        private void ExecuteElement(BrowserItem searchElement)
-        {
-            dynamic ele = searchElement;
-            ExecuteElement(ele);
-        }
-
-        private void ExecuteElement(CategorySearchElement searchElement)
-        {
-            this.SearchText = searchElement.Name + ".";
-        }
-
-        private void ExecuteElement(DSFunctionNodeSearchElement element)
-        {
-            // create node
-            var guid = Guid.NewGuid();
-            this.dynamoViewModel.ExecuteCommand(
-                new DynamoModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
-
-            // select node
-            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
-            }
-        }
-
-        private void ExecuteElement(CustomNodeSearchElement element)
-        {
-            string name = element.Guid.ToString();
-
-            // create node
-            var guid = Guid.NewGuid();
-            dynamoViewModel.ExecuteCommand(
-                new DynamoModel.CreateNodeCommand(guid, name, 0, 0, true, true));
-
-            // select node
-            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
-            }
-        }
-
-        private void ExecuteElement(NodeSearchElement element)
-        {
-            // create node
-            var guid = Guid.NewGuid();
-            dynamoViewModel.ExecuteCommand(
-                new DynamoModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
-
-            // select node
-            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
-            }
+            visibleSearchResults[SelectedIndex].Model.ProduceNode();
         }
 
         #endregion
@@ -531,7 +519,7 @@ namespace Dynamo.ViewModels
 
         public void Search(object parameter)
         {
-            this.SearchAndUpdateResults();
+            SearchAndUpdateResults();
         }
 
         internal bool CanSearch(object parameter)
@@ -541,31 +529,27 @@ namespace Dynamo.ViewModels
 
         internal void HideSearch(object parameter)
         {
-            this.Visible = false;
+            Visible = false;
         }
 
         internal bool CanHideSearch(object parameter)
         {
-            if (this.Visible == true)
-                return true;
-            return false;
+            return Visible;
         }
 
         public void ShowSearch(object parameter)
         {
-            this.Visible = true;
+            Visible = true;
         }
 
         internal bool CanShowSearch(object parameter)
         {
-            if (this.Visible == false)
-                return true;
-            return false;
+            return !Visible;
         }
 
         public void FocusSearch(object parameter)
         {
-            this.OnRequestFocusSearch(this.dynamoViewModel, EventArgs.Empty);
+            OnRequestFocusSearch(dynamoViewModel, EventArgs.Empty);
         }
 
         internal bool CanFocusSearch(object parameter)
@@ -574,6 +558,5 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
-
     }
 }

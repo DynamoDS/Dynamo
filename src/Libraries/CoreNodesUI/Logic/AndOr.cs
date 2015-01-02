@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using DSCoreNodesUI;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
@@ -18,7 +17,7 @@ namespace DSCore.Logic
     {
         private readonly Operator _op;
 
-        protected BinaryLogic(WorkspaceModel workspaceModel, string symbol, Operator op) : base(workspaceModel)
+        protected BinaryLogic(Operator op)
         {
             _op = op;
 
@@ -69,7 +68,7 @@ namespace DSCore.Logic
     [IsDesignScriptCompatible]
     public class And : BinaryLogic
     {
-        public And(WorkspaceModel workspaceModel) : base(workspaceModel, "∧", Operator.and) { }
+        public And() : base(Operator.and) { }
     }
 
     /// <summary>
@@ -81,6 +80,6 @@ namespace DSCore.Logic
     [IsDesignScriptCompatible]
     public class Or : BinaryLogic
     {
-        public Or(WorkspaceModel workspaceModel) : base(workspaceModel, "∨", Operator.or) { }
+        public Or() : base(Operator.or) { }
     }
 }

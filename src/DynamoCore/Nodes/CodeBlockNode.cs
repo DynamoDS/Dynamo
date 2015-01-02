@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
+
+using Dynamo.Core;
+using Dynamo.DSEngine;
+
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -25,8 +30,9 @@ namespace Dynamo.Nodes
         private readonly List<Statement> codeStatements = new List<Statement>();
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
-        private List<string> tempVariables = new List<string>();
-        private string previewVariable = null;
+        private readonly List<string> tempVariables = new List<string>();
+        private string previewVariable;
+        private readonly LibraryServices libraryServices;
 
         private bool shouldFocus = true;
         public bool ShouldFocus
@@ -35,38 +41,53 @@ namespace Dynamo.Nodes
             internal set { shouldFocus = value; }
         }
 
-        private readonly DynamoLogger logger;
-
         private struct Formatting
         {
-            public const double InitialMargin = 0;
-            public const string ToolTipForTempVariable = "Statement Output";
+            public const double INITIAL_MARGIN = 0;
+            public const string TOOL_TIP_FOR_TEMP_VARIABLE = "Statement Output";
         }
 
         #region Public Methods
 
-        public CodeBlockNodeModel(WorkspaceModel workspace)
-            : base(workspace)
+        public CodeBlockNodeModel(LibraryServices libraryServices)
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            this.libraryServices = libraryServices;
+            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
         }
 
-        public CodeBlockNodeModel(WorkspaceModel workspace, string userCode)
-            : this(workspace)
+        public CodeBlockNodeModel(string userCode, LibraryServices libraryServices)
+            : this(libraryServices)
         {
             code = userCode;
             ProcessCodeDirect();
         }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workspace, double xPos, double yPos)
-            : base(workspace)
+        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
+            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices) { }
+
+        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            this.X = xPos;
-            this.Y = yPos;
-            this.code = userCode;
-            this.GUID = guid;
-            this.ShouldFocus = false;
+            X = xPos;
+            Y = yPos;
+            this.libraryServices = libraryServices;
+            this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
+            code = userCode;
+            GUID = guid;
+            ShouldFocus = false;
+
+            ProcessCodeDirect();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            libraryServices.LibraryLoaded -= LibraryServicesOnLibraryLoaded;
+        }
+
+        private void LibraryServicesOnLibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs libraryLoadedEventArgs)
+        {
             ProcessCodeDirect();
         }
 
@@ -157,63 +178,45 @@ namespace Dynamo.Nodes
         public string Code
         {
             get { return code; }
+            private set { code = value; }
+        }
 
-            set
+        public void SetCodeContent(string newCode, UndoRedoRecorder recorder)
+        {
+            if (code != null && code.Equals(newCode))
+                return;
+
+            if (newCode == null) 
+                code = null;
+            else
             {
-                if (code == null || !code.Equals(value))
+                string errorMessage = string.Empty;
+                string warningMessage = string.Empty;
+
+                using (recorder.BeginActionGroup())
                 {
-                    if (value != null)
-                    {
-                        string errorMessage = string.Empty;
-                        string warningMessage = string.Empty;
+                    var inportConnections = new OrderedDictionary();
+                    var outportConnections = new OrderedDictionary();
+                    //Save the connectors so that we can recreate them at the correct positions
+                    SaveAndDeleteConnectors(inportConnections, outportConnections, recorder);
+                    
+                    code = newCode;
+                    ProcessCode(ref errorMessage, ref warningMessage);
 
-                        DisableReporting();
-
-                        using (Workspace.UndoRecorder.BeginActionGroup())
-                        {                            
-                            var inportConnections = new OrderedDictionary();
-                            var outportConnections = new OrderedDictionary();
-                            //Save the connectors so that we can recreate them at the correct positions
-                            SaveAndDeleteConnectors(inportConnections, outportConnections);
-
-                            if (string.IsNullOrEmpty(code))
-                            {
-                                Workspace.UndoRecorder.PopFromUndoGroup();
-                                Workspace.UndoRecorder.RecordCreationForUndo(this);
-                            }
-                            else
-                                Workspace.UndoRecorder.RecordModificationForUndo(this);
-                            code = value;
-                            ProcessCode(ref errorMessage, ref warningMessage);
-
-                            //Recreate connectors that can be reused
-                            LoadAndCreateConnectors(inportConnections, outportConnections);
-                        }
-
-                        RaisePropertyChanged("Code");
-                        RequiresRecalc = true;
-                        ReportPosition();
-
-                        if (Workspace != null)
-                        {
-                            Workspace.Modified();
-                        }
-
-                        EnableReporting();
-
-                        ClearRuntimeError();
-                        if (!string.IsNullOrEmpty(errorMessage))
-                        {
-                            Error(errorMessage);
-                        }
-                        else if (!string.IsNullOrEmpty(warningMessage))
-                        {
-                            Warning(warningMessage);
-                        }
-                    }
-                    else
-                        code = null;
+                    //Recreate connectors that can be reused
+                    LoadAndCreateConnectors(inportConnections, outportConnections, recorder);
                 }
+
+                RaisePropertyChanged("Code");
+                ForceReExecuteOfNode = true;
+                OnAstUpdated();
+                ReportPosition();
+
+                ClearRuntimeError();
+                if (!string.IsNullOrEmpty(errorMessage))
+                    Error(errorMessage);
+                else if (!string.IsNullOrEmpty(warningMessage))
+                    Warning(warningMessage);
             }
         }
 
@@ -229,37 +232,30 @@ namespace Dynamo.Nodes
 
         #region Protected Methods
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            base.SaveNode(xmlDoc, nodeElement, context);
-            var helper = new XmlElementHelper(nodeElement);
-            helper.SetAttribute("CodeText", code);
-            helper.SetAttribute("ShouldFocus", shouldFocus);
-        }
+            if (name != "Code") 
+                return base.UpdateValueCore(name, value, recorder);
 
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            base.LoadNode(nodeElement);
-            var helper = new XmlElementHelper(nodeElement as XmlElement);
-            code = helper.ReadString("CodeText");
-            ProcessCodeDirect();
-            shouldFocus = helper.ReadBoolean("ShouldFocus");
-        }
+            //Remove the UpdateValue's recording
+            recorder.PopFromUndoGroup();
 
-        protected override bool UpdateValueCore(string name, string value)
-        {
-            //Empty code blocks are deleted only on Esc key press. The values are stored all the other times.
-            //This is helpful to Undo the deleted values from code block.
-            if (name == "Code")
+            value = CodeBlockUtils.FormatUserText(value);
+
+            //Since an empty Code Block Node should not exist, this checks for such instances.
+            // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
+            // an empty Code Block Node should not be recorded, this method also checks and removes
+            // any unwanted recordings
+            if (value == "")
             {
-                //Remove the UpdateValue's recording
-                this.Workspace.UndoRecorder.PopFromUndoGroup();              
-                value = CodeBlockUtils.FormatUserText(value);
-                if (!value.Equals(this.Code))
-                    Code = value;                               
-                return true;
-            }            
-            return base.UpdateValueCore(name, value);
+                Code = "";
+            }
+            else
+            {
+                if (!value.Equals(Code))
+                    SetCodeContent(value, recorder);
+            }
+            return true;
         }
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -270,22 +266,19 @@ namespace Dynamo.Nodes
             helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context);
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                shouldFocus = helper.ReadBoolean("ShouldFocus");
-                code = helper.ReadString("CodeText");
-                ProcessCodeDirect();
-            }
+            base.DeserializeCore(nodeElement, context);
+            var helper = new XmlElementHelper(nodeElement);
+            shouldFocus = helper.ReadBoolean("ShouldFocus");
+            code = helper.ReadString("CodeText");
+            ProcessCodeDirect();
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             //Do not build if the node is in error.
-            if (this.State == ElementState.Error)
+            if (State == ElementState.Error)
             {
                 return null;
             }
@@ -307,11 +300,10 @@ namespace Dynamo.Nodes
                 resultNodes.AddRange(initStatments);
             }
 
-            foreach (var stmnt in codeStatements)
+            foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
-                var astNode = ProtoCore.Utils.NodeUtils.Clone(stmnt.AstNode);
                 MapIdentifiers(astNode);
-                resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
+                resultNodes.Add(astNode as AssociativeNode);
             }
 
             return resultNodes;
@@ -353,7 +345,7 @@ namespace Dynamo.Nodes
                 return null;
 
             var identNode = binExprNode.LeftNode as IdentifierNode;
-            var mappedIdent = ProtoCore.Utils.NodeUtils.Clone(identNode);
+            var mappedIdent = NodeUtils.Clone(identNode);
             MapIdentifiers(mappedIdent);
             return mappedIdent as IdentifierNode;
         }
@@ -369,13 +361,9 @@ namespace Dynamo.Nodes
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
-            RequiresRecalc = true;
-
-            if (Workspace != null)
-            {
-                Workspace.Modified();
-            }
-
+            ForceReExecuteOfNode = true;
+            OnAstUpdated();
+            
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
@@ -397,8 +385,8 @@ namespace Dynamo.Nodes
 
             try
             {
-                ParseParam parseParam = new ParseParam(this.GUID, code);
-                if (Workspace.DynamoModel.EngineController.TryParseCode(ref parseParam))
+                var parseParam = new ParseParam(GUID, code);
+                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
                     {
@@ -428,11 +416,11 @@ namespace Dynamo.Nodes
                     // To check function redefinition, we need to check other
                     // CBN to find out if it has been defined yet. Now just
                     // skip this warning.
-                    var warnings = parseParam.Warnings.Where((w) =>
-                    {
-                        return w.ID != WarningID.kIdUnboundIdentifier
-                            && w.ID != WarningID.kFunctionAlreadyDefined;
-                    });
+                    var warnings =
+                        parseParam.Warnings.Where(
+                            w =>
+                                w.ID != WarningID.kIdUnboundIdentifier
+                                    && w.ID != WarningID.kFunctionAlreadyDefined);
 
                     if (warnings.Any())
                     {
@@ -459,17 +447,13 @@ namespace Dynamo.Nodes
 
         private void SetPreviewVariable(IEnumerable<Node> parsedNodes)
         {
-            this.previewVariable = null;
+            previewVariable = null;
             if (parsedNodes == null || (!parsedNodes.Any()))
                 return;
 
             IdentifierNode identifierNode = null;
-            foreach (var parsedNode in parsedNodes.Reverse())
+            foreach (var statement in parsedNodes.Reverse().OfType<BinaryExpressionNode>())
             {
-                var statement = parsedNode as BinaryExpressionNode;
-                if (null == statement)
-                    continue;
-
                 identifierNode = statement.LeftNode as IdentifierNode;
                 if (identifierNode != null) // Found the identifier...
                 {
@@ -529,7 +513,7 @@ namespace Dynamo.Nodes
         private void SetInputPorts()
         {
             // Generate input port data list from the unbound identifiers.
-            var inportData = CodeBlockUtils.GenerateInputPortData(this.inputIdentifiers);
+            var inportData = CodeBlockUtils.GenerateInputPortData(inputIdentifiers);
             foreach (var portData in inportData)
                 InPortData.Add(portData);
         }
@@ -558,7 +542,7 @@ namespace Dynamo.Nodes
                 return;
 
             double prevPortBottom = 0.0;
-            var map = CodeBlockUtils.MapLogicalToVisualLineIndices(this.code);
+            var map = CodeBlockUtils.MapLogicalToVisualLineIndices(code);
             foreach (var def in allDefs)
             {
                 // Map the given logical line index to its corresponding visual 
@@ -571,9 +555,9 @@ namespace Dynamo.Nodes
 
                 string tooltip = def.Key;
                 if (tempVariables.Contains(def.Key))
-                    tooltip = Formatting.ToolTipForTempVariable;
+                    tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
 
-                double portCoordsY = Formatting.InitialMargin;
+                double portCoordsY = Formatting.INITIAL_MARGIN;
                 portCoordsY += visualIndex * Configurations.CodeBlockPortHeightInPixels;
 
                 OutPortData.Add(new PortData(string.Empty, tooltip)
@@ -595,21 +579,22 @@ namespace Dynamo.Nodes
         ///     Deletes all the connections and saves their data (the start and end port)
         ///     so that they can be recreated if needed.
         /// </summary>
-        /// <param name="portConnections">A list of connections that will be destroyed</param>
-        private void SaveAndDeleteConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections)
+        /// <param name="inportConnections">A list of connections that will be destroyed</param>
+        /// <param name="outportConnections"></param>
+        /// <param name="recorder"></param>
+        private void SaveAndDeleteConnectors(IDictionary inportConnections, IDictionary outportConnections, UndoRedoRecorder recorder)
         {
             //----------------------------Inputs---------------------------------
-            for (int i = 0; i < InPorts.Count; i++)
+            foreach (var portModel in InPorts)
             {
-                PortModel portModel = InPorts[i];
-                string portName = portModel.ToolTipContent;
+                var portName = portModel.ToolTipContent;
                 if (portModel.Connectors.Count != 0)
                 {
                     inportConnections.Add(portName, new List<PortModel>());
-                    foreach (ConnectorModel connector in portModel.Connectors)
+                    foreach (var connector in portModel.Connectors)
                     {
                         (inportConnections[portName] as List<PortModel>).Add(connector.Start);
-                        Workspace.UndoRecorder.RecordDeletionForUndo(connector);
+                        recorder.RecordDeletionForUndo(connector);
                     }
                 }
                 else
@@ -630,7 +615,7 @@ namespace Dynamo.Nodes
             {
                 PortModel portModel = OutPorts[i];
                 string portName = portModel.ToolTipContent;
-                if (portModel.ToolTipContent.Equals(Formatting.ToolTipForTempVariable))
+                if (portModel.ToolTipContent.Equals(Formatting.TOOL_TIP_FOR_TEMP_VARIABLE))
                     portName += i.ToString(CultureInfo.InvariantCulture);
                 if (portModel.Connectors.Count != 0)
                 {
@@ -638,7 +623,7 @@ namespace Dynamo.Nodes
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
                         (outportConnections[portName] as List<PortModel>).Add(connector.End);
-                        Workspace.UndoRecorder.RecordDeletionForUndo(connector);
+                        recorder.RecordDeletionForUndo(connector);
                     }
                 }
                 else
@@ -658,8 +643,10 @@ namespace Dynamo.Nodes
         ///     Now that the portData has been set for the new ports, we recreate the connections we
         ///     so mercilessly destroyed, restoring peace and balance to the world once again.
         /// </summary>
+        /// <param name="inportConnections"></param>
         /// <param name="outportConnections"> List of the connections that were killed</param>
-        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections)
+        /// <param name="recorder"></param>
+        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections, UndoRedoRecorder recorder)
         {
             //----------------------------Inputs---------------------------------
             /* Input Port connections are matched only if the name is the same */
@@ -674,9 +661,12 @@ namespace Dynamo.Nodes
                         {
                             PortType p;
                             NodeModel startNode = startPortModel.Owner;
-                            ConnectorModel connector = this.Workspace.AddConnection(startNode, this,
-                                startNode.GetPortIndexAndType(startPortModel, out p), i);
-                            this.Workspace.UndoRecorder.RecordCreationForUndo(connector);
+                            var connector = ConnectorModel.Make(
+                                startNode,
+                                this,
+                                startNode.GetPortIndexAndType(startPortModel, out p),
+                                i);
+                            recorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
                     }
@@ -704,9 +694,9 @@ namespace Dynamo.Nodes
                         {
                             PortType p;
                             NodeModel endNode = endPortModel.Owner;
-                            var connector = this.Workspace.AddConnection(this, endNode, i,
-                                endNode.GetPortIndexAndType(endPortModel, out p), PortType.INPUT);
-                            this.Workspace.UndoRecorder.RecordCreationForUndo(connector);
+                            var connector = ConnectorModel.Make(this, endNode, i,
+                                endNode.GetPortIndexAndType(endPortModel, out p));
+                            recorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
                     }
@@ -733,9 +723,9 @@ namespace Dynamo.Nodes
                     {
                         PortType p;
                         NodeModel endNode = endPortModel.Owner;
-                        var connector = this.Workspace.AddConnection(this, endNode, index,
-                            endNode.GetPortIndexAndType(endPortModel, out p), PortType.INPUT);
-                        Workspace.UndoRecorder.RecordCreationForUndo(connector);
+                        var connector = ConnectorModel.Make(this, endNode, index,
+                            endNode.GetPortIndexAndType(endPortModel, out p));
+                        recorder.RecordCreationForUndo(connector);
                     }
                     outportConnections[index] = null;
                     undefinedIndices.Remove(index);
@@ -749,26 +739,23 @@ namespace Dynamo.Nodes
              *   function tries to reuse any existing connections by attaching 
              *   them to any ports that have not already been given connections
              */
-            List<List<PortModel>> unusedConnections = new List<List<PortModel>>();
-            foreach (List<PortModel> portModelList in outportConnections.Values.Cast<List<PortModel>>())
-            {
-                if (portModelList == null)
-                    continue;
-                unusedConnections.Add(portModelList);
-            }
+            List<List<PortModel>> unusedConnections =
+                outportConnections.Values.Cast<List<PortModel>>()
+                    .Where(portModelList => portModelList != null)
+                    .ToList();
+
             while (undefinedIndices.Count > 0 && unusedConnections.Count != 0)
             {
                 foreach (PortModel endPortModel in unusedConnections[0])
                 {
                     PortType p;
                     NodeModel endNode = endPortModel.Owner;
-                    ConnectorModel connector = this.Workspace.AddConnection(
+                    ConnectorModel connector = ConnectorModel.Make(
                         this,
                         endNode,
                         undefinedIndices[0],
-                        endNode.GetPortIndexAndType(endPortModel, out p),
-                        PortType.INPUT);
-                    Workspace.UndoRecorder.RecordCreationForUndo(connector);
+                        endNode.GetPortIndexAndType(endPortModel, out p));
+                    recorder.RecordCreationForUndo(connector);
                 }
                 undefinedIndices.RemoveAt(0);
                 unusedConnections.RemoveAt(0);
@@ -790,7 +777,7 @@ namespace Dynamo.Nodes
                 var ident = identNode.Value;
                 if ((inputIdentifiers.Contains(ident) || definedVars.Contains(ident))
                     && !tempVariables.Contains(ident)
-                    && !identNode.Equals(this.AstIdentifierForPreview))
+                    && !identNode.Equals(AstIdentifierForPreview))
                 {
                     identNode.Name = identNode.Value = LocalizeIdentifier(ident);
                 }
@@ -852,14 +839,11 @@ namespace Dynamo.Nodes
                 MapIdentifiers(node.LeftNode);
                 MapIdentifiers(node.RightNode);
             }
-            else
-            {
-            }
         }
 
         private string LocalizeIdentifier(string identifierName)
         {
-            var guid = this.GUID.ToString().Replace("-", string.Empty);
+            var guid = GUID.ToString().Replace("-", string.Empty);
             return string.Format("{0}_{1}", identifierName, guid);
         }
 
@@ -1063,7 +1047,7 @@ namespace Dynamo.Nodes
             StartLine = parsedNode.line;
             EndLine = parsedNode.endLine;
             CurrentType = GetStatementType(parsedNode);
-            this.AstNode = parsedNode;
+            AstNode = parsedNode;
 
             if (parsedNode is BinaryExpressionNode)
             {
