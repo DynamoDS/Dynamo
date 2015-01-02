@@ -59,6 +59,11 @@ namespace Dynamo.ViewModels
             get { return model; }
         }
 
+        public PreferenceSettings PreferenceSettings
+        {
+            get { return Model.PreferenceSettings; }
+        }
+
         public System.Windows.Point TransformOrigin
         {
             get { return transformOrigin; }

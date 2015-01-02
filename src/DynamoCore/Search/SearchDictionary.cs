@@ -1,4 +1,5 @@
-﻿using Dynamo.Utilities;
+﻿using System.Diagnostics;
+using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -258,10 +259,10 @@ namespace Dynamo.Search
         {
             var searchDict = new Dictionary<V, double>();
 
-            var _tagDictionary = entryDictionary.AsParallel()
+            var _tagDictionary = entryDictionary
                 .SelectMany(
                     entryAndTags =>
-                        entryAndTags.Value.AsParallel().Select(
+                        entryAndTags.Value.Select(
                             tagAndWeight =>
                                 new
                                 {
