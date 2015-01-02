@@ -39,6 +39,11 @@ namespace DynamoWebServer
             return webSocketServer.GetAppSessionByID(sessionId);
         }
 
+        public int GetSessionCount()
+        {
+            return webSocketServer.SessionCount;
+        }
+
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
             if (NewSessionConnected != null)
