@@ -587,14 +587,14 @@ namespace Dynamo.ViewModels
 
         private void SubscribeDispatcherHandlers()
         {
-            this.Model.RequestDispatcherBeginInvoke += TryDispatcherBeginInvoke;
-            this.Model.RequestDispatcherInvoke += TryDispatcherInvoke;
+            DynamoModel.RequestDispatcherBeginInvoke += TryDispatcherBeginInvoke;
+            DynamoModel.RequestDispatcherInvoke += TryDispatcherInvoke;
         }
 
         private void UnsubscribeDispatcherEvents()
         {
-            this.Model.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
-            this.Model.RequestDispatcherInvoke -= TryDispatcherInvoke;
+            DynamoModel.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
+            DynamoModel.RequestDispatcherInvoke -= TryDispatcherInvoke;
         }
 
         #endregion
