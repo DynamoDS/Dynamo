@@ -36,7 +36,7 @@ namespace Dynamo
         public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 
-        public int LeftSidebarWidth { get; set; }
+        public int LibraryWidth { get; set; }
         public int ConsoleHeight { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
@@ -128,7 +128,7 @@ namespace Dynamo
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;
-            LeftSidebarWidth = 304;
+            LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;

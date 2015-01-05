@@ -273,16 +273,16 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int LeftSidebarWidth
+        public int LibraryWidth
         {
             get
             {
-                return model.PreferenceSettings.LeftSidebarWidth;
+                return model.PreferenceSettings.LibraryWidth;
             }
             set
             {
-                model.PreferenceSettings.LeftSidebarWidth = value;
-                RaisePropertyChanged("LeftSidebarWidth");
+                model.PreferenceSettings.LibraryWidth = value;
+                RaisePropertyChanged("LibraryWidth");
             }
         }
 

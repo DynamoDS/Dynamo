@@ -177,7 +177,7 @@
                               MinWidth="204"
                               Name="LibraryViewColumn">
                 <ColumnDefinition.Width>
-                    <Binding Path="LeftSidebarWidth"
+                    <Binding Path="LibraryWidth"
                              Mode="TwoWay"
                              Converter="{StaticResource ConsoleHeightConverter}" />
                 </ColumnDefinition.Width>
