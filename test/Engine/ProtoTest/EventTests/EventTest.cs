@@ -10,6 +10,8 @@ using ProtoCore.Lang;
 using ProtoFFI;
 using ProtoScript.Runners;
 using ProtoTestFx.TD;
+using Category = NUnit.Framework.CategoryAttribute;
+
 namespace ProtoTest.EventTests
 {
     public class Foo : INotifyPropertyChanged
@@ -196,6 +198,7 @@ namespace ProtoTest.EventTests
         }
 
         [Test]
+        [Category("Failure")]
         public void RunDSPropertyChangedTest()
         {
             string code =
