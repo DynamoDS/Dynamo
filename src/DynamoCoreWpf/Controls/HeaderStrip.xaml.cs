@@ -23,18 +23,18 @@ namespace Dynamo.UI.Controls
 
         #region Properties
 
-        public IEnumerable<HeaderStripItem> HeadersList
+        public IEnumerable<HeaderStripItem> HeaderStripItems
         {
             get
             {
-                return (IEnumerable<HeaderStripItem>)GetValue(HeadersListProperty);
+                return (IEnumerable<HeaderStripItem>)GetValue(HeaderStripItemsProperty);
             }
             set
             {
                 if (value == null)
                     return;
 
-                SetValue(HeadersListProperty, value);
+                SetValue(HeaderStripItemsProperty, value);
                 SelectedItem = value.FirstOrDefault();
             }
         }
@@ -49,7 +49,7 @@ namespace Dynamo.UI.Controls
 
         #region Dependency properties
 
-        public static readonly DependencyProperty HeadersListProperty =
+        public static readonly DependencyProperty HeaderStripItemsProperty =
             DependencyProperty.Register("HeadersList", typeof(IEnumerable<HeaderStripItem>),
               typeof(HeaderStrip), new PropertyMetadata(null));
 
@@ -61,11 +61,6 @@ namespace Dynamo.UI.Controls
 
         public HeaderStrip()
         {
-            //HeaderStripItem item1 = new HeaderStripItem() { Index = 12, Text = "CRE_A_TE1" };
-            //HeaderStripItem item2 = new HeaderStripItem() { Index = 12, Text = "CRE_A_TE2" };
-            //HeadersList = new List<HeaderStripItem> { item1, item2 };
-            //SelectedItem = HeadersList.First();
-
             InitializeComponent();
 
             this.DataContext = this;
@@ -80,6 +75,11 @@ namespace Dynamo.UI.Controls
                 OnHeaderActivated(sender, e);
             }
         }
+    }
+
+    public class HeaderStripItem
+    {
+        public string Text { get; set; }
     }
 }
 

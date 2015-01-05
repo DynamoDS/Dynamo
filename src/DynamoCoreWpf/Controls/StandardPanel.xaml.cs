@@ -100,8 +100,8 @@ namespace Dynamo.UI.Controls
             bool hasActionMembers = castedDataContext.ActionMembers.Any();
             bool hasQueryMembers = castedDataContext.QueryMembers.Any();
 
-            primaryHeaderStrip.HeadersList = castedDataContext.PrimaryHeaderStrip;
-            secondaryHeaderStrip.HeadersList = castedDataContext.SecondaryHeaderStrip;
+            primaryHeaderStrip.HeaderStripItems = castedDataContext.PrimaryHeaderItems;
+            secondaryHeaderStrip.HeaderStripItems = castedDataContext.SecondaryHeaderItems;
 
             castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.None;
 

@@ -40,8 +40,8 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public List<HeaderStripItem> PrimaryHeaderStrip { get; private set; }
-        public List<HeaderStripItem> SecondaryHeaderStrip { get; private set; }
+        public List<HeaderStripItem> PrimaryHeaderItems { get; private set; }
+        public List<HeaderStripItem> SecondaryHeaderItems { get; private set; }
 
         public enum DisplayMode { None, Query, Action };
 
@@ -68,7 +68,7 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                return SecondaryHeaderStrip.Any();
+                return SecondaryHeaderItems.Any();
             }
         }
 
@@ -116,8 +116,8 @@ namespace Dynamo.Wpf.ViewModels
             createMembers = new List<BrowserInternalElement>();
             actionMembers = new List<BrowserInternalElement>();
             queryMembers = new List<BrowserInternalElement>();
-            PrimaryHeaderStrip = new List<HeaderStripItem>();
-            SecondaryHeaderStrip = new List<HeaderStripItem>();
+            PrimaryHeaderItems = new List<HeaderStripItem>();
+            SecondaryHeaderItems = new List<HeaderStripItem>();
         }
 
         public void PopulateMemberCollections(BrowserItem element)
@@ -125,12 +125,12 @@ namespace Dynamo.Wpf.ViewModels
             createMembers.Clear();
             actionMembers.Clear();
             queryMembers.Clear();
-            PrimaryHeaderStrip.Clear();
-            SecondaryHeaderStrip.Clear();
+            PrimaryHeaderItems.Clear();
+            SecondaryHeaderItems.Clear();
 
             foreach (var subElement in element.Items)
             {
-                var nodeSearchEle = subElement as NodeSearchElement;                
+                var nodeSearchEle = subElement as NodeSearchElement;
                 switch (nodeSearchEle.Group)
                 {
                     case SearchElementGroup.Create:
@@ -158,7 +158,7 @@ namespace Dynamo.Wpf.ViewModels
                 if (string.IsNullOrEmpty(headerStripText))
                     headerStripText = Configurations.HeaderAction;
                 else
-                    SecondaryHeaderStrip.Add(new HeaderStripItem() { Text = Configurations.HeaderAction });
+                    SecondaryHeaderItems.Add(new HeaderStripItem() { Text = Configurations.HeaderAction });
             }
 
             if (queryMembers.Any())
@@ -166,10 +166,10 @@ namespace Dynamo.Wpf.ViewModels
                 if (string.IsNullOrEmpty(headerStripText))
                     headerStripText = Configurations.HeaderQuery;
                 else
-                    SecondaryHeaderStrip.Add(new HeaderStripItem() { Text = Configurations.HeaderQuery });
+                    SecondaryHeaderItems.Add(new HeaderStripItem() { Text = Configurations.HeaderQuery });
             }
 
-            PrimaryHeaderStrip.Add(new HeaderStripItem() { Text = headerStripText });
+            PrimaryHeaderItems.Add(new HeaderStripItem() { Text = headerStripText });
         }
     }
 }
