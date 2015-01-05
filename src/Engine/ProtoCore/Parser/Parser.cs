@@ -4187,7 +4187,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		} else if (la.kind == 3) {
 			Get();
 			double value;
-			if (Double.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+			if (Double.TryParse(t.val, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
 			   node = new ProtoCore.AST.ImperativeAST.DoubleNode(value * sign);
 			}
