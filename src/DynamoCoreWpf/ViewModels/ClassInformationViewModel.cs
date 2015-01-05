@@ -147,6 +147,7 @@ namespace Dynamo.Wpf.ViewModels
                 }
             }
 
+            // Populate headers collections.
             string headerStripText = string.Empty;
             if (createMembers.Any())
             {
@@ -155,6 +156,8 @@ namespace Dynamo.Wpf.ViewModels
 
             if (actionMembers.Any())
             {
+                // As soon as primary headers collection is defined, 
+                // add item to secondary headers collection.
                 if (string.IsNullOrEmpty(headerStripText))
                     headerStripText = Configurations.HeaderAction;
                 else
@@ -163,6 +166,8 @@ namespace Dynamo.Wpf.ViewModels
 
             if (queryMembers.Any())
             {
+                // As soon as primary headers collection is defined, 
+                // add item to secondary headers collection.
                 if (string.IsNullOrEmpty(headerStripText))
                     headerStripText = Configurations.HeaderQuery;
                 else

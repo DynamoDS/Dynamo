@@ -8,7 +8,7 @@ namespace Dynamo.Controls
 {
     public class HeaderTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate OneHeaderTemplate { get; set; }
+        public DataTemplate SingleHeaderTemplate { get; set; }
         public DataTemplate HeadersListTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
@@ -17,7 +17,7 @@ namespace Dynamo.Controls
                 return null;
 
             if ((item as IEnumerable<HeaderStripItem>).Count() == 1)
-                return OneHeaderTemplate;
+                return SingleHeaderTemplate;
             else
                 return HeadersListTemplate;
         }

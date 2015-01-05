@@ -60,7 +60,7 @@
             </Setter>
         </Style>
 
-        <DataTemplate x:Key="OneHeaderTemplate">
+        <DataTemplate x:Key="SingleItemListTemplate">
             <Border x:Name="container"
                     Padding="8,3,8,3"
                     Background="#393939">
@@ -106,7 +106,7 @@
         </DataTemplate>
 
         <controls:HeaderTemplateSelector x:Key="HeaderTemplateSelector"
-                                         OneHeaderTemplate="{StaticResource OneHeaderTemplate}"
+                                         SingleHeaderTemplate="{StaticResource SingleItemListTemplate}"
                                          HeadersListTemplate="{StaticResource HeadersListTemplate}" />
     </UserControl.Resources>
     <ContentControl Content="{Binding HeadersList}"
