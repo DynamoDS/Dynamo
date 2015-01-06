@@ -7,12 +7,6 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using DynamoUtilities;
-<<<<<<< HEAD
-=======
-using Dynamo.Search;
-using Dynamo.DSEngine;
-using System.Text;
->>>>>>> Sitrus2
 
 namespace Dynamo.Utilities
 {
@@ -191,13 +185,9 @@ namespace Dynamo.Utilities
         ///     to the console.
         /// </summary>
         /// <Returns>The list of node types loaded from this assembly</Returns>
-<<<<<<< HEAD
         public void LoadNodesFromAssembly(
             Assembly assembly, string context, List<TypeLoadData> nodeModels,
             List<TypeLoadData> migrationTypes)
-=======
-        public List<Type> LoadNodesFromAssembly(Assembly assembly, SearchModel.ElementType nodesType = SearchModel.ElementType.Regular)
->>>>>>> Sitrus2
         {
             if (assembly == null)
                 throw new ArgumentNullException("assembly");
@@ -241,33 +231,6 @@ namespace Dynamo.Utilities
                         {
                             nodeModels.Add(new TypeLoadData(t));
                         }
-<<<<<<< HEAD
-=======
-
-                        string typeName;
-
-                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
-                        {
-                            searchViewModel.Add(t, nodesType);
-                            typeName = (attribs[0] as NodeNameAttribute).Name;
-                        }
-                        else
-                            typeName = t.Name;
-
-                        AssemblyPathToTypesLoaded[assembly.Location].Add(t);
-
-                        if (!dynamoModel.BuiltInTypesByNickname.ContainsKey(typeName))
-                            dynamoModel.BuiltInTypesByNickname.Add(typeName, data);
-                        else
-                            dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
-
-                        if (!dynamoModel.BuiltInTypesByName.ContainsKey(t.FullName))
-                            dynamoModel.BuiltInTypesByName.Add(t.FullName, data);
-                        else
-                            dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
-
-                        
->>>>>>> Sitrus2
                     }
 
                     if (IsMigration(t))
@@ -282,64 +245,6 @@ namespace Dynamo.Utilities
                     Log(e);
                 }
             }
-<<<<<<< HEAD
-=======
-
-            
-
-            return AssemblyPathToTypesLoaded[assembly.Location];
-        }
-
-        /// <summary>
-        ///     Load Custom Nodes from the default directory - the "definitions"
-        ///     directory where the executing assembly is located..
-        /// </summary>
-        public IEnumerable<CustomNodeInfo> LoadCustomNodes()
-        {
-            var customNodeLoader = dynamoModel.CustomNodeManager;
-            var searchModel = dynamoModel.SearchModel;
-            var loadedNodes = customNodeLoader.UpdateSearchPath();
-
-            // add nodes to search
-            loadedNodes.ForEach(x => searchModel.Add(x));
-
-            // update search view
-            searchModel.OnRequestSync();
-
-            return loadedNodes;
-        }
-
-        /// <summary>
-        ///     Load Custom Nodes from the CustomNodeLoader search path and update search
-        /// </summary>
-        public List<CustomNodeInfo> LoadCustomNodes(string path, SearchModel.ElementType elementType)
-        {
-            if (!Directory.Exists(path))
-                return new List<CustomNodeInfo>();
-
-            var customNodeLoader = dynamoModel.CustomNodeManager;
-            var searchModel = dynamoModel.SearchModel;
-
-            var loadedNodes = customNodeLoader.ScanNodeHeadersInDirectory(path).ToList();
-            
-            // add nodes to search
-            loadedNodes.ForEach(x =>
-            {
-                x.ElementType = elementType;
-                searchModel.Add(x);
-            });
-
-            // update search view
-            searchModel.OnRequestSync();
-
-            return loadedNodes;
-        }
-
-        internal void ClearCachedAssemblies()
-        {
-            LoadedAssemblyNames = new HashSet<string>();
-            AssemblyPathToTypesLoaded = new Dictionary<string, List<Type>>();
->>>>>>> Sitrus2
         }
 
         #endregion

@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+
 using Dynamo.Interfaces;
 using Dynamo.Library;
-<<<<<<< HEAD
 using Dynamo.Utilities;
-=======
-using Dynamo.Search;
->>>>>>> Sitrus2
 using DynamoUtilities;
+
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoFFI;
+
 using Operator = ProtoCore.DSASM.Operator;
 
 namespace Dynamo.DSEngine
@@ -24,11 +23,7 @@ namespace Dynamo.DSEngine
     ///     LibraryServices is a singleton class which manages builtin libraries
     ///     as well as imported libraries. It is across different sessions.
     /// </summary>
-<<<<<<< HEAD
     public class LibraryServices : LogSourceBase, IDisposable
-=======
-    public class LibraryServices : IDisposable
->>>>>>> Sitrus2
     {
         private readonly Dictionary<string, FunctionGroup> builtinFunctionGroups =
             new Dictionary<string, FunctionGroup>();
@@ -36,12 +31,7 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-<<<<<<< HEAD
         private readonly List<string> importedLibraries = new List<string>();
-=======
-        private readonly Dictionary<string, SearchModel.ElementType> importedLibraries =
-            new Dictionary<string, SearchModel.ElementType>();
->>>>>>> Sitrus2
 
         public readonly ProtoCore.Core LibraryManagementCore;
 
@@ -70,7 +60,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         public IEnumerable<string> ImportedLibraries
         {
-            get { return importedLibraries.Keys; }
+            get { return importedLibraries; }
         }
 
         /// <summary>
@@ -96,18 +86,10 @@ namespace Dynamo.DSEngine
 
         private void PreloadLibraries()
         {
-<<<<<<< HEAD
             importedLibraries.AddRange(DynamoPathManager.Instance.PreloadLibraries);
 
             foreach (var library in importedLibraries)
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
-=======
-            foreach (var library in DynamoPathManager.Instance.PreloadLibraries)
-            {
-                importedLibraries.Add(library, SearchModel.ElementType.Regular);
-                CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library);
-            }
->>>>>>> Sitrus2
         }
 
         public string NicknameFromFunctionSignatureHint(string functionSignature)
@@ -161,20 +143,7 @@ namespace Dynamo.DSEngine
 
             Dictionary<string, FunctionGroup> functionGroups;
             if (importedFunctionGroups.TryGetValue(library, out functionGroups))
-            {
-                if (importedLibraries[library] == SearchModel.ElementType.CustomDll)
-                {
-                    var modifiedFGroups = functionGroups.Values.ToList();
-                    for (int i = 0; i < modifiedFGroups.Count; i++)
-                        modifiedFGroups[i].ElementType = SearchModel.ElementType.CustomDll;
-
-                    return modifiedFGroups;
-                }
-                else
-                {
-                    return functionGroups.Values;
-                }
-            }
+                return functionGroups.Values;
 
             // Return an empty list instead of 'null' as some of the caller may
             // not have the opportunity to check against 'null' enumerator (for
@@ -276,12 +245,7 @@ namespace Dynamo.DSEngine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library"></param>
-<<<<<<< HEAD
         public bool ImportLibrary(string library)
-=======
-        public void ImportLibrary(string library, ILogger logger,
-            SearchModel.ElementType elementType = SearchModel.ElementType.CustomDll)
->>>>>>> Sitrus2
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -354,12 +318,8 @@ namespace Dynamo.DSEngine
                 return false;
             }
 
-<<<<<<< HEAD
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
             return true;
-=======
-            OnLibraryLoaded(new LibraryLoadedEventArgs(library, elementType));
->>>>>>> Sitrus2
         }
 
         private void ParseLibraryMigrations(string library)
@@ -688,7 +648,7 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            importedLibraries.Add(e.LibraryPath, e.ElementType);
+            importedLibraries.Add(e.LibraryPath);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
@@ -718,14 +678,12 @@ namespace Dynamo.DSEngine
 
         public class LibraryLoadedEventArgs : EventArgs
         {
-            public LibraryLoadedEventArgs(string libraryPath, SearchModel.ElementType elementType)
+            public LibraryLoadedEventArgs(string libraryPath)
             {
                 LibraryPath = libraryPath;
-                ElementType = elementType;
             }
 
             public string LibraryPath { get; private set; }
-            public SearchModel.ElementType ElementType { get; private set; }
         }
 
         public class LibraryLoadingEventArgs : EventArgs

@@ -749,19 +749,8 @@ namespace Dynamo.Models
                 DebugSettings.VerboseLogging);
             EngineController.MessageLogged += LogMessage;
 
-<<<<<<< HEAD
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
-=======
-            this.SearchModel.RemoveEmptyCategories();
-            this.SearchModel.SortRootCategories();
-            this.SearchModel.SortCategoryChildren();
-
-            // Expand "Geometry" by default.
-            this.SearchModel.ChangeCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
-
-            Logger.Log("Welcome to Dynamo!");
->>>>>>> Sitrus2
         }
 
         /// <summary>

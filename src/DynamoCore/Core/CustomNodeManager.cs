@@ -7,17 +7,6 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-<<<<<<< HEAD
-=======
-using System.IO;
-
-using DynamoUtilities;
-
-using Enum = System.Enum;
-using Utils = Dynamo.Nodes.Utilities;
-using Dynamo.DSEngine;
-using Dynamo.Search;
->>>>>>> Sitrus2
 
 namespace Dynamo.Utilities
 {
@@ -28,7 +17,6 @@ namespace Dynamo.Utilities
     /// </summary>
     public class CustomNodeManager : LogSourceBase, ICustomNodeSource
     {
-<<<<<<< HEAD
         public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager)
         {
             this.nodeFactory = nodeFactory;
@@ -36,26 +24,6 @@ namespace Dynamo.Utilities
         }
 
         #region Fields and properties
-=======
-        public CustomNodeInfo(Guid guid, string name, string category, string description, string path, 
-            SearchModel.ElementType elementType = SearchModel.ElementType.CustomNode)
-        {
-            Guid = guid;
-            Name = name;
-            Category = category;
-            Description = description;
-            Path = path;
-            ElementType = elementType;
-        }
-
-        public Guid Guid { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public string Path { get; set; }
-        public SearchModel.ElementType ElementType { get; set; }
-    }
->>>>>>> Sitrus2
 
         private readonly OrderedSet<Guid> loadOrder = new OrderedSet<Guid>();
 
