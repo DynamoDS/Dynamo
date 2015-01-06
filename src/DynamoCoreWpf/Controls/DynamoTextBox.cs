@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-<<<<<<< HEAD
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-=======
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
-
->>>>>>> Sitrus2
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -22,12 +14,9 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
-<<<<<<< HEAD
 using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Thickness = System.Windows.Thickness;
-=======
->>>>>>> Sitrus2
 
 namespace Dynamo.Nodes
 {
@@ -237,7 +226,7 @@ namespace Dynamo.Nodes
 
                 if (OnChangeCommitted != null)
                     OnChangeCommitted();
-
+                
                 Pending = false;
             }
         }
@@ -307,91 +296,6 @@ namespace Dynamo.Nodes
         #endregion
     }
 
-    public class CodeNodeTextBox : DynamoTextBox
-    {
-
-        bool shift, enter;
-        public CodeNodeTextBox(string s)
-            : base(s)
-        {
-            shift = enter = false;
-
-            //Remove the select all when focused feature
-            RemoveHandler(GotKeyboardFocusEvent, focusHandler);
-
-            //Allow for event processing after textbook has been focused to
-            //help set the Caret position
-            selectAllWhenFocused = false;
-
-            //Set style for Watermark
-            this.SetResourceReference(TextBox.StyleProperty, "CodeBlockNodeTextBox");
-            this.Tag = "Your code goes here";
-        }
-
-
-        /// <summary>
-        /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
-        /// and sets them when pressed/released
-        /// </summary>
-        #region Key Press Event Handlers
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
-            {
-                shift = true;
-            }
-            else if (e.Key == Key.Enter || e.Key == Key.Return)
-            {
-                enter = true;
-            }
-            else if (e.Key == Key.Escape)
-            {
-                HandleEscape();
-            }
-            if (shift == true && enter == true)
-            {
-                OnRequestReturnFocusToSearch();
-                shift = enter = false;
-            }
-        }
-        protected override void OnPreviewKeyUp(KeyEventArgs e)
-        {
-            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
-            {
-                shift = false;
-            }
-            else if (e.Key == Key.Enter || e.Key == Key.Return)
-            {
-                enter = false;
-            }
-        }
-        #endregion
-
-        protected override void OnTextChanged(TextChangedEventArgs e)
-        {
-            e.Handled = true; //hide base
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override void OnLostFocus(RoutedEventArgs e)
-        {
-            Pending = true;
-            base.OnLostFocus(e);
-        }
-
-        private void HandleEscape()
-        {
-            var text = this.Text;
-            var cb = DataContext as CodeBlockNodeModel;
-
-            if (cb == null || cb.Code != null && text.Equals(cb.Code))
-                OnRequestReturnFocusToSearch();
-            else
-                (this as TextBox).Text = (DataContext as CodeBlockNodeModel).Code;
-        }
-    }
 }
 
 namespace Dynamo.UI.Controls

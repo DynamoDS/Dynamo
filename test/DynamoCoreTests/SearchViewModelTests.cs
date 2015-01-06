@@ -1,11 +1,6 @@
 ﻿using System;
 using Dynamo.Search;
-<<<<<<< HEAD
 using Dynamo.Search.SearchElements;
-=======
-using Dynamo.UI;
-using Dynamo.Utilities;
->>>>>>> Sitrus2
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
@@ -52,8 +47,6 @@ namespace Dynamo.Tests
             viewModel.PopulateSearchTextWithSelectedResult();
             Assert.AreEqual("dog", viewModel.SearchText);
         }
-<<<<<<< HEAD
-=======
 
         [Test]
         [Category("UnitTests")]
@@ -90,6 +83,5 @@ namespace Dynamo.Tests
                            " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
                            " MoreSymbols", result);
         }
->>>>>>> Sitrus2
     }
 }

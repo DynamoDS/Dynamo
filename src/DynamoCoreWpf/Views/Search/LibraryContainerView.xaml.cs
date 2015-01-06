@@ -236,7 +236,6 @@ namespace Dynamo.Search
             viewModel.SearchCommand.Execute(null);
         }
 
-<<<<<<< HEAD:src/DynamoCoreWpf/Views/Search/LibraryContainerView.xaml.cs
         // Not used anywhere.
         public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -258,9 +257,6 @@ namespace Dynamo.Search
         }
 
         private void OnTreeViewScrollViewerPreviewMouseWheel(object sender, MouseWheelEventArgs e)
-=======
-        private void OnTreeViewScrollViewerPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
->>>>>>> Sitrus2:src/DynamoCoreWpf/Views/LibraryContainerView.xaml.cs
         {
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
@@ -292,13 +288,8 @@ namespace Dynamo.Search
             BitmapImage bmi = new BitmapImage(collapsestateSource);
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
             collapsestate.Source = new BitmapImage(collapsestateSource);
-<<<<<<< HEAD:src/DynamoCoreWpf/Views/Search/LibraryContainerView.xaml.cs
             
             Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
-=======
-
-            this.Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
->>>>>>> Sitrus2:src/DynamoCoreWpf/Views/LibraryContainerView.xaml.cs
         }
 
         private void OnLibraryExpanderMouseLeave(object sender, MouseEventArgs e)
@@ -311,13 +302,8 @@ namespace Dynamo.Search
             Image collapsestate = (Image)(b).Content;
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
-<<<<<<< HEAD:src/DynamoCoreWpf/Views/Search/LibraryContainerView.xaml.cs
             
             Cursor = null;
-=======
-
-            this.Cursor = null;
->>>>>>> Sitrus2:src/DynamoCoreWpf/Views/LibraryContainerView.xaml.cs
         }
 
         private void OnSearchTextBoxGridMouseEnter(object sender, MouseEventArgs e)

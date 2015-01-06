@@ -9,7 +9,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-<<<<<<< HEAD
 
 using Dynamo.UI;
 using Dynamo.Models;
@@ -23,11 +22,6 @@ using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 
 using Dynamo.UI.Controls;
-=======
-using Dynamo.Models;
-using Dynamo.PackageManager;
-using Dynamo.Search;
->>>>>>> Sitrus2
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
@@ -775,11 +769,9 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-<<<<<<< HEAD
             if (value is NodeSearchElementViewModel)
-=======
-            if (value is NodeSearchElement || value is NodeSearchElementViewModel)
->>>>>>> Sitrus2
+			// TODO(Vladimir): Check if bug returns. Earlier line was:
+            //if (value is NodeSearchElement || value is NodeSearchElementViewModel)
                 return true;
 
             return false;
