@@ -273,6 +273,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public int LibraryWidth
+        {
+            get
+            {
+                return model.PreferenceSettings.LibraryWidth;
+            }
+            set
+            {
+                model.PreferenceSettings.LibraryWidth = value;
+                RaisePropertyChanged("LibraryWidth");
+            }
+        }
+
         public bool IsShowingConnectors
         {
             get
