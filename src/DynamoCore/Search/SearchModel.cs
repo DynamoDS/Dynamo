@@ -17,6 +17,7 @@ using System.Collections.Specialized;
 
 namespace Dynamo.Search
 {
+#if false
     public class SearchModel : NotificationObject
     {
         #region Events
@@ -754,4 +755,5 @@ namespace Dynamo.Search
             return category.Substring(0, index);
         }
     }
+#endif
 }

@@ -6,6 +6,7 @@ using Dynamo.UI;
 
 namespace Dynamo.Search
 {
+#if false
     public class SearchCategory
     {
         private readonly ObservableCollection<BrowserItem> classes;
@@ -95,4 +96,5 @@ namespace Dynamo.Search
             MemberGroups.ToList().ForEach(x => x.Sort());
         }
     }
+#endif
 }

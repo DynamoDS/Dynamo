@@ -200,14 +200,13 @@
     <Compile Include="Views\Search\LibraryContainerView.xaml.cs">
       <DependentUpon>LibraryContainerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Core\NodeView.xaml.cs">
     <Compile Include="Views\LibrarySearchView.xaml.cs">
       <DependentUpon>LibrarySearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\NodeView.xaml.cs">
+    <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\NoteView.xaml.cs">
@@ -221,12 +220,11 @@
     </Compile>
     <Compile Include="Views\PackageManager\PublishPackageView.xaml.cs">
       <DependentUpon>PublishPackageView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Preview\Watch3DView.xaml.cs">
+    </Compile>    
     <Compile Include="Controls\TooltipWindow.xaml.cs">
       <DependentUpon>TooltipWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Watch3DView.xaml.cs">
+    <Compile Include="Views\Preview\Watch3DView.xaml.cs">
       <DependentUpon>Watch3DView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\WatchTree.xaml.cs">
@@ -932,8 +930,7 @@
     <Page Include="Views\Search\LibraryContainerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Core\NodeView.xaml">
+    </Page>    
     <Page Include="Views\LibrarySearchView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -942,7 +939,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\NodeView.xaml">
+    <Page Include="Views\Core\NodeView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
@@ -968,13 +965,12 @@
     <Page Include="Views\PackageManager\PublishPackageView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Preview\Watch3DView.xaml">
+    </Page>    
     <Page Include="Controls\TooltipWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Watch3DView.xaml">
+    <Page Include="Views\Preview\Watch3DView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

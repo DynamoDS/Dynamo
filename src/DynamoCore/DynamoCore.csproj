@@ -85,11 +85,6 @@ limitations under the License.
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
@@ -137,8 +132,7 @@ limitations under the License.
     <Compile Include="Search\Legacy\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
-    <Compile Include="Search\BrowserInternalElementForClasses.cs" />
-    <Compile Include="Search\BrowserRootElement.cs" />
+    <Compile Include="Search\Legacy\BrowserInternalElementForClasses.cs" />
     <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Disposable.cs" />
@@ -189,10 +183,9 @@ limitations under the License.
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
     <Compile Include="Search\Legacy\BrowserItem.cs" />
-    <Compile Include="Search\CategoryBuilder.cs" />
+    <Compile Include="Search\Legacy\CategoryBuilder.cs" />
     <Compile Include="Search\SearchCategory.cs" />
     <Compile Include="Search\SearchMemberGroup.cs" />
-    <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />

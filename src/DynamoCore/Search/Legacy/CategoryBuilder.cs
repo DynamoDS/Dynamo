@@ -6,6 +6,7 @@ using Dynamo.UI;
 
 namespace Dynamo.Search
 {
+#if false
     class CategoryBuilder
     {
         private ObservableCollection<BrowserRootElement> rootCategories;
@@ -415,4 +416,5 @@ namespace Dynamo.Search
             }
         }
     }
+#endif
 }

@@ -6,6 +6,7 @@ using Dynamo.UI;
 
 namespace Dynamo.Search
 {
+#if false
     public class SearchMemberGroup : NotificationObject
     {
         private List<BrowserInternalElement> members;
@@ -92,4 +93,5 @@ namespace Dynamo.Search
             members = members.OrderBy(x => x.Name).ToList();
         }
     }
+#endif
 }
