@@ -16,7 +16,7 @@ namespace Dynamo.Nodes
     [NodeName(/*NXLT*/"Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription(/*NXLT*/"WatchDescription", typeof(Resources))]
-    [NodeSearchTags("WatchSearchTags", typeof(Resources))]
+    [NodeSearchTags(/*NXLT*/"WatchSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Watch : NodeModel
     {
@@ -168,8 +168,8 @@ namespace Dynamo.Nodes
                         AstFactory.BuildFunctionObject(
                             new IdentifierListNode
                             {
-                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
-                                RightNode = AstFactory.BuildIdentifier("BridgeData")
+                                LeftNode = AstFactory.BuildIdentifier(/*NXLT*/"DataBridge"),
+                                RightNode = AstFactory.BuildIdentifier(/*NXLT*/"BridgeData")
                             },
                             2,
                             new[] { 0 },
@@ -184,7 +184,7 @@ namespace Dynamo.Nodes
             var resultAst = new[]
             {
                 AstFactory.BuildAssignment(
-                    AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
+                    AstFactory.BuildIdentifier(AstIdentifierBase + /*NXLT*/"_dummy"),
                     DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };

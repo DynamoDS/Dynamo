@@ -7,7 +7,7 @@ namespace Dynamo.Nodes
 {
     public class ModelText : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             #region Migration Setup Steps
@@ -41,10 +41,10 @@ namespace Dynamo.Nodes
             #region Create New Nodes...
 
             XmlElement dsModelText = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsModelText, "RevitNodes.dll", 
-                "ModelText.ByTextSketchPlaneAndPosition", 
-                "ModelText.ByTextSketchPlaneAndPosition@" + 
-                "string,SketchPlane,double,double,double,ModelTextType");
+            MigrationManager.SetFunctionSignature(dsModelText,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"ModelText.ByTextSketchPlaneAndPosition",
+                /*NXLT*/"ModelText.ByTextSketchPlaneAndPosition@" +
+                /*NXLT*/"string,SketchPlane,double,double,double,ModelTextType");
 
             migratedData.AppendNode(dsModelText);
             string dsModelTextId = MigrationManager.GetGuidFromXmlElement(dsModelText);
@@ -53,8 +53,8 @@ namespace Dynamo.Nodes
             // a "Vector" (normal). This new node will convert both the "position" 
             // and "normal" to a "Plane".
             XmlElement plane = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, "ProtoGeometry.dll", "Plane.ByOriginNormal",
-                "Plane.ByOriginNormal@Point,Vector");
+                data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"Plane.ByOriginNormal",
+                /*NXLT*/"Plane.ByOriginNormal@Point,Vector");
 
             migratedData.AppendNode(plane);
             string planeId = MigrationManager.GetGuidFromXmlElement(plane);
@@ -62,8 +62,8 @@ namespace Dynamo.Nodes
             // Create a "SketchPlane.ByPlane" node which converts a "Plane" 
             // into a "SketchPlane".
             XmlElement dsSketchPlane = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "RevitNodes.dll",
-                "SketchPlane.ByPlane", "SketchPlane.ByPlane@Plane");
+                data.Document, oldNode, 1,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"SketchPlane.ByPlane", /*NXLT*/"SketchPlane.ByPlane@Plane");
 
             migratedData.AppendNode(dsSketchPlane);
             string dsSketchPlaneId = MigrationManager.GetGuidFromXmlElement(dsSketchPlane);
@@ -71,16 +71,16 @@ namespace Dynamo.Nodes
             // Create a "ModelTextType.ByName" node that converts a "string"
             // into "ModelTextType" node.
             XmlElement dsModelTextType = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2, "RevitNodes.dll",
-                "ModelTextType.ByName", "ModelTextType.ByName@string");
+                data.Document, oldNode, 2,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"ModelTextType.ByName", /*NXLT*/"ModelTextType.ByName@string");
 
             migratedData.AppendNode(dsModelTextType);
             string dsModelTextTypeId = MigrationManager.GetGuidFromXmlElement(dsModelTextType);
 
             //append asVector Node
             XmlElement pointAsVector0 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 3, "ProtoGeometry.dll",
-                "Point.AsVector", "Point.AsVector");
+                data.Document, oldNode, 3,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Point.AsVector",/*NXLT*/"Point.AsVector");
             migratedData.AppendNode(pointAsVector0);
             string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
 

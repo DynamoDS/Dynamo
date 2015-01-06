@@ -39,7 +39,7 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
     {
-        public Filename(WorkspaceModel workspace) : base(workspace, "Filename") { }
+        public Filename(WorkspaceModel workspace) : base(workspace, /*NXLT*/"Filename") { }
 
         protected override bool ShouldDisplayPreviewCore
         {
@@ -57,7 +57,7 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
     {
-        public Directory(WorkspaceModel workspace) : base(workspace, "Directory") { }
+        public Directory(WorkspaceModel workspace) : base(workspace, /*NXLT*/"Directory") { }
 
         protected override bool ShouldDisplayPreviewCore
         {
@@ -108,7 +108,7 @@ namespace DSCore.File
 
             yield return
                 AstFactory.BuildAssignment(
-                    AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
+                    AstFactory.BuildIdentifier(AstIdentifierBase + /*NXLT*/"_dummy"),
                     DataBridge.GenerateBridgeDataAst(GUID.ToString(), GetAstIdentifierForOutputIndex(0)));
         }
 

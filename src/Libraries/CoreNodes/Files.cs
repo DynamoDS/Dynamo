@@ -456,7 +456,7 @@ namespace DSCore
     {
         #region Obsolete Methods
 
-        [Obsolete("Use File.FromPath -> Image.ReadFromFile -> Image.Pixels nodes instead.")]
+        [Obsolete(/*NXLT*/"Use File.FromPath -> Image.ReadFromFile -> Image.Pixels nodes instead.")]
         public static Color[] ReadImage(string path, int xSamples, int ySamples)
         {
             var info = IO.File.FromPath(path);
@@ -464,27 +464,27 @@ namespace DSCore
             return IO.Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
         }
 
-        [Obsolete("Use File.FromPath -> Image.ReadFromFile nodes instead.")]
+        [Obsolete(/*NXLT*/"Use File.FromPath -> Image.ReadFromFile nodes instead.")]
         public static Bitmap LoadImageFromPath(string path)
         {
             return IO.Image.ReadFromFile(IO.File.FromPath(path));
         }
 
-        [Obsolete("Use File.FromPath -> File.ReadText nodes instead.")]
+        [Obsolete(/*NXLT*/"Use File.FromPath -> File.ReadText nodes instead.")]
         public static string ReadText(string path)
         {
             return IO.File.ReadText(IO.File.FromPath(path));
         }
 
-        [Obsolete("Use Image.WriteToFile node instead.")]
+        [Obsolete(/*NXLT*/"Use Image.WriteToFile node instead.")]
         public static bool WriteImage(string filePath, string fileName, Bitmap image)
         {
-            fileName = Path.ChangeExtension(fileName, "png");
+            fileName = Path.ChangeExtension(fileName, /*NXLT*/"png");
             IO.Image.WriteToFile(Path.Combine(filePath, fileName), image);
             return true;
         }
 
-        [Obsolete("Use CSV.WriteToFile node instead.")]
+        [Obsolete(/*NXLT*/"Use CSV.WriteToFile node instead.")]
         public static void ExportToCSV(string filePath, object[][] data)
         {
             IO.CSV.WriteToFile(filePath, data);

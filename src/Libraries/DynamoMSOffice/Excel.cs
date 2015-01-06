@@ -4,7 +4,7 @@ using DynamoMSOffice.Properties;
 namespace Dynamo.Nodes
 {
     [NodeName(/*NXLT*/"New Excel Workbook")]
-    [NodeCategory("Input/Output.Office.Excel")]
+    [NodeCategory(/*NXLT*/"Input/Output.Office.Excel")]
     [NodeDescription(/*NXLT*/"NewExelWorkbookDescription", typeof(Resources))]
     public class NewExcelWorkbook : NodeModel
     {
@@ -18,13 +18,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.NewExcelWorkbook",
-                "Excel.NewExcelWorkbook");
+            return MigrateToDsFunction(data, /*NXLT*/"DSOffice.dll", /*NXLT*/"Excel.NewExcelWorkbook",
+                /*NXLT*/"Excel.NewExcelWorkbook");
         }
     }
 
     [NodeName(/*NXLT*/"Open Excel Workbook")]
-    [NodeCategory("Input/Output.Office.Excel")]
+    [NodeCategory(/*NXLT*/"Input/Output.Office.Excel")]
     [NodeDescription(/*NXLT*/"OpenExelWorkbookDescription", typeof(Resources))]
     public class ReadExcelFile : FileReaderBase
     {
@@ -39,13 +39,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.ReadExcelFile",
-                "Excel.ReadExcelFile@string");
+            return MigrateToDsFunction(data, /*NXLT*/"DSOffice.dll", /*NXLT*/"Excel.ReadExcelFile",
+                /*NXLT*/"Excel.ReadExcelFile@string");
         }
     }
 
     [NodeName(/*NXLT*/"Get Worksheets From Excel Workbook")]
-    [NodeCategory("Input/Output.Office.Excel")]
+    [NodeCategory(/*NXLT*/"Input/Output.Office.Excel")]
     [NodeDescription(/*NXLT*/"GetWorksheetsFromExcelWorkbookDescription", typeof(Resources))]
     public class GetWorksheetsFromExcelWorkbook : NodeModel
     {
@@ -61,13 +61,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetWorksheetsFromExcelWorkbook",
-                "Excel.GetWorksheetsFromExcelWorkbook@var");
+            return MigrateToDsFunction(data, /*NXLT*/"DSOffice.dll", /*NXLT*/"Excel.GetWorksheetsFromExcelWorkbook",
+                /*NXLT*/"Excel.GetWorksheetsFromExcelWorkbook@var");
         }
     }
 
     [NodeName(/*NXLT*/"Get Excel Worksheet By Name")]
-    [NodeCategory("Input/Output.Office.Excel")]
+    [NodeCategory(/*NXLT*/"Input/Output.Office.Excel")]
     [NodeDescription(/*NXLT*/"GetExcelWorksheetByName", typeof(Resources))]
     public class GetExcelWorksheetByName : NodeModel
     {
@@ -84,13 +84,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetExcelWorksheetByName",
-                "Excel.GetExcelWorksheetByName@var,string");
+            return MigrateToDsFunction(data, /*NXLT*/"DSOffice.dll", /*NXLT*/"Excel.GetExcelWorksheetByName",
+                /*NXLT*/"Excel.GetExcelWorksheetByName@var,string");
         }
     }
 
     [NodeName(/*NXLT*/"Get Data From Excel Worksheet")]
-    [NodeCategory("Input/Output.Office.Excel")]
+    [NodeCategory(/*NXLT*/"Input/Output.Office.Excel")]
     [NodeDescription(/*NXLT*/"GetDataFromExcelWorksheetDescription", typeof(Resources))]
     public class GetDataFromExcelWorksheet : NodeModel
     {
@@ -106,13 +106,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.GetDataFromExcelWorksheet",
-                "Excel.GetDataFromExcelWorksheet@var");
+            return MigrateToDsFunction(data, /*NXLT*/"DSOffice.dll", /*NXLT*/"Excel.GetDataFromExcelWorksheet",
+                /*NXLT*/"Excel.GetDataFromExcelWorksheet@var");
         }
     }
 
     [NodeName(/*NXLT*/"Write Data To Excel Worksheet")]
-    [NodeCategory("Input/Output.Office.Excel")]
+    [NodeCategory(/*NXLT*/"Input/Output.Office.Excel")]
     [NodeDescription(/*NXLT*/"WriteDataToExcelWorksheetDescription", typeof(Resources))]
     public class WriteDataToExcelWorksheet : NodeModel
     {
@@ -133,13 +133,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.WriteDataToExcelWorksheet",
-                "Excel.WriteDataToExcelWorksheet@var,int,int,var[][]");
+            return MigrateToDsFunction(data, /*NXLT*/"DSOffice.dll", /*NXLT*/"Excel.WriteDataToExcelWorksheet",
+                /*NXLT*/"Excel.WriteDataToExcelWorksheet@var,int,int,var[][]");
         }
     }
 
     [NodeName(/*NXLT*/"Add Excel Worksheet To Workbook")]
-    [NodeCategory("Input/Output.Office.Excel")]
+    [NodeCategory(/*NXLT*/"Input/Output.Office.Excel")]
     [NodeDescription(/*NXLT*/"AddExcelWorksheetToWorkbookDescription", typeof(Resources))]
     public class AddExcelWorksheetToWorkbook : NodeModel
     {
@@ -158,13 +158,13 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.AddExcelWorksheetToWorkbook",
-                "Excel.AddExcelWorksheetToWorkbook@var,string");
+            return MigrateToDsFunction(data, /*NXLT*/"DSOffice.dll", /*NXLT*/"Excel.AddExcelWorksheetToWorkbook",
+                /*NXLT*/"Excel.AddExcelWorksheetToWorkbook@var,string");
         }
     }
 
     [NodeName(/*NXLT*/"Save Excel Workbook As")]
-    [NodeCategory("Input/Output.Office.Excel")]
+    [NodeCategory(/*NXLT*/"Input/Output.Office.Excel")]
     [NodeDescription(/*NXLT*/"SaveExcelWorkbookAsDescription", typeof(Resources))]
     public class SaveAsExcelWorkbook : NodeModel
     {
@@ -182,8 +182,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSOffice.dll", "Excel.SaveAsExcelWorkbook",
-                "Excel.SaveAsExcelWorkbook@var,string");
+            return MigrateToDsFunction(data, /*NXLT*/"DSOffice.dll", /*NXLT*/"Excel.SaveAsExcelWorkbook",
+                /*NXLT*/"Excel.SaveAsExcelWorkbook@var,string");
         }
     }
 }

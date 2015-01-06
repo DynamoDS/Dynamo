@@ -7,7 +7,7 @@ namespace Dynamo.Nodes
 {
     public class WallByCurve : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -16,9 +16,9 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
-                "Wall.ByCurveAndHeight", 
-                "Wall.ByCurveAndHeight@Curve,double,Level,WallType");
+            MigrationManager.SetFunctionSignature(dsRevitNode,/*NXLT*/"RevitNodes.dll",
+                /*NXLT*/"Wall.ByCurveAndHeight",
+                /*NXLT*/"Wall.ByCurveAndHeight@Curve,double,Level,WallType");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -52,12 +52,12 @@ namespace Dynamo.Nodes
 
     public class SelectWallType : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(MigrationManager.CloneAndChangeName(
-                data.MigratedNodes.ElementAt(0), "DSRevitNodesUI.WallTypes", "Wall Types"));
+                data.MigratedNodes.ElementAt(0), /*NXLT*/"DSRevitNodesUI.WallTypes", /*NXLT*/"Wall Types"));
 
             return migrationData;
         }

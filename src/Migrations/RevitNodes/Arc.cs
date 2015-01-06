@@ -7,17 +7,17 @@ namespace Dynamo.Nodes
 {
     public class ArcStartMiddleEnd : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Arc.ByThreePoints",
-                "Arc.ByThreePoints@Point,Point,Point");
+            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"Arc.ByThreePoints",
+                /*NXLT*/"Arc.ByThreePoints@Point,Point,Point");
         }
     }
 
     public class ArcCenter : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             // This migration assumes that the first input of the old node is
@@ -30,26 +30,26 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Arc.ByCenterPointRadiusAngle", "Arc.ByCenterPointRadiusAngle@Point,double,double,double,Vector");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Arc.ByCenterPointRadiusAngle", /*NXLT*/"Arc.ByCenterPointRadiusAngle@Point,double,double,double,Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new nodes
             XmlElement zAxisNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, "ProtoGeometry.dll", "Vector.ZAxis", "Vector.ZAxis");
+                data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"Vector.ZAxis", /*NXLT*/"Vector.ZAxis");
             migrationData.AppendNode(zAxisNode);
             string zAxisNodeId = MigrationManager.GetGuidFromXmlElement(zAxisNode);
 
             XmlElement toDegreeNodeStart = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "DSCoreNodes.dll", 
+                data.Document, oldNode, 1, /*NXLT*/"DSCoreNodes.dll", 
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(toDegreeNodeStart);
             string toDegreeNodeStartId = MigrationManager.GetGuidFromXmlElement(toDegreeNodeStart);
 
             XmlElement toDegreeNodeEnd = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2, "DSCoreNodes.dll",
-                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+                data.Document, oldNode, 2, /*NXLT*/"DSCoreNodes.dll",
+                /*NXLT*/"Math.RadiansToDegrees", /*NXLT*/"Math.RadiansToDegrees@double");
             migrationData.AppendNode(toDegreeNodeEnd);
             string toDegreeNodeEndId = MigrationManager.GetGuidFromXmlElement(toDegreeNodeEnd);
 
@@ -75,10 +75,10 @@ namespace Dynamo.Nodes
 
     public class BestFitArc : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Arc.ByBestFitThroughPoints", "Arc.ByBestFitThroughPoints@Point[]");
+            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"Arc.ByBestFitThroughPoints", /*NXLT*/"Arc.ByBestFitThroughPoints@Point[]");
         }
     }
 }

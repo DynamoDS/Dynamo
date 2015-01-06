@@ -50,11 +50,11 @@ namespace DSCoreNodesUI
             combo.DataContext = model;
             //bind this combo box to the selected item hash
 
-            var bindingVal = new System.Windows.Data.Binding("Items") { Mode = BindingMode.TwoWay, Source = model };
+            var bindingVal = new System.Windows.Data.Binding(/*NXLT*/"Items") { Mode = BindingMode.TwoWay, Source = model };
             combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
 
             //bind the selected index to the 
-            var indexBinding = new Binding("SelectedIndex")
+            var indexBinding = new Binding(/*NXLT*/"SelectedIndex")
             {
                 Mode = BindingMode.TwoWay,
                 Source = model

@@ -12,7 +12,7 @@ namespace Dynamo.Nodes
 
     public class CloudRender : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -31,7 +31,7 @@ namespace Dynamo.Nodes
 
     public class UploadRenderData : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -50,7 +50,7 @@ namespace Dynamo.Nodes
 
     public class ExportDocumentRenderData : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -69,7 +69,7 @@ namespace Dynamo.Nodes
 
     public class RenderType : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
@@ -82,7 +82,7 @@ namespace Dynamo.Nodes
 
     public class RenderQuality : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
@@ -95,7 +95,7 @@ namespace Dynamo.Nodes
 
     public class SkymodelType : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
@@ -108,7 +108,7 @@ namespace Dynamo.Nodes
 
     public class CloudDaylightingJob : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "CloudDaylightingJob.ByViewNameDivisionsGridBoundary",
@@ -118,7 +118,7 @@ namespace Dynamo.Nodes
 
     public class CloudRenderingJob : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "CloudRenderingJob.ByViewNameWidthHeight",
@@ -128,7 +128,7 @@ namespace Dynamo.Nodes
 
     public class MakeDaylightingSkyModel : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "SkyModel.ByTypeConstants",
@@ -138,7 +138,7 @@ namespace Dynamo.Nodes
 
     public class MakeDateTime :MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "DateTime.ByDateInformation",
@@ -148,7 +148,7 @@ namespace Dynamo.Nodes
 
     public class MakeDaylightingEnvironmentData : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "RenderingEnvironment.BySkyModelLocationDate",
@@ -158,7 +158,7 @@ namespace Dynamo.Nodes
 
     public class IlluminanceToSRGB : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "Illuminance.ToSRGB",
@@ -168,7 +168,7 @@ namespace Dynamo.Nodes
 
     public class LuxToFootCandles : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "Illuminance.ToFootCandles",
@@ -178,7 +178,7 @@ namespace Dynamo.Nodes
 
     public class ParseSDF : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "DaylightingResults.Parse",
@@ -188,7 +188,7 @@ namespace Dynamo.Nodes
 
     public class GetSDFResolution : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "DaylightingResults.Resolution",
@@ -198,7 +198,7 @@ namespace Dynamo.Nodes
 
     public class GetDaylightingIlluminanceValues : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "DaylightingResults.IlluminanceValues",
@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
 
     public class GetDaylightingColors : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "DaylightingResults.Colors",
@@ -218,7 +218,7 @@ namespace Dynamo.Nodes
 
     public class GetDaylightingNormals : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "DaylightingResults.Normals",
@@ -228,7 +228,7 @@ namespace Dynamo.Nodes
 
     public class GetDaylightingPositions : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "DaylightingResults.Points",
@@ -238,7 +238,7 @@ namespace Dynamo.Nodes
 
     public class GetDaylightingForegroundImage : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "SimpleRaaS.dll", "DaylightingResults.ToImage",

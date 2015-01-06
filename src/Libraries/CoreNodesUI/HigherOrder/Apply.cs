@@ -26,9 +26,9 @@ namespace DSCoreNodesUI.HigherOrder
         protected override string GetInputName(int index)
         {
             if (index == 0)
-                return "func";
+                return /*NXLT*/"func";
 
-            return "arg" + index;
+            return /*NXLT*/"arg" + index;
         }
 
         protected override string GetInputTooltip(int index)
@@ -53,7 +53,7 @@ namespace DSCoreNodesUI.HigherOrder
                     GetAstIdentifierForOutputIndex(0),
                     new FunctionCallNode
                     {
-                        Function = AstFactory.BuildIdentifier("__ApplyList"),
+                        Function = AstFactory.BuildIdentifier(/*NXLT*/"__ApplyList"),
                         FormalArguments =
                             new List<AssociativeNode>
                             {
@@ -83,7 +83,7 @@ namespace DSCoreNodesUI.HigherOrder
 
         protected override string GetInputName(int index)
         {
-            return "func" + index;
+            return /*NXLT*/"func" + index;
         }
 
         protected override string GetInputTooltip(int index)
@@ -104,7 +104,7 @@ namespace DSCoreNodesUI.HigherOrder
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        "__Compose",
+                        /*NXLT*/"__Compose",
                         new List<AssociativeNode>
                         {
                             AstFactory.BuildExprList(Enumerable.Reverse(inputAstNodes).ToList())

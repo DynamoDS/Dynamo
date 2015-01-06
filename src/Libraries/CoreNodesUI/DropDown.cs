@@ -107,7 +107,7 @@ namespace DSCoreNodesUI
             else
             {
                 var item = items[index];
-                result = string.Format("{0}:{1}", index, XmlEscape(item.Name));
+                result = string.Format(/*NXLT*/"{0}:{1}", index, XmlEscape(item.Name));
             }
 
             return result;
@@ -116,7 +116,7 @@ namespace DSCoreNodesUI
         private static string XmlEscape(string unescaped)
         {
             var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
+            XmlNode node = doc.CreateElement(/*NXLT*/"root");
             node.InnerText = unescaped;
             return node.InnerXml;
         }
@@ -124,7 +124,7 @@ namespace DSCoreNodesUI
         private static string XmlUnescape(string escaped)
         {
             var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement("root");
+            XmlNode node = doc.CreateElement(/*NXLT*/"root");
             node.InnerXml = escaped;
             return node.InnerText;
         }

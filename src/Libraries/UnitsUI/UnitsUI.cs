@@ -78,10 +78,10 @@ namespace UnitsUI
 
         void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "AreaUnit" ||
-                e.PropertyName == "VolumeUnit" ||
-                e.PropertyName == "LengthUnit" ||
-                e.PropertyName == "NumberFormat")
+            if (e.PropertyName == /*NXLT*/"AreaUnit" ||
+                e.PropertyName == /*NXLT*/"VolumeUnit" ||
+                e.PropertyName == /*NXLT*/"LengthUnit" ||
+                e.PropertyName == /*NXLT*/"NumberFormat")
             {
                 this.mesBaseModel.ForceValueRaisePropertyChanged();
                 this.mesBaseModel.RequiresRecalc = true;
@@ -148,7 +148,7 @@ namespace UnitsUI
             {
                 // this node now stores a double, having previously stored a measure type
                 // by checking for the measure type as well we allow for loading of older files.
-                if (subNode.Name.Equals(typeof(double).FullName) || subNode.Name.Equals("Dynamo.Measure.Foot"))
+                if (subNode.Name.Equals(typeof(double).FullName) || subNode.Name.Equals(/*NXLT*/"Dynamo.Measure.Foot"))
                 {
                     Value = DeserializeValue(subNode.Attributes[0].Value);
                 }
@@ -196,9 +196,9 @@ namespace UnitsUI
     }
 
     [NodeName(/*NXLT*/"Length From String")]
-    [NodeCategory("Units.Length.Create")]
+    [NodeCategory(/*NXLT*/"Units.Length.Create")]
     [NodeDescription(/*NXLT*/"LengthFromStringDescription",typeof(Properties.Resources))]
-    [NodeSearchTags("LengthFromStringSearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags(/*NXLT*/"LengthFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
@@ -209,14 +209,14 @@ namespace UnitsUI
             RegisterAllPorts();
         }
 
-        [NodeMigration(from: "0.6.2")]
+        [NodeMigration(from: /*NXLT*/"0.6.2")]
         public void MigrateLengthFromFeetToMeters(XmlNode node)
         {
             //length values were previously stored as decimal feet
             //convert them internally to SI meters.
             foreach (XmlNode child in node.ChildNodes)
             {
-                if (child.Name == "System.Double")
+                if (child.Name == /*NXLT*/"System.Double")
                 {
                     if (child.Attributes != null && child.Attributes.Count > 0)
                     {
@@ -245,9 +245,9 @@ namespace UnitsUI
     }
 
     [NodeName(/*NXLT*/"Area From String")]
-    [NodeCategory("Units.Area.Create")]
+    [NodeCategory(/*NXLT*/"Units.Area.Create")]
     [NodeDescription(/*NXLT*/"AreaFromStringDescription",typeof(Properties.Resources))]
-    [NodeSearchTags("AreaFromStringSearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags(/*NXLT*/"AreaFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
     {
@@ -276,9 +276,9 @@ namespace UnitsUI
     }
 
     [NodeName(/*NXLT*/"Volume From String")]
-    [NodeCategory("Units.Volume.Create")]
+    [NodeCategory(/*NXLT*/"Units.Volume.Create")]
     [NodeDescription(/*NXLT*/"VolumeFromStringDescription",typeof(Properties.Resources))]
-    [NodeSearchTags("VolumeFromStringSearchTags",typeof(Properties.Resources))]
+    [NodeSearchTags(/*NXLT*/"VolumeFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
     {
@@ -298,9 +298,9 @@ namespace UnitsUI
     }
 
     [NodeName(/*NXLT*/"Unit Types")]
-    [NodeCategory("Units")]
+    [NodeCategory(/*NXLT*/"Units")]
     [NodeDescription(/*NXLT*/"UnitTypesDescription", typeof(Properties.Resources))]
-    [NodeSearchTags("UnitTypesSearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags(/*NXLT*/"UnitTypesSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
@@ -309,7 +309,7 @@ namespace UnitsUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);
-            var assemblyName = AstFactory.BuildStringNode("DynamoUnits");
+            var assemblyName = AstFactory.BuildStringNode(/*NXLT*/"DynamoUnits");
             var functionCall = AstFactory.BuildFunctionCall(new Func<string, string, object>(Types.FindTypeByNameInAssembly), new List<AssociativeNode>() { typeName, assemblyName });
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }

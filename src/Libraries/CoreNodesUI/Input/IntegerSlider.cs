@@ -59,13 +59,13 @@ namespace Dynamo.Nodes
             var converter = new IntegerDisplay();
             switch (name)
             {
-                case "Value":
+                case /*NXLT*/"Value":
                     Value = ((int)converter.ConvertBack(value, typeof(int), null, null));
                     return true; // UpdateValueCore handled.
-                case "Max":
+                case /*NXLT*/"Max":
                     Max = ((int)converter.ConvertBack(value, typeof(int), null, null));
                     return true; // UpdateValueCore handled.
-                case "Min":
+                case /*NXLT*/"Min":
                     Min = ((int)converter.ConvertBack(value, typeof(int), null, null));
                     if (Value >= Max)
                     {
@@ -89,8 +89,8 @@ namespace Dynamo.Nodes
             base.SaveNode(xmlDoc, nodeElement, context);
 
             XmlElement outEl = xmlDoc.CreateElement("Range");
-            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute(/*NXLT*/"min", Min.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute(/*NXLT*/"max", Max.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
 
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
-                if (!subNode.Name.Equals("Range"))
+                if (!subNode.Name.Equals(/*NXLT*/"Range"))
                     continue;
 
                 int min = Min;
@@ -110,11 +110,11 @@ namespace Dynamo.Nodes
                 {
                     foreach (XmlAttribute attr in subNode.Attributes)
                     {
-                        if (attr.Name.Equals("min"))
+                        if (attr.Name.Equals(/*NXLT*/"min"))
                             min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
+                        else if (attr.Name.Equals(/*NXLT*/"max"))
                             max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("value"))
+                        else if (attr.Name.Equals(/*NXLT*/"value"))
                             Value = Convert.ToInt32(subNode.InnerText, CultureInfo.InvariantCulture);
                     }
                 }
@@ -136,8 +136,8 @@ namespace Dynamo.Nodes
             {
                 var xmlDocument = element.OwnerDocument;
                 XmlElement subNode = xmlDocument.CreateElement("Range");
-                subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-                subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+                subNode.SetAttribute(/*NXLT*/"min", Min.ToString(CultureInfo.InvariantCulture));
+                subNode.SetAttribute(/*NXLT*/"max", Max.ToString(CultureInfo.InvariantCulture));
                 element.AppendChild(subNode);
             }
         }
@@ -150,7 +150,7 @@ namespace Dynamo.Nodes
             {
                 foreach (XmlNode subNode in element.ChildNodes)
                 {
-                    if (!subNode.Name.Equals("Range"))
+                    if (!subNode.Name.Equals(/*NXLT*/"Range"))
                         continue;
                     if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
                         continue;
@@ -160,9 +160,9 @@ namespace Dynamo.Nodes
 
                     foreach (XmlAttribute attr in subNode.Attributes)
                     {
-                        if (attr.Name.Equals("min"))
+                        if (attr.Name.Equals(/*NXLT*/"min"))
                             min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
+                        else if (attr.Name.Equals(/*NXLT*/"max"))
                             max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
                     }
 

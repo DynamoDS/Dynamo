@@ -8,7 +8,7 @@ namespace Dynamo.Nodes
 {
     public class ProjectPointOnCurve : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -16,8 +16,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Geometry.ClosestPointTo", "Geometry.ClosestPointTo@Geometry");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Geometry.ClosestPointTo", /*NXLT*/"Geometry.ClosestPointTo@Geometry");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -40,9 +40,9 @@ namespace Dynamo.Nodes
 
                 // make distance to node
                 var distTo = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 1, "ProtoGeometry.dll",
-                    "Geometry.DistanceTo",
-                    "Geometry.DistanceTo@Geometry");
+                    data.Document, oldNode, 1,/*NXLT*/"ProtoGeometry.dll",
+                    /*NXLT*/"Geometry.DistanceTo",
+                    /*NXLT*/"Geometry.DistanceTo@Geometry");
                 migrationData.AppendNode(distTo);
                 var distToId = MigrationManager.GetGuidFromXmlElement(distTo);
 
@@ -63,9 +63,9 @@ namespace Dynamo.Nodes
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0, "ProtoGeometry.dll",
-                    "Curve.ParameterAtPoint",
-                    "Curve.ParameterAtPoint@Point");
+                    data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                    /*NXLT*/"Curve.ParameterAtPoint",
+                    /*NXLT*/"Curve.ParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);
                 var parmAtPtId = MigrationManager.GetGuidFromXmlElement(parmAtPt);
 
@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
 
     public class ProjectPointOnFace : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
+        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -96,8 +96,8 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Geometry.ClosestPointTo", "Geometry.ClosestPointTo@Geometry");
+            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
+                /*NXLT*/"Geometry.ClosestPointTo", /*NXLT*/"Geometry.ClosestPointTo@Geometry");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -121,9 +121,9 @@ namespace Dynamo.Nodes
             {
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0, "ProtoGeometry.dll",
-                    "Surface.UVParameterAtPoint",
-                    "Surface.UVParameterAtPoint@Point");
+                    data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                    /*NXLT*/"Surface.UVParameterAtPoint",
+                    /*NXLT*/"Surface.UVParameterAtPoint@Point");
                 migrationData.AppendNode(parmAtPt);
                 var parmAtPtId = MigrationManager.GetGuidFromXmlElement(parmAtPt);
 
@@ -154,9 +154,9 @@ namespace Dynamo.Nodes
 
                 // make distance to node
                 var distTo = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0, "ProtoGeometry.dll",
-                    "Geometry.DistanceTo",
-                    "Geometry.DistanceTo@Geometry");
+                    data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
+                    /*NXLT*/"Geometry.DistanceTo",
+                    /*NXLT*/"Geometry.DistanceTo@Geometry");
                 migrationData.AppendNode(distTo);
                 var distToId = MigrationManager.GetGuidFromXmlElement(distTo);
 

@@ -63,7 +63,7 @@ namespace DynamoUnits
         private static VolumeUnit _hostApplicationInternalVolumeUnit = DynamoUnits.VolumeUnit.CubicMeter;
         private static InsolationUnit _insolationUnit = DynamoUnits.InsolationUnit.WattHoursPerMeterSquared;
 
-        private static string _numberFormat = "f4";
+        private static string _numberFormat = /*NXLT*/"f4";
         private static LengthUnit _lengthUnit;
         private static AreaUnit _areaUnit;
         private static VolumeUnit _volumeUnit;
@@ -1543,7 +1543,7 @@ namespace DynamoUnits
                     denominator = denominator/2;
                 }
 
-                return string.Format("{0}/{1}", numerator, denominator);
+                return string.Format(/*NXLT*/"{0}/{1}", numerator, denominator);
             }
 
             return "";
@@ -1628,8 +1628,8 @@ namespace DynamoUnits
 
             string fractionalInches = ToFractionalInches(Math.Round(partialFeet * 12.0,4));
 
-            if (fractionalInches == "11 1\"" ||
-                fractionalInches == "12\"")
+            if (fractionalInches == /*NXLT*/"11 1\"" ||
+                fractionalInches == /*NXLT*/"12\"")
             {
                 //add a foot to the whole feet
                 wholeFeet += 1.0;
@@ -1638,12 +1638,12 @@ namespace DynamoUnits
 
             string feet = "";
             if (wholeFeet != 0.0)
-                feet = string.Format("{0}'", wholeFeet);
+                feet = string.Format(/*NXLT*/"{0}'", wholeFeet);
 
             if (wholeFeet.AlmostEquals(0.0, 0.00001) && (partialFeet * 12.0).AlmostEquals(0.0,0.00001))
                 feet = "0'";
 
-            return string.Format("{0} {1}", feet, fractionalInches).Trim();
+            return string.Format(/*NXLT*/"{0} {1}", feet, fractionalInches).Trim();
         }
 
         public static string ToFractionalInches(double decimalInches)
@@ -1658,23 +1658,23 @@ namespace DynamoUnits
             if(string.IsNullOrEmpty(inches) && string.IsNullOrEmpty(fraction))
                 return "0\"";
             else if(string.IsNullOrEmpty(fraction))
-                return string.Format("{0}{1}\"", sign, inches).Trim();
+                return string.Format(/*NXLT*/"{0}{1}\"", sign, inches).Trim();
             else if(string.IsNullOrEmpty(inches))
-                return string.Format("{0}{1}\"", sign, fraction).Trim();
+                return string.Format(/*NXLT*/"{0}{1}\"", sign, fraction).Trim();
 
             if (fraction == "1")
             {
                 fraction = "";
                 inches = (double.Parse(inches) + 1).ToString(CultureInfo.InvariantCulture);
-                return string.Format("{0}{1}\"", sign, inches).Trim();
+                return string.Format(/*NXLT*/"{0}{1}\"", sign, inches).Trim();
             }
-            return string.Format("{0}{1} {2}\"", sign, inches, fraction).Trim();
+            return string.Format(/*NXLT*/"{0}{1} {2}\"", sign, inches, fraction).Trim();
         }
     
         public static void ParseLengthFromString(string value, out double feet, 
             out double inch, out double m, out double cm, out double mm, out double numerator, out double denominator )
         {
-            string pattern = @"(((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)('|ft))*\s*((?<in>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d{1,}?)(\s|-)*(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,})?)( ?)(""|in)))?)*((?<m>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)m($|\s))*((?<cm>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)cm($|\s))*((?<mm>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)mm($|\s))*";
+            string pattern = /*NXLT*/@"(((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)('|ft))*\s*((?<in>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d{1,}?)(\s|-)*(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,})?)( ?)(""|in)))?)*((?<m>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)m($|\s))*((?<cm>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)cm($|\s))*((?<mm>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)mm($|\s))*";
 
             feet = 0.0;
             inch = 0.0;
@@ -1690,24 +1690,24 @@ namespace DynamoUnits
             if (match.Success)
             {
                 //parse imperial values
-                double.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out feet);
-                double.TryParse(match.Groups["wholeInch"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out inch);
-                double.TryParse(match.Groups["num"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
+                double.TryParse(match.Groups[/*NXLT*/"ft"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out feet);
+                double.TryParse(match.Groups[/*NXLT*/"wholeInch"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out inch);
+                double.TryParse(match.Groups[/*NXLT*/"num"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                                 out numerator);
-                double.TryParse(match.Groups["den"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
+                double.TryParse(match.Groups[/*NXLT*/"den"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                                 out denominator);
 
                 //parse metric values
-                double.TryParse(match.Groups["m"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out m);
-                double.TryParse(match.Groups["cm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cm);
-                double.TryParse(match.Groups["mm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out mm);
+                double.TryParse(match.Groups[/*NXLT*/"m"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out m);
+                double.TryParse(match.Groups[/*NXLT*/"cm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cm);
+                double.TryParse(match.Groups[/*NXLT*/"mm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out mm);
             }
         }
 
         public static void ParseAreaFromString(string value, out double square_inch, out double square_foot, out double square_millimeter,  out double square_centimeter, out double square_meter)
         {
             const string pattern =
-                @"((?<square_inches>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(in2|sqin|in²))*\s*((?<square_feet>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(ft2|sqft|ft²))*\s*((?<square_millimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(mm2|sqmm|mm²))*\s*((?<square_centimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(cm2|sqcm|cm²))*\s*((?<square_meters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(m2|sqm|m²))*\s*";
+                /*NXLT*/@"((?<square_inches>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(in2|sqin|in²))*\s*((?<square_feet>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(ft2|sqft|ft²))*\s*((?<square_millimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(mm2|sqmm|mm²))*\s*((?<square_centimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(cm2|sqcm|cm²))*\s*((?<square_meters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(m2|sqm|m²))*\s*";
             
             square_inch = 0.0;
             square_foot = 0.0;
@@ -1720,15 +1720,15 @@ namespace DynamoUnits
             Match match = regex.Match(value.Trim().ToLower());
             if (match.Success)
             {
-                double.TryParse(match.Groups["square_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out square_inch);
-                double.TryParse(match.Groups["square_feet"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out square_foot);
-                double.TryParse(match.Groups["square_millimeters"].Value,
+                double.TryParse(match.Groups[/*NXLT*/"square_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out square_inch);
+                double.TryParse(match.Groups[/*NXLT*/"square_feet"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out square_foot);
+                double.TryParse(match.Groups[/*NXLT*/"square_millimeters"].Value,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out square_millimeter);
-                double.TryParse(match.Groups["square_centimeters"].Value,
+                double.TryParse(match.Groups[/*NXLT*/"square_centimeters"].Value,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out square_centimeter);
-                double.TryParse(match.Groups["square_meters"].Value,
+                double.TryParse(match.Groups[/*NXLT*/"square_meters"].Value,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out square_meter);
             }
@@ -1737,7 +1737,7 @@ namespace DynamoUnits
         public static void ParseVolumeFromString(string value, out double cubic_inch, out double cubic_foot, out double cubic_millimeter, out double cubic_centimeter, out double cubic_meter)
         {
             const string pattern =
-                @"((?<cubic_inches>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(in3|cuin|in³))*\s*((?<cubic_feet>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(ft3|cuft|ft³))*\s*((?<cubic_millimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(mm3|cumm|mm³))*\s*((?<cubic_centimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(cm3|cucm|cm³))*\s*((?<cubic_meters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(m3|cum|m³))*\s*";
+                /*NXLT*/@"((?<cubic_inches>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(in3|cuin|in³))*\s*((?<cubic_feet>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(ft3|cuft|ft³))*\s*((?<cubic_millimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(mm3|cumm|mm³))*\s*((?<cubic_centimeters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(cm3|cucm|cm³))*\s*((?<cubic_meters>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)(m3|cum|m³))*\s*";
 
             cubic_inch = 0.0;
             cubic_foot = 0.0;
@@ -1750,15 +1750,15 @@ namespace DynamoUnits
             Match match = regex.Match(value.Trim().ToLower());
             if (match.Success)
             {
-                double.TryParse(match.Groups["cubic_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cubic_inch);
-                double.TryParse(match.Groups["cubic_feet"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cubic_foot);
-                double.TryParse(match.Groups["cubic_millimeters"].Value,
+                double.TryParse(match.Groups[/*NXLT*/"cubic_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cubic_inch);
+                double.TryParse(match.Groups[/*NXLT*/"cubic_feet"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cubic_foot);
+                double.TryParse(match.Groups[/*NXLT*/"cubic_millimeters"].Value,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out cubic_millimeter);
-                double.TryParse(match.Groups["cubic_centimeters"].Value,
+                double.TryParse(match.Groups[/*NXLT*/"cubic_centimeters"].Value,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out cubic_centimeter);
-                double.TryParse(match.Groups["cubic_meters"].Value,
+                double.TryParse(match.Groups[/*NXLT*/"cubic_meters"].Value,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out cubic_meter);
             }

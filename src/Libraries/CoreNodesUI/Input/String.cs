@@ -18,7 +18,7 @@ namespace DSCoreNodesUI
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (name == "Value")
+            if (name == /*NXLT*/"Value")
             {
                 var converter = new StringDisplay();
                 Value = converter.ConvertBack(value, typeof(string), null, null) as string;

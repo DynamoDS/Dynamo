@@ -130,8 +130,8 @@ namespace Dynamo.Nodes
         public override string ToString()
         {
             return SelectionResults.Any()
-                ? string.Format("{0} : {1}", Prefix, FormatSelectionText(SelectionResults))
-                : "Nothing selected.";
+                ? string.Format(/*NXLT*/"{0} : {1}", Prefix, FormatSelectionText(SelectionResults))
+                : /*NXLT*/"Nothing selected.";
         }
 
         public void ClearSelections()
@@ -227,7 +227,7 @@ namespace Dynamo.Nodes
         {
             var savedUuids =
                 nodeElement.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
+                    .Where(subNode => subNode.Name.Equals(/*NXLT*/"instance") && subNode.Attributes != null)
                     .Select(subNode => subNode.Attributes[0].Value)
                     .ToList();
 
