@@ -1,4 +1,5 @@
-﻿using Dynamo.Nodes;
+﻿﻿using System.Diagnostics;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views;
@@ -15,8 +16,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
-using Dynamo.Models;
-using ICSharpCode.AvalonEdit.Rendering;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
@@ -26,11 +25,11 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class CodeBlockEditor : UserControl
     {
-        private NodeViewModel nodeViewModel;
-        private DynamoViewModel dynamoViewModel;
-        private CodeBlockNodeModel nodeModel = null;
-        private CompletionWindow completionWindow = null;
-        private CodeBlockMethodInsightWindow insightWindow = null;
+        private readonly NodeViewModel nodeViewModel;
+        private readonly DynamoViewModel dynamoViewModel;
+        private readonly CodeBlockNodeModel nodeModel;
+        private CompletionWindow completionWindow;
+        private CodeBlockMethodInsightWindow insightWindow;
 
         internal CodeBlockEditor(DynamoViewModel dynamoViewModel)
         {
@@ -143,6 +142,7 @@ namespace Dynamo.UI.Controls
             var stream = GetType().Assembly.GetManifestResourceStream(
                 "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
 
+            Debug.Assert(stream != null);
             this.InnerTextEditor.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(stream), HighlightingManager.Instance);
 
@@ -157,10 +157,12 @@ namespace Dynamo.UI.Controls
         private HighlightingRule CreateClassHighlightRule()
         {
             Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
-            var classHighlightRule = new HighlightingRule();
-            classHighlightRule.Color = new HighlightingColor()
+            var classHighlightRule = new HighlightingRule
             {
-                Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
+                Color = new HighlightingColor()
+                {
+                    Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
+                }
             };
 
             var engineController = dynamoViewModel.EngineController;
@@ -175,10 +177,12 @@ namespace Dynamo.UI.Controls
         private HighlightingRule CreateMethodHighlightRule()
         {
             Color color = (Color)ColorConverter.ConvertFromString("#417693");
-            var methodHighlightRule = new HighlightingRule();
-            methodHighlightRule.Color = new HighlightingColor()
+            var methodHighlightRule = new HighlightingRule
             {
-                Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
+                Color = new HighlightingColor()
+                {
+                    Foreground = new CodeBlockEditorUtils.CustomizedBrush(color)
+                }
             };
 
             var engineController = dynamoViewModel.EngineController;
@@ -306,9 +310,11 @@ namespace Dynamo.UI.Controls
             {
                 completionWindow.Close();
             }
-            completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea);
-            completionWindow.AllowsTransparency = true;
-            completionWindow.SizeToContent = SizeToContent.WidthAndHeight;
+            completionWindow = new CompletionWindow(this.InnerTextEditor.TextArea)
+            {
+                AllowsTransparency = true,
+                SizeToContent = SizeToContent.WidthAndHeight
+            };
 
             if (completeWhenTyping)
             {
