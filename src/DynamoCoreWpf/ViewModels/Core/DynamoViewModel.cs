@@ -547,14 +547,12 @@ namespace Dynamo.ViewModels
 
         private void SubscribeModelUiEvents()
         {
-            CodeBlockUtils.RequestLogicalToVisualLineIndexMap += VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
             model.RequestBugReport += ReportABug;
             model.RequestDownloadDynamo += DownloadDynamo;
         }
 
         private void UnsubscribeModelUiEvents()
         {
-            CodeBlockUtils.RequestLogicalToVisualLineIndexMap -= VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
             model.RequestBugReport -= ReportABug;
             model.RequestDownloadDynamo -= DownloadDynamo;
         }
