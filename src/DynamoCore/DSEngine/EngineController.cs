@@ -16,6 +16,7 @@ using System.Text;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
+using Dynamo.Search;
 
 namespace Dynamo.DSEngine
 {
@@ -81,7 +82,11 @@ namespace Dynamo.DSEngine
         /// <param name="library"></param>
         public void ImportLibrary(string library)
         {
+<<<<<<< HEAD
             LibraryServices.ImportLibrary(library);
+=======
+            libraryServices.ImportLibrary(library, this.dynamoModel.Logger, SearchModel.ElementType.CustomDll);
+>>>>>>> Sitrus2
         }
 
         #endregion
@@ -471,6 +476,18 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
+<<<<<<< HEAD
+=======
+            string newLibrary = e.LibraryPath;
+
+            var functionGroups = libraryServices.GetFunctionGroups(newLibrary).ToList();
+            functionGroups.ForEach(fg => fg.ElementType = SearchModel.ElementType.CustomDll);
+
+            // Load all functions defined in that library.
+            dynamoModel.SearchModel.Add(functionGroups);
+
+            // Reset the VM
+>>>>>>> Sitrus2
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
             // The LiveRunner core is newly instantiated whenever a new library is imported

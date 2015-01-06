@@ -584,5 +584,62 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(expected, result);
         }
+
+        [Test]
+        public void InsertSpacesToStringTest()
+        {
+            string testingSTR = string.Empty;
+            //1. When original is empty string
+            //2. When original is null
+            //3. When original is whitespaces (\n, \t or space)
+            //4. When original is AaaBbbbCDE
+
+            // case 1
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("");
+            Assert.AreEqual("", testingSTR);
+
+            // case 2
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString(null);
+            Assert.AreEqual("", testingSTR);
+
+            // case 3
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("    ");
+            Assert.AreEqual("", testingSTR);
+
+            //case 4
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("AaaBbbbCDE");
+            Assert.AreEqual("Aaa Bbbb CDE", testingSTR);
+        }
+
+        [Test]
+        public void NormalizeAsResourceNameTest()
+        {
+            string testingSTR = string.Empty;
+            //1. When resource is empty string
+            //2. When resource is null
+            //3. When resource is whitespaces (\n, \t or space)
+            //4. When resource is %Aaa2Bb**CDE
+            //5. When resource is Ab/b.double-int
+
+            // case 1
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("");
+            Assert.AreEqual("", testingSTR);
+
+            // case 2
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName(null);
+            Assert.AreEqual("", testingSTR);
+
+            // case 3
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("   ");
+            Assert.AreEqual("", testingSTR);
+
+            //case 4
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("%Aaa2Bb**CDE");
+            Assert.AreEqual("Aaa2BbCDE", testingSTR);
+
+            // case 5
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("Ab/b.double-int");
+            Assert.AreEqual("Abb.double-int", testingSTR);
+        }
     }
 }

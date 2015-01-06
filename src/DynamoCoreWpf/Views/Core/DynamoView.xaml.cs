@@ -330,8 +330,14 @@ namespace Dynamo.Controls
             #region Search initialization
 
             var search = new SearchView(
+<<<<<<< HEAD:src/DynamoCoreWpf/Views/Core/DynamoView.xaml.cs
                 dynamoViewModel.SearchViewModel,
                 dynamoViewModel);
+=======
+                this.dynamoViewModel.SearchViewModel,
+                this.dynamoViewModel);
+
+>>>>>>> Sitrus2:src/DynamoCoreWpf/Views/DynamoView.xaml.cs
             sidebarGrid.Children.Add(search);
             dynamoViewModel.SearchViewModel.Visible = true;
 
@@ -1085,9 +1091,15 @@ namespace Dynamo.Controls
             collapseIcon.Source = hover;
         }
 
-        private void Button_Click(object sender, EventArgs e)
+        private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
+<<<<<<< HEAD:src/DynamoCoreWpf/Views/Core/DynamoView.xaml.cs
             UserControl view = (UserControl)sidebarGrid.Children[0];
+=======
+            this.LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
+
+            UserControl view = (UserControl)this.sidebarGrid.Children[0];
+>>>>>>> Sitrus2:src/DynamoCoreWpf/Views/DynamoView.xaml.cs
             if (view.Visibility == Visibility.Collapsed)
             {
                 view.Width = double.NaN;
@@ -1122,7 +1134,12 @@ namespace Dynamo.Controls
 
         private void LibraryClicked(object sender, EventArgs e)
         {
+<<<<<<< HEAD:src/DynamoCoreWpf/Views/Core/DynamoView.xaml.cs
             restoreWidth = sidebarGrid.ActualWidth;
+=======
+            restoreWidth = this.sidebarGrid.ActualWidth;
+            this.LibraryViewColumn.MinWidth = 0;
+>>>>>>> Sitrus2:src/DynamoCoreWpf/Views/DynamoView.xaml.cs
 
             mainGrid.ColumnDefinitions[0].Width = new GridLength(0.0);
             verticalSplitter.Visibility = Visibility.Collapsed;

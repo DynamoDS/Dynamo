@@ -10,7 +10,6 @@ using DynamoUnits;
 
 using DynamoUtilities;
 
-
 namespace Dynamo
 {
     /// <summary>
@@ -21,12 +20,21 @@ namespace Dynamo
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences
     {
+<<<<<<< HEAD
         public static string DynamoTestPath = null;
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
         private LengthUnit lengthUnit;
         private AreaUnit areaUnit;
         private VolumeUnit volumeUnit;
         private string numberFormat;
+=======
+        public static string DYNAMO_TEST_PATH = null;
+        private const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
+        private LengthUnit _lengthUnit;
+        private AreaUnit _areaUnit;
+        private VolumeUnit _volumeUnit;
+        private string _numberFormat;
+>>>>>>> Sitrus2
         private string lastUpdateDownloadPath;
 
         // Variables of the settings that will be persistent
@@ -37,6 +45,7 @@ namespace Dynamo
         public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 
+        public int LibraryWidth { get; set; }
         public int ConsoleHeight { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
@@ -100,7 +109,21 @@ namespace Dynamo
         public string LastUpdateDownloadPath
         {
             get { return lastUpdateDownloadPath; }
+<<<<<<< HEAD
             set { lastUpdateDownloadPath = !File.Exists(value) ? "" : value; }
+=======
+            set
+            {
+                if (!File.Exists(value))
+                {
+                    lastUpdateDownloadPath = "";
+                }
+                else
+                {
+                    lastUpdateDownloadPath = value;
+                }
+            }
+>>>>>>> Sitrus2
         }
 
         public PreferenceSettings()
@@ -114,6 +137,7 @@ namespace Dynamo
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;
+            LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
@@ -136,7 +160,7 @@ namespace Dynamo
         {
             try
             {
-                var serializer = new XmlSerializer(typeof (PreferenceSettings));
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
                 using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
                     serializer.Serialize(fs, this);
@@ -149,7 +173,7 @@ namespace Dynamo
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }
-            
+
             return false;
         }
 
@@ -159,7 +183,16 @@ namespace Dynamo
         /// <returns>Whether file is saved or error occurred.</returns>
         public bool Save()
         {
+<<<<<<< HEAD
             return Save(DynamoTestPath ?? GetSettingsFilePath());
+=======
+            if (DYNAMO_TEST_PATH == null)
+                // Save in User Directory Path
+                return Save(GetSettingsFilePath());
+            else
+                // Support Testing
+                return Save(DYNAMO_TEST_PATH);
+>>>>>>> Sitrus2
         }
 
         /// <summary>
@@ -188,10 +221,10 @@ namespace Dynamo
                 }
             }
             catch (Exception) { }
-            
+
             return settings;
         }
-        
+
         /// <summary>
         /// Return PreferenceSettings from Default XML path
         /// </summary>
@@ -201,7 +234,16 @@ namespace Dynamo
         /// </returns>
         public static PreferenceSettings Load()
         {
+<<<<<<< HEAD
             return Load(DynamoTestPath ?? GetSettingsFilePath());
+=======
+            if (DYNAMO_TEST_PATH == null)
+                // Save in User Directory Path
+                return Load(GetSettingsFilePath());
+            else
+                // Support Testing
+                return Load(DYNAMO_TEST_PATH);
+>>>>>>> Sitrus2
         }
 
         /// <summary>

@@ -1,6 +1,11 @@
 ﻿using System;
 using Dynamo.Search;
+<<<<<<< HEAD
 using Dynamo.Search.SearchElements;
+=======
+using Dynamo.UI;
+using Dynamo.Utilities;
+>>>>>>> Sitrus2
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
@@ -47,5 +52,44 @@ namespace Dynamo.Tests
             viewModel.PopulateSearchTextWithSelectedResult();
             Assert.AreEqual("dog", viewModel.SearchText);
         }
+<<<<<<< HEAD
+=======
+
+        [Test]
+        [Category("UnitTests")]
+        public void ShortenCategoryNameTests()
+        {
+            var categoryName = "";
+            var result = SearchModel.ShortenCategoryName(categoryName);
+            Assert.AreEqual(string.Empty, result);
+
+            categoryName = null;
+            result = SearchModel.ShortenCategoryName(categoryName);
+            Assert.AreEqual(string.Empty, result);
+
+            categoryName = "Category1";
+            result = SearchModel.ShortenCategoryName(categoryName);
+            Assert.AreEqual("Category1", result);
+
+            categoryName = "Cat1 Cat" + Configurations.CategoryDelimiter + "Cat2 Cat" +
+                                    Configurations.CategoryDelimiter + "Cat3";
+            result = SearchModel.ShortenCategoryName(categoryName);
+            Assert.AreEqual("Cat1 Cat " + Configurations.ShortenedCategoryDelimiter + " Cat2 Cat " +
+                                      Configurations.ShortenedCategoryDelimiter + " Cat3", result);
+
+            categoryName = "TenSymbol" + Configurations.CategoryDelimiter +
+                           "TenSymbol" + Configurations.CategoryDelimiter +
+                           "TenSymbol" + Configurations.CategoryDelimiter +
+                           "TenSymbol" + Configurations.CategoryDelimiter +
+                           "TenSymbol" + Configurations.CategoryDelimiter +
+                           "MoreSymbols";
+            result = SearchModel.ShortenCategoryName(categoryName);
+            Assert.AreEqual("TenSymbol " + Configurations.ShortenedCategoryDelimiter +
+                           " ... " + Configurations.ShortenedCategoryDelimiter +
+                           " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
+                           " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
+                           " MoreSymbols", result);
+        }
+>>>>>>> Sitrus2
     }
 }

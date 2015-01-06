@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+             xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:search="clr-namespace:Dynamo.Search;assembly=DynamoCore"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements;assembly=DynamoCore"
@@ -31,8 +32,7 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+            <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -47,6 +47,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid Name="buttonGrid"
@@ -100,14 +101,16 @@
             </Button>
         </Grid>
 
-        <Border BorderThickness="0,0,0,1"
-                BorderBrush="#3F3F3F"
+        <Border BorderThickness="0,1,0,1"
+                BorderBrush="#555555"
                 Grid.Row="1">
             <Grid Name="SearchTextBoxGrid"
-                  Height="30"
+                  Height="25"
                   VerticalAlignment="Center"
                   MouseEnter="OnSearchTextBoxGridMouseEnter"
-                  MouseLeave="OnSearchTextBoxGridMouseLeave">
+                  MouseLeave="OnSearchTextBoxGridMouseLeave"
+                  Background="#444444">
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -115,44 +118,52 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Image x:Name="SearchIcon"
-                       Grid.Column="0"
-                       Source="/DynamoCoreWpf;component/UI/Images/search_normal.png"
-                       Width="25"
-                       Height="25"
-                       Margin="10,0,0,0"
-                       VerticalAlignment="Center" />
+                <StackPanel Name="SearchIconAndTextBlockGrid"
+                            Grid.ColumnSpan="2"
+                            Width="Auto"
+                            Orientation="Horizontal">
+                    <StackPanel.HorizontalAlignment>
+                        <Binding Path="SearchIconAlignment" />
+                    </StackPanel.HorizontalAlignment>
+
+
+                    <Image x:Name="SearchIcon"
+                           Source="/DynamoCoreWpf;component/UI/Images/search_normal.png"
+                           Width="25"
+                           Height="26"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left" />
+
+                    <TextBlock Name="SearchTextBlock"
+                               FontSize="14"
+                               IsHitTestVisible="False"
+                               Foreground="#AAAAAA"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding Path=SearchText, 
+                                                    Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                               HorizontalAlignment="Center"
+                               Height="18"
+                               Margin="3,0,0,0">
+                        SEARCH LIBRARY
+                    </TextBlock>
+                </StackPanel>
 
                 <TextBox Name="SearchTextBox"
                          KeyboardNavigation.TabIndex="0"
-                         Foreground="#DDD"
+                         Foreground="#CCCCCC"
                          Background="Transparent"
                          BorderThickness="0"
                          FontSize="14"
-                         Padding="0,0,5,0"
-                         Margin="0"
                          IsEnabled="True"
                          TextChanged="OnSearchTextBoxTextChanged"
+                         GotKeyboardFocus="TextBoxGotKeyboardFocus"
+                         LostKeyboardFocus="TextBoxLostKeyboardFocus"
                          VerticalAlignment="Center"
-                         Text="{Binding Path=SearchText, Mode=TwoWay}"
-                         Grid.Column="1"
+                         Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"
-                         CaretBrush="#DDD">
-                </TextBox>
-
-                <TextBlock FontSize="14"
-                           IsHitTestVisible="False"
-                           Padding="2,0,5,0"
-                           Margin="0"
-                           Foreground="#666"
-                           Grid.Column="1"
-                           VerticalAlignment="Center">
-                    <TextBlock.Visibility>
-                        <Binding Path="SearchText"
-                                 Converter="{StaticResource NonEmptyStringToCollapsedConverter}" />
-                    </TextBlock.Visibility>
-                    Search
-                </TextBlock>
+                         CaretBrush="#CCCCCC"
+                         Margin="26,0,0,-1"
+                         Grid.ColumnSpan="3" />
 
                 <Button Name="SearchCancelButton"
                         Grid.Column="2"
@@ -194,6 +205,7 @@
             </Grid>
         </Border>
 
+<<<<<<< HEAD:src/DynamoCoreWpf/Views/Search/LibraryContainerView.xaml
         <ScrollViewer HorizontalAlignment="Stretch"
                       Margin="0"
                       Name="BrowserScrollView"
@@ -888,6 +900,34 @@
                     <RotateTransform CenterX="0" CenterY="0" Angle="-90" />
                 </TextBlock.RenderTransform>
         </TextBlock>-->
+=======
+        <!-- LIBRARY VIEW -->
+        <views:LibraryView x:Name="libraryView"
+                           Grid.Row="2"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Stretch"
+                           DataContext="{Binding}"
+                           PreviewKeyDown="OnLibraryViewPreviewKeyDown">
+            <views:LibraryView.Visibility>
+                <Binding Path="CurrentMode"
+                         Converter="{StaticResource ViewModeToVisibilityConverter}"
+                         ConverterParameter="LibraryView" />
+            </views:LibraryView.Visibility>
+        </views:LibraryView>
+
+        <!-- LIBRARYSEARCH VIEW -->
+        <views:LibrarySearchView Grid.Row="2"
+                                 DataContext="{Binding}"
+                                 PreviewKeyDown="OnLibraryViewPreviewKeyDown"
+                                 x:Name="librarySearchView">
+            <views:LibrarySearchView.Visibility>
+                <Binding Path="CurrentMode"
+                         Converter="{StaticResource ViewModeToVisibilityConverter}"
+                         ConverterParameter="LibrarySearchView" />
+            </views:LibrarySearchView.Visibility>
+        </views:LibrarySearchView>
+
+>>>>>>> Sitrus2:src/DynamoCoreWpf/Views/LibraryContainerView.xaml
     </Grid>
 
 </UserControl>

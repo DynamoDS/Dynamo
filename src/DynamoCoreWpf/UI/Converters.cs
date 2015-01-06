@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
+<<<<<<< HEAD
 
 using Dynamo.UI;
 using Dynamo.Models;
@@ -19,9 +23,17 @@ using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 
 using Dynamo.UI.Controls;
+=======
+using Dynamo.Models;
+using Dynamo.PackageManager;
+using Dynamo.Search;
+>>>>>>> Sitrus2
 using Dynamo.Search.SearchElements;
-using System.Windows.Input;
-
+using Dynamo.UI;
+using Dynamo.UI.Controls;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels;
+using DynamoUnits;
 using RestSharp.Contrib;
 
 namespace Dynamo.Controls
@@ -238,14 +250,31 @@ namespace Dynamo.Controls
         }
     }
 
+    // This converter expects the following properties to be bound through XAML 
+    // (these properties are also to be bound in the exact order as stated here):
+    // 
+    //      SearchViewModel.SearchRootCategories.Count (int)
+    //      SearchViewModel.SearchAddonsVisibility (bool)
+    //      SearchViewModel.SearchText (string)
+    //
     public class SearchResultsToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
-            {
+            const string message = "Wrong properties bound to SearchResultsToVisibilityConverter";
+
+            if (values.Length != 3)
+                throw new ArgumentException(message);
+
+            if (!(values[0] is int) || !(values[1] is bool) || !(values[2] is string))
+                return Visibility.Collapsed;
+
+            var count = (int)values[0];
+            var addOnVisible = (bool)values[1];
+            var text = (string)values[2];
+
+            if (count == 0 && (addOnVisible == false) && !string.IsNullOrEmpty(text))
                 return Visibility.Visible;
-            }
 
             return Visibility.Collapsed;
         }
@@ -746,7 +775,11 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+<<<<<<< HEAD
             if (value is NodeSearchElementViewModel)
+=======
+            if (value is NodeSearchElement || value is NodeSearchElementViewModel)
+>>>>>>> Sitrus2
                 return true;
 
             return false;
@@ -1674,18 +1707,400 @@ namespace Dynamo.Controls
         }
     }
 
-    public class StringLengthToVisibilityConverter : IValueConverter
+    public class FullyQualifiedNameToDisplayConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (string.IsNullOrEmpty((string)value))
+            string text = value.ToString();
+            string typeOfInput = parameter as string;
+            switch (typeOfInput)
+            {
+                case "ToolTip":
+                    if (text.Length > Configurations.MaxLengthTooltipCode)
+                        return text.Insert(text.LastIndexOf(".") + 1, "\n");
+                    return text;
+                case "ClassButton":
+                    text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
+                    if (text.Length > Configurations.MaxLengthRowClassButtonTitle)
+                    {
+                        if (text.IndexOf(" ") != -1)
+                            text = text.Insert(text.IndexOf(" ") + 1, "\n");
+                        if (text.Length > Configurations.MaxLengthClassButtonTitle)
+                            // If title is too long, we can cat it.
+                            text = text.Substring(0, Configurations.MaxLengthClassButtonTitle - 3) +
+                                Configurations.TwoDots;
+                    }
+                    return text;
+
+                // Maybe, later we need more string converters.
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter is used to format the display string for both input and output 
+    /// parameters on the "TooltipWindow.xaml". If "parameter" here is "inputParam", 
+    /// then this converter is invoked by input parameter related binding. A colon 
+    /// character will be prefixed to the parameter type (e.g. "value : double") only 
+    /// for input parameter (since an output of a function does not have a name). Also,
+    /// the colon will only appended when there is actually an input parameter (for 
+    /// cases without input parameter, only "none" string will be displayed so there is 
+    /// no point in prefixing a colon character (e.g. we don't want ": none").
+    public class InOutParamTypeConverter : IValueConverter
+    {
+        private static readonly string NoneString = "none";
+        private static readonly string ColonString = ":";
+        private static readonly string SpaceString = " ";
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool shouldPrefixColon = false;
+
+            if (parameter != null)
+                shouldPrefixColon = ((parameter as string).Equals("inputParam"));
+
+            var input = value as string;
+            if (string.IsNullOrEmpty(input) || input.Equals(NoneString))
+                return input;
+
+            if (shouldPrefixColon)
+                return String.Concat(ColonString, SpaceString, input);
+            else
+                return input;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// This converter modifies TextBlock Background depending on DisplayMode.
+    /// To know for which TextBlock the converter works the parameter used.
+    /// Converter is used on StandardPanel.
+    public class DisplayModeToBackgroundConverter : IMultiValueConverter
+    {
+        public SolidColorBrush NormalColor { get; set; }
+        public SolidColorBrush ActiveColor { get; set; }
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length != 2 && parameter == null)
+                return new ArgumentException();
+
+            var isSecondaryHeaderRightVisible = (bool)values[1];
+            // If only left header is presented, it should be selected.
+            if (!isSecondaryHeaderRightVisible)
+                return ActiveColor;
+
+            var displayMode = (ClassInformationViewModel.DisplayMode)values[0];
+
+            if (displayMode.ToString() == parameter.ToString())
+                return ActiveColor;
+
+            return NormalColor;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// The converter switches between LibraryView and LibrarySearchView
+    /// using SearchViewModel.ViewMode as value, the View as parameter.
+    /// Converter is used on LibraryConatiner.
+    public class ViewModeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null)
+                return Visibility.Collapsed;
+
+            if (((SearchViewModel.ViewMode)value).ToString() == parameter.ToString())
                 return Visibility.Visible;
+
             return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            throw new NotImplementedException();
+        }
+    }
+
+    // It's used for ClassDetails and ClassObject itself. ClassDetails should be not focusable,
+    // in contrast to ClassObject.
+    // Also decides, should be category underlined or not.
+    public class ElementTypeToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is NodeSearchElementViewModel) 
+                return false;
+            if (value is BrowserInternalElementViewModel)
+                return true;
+            if (value is BrowserInternalElementForClassesViewModel)
+                return true;
+
+            if (value is BrowserRootElementViewModel)
+            {
+                var rootElement = value as BrowserRootElementViewModel;
+                return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
+            }
+            return false;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // This converter is used to change color of output parameters for custom node.
+    public class NodeTypeToColorConverter : IValueConverter
+    {
+        public SolidColorBrush TrueBrush { get; set; }
+        public SolidColorBrush FalseBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is CustomNodeSearchElementViewModel)
+                return TrueBrush;
+            return FalseBrush;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class RootElementVMToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is BrowserRootElementViewModel);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class BrowserInternalElementVMToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is BrowserInternalElementViewModel);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
+    public class HasParentRootElement : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BrowserRootElementViewModel) return true;
+            if (value is BrowserInternalElementViewModel)
+            {
+                return (value as BrowserInternalElementViewModel).CastedModel.Parent is BrowserRootElement;
+            }
+            else return false;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class NullValueToCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Depending on the number of points in FullCategoryName margin will be done.
+    // E.g. Geometry.Tesselation -> Margin="10,0,0,0"
+    // E.g. RootCategory.Namespace1.Namespace2 -> Margin="20,0,0,0"
+    public class FullCategoryNameToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var incomingString = value as string;
+
+            if (string.IsNullOrEmpty(incomingString)) return new Thickness(5, 0, 0, 0);
+
+            var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
+            return new Thickness(5 + 20 * numberOfPoints, 0, 20, 0);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Converter that will be used, if number of items equals 0. Then control should be collapsed.
+    public class IntToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((int)value > 0)
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Converter is used in LibraryView.xaml. Do not show LibraryTreeView TreviewItem ItemsHost
+    // for only one item, item should be of type BrowserInternalElementForClasses.
+    public class LibraryTreeItemsHostVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BrowserInternalElementForClassesViewModel)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Converter is used to specify Margin of highlight rectangle. 
+    // This rectangle highlights first instance of search phrase.
+    //
+    // Input parameters:
+    //     values[0] (TextBlock) - name of member. Part of this text rectangle should highlight.
+    //     values[1] (SearchViewModel) - properties SearchText and RegularTypeface are used.
+    public class SearchHighlightMarginConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length != 2)
+                return new ArgumentException();
+
+            var textBlock = values[0] as TextBlock;
+            var viewModel = values[1] as SearchViewModel;
+            var searchText = viewModel.SearchText;
+            var typeface = viewModel.RegularTypeface;
+            var fullText = textBlock.Text;
+
+            var index = fullText.IndexOf(searchText, StringComparison.CurrentCultureIgnoreCase);
+            if (index == -1)
+                return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
+
+            double rightMargin = textBlock.ActualWidth -
+                ComputeTextWidth(fullText.Substring(0, index + searchText.Length), typeface, textBlock);
+
+            double leftMargin = textBlock.ActualWidth - rightMargin -
+                ComputeTextWidth(fullText.Substring(index, searchText.Length), typeface, textBlock);
+
+            return new Thickness(leftMargin, 0, rightMargin, 0);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        private double ComputeTextWidth(string text, Typeface typeface, TextBlock textBlock)
+        {
+            var formattedText = new FormattedText(text,
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                typeface,
+                textBlock.FontSize,
+                textBlock.Foreground);
+
+            return formattedText.Width;
+        }
+    }
+
+    // This converter is used to show text label of Addon type in AddonsTreeView control.
+    public class ElementTypeToShorthandConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var elementType = (SearchModel.ElementType)value;
+
+            switch (elementType)
+            {
+                case SearchModel.ElementType.Package:
+                    return Configurations.ElementTypeShorthandPackage;
+                case SearchModel.ElementType.CustomDll:
+                    return Configurations.ElementTypeShorthandImportedDll;
+                case SearchModel.ElementType.CustomNode:
+                    return Configurations.ElementTypeShorthandCategory;
+                default:
+                    return "NIL";
+                //TODO: as logic of specifying BrowserRootElement.ElementType is implemented
+                //      next line should be used.
+                //throw new Exception("Incorrect value provided to converter");
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // This converter is used to style left secondary header of StandardPanel control.
+    // value specifies is visible right secondary header.
+    public class LeftSecondaryHeaderStyleConverter : IValueConverter
+    {
+        public Style PrimaryHeaderStyle { get; set; }
+        public Style SecondaryHeaderStyle { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+                return SecondaryHeaderStyle;
+            else
+                return PrimaryHeaderStyle;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

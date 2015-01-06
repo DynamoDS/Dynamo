@@ -84,6 +84,12 @@ limitations under the License.
       <HintPath>..\..\extern\Newtonsoft.json\Newtonsoft.Json.dll</HintPath>
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
@@ -100,6 +106,8 @@ limitations under the License.
     <Reference Include="System.Reactive.Interfaces">
       <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net40\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
@@ -129,6 +137,9 @@ limitations under the License.
     <Compile Include="Search\Legacy\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
+    <Compile Include="Search\BrowserInternalElementForClasses.cs" />
+    <Compile Include="Search\BrowserRootElement.cs" />
+    <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Disposable.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
@@ -178,6 +189,11 @@ limitations under the License.
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
     <Compile Include="Search\Legacy\BrowserItem.cs" />
+    <Compile Include="Search\CategoryBuilder.cs" />
+    <Compile Include="Search\SearchCategory.cs" />
+    <Compile Include="Search\SearchMemberGroup.cs" />
+    <Compile Include="Search\BrowserItem.cs" />
+    <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
@@ -301,6 +317,9 @@ limitations under the License.
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -310,11 +329,8 @@ copy "$(SolutionDir)..\tools\install\extra\InstallASMForDynamo.exe" "$(OutputPat
 IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
     <PostBuildEvent>mkdir "$(OutputPath)\dll"
-copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
-</PostBuildEvent>
+copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"</PostBuildEvent>
     <PostBuildEvent>xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
 xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
@@ -325,8 +341,8 @@ xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
+  </Target>  
+  <Target Name="AfterBuild">    
   </Target>
   -->
 </Project>

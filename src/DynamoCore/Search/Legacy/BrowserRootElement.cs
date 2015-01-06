@@ -1,10 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
 {
     public class BrowserRootElement : BrowserItem
     {
+
         /// <summary>
         ///     The items inside of the browser item
         /// </summary>
@@ -22,6 +24,33 @@ namespace Dynamo.Search
         {
             get { return _name; }
         }
+
+        /// <summary>
+        /// Property specifies if BrowserItem has members only as children. No any subcategories.
+        /// </summary>        
+        public bool IsPlaceholder
+        {
+            get
+            {
+                // If all childs are derived from NodeSearchElement they all are members
+                // not subcategories.
+                return Items.Count > 0 && !Items.Any(it => !(it is NodeSearchElement));
+            }
+        }
+
+        /// <summary>
+        /// Specifies whether or not Root Category package / packages need update.
+        /// Makes sense for packages only.
+        /// TODO: implement as design clarifications are provided.
+        /// </summary>
+        public bool IsUpdateAvailable { get; set; }
+
+        /// <summary>
+        /// Specifies the type of library under the category. Can be Regular, Package, CustomDll 
+        /// and CustomNode.
+        /// TODO: implement as design clarifications are provided. 
+        /// </summary>
+        public SearchModel.ElementType ElementType { get; set; }
 
         public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {
@@ -48,6 +77,13 @@ namespace Dynamo.Search
 
             foreach (var ele in this.Siblings)
                 ele.IsExpanded = false;
+
+            // Collapse all expanded items on next level.
+            if (endState)
+            {
+                foreach (var ele in this.Items)
+                    ele.IsExpanded = false;
+            }
 
             //Walk down the tree expanding anything nested one layer deep
             //this can be removed when we have the hierachy implemented properly

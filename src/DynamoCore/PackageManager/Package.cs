@@ -10,6 +10,7 @@ using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Search;
 using Dynamo.Utilities;
 using Greg.Requests;
 
@@ -113,8 +114,13 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal IEnumerable<Assembly> NodeLibraries
         {
+<<<<<<< HEAD
             get { return LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
         } 
+=======
+            get { return this.LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
+        }
+>>>>>>> Sitrus2
 
         public String SiteUrl { get; set; }
         public String RepositoryUrl { get; set; }
@@ -199,21 +205,32 @@ namespace Dynamo.PackageManager
         /// <param name="loader"></param>
         /// <param name="logger"></param>
         /// <param name="libraryServices"></param>
+<<<<<<< HEAD
         /// <param name="context"></param>
         /// <param name="isTestMode"></param>
         /// <param name="customNodeManager"></param>
         public void LoadIntoDynamo(
             DynamoLoader loader, ILogger logger, LibraryServices libraryServices, string context,
             bool isTestMode, CustomNodeManager customNodeManager)
+=======
+        public void LoadIntoDynamo(DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
+>>>>>>> Sitrus2
         {
             // Prevent duplicate loads
             if (Loaded) return;
 
             try
             {
+<<<<<<< HEAD
                 LoadAssembliesIntoDynamo(loader, libraryServices, context);
                 LoadCustomNodesIntoDynamo(customNodeManager, isTestMode);
                 EnumerateAdditionalFiles();
+=======
+                this.LoadAssembliesIntoDynamo(loader, logger, libraryServices);
+                this.LoadCustomNodesIntoDynamo(loader);
+                this.EnumerateAdditionalFiles();
+
+>>>>>>> Sitrus2
                 Loaded = true;
             }
             catch (Exception e)
@@ -234,8 +251,13 @@ namespace Dynamo.PackageManager
                 .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll") && !x.ToLower().EndsWith("pkg.json") && !x.ToLower().EndsWith(".backup"))
                 .Select(x => new PackageFileInfo(RootDirectory, x));
 
+<<<<<<< HEAD
             AdditionalFiles.Clear();
             AdditionalFiles.AddRange(nonDyfDllFiles);
+=======
+            this.AdditionalFiles.Clear();
+            this.AdditionalFiles.AddRange(nonDyfDllFiles);
+>>>>>>> Sitrus2
         }
 
         public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
@@ -246,6 +268,7 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*.dll", SearchOption.AllDirectories);
         }
 
+<<<<<<< HEAD
         private void LoadCustomNodesIntoDynamo(CustomNodeManager loader, bool isTestMode)
         {
             foreach (var info in loader.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
@@ -253,6 +276,15 @@ namespace Dynamo.PackageManager
         }
 
         private void LoadAssembliesIntoDynamo(DynamoLoader loader, LibraryServices libraryServices, string context)
+=======
+        private void LoadCustomNodesIntoDynamo(DynamoLoader loader)
+        {
+            loader.LoadCustomNodes(CustomNodeDirectory, SearchModel.ElementType.Package).
+                ForEach(x => LoadedCustomNodes.Add(x));
+        }
+
+        private void LoadAssembliesIntoDynamo(DynamoLoader loader, ILogger logger, LibraryServices libraryServices)
+>>>>>>> Sitrus2
         {
             var assemblies = LoadAssembliesInBinDirectory();
 
@@ -271,6 +303,7 @@ namespace Dynamo.PackageManager
 
             // load the zero touch assemblies
             foreach (var zeroTouchAssem in zeroTouchAssemblies)
+<<<<<<< HEAD
                 libraryServices.ImportLibrary(zeroTouchAssem.Location);
 
             // load the node model assemblies
@@ -284,6 +317,18 @@ namespace Dynamo.PackageManager
 
             foreach (var node in nodes)
                 LoadedTypes.Add(node.Type);
+=======
+            {
+                libraryServices.ImportLibrary(zeroTouchAssem.Location, logger, SearchModel.ElementType.Package);
+            }
+
+            // load the node model assemblies
+            foreach (var nodeModelAssem in nodeModelAssemblies)
+            {
+                var nodes = loader.LoadNodesFromAssembly(nodeModelAssem, SearchModel.ElementType.Package);
+                nodes.ForEach(x => LoadedTypes.Add(x));
+            }
+>>>>>>> Sitrus2
         }
 
         /// <summary>
@@ -339,7 +384,11 @@ namespace Dynamo.PackageManager
 
             foreach (var assem in assemblies)
             {
+<<<<<<< HEAD
                 LoadedAssemblies.Add( assem );
+=======
+                this.LoadedAssemblies.Add(assem);
+>>>>>>> Sitrus2
             }
 
             return assemblies;
@@ -374,9 +423,18 @@ namespace Dynamo.PackageManager
             var guids = new HashSet<Guid>(LoadedCustomNodes.Select(x => x.FunctionId));
 
             return
+<<<<<<< HEAD
                 dynamoModel.Workspaces.OfType<CustomNodeWorkspaceModel>()
                     .Select(x => x.CustomNodeId)
                     .Any(guids.Contains);
+=======
+                dynamoModel.Workspaces.Any(
+                    x =>
+                    {
+                        var def = dynamoModel.CustomNodeManager.GetDefinitionFromWorkspace(x);
+                        return def != null && guids.Contains(def.FunctionId);
+                    });
+>>>>>>> Sitrus2
         }
 
         internal void MarkForUninstall(IPreferences prefs)
@@ -395,7 +453,11 @@ namespace Dynamo.PackageManager
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 
+<<<<<<< HEAD
         internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
+=======
+        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs, ILogger logger)
+>>>>>>> Sitrus2
         {
             if (LoadedAssemblies.Any())
             {

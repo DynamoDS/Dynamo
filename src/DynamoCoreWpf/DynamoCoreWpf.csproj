@@ -71,11 +71,21 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AddonsTreeView.xaml.cs">
+      <DependentUpon>AddonsTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StandardPanel.xaml.cs">
+      <DependentUpon>StandardPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
+    <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
+    <Compile Include="UI\LibraryWrapPanel.cs" />
+    <Compile Include="UI\VisualCodeBlockUtils.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
@@ -160,6 +170,13 @@
     <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
+    <Compile Include="ViewModels\BrowserInternalElementViewModel.cs" />
+    <Compile Include="ViewModels\BrowserItemViewModel.cs" />
+    <Compile Include="ViewModels\BrowserRootElementViewModel.cs" />
+    <Compile Include="ViewModels\ClassInformationViewModel.cs" />
+    <Compile Include="ViewModels\NodeSearchElementViewModel.cs" />
+    <Compile Include="ViewModels\StateMachine.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizations\SublistsViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
@@ -184,6 +201,13 @@
       <DependentUpon>LibraryContainerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
+    <Compile Include="Views\LibrarySearchView.xaml.cs">
+      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LibraryView.xaml.cs">
+      <DependentUpon>LibraryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\NoteView.xaml.cs">
@@ -199,6 +223,10 @@
       <DependentUpon>PublishPackageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\Watch3DView.xaml.cs">
+    <Compile Include="Controls\TooltipWindow.xaml.cs">
+      <DependentUpon>TooltipWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Watch3DView.xaml.cs">
       <DependentUpon>Watch3DView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\WatchTree.xaml.cs">
@@ -255,6 +283,10 @@
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\AddonsTreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -267,6 +299,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\StandardPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\StartPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -898,6 +934,15 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Core\NodeView.xaml">
+    <Page Include="Views\LibrarySearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\LibraryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NodeView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
@@ -925,6 +970,11 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Preview\Watch3DView.xaml">
+    <Page Include="Controls\TooltipWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Watch3DView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -981,6 +1031,12 @@
     <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\CustomNode\customNode.png" />
+    <Resource Include="UI\Images\Tooltip\code.png" />
+    <Resource Include="UI\Images\Tooltip\copy.png" />
+    <Resource Include="UI\Images\Tooltip\copy_hover.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

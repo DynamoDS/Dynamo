@@ -1,4 +1,6 @@
-﻿using Dynamo.Utilities;
+﻿using System.Windows;
+using System.Windows.Media;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI
 {
@@ -41,6 +43,7 @@ namespace Dynamo.UI
         // Grid Settings
         public static readonly int GridSpacing = 100;
         public static readonly int GridThickness = 2;
+        public static readonly Color GridLineColor = Color.FromRgb(232, 232, 232);
 
         // Canvas Control
         public static readonly double ZoomIncrement = 0.05;
@@ -69,6 +72,8 @@ namespace Dynamo.UI
         public static double PreviewFrameStrokeThickness = 1;
 
         public static double PreviewTextFontSize = 10;
+        public static FontWeight PreviewTextFontWeight = FontWeights.Light;
+        public static Thickness PreviewContentMargin = new Thickness(5, 12, 5, 5);
 
         public static double PreviewMaxWidth = 500;
         public static double PreviewMinWidth = 40;
@@ -105,6 +110,7 @@ namespace Dynamo.UI
         public static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
 
         public static double ErrorTextFontSize = 13;
+        public static FontWeight ErrorTextFontWeight = FontWeights.Normal;
         public static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
 
         public static double ErrorArrowWidth = 12;
@@ -120,6 +126,7 @@ namespace Dynamo.UI
         public static double NodeTooltipContentMaxHeight = NodeTooltipMaxHeight - 16;
 
         public static double NodeTooltipTextFontSize = 11;
+        public static FontWeight NodeTooltipTextFontWeight = FontWeights.Light;
 
         public static Thickness NodeTooltipContentMarginLeft = new Thickness(11, 5, 5, 5);
         public static Thickness NodeTooltipContentMarginRight = new Thickness(5, 5, 11, 5);
@@ -131,6 +138,11 @@ namespace Dynamo.UI
         public static double NodeTooltipArrowHeight_SideConnecting = 12;
 
         public static double ToolTipTargetGapInPixels = 3.0;
+        public static double NodeButtonHeight = 32; // Height of node button.
+        public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
+        public static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
+        public static string NoDescriptionAvailable = "No description available";
+
         #endregion
 
         #region Library Item Tooltip
@@ -143,6 +155,7 @@ namespace Dynamo.UI
         public static double LibraryTooltipContentMaxHeight = LibraryTooltipMaxHeight - 17;
 
         public static double LibraryTooltipTextFontSize = 11;
+        public static FontWeight LibraryTooltipTextFontWeight = FontWeights.Normal;
         public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
 
         public static double LibraryTooltipArrowHeight = 12;
@@ -181,6 +194,55 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region Icon Resources Strings
+
+        public const string SmallIconPostfix = ".Small";
+        public const string LargeIconPostfix = ".Large";
+        public const string ResourcesDLL = ".resources.dll";
+        public const string DefaultIcon = "DefaultIcon";
+        public const string DefaultCustomNodeIcon = "DefaultCustomNode";
+        public const string DefaultAssembly = "DynamoCore";
+
+        #endregion
+
+        #region Class button
+        public const int MaxLengthClassButtonTitle = 22;
+        public const int MaxLengthRowClassButtonTitle = 8; // How many characters can be in one row.
+        public const string TwoDots = "..";
+        #endregion
+
+        #region LibraryView
+
+        public const double MinWidthLibraryView = 204;
+
+        public const string TopResult = "Top Result";
+        public const string CategoryGroupCreate = "Create";
+        public const string CategoryGroupAction = "Actions";
+        public const string CategoryGroupQuery = "Query";
+        public const char CategoryDelimiter = '.';
+        public const char ShortenedCategoryDelimiter = '>';
+
+        public const string ClassesDefaultName = "Classes";
+
+        public const string ElementTypeShorthandCategory = "CTGRY";
+        public const string ElementTypeShorthandPackage = "PKG";
+        public const string ElementTypeShorthandImportedDll = "DLL";
+
+        #endregion
+
+        #region StandardPanel
+
+        public const string MoreButtonTextFormat = "SHOW MORE ({0})";
+
+        #endregion
+
+#if DEBUG
+        public const string UpdateDownloadLocation = "http://dyn-builds-dev.s3.amazonaws.com/";
+        public const string UpdateSignatureLocation = "http://dyn-builds-dev-sig.s3.amazonaws.com/";
+#else
+        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3.amazonaws.com/";
+        public const string UpdateSignatureLocation = "http://dyn-builds-data-sig.s3.amazonaws.com/";
+#endif
     }
 
     public class ResourceNames

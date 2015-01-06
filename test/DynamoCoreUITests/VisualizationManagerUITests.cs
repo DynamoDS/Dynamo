@@ -12,7 +12,6 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreUITests.Utility;
 using NUnit.Framework;
-using Dynamo.Utilities;
 using Dynamo.Selection;
 
 namespace DynamoCoreUITests

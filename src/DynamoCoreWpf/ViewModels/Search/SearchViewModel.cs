@@ -1,15 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
 
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
+=======
+using System.Windows;
+using System.Windows.Media;
+using Dynamo.Models;
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
+using Dynamo.UI;
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
 using Dynamo.Wpf.ViewModels;
-
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
@@ -30,6 +38,13 @@ namespace Dynamo.ViewModels
         {
             if (RequestReturnFocusToSearch != null)
                 RequestReturnFocusToSearch(this, e);
+        }
+
+        public event EventHandler SearchTextChanged;
+        public void OnSearchTextChanged(object sender, EventArgs e)
+        {
+            if (SearchTextChanged != null)
+                SearchTextChanged(this, e);
         }
 
         #endregion
@@ -64,23 +79,40 @@ namespace Dynamo.ViewModels
             set
             {
                 searchText = value;
+                OnSearchTextChanged(this, EventArgs.Empty);
                 RaisePropertyChanged("SearchText");
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
                 RaisePropertyChanged("BrowserRootCategories");
+=======
+                RaisePropertyChanged("CurrentMode");
+            }
+        }
+
+        private SearchMemberGroup topResult;
+        public SearchMemberGroup TopResult
+        {
+            get { return topResult; }
+            set
+            {
+                topResult = value;
+                RaisePropertyChanged("TopResult");
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
             }
         }
 
         /// <summary>
-        ///     SelectedIndex property
+        ///     SearchIconAlignment property
         /// </summary>
         /// <value>
-        ///     This is the currently selected element in the UI.
+        ///     This is used for aligment search icon and text.
         /// </value>
-        private int selectedIndex;
-        public int SelectedIndex
+        private System.Windows.HorizontalAlignment searchIconAlignment;
+        public System.Windows.HorizontalAlignment SearchIconAlignment
         {
-            get { return selectedIndex; }
+            get { return searchIconAlignment; }
             set
             {
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
                 if (selectedIndex != value)
                 {
                     if (visibleSearchResults.Count > selectedIndex)
@@ -90,6 +122,10 @@ namespace Dynamo.ViewModels
                         visibleSearchResults[selectedIndex].IsSelected = true;
                     RaisePropertyChanged("SelectedIndex");
                 }
+=======
+                searchIconAlignment = value;
+                RaisePropertyChanged("SearchIconAlignment");
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
             }
         }
 
@@ -110,6 +146,28 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool SearchAddonsVisibility
+        {
+            get
+            {
+                return Model.AddonRootCategories.Any(cat => cat.Visibility);
+            }
+        }
+
+        public enum ViewMode { LibraryView, LibrarySearchView };
+
+        /// <summary>
+        /// The property specifies which View is active now.
+        /// </summary>
+        public ViewMode CurrentMode
+        {
+            get
+            {
+                return string.IsNullOrEmpty(SearchText) ? ViewMode.LibraryView :
+                    ViewMode.LibrarySearchView;
+            }
+        }
+
         /// <summary>
         ///     SearchResults property
         /// </summary>
@@ -118,6 +176,7 @@ namespace Dynamo.ViewModels
         /// </value>
         public ObservableCollection<NodeSearchElementViewModel> SearchResults { get; private set; }
 
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
         /// <summary>
         /// A category representing the "Top Result"
         /// </summary>
@@ -130,12 +189,30 @@ namespace Dynamo.ViewModels
         private readonly List<NodeSearchElementViewModel> visibleSearchResults =
             new List<NodeSearchElementViewModel>();
 
+=======
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
         private bool searchScrollBarVisibility = true;
         public bool SearchScrollBarVisibility
         {
             get { return searchScrollBarVisibility; }
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
+=======
+
+        public Typeface RegularTypeface { get; private set; }
+
+        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories { get;
+            private set; }
+
+        public ObservableCollection<SearchCategory> SearchRootCategories
+        {
+            get { return Model.SearchRootCategories; }
+        }
+
+        public SearchModel Model { get; private set; }
+        private readonly DynamoViewModel dynamoViewModel;
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
 
         public ObservableCollection<NodeCategoryViewModel> SearchRootCategories { get; private set; }
 
@@ -169,12 +246,24 @@ namespace Dynamo.ViewModels
 
         private void InitializeCore()
         {
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
             SelectedIndex = 0;
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>();
             SearchRootCategories = new ObservableCollection<NodeCategoryViewModel>();
+=======
+            SearchResults = new ObservableCollection<SearchElementBaseViewModel>();
+            BrowserRootCategories = new ObservableCollection<BrowserRootElementViewModel>();
+
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
             Visible = false;
             searchText = "";
+            searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
+            var fontFamily = new FontFamily(SharedDictionaryManager.DynamoModernDictionaryUri, "../../Fonts/#Open Sans");
+            RegularTypeface = new Typeface(fontFamily, FontStyles.Normal, FontWeights.Normal,
+                FontStretches.Normal);
+
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
             // When Library changes, sync up
             Model.EntryAdded += entry =>
             {
@@ -185,6 +274,10 @@ namespace Dynamo.ViewModels
             libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
         }
+=======
+            this.Model.RequestSync += ModelOnRequestSync;
+            this.Model.Executed += ExecuteElement;
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
 
         private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
@@ -237,12 +330,18 @@ namespace Dynamo.ViewModels
                 return;
             target.Entries.RemoveAt(location.i);
 
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
             while (!target.Items.Any() && treeStack.Any())
             {
                 var parent = treeStack.Pop();
                 parent.SubCategories.Remove(target);
                 target = parent;
             }
+=======
+            this.Model.BrowserRootCategoriesCollectionChanged += BrowserRootCategoriesOnCollectionChanged;
+
+            this.SortCategoryChildren();
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
         }
 
         private void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
@@ -289,8 +388,7 @@ namespace Dynamo.ViewModels
         #region Search
 
         /// <summary>
-        ///     Performs a search using the internal SearcText as the query and
-        ///     updates the observable SearchResults property.
+        ///     Performs a search using the internal SearcText as the query.
         /// </summary>
         internal void SearchAndUpdateResults()
         {
@@ -306,6 +404,7 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
             // deselect the last selected item
             if (visibleSearchResults.Count > SelectedIndex)
                 visibleSearchResults[SelectedIndex].IsSelected = false;
@@ -419,20 +518,43 @@ namespace Dynamo.ViewModels
         {
             if (SelectedIndex == SearchResults.Count - 1
                 || SelectedIndex == -1)
-                return;
+=======
+            //var sw = new Stopwatch();
 
-            SelectedIndex = SelectedIndex + 1;
+            //sw.Start();
+
+            var foundNodes = this.Model.Search(query);
+            this.UpdateTopResult();
+
+            //sw.Stop();
+
+            //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
+
+            RaisePropertyChanged("SearchAddonsVisibility");
+            RaisePropertyChanged("SearchRootCategories");
+
+            // SearchResults doesn't used everywhere.
+            // It is populated for making connected tests as successful.
+            SearchResults = new ObservableCollection<SearchElementBaseViewModel>(foundNodes.Select(node => new NodeSearchElementViewModel(node as NodeSearchElement)));
         }
 
-        /// <summary>
-        ///     Decrements the selected element by 1, unless it is the first element already
-        /// </summary>
-        public void SelectPrevious()
+        private void UpdateTopResult()
         {
-            if (SelectedIndex <= 0)
+            if (!Model.SearchRootCategories.Any())
+            {
+                TopResult = null;
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
                 return;
+            }
 
-            SelectedIndex = SelectedIndex - 1;
+            // If SearchRootCategories has at least 1 element, it has at least 1 member. 
+            var firstMemberGroup = Model.SearchRootCategories.First().
+                MemberGroups.First();
+
+            var topMemberGroup = new SearchMemberGroup(firstMemberGroup.FullyQualifiedName);
+            topMemberGroup.AddMember(firstMemberGroup.Members.First());
+
+            TopResult = topMemberGroup;
         }
 
         #endregion
@@ -484,13 +606,15 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void PopulateSearchTextWithSelectedResult()
         {
-            if (SearchResults.Count == 0) return;
+            // TODO (Vladimir): implement it for new navigation system
 
-            // none of the elems are selected, return 
-            if (SelectedIndex == -1)
-                return;
+            //if (SearchResults.Count == 0) return;
 
-            SearchText = SearchResults[SelectedIndex].Model.Name;
+            //// none of the elems are selected, return 
+            //if (SelectedIndex == -1)
+            //    return;
+
+            //SearchText = SearchResults[SelectedIndex].Model.Name;
         }
 
         #endregion
@@ -498,19 +622,87 @@ namespace Dynamo.ViewModels
         #region Execution
 
         /// <summary>
-        ///     Runs the Execute() method of the current selected SearchElementBase object
-        ///     amongst the SearchResults.
+        ///     Runs the Execute() method of the current selected SearchElementBase object.
         /// </summary>
         public void Execute()
         {
-            // none of the elems are selected, return 
-            if (SelectedIndex == -1)
-                return;
+            // TODO (Vladimir): implement it for new navigation system
 
-            if (visibleSearchResults.Count <= SelectedIndex)
-                return;
+            //// none of the elems are selected, return 
+            //if (SelectedIndex == -1)
+            //    return;
 
+            //if (visibleSearchResults.Count <= SelectedIndex)
+            //    return;
+
+<<<<<<< HEAD:src/DynamoCoreWpf/ViewModels/Search/SearchViewModel.cs
             visibleSearchResults[SelectedIndex].Model.ProduceNode();
+=======
+            //if (!(visibleSearchResults[SelectedIndex].Model is SearchElementBase)) return;
+
+            //ExecuteElement(visibleSearchResults[SelectedIndex].Model as SearchElementBase);
+        }
+
+        private void ExecuteElement(BrowserItem searchElement)
+        {
+            dynamic ele = searchElement;
+            ExecuteElement(ele);
+        }
+
+        private void ExecuteElement(CategorySearchElement searchElement)
+        {
+            this.SearchText = searchElement.Name + ".";
+        }
+
+        private void ExecuteElement(DSFunctionNodeSearchElement element)
+        {
+            // create node
+            var guid = Guid.NewGuid();
+            this.dynamoViewModel.ExecuteCommand(
+                new DynamoModel.CreateNodeCommand(guid, element.FunctionDescriptor.MangledName, 0, 0, true, true));
+
+            // select node
+            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
+        }
+
+        private void ExecuteElement(CustomNodeSearchElement element)
+        {
+            string name = element.Guid.ToString();
+
+            // create node
+            var guid = Guid.NewGuid();
+            dynamoViewModel.ExecuteCommand(
+                new DynamoModel.CreateNodeCommand(guid, name, 0, 0, true, true));
+
+            // select node
+            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
+        }
+
+        private void ExecuteElement(NodeSearchElement element)
+        {
+            // create node
+            var guid = Guid.NewGuid();
+            dynamoViewModel.ExecuteCommand(
+                new DynamoModel.CreateNodeCommand(guid, element.FullName, 0, 0, true, true));
+
+            // select node
+            var placedNode = dynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
+>>>>>>> Sitrus2:src/DynamoCoreWpf/ViewModels/SearchViewModel.cs
         }
 
         #endregion
