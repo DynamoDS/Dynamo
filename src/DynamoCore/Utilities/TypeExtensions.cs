@@ -111,9 +111,9 @@ namespace Dynamo.Utilities
                 // Get a set of Expressions representing the parameters which will be passed to the Func:
                 var lamdaParameterExpressions = new[]
                 {
-                    Expression.Parameter(typeof(TArg1), "param1"),
-                    Expression.Parameter(typeof(TArg2), "param2"),
-                    Expression.Parameter(typeof(TArg3), "param3")
+                    Expression.Parameter(typeof(TArg1), /*NXLT*/"param1"),
+                    Expression.Parameter(typeof(TArg2), /*NXLT*/"param2"),
+                    Expression.Parameter(typeof(TArg3), /*NXLT*/"param3")
                 };
 
                 // Get a set of Expressions representing the parameters which will be passed to the constructor:

@@ -22,7 +22,7 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DYNAMO_TEST_PATH = null;
-        const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
+        const string DYNAMO_SETTINGS_FILE = /*NXLT*/"DynamoSettings.xml";
         private LengthUnit _lengthUnit;
         private AreaUnit _areaUnit;
         private VolumeUnit _volumeUnit;
@@ -136,7 +136,7 @@ namespace Dynamo
             AreaUnit = DynamoUnits.AreaUnit.SquareMeter;
             VolumeUnit = VolumeUnit.CubicMeter;
             PackageDirectoriesToUninstall = new List<string>();
-            NumberFormat = "f3";
+            NumberFormat = /*NXLT*/"f3";
             LastUpdateDownloadPath = "";
         }
 

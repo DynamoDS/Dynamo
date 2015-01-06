@@ -261,4 +261,127 @@ You can also try deleting [FILEPATH] and trying again.
 Depending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.
 Sorry about that.</value>
   </data>
+  <data name="CouldNotLoadTypes" xml:space="preserve">
+    <value>Could not load types.</value>
+  </data>
+  <data name="CreatingConnectorError" xml:space="preserve">
+    <value>ERROR : Could not create connector between {0} and {1}.</value>
+  </data>
+  <data name="DllLoadException" xml:space="preserve">
+    <value>Dll Load Exception:</value>
+  </data>
+  <data name="ElapsedWhenLoadingXml" xml:space="preserve">
+    <value>{0} elapsed for loading xml.</value>
+  </data>
+  <data name="EvaluationComleted" xml:space="preserve">
+    <value>Evaluation completed in {0}</value>
+  </data>
+  <data name="FailedToLoadHeader" xml:space="preserve">
+    <value>ERROR: The header for the custom node at {0} failed to load.  It will be left out of search.</value>
+  </data>
+  <data name="FileBackUpLocation" xml:space="preserve">
+    <value>Original file '{0}' gets backed up at '{1}'</value>
+  </data>
+  <data name="LoadingNodeDefinition" xml:space="preserve">
+    <value>Loading node definition for "{0}" from: {1}</value>
+  </data>
+  <data name="NodeProblemEncountered" xml:space="preserve">
+    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}</value>
+  </data>
+  <data name="OpeningHomeWorkspace" xml:space="preserve">
+    <value>Opening home workspace {0}...</value>
+  </data>
+  <data name="OpenWorkbenchError" xml:space="preserve">
+    <value>There was an error opening the workbench.</value>
+  </data>
+  <data name="BadIdentifierSyntax" xml:space="preserve">
+    <value>Bad identifier syntax: "{0}"</value>
+  </data>
+  <data name="BadRangeSyntax" xml:space="preserve">
+    <value>Bad range syntax: not of format \"start..end[..(increment|#count)]\"</value>
+  </data>
+  <data name="CannotHave0Step" xml:space="preserve">
+    <value>Can't have 0 step.</value>
+  </data>
+  <data name="ClearingWorkflow" xml:space="preserve">
+    <value>Clearing workflow...</value>
+  </data>
+  <data name="CouldNotCompressFile" xml:space="preserve">
+    <value>Could not compress file.  Is the file in use?</value>
+  </data>
+  <data name="CouldNotGetLatestBuild" xml:space="preserve">
+    <value>Couldn't get the latest build from S3</value>
+  </data>
+  <data name="CouldNotGetUpdateData" xml:space="preserve">
+    <value>Couldn't get update data from {0}</value>
+  </data>
+  <data name="DulicatedPackage" xml:space="preserve">
+    <value>A duplicate of the package called {0} was found at {1}.  Ignoring it.</value>
+  </data>
+  <data name="DynamoUpToDate" xml:space="preserve">
+    <value>Dynamo is up to date.</value>
+  </data>
+  <data name="ExceptionEncountered" xml:space="preserve">
+    <value>Exception encountered scanning the package directory at {0}</value>
+  </data>
+  <data name="FailedToLoad" xml:space="preserve">
+    <value>Failed to load {0}\n, Exception: {1}</value>
+  </data>
+  <data name="FailedToLoadCustomNode" xml:space="preserve">
+    <value>Failed to load custom node: {0}.  Replacing with proxy custom node.</value>
+  </data>
+  <data name="FailedToSave" xml:space="preserve">
+    <value>Failed to save {0}\n, Exception: {1}</value>
+  </data>
+  <data name="IdentifiersNotFound" xml:space="preserve">
+    <value>No identifiers found.</value>
+  </data>
+  <data name="InvalidStartOrEndOfRange" xml:space="preserve">
+    <value>The start or end of a range is greater than the number of available elements in the list.</value>
+  </data>
+  <data name="MalformedHeaderPackage" xml:space="preserve">
+    <value>{0} contains a package with a malformed header.  Ignoring it.</value>
+  </data>
+  <data name="NoHeaderPackage" xml:space="preserve">
+    <value>{0} contains a package without a header.  Ignoring it.</value>
+  </data>
+  <data name="PackageEmpty" xml:space="preserve">
+    <value>The package was found to be empty and was not installed.</value>
+  </data>
+  <data name="PackageTooLarge" xml:space="preserve">
+    <value>The package is too large!  The package must be less than 15 MB!</value>
+  </data>
+  <data name="PathNotRegconizableAsStableOrDailyBuild" xml:space="preserve">
+    <value>The specified file path is not recognizable as a stable or a daily build</value>
+  </data>
+  <data name="RangeEndCouldNotBeParsed" xml:space="preserve">
+    <value>Range end could not be parsed.</value>
+  </data>
+  <data name="RangeOrApprIdentifierAlrUsed" xml:space="preserve">
+    <value>Cannot use range or approx. identifier on increment field when one has already been used to specify a count.</value>
+  </data>
+  <data name="RangeStepCouldNotBeParsed" xml:space="preserve">
+    <value>Range step could not be parsed.</value>
+  </data>
+  <data name="RangeValuesGreaterThanZero" xml:space="preserve">
+    <value>Range values must be greater than zero.</value>
+  </data>
+  <data name="RequestingVersionUpdate" xml:space="preserve">
+    <value>Requesting version update info...</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update available: {0}</value>
+  </data>
+  <data name="UpdateDownloadComplete" xml:space="preserve">
+    <value>Update download complete.</value>
+  </data>
+  <data name="UpdateDownloadProgress" xml:space="preserve">
+    <value>Update download progress: {0}%</value>
+  </data>
+  <data name="UpdateDownloadStarted" xml:space="preserve">
+    <value>Update download started...</value>
+  </data>
+  <data name="WorkbenchNotOpen" xml:space="preserve">
+    <value>Workbench could not be opened.</value>
+  </data>
 </root>

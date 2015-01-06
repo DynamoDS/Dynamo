@@ -75,7 +75,7 @@ namespace Dynamo.Core.Threading
         internal bool Initialize(WorkspaceModel workspaceModel, NodeModel nodeModel)
         {
             if (workspaceModel == null)
-                throw new ArgumentNullException("workspaceModel");
+                throw new ArgumentNullException(/*NXLT*/"workspaceModel");
 
             if (nodeModel == null) // No node is specified, gather all nodes.
             {
@@ -94,7 +94,7 @@ namespace Dynamo.Core.Threading
                 duplicatedNodeReferences = gathered;
             }
 
-            Debug.WriteLine(string.Format("Aggregation task initialized for {0}", nodeModel == null?"null":nodeModel.GUID.ToString()));
+            Debug.WriteLine(string.Format(/*NXLT*/"Aggregation task initialized for {0}", nodeModel == null ? "null" : nodeModel.GUID.ToString()));
             return duplicatedNodeReferences.Any();
         }
 
@@ -106,7 +106,7 @@ namespace Dynamo.Core.Threading
         {
             if (duplicatedNodeReferences == null)
             {
-                const string message = "Initialize method was not called";
+                const string message = /*NXLT*/"Initialize method was not called";
                 throw new InvalidOperationException(message);
             }
 

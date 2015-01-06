@@ -27,12 +27,12 @@ namespace Dynamo.Models
                 double zoom = 1.0;
                 string id = "";
 
-                var topNode = xmlDoc.GetElementsByTagName("Workspace");
+                var topNode = xmlDoc.GetElementsByTagName(/*NXLT*/"Workspace");
 
                 // legacy support
                 if (topNode.Count == 0)
                 {
-                    topNode = xmlDoc.GetElementsByTagName("dynWorkspace");
+                    topNode = xmlDoc.GetElementsByTagName(/*NXLT*/"dynWorkspace");
                 }
 
                 // load the header
@@ -40,13 +40,13 @@ namespace Dynamo.Models
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
-                        if (att.Name.Equals("X"))
+                        if (att.Name.Equals(/*NXLT*/"X"))
                             cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("Y"))
+                        else if (att.Name.Equals(/*NXLT*/"Y"))
                             cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("zoom"))
+                        else if (att.Name.Equals(/*NXLT*/"zoom"))
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("Name"))
+                        else if (att.Name.Equals(/*NXLT*/"Name"))
                             funName = att.Value;
                         else if (att.Name.Equals("ID"))
                         {
@@ -58,7 +58,7 @@ namespace Dynamo.Models
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
                 // files remain compatible
-                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != "Home")
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != /*NXLT*/"Home")
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
@@ -68,7 +68,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                dynamoModel.Logger.Log("There was an error opening the workbench.");
+                dynamoModel.Logger.Log(Properties.Resources.OpenWorkbenchError);
                 dynamoModel.Logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 

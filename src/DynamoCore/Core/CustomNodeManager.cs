@@ -529,25 +529,25 @@ namespace Dynamo.Utilities
                 // load the header
                 // handle legacy workspace nodes called dynWorkspace
                 // and new workspaces without the dyn prefix
-                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName("Workspace");
+                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Workspace");
                 if (workspaceNodes.Count == 0)
-                    workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
+                    workspaceNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynWorkspace");
 
                 foreach (XmlNode node in workspaceNodes)
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
-                        if (att.Name.Equals("Name"))
+                        if (att.Name.Equals(/*NXLT*/"Name"))
                             funName = att.Value;
-                        else if (att.Name.Equals("ID"))
+                        else if (att.Name.Equals(/*NXLT*/"ID"))
                         {
                             id = att.Value;
                         }
-                        else if (att.Name.Equals("Category"))
+                        else if (att.Name.Equals(/*NXLT*/"Category"))
                         {
                             cat = att.Value;
                         }
-                        else if (att.Name.Equals("Description"))
+                        else if (att.Name.Equals(/*NXLT*/"Description"))
                         {
                             des = att.Value;
                         }
@@ -576,7 +576,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception e)
             {
-                this.dynamoModel.Logger.Log("ERROR: The header for the custom node at " + path + " failed to load.  It will be left out of search.");
+                this.dynamoModel.Logger.Log(String.Format(Properties.Resources.FailedToLoadHeader,path));
                 this.dynamoModel.Logger.Log(e.ToString());
                 category = "";
                 guid = Guid.Empty;
@@ -630,29 +630,29 @@ namespace Dynamo.Utilities
 
                 // handle legacy workspace nodes called dynWorkspace
                 // and new workspaces without the dyn prefix
-                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName("Workspace");
+                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Workspace");
                 if (workspaceNodes.Count == 0)
-                    workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
+                    workspaceNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynWorkspace");
 
                 foreach (XmlNode node in workspaceNodes)
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
-                        if (att.Name.Equals("X"))
+                        if (att.Name.Equals(/*NXLT*/"X"))
                             cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("Y"))
+                        else if (att.Name.Equals(/*NXLT*/"Y"))
                             cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("zoom"))
+                        else if (att.Name.Equals(/*NXLT*/"zoom"))
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("Name"))
+                        else if (att.Name.Equals(/*NXLT*/"Name"))
                             funName = att.Value;
-                        else if (att.Name.Equals("Category"))
+                        else if (att.Name.Equals(/*NXLT*/"Category"))
                             category = att.Value;
-                        else if (att.Name.Equals("Description"))
+                        else if (att.Name.Equals(/*NXLT*/"Description"))
                             description = att.Value;
-                        else if (att.Name.Equals("ID"))
+                        else if (att.Name.Equals(/*NXLT*/"ID"))
                             id = att.Value;
-                        else if (att.Name.Equals("Version"))
+                        else if (att.Name.Equals(/*NXLT*/"Version"))
                             version = att.Value;
                     }
                 }
@@ -686,7 +686,7 @@ namespace Dynamo.Utilities
                     if (!isTesting && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = string.Format(
-                            "Original file '{0}' gets backed up at '{1}'",
+                            Properties.Resources.FileBackUpLocation,
                             Path.GetFileName(xmlPath), backupPath);
 
                         dynamoModel.Logger.Log(message);
@@ -707,7 +707,7 @@ namespace Dynamo.Utilities
                 #endregion
 
                 //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
-                this.dynamoModel.Logger.Log("Loading node definition for \"" + funName + "\" from: " + xmlPath);
+                this.dynamoModel.Logger.Log(String.Format(Properties.Resources.LoadingNodeDefinition,funName,xmlPath));
 
                 var ws = new CustomNodeWorkspaceModel(dynamoModel,
                     funName, category.Length > 0
@@ -729,16 +729,16 @@ namespace Dynamo.Utilities
                 // custom node won't recursively load itself.
                 SetFunctionDefinition(def.FunctionId, def);
 
-                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
-                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
-                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
+                XmlNodeList elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Elements");
+                XmlNodeList cNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Connectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Notes");
 
                 if (elNodes.Count == 0)
-                    elNodes = xmlDoc.GetElementsByTagName("dynElements");
+                    elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynElements");
                 if (cNodes.Count == 0)
-                    cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                    cNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynConnectors");
                 if (nNodes.Count == 0)
-                    nNodes = xmlDoc.GetElementsByTagName("dynNotes");
+                    nNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynNotes");
 
                 XmlNode elNodesList = elNodes[0];
                 XmlNode cNodesList = cNodes[0];
@@ -748,14 +748,14 @@ namespace Dynamo.Utilities
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
-                    XmlAttribute typeAttrib = elNode.Attributes["type"];
-                    XmlAttribute guidAttrib = elNode.Attributes["guid"];
-                    XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
-                    XmlAttribute xAttrib = elNode.Attributes["x"];
-                    XmlAttribute yAttrib = elNode.Attributes["y"];
-                    XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
-                    XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
-                    XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
+                    XmlAttribute typeAttrib = elNode.Attributes[/*NXLT*/"type"];
+                    XmlAttribute guidAttrib = elNode.Attributes[/*NXLT*/"guid"];
+                    XmlAttribute nicknameAttrib = elNode.Attributes[/*NXLT*/"nickname"];
+                    XmlAttribute xAttrib = elNode.Attributes[/*NXLT*/"x"];
+                    XmlAttribute yAttrib = elNode.Attributes[/*NXLT*/"y"];
+                    XmlAttribute lacingAttrib = elNode.Attributes[/*NXLT*/"lacing"];
+                    XmlAttribute isVisAttrib = elNode.Attributes[/*NXLT*/"isVisible"];
+                    XmlAttribute isUpstreamVisAttrib = elNode.Attributes[/*NXLT*/"isUpstreamVisible"];
 
                     string typeName = typeAttrib.Value;
 
@@ -776,14 +776,14 @@ namespace Dynamo.Utilities
 
                     bool isVisible = true;
                     if (isVisAttrib != null)
-                        isVisible = isVisAttrib.Value == "true" ? true : false;
+                        isVisible = isVisAttrib.Value == /*NXLT*/"true" ? true : false;
 
                     bool isUpstreamVisible = true;
                     if (isUpstreamVisAttrib != null)
-                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
+                        isUpstreamVisible = isUpstreamVisAttrib.Value == /*NXLT*/"true" ? true : false;
 
                     // Retrieve optional 'function' attribute (only for DSFunction).
-                    XmlAttribute signatureAttrib = elNode.Attributes["function"];
+                    XmlAttribute signatureAttrib = elNode.Attributes[/*NXLT*/"function"];
                     var signature = signatureAttrib == null ? null : signatureAttrib.Value;
 
                     NodeModel el = null;
@@ -824,7 +824,7 @@ namespace Dynamo.Utilities
                     if (dummyElement != null) // If a dummy node placement is desired.
                     {
                         // The new type representing the dummy node.
-                        typeName = dummyElement.GetAttribute("type");
+                        typeName = dummyElement.GetAttribute(/*NXLT*/"type");
                         System.Type type = Dynamo.Nodes.Utilities.ResolveType(this.dynamoModel, typeName);
                         var tld = Nodes.Utilities.GetDataForType(dynamoModel, type);
 
@@ -907,7 +907,7 @@ namespace Dynamo.Utilities
                     }
                     catch
                     {
-                        dynamoModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
+                        dynamoModel.WriteToLog(string.Format(Properties.Resources.CreatingConnectorError, start.NickName, end.NickName));
                     }
                 }
 
@@ -949,7 +949,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                dynamoModel.WriteToLog("There was an error opening the workbench.");
+                dynamoModel.WriteToLog(Properties.Resources.OpenWorkbenchError);
                 dynamoModel.WriteToLog(ex);
 
                 if (DynamoModel.IsTestMode)

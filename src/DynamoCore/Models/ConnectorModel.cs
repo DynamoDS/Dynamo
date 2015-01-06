@@ -160,12 +160,12 @@ namespace Dynamo.Models
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("guid", this.GUID);
-            helper.SetAttribute("start", this.Start.Owner.GUID);
-            helper.SetAttribute("start_index", this.Start.Index);
-            helper.SetAttribute("end", this.End.Owner.GUID);
-            helper.SetAttribute("end_index", this.End.Index);
-            helper.SetAttribute("portType", ((int) this.End.PortType));
+            helper.SetAttribute(/*NXLT*/"guid", this.GUID);
+            helper.SetAttribute(/*NXLT*/"start", this.Start.Owner.GUID);
+            helper.SetAttribute(/*NXLT*/"start_index", this.Start.Index);
+            helper.SetAttribute(/*NXLT*/"end", this.End.Owner.GUID);
+            helper.SetAttribute(/*NXLT*/"end_index", this.End.Index);
+            helper.SetAttribute(/*NXLT*/"portType", ((int)this.End.PortType));
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -173,12 +173,12 @@ namespace Dynamo.Models
             XmlElementHelper helper = new XmlElementHelper(element);
 
             // Restore some information from the node attributes.
-            this.GUID = helper.ReadGuid("guid", this.GUID);
-            Guid startNodeId = helper.ReadGuid("start");
-            int startIndex = helper.ReadInteger("start_index");
-            Guid endNodeId = helper.ReadGuid("end");
-            int endIndex = helper.ReadInteger("end_index");
-            PortType portType = ((PortType)helper.ReadInteger("portType"));
+            this.GUID = helper.ReadGuid(/*NXLT*/"guid", this.GUID);
+            Guid startNodeId = helper.ReadGuid(/*NXLT*/"start");
+            int startIndex = helper.ReadInteger(/*NXLT*/"start_index");
+            Guid endNodeId = helper.ReadGuid(/*NXLT*/"end");
+            int endIndex = helper.ReadInteger(/*NXLT*/"end_index");
+            PortType portType = ((PortType)helper.ReadInteger(/*NXLT*/"portType"));
 
             // Get to the start and end nodes that this connector connects to.
             NodeModel startNode = workspaceModel.GetModelInternal(startNodeId) as NodeModel;
@@ -206,7 +206,7 @@ namespace Dynamo.Models
 
         public InvalidPortException()
         {
-            message = "Connection port is not valid.";
+            message = /*NXLT*/"Connection port is not valid.";
         }
     }
 }

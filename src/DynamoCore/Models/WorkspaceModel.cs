@@ -363,7 +363,7 @@ namespace Dynamo.Models
             {
                 if (value != null && (preloadedTraceData != null))
                 {
-                    var message = "PreloadedTraceData cannot be set twice";
+                    var message = /*NXLT*/"PreloadedTraceData cannot be set twice";
                     throw new InvalidOperationException(message);
                 }
 
@@ -410,7 +410,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            DynamoModel.Logger.Log("Saving " + newPath + "...");
+            DynamoModel.Logger.Log(/*NXLT*/"Saving " + newPath + "...");
             try
             {
                 if (SaveInternal(newPath))
@@ -478,12 +478,12 @@ namespace Dynamo.Models
             bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode = null)
         {
             if (nodeId == Guid.Empty)
-                throw new ArgumentException("Node ID must be specified", "nodeId");
+                throw new ArgumentException(/*NXLT*/"Node ID must be specified", "nodeId");
 
             NodeModel node = NodeFactory.CreateNodeInstance(nodeName);
             if (node == null)
             {
-                string format = "Failed to create node '{0}' (GUID: {1})";
+                string format = /*NXLT*/"Failed to create node '{0}' (GUID: {1})";
                 DynamoModel.Logger.Log(string.Format(format, nodeName, nodeId));
                 return null;
             }
@@ -573,7 +573,7 @@ namespace Dynamo.Models
                 OnRequestNodeCentered(this, args);
             }
 
-            noteModel.Text = "New Note";
+            noteModel.Text = /*NXLT*/"New Note";
             if (!string.IsNullOrEmpty(text))
                 noteModel.Text = text;
 
@@ -828,10 +828,10 @@ namespace Dynamo.Models
                 {
                     string type = model.GetType().FullName;
                     string message = string.Format(
-                        "ModelBase.HandleModelEvent call not handled.\n\n" +
-                        "Model type: {0}\n" +
-                        "Model GUID: {1}\n" +
-                        "Event name: {2}",
+                        /*NXLT*/"ModelBase.HandleModelEvent call not handled.\n\n" +
+                        /*NXLT*/"Model type: {0}\n" +
+                        /*NXLT*/"Model GUID: {1}\n" +
+                        /*NXLT*/"Event name: {2}",
                         type, modelGuid.ToString(), eventName);
 
                     // All 'HandleModelEvent' calls must be handled by one of 
@@ -854,11 +854,11 @@ namespace Dynamo.Models
                 {
                     string type = model.GetType().FullName;
                     string message = string.Format(
-                        "ModelBase.UpdateValue call not handled.\n\n" +
-                        "Model type: {0}\n" +
-                        "Model GUID: {1}\n" +
-                        "Property name: {2}\n" +
-                        "Property value: {3}",
+                        /*NXLT*/"ModelBase.UpdateValue call not handled.\n\n" +
+                        /*NXLT*/"Model type: {0}\n" +
+                        /*NXLT*/"Model GUID: {1}\n" +
+                        /*NXLT*/"Property name: {2}\n" +
+                        /*NXLT*/"Property value: {3}",
                         type, modelGuid.ToString(), name, value);
 
                     // All 'UpdateValue' calls must be handled by one of the 
@@ -1214,7 +1214,7 @@ namespace Dynamo.Models
             {
                 // If it gets here we obviously need to handle it.
                 throw new InvalidOperationException(string.Format(
-                    "Unhandled type: {0}", model.GetType().ToString()));
+                    /*NXLT*/"Unhandled type: {0}", model.GetType().ToString()));
             }
         }
 
@@ -1238,12 +1238,12 @@ namespace Dynamo.Models
                 {
                     string guid = helper.ReadString("guid");
                     throw new InvalidOperationException(
-                        string.Format("No type information: {0}", guid));
+                        string.Format(/*NXLT*/"No type information: {0}", guid));
                 }
             }
 
-            if (typeName.Equals("Dynamo.Nodes.DSFunction") ||
-                typeName.Equals("Dynamo.Nodes.DSVarArgFunction"))
+            if (typeName.Equals(/*NXLT*/"Dynamo.Nodes.DSFunction") ||
+                typeName.Equals(/*NXLT*/"Dynamo.Nodes.DSVarArgFunction"))
             {
                 // For DSFunction and DSVarArgFunction node types, the type name
                 // is actually embedded within "name" attribute (for an example,
@@ -1252,13 +1252,13 @@ namespace Dynamo.Models
                 typeName = modelData.Attributes["name"].Value;
             }
 
-            if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
+            if (typeName.StartsWith(/*NXLT*/"Dynamo.Models.ConnectorModel"))
             {
                 ConnectorModel connector = ConnectorModel.Make(this);
                 connector.Deserialize(modelData, SaveContext.Undo);
                 Connectors.Add(connector);
             }
-            else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
+            else if (typeName.StartsWith(/*NXLT*/"Dynamo.Models.NoteModel"))
             {
                 NoteModel noteModel = new NoteModel(this, 0.0, 0.0);
                 noteModel.Deserialize(modelData, SaveContext.Undo);
@@ -1292,7 +1292,7 @@ namespace Dynamo.Models
                 return foundModel;
 
             throw new ArgumentException(string.Format(
-                "Unhandled model type: {0}", helper.ReadString("type")));
+                /*NXLT*/"Unhandled model type: {0}", helper.ReadString("type")));
         }
 
         internal ModelBase GetModelInternal(Guid modelGuid)
@@ -1411,7 +1411,7 @@ namespace Dynamo.Models
                     document.AppendChild(document.CreateElement("Workspace"));
 
                     //This is only used for computing relative offsets, it's not actually created
-                    string virtualFileName = String.Join(Path.GetTempPath(), "DynamoTemp.dyn");
+                    string virtualFileName = String.Join(Path.GetTempPath(), /*NXLT*/"DynamoTemp.dyn");
                     Utils.SetDocumentXmlPath(document, virtualFileName);
 
                     if (!PopulateXmlDocument(document))

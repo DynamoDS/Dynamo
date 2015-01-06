@@ -382,7 +382,7 @@ namespace Dynamo.Models
             Nodes.ForEach(n => n.RequiresRecalc = true);
 
             Logger.Log(String.Format(
-                "Dynamo -- Build {0}",
+                /*NXLT*/"Dynamo -- Build {0}",
                 Assembly.GetExecutingAssembly().GetName().Version));
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
@@ -439,7 +439,7 @@ namespace Dynamo.Models
         {
             if (ShutdownRequested)
             {
-                const string message = "'DynamoModel.ShutDown' called twice";
+                const string message = /*NXLT*/"'DynamoModel.ShutDown' called twice";
                 throw new InvalidOperationException(message);
             }
 
@@ -648,10 +648,10 @@ namespace Dynamo.Models
                         long end = e.Task.ExecutionEndTime.TickCount;
                         var executionTimeSpan = new TimeSpan(end - start);
 
-                        InstrumentationLogger.LogAnonymousTimedEvent("Perf",
+                        InstrumentationLogger.LogAnonymousTimedEvent(/*NXLT*/"Perf",
                             e.Task.GetType().Name, executionTimeSpan);
 
-                        Logger.Log("Evaluation completed in " + executionTimeSpan);
+                        Logger.Log(String.Format(Properties.Resources.EvaluationComleted,executionTimeSpan));
                         ExecutionEvents.OnGraphPostExecution();
                     }
                     break;
@@ -674,9 +674,9 @@ namespace Dynamo.Models
                 Runner.CancelAsync(this.EngineController);
             else
             {
-                Logger.Log("Beginning engine reset");
+                Logger.Log(/*NXLT*/"Beginning engine reset");
                 ResetEngine(markNodesAsDirty: true);
-                Logger.Log("Reset complete");
+                Logger.Log(/*NXLT*/"Reset complete");
 
                 RunExpression();
             }
@@ -705,16 +705,16 @@ namespace Dynamo.Models
         {
             switch (e.PropertyName)
             {
-                case "LengthUnit":
+                case /*NXLT*/"LengthUnit":
                     BaseUnit.LengthUnit = PreferenceSettings.LengthUnit;
                     break;
-                case "AreaUnit":
+                case /*NXLT*/"AreaUnit":
                     BaseUnit.AreaUnit = PreferenceSettings.AreaUnit;
                     break;
-                case "VolumeUnit":
+                case /*NXLT*/"VolumeUnit":
                     BaseUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
                     break;
-                case "NumberFormat":
+                case /*NXLT*/"NumberFormat":
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
@@ -746,7 +746,7 @@ namespace Dynamo.Models
             }
             else
             {
-                throw new Exception("Duplicate node GUID in map!");
+                throw new Exception(/*NXLT*/"Duplicate node GUID in map!");
             }
         }
 
@@ -754,11 +754,11 @@ namespace Dynamo.Models
         {
             if (!OpenDefinition(xmlPath))
             {
-                Logger.Log("Workbench could not be opened.");
+                Logger.Log(Properties.Resources.WorkbenchNotOpen);
 
                 if (Logger != null)
                 {
-                    WriteToLog("Workbench could not be opened.");
+                    WriteToLog(Properties.Resources.WorkbenchNotOpen);
                     WriteToLog(xmlPath);
                 }
             }
@@ -839,7 +839,7 @@ namespace Dynamo.Models
 
         internal void CleanWorkbench()
         {
-            Logger.Log("Clearing workflow...");
+            Logger.Log(Properties.Resources.ClearingWorkflow);
 
             //Copy locally
             List<NodeModel> elements = Nodes.ToList();
@@ -920,12 +920,12 @@ namespace Dynamo.Models
         internal void DumpLibraryToXml(object parameter)
         {
             string directory = DynamoPathManager.Instance.Logs;
-            string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string fileName = String.Format(/*NXLT*/"LibrarySnapshot_{0}.xml", DateTime.Now.ToString(/*NXLT*/"yyyyMMddHmmss"));
             string fullFileName = Path.Combine(directory, fileName);
 
             this.SearchModel.DumpLibraryToXml(fullFileName);
 
-            Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
+            Logger.Log(string.Format(/*NXLT*/"Library is dumped to \"{0}\".", fullFileName));
         }
 
         internal bool CanDumpLibraryToXml(object obj)
@@ -974,7 +974,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public bool OpenWorkspace(string xmlPath)
         {
-            Logger.Log("Opening home workspace " + xmlPath + "...");
+            Logger.Log(String.Format(Properties.Resources.OpeningHomeWorkspace, xmlPath));
 
             CleanWorkbench();
             MigrationManager.ResetIdentifierIndex();
@@ -991,7 +991,7 @@ namespace Dynamo.Models
                 xmlDoc.Load(xmlPath);
 
                 TimeSpan previousElapsed = sw.Elapsed;
-                Logger.Log(String.Format("{0} elapsed for loading xml.", sw.Elapsed));
+                Logger.Log(String.Format(Properties.Resources.ElapsedWhenLoadingXml, sw.Elapsed));
 
                 double cx = 0;
                 double cy = 0;
@@ -1000,27 +1000,27 @@ namespace Dynamo.Models
 
                 // handle legacy workspace nodes called dynWorkspace
                 // and new workspaces without the dyn prefix
-                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName("Workspace");
+                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Workspace");
                 if (workspaceNodes.Count == 0)
-                    workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
+                    workspaceNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynWorkspace");
 
                 foreach (XmlNode node in workspaceNodes)
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
-                        if (att.Name.Equals("X"))
+                        if (att.Name.Equals(/*NXLT*/"X"))
                         {
                             cx = Double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
-                        else if (att.Name.Equals("Y"))
+                        else if (att.Name.Equals(/*NXLT*/"Y"))
                         {
                             cy = Double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
-                        else if (att.Name.Equals("zoom"))
+                        else if (att.Name.Equals(/*NXLT*/"zoom"))
                         {
                             zoom = Double.Parse(att.Value, CultureInfo.InvariantCulture);
                         }
-                        else if (att.Name.Equals("Version"))
+                        else if (att.Name.Equals(/*NXLT*/"Version"))
                         {
                             version = att.Value;
                         }
@@ -1049,7 +1049,7 @@ namespace Dynamo.Models
                     if (!IsTestMode && MigrationManager.BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = String.Format(
-                            "Original file '{0}' gets backed up at '{1}'",
+                            Properties.Resources.FileBackUpLocation,
                             Path.GetFileName(xmlPath), backupPath);
 
                         Logger.Log(message);
@@ -1074,16 +1074,16 @@ namespace Dynamo.Models
                 var vm = this.Workspaces.First(x => x == CurrentWorkspace);
                 vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(cx, cy)));
 
-                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
-                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
-                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
+                XmlNodeList elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Elements");
+                XmlNodeList cNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Connectors");
+                XmlNodeList nNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Notes");
 
                 if (elNodes.Count == 0)
-                    elNodes = xmlDoc.GetElementsByTagName("dynElements");
+                    elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynElements");
                 if (cNodes.Count == 0)
-                    cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
+                    cNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynConnectors");
                 if (nNodes.Count == 0)
-                    nNodes = xmlDoc.GetElementsByTagName("dynNotes");
+                    nNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynNotes");
 
                 XmlNode elNodesList = elNodes[0];
                 XmlNode cNodesList = cNodes[0];
@@ -1091,14 +1091,14 @@ namespace Dynamo.Models
 
                 foreach (XmlNode elNode in elNodesList.ChildNodes)
                 {
-                    XmlAttribute typeAttrib = elNode.Attributes["type"];
-                    XmlAttribute guidAttrib = elNode.Attributes["guid"];
-                    XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
-                    XmlAttribute xAttrib = elNode.Attributes["x"];
-                    XmlAttribute yAttrib = elNode.Attributes["y"];
-                    XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
-                    XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
-                    XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
+                    XmlAttribute typeAttrib = elNode.Attributes[/*NXLT*/"type"];
+                    XmlAttribute guidAttrib = elNode.Attributes[/*NXLT*/"guid"];
+                    XmlAttribute nicknameAttrib = elNode.Attributes[/*NXLT*/"nickname"];
+                    XmlAttribute xAttrib = elNode.Attributes[/*NXLT*/"x"];
+                    XmlAttribute yAttrib = elNode.Attributes[/*NXLT*/"y"];
+                    XmlAttribute isVisAttrib = elNode.Attributes[/*NXLT*/"isVisible"];
+                    XmlAttribute isUpstreamVisAttrib = elNode.Attributes[/*NXLT*/"isUpstreamVisible"];
+                    XmlAttribute lacingAttrib = elNode.Attributes[/*NXLT*/"lacing"];
 
                     string typeName = typeAttrib.Value;
 
@@ -1119,14 +1119,14 @@ namespace Dynamo.Models
 
                     bool isVisible = true;
                     if (isVisAttrib != null)
-                        isVisible = isVisAttrib.Value == "true" ? true : false;
+                        isVisible = isVisAttrib.Value == /*NXLT*/"true" ? true : false;
 
                     bool isUpstreamVisible = true;
                     if (isUpstreamVisAttrib != null)
-                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
+                        isUpstreamVisible = isUpstreamVisAttrib.Value == /*NXLT*/"true" ? true : false;
 
                     // Retrieve optional 'function' attribute (only for DSFunction).
-                    XmlAttribute signatureAttrib = elNode.Attributes["function"];
+                    XmlAttribute signatureAttrib = elNode.Attributes[/*NXLT*/"function"];
                     var signature = signatureAttrib == null ? null : signatureAttrib.Value;
 
                     NodeModel el = null;
@@ -1179,7 +1179,7 @@ namespace Dynamo.Models
                     if (dummyElement != null) // If a dummy node placement is desired.
                     {
                         // The new type representing the dummy node.
-                        typeName = dummyElement.GetAttribute("type");
+                        typeName = dummyElement.GetAttribute(/*NXLT*/"type");
                         var type = Utils.ResolveType(this, typeName);
                         var tld = Utils.GetDataForType(this, type);
 
@@ -1223,7 +1223,7 @@ namespace Dynamo.Models
                         el.SaveResult = true;
                 }
 
-                Logger.Log(String.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
+                Logger.Log(String.Format(/*NXLT*/"{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
                 //OnRequestLayoutUpdate(this, EventArgs.Empty);
@@ -1271,7 +1271,7 @@ namespace Dynamo.Models
                     OnConnectorAdded(newConnector);
                 }
 
-                Logger.Log(String.Format("{0} ellapsed for loading connectors.",
+                Logger.Log(String.Format(/*NXLT*/"{0} ellapsed for loading connectors.",
                     sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
@@ -1297,7 +1297,7 @@ namespace Dynamo.Models
 
                 #endregion
 
-                Logger.Log(String.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
+                Logger.Log(String.Format(/*NXLT*/"{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
 
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
@@ -1318,7 +1318,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                Logger.Log("There was an error opening the workbench.");
+                Logger.Log(Properties.Resources.OpenWorkbenchError);
                 Logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
                 CleanWorkbench();

@@ -191,11 +191,11 @@ namespace Dynamo.Core
             {
                 sw.Stop();
 
-                InstrumentationLogger.LogAnonymousEvent("Run", "Eval");
-                InstrumentationLogger.LogAnonymousTimedEvent("Perf", "EvalTime", sw.Elapsed);
+                InstrumentationLogger.LogAnonymousEvent(/*NXLT*/"Run", /*NXLT*/"Eval");
+                InstrumentationLogger.LogAnonymousTimedEvent(/*NXLT*/"Perf", /*NXLT*/"EvalTime", sw.Elapsed);
 
                 dynamoModel.Logger.Log(
-                    string.Format("Evaluation completed in {0}", sw.Elapsed));
+                    string.Format(Properties.Resources.EvaluationComleted, sw.Elapsed));
             }
 
             // When evaluation is completed, we mark all

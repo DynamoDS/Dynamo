@@ -136,7 +136,7 @@ namespace Dynamo
             {
                 //Don't overwhelm the logging system
                 if (dynamoModel.DebugSettings.VerboseLogging)
-                    InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
+                    InstrumentationLogger.LogPiiInfo(/*NXLT*/"LogMessage-" + level.ToString(), message);
 
                 switch (level)
                 {
@@ -264,13 +264,13 @@ namespace Dynamo
         {
             lock (this.guardMutex)
             {
-                _logPath = Path.Combine(logDirectory, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
+                _logPath = Path.Combine(logDirectory, string.Format(/*NXLT*/"dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
 
                 FileWriter = new StreamWriter(_logPath);
-                FileWriter.WriteLine("Dynamo log started " + DateTime.Now.ToString());
+                FileWriter.WriteLine(/*NXLT*/"Dynamo log started " + DateTime.Now.ToString());
 
                 ConsoleWriter = new StringBuilder();
-                ConsoleWriter.AppendLine("Dynamo log started " + DateTime.Now.ToString());
+                ConsoleWriter.AppendLine(/*NXLT*/"Dynamo log started " + DateTime.Now.ToString());
             }
 
         }
@@ -292,7 +292,7 @@ namespace Dynamo
                 try
                 {
                     FileWriter.Flush();
-                    Log("Goodbye", LogLevel.Console, false);
+                    Log(/*NXLT*/"Goodbye", LogLevel.Console, false);
                     FileWriter.Close();
                 }
                 catch

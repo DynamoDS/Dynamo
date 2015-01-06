@@ -69,13 +69,13 @@ namespace Dynamo.Core.Threading
         internal bool Initialize(UpdateRenderPackageParams initParams)
         {
             if (initParams == null)
-                throw new ArgumentNullException("initParams");
+                throw new ArgumentNullException(/*NXLT*/"initParams");
             if (initParams.Node == null)
-                throw new ArgumentNullException("initParams.Node");
+                throw new ArgumentNullException(/*NXLT*/"initParams.Node");
             if (initParams.EngineController == null)
-                throw new ArgumentNullException("initParams.EngineController");
+                throw new ArgumentNullException(/*NXLT*/"initParams.EngineController");
             if (initParams.DrawableIds == null)
-                throw new ArgumentNullException("initParams.DrawableIds");
+                throw new ArgumentNullException(/*NXLT*/"initParams.DrawableIds");
 
             var nodeModel = initParams.Node;
             if (!nodeModel.IsUpdated && (!nodeModel.RequiresRecalc))
@@ -113,7 +113,7 @@ namespace Dynamo.Core.Threading
             if (nodeGuid == Guid.Empty)
             {
                 throw new InvalidOperationException(
-                    "UpdateRenderPackageAsyncTask.Initialize not called");
+                    /*NXLT*/"UpdateRenderPackageAsyncTask.Initialize not called");
             }
 
             var data = from varName in drawableIds
@@ -150,7 +150,7 @@ namespace Dynamo.Core.Threading
                     catch (Exception e)
                     {
                         System.Diagnostics.Debug.WriteLine(
-                            "PushGraphicItemIntoPackage: " + e);
+                            /*NXLT*/"PushGraphicItemIntoPackage: " + e);
                     }
 
                     package.ItemsCount++;

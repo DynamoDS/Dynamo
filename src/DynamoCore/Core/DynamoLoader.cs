@@ -106,10 +106,10 @@ namespace Dynamo.Utilities
             // find all the dlls registered in all search paths
             // and concatenate with all dlls in the current directory
             List<string> allDynamoAssemblyPaths =
-                DynamoPathManager.Instance.Nodes.SelectMany(path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)).ToList();
+                DynamoPathManager.Instance.Nodes.SelectMany(path => Directory.GetFiles(path, /*NXLT*/"*.dll", SearchOption.TopDirectoryOnly)).ToList();
 
             // add the core assembly to get things like code block nodes and watches.
-            allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, "DynamoCore.dll"));
+            allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, /*NXLT*/"DynamoCore.dll"));
 
             var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {
@@ -198,7 +198,7 @@ namespace Dynamo.Utilities
                     var displayString = function.UserFriendlyName;
                 
                     // do not add GetType method names to search
-                    if (displayString.Contains("GetType"))
+                    if (displayString.Contains(/*NXLT*/"GetType"))
                     {
                         continue;
                     }
@@ -281,19 +281,19 @@ namespace Dynamo.Utilities
                         if (!dynamoModel.BuiltInTypesByNickname.ContainsKey(typeName))
                             dynamoModel.BuiltInTypesByNickname.Add(typeName, data);
                         else
-                            dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
+                            dynamoModel.Logger.Log(/*NXLT*/"Duplicate type encountered: " + typeName);
 
                         if (!dynamoModel.BuiltInTypesByName.ContainsKey(t.FullName))
                             dynamoModel.BuiltInTypesByName.Add(t.FullName, data);
                         else
-                            dynamoModel.Logger.Log("Duplicate type encountered: " + typeName);
+                            dynamoModel.Logger.Log(/*NXLT*/"Duplicate type encountered: " + typeName);
 
                         
                     }
                     catch (Exception e)
                     {
-                        dynamoModel.Logger.Log("Failed to load type from " + assembly.FullName);
-                        dynamoModel.Logger.Log("The type was " + t.FullName);
+                        dynamoModel.Logger.Log(/*NXLT*/"Failed to load type from " + assembly.FullName);
+                        dynamoModel.Logger.Log(/*NXLT*/"The type was " + t.FullName);
                         dynamoModel.Logger.Log(e);
                     }
 
@@ -302,17 +302,17 @@ namespace Dynamo.Utilities
             }
             catch (Exception e)
             {
-                dynamoModel.Logger.Log("Could not load types.");
+                dynamoModel.Logger.Log(Properties.Resources.CouldNotLoadTypes);
                 dynamoModel.Logger.Log(e);
                 if (e is ReflectionTypeLoadException)
                 {
                     var typeLoadException = e as ReflectionTypeLoadException;
                     Exception[] loaderExceptions = typeLoadException.LoaderExceptions;
-                    dynamoModel.Logger.Log("Dll Load Exception: " + loaderExceptions[0]);
+                    dynamoModel.Logger.Log(Properties.Resources.DllLoadException + loaderExceptions[0]);
                     dynamoModel.Logger.Log(loaderExceptions[0].ToString());
                     if (loaderExceptions.Count() > 1)
                     {
-                        dynamoModel.Logger.Log("Dll Load Exception: " + loaderExceptions[1]);
+                        dynamoModel.Logger.Log(Properties.Resources.DllLoadException + loaderExceptions[1]);
                         dynamoModel.Logger.Log(loaderExceptions[1].ToString());
                     }
                 }

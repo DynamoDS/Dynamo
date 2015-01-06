@@ -239,7 +239,7 @@ namespace Dynamo.Nodes
                 //Reads in the new number of ports required from the data stored in the Xml Element
                 //during Serialize (nextLength). Changes the current In Port Data to match the
                 //required size by adding or removing port data.
-                XmlNodeList inNodes = element.SelectNodes("Input");
+                XmlNodeList inNodes = element.SelectNodes(/*NXLT*/"Input");
                 int nextLength = inNodes.Count;
                 SetNumInputs(nextLength);
                 model.RegisterAllPorts();
@@ -261,7 +261,7 @@ namespace Dynamo.Nodes
                 if (connectors.Count != 1)
                 {
                     throw new InvalidOperationException(
-                        "There should be only one connection to an input port");
+                        /*NXLT*/"There should be only one connection to an input port");
                 }
                 var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>
                 {
@@ -276,14 +276,14 @@ namespace Dynamo.Nodes
 
         public bool HandleModelEventCore(string eventName)
         {
-            if (eventName == "AddInPort")
+            if (eventName == /*NXLT*/"AddInPort")
             {
                 AddInputToModel();
                 model.RegisterAllPorts();
                 return true; // Handled here.
             }
 
-            if (eventName == "RemoveInPort")
+            if (eventName == /*NXLT*/"RemoveInPort")
             {
                 // When an in-port is removed, it is possible that a connector 
                 // is almost removed along with it. Both node modification and 

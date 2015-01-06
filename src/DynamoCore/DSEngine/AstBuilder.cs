@@ -112,7 +112,7 @@ namespace Dynamo.DSEngine
 
 #if DEBUG
                     Validity.Assert(inputNode != null,
-                        "Shouldn't have null nodes in the AST list");
+                        /*NXLT*/"Shouldn't have null nodes in the AST list");
 #endif
                     inputAstNodes.Add(inputNode);
                 }
@@ -128,14 +128,14 @@ namespace Dynamo.DSEngine
 
             //TODO: This should do something more than just log a generic message. --SJE
             if (node.State == ElementState.Error)
-                dynamoModel.Logger.Log("Error in Node. Not sent for building and compiling");
+                dynamoModel.Logger.Log(/*NXLT*/"Error in Node. Not sent for building and compiling");
 
             if (isDeltaExecution)
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
-            Validity.Assert(inputAstNodes.All(n => n != null), 
-                "Shouldn't have null nodes in the AST list");
+            Validity.Assert(inputAstNodes.All(n => n != null),
+                /*NXLT*/"Shouldn't have null nodes in the AST list");
 #endif
 
             var scopedNode = node as ScopedNodeModel;
@@ -256,7 +256,7 @@ namespace Dynamo.DSEngine
                  */
 
                 // return array, holds all outputs
-                string rtnName = "__temp_rtn_" + def.FunctionId.ToString().Replace("-", String.Empty); 
+                string rtnName = /*NXLT*/"__temp_rtn_" + def.FunctionId.ToString().Replace("-", String.Empty); 
                 functionBody.Body.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(rtnName),
@@ -355,12 +355,11 @@ namespace Dynamo.DSEngine
 
         internal class StringConstants
         {
-            public const string ParamPrefix = @"p_";
-            public const string FunctionPrefix = @"__func_";
-            public const string VarPrefix = @"var_";
-            public const string ShortVarPrefix = @"t_";
-            public const string CustomNodeReturnVariable = @"%arr";
-            public const string AstBuildBrokenMessage = "Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}";
+            public const string ParamPrefix = /*NXLT*/@"p_";
+            public const string FunctionPrefix = /*NXLT*/@"__func_";
+            public const string VarPrefix = /*NXLT*/@"var_";
+            public const string ShortVarPrefix = /*NXLT*/@"t_";
+            public const string CustomNodeReturnVariable = /*NXLT*/@"%arr";
         }
     }
 }

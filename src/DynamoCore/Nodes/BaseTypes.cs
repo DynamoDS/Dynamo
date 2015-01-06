@@ -158,11 +158,11 @@ namespace Dynamo.Nodes
         public static string PreprocessTypeName(string fullyQualifiedName)
         {
             if (string.IsNullOrEmpty(fullyQualifiedName))
-                throw new ArgumentNullException("fullyQualifiedName");
+                throw new ArgumentNullException(/*NXLT*/"fullyQualifiedName");
 
             // older files will have nodes in the Dynamo.Elements namespace
-            string oldPrefix = "Dynamo.Elements.";
-            string newPrefix = "Dynamo.Nodes.";
+            string oldPrefix = /*NXLT*/"Dynamo.Elements.";
+            string newPrefix = /*NXLT*/"Dynamo.Nodes.";
             string className = string.Empty;
 
             // Attempt to extract the class name out of the fully qualified 
@@ -183,7 +183,7 @@ namespace Dynamo.Nodes
             }
 
             // Remove prefix of 'dyn' from older files.
-            if (className.StartsWith("dyn"))
+            if (className.StartsWith(/*NXLT*/"dyn"))
                 className = className.Remove(0, 3);
 
             // Older files will have nodes that use "XYZ" and "UV" 
@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
         public static System.Type ResolveType(DynamoModel dynamoModel, string fullyQualifiedName)
         {
             if (string.IsNullOrEmpty(fullyQualifiedName))
-                throw new ArgumentNullException("fullyQualifiedName");
+                throw new ArgumentNullException(/*NXLT*/"fullyQualifiedName");
 
             TypeLoadData tData = null;
             var builtInTypes = dynamoModel.BuiltInTypesByName;
@@ -233,7 +233,7 @@ namespace Dynamo.Nodes
                 if (akaAttrib.Values.Contains(fullyQualifiedName))
                 {
                     dynamoModel.Logger.Log(string.Format(
-                        "Found matching node for {0} also known as {1}",
+                        /*NXLT*/"Found matching node for {0} also known as {1}",
                         builtInType.Key, fullyQualifiedName));
 
                     return builtInType.Value.Type; // Found a matching type.
@@ -241,10 +241,10 @@ namespace Dynamo.Nodes
             }
 
             dynamoModel.Logger.Log(string.Format(
-                "Could not load node of type: {0}", fullyQualifiedName));
+                /*NXLT*/"Could not load node of type: {0}", fullyQualifiedName));
 
             dynamoModel.Logger.Log("Loading will continue but nodes " +
-                "might be missing from your workflow.");
+                /*NXLT*/"might be missing from your workflow.");
 
             return null;
         }
@@ -267,7 +267,7 @@ namespace Dynamo.Nodes
                 }
             }
 
-            if (!IsNodeSubType(t) && t.Namespace != "Dynamo.Nodes")
+            if (!IsNodeSubType(t) && t.Namespace != /*NXLT*/"Dynamo.Nodes")
                 return null;
 
             //if we are running in revit (or any context other than NONE) use the DoNotLoadOnPlatforms attribute, 
@@ -314,11 +314,11 @@ namespace Dynamo.Nodes
         internal static void SetDocumentXmlPath(XmlDocument document, string targetFilePath)
         {
             if (document == null)
-                throw new ArgumentNullException("document");
+                throw new ArgumentNullException(/*NXLT*/"document");
 
             if (document.DocumentElement == null)
             {
-                var message = "'XmlDocument.DocumentElement' cannot be null";
+                var message = /*NXLT*/"'XmlDocument.DocumentElement' cannot be null";
                 throw new ArgumentException(message);
             }
 
@@ -343,11 +343,11 @@ namespace Dynamo.Nodes
         internal static string GetDocumentXmlPath(XmlDocument document)
         {
             if (document == null)
-                throw new ArgumentNullException("document");
+                throw new ArgumentNullException(/*NXLT*/"document");
 
             if (document.DocumentElement == null)
             {
-                var message = "'XmlDocument.DocumentElement' cannot be null";
+                var message = /*NXLT*/"'XmlDocument.DocumentElement' cannot be null";
                 throw new ArgumentException(message);
             }
 
@@ -365,7 +365,7 @@ namespace Dynamo.Nodes
             if (attrib == null)
             {
                 throw new InvalidOperationException(
-                    string.Format("'{0}' attribute not found in XmlDocument",
+                    string.Format(/*NXLT*/"'{0}' attribute not found in XmlDocument",
                     Configurations.FilePathAttribName));
             }
 
@@ -389,21 +389,21 @@ namespace Dynamo.Nodes
             #region Parameter Validations
 
             if (document == null)
-                throw new ArgumentNullException("document");
+                throw new ArgumentNullException(/*NXLT*/"document");
 
             if (document.DocumentElement == null)
             {
-                var message = "Document does not have a root element";
-                throw new ArgumentException(message, "document");
+                var message = /*NXLT*/"Document does not have a root element";
+                throw new ArgumentException(message, /*NXLT*/"document");
             }
 
             if (nodeTraceDataList == null)
-                throw new ArgumentNullException("nodeTraceDataList");
+                throw new ArgumentNullException(/*NXLT*/"nodeTraceDataList");
 
             if (nodeTraceDataList.Count() <= 0)
             {
-                var message = "Trade data list must be non-empty";
-                throw new ArgumentException(message, "nodeTraceDataList");
+                var message = /*NXLT*/"Trade data list must be non-empty";
+                throw new ArgumentException(message, /*NXLT*/"nodeTraceDataList");
             }
 
             #endregion
@@ -454,12 +454,12 @@ namespace Dynamo.Nodes
             LoadTraceDataFromXmlDocument(XmlDocument document)
         {
             if (document == null)
-                throw new ArgumentNullException("document");
+                throw new ArgumentNullException(/*NXLT*/"document");
 
             if (document.DocumentElement == null)
             {
-                var message = "Document does not have a root element";
-                throw new ArgumentException(message, "document");
+                var message = /*NXLT*/"Document does not have a root element";
+                throw new ArgumentException(message, /*NXLT*/"document");
             }
 
             var childNodes = document.DocumentElement.ChildNodes.Cast<XmlElement>();
@@ -501,7 +501,7 @@ namespace Dynamo.Nodes
         internal static string MakeRelativePath(string basePath, string subjectPath)
         {
             if (string.IsNullOrEmpty(basePath))
-                throw new ArgumentNullException("basePath");
+                throw new ArgumentNullException(/*NXLT*/"basePath");
 
             if (string.IsNullOrEmpty(subjectPath))
                 return string.Empty;
@@ -537,9 +537,9 @@ namespace Dynamo.Nodes
         internal static string MakeAbsolutePath(string basePath, string relativePath)
         {
             if (string.IsNullOrEmpty(basePath))
-                throw new ArgumentNullException("basePath");
+                throw new ArgumentNullException(/*NXLT*/"basePath");
             if (string.IsNullOrEmpty(relativePath))
-                throw new ArgumentNullException("relativePath");
+                throw new ArgumentNullException(/*NXLT*/"relativePath");
 
             // Determine if we have any directory information in the 
             // subjectPath. For example, we won't want to form an absolute 
@@ -798,7 +798,7 @@ namespace Dynamo.Nodes
                     }
                     else
                     {
-                        throw new Exception("Range start could not be parsed.");
+                        throw new Exception(/*NXLT*/"Range start could not be parsed.");
                     }
                 }
 
@@ -815,7 +815,10 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
-                            throw new Exception("Range " + (valueRange.Length > 2 ? "step" : "end") + "could not be parsed.");
+                            if (valueRange.Length > 2)
+                                throw new Exception(Properties.Resources.RangeStepCouldNotBeParsed);
+                            else
+                                throw new Exception(Properties.Resources.RangeEndCouldNotBeParsed);
                         }
                     }
                 }
@@ -831,17 +834,17 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
-                            throw new Exception("Range end could not be parsed.");
+                            throw new Exception(Properties.Resources.RangeEndCouldNotBeParsed);
                         }
                     }
                 }
 
                 if (start < 0 || end < 0 || step <= 0)
-                    throw new Exception("Range values must be greater than zero.");
+                    throw new Exception(Properties.Resources.RangeValuesGreaterThanZero);
 
                 //if any values are greater than the length of the list - fail
                 if (start >= maxVal || end >= maxVal)
-                    throw new Exception("The start or end of a range is greater than the number of available elements in the list.");
+                    throw new Exception(Properties.Resources.InvalidStartOrEndOfRange);
 
                 ranges.Add(Tuple.Create(start, end, step));
             }
@@ -995,7 +998,7 @@ namespace Dynamo.Nodes
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(T).FullName);
-            outEl.SetAttribute("value", Value.ToString());
+            outEl.SetAttribute(/*NXLT*/"value", Value.ToString());
             nodeElement.AppendChild(outEl);
         }
 
@@ -1101,7 +1104,7 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (name == "Value")
+            if (name == /*NXLT*/"Value")
             {
                 Value = HttpUtility.HtmlEncode(value);
                 return true;
@@ -1128,7 +1131,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                Value = helper.ReadString("stringValue");
+                Value = helper.ReadString(/*NXLT*/"stringValue");
             }
         }
 
@@ -1266,7 +1269,7 @@ namespace Dynamo.Nodes
         {
             switch (e.PropertyName)
             {
-                case "NumberFormat":
+                case /*NXLT*/"NumberFormat":
                     RaisePropertyChanged(/*NXLT*/"Value");
                     break;
             }
@@ -1343,7 +1346,7 @@ namespace Dynamo.Nodes
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
-            outEl.SetAttribute("value", Value);
+            outEl.SetAttribute(/*NXLT*/"value", Value);
             nodeElement.AppendChild(outEl);
         }
 
@@ -1364,7 +1367,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("doubleInputValue", Value);
+                helper.SetAttribute(/*NXLT*/"doubleInputValue", Value);
             }
         }
 
@@ -1375,7 +1378,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                this.Value = helper.ReadString("doubleInputValue");
+                this.Value = helper.ReadString(/*NXLT*/"doubleInputValue");
             }
         }
 
@@ -1392,10 +1395,10 @@ namespace Dynamo.Nodes
                         StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
 
                     if (rangeIdentifiers.Length > 3)
-                        throw new Exception("Bad range syntax: not of format \"start..end[..(increment|#count)]\"");
+                        throw new Exception(Properties.Resources.BadRangeSyntax);
 
                     if (rangeIdentifiers.Length == 0)
-                        throw new Exception("No identifiers found.");
+                        throw new Exception(Properties.Resources.IdentifiersNotFound);
 
                     IDoubleInputToken startToken = ParseToken(rangeIdentifiers[0], idSet, identifiers);
 
@@ -1409,7 +1412,7 @@ namespace Dynamo.Nodes
                             if (rangeIdentifiers.Length > 2)
                             {
                                 if (rangeIdentifiers[2].StartsWith("#") || rangeIdentifiers[2].StartsWith("~"))
-                                    throw new Exception("Cannot use range or approx. identifier on increment field when one has already been used to specify a count.");
+                                    throw new Exception(Properties.Resources.RangeOrApprIdentifierAlrUsed);
                                 return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
                             }
 
@@ -1481,7 +1484,7 @@ namespace Dynamo.Nodes
                 return new IdentifierToken(tokenId);
             }
 
-            throw new Exception("Bad identifier syntax: \"" + id + "\"");
+            throw new Exception(String.Format(Properties.Resources.BadIdentifierSyntax, id));
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
@@ -1593,7 +1596,7 @@ namespace Dynamo.Nodes
                     var step = _step.GetValue(idLookup);
 
                     if (step == 0)
-                        throw new Exception("Can't have 0 step.");
+                        throw new Exception(Properties.Resources.CannotHave0Step);
 
                     var start = _start.GetValue(idLookup);
                     var count = (int)_count.GetValue(idLookup);
@@ -1667,7 +1670,7 @@ namespace Dynamo.Nodes
                     var step = _convert(_step.GetValue(idLookup));
 
                     if (step == 0)
-                        throw new Exception("Can't have 0 step.");
+                        throw new Exception(Properties.Resources.CannotHave0Step);
 
                     var start = _convert(_start.GetValue(idLookup));
                     var end = _convert(_end.GetValue(idLookup));
@@ -1907,7 +1910,7 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("index", SelectedIndex.ToString());
+            nodeElement.SetAttribute(/*NXLT*/"index", SelectedIndex.ToString());
         }
 
         protected override void LoadNode(XmlNode nodeElement)

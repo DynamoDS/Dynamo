@@ -49,10 +49,10 @@ namespace Dynamo.PackageManager
         #region Properties/Fields
 
         [Obsolete]
-        internal readonly static string PackageContainsBinariesConstant = "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
+        internal readonly static string PackageContainsBinariesConstant = /*NXLT*/"|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
 
         [Obsolete]
-        internal readonly static string PackageContainsPythonScriptsConstant = "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
+        internal readonly static string PackageContainsPythonScriptsConstant = /*NXLT*/"|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
         private readonly DynamoModel dynamoModel;
 
@@ -197,7 +197,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                var nv = Greg.Requests.HeaderCollectionDownload.ByEngine("dynamo");
+                var nv = Greg.Requests.HeaderCollectionDownload.ByEngine(/*NXLT*/"dynamo");
                 var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
                 return pkgResponse.content;
             }
@@ -232,7 +232,7 @@ namespace Dynamo.PackageManager
             if (pkgResponse == null)
             {
                 throw new AuthenticationException(
-                    "It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
+                    /*NXLT*/"It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
             }
 
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(l));
@@ -266,7 +266,7 @@ namespace Dynamo.PackageManager
                     }
                     if (ret == null)
                     {
-                        packageUploadHandle.Error("Failed to submit.  Try again later.");
+                        packageUploadHandle.Error(/*NXLT*/"Failed to submit.  Try again later.");
                         return;
                     }
 

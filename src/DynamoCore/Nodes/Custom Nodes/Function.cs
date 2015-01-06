@@ -62,7 +62,7 @@ namespace Dynamo.Nodes
                 var infos = Workspace.DynamoModel.CustomNodeManager.NodeInfos;
                 return infos.ContainsKey(Definition.FunctionId)
                     ? infos[Definition.FunctionId].Category
-                    : "Custom Nodes";
+                    : /*NXLT*/"Custom Nodes";
             }
         }
 
@@ -112,13 +112,13 @@ namespace Dynamo.Nodes
 
             List<XmlNode> childNodes = nodeElement.ChildNodes.Cast<XmlNode>().ToList();
 
-            XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
+            XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals(/*NXLT*/"Name"));
             if (nameNode != null && nameNode.Attributes != null)
                 NickName = nameNode.Attributes[0].Value;
 
             foreach (XmlNode subNode in childNodes)
             {
-                if (subNode.Name.Equals("Outputs"))
+                if (subNode.Name.Equals(/*NXLT*/"Outputs"))
                 {
                     var data =
                         subNode.ChildNodes.Cast<XmlNode>()
@@ -139,7 +139,7 @@ namespace Dynamo.Nodes
                             OutPortData.Add(dataAndIdx.data);
                     }
                 }
-                else if (subNode.Name.Equals("Inputs"))
+                else if (subNode.Name.Equals(/*NXLT*/"Inputs"))
                 {
                     var data =
                         subNode.ChildNodes.Cast<XmlNode>()
@@ -163,7 +163,7 @@ namespace Dynamo.Nodes
 
                 #region Legacy output support
 
-                else if (subNode.Name.Equals("Output"))
+                else if (subNode.Name.Equals(/*NXLT*/"Output"))
                 {
                     var data = new PortData(subNode.Attributes[0].Value, Resources.PortDataFunctionOutputToolTip);
 
@@ -232,12 +232,12 @@ namespace Dynamo.Nodes
             if (context != SaveContext.Undo) return;
 
             var helper = new XmlElementHelper(element);
-            NickName = helper.ReadString("functionName");
+            NickName = helper.ReadString(/*NXLT*/"functionName");
 
             Controller.DeserializeCore(element, context);
 
-            XmlNodeList inNodes = element.SelectNodes("functionInput");
-            XmlNodeList outNodes = element.SelectNodes("functionOutput");
+            XmlNodeList inNodes = element.SelectNodes(/*NXLT*/"functionInput");
+            XmlNodeList outNodes = element.SelectNodes(/*NXLT*/"functionOutput");
 
             var inData =
                 inNodes.Cast<XmlNode>()
@@ -284,7 +284,7 @@ namespace Dynamo.Nodes
 
             foreach (var portData in 
                 from XmlNode subNode in element.ChildNodes
-                where subNode.Name.Equals("Output")
+                where subNode.Name.Equals(/*NXLT*/"Output")
                 select new PortData(subNode.Attributes[0].Value, Resources.PortDataFunctionOutputToolTip))
             {
                 if (OutPortData.Any())
@@ -318,7 +318,7 @@ namespace Dynamo.Nodes
     [NodeName(/*NXLT*/"Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription(/*NXLT*/"InputNodeDescription", typeof(Properties.Resources))]
-    [NodeSearchTags("InputNodeSearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags(/*NXLT*/"InputNodeSearchTags", typeof(Properties.Resources))]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
@@ -365,7 +365,7 @@ namespace Dynamo.Nodes
         {
             foreach (var subNode in
                 nodeElement.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name == "Symbol"))
+                    .Where(subNode => subNode.Name == /*NXLT*/"Symbol"))
             {
                 InputSymbol = subNode.Attributes[0].Value;
             }
@@ -417,7 +417,7 @@ namespace Dynamo.Nodes
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
-                throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
+                throw new ArgumentOutOfRangeException(/*NXLT*/"outputIndex", /*NXLT*/@"Index must correspond to an OutPortData index.");
 
             return AstIdentifierForPreview;
         }
@@ -445,7 +445,7 @@ namespace Dynamo.Nodes
         {
             foreach (var subNode in 
                 nodeElement.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name == "Symbol"))
+                    .Where(subNode => subNode.Name == /*NXLT*/"Symbol"))
             {
                 Symbol = subNode.Attributes[0].Value;
             }
@@ -455,7 +455,7 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (name == "Symbol")
+            if (name == /*NXLT*/"Symbol")
             {
                 Symbol = value;
                 return true; // UpdateValueCore handled.

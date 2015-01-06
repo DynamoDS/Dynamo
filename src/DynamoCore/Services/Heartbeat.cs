@@ -44,7 +44,7 @@ namespace Dynamo.Services
             else
                 StabilityCookie.WriteCleanShutdown();
 
-            System.Diagnostics.Debug.WriteLine("Heartbeat Destory Internal called");
+            System.Diagnostics.Debug.WriteLine(/*NXLT*/"Heartbeat Destory Internal called");
 
             shutdownEvent.Set(); // Signal the shutdown event... 
 
@@ -113,7 +113,7 @@ namespace Dynamo.Services
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Exception in Heartbeat " + e);
+                    Debug.WriteLine(/*NXLT*/"Exception in Heartbeat " + e);
                 }
 
                 // The following call will return "true" if the event is 

@@ -29,7 +29,7 @@ namespace Dynamo.Models
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (name == "Text")
+            if (name == /*NXLT*/"Text")
             {
                 this.Text = value;
                 return true;
@@ -45,19 +45,19 @@ namespace Dynamo.Models
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("guid", this.GUID);
-            helper.SetAttribute("text", this.Text);
-            helper.SetAttribute("x", this.X);
-            helper.SetAttribute("y", this.Y);
+            helper.SetAttribute(/*NXLT*/"guid", this.GUID);
+            helper.SetAttribute(/*NXLT*/"text", this.Text);
+            helper.SetAttribute(/*NXLT*/"x", this.X);
+            helper.SetAttribute(/*NXLT*/"y", this.Y);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
-            this.GUID = helper.ReadGuid("guid", this.GUID);
-            this.Text = helper.ReadString("text", "New Note");
-            this.X = helper.ReadDouble("x", 0.0);
-            this.Y = helper.ReadDouble("y", 0.0);
+            this.GUID = helper.ReadGuid(/*NXLT*/"guid", this.GUID);
+            this.Text = helper.ReadString(/*NXLT*/"text", /*NXLT*/"New Note");
+            this.X = helper.ReadDouble(/*NXLT*/"x", 0.0);
+            this.Y = helper.ReadDouble(/*NXLT*/"y", 0.0);
         }
 
         #endregion

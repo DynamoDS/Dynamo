@@ -208,7 +208,7 @@ namespace Dynamo.Search
 
         internal void RemoveEmptyCategories()
         {
-            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
+            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == /*NXLT*/"Top Result"));
         }
 
 
@@ -530,7 +530,7 @@ namespace Dynamo.Search
                     var category = function.Category;
 
                     // do not add GetType method names to search
-                    if (displayString.Contains("GetType"))
+                    if (displayString.Contains(/*NXLT*/"GetType"))
                     {
                         continue;
                     }
@@ -644,7 +644,7 @@ namespace Dynamo.Search
             if (tags.Count > 0)
             {
                 // reduce the weight in search by adding white space
-                tags.ForEach(x => SearchDictionary.Add(searchEle, x + "++++++++"));
+                tags.ForEach(x => SearchDictionary.Add(searchEle, x + /*NXLT*/"++++++++"));
             }
             SearchDictionary.Add(searchEle, description);
 

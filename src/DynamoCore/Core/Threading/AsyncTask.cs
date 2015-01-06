@@ -107,7 +107,7 @@ namespace Dynamo.Core.Threading
         protected AsyncTask(DynamoScheduler scheduler)
         {
             if (scheduler == null)
-                throw new ArgumentNullException("scheduler");
+                throw new ArgumentNullException(/*NXLT*/"scheduler");
 
             this.scheduler = scheduler;
             CreationTime = scheduler.NextTimeStamp;

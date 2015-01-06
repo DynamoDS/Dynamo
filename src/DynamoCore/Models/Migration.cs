@@ -144,9 +144,9 @@ namespace Dynamo.Models
                 migrationReport = new MigrationReport();
             }
 
-            XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
+            XmlNodeList elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Elements");
             if (elNodes == null || (elNodes.Count == 0))
-                elNodes = xmlDoc.GetElementsByTagName("dynElements");
+                elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynElements");
 
             // A new list to store migrated nodes.
             List<XmlElement> migratedNodes = new List<XmlElement>();
@@ -154,7 +154,7 @@ namespace Dynamo.Models
             XmlNode elNodesList = elNodes[0];
             foreach (XmlNode elNode in elNodesList.ChildNodes)
             {
-                string typeName = elNode.Attributes["type"].Value;
+                string typeName = elNode.Attributes[/*NXLT*/"type"].Value;
                 typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
                 System.Type type = Dynamo.Nodes.Utilities.ResolveType(dynamoModel, typeName);
 
@@ -242,9 +242,9 @@ namespace Dynamo.Models
             backupPath = string.Empty;
 
             if (string.IsNullOrEmpty(originalPath))
-                throw new ArgumentException("Argument cannot be empty", "originalPath");
+                throw new ArgumentException(/*NXLT*/"Argument cannot be empty", /*NXLT*/"originalPath");
             if (!System.IO.File.Exists(originalPath))
-                throw new System.IO.FileNotFoundException("File not found", originalPath);
+                throw new System.IO.FileNotFoundException(/*NXLT*/"File not found", originalPath);
 
             try
             {
@@ -314,12 +314,12 @@ namespace Dynamo.Models
         internal static string GetBackupFolder(string baseFolder, bool create)
         {
             if (string.IsNullOrEmpty(baseFolder))
-                throw new ArgumentNullException("rootFolder");
+                throw new ArgumentNullException(/*NXLT*/"rootFolder");
 
             if (Directory.Exists(baseFolder) == false)
             {
-                var message = string.Format("Folder {0} does not exist", baseFolder);
-                throw new ArgumentException(message, "rootFolder");
+                var message = string.Format(/*NXLT*/"Folder {0} does not exist", baseFolder);
+                throw new ArgumentException(message, /*NXLT*/"rootFolder");
             }
 
             var backupFolderName = Dynamo.UI.Configurations.BackupFolderName;
@@ -368,12 +368,12 @@ namespace Dynamo.Models
         internal static int ExtractFileIndex(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
-                throw new ArgumentNullException("fileName");
+                throw new ArgumentNullException(/*NXLT*/"fileName");
 
-            if (Path.GetExtension(fileName) != ".backup")
+            if (Path.GetExtension(fileName) != /*NXLT*/".backup")
             {
-                var msg = "File name must be in 'fileName.NNN.backup' form.";
-                throw new ArgumentException(msg, "fileName");
+                var msg = /*NXLT*/"File name must be in 'fileName.NNN.backup' form.";
+                throw new ArgumentException(msg, /*NXLT*/"fileName");
             }
 
             // Get rid of ".backup" extension.
@@ -381,8 +381,8 @@ namespace Dynamo.Models
             int dotIndex = fileNameWithoutExtension.LastIndexOf('.');
             if (dotIndex == -1)
             {
-                var msg = "File name must be in 'fileName.NNN.backup' form.";
-                throw new ArgumentException(msg, "fileName");
+                var msg = /*NXLT*/"File name must be in 'fileName.NNN.backup' form.";
+                throw new ArgumentException(msg, /*NXLT*/"fileName");
             }
 
             // Extract 'NNN' and convert it into the corresponding integer value.
@@ -634,7 +634,7 @@ namespace Dynamo.Models
             string id, string name, string description, List<string> inputs, List<string> outputs)
         {
             if (srcElement == null)
-                throw new ArgumentNullException("srcElement");
+                throw new ArgumentNullException(/*NXLT*/"srcElement");
 
             XmlElement funcEl = document.CreateElement("Dynamo.Nodes.Function");
 
@@ -690,7 +690,7 @@ namespace Dynamo.Models
         public static XmlElement CreateFunctionNodeFrom(XmlElement srcElement)
         {
             if (srcElement == null)
-                throw new ArgumentNullException("srcElement");
+                throw new ArgumentNullException(/*NXLT*/"srcElement");
 
             XmlDocument document = srcElement.OwnerDocument;
             XmlElement dstElement = document.CreateElement("Dynamo.Nodes.DSFunction");
@@ -705,7 +705,7 @@ namespace Dynamo.Models
         public static XmlElement CreateVarArgFunctionNodeFrom(XmlElement srcElement)
         {
             if (srcElement == null)
-                throw new ArgumentNullException("srcElement");
+                throw new ArgumentNullException(/*NXLT*/"srcElement");
 
             int childNumber = srcElement.ChildNodes.Count;
             string childNumberString = childNumber.ToString();
@@ -735,7 +735,7 @@ namespace Dynamo.Models
         public static XmlElement CreateCodeBlockNodeFrom(XmlElement srcElement)
         {
             if (srcElement == null)
-                throw new ArgumentNullException("srcElement");
+                throw new ArgumentNullException(/*NXLT*/"srcElement");
 
             XmlDocument document = srcElement.OwnerDocument;
             XmlElement dstElement = document.CreateElement("Dynamo.Nodes.CodeBlockNodeModel");
@@ -796,7 +796,7 @@ namespace Dynamo.Models
             XmlElement element, int inportCount, int outportCount)
         {
             if (element == null)
-                throw new ArgumentNullException("element");
+                throw new ArgumentNullException(/*NXLT*/"element");
 
             if (inportCount < 0 || (outportCount < 0))
             {
@@ -817,7 +817,7 @@ namespace Dynamo.Models
             dummy.SetAttribute("outputCount", outportCount.ToString());
             dummy.SetAttribute("nodeNature", "Deprecated");
 
-            XmlElement originalNode = document.CreateElement("OriginalNodeContent");
+            XmlElement originalNode = document.CreateElement(/*NXLT*/"OriginalNodeContent");
 
             //clone a copy of the original node
             XmlElement nodeContent = (XmlElement)element.Clone();
@@ -845,33 +845,33 @@ namespace Dynamo.Models
         public static XmlElement CreateUnresolvedFunctionNode(XmlElement element)
         {
             if (element == null)
-                throw new ArgumentNullException("element");
-            if (element.Name.Equals("Dynamo.Nodes.DSFunction") == false)
+                throw new ArgumentNullException(/*NXLT*/"element");
+            if (element.Name.Equals(/*NXLT*/"Dynamo.Nodes.DSFunction") == false)
             {
-                if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
+                if (element.Name.Equals(/*NXLT*/"Dynamo.Nodes.DSVarArgFunction") == false)
                 {
-                    var message = "Only DSFunction/DSVarArgFunction should be here.";
+                    var message = /*NXLT*/"Only DSFunction/DSVarArgFunction should be here.";
                     throw new ArgumentException(message);
                 }
             }
 
             var type = element.Attributes["type"].Value;
-            if (type.Equals("Dynamo.Nodes.DSFunction") == false)
+            if (type.Equals(/*NXLT*/"Dynamo.Nodes.DSFunction") == false)
             {
                 if (type.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
                 {
-                    var message = "Only DSFunction/DSVarArgFunction should be here.";
+                    var message = /*NXLT*/"Only DSFunction/DSVarArgFunction should be here.";
                     throw new ArgumentException(message);
                 }
             }
 
             var nicknameAttrib = element.Attributes["nickname"];
             if (nicknameAttrib == null)
-                throw new ArgumentException("'nickname' attribute missing.");
+                throw new ArgumentException(/*NXLT*/"'nickname' attribute missing.");
 
             var nickname = nicknameAttrib.Value;
             if (string.IsNullOrEmpty(nickname))
-                throw new ArgumentException("'nickname' attribute missing.");
+                throw new ArgumentException(/*NXLT*/"'nickname' attribute missing.");
 
             // Determine the number of input and output count (always 1).
             int inportCount = DetermineFunctionInputCount(element);
@@ -879,9 +879,9 @@ namespace Dynamo.Models
 
             // Create an XmlElement representation of the new dummy node.
             var dummy = CreateDummyNode(element, inportCount, 1);
-            dummy.SetAttribute("legacyNodeName", nickname);
-            dummy.SetAttribute("legacyAssembly", assembly);
-            dummy.SetAttribute("nodeNature", "Unresolved");
+            dummy.SetAttribute(/*NXLT*/"legacyNodeName", nickname);
+            dummy.SetAttribute(/*NXLT*/"legacyAssembly", assembly);
+            dummy.SetAttribute(/*NXLT*/"nodeNature", /*NXLT*/"Unresolved");
             return dummy;
         }
 
@@ -916,14 +916,14 @@ namespace Dynamo.Models
             // "DSVarArgFunction" is a "VariableInputNode", therefore it will 
             // have "inputcount" as one of the attributes. If such attribute 
             // does not exist, throw an ArgumentException.
-            if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction"))
+            if (element.Name.Equals(/*NXLT*/"Dynamo.Nodes.DSVarArgFunction"))
             {
                 var inputCountAttrib = element.Attributes["inputcount"];
 
                 if (inputCountAttrib == null)
                 {
                     throw new ArgumentException(string.Format(
-                        "Function inputs cannot be determined ({0}).",
+                        /*NXLT*/"Function inputs cannot be determined ({0}).",
                         element.GetAttribute("nickname")));
                 }
 
@@ -939,14 +939,14 @@ namespace Dynamo.Models
                 // We have an old file format with "FunctionItem" child element.
                 var childElement = element.ChildNodes[0] as XmlElement;
                 signature = string.Format("{0}@{1}",
-                    childElement.GetAttribute("DisplayName"),
-                    childElement.GetAttribute("Parameters").Replace(';', ','));
+                    childElement.GetAttribute(/*NXLT*/"DisplayName"),
+                    childElement.GetAttribute(/*NXLT*/"Parameters").Replace(';', ','));
 
                 // We need one more port for instance methods/properties.
-                switch (childElement.GetAttribute("Type"))
+                switch (childElement.GetAttribute(/*NXLT*/"Type"))
                 {
-                    case "InstanceMethod":
-                    case "InstanceProperty":
+                    case /*NXLT*/"InstanceMethod":
+                    case /*NXLT*/"InstanceProperty":
                         additionalPort = 1; // For taking the instance itself.
                         break;
                 }
@@ -954,7 +954,7 @@ namespace Dynamo.Models
 
             if (string.IsNullOrEmpty(signature))
             {
-                var message = "Function signature cannot be determined.";
+                var message = /*NXLT*/"Function signature cannot be determined.";
                 throw new ArgumentException(message);
             }
 
@@ -972,14 +972,14 @@ namespace Dynamo.Models
         private static string DetermineAssemblyName(XmlElement element)
         {
             var assemblyName = string.Empty;
-            var assemblyAttrib = element.Attributes["assembly"];
+            var assemblyAttrib = element.Attributes[/*NXLT*/"assembly"];
             if (assemblyAttrib != null)
                 assemblyName = assemblyAttrib.Value;
             else if (element.ChildNodes.Count > 0)
             {
                 // We have an old file format with "FunctionItem" child element.
                 var childElement = element.ChildNodes[0] as XmlElement;
-                var funcItemAsmAttrib = childElement.Attributes["Assembly"];
+                var funcItemAsmAttrib = childElement.Attributes[/*NXLT*/"Assembly"];
                 if (funcItemAsmAttrib != null)
                     assemblyName = funcItemAsmAttrib.Value;
             }
@@ -1038,9 +1038,9 @@ namespace Dynamo.Models
         {
             this.Document = document;
 
-            XmlNodeList cNodes = document.GetElementsByTagName("Connectors");
+            XmlNodeList cNodes = document.GetElementsByTagName(/*NXLT*/"Connectors");
             if (cNodes.Count == 0)
-                cNodes = document.GetElementsByTagName("dynConnectors");
+                cNodes = document.GetElementsByTagName(/*NXLT*/"dynConnectors");
 
             connectorRoot = cNodes[0]; // All the connectors in document.
         }

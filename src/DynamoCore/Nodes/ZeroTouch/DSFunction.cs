@@ -178,7 +178,7 @@ namespace Dynamo.Nodes
 
                 if (helper != null)
                 {
-                    assembly = helper.ReadString("Assembly", "");
+                    assembly = helper.ReadString(/*NXLT*/"Assembly", "");
                 }
 
                 function = nodeElement.Attributes["nickname"].Value.Replace(".get", ".");

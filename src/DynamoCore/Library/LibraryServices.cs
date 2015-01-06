@@ -184,7 +184,7 @@ namespace Dynamo.DSEngine
         public FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             if (string.IsNullOrEmpty(managledName))
-                throw new ArgumentException("Invalid arguments");
+                throw new ArgumentException(/*NXLT*/"Invalid arguments");
 
             string qualifiedName = managledName.Split(new[] { '@' })[0];
             FunctionGroup functionGroup;
@@ -243,8 +243,8 @@ namespace Dynamo.DSEngine
             if (null == library)
                 throw new ArgumentNullException();
 
-            if (!library.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase)
-                && !library.EndsWith(".ds", StringComparison.InvariantCultureIgnoreCase))
+            if (!library.EndsWith(/*NXLT*/".dll", StringComparison.InvariantCultureIgnoreCase)
+                && !library.EndsWith(/*NXLT*/".ds", StringComparison.InvariantCultureIgnoreCase))
             {
                 const string errorMessage = "Invalid library format.";
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
@@ -322,7 +322,7 @@ namespace Dynamo.DSEngine
                 return;
 
             string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),
-                Path.GetFileNameWithoutExtension(fullLibraryName) + ".Migrations.xml");
+                Path.GetFileNameWithoutExtension(fullLibraryName) + /*NXLT*/".Migrations.xml");
 
             if (!File.Exists(migrationsXMLFile))
                 return;
@@ -335,14 +335,14 @@ namespace Dynamo.DSEngine
                 {
                     while (reader.Read())
                     {
-                        reader.ReadToFollowing("priorNameHint");
+                        reader.ReadToFollowing(/*NXLT*/"priorNameHint");
 
                         if (!reader.Read())
                             break;
 
-                        reader.ReadToFollowing("oldName");
+                        reader.ReadToFollowing(/*NXLT*/"oldName");
                         string oldName = reader.ReadElementContentAsString();
-                        reader.ReadToFollowing("newName");
+                        reader.ReadToFollowing(/*NXLT*/"newName");
                         string newName = reader.ReadElementContentAsString();
 
                         foundPriorNameHints[oldName] = newName;
@@ -421,7 +421,7 @@ namespace Dynamo.DSEngine
                                                 .procList
                                                 .Where(p =>
                     !p.name.StartsWith(Constants.kInternalNamePrefix) &&
-                    !p.name.Equals("Break"));
+                    !p.name.Equals(/*NXLT*/"Break"));
 
             IEnumerable<FunctionDescriptor> functions = from method in builtins
                                                         let arguments =
@@ -451,8 +451,8 @@ namespace Dynamo.DSEngine
         {
             return new List<TypedParameter>
             {
-                new TypedParameter(null, "x", string.Empty),
-                new TypedParameter(null, "y", string.Empty),
+                new TypedParameter(null, /*NXLT*/"x", string.Empty),
+                new TypedParameter(null, /*NXLT*/"y", string.Empty),
             };
         }
 

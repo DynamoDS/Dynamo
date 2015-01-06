@@ -261,7 +261,7 @@ namespace Dynamo.DSEngine.CodeCompletion
                 return new CompletionData(className, CompletionType.Class);
             }
             else
-                throw new ArgumentException("Invalid argument");
+                throw new ArgumentException(/*NXLT*/"Invalid argument");
         }
     }
 }

@@ -132,8 +132,8 @@ namespace Dynamo.Selection
                 Items.Add(item);
             }
 
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            this.OnPropertyChanged(new PropertyChangedEventArgs(/*NXLT*/"Count"));
+            this.OnPropertyChanged(new PropertyChangedEventArgs(/*NXLT*/"Item[]"));
             this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
