@@ -575,7 +575,7 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        private ListBoxItem GetVisibleCategory(ListBox parent, int startIndex, Key key)
+        private static ListBoxItem GetVisibleCategory(ListBox parent, int startIndex, Key key)
         {
             if (parent.Equals(null)) return null;
 
@@ -627,6 +627,8 @@ namespace Dynamo.UI.Views
             topResultListBox.ItemContainerGenerator.StatusChanged += OnTopResultListBoxIcgStatusChanged;
         }
 
+        // ListBox.ItemContainerGenerator works asynchronously. To make sure it is ready for use
+        // we check status of it. If status is correct HighlightedItem updated. 
         private void OnTopResultListBoxIcgStatusChanged(object sender, EventArgs e)
         {
             if (topResultListBox.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
@@ -642,17 +644,21 @@ namespace Dynamo.UI.Views
 
         #endregion
 
+        // As soon as user hover on TopResult HighlightedIten should be updated to it.
         private void OnTopResultMouseEnter(object sender, MouseEventArgs e)
         {
             UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
         }
 
+        // As soon as user goes out of TopResult HighlightedIten should set to null
+        // because nothing is selected.
         private void OnTopResultMouseLeave(object sender, MouseEventArgs e)
         {
             UpdateHighlightedItem(null);
             libraryToolTipPopup.SetDataContext(null);
         }
 
+        // User collapsed a category. Function checks if HighlightedItem inside and deselect it.
         private void OnCategoryExpanderCollapsed(object sender, RoutedEventArgs e)
         {
             SearchTextBox.Focus();
