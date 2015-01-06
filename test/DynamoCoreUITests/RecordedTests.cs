@@ -1599,8 +1599,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("t_1", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 3 * codeBlockPortHeight) <= tolerance);
-
+            Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
         }
 
         [Test, RequiresSTA]
