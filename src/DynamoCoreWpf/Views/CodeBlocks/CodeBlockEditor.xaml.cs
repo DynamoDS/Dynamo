@@ -383,10 +383,35 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
+            var codeBlockNode = nodeViewModel.NodeModel as CodeBlockNodeModel;
+            if (codeBlockNode == null)
+                throw new InvalidOperationException("Unknown node type used");
+
+            var isNewCodeBlockNode = string.IsNullOrEmpty(codeBlockNode.Code);
+
             this.InnerTextEditor.TextArea.ClearSelection();
             this.nodeViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.UpdateModelValueCommand(
-                       this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));           
+                       this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
+
+            if (isNewCodeBlockNode)
+            {
+                // If this editing was started due to a new code block node, 
+                // then by this point there would have been two action groups 
+                // recorded on the undo-stack: one for node creation, and 
+                // another one for node editing (as part of the command above).
+                var recorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
+
+                // Pop off the two action groups...
+                recorder.PopFromUndoGroup(); // Pop off modification action.
+                recorder.PopFromUndoGroup(); // Pop off creation action.
+
+                // ... and record this new node as creation.
+                using (recorder.BeginActionGroup())
+                {
+                    recorder.RecordCreationForUndo(codeBlockNode);
+                }
+            }
         }
 
         void InnerTextEditor_TextChanged(object sender, EventArgs e)
