@@ -220,29 +220,6 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Call this method to retrieve user actions of the top-most action 
-        /// group on the undo stack, without modifying the undo stack contents.
-        /// </summary>
-        /// <returns>Returns a list of UserAction values that are recorded in 
-        /// the first action group on top of the undo stack. This list is empty
-        /// if the undo stack is empty.</returns>
-        public IEnumerable<UserAction> PeekUndoStackActions()
-        {
-            var actions = new List<UserAction>();
-            if (undoStack.Count <= 0)
-                return actions;
-
-            var element = undoStack.Peek();
-            if (!element.HasChildNodes)
-                throw new Exception("Invalid action group with no child node");
-
-            foreach (XmlElement childNode in element.ChildNodes)
-                actions.Add(GetNodeAction(childNode));
-
-            return actions;
-        }
-
-        /// <summary>
         /// This function removes the top most item from the UndoStack. In 
         /// order to preserve continuity of both undo and redo stacks, a pop 
         /// action cannot be done when undo has unwinded some user actions, 
@@ -329,16 +306,6 @@ namespace Dynamo.Core
             XmlAttribute actionAttribute = document.CreateAttribute(UserActionAttrib);
             actionAttribute.Value = action;
             childNode.Attributes.Append(actionAttribute);
-        }
-
-        private UserAction GetNodeAction(XmlNode node)
-        {
-            UserAction action;
-            var value = node.Attributes[UserActionAttrib].Value;
-            if (!UserAction.TryParse(value, out action))
-                throw new Exception("Invalid UserAction value");
-
-            return action;
         }
 
         private XmlElement PopActionGroupFromUndoStack()
