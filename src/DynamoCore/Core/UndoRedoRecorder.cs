@@ -276,17 +276,14 @@ namespace Dynamo.Core
         /// recorded for undo).
         /// </summary>
         /// <param name="group">The action group to check against.</param>
-        /// <param name="model">The model to check against.</param>
+        /// <param name="guid">The Guid of a model to check against.</param>
         /// <returns>Returns true if the model has already been recorded in the
         /// current action group, or false otherwise.</returns>
-        private bool IsRecordedInActionGroup(XmlElement group, ModelBase model)
+        private bool IsRecordedInActionGroup(XmlElement group, Guid guid)
         {
             if (null == group)
                 throw new ArgumentNullException("group");
-            if (null == model)
-                throw new ArgumentNullException("model");
 
-            Guid guid = model.GUID;
             foreach (XmlNode childNode in group.ChildNodes)
             {
                 // See if the model supports Guid identification, in unit test cases 
@@ -332,14 +329,29 @@ namespace Dynamo.Core
 
         private void RecordActionInternal(XmlElement group, ModelBase model, UserAction action)
         {
-            if (IsRecordedInActionGroup(group, model))
+            if (null == model)
+                throw new ArgumentNullException("model");
+
+            if (IsRecordedInActionGroup(group, model.GUID))
                 return;
 
-            // Serialize the affected model into xml representation
-            // and store it under the current action group.
-            XmlNode childNode = model.Serialize(document, SaveContext.Undo);
-            SetNodeAction(childNode, action.ToString());
-            group.AppendChild(childNode);
+            // Serialize the affected model into its xml representation.
+            var childNode = model.Serialize(document, SaveContext.Undo);
+            RecordActionInternal(group, childNode, action);
+        }
+
+        private void RecordActionInternal(XmlElement group, XmlElement element, UserAction action)
+        {
+            if (null == element)
+                throw new ArgumentNullException("element");
+
+            var guid = Guid.Parse(element.Attributes["guid"].Value);
+            if (IsRecordedInActionGroup(group, guid))
+                return;
+
+            // Store the xml representation under the action group.
+            SetNodeAction(element, action.ToString());
+            group.AppendChild(element);
         }
 
         private void UndoActionGroup(XmlElement actionGroup)
