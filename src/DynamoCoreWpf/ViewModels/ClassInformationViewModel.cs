@@ -3,6 +3,7 @@ using System.Linq;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -39,12 +40,8 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public string PrimaryHeaderText { get; set; }
-        public string SecondaryHeaderLeftText { get; set; }
-        public string SecondaryHeaderRightText { get; set; }
-        public bool IsPrimaryHeaderVisible { get; set; }
-        public bool IsSecondaryHeaderLeftVisible { get; set; }
-        public bool IsSecondaryHeaderRightVisible { get; set; }
+        public List<HeaderStripItem> PrimaryHeaderItems { get; private set; }
+        public List<HeaderStripItem> SecondaryHeaderItems { get; private set; }
 
         public enum DisplayMode { None, Query, Action };
 
@@ -64,6 +61,14 @@ namespace Dynamo.Wpf.ViewModels
             {
                 currentDisplayMode = value;
                 RaisePropertyChanged("CurrentDisplayMode");
+            }
+        }
+
+        public bool AreSecondaryHeadersVisible
+        {
+            get
+            {
+                return SecondaryHeaderItems.Any();
             }
         }
 
@@ -111,6 +116,8 @@ namespace Dynamo.Wpf.ViewModels
             createMembers = new List<BrowserInternalElement>();
             actionMembers = new List<BrowserInternalElement>();
             queryMembers = new List<BrowserInternalElement>();
+            PrimaryHeaderItems = new List<HeaderStripItem>();
+            SecondaryHeaderItems = new List<HeaderStripItem>();
         }
 
         public void PopulateMemberCollections(BrowserItem element)
@@ -118,17 +125,12 @@ namespace Dynamo.Wpf.ViewModels
             createMembers.Clear();
             actionMembers.Clear();
             queryMembers.Clear();
+            PrimaryHeaderItems.Clear();
+            SecondaryHeaderItems.Clear();
 
             foreach (var subElement in element.Items)
             {
                 var nodeSearchEle = subElement as NodeSearchElement;
-                // nodeSearchEle is null means that our subelement 
-                // is not a leaf of nodes tree.
-                // Normally we shouldn't have this situation.
-                // TODO: discuss with product management.
-                if (nodeSearchEle == null)
-                    continue;
-
                 switch (nodeSearchEle.Group)
                 {
                     case SearchElementGroup.Create:
@@ -144,6 +146,35 @@ namespace Dynamo.Wpf.ViewModels
                         break;
                 }
             }
+
+            // Populate headers collections.
+            string headerStripText = string.Empty;
+            if (createMembers.Any())
+            {
+                headerStripText = Configurations.HeaderCreate;
+            }
+
+            if (actionMembers.Any())
+            {
+                // As soon as primary headers collection is defined, 
+                // add item to secondary headers collection.
+                if (string.IsNullOrEmpty(headerStripText))
+                    headerStripText = Configurations.HeaderAction;
+                else
+                    SecondaryHeaderItems.Add(new HeaderStripItem() { Text = Configurations.HeaderAction });
+            }
+
+            if (queryMembers.Any())
+            {
+                // As soon as primary headers collection is defined, 
+                // add item to secondary headers collection.
+                if (string.IsNullOrEmpty(headerStripText))
+                    headerStripText = Configurations.HeaderQuery;
+                else
+                    SecondaryHeaderItems.Add(new HeaderStripItem() { Text = Configurations.HeaderQuery });
+            }
+
+            PrimaryHeaderItems.Add(new HeaderStripItem() { Text = headerStripText });
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,20 +15,7 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class StandardPanel : UserControl
     {
-        #region Constants
-
-        private const string CreateHeaderText = "CREATE";
-        private const string QueryHeaderText = "QUERY";
-        private const string ActionHeaderText = "ACTIONS";
-        private const string ActionHeaderTag = "Action";
-        private const string QueryHeaderTag = "Query";
         private const int TruncatedMembersCount = 5;
-
-        #endregion
-
-        // Specifies if all Lists (CreateMembers, QueryMembers and ActionMembers) are not empty
-        // and should be presented on StandardPanel.
-        private bool areAllListsPresented;
         private ClassInformationViewModel castedDataContext;
 
         public bool FocusItemOnSelection { get; set; }
@@ -35,30 +23,23 @@ namespace Dynamo.UI.Controls
         public StandardPanel()
         {
             InitializeComponent();
+
+            secondaryHeaderStrip.HeaderActivated += OnHeaderButtonClick;
         }
 
         private void OnHeaderButtonClick(object sender, RoutedEventArgs e)
         {
-            // In this cases at addCetgoryList will be situated not more one
-            // list. We don't need switch between lists.
-            if (!areAllListsPresented)
-                return;
-
-            var senderTag = (sender as FrameworkElement).Tag.ToString();
-
-            // User clicked on selected header. No need to change ItemsSource.
-            if (senderTag == castedDataContext.CurrentDisplayMode.ToString())
-                return;
-
-            if (senderTag == QueryHeaderTag)
-            {
-                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
-                secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
-            }
-            else
+            var selectedItem = (sender as FrameworkElement).DataContext as HeaderStripItem;
+            if (selectedItem.Text == Configurations.HeaderAction)
             {
                 castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Action;
                 secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
+            }
+
+            if (selectedItem.Text == Configurations.HeaderQuery)
+            {
+                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
+                secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
 
             TruncateSecondaryMembers();
@@ -119,17 +100,8 @@ namespace Dynamo.UI.Controls
             bool hasActionMembers = castedDataContext.ActionMembers.Any();
             bool hasQueryMembers = castedDataContext.QueryMembers.Any();
 
-            areAllListsPresented = hasCreateMembers && hasActionMembers && hasQueryMembers;
-
-            // Hide all headers by default.
-            castedDataContext.IsPrimaryHeaderVisible = false;
-            castedDataContext.IsSecondaryHeaderLeftVisible = false;
-            castedDataContext.IsSecondaryHeaderRightVisible = false;
-
-            // Set default values.
-            castedDataContext.PrimaryHeaderText = CreateHeaderText;
-            castedDataContext.SecondaryHeaderLeftText = ActionHeaderText;
-            castedDataContext.SecondaryHeaderRightText = QueryHeaderText;
+            primaryHeaderStrip.HeaderStripItems = castedDataContext.PrimaryHeaderItems;
+            secondaryHeaderStrip.HeaderStripItems = castedDataContext.SecondaryHeaderItems;
 
             castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.None;
 
@@ -139,28 +111,18 @@ namespace Dynamo.UI.Controls
             // We should present CreateMembers in primaryMembers.            
             if (hasCreateMembers)
             {
-                castedDataContext.IsPrimaryHeaderVisible = true;
                 primaryMembers.ItemsSource = castedDataContext.CreateMembers;
-
-                if (hasActionMembers && hasQueryMembers)
-                {
-                    // Both "Action" and "Queries" are available.                    
-                    castedDataContext.IsSecondaryHeaderRightVisible = true;
-                }
 
                 if (hasActionMembers)
                 {
                     // "Action" members available.
-                    castedDataContext.IsSecondaryHeaderLeftVisible = true;
-                    secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
-
                     castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Action;
+
+                    secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
                 }
                 else if (hasQueryMembers)
                 {
                     // No "Action" members but "Query" members are available.
-                    castedDataContext.IsSecondaryHeaderLeftVisible = true;
-                    castedDataContext.SecondaryHeaderLeftText = QueryHeaderText;
                     castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
 
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
@@ -175,14 +137,10 @@ namespace Dynamo.UI.Controls
             // Depending on availibility of QueryMembers it will be shown as secondaryHeaderLeft.
             if (hasActionMembers)
             {
-                castedDataContext.IsPrimaryHeaderVisible = true;
-                castedDataContext.PrimaryHeaderText = ActionHeaderText;
                 primaryMembers.ItemsSource = castedDataContext.ActionMembers;
 
                 if (hasQueryMembers)
                 {
-                    castedDataContext.IsSecondaryHeaderLeftVisible = true;
-                    castedDataContext.SecondaryHeaderLeftText = QueryHeaderText;
                     castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
 
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
@@ -196,8 +154,6 @@ namespace Dynamo.UI.Controls
             // If QueryMembers is not empty the list will be presented in primaryMembers. 
             if (hasQueryMembers)
             {
-                castedDataContext.IsPrimaryHeaderVisible = true;
-                castedDataContext.PrimaryHeaderText = QueryHeaderText;
                 primaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
         }

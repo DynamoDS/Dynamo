@@ -14,9 +14,6 @@
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
-        <controls:DisplayModeToBackgroundConverter x:Key="DisplayModeToBackgroundConverter"
-                                                   NormalColor="Transparent"
-                                                   ActiveColor="#393939" />
         <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
                                           TrueBrush="#333333"
                                           FalseBrush="#272727" />
@@ -102,75 +99,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="SecondaryMembersTextBlock"
-               TargetType="{x:Type TextBlock}">
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="Foreground"
-                    Value="#999999" />
-            <Setter Property="FontSize"
-                    Value="9" />
-        </Style>
-
-        <Style x:Key="PrimaryHeaderButtonStyle"
-               TargetType="{x:Type Button}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Border x:Name="container"
-                                Padding="8,3,8,3"
-                                Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
-                            <TextBlock x:Name="text"
-                                       Style="{StaticResource SecondaryMembersTextBlock}"
-                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
-                            </TextBlock>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="SecondaryHeaderButtonStyle"
-               TargetType="{x:Type Button}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Border x:Name="container"
-                                Padding="8,3,8,3"
-                                BorderThickness="1"
-                                BorderBrush="#444444"
-                                CornerRadius="2"
-                                Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}">
-                            <TextBlock x:Name="text"
-                                       Style="{StaticResource SecondaryMembersTextBlock}"
-                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
-                            </TextBlock>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="Button.IsMouseOver"
-                                     Value="True">
-                                <Setter TargetName="container"
-                                        Property="Background"
-                                        Value="#393939" />
-                                <Setter TargetName="text"
-                                        Property="Foreground"
-                                        Value="#AAAAAA" />
-                            </Trigger>
-                            <Trigger Property="Button.IsPressed"
-                                     Value="True">
-                                <Setter TargetName="container"
-                                        Property="Background"
-                                        Value="#222222" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <controls:LeftSecondaryHeaderStyleConverter x:Key="LeftSecondaryHeaderStyleConverter"
-                                                    PrimaryHeaderStyle="{StaticResource PrimaryHeaderButtonStyle}"
-                                                    SecondaryHeaderStyle="{StaticResource SecondaryHeaderButtonStyle}" />
-
     </UserControl.Resources>
     <UserControl.Visibility>
         <Binding Path="ClassDetailsVisibility"
@@ -195,15 +123,9 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Button Margin="16,0,0,10"
-                    Background="#393939"
-                    Style="{StaticResource PrimaryHeaderButtonStyle}"
-                    Content="{Binding PrimaryHeaderText}">
-                <Button.Visibility>
-                    <Binding Path="IsPrimaryHeaderVisible"
-                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                </Button.Visibility>
-            </Button>
+            <uicontrols:HeaderStrip x:Name="primaryHeaderStrip"
+                                    Margin="16,0,0,10"
+                                    HorizontalAlignment="Left" />
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
                      Grid.ColumnSpan="2"
@@ -229,53 +151,15 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Border Padding="0,10,0,10"
+
+            <Border Padding="16,10,0,10"
                     Grid.Row="2"
-                    Grid.ColumnSpan="2">
+                    HorizontalAlignment="Left">
                 <Border.Visibility>
-                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                    <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
-                <StackPanel Orientation="Horizontal"
-                            Margin="16,0,0,0">
-                    <Button Tag="Action"
-                            Margin="0,0,16,0"
-                            Content="{Binding SecondaryHeaderLeftText}"
-                            Click="OnHeaderButtonClick">
-                        <Button.Visibility>
-                            <Binding Path="IsSecondaryHeaderLeftVisible"
-                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                        </Button.Visibility>
-                        <Button.Background>
-                            <MultiBinding Converter="{StaticResource DisplayModeToBackgroundConverter}"
-                                          ConverterParameter="Action">
-                                <Binding Path="CurrentDisplayMode" />
-                                <Binding Path="IsSecondaryHeaderRightVisible" />
-                            </MultiBinding>
-                        </Button.Background>
-                        <Button.Style>
-                            <Binding Path="IsSecondaryHeaderRightVisible"
-                                     Converter="{StaticResource LeftSecondaryHeaderStyleConverter}" />
-                        </Button.Style>
-                    </Button>
-
-                    <Button Tag="Query"
-                            Style="{StaticResource SecondaryHeaderButtonStyle}"
-                            Content="{Binding SecondaryHeaderRightText}"
-                            Click="OnHeaderButtonClick">
-                        <Button.Visibility>
-                            <Binding Path="IsSecondaryHeaderRightVisible"
-                                     Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                        </Button.Visibility>
-                        <Button.Background>
-                            <MultiBinding Converter="{StaticResource DisplayModeToBackgroundConverter}"
-                                          ConverterParameter="Query">
-                                <Binding Path="CurrentDisplayMode" />
-                                <Binding Path="IsSecondaryHeaderRightVisible" />
-                            </MultiBinding>
-                        </Button.Background>
-                    </Button>
-                </StackPanel>
+                <uicontrols:HeaderStrip x:Name="secondaryHeaderStrip" />
             </Border>
             <ListBox x:Name="secondaryMembers"
                      Grid.Row="3"
@@ -285,7 +169,7 @@
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                 <ListBox.Visibility>
-                    <Binding Path="IsSecondaryHeaderLeftVisible"
+                    <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                 </ListBox.Visibility>
                 <ListBox.ItemTemplate>
@@ -297,7 +181,6 @@
                                    VerticalAlignment="Center"
                                    Width="32"
                                    Source="{Binding SmallIcon}" />
-
                             <TextBlock HorizontalAlignment="Left"
                                        Text="{Binding Name}"
                                        VerticalAlignment="Top"
