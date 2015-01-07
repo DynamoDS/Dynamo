@@ -112,20 +112,6 @@ namespace Dynamo.Core
             return new ActionGroupDisposable(this);
         }
 
-        private sealed class ActionGroupDisposable : IDisposable
-        {
-            private readonly UndoRedoRecorder recorder;
-            public ActionGroupDisposable(UndoRedoRecorder recorder)
-            {
-                this.recorder = recorder;
-            }
-            
-            public void Dispose()
-            {
-                recorder.EndActionGroup();
-            }
-        }
-
         /// <summary>
         /// Call this method to close the currently opened action group, wrapping 
         /// all recorded actions as part of the group. Actions in an action group
@@ -242,7 +228,9 @@ namespace Dynamo.Core
         /// recent item that was pushed onto the undo stack (and that it does 
         /// not accidentally pop an action that is irrelevant).
         /// </summary>
-        public void PopFromUndoGroup()
+        /// <returns>Returns the XmlElement representing the action group that 
+        /// is on top of the stack at the time pop is requested.</returns>
+        public XmlElement PopFromUndoGroup()
         {
             if (redoStack.Count > 0)
             {
@@ -250,7 +238,7 @@ namespace Dynamo.Core
                     "UndoStack cannot be popped with non-empty RedoStack");
             }
 
-            PopActionGroupFromUndoStack();
+            return PopActionGroupFromUndoStack();
         }
 
         #endregion
@@ -440,6 +428,24 @@ namespace Dynamo.Core
             }
 
             undoStack.Push(newGroup);
+        }
+
+        #endregion
+
+        #region Nested Undo Helper Classes
+
+        private sealed class ActionGroupDisposable : IDisposable
+        {
+            private readonly UndoRedoRecorder recorder;
+            public ActionGroupDisposable(UndoRedoRecorder recorder)
+            {
+                this.recorder = recorder;
+            }
+
+            public void Dispose()
+            {
+                recorder.EndActionGroup();
+            }
         }
 
         #endregion
