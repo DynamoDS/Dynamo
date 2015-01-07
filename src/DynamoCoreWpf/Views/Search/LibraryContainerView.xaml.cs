@@ -328,13 +328,8 @@ namespace Dynamo.Search
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
         }
-
-<<<<<<< HEAD:src/DynamoCoreWpf/Views/Search/LibraryContainerView.xaml.cs
-
-        private void Edit_OnClick(object sender, RoutedEventArgs e)
-=======
+        
         private void TextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
->>>>>>> Sitrus2:src/DynamoCoreWpf/Views/LibraryContainerView.xaml.cs
         {
             if (viewModel != null)
                 viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
@@ -344,19 +339,10 @@ namespace Dynamo.Search
         {
             if (viewModel != null)
             {
-<<<<<<< HEAD:src/DynamoCoreWpf/Views/Search/LibraryContainerView.xaml.cs
-                var element = menuItem.DataContext as CustomNodeSearchElementViewModel;
-                if (element != null)
-                {
-                    if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
-                        dynamoViewModel.OpenCommand.Execute(element.Path);
-                }
-=======
                 if (string.IsNullOrEmpty(viewModel.SearchText))
                     viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Center;
                 else
                     viewModel.SearchIconAlignment = System.Windows.HorizontalAlignment.Left;
->>>>>>> Sitrus2:src/DynamoCoreWpf/Views/LibraryContainerView.xaml.cs
             }
         }
 
