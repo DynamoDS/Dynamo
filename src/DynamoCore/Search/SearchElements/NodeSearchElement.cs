@@ -1,17 +1,11 @@
 using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
 using System.ComponentModel;
 using System.Linq;
 using Dynamo.Annotations;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search.Interfaces;
-=======
-using System.Linq;
-using Dynamo.Models;
-using String = System.String;
->>>>>>> Sitrus2
 
 namespace Dynamo.Search.SearchElements
 {
@@ -20,16 +14,11 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public abstract class NodeSearchElement : INotifyPropertyChanged, ISearchEntry, ISource<NodeModel>
     {
-<<<<<<< HEAD
         private readonly HashSet<string> keywords = new HashSet<string>();
         private string fullCategoryName;
         private string description;
         private string name;
         private bool isVisibleInSearch = true;
-=======
-
-        #region Properties
->>>>>>> Sitrus2
 
         /// <summary>
         ///     Specified whether or not this entry should appear in search.
@@ -71,11 +60,11 @@ namespace Dynamo.Search.SearchElements
                     .Where(x => x != CATEGORY_DELIMITER.ToString() && !String.IsNullOrEmpty(x));
         }
 
-        private string _fullName;
-        public string FullName { get { return _fullName; } }
+        // TODO(Vladimir): check if this property needed.
+        //private string _fullName;
+        //public string FullName { get { return _fullName; } }
 
         /// <summary>
-<<<<<<< HEAD
         ///     The category name of this node.
         /// </summary>
         public string FullCategoryName
@@ -87,68 +76,13 @@ namespace Dynamo.Search.SearchElements
                 fullCategoryName = value;
                 OnPropertyChanged("FullCategoryName");
                 OnPropertyChanged("Categories");
-=======
-        /// Description property </summary>
-        /// <value>
-        /// A string describing what the node does</value>
-        private string _description;
-        public override string Description 
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_description))
-                    return Dynamo.UI.Configurations.NoDescriptionAvailable;
-
-                return _description;
-            } 
-        }
-
-
-        public bool HasDescription
-        {
-            get { return (!string.IsNullOrEmpty(_description)); }
-        }
-
-        /// <summary>
-        /// Group property </summary>
-        /// <value>
-        /// Group to which Node belongs to</value>
-        private SearchElementGroup _group;
-        public SearchElementGroup Group { get { return _group; } }
-
-        /// <summary>
-        /// Property specifies how Node was created.
-        /// </summary>
-        public SearchModel.ElementType ElementType { get; set; }
-
-        private List<Tuple<string, string>> _inputParameters;
-        public IEnumerable<Tuple<string, string>> InputParameters
-        {
-            get
-            {
-                if (_inputParameters == null)
-                {
-                    _inputParameters = GenerateInputParameters();
-                }
-                return _inputParameters;
-            }
-        }
-
-        private List<string> _outputParameters = new List<String>();
-
-        public List<string> OutputParameters
-        {
-            get
-            {
-                return GenerateOutputParameters();
->>>>>>> Sitrus2
             }
         }
 
         /// <summary>
         ///     The name of this entry in search.
         /// </summary>
-        string ISearchEntry.Name 
+        string ISearchEntry.Name
         {
             get { return FullCategoryName + "." + Name; }
         }
@@ -185,7 +119,13 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         public string Description
         {
-            get { return description; }
+            get
+            {
+                if (string.IsNullOrEmpty(description))
+                    return Dynamo.UI.Configurations.NoDescriptionAvailable;
+
+                return description;
+            }
             set
             {
                 if (value == description) return;
@@ -194,17 +134,52 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        public bool HasDescription
+        {
+            get { return (!string.IsNullOrEmpty(description)); }
+        }
+
+        /// <summary>
+        /// Group property </summary>
+        /// <value>
+        /// Group to which Node belongs to</value>
+        private SearchElementGroup group;
+        public SearchElementGroup Group { get { return group; } }
+
+        protected List<Tuple<string, string>> inputParameters;
+        public IEnumerable<Tuple<string, string>> InputParameters
+        {
+            get
+            {
+                if (inputParameters == null)
+                    inputParameters = GenerateInputParameters();
+
+                return inputParameters;
+            }
+        }
+
+        protected List<string> outputParameters = new List<String>();
+        public List<string> OutputParameters
+        {
+            get
+            {
+                return GenerateOutputParameters();
+            }
+        }
+
         /// <summary>
         ///     Event fired when this search element produces a new NodeModel. This typically
         ///     happens when it is selected in the library by the user.
         /// </summary>
-<<<<<<< HEAD
         public event Action<NodeModel> ItemProduced;
         protected virtual void OnItemProduced(NodeModel obj)
         {
             var handler = ItemProduced;
             if (handler != null) handler(obj);
-=======
+        }
+
+        // TODO(Vladimir): find the place where inputparameters can be entered.
+#if false
         /// <param name="name"></param>
         /// <param name="description"></param>
         /// <param name="tags"></param>
@@ -227,9 +202,8 @@ namespace Dynamo.Search.SearchElements
                 this._inputParameters = inputParameters.ToList();
             this._outputParameters = outputParameters;
             this.Assembly = _assembly;
->>>>>>> Sitrus2
         }
-        
+#endif
         /// <summary>
         ///     Creates a new NodeModel to be inserted into the current Dynamo workspace.
         /// </summary>
@@ -241,16 +215,7 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         public void ProduceNode()
         {
-<<<<<<< HEAD
             OnItemProduced(ConstructNewNodeModel());
-=======
-            var f = new NodeSearchElement(this.Name, this.Description, new List<string>(),
-                                          this._group, this._fullName, this.Assembly,
-                                          this._inputParameters, this._outputParameters);
-            f.FullCategoryName = this.FullCategoryName;
-            f.ElementType = this.ElementType;
-            return f;
->>>>>>> Sitrus2
         }
 
         ICollection<string> ISearchEntry.SearchTags
@@ -269,11 +234,9 @@ namespace Dynamo.Search.SearchElements
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
-<<<<<<< HEAD
-    }
-}
-=======
 
+        // TODO(Vladimir): function should be moved to ViewModel
+#if false 
         /// <summary>
         /// This method is called to obtain the resource name for this NodeSearchElement.
         /// Typical NodeSearchElement includes 'ColorRange' or 'File.Directory'. Since these 
@@ -289,15 +252,15 @@ namespace Dynamo.Search.SearchElements
 
             throw new InvalidOperationException("Unhandled resourceType");
         }
-
+#endif
         protected virtual List<string> GenerateOutputParameters()
         {
-            if (_outputParameters == null)
+            if (outputParameters == null)
             {
-                _outputParameters = new List<String>();
-                _outputParameters.Add("none");
+                outputParameters = new List<String>();
+                outputParameters.Add("none");
             }
-            return _outputParameters;
+            return outputParameters;
         }
 
 
@@ -309,4 +272,3 @@ namespace Dynamo.Search.SearchElements
         }
     }
 }
->>>>>>> Sitrus2
