@@ -95,7 +95,7 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
-    <Compile Include="Utils\ASTCompilerUtils.cs" />
+    <Compile Include="ASTCompilerUtils.cs" />
     <Compile Include="AttributeEntry.cs" />
     <Compile Include="BuildStatus.cs" />
     <Compile Include="CodeBlock.cs" />
@@ -104,7 +104,7 @@
     <Compile Include="CodeGenDS.cs" />
     <Compile Include="CodePoint.cs" />
     <Compile Include="CompilerOptions.cs" />
-    <Compile Include="Utils\CompilerUtils.cs" />
+    <Compile Include="CompilerUtils.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
     <Compile Include="DSASM\FunctionCounter.cs" />
@@ -137,7 +137,7 @@
     <Compile Include="Lang\TraceUtils.cs" />
     <Compile Include="Namespace\ElementRewriter.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
-    <Compile Include="Utils\ParserUtils.cs" />
+    <Compile Include="ParserUtils.cs" />
     <Compile Include="Reflection\GraphicDataProvider.cs" />
     <Compile Include="Reflection\Mirror.cs" />
     <Compile Include="Reflection\MirrorData.cs" />

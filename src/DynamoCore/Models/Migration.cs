@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using Dynamo.Interfaces;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using System.Collections.Generic;
 using System.IO;
@@ -32,7 +35,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class MigrationManager
+    public class MigrationManager : LogSourceBase
     {
         /// <summary>
         /// Enumerator to determine if migration should proceed or abort. This 
@@ -60,32 +63,10 @@ namespace Dynamo.Models
             /// </summary>
             Retain
         }
+        
+        private const int NEW_NODE_OFFSET_X = -150;
 
-        private static MigrationManager _instance;
-
-        private static int IdentifierIndex = 0;
-
-        private static int NewNodeOffsetX = -150;
-
-        private static int NewNodeOffsetY = 100;
-
-        public static int GetNextIdentifierIndex()
-        {
-            return IdentifierIndex++;
-        }
-
-        public static void ResetIdentifierIndex()
-        {
-            IdentifierIndex = 0;
-        }
-
-        /// <summary>
-        /// The singleton instance property.
-        /// </summary>
-        public static MigrationManager Instance
-        {
-            get { return _instance ?? (_instance = new MigrationManager()); }
-        }
+        private const int NEW_NODE_OFFSET_Y = 100;
 
         private MigrationReport migrationReport;
 
@@ -94,20 +75,131 @@ namespace Dynamo.Models
         /// </summary>
         public List<Type> MigrationTargets { get; set; }
 
+        private readonly Dictionary<string, Type> nodeMigrationLookup =
+            new Dictionary<string, Type>();
+
+        /// <summary>
+        ///     Functions that can be used as a callback in the event a file from a later version of Dynamo
+        ///     is attempting to be loaded.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="fileVersion"></param>
+        /// <param name="currentVersion"></param>
+        /// <returns></returns>
+        public delegate bool FutureFileCallback(string fileName, Version fileVersion, Version currentVersion);
+
+        /// <summary>
+        ///     Functions that can be used as a callback in the event an obsolete file is attempted to be loaded.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="fileVersion"></param>
+        /// <param name="currentVersion"></param>
+        public delegate void ObsoleteFileCallback(string fileName, Version fileVersion, Version currentVersion);
+
+        private readonly FutureFileCallback displayFutureFileMessage;
+        private readonly ObsoleteFileCallback displayObsoleteFileMessage;
+
         /// <summary>
         /// The private constructor.
         /// </summary>
-        private MigrationManager()
+        public MigrationManager(FutureFileCallback displayFutureFileMessage, ObsoleteFileCallback displayObsoleteFileMessage)
         {
+            this.displayFutureFileMessage = displayFutureFileMessage;
+            this.displayObsoleteFileMessage = displayObsoleteFileMessage;
             MigrationTargets = new List<Type>();
+        }
+
+        /// <summary>
+        ///     Adds a new type containing Migration methods into this manager.
+        /// </summary>
+        /// <param name="t"></param>
+        public void AddMigrationType(TypeLoadData t)
+        {
+            nodeMigrationLookup[t.Type.FullName] = t.Type;
+            foreach (var aka in t.AlsoKnownAs)
+            {
+                if (nodeMigrationLookup.ContainsKey(aka))
+                    Log(string.Format("Duplicate migration type registered for {0}", aka), WarningLevel.Moderate);
+                nodeMigrationLookup[aka] = t.Type;
+            }
+        }
+
+        /// <summary>
+        ///     Attempts to migrate a workspace to the current version of Dynamo.
+        /// </summary>
+        /// <param name="workspaceInfo"></param>
+        /// <param name="xmlDoc"></param>
+        /// <returns></returns>
+        public bool ProcessWorkspace(WorkspaceHeader workspaceInfo, XmlDocument xmlDoc, bool isTestMode, NodeFactory factory)
+        {
+            Version fileVersion = VersionFromString(workspaceInfo.Version);
+
+            var currentVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false);
+
+            if (fileVersion > currentVersion)
+            {
+                bool resume = displayFutureFileMessage(
+                    workspaceInfo.FileName,
+                    fileVersion,
+                    currentVersion);
+
+                if (!resume)
+                    return false;
+            }
+
+            var decision = ProcessWorkspace(
+                xmlDoc, fileVersion, currentVersion, workspaceInfo.FileName, isTestMode, factory);
+
+            if (decision != Decision.Abort) 
+                return true;
+
+            displayObsoleteFileMessage(workspaceInfo.FileName, fileVersion, currentVersion);
+            return false;
+        }
+
+        private Decision ProcessWorkspace(
+            XmlDocument xmlDoc, Version fileVersion, Version currentVersion, string xmlPath,
+            bool isTestMode, NodeFactory factory)
+        {
+            switch (ShouldMigrateFile(fileVersion, currentVersion, isTestMode))
+            {
+                case Decision.Abort:
+                    return Decision.Abort;
+                case Decision.Migrate:
+                    string backupPath = String.Empty;
+                    if (!isTestMode && BackupOriginalFile(xmlPath, ref backupPath))
+                    {
+                        string message = String.Format(
+                            "Original file '{0}' gets backed up at '{1}'",
+                            Path.GetFileName(xmlPath),
+                            backupPath);
+
+                        Log(message);
+                    }
+
+                    //Hardcode the file version to 0.6.0.0. The file whose version is 0.7.0.x
+                    //needs to be forced to be migrated. The version number needs to be changed from
+                    //0.7.0.x to 0.6.0.0.
+                    if (fileVersion == new Version(0, 7, 0, 0))
+                        fileVersion = new Version(0, 6, 0, 0);
+
+                    ProcessWorkspaceMigrations(currentVersion, xmlDoc, fileVersion);
+                    ProcessNodesInWorkspace(xmlDoc, fileVersion, currentVersion, factory);
+                    return Decision.Migrate;
+                case Decision.Retain:
+                    return Decision.Retain;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         /// <summary>
         /// Runs all migration methods found on the listed migration target types.
         /// </summary>
+        /// <param name="currentVersion"></param>
         /// <param name="xmlDoc"></param>
-        /// <param name="version"></param>
-        public void ProcessWorkspaceMigrations(DynamoModel dynamoModel, XmlDocument xmlDoc, Version workspaceVersion)
+        /// <param name="workspaceVersion"></param>
+        public void ProcessWorkspaceMigrations(Version currentVersion, XmlDocument xmlDoc, Version workspaceVersion)
         {
             var methods = MigrationTargets.SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.Static));
 
@@ -122,8 +214,6 @@ namespace Dynamo.Models
                  orderby result.From
                  select result).ToList();
 
-            var currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
-
             while (workspaceVersion != null && workspaceVersion < currentVersion)
             {
                 var nextMigration = migrations.FirstOrDefault(x => x.From >= workspaceVersion);
@@ -136,7 +226,8 @@ namespace Dynamo.Models
             }
         }
 
-        public void ProcessNodesInWorkspace(DynamoModel dynamoModel, XmlDocument xmlDoc, Version workspaceVersion)
+        public void ProcessNodesInWorkspace(
+            XmlDocument xmlDoc, Version workspaceVersion, Version currentVersion, NodeFactory nodeFactory)
         {
             if (DynamoModel.EnableMigrationLogging)
             {
@@ -145,31 +236,30 @@ namespace Dynamo.Models
             }
 
             XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
-            if (elNodes == null || (elNodes.Count == 0))
+            if (elNodes.Count == 0)
                 elNodes = xmlDoc.GetElementsByTagName("dynElements");
 
             // A new list to store migrated nodes.
-            List<XmlElement> migratedNodes = new List<XmlElement>();
+            var migratedNodes = new List<XmlElement>();
 
             XmlNode elNodesList = elNodes[0];
-            foreach (XmlNode elNode in elNodesList.ChildNodes)
+            foreach (XmlElement elNode in elNodesList.ChildNodes)
             {
                 string typeName = elNode.Attributes["type"].Value;
-                typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
-                System.Type type = Dynamo.Nodes.Utilities.ResolveType(dynamoModel, typeName);
+                typeName = Nodes.Utilities.PreprocessTypeName(typeName);
 
-                if (type == null)
+                Type type;
+                if (!nodeFactory.ResolveType(typeName, out type)
+                    && !nodeMigrationLookup.TryGetValue(typeName, out type))
                 {
                     // If we are not able to resolve the type given its name, 
                     // turn it into a deprecated node so that user is aware.
-                    migratedNodes.Add(MigrationManager.CreateMissingNode(
-                        elNode as XmlElement, 1, 1));
-
+                    migratedNodes.Add(CreateMissingNode(elNode, 1, 1));
                     continue; // Error displayed in console, continue on.
                 }
 
                 // Migrate the given node into one or more new nodes.
-                var migrationData = this.MigrateXmlNode(dynamoModel.HomeSpace, elNode, type, workspaceVersion);
+                var migrationData = MigrateXmlNode(currentVersion, elNode, type, workspaceVersion);
                 migratedNodes.AddRange(migrationData.MigratedNodes);
             }
 
@@ -184,14 +274,14 @@ namespace Dynamo.Models
             // any attribute here, it is safe. Added an assertion to make sure 
             // we revisit this codes if we do add attributes to 'elNodesList'.
             // 
-            System.Diagnostics.Debug.Assert(elNodesList.Attributes.Count == 0);
+            Debug.Assert(elNodesList.Attributes.Count == 0);
             elNodesList.RemoveAll();
 
             foreach (XmlElement migratedNode in migratedNodes)
                 elNodesList.AppendChild(migratedNode);
         }
 
-        public NodeMigrationData MigrateXmlNode(WorkspaceModel homespace, XmlNode elNode, System.Type type, Version workspaceVersion)
+        public NodeMigrationData MigrateXmlNode(Version currentVersion, XmlNode elNode, Type type, Version workspaceVersion)
         {
             var migrations = (from method in type.GetMethods()
                               let attribute =
@@ -201,10 +291,8 @@ namespace Dynamo.Models
                               orderby result.From
                               select result).ToList();
 
-            var currentVersion = MigrationManager.VersionFromWorkspace(homespace);
-
-            XmlElement nodeToMigrate = elNode as XmlElement;
-            NodeMigrationData migrationData = new NodeMigrationData(elNode.OwnerDocument);
+            var nodeToMigrate = elNode as XmlElement;
+            var migrationData = new NodeMigrationData(elNode.OwnerDocument);
             migrationData.AppendNode(elNode as XmlElement);
 
             while (workspaceVersion != null && workspaceVersion < currentVersion)
@@ -243,18 +331,18 @@ namespace Dynamo.Models
 
             if (string.IsNullOrEmpty(originalPath))
                 throw new ArgumentException("Argument cannot be empty", "originalPath");
-            if (!System.IO.File.Exists(originalPath))
-                throw new System.IO.FileNotFoundException("File not found", originalPath);
+            if (!File.Exists(originalPath))
+                throw new FileNotFoundException("File not found", originalPath);
 
             try
             {
                 string folder = GetBackupFolder(Path.GetDirectoryName(originalPath), true);
                 string destFileName = GetUniqueFileName(folder, Path.GetFileName(originalPath));
-                System.IO.File.Copy(originalPath, destFileName);
+                File.Copy(originalPath, destFileName);
                 backupPath = destFileName;
                 return true;
             }
-            catch (System.IO.IOException)
+            catch (IOException)
             {
                 // If we caught an IO exception, fall through and let the rest handle this 
                 // (by saving to other locations). Any other exception will be thrown to the 
@@ -266,11 +354,11 @@ namespace Dynamo.Models
                 var myDocs = Environment.SpecialFolder.MyDocuments;
                 string folder = GetBackupFolder(Environment.GetFolderPath(myDocs), true);
                 string destFileName = GetUniqueFileName(folder, Path.GetFileName(originalPath));
-                System.IO.File.Copy(originalPath, destFileName);
+                File.Copy(originalPath, destFileName);
                 backupPath = destFileName;
                 return true;
             }
-            catch (System.IO.IOException)
+            catch (IOException)
             {
                 return false; // Okay I give up.
             }
@@ -322,7 +410,7 @@ namespace Dynamo.Models
                 throw new ArgumentException(message, "rootFolder");
             }
 
-            var backupFolderName = Dynamo.UI.Configurations.BackupFolderName;
+            var backupFolderName = Configurations.BackupFolderName;
 
             var subFolder = Path.Combine(baseFolder, backupFolderName);
             if (create && (Directory.Exists(subFolder) == false))
@@ -435,22 +523,18 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="fileVersion">The version of input file.</param>
         /// <param name="currVersion">The version of Dynamo software.</param>
+        /// <param name="isTestMode"></param>
         /// <returns>Returns the decision if the migration should take place or 
         /// not. See "Decision" enumeration for details of each field.</returns>
-        /// 
-        internal static Decision ShouldMigrateFile(
-            Version fileVersion, Version currVersion)
+        internal static Decision ShouldMigrateFile(Version fileVersion, Version currVersion, bool isTestMode)
         {
             // We currently enable migration for testing scenario. This is to 
             // avoid large number of test failures with this change, and also 
             // ensure that our tests continue to exercise migration code changes.
             // 
-            if (DynamoModel.IsTestMode)
+            if (isTestMode)
             {
-                if (fileVersion < currVersion)
-                    return Decision.Migrate;
-
-                return Decision.Retain;
+                return fileVersion < currVersion ? Decision.Migrate : Decision.Retain;
             }
 
             //Force the file to go through the migration process, when the file version
@@ -499,10 +583,10 @@ namespace Dynamo.Models
 
             element.SetAttribute("x",
                 (Convert.ToDouble(oldNode.GetAttribute("x"))
-                + NewNodeOffsetX).ToString());
+                + NEW_NODE_OFFSET_X).ToString());
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
-                + nodeIndex * NewNodeOffsetY).ToString());
+                + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
         }
@@ -525,10 +609,10 @@ namespace Dynamo.Models
 
             element.SetAttribute("x",
                 (Convert.ToDouble(oldNode.GetAttribute("x"))
-                + NewNodeOffsetX).ToString());
+                + NEW_NODE_OFFSET_X).ToString());
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
-                + nodeIndex * NewNodeOffsetY).ToString());
+                + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
         }
@@ -551,10 +635,10 @@ namespace Dynamo.Models
 
             element.SetAttribute("x",
                 (Convert.ToDouble(oldNode.GetAttribute("x"))
-                + NewNodeOffsetX).ToString());
+                + NEW_NODE_OFFSET_X).ToString());
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
-                + nodeIndex * NewNodeOffsetY).ToString());
+                + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
         }
@@ -574,10 +658,10 @@ namespace Dynamo.Models
 
             element.SetAttribute("x",
                 (Convert.ToDouble(oldNode.GetAttribute("x"))
-                + NewNodeOffsetX).ToString());
+                + NEW_NODE_OFFSET_X).ToString());
             element.SetAttribute("y",
                 (Convert.ToDouble(oldNode.GetAttribute("y"))
-                + nodeIndex * NewNodeOffsetY).ToString());
+                + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
         }
@@ -798,13 +882,19 @@ namespace Dynamo.Models
             if (element == null)
                 throw new ArgumentNullException("element");
 
-            if (inportCount < 0 || (outportCount < 0))
+            if (inportCount < 0)
             {
-                var message = "Argument value must be equal or larger than zero";
-                throw new ArgumentException(message, "inportCount/outportCount");
+                const string message = "Argument value must be equal or larger than zero";
+                throw new ArgumentException(message, "inportCount");
             }
 
-            var dummyNodeName = "DSCoreNodesUI.DummyNode";
+            if (outportCount < 0)
+            {
+                const string message = "Argument value must be equal or larger than zero";
+                throw new ArgumentException(message, "outportCount");
+            }
+
+            const string dummyNodeName = "DSCoreNodesUI.DummyNode";
             XmlDocument document = element.OwnerDocument;
             XmlElement dummy = document.CreateElement(dummyNodeName);
 
@@ -826,62 +916,6 @@ namespace Dynamo.Models
             originalNode.AppendChild(nodeContent);
             dummy.AppendChild(originalNode);
 
-            return dummy;
-        }
-
-        /// <summary>
-        /// Call this method to convert a DSFunction/DSVarArgFunction element into 
-        /// an equivalent dummy node to indicate that a function node cannot be 
-        /// resolved during load time. This method retains the number of input 
-        /// ports based on the function signature that comes with the XmlElement 
-        /// that represent the function node.
-        /// </summary>
-        /// <param name="element">XmlElement representing the original DSFunction
-        /// node which has failed function resolution. This XmlElement must be of 
-        /// type "DSFunction" or "DSVarArgFunction" otherwise an exception will be 
-        /// thrown.</param>
-        /// <returns>Returns a new XmlElement representing the dummy node.</returns>
-        /// 
-        public static XmlElement CreateUnresolvedFunctionNode(XmlElement element)
-        {
-            if (element == null)
-                throw new ArgumentNullException("element");
-            if (element.Name.Equals("Dynamo.Nodes.DSFunction") == false)
-            {
-                if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
-                {
-                    var message = "Only DSFunction/DSVarArgFunction should be here.";
-                    throw new ArgumentException(message);
-                }
-            }
-
-            var type = element.Attributes["type"].Value;
-            if (type.Equals("Dynamo.Nodes.DSFunction") == false)
-            {
-                if (type.Equals("Dynamo.Nodes.DSVarArgFunction") == false)
-                {
-                    var message = "Only DSFunction/DSVarArgFunction should be here.";
-                    throw new ArgumentException(message);
-                }
-            }
-
-            var nicknameAttrib = element.Attributes["nickname"];
-            if (nicknameAttrib == null)
-                throw new ArgumentException("'nickname' attribute missing.");
-
-            var nickname = nicknameAttrib.Value;
-            if (string.IsNullOrEmpty(nickname))
-                throw new ArgumentException("'nickname' attribute missing.");
-
-            // Determine the number of input and output count (always 1).
-            int inportCount = DetermineFunctionInputCount(element);
-            var assembly = DetermineAssemblyName(element);
-
-            // Create an XmlElement representation of the new dummy node.
-            var dummy = CreateDummyNode(element, inportCount, 1);
-            dummy.SetAttribute("legacyNodeName", nickname);
-            dummy.SetAttribute("legacyAssembly", assembly);
-            dummy.SetAttribute("nodeNature", "Unresolved");
             return dummy;
         }
 
@@ -909,88 +943,6 @@ namespace Dynamo.Models
             return dummy;
         }
 
-        private static int DetermineFunctionInputCount(XmlElement element)
-        {
-            int additionalPort = 0;
-
-            // "DSVarArgFunction" is a "VariableInputNode", therefore it will 
-            // have "inputcount" as one of the attributes. If such attribute 
-            // does not exist, throw an ArgumentException.
-            if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction"))
-            {
-                var inputCountAttrib = element.Attributes["inputcount"];
-
-                if (inputCountAttrib == null)
-                {
-                    throw new ArgumentException(string.Format(
-                        "Function inputs cannot be determined ({0}).",
-                        element.GetAttribute("nickname")));
-                }
-
-                return Convert.ToInt32(inputCountAttrib.Value);
-            }
-
-            var signature = string.Empty;
-            var signatureAttrib = element.Attributes["function"];
-            if (signatureAttrib != null)
-                signature = signatureAttrib.Value;
-            else if (element.ChildNodes.Count > 0)
-            {
-                // We have an old file format with "FunctionItem" child element.
-                var childElement = element.ChildNodes[0] as XmlElement;
-                signature = string.Format("{0}@{1}",
-                    childElement.GetAttribute("DisplayName"),
-                    childElement.GetAttribute("Parameters").Replace(';', ','));
-
-                // We need one more port for instance methods/properties.
-                switch (childElement.GetAttribute("Type"))
-                {
-                    case "InstanceMethod":
-                    case "InstanceProperty":
-                        additionalPort = 1; // For taking the instance itself.
-                        break;
-                }
-            }
-
-            if (string.IsNullOrEmpty(signature))
-            {
-                var message = "Function signature cannot be determined.";
-                throw new ArgumentException(message);
-            }
-
-            int atSignIndex = signature.IndexOf('@');
-            if (atSignIndex >= 0) // An '@' sign found, there's param information.
-            {
-                signature = signature.Substring(atSignIndex + 1); // Skip past '@'.
-                var parts = signature.Split(new char[] { ',' });
-                return ((parts != null) ? parts.Length : 1) + additionalPort;
-            }
-
-            return additionalPort + 1; // At least one.
-        }
-
-        private static string DetermineAssemblyName(XmlElement element)
-        {
-            var assemblyName = string.Empty;
-            var assemblyAttrib = element.Attributes["assembly"];
-            if (assemblyAttrib != null)
-                assemblyName = assemblyAttrib.Value;
-            else if (element.ChildNodes.Count > 0)
-            {
-                // We have an old file format with "FunctionItem" child element.
-                var childElement = element.ChildNodes[0] as XmlElement;
-                var funcItemAsmAttrib = childElement.Attributes["Assembly"];
-                if (funcItemAsmAttrib != null)
-                    assemblyName = funcItemAsmAttrib.Value;
-            }
-
-            if (string.IsNullOrEmpty(assemblyName))
-                return string.Empty;
-
-            try { return Path.GetFileName(assemblyName); }
-            catch (Exception) { return string.Empty; }
-        }
-
         public static void SetFunctionSignature(XmlElement element,
             string assemblyName, string methodName, string signature)
         {
@@ -1013,9 +965,9 @@ namespace Dynamo.Models
         public PortId(string owningNode, int portIndex, PortType type)
             : this()
         {
-            this.OwningNode = owningNode;
-            this.PortIndex = portIndex;
-            this.PortType = type;
+            OwningNode = owningNode;
+            PortIndex = portIndex;
+            PortType = type;
         }
 
         public string OwningNode { get; private set; }
@@ -1036,7 +988,7 @@ namespace Dynamo.Models
 
         public NodeMigrationData(XmlDocument document)
         {
-            this.Document = document;
+            Document = document;
 
             XmlNodeList cNodes = document.GetElementsByTagName("Connectors");
             if (cNodes.Count == 0)
@@ -1103,7 +1055,7 @@ namespace Dynamo.Models
                 XmlElement connector = node as XmlElement;
                 XmlAttributeCollection attribs = connector.Attributes;
 
-                if (portId.PortType == PortType.INPUT)
+                if (portId.PortType == PortType.Input)
                 {
                     if (portId.OwningNode != attribs["end"].Value)
                         continue;
@@ -1134,7 +1086,7 @@ namespace Dynamo.Models
                 XmlElement connector = node as XmlElement;
                 XmlAttributeCollection attribs = connector.Attributes;
 
-                if (portId.PortType == PortType.INPUT)
+                if (portId.PortType == PortType.Input)
                 {
                     if (portId.OwningNode != attribs["end"].Value)
                         continue;
@@ -1172,7 +1124,7 @@ namespace Dynamo.Models
                 XmlElement connector = node as XmlElement;
                 XmlAttributeCollection attribs = connector.Attributes;
 
-                if (portId.PortType == PortType.INPUT)
+                if (portId.PortType == PortType.Input)
                 {
                     if (portId.OwningNode != attribs["end"].Value)
                         continue;
@@ -1193,7 +1145,7 @@ namespace Dynamo.Models
                 foundConnectors.Add(connector);
 
                 // There can only be one connector for input port...
-                if (portId.PortType == PortType.INPUT)
+                if (portId.PortType == PortType.Input)
                     break; // ... so look no further.
             }
 
@@ -1216,7 +1168,7 @@ namespace Dynamo.Models
                 return;
 
             XmlAttributeCollection attribs = connector.Attributes;
-            if (port.PortType == PortType.INPUT) // We're updating end point.
+            if (port.PortType == PortType.Input) // We're updating end point.
             {
                 attribs["end"].Value = port.OwningNode;
                 attribs["end_index"].Value = port.PortIndex.ToString();
@@ -1231,7 +1183,7 @@ namespace Dynamo.Models
         public void CreateConnector(XmlElement startNode,
             int startIndex, XmlElement endNode, int endIndex)
         {
-            XmlElement connector = this.Document.CreateElement(
+            XmlElement connector = Document.CreateElement(
                 "Dynamo.Models.ConnectorModel");
 
             connector.SetAttribute("start", MigrationManager.GetGuidFromXmlElement(startNode));
@@ -1247,7 +1199,7 @@ namespace Dynamo.Models
         public void CreateConnectorFromId(string startNodeId,
             int startIndex, string endNodeId, int endIndex)
         {
-            XmlElement connector = this.Document.CreateElement(
+            XmlElement connector = Document.CreateElement(
                 "Dynamo.Models.ConnectorModel");
 
             connector.SetAttribute("start", startNodeId);
@@ -1282,7 +1234,7 @@ namespace Dynamo.Models
 
         public IEnumerable<XmlElement> MigratedNodes
         {
-            get { return this.migratedNodes; }
+            get { return migratedNodes; }
         }
 
         #endregion

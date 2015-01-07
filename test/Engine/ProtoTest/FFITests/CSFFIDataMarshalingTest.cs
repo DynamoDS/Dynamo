@@ -52,17 +52,14 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDecimals()
         {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4392
             String code =
             @"               import(TestData from ""FFITarget.dll"");               import(""System.Decimal"");               x = Decimal.Decimal(1.11e+10);               y = Decimal.Decimal(1.11e+5);               value = TestData.MultiplyDecimals(x, y);               result = Decimal.Decimal(1.2321e+15);               success = Decimal.Equals(value, result);            ";
             ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
             int nErrors = -1;
             ExecuteAndVerify(code, data, out nErrors);
-            string err = "MAGN-4392: Test fails due to FFI function calls for Decimal not being resolved";
-            Assert.IsTrue(nErrors == 0, err);
+            Assert.IsTrue(nErrors == 0);
         }
 
         [Test]

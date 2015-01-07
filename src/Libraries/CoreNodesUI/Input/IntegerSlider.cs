@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Xml;
-
 using Autodesk.DesignScript.Runtime;
 
-using DSCoreNodesUI.Input;
-
+using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 
 namespace Dynamo.Nodes
@@ -15,83 +14,62 @@ namespace Dynamo.Nodes
     [NodeDescription("A slider that produces integer values.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    public class IntegerSlider : DSCoreNodesUI.Integer, ISlider<int>
+    public class IntegerSlider : DSCoreNodesUI.Integer
     {
-        private int max;
-        private int min;
-        private int step;
-
-        public IntegerSlider(WorkspaceModel workspace)
-            : base(workspace)
+        public IntegerSlider()
         {
             RegisterAllPorts();
 
             Min = 0;
             Max = 100;
-            Step = 1;
             Value = 0;
+
+            ShouldDisplayPreviewCore = false;
         }
 
+        private int _max;
         public int Max
         {
-            get { return max; }
+            get { return _max; }
             set
             {
-                max = value;
+                _max = value;
+
+                if (_max < Value)
+                    Value = _max;
+
                 RaisePropertyChanged("Max");
             }
         }
 
+        private int _min;
         public int Min
         {
-            get { return min; }
+            get { return _min; }
             set
             {
-                min = value;
+                _min = value;
+
+                if (_min > Value)
+                    Value = _min;
+
                 RaisePropertyChanged("Min");
             }
         }
 
-        public int Step
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            get { return step; }
-            set
-            {
-                step = value;
-                RaisePropertyChanged("Step");
-            }
-        }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get { return false; }
-        }
-
-        protected override bool UpdateValueCore(string name, string value)
-        {
+            var converter = new IntegerDisplay();
             switch (name)
             {
-                case "Min":
-                case "MinText":
-                    Min = SliderViewModel<int>.ConvertStringToInt(value);
-                    if (Min > Max)
-                    {
-                        Max = Min;
-                        Value = Max;
-                    }
+                case "Value":
+                    Value = ((int)converter.ConvertBack(value, typeof(int), null, null));
                     return true; // UpdateValueCore handled.
                 case "Max":
-                case "MaxText":
-                    Max = SliderViewModel<int>.ConvertStringToInt(value);
-                    if (Max < Min)
-                    {
-                        Min = Max;
-                        Value = Min;
-                    }
+                    Max = ((int)converter.ConvertBack(value, typeof(int), null, null));
                     return true; // UpdateValueCore handled.
-                case "Value":
-                case "ValueText":
-                    Value = SliderViewModel<int>.ConvertStringToInt(value);
+                case "Min":
+                    Min = ((int)converter.ConvertBack(value, typeof(int), null, null));
                     if (Value >= Max)
                     {
                         this.Max = Value;
@@ -101,93 +79,50 @@ namespace Dynamo.Nodes
                         this.Min = Value;
                     }
                     return true; // UpdateValueCore handled.
-                case "Step":
-                case "StepText":
-                    Step = SliderViewModel<int>.ConvertStringToInt(value);
-                    return true;
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
-
-        #region Load/Save
-
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            base.SaveNode(xmlDoc, nodeElement, context);
-
-            XmlElement outEl = xmlDoc.CreateElement("Range");
-            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-            outEl.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
-            nodeElement.AppendChild(outEl);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            base.LoadNode(nodeElement);
-
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                if (!subNode.Name.Equals("Range"))
-                    continue;
-
-                if (subNode.Attributes == null) continue;
-
-                foreach (XmlAttribute attr in subNode.Attributes)
-                {
-                    if (attr.Name.Equals("min"))
-                        Min = Convert.ToInt16(attr.Value, CultureInfo.InvariantCulture);
-                    else if (attr.Name.Equals("max"))
-                        Max = Convert.ToInt16(attr.Value, CultureInfo.InvariantCulture);
-                    else if (attr.Name.Equals("step"))
-                        Step = Convert.ToInt16(attr.Value, CultureInfo.InvariantCulture);
-                }
-            }
-        }
-
-        #endregion
-
+        
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context); // Base implementation must be called.
 
-            if (context != SaveContext.Undo) return;
-
-            var xmlDocument = element.OwnerDocument;
-            XmlElement subNode = xmlDocument.CreateElement("Range");
-            subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-            subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-            subNode.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
-            element.AppendChild(subNode);
+            XmlElement outEl = element.OwnerDocument.CreateElement("Range");
+            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            element.AppendChild(outEl);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context); //Base implementation must be called.
+            base.DeserializeCore(nodeElement, context); // Base implementation must be called.
 
-            if (context != SaveContext.Undo) return;
-
-            foreach (XmlNode subNode in element.ChildNodes)
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 if (!subNode.Name.Equals("Range"))
                     continue;
-                if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
-                    continue;
 
-                foreach (XmlAttribute attr in subNode.Attributes)
+                int min = Min;
+                int max = Max;
+
+                if (subNode.Attributes != null)
                 {
-                    if (attr.Name.Equals("min"))
-                        Min = Convert.ToInt16(attr.Value, CultureInfo.InvariantCulture);
-                    else if (attr.Name.Equals("max"))
-                        Max = Convert.ToInt16(attr.Value, CultureInfo.InvariantCulture);
-                    else if (attr.Name.Equals("step"))
-                        Step = Convert.ToInt16(attr.Value, CultureInfo.InvariantCulture);
+                    foreach (XmlAttribute attr in subNode.Attributes)
+                    {
+                        if (attr.Name.Equals("min"))
+                            min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                        else if (attr.Name.Equals("max"))
+                            max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                        else if (attr.Name.Equals("value"))
+                            Value = Convert.ToInt32(subNode.InnerText, CultureInfo.InvariantCulture);
+                    }
                 }
 
-                break;
+                Min = min;
+                Max = max;
             }
         }
 

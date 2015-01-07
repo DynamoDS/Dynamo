@@ -13,7 +13,7 @@ namespace DynamoUtilities
     /// </summary>
     public class DynamoPathManager
     {
-        private List<string> preloadLibaries = new List<string>();
+        private readonly HashSet<string> preloadLibaries = new HashSet<string>();
         private List<string> addResolvePaths = new List<string>();
 
         private static DynamoPathManager instance;
@@ -111,7 +111,6 @@ namespace DynamoUtilities
         /// the beginning of a Dynamo session.
         /// </summary>
         /// <param name="mainExecPath">The main execution directory of Dynamo.</param>
-        /// <param name="preloadLibraries">A list of libraries to preload.</param>
         public void InitializeCore(string mainExecPath)
         {
             if (Directory.Exists(mainExecPath))
@@ -245,26 +244,23 @@ namespace DynamoUtilities
             if (File.Exists(library)) // Absolute path, we're done here.
                 return true;
 
-            // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
+            library = LibrarySearchPaths(library).FirstOrDefault(File.Exists);
+            return library != default(string);
+        }
+
+        private IEnumerable<string> LibrarySearchPaths(string library)
+        {
             string assemblyName = Path.GetFileName(library); // Strip out possible directory.
+            if (assemblyName == null)
+                yield break;
+
             var assemPath = Path.Combine(Instance.MainExecPath ?? "", assemblyName);
+            yield return assemPath;
 
-            if (File.Exists(assemPath)) // Found under add-in folder...
-            {
-                library = assemPath;
-                return true;
-            }
+            foreach (var path in AdditionalResolutionPaths.Select(dir => Path.Combine(dir, assemblyName)))
+                yield return path;
 
-            foreach (var dir in AdditionalResolutionPaths)
-            {
-                var path = Path.Combine(dir, assemblyName);
-                if (!File.Exists(path)) continue;
-                library = path;
-                return true;
-            }
-
-            library = Path.GetFullPath(library); // Fallback on system search.
-            return File.Exists(library);
+            yield return Path.GetFullPath(library);
         }
 
         /// <summary>
@@ -274,9 +270,7 @@ namespace DynamoUtilities
         public void AddPreloadLibrary(string path)
         {
             if (!preloadLibaries.Contains(path))
-            {
                 preloadLibaries.Add(path);
-            }
         }
 
         /// <summary>
@@ -286,9 +280,7 @@ namespace DynamoUtilities
         public void AddResolutionPath(string path)
         {
             if (!addResolvePaths.Contains(path))
-            {
                 addResolvePaths.Add(path);
-            }
         }
 
         public void SetLibGPath(string version)
@@ -319,25 +311,24 @@ namespace DynamoUtilities
 
             string baseSearchDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Autodesk");
 
-            DirectoryInfo root = null;
+            DirectoryInfo root;
 
             try
             {
                 root = new DirectoryInfo(baseSearchDirectory);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
 
-            FileInfo[] files;
             DirectoryInfo[] subDirs;
 
             try
             {
                 subDirs = root.GetDirectories();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // TODO: figure out how to print to the console that Sandbox needs higher permissions
                 return false;
@@ -346,23 +337,17 @@ namespace DynamoUtilities
             if (subDirs.Length == 0)
                 return false;
 
-            foreach (var dirInfo in subDirs)
+            foreach (
+                var dirInfo in
+                    from dirInfo in
+                        subDirs.Where(
+                            dirInfo => dirInfo.Name.Contains("Revit") || dirInfo.Name.Contains("Vasari"))
+                    let files = dirInfo.GetFiles("*.*")
+                    where files.Any(fi => fi.Name.ToUpper() == string.Format("ASMAHL{0}A.DLL", version))
+                    select dirInfo)
             {
-                // AutoCAD directories don't seem to contain all the needed ASM DLLs
-                if (!dirInfo.Name.Contains("Revit") && !dirInfo.Name.Contains("Vasari"))
-                    continue;
-
-                files = dirInfo.GetFiles("*.*");
-
-                foreach (FileInfo fi in files)
-                {
-                    if (fi.Name.ToUpper() == string.Format("ASMAHL{0}A.DLL",version))
-                    {
-                        // we found a match for the ASM dir
-                        host = dirInfo.FullName;
-                        return true;
-                    }
-                }
+                host = dirInfo.FullName;
+                return true;
             }
 
             return false;
@@ -372,6 +357,7 @@ namespace DynamoUtilities
         /// Preload a specific version of ASM.
         /// </summary>
         /// <param name="version">The version as ex. "219"</param>
+        /// <param name="pathManager"></param>
         public static bool PreloadAsmVersion(string version, DynamoPathManager pathManager)
         {
             Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
