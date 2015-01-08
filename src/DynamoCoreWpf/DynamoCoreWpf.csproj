@@ -170,7 +170,6 @@
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
     <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
-    <Compile Include="NodeViewCustomization\NodeViewCustomizations\SublistsViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">

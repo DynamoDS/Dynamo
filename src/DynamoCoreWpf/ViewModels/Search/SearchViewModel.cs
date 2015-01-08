@@ -167,11 +167,12 @@ namespace Dynamo.ViewModels
 
         public Typeface RegularTypeface { get; private set; }
 
-        public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories
-        {
-            get;
-            private set;
-        }
+        // TODO(Vladimir)
+        //public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories
+        //{
+        //    get;
+        //    private set;
+        //}
 
         // TODO(Vladimir)
         //public ObservableCollection<SearchCategory> SearchRootCategories

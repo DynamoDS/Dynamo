@@ -3,8 +3,9 @@ using System.Linq;
 
 namespace Dynamo.Search
 {
-    public class BrowserInternalElementForClasses : BrowserItem
+    public class BrowserInternalElementForClasses //: BrowserItem
     {
+#if false
         private string name;
         public override string Name
         {
@@ -58,5 +59,6 @@ namespace Dynamo.Search
         }
 
         public override void Execute() { }
+#endif
     }
 }

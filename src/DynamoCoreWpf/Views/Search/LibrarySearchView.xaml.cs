@@ -423,12 +423,13 @@ namespace Dynamo.UI.Views
             int categoryIndex = 0;
             for (int i = 0; i < categoryListView.Items.Count; i++)
             {
-                var category = categoryListView.Items[i] as SearchCategory;
+                //TODO(Vladimir): take a look.
+                /*var category = categoryListView.Items[i] as SearchCategory;
                 if (category.ContainsClassOrMember(selectedMemberContext))
                 {
                     categoryIndex = i;
                     break;
-                }
+                }*/
             }
 
             if (e.Key == Key.Down)

@@ -26,31 +26,11 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// Property specifies if BrowserItem has members only as children. No any subcategories.
-        /// </summary>        
-        public bool IsPlaceholder
-        {
-            get
-            {
-                // If all childs are derived from NodeSearchElement they all are members
-                // not subcategories.
-                return Items.Count > 0 && !Items.Any(it => !(it is NodeSearchElement));
-            }
-        }
-
-        /// <summary>
         /// Specifies whether or not Root Category package / packages need update.
         /// Makes sense for packages only.
         /// TODO: implement as design clarifications are provided.
         /// </summary>
         public bool IsUpdateAvailable { get; set; }
-
-        /// <summary>
-        /// Specifies the type of library under the category. Can be Regular, Package, CustomDll 
-        /// and CustomNode.
-        /// TODO: implement as design clarifications are provided. 
-        /// </summary>
-        public SearchModel.ElementType ElementType { get; set; }
 
         public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {

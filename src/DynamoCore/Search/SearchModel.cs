@@ -2,24 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using System.Collections.ObjectModel;
 using Dynamo.Core;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
-using Dynamo.DSEngine;
 
-using System.Xml;
-using DynamoUtilities;
 using Dynamo.UI;
-using System.Collections.Specialized;
 
 namespace Dynamo.Search
 {
-#if false
+
     public class SearchModel : NotificationObject
     {
+
+        internal static string ShortenCategoryName(string fullCategoryName)
+        {
+            if (string.IsNullOrEmpty(fullCategoryName))
+                return string.Empty;
+
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
+
+            // if the category name is too long, we strip off the interior categories
+            if (catName.Length > 50)
+            {
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
+                if (s.Count() > 4)
+                {
+                    s = new List<string>()
+                                        {
+                                            s[0],
+                                            "...",
+                                            s[s.Count - 3],
+                                            s[s.Count - 2],
+                                            s[s.Count - 1]
+                                        };
+                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
+                }
+            }
+
+            return catName;
+        }
+#if false
         #region Events
 
         /// <summary>
@@ -132,7 +152,7 @@ namespace Dynamo.Search
 
         private readonly DynamoModel DynamoModel;
 
-        #endregion
+    #endregion
 
         #region Initialization
 
@@ -174,7 +194,7 @@ namespace Dynamo.Search
             browserCategoriesBuilder.AddRootCategory("Migration");
         }
 
-        #endregion
+    #endregion
 
         #region Context-specific hiding
 
@@ -206,7 +226,7 @@ namespace Dynamo.Search
             if (updateSearch) this.OnRequestSync();
         }
 
-        #endregion
+    #endregion
 
         #region Search
 
@@ -263,7 +283,7 @@ namespace Dynamo.Search
             _searchRootCategories.Clear();
         }
 
-        #endregion
+    #endregion
 
         #region Categories
 
@@ -347,35 +367,9 @@ namespace Dynamo.Search
             _searchRootCategories.ToList().ForEach(x => x.SortChildren());
         }
 
-        internal static string ShortenCategoryName(string fullCategoryName)
-        {
-            if (string.IsNullOrEmpty(fullCategoryName))
-                return string.Empty;
+        
 
-            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
-
-            // if the category name is too long, we strip off the interior categories
-            if (catName.Length > 50)
-            {
-                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
-                if (s.Count() > 4)
-                {
-                    s = new List<string>()
-                                        {
-                                            s[0],
-                                            "...",
-                                            s[s.Count - 3],
-                                            s[s.Count - 2],
-                                            s[s.Count - 1]
-                                        };
-                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
-                }
-            }
-
-            return catName;
-        }
-
-        #endregion
+    #endregion
 
         #region Add
 
@@ -563,7 +557,7 @@ namespace Dynamo.Search
             return true;
         }
 
-        #endregion
+    #endregion
 
         #region Execution
 
@@ -576,7 +570,7 @@ namespace Dynamo.Search
             }
         }
 
-        #endregion
+    #endregion
 
         #region Remove
 
@@ -644,7 +638,7 @@ namespace Dynamo.Search
             }
         }
 
-        #endregion
+    #endregion
 
         #region Refactoring
 
@@ -654,7 +648,7 @@ namespace Dynamo.Search
             return this.Add(nodeInfo);
         }
 
-        #endregion
+    #endregion
 
         internal void DumpLibraryToXml(string fileName)
         {
@@ -754,6 +748,7 @@ namespace Dynamo.Search
 
             return category.Substring(0, index);
         }
-    }
 #endif
+    }
+
 }

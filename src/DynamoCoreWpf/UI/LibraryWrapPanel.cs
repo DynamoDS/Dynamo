@@ -23,11 +23,11 @@ namespace Dynamo.Controls
         /// </summary>
         private int selectedClassProspectiveIndex = -2;
         private double classObjectWidth = double.NaN;
-        private ObservableCollection<BrowserItemViewModel> collection;
-        private BrowserInternalElementViewModel currentClass;
+        private ObservableCollection<NodeCategoryViewModel> collection;
+        private NodeCategoryViewModel currentClass;
         private ListView classListView;
 
-        internal bool MakeOrClearSelection(BrowserInternalElementViewModel selectedClass)
+        internal bool MakeOrClearSelection(NodeCategoryViewModel selectedClass)
         {
             if (currentClass != null)
             {
@@ -59,7 +59,7 @@ namespace Dynamo.Controls
         {
             // ListView should never be null.
             classListView = WpfUtilities.FindUpVisualTree<ListView>(this);
-            collection = classListView.ItemsSource as ObservableCollection<BrowserItemViewModel>;
+            collection = classListView.ItemsSource as ObservableCollection<NodeCategoryViewModel>;
             collection.Add(new ClassInformationViewModel());
             classListView.SelectionChanged += OnClassViewSelectionChanged;
 
@@ -280,7 +280,7 @@ namespace Dynamo.Controls
                 (collection[classInfoIndex] as ClassInformationViewModel).ClassDetailsVisibility = true;
             }
 
-            currentClass = collection[selectedIndex] as BrowserInternalElementViewModel;
+            currentClass = collection[selectedIndex];
             OrderListItems(); // Selection change, we may need to reorder items.
         }
 
@@ -324,7 +324,7 @@ namespace Dynamo.Controls
                 return;
 
             //Add members of selected class to StandardPanel            
-            classInformation.PopulateMemberCollections((currentClass as BrowserInternalElementViewModel).Model);
+            classInformation.PopulateMemberCollections(currentClass);
 
             // When we know the number of items on a single row, through selected 
             // item index we will find out where the expanded StandardPanel sit.

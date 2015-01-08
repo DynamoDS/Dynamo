@@ -17,6 +17,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Thickness = System.Windows.Thickness;
+using System.Windows.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -226,7 +227,7 @@ namespace Dynamo.Nodes
 
                 if (OnChangeCommitted != null)
                     OnChangeCommitted();
-                
+
                 Pending = false;
             }
         }

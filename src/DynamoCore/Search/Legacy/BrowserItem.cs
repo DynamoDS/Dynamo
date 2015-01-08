@@ -3,9 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 using Dynamo.Core;
-using Dynamo.PackageManager;
-using Dynamo.Search.SearchElements;
-
 
 namespace Dynamo.Search
 {
@@ -20,14 +17,15 @@ namespace Dynamo.Search
         {
             this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
 
+            // TODO(Vladimir): reimplement this.
             // BrowserInternalElementForClasses object, if any, must 
             // always appear before any other nested namespaces. 
-            var classes = this.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault();
-            if (classes != null)
-            {
-                this.Items.Remove(classes);
-                this.Items.Insert(0, classes);
-            }
+            //var classes = this.Items.OfType<BrowserInternalElementForClasses>().FirstOrDefault();
+            //if (classes != null)
+            //{
+            //    this.Items.Remove(classes);
+            //    this.Items.Insert(0, classes);
+            //}
 
             this.Items.ToList().ForEach(x => x.RecursivelySort());
         }

@@ -204,7 +204,7 @@ namespace Dynamo.UI.Controls
 
         private void OnMoreButtonClick(object sender, RoutedEventArgs e)
         {
-            IEnumerable<BrowserInternalElement> collection = castedDataContext.ActionMembers;
+            IEnumerable<NodeSearchElementViewModel> collection = castedDataContext.ActionMembers;
             if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
                 collection = castedDataContext.QueryMembers;
 
@@ -218,7 +218,7 @@ namespace Dynamo.UI.Controls
             if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.None)
                 return;
 
-            IEnumerable<BrowserInternalElement> collection = castedDataContext.ActionMembers;
+            IEnumerable<NodeSearchElementViewModel> collection = castedDataContext.ActionMembers;
             if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
                 collection = castedDataContext.QueryMembers;
 

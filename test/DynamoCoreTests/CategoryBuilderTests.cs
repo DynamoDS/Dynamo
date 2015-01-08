@@ -7,6 +7,8 @@ namespace Dynamo.Tests
     [TestFixture]
     class CategoryBuilderTests
     {
+        // TODO(Vladimir): no need in these tests.
+#if false
         private CategoryBuilder browserCatBuilder;
         private CategoryBuilder addonCatBuilder;
 
@@ -321,5 +323,6 @@ namespace Dynamo.Tests
         }
 
         #endregion
+#endif
     }
 }

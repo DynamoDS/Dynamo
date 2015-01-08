@@ -15,9 +15,9 @@ namespace Dynamo.Controls
         {
             if (item is NodeSearchElementViewModel)
                 return MemberTemplate;
-
-            if (item is BrowserInternalElementForClassesViewModel)
-                return SubclassesTemplate;
+            // TODO(Vladimir): take a look.
+            //if (item is BrowserInternalElementForClassesViewModel)
+            //    return SubclassesTemplate;
 
             if (item is BrowserRootElementViewModel || item is BrowserInternalElementViewModel)
                 return NestedCategoryTemplate;

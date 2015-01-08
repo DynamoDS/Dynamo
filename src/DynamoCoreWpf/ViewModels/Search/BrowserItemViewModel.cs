@@ -42,13 +42,14 @@ namespace Dynamo.Wpf.ViewModels
             Items.ToList().ForEach(x => x.RecursivelySort());
         }
 
-        private void ItemsOnCollectionChanged(object sender, 
+        private void ItemsOnCollectionChanged(object sender,
             NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (BrowserItem item in e.NewItems.OfType<BrowserItem>()) {
+                    foreach (BrowserItem item in e.NewItems.OfType<BrowserItem>())
+                    {
                         Items.Add(Wrap(item));
                     }
                     break;
@@ -221,10 +222,10 @@ namespace Dynamo.Wpf.ViewModels
                     .OrderBy(x => x.Name));
 
             Items.CollectionChanged += ItemsOnCollectionChanged;
-            
+
             foreach (var item in Items)
                 item.PropertyChanged += ItemOnPropertyChanged;
-            
+
             Visibility = true;
             IsExpanded = false;
         }
@@ -241,8 +242,8 @@ namespace Dynamo.Wpf.ViewModels
                 {
                     item.PropertyChanged += ItemOnPropertyChanged;
                 }
-            } 
-            
+            }
+
             if (args.OldItems != null)
             {
                 foreach (var item in args.OldItems.Cast<ISearchEntryViewModel>())
@@ -332,7 +333,7 @@ namespace Dynamo.Wpf.ViewModels
                     subElement.IsExpanded = true;
                     if (subElement.SubCategories.Any())
                         subElement = subElement.SubCategories[0];
-                    else 
+                    else
                         break;
                 }
 
@@ -386,7 +387,7 @@ namespace Dynamo.Wpf.ViewModels
         private void RemoveFromItems(IEnumerable<ISearchEntryViewModel> oldItems)
         {
             foreach (var entry in oldItems)
-                Items.Remove(entry);   
+                Items.Remove(entry);
         }
 
         private void AddToItems(IEnumerable<ISearchEntryViewModel> newItems)
@@ -411,11 +412,28 @@ namespace Dynamo.Wpf.ViewModels
 
     public class RootNodeCategoryViewModel : NodeCategoryViewModel
     {
+        private ClassInformationViewModel classDetails;
+        public ClassInformationViewModel ClassDetails
+        {
+            get
+            {
+                if (classDetails == null && SubCategories.Count == 0)
+                {
+                    classDetails = new ClassInformationViewModel();
+                    classDetails.IsRootCategoryDetails = true;
+                    classDetails.PopulateMemberCollections(this);
+                }
+
+                return classDetails;
+            }
+        }
+
         public RootNodeCategoryViewModel(string name) : base(name) { }
 
         public RootNodeCategoryViewModel(
             string name, IEnumerable<NodeSearchElementViewModel> entries,
-            IEnumerable<NodeCategoryViewModel> subs) : base(name, entries, subs)
+            IEnumerable<NodeCategoryViewModel> subs)
+            : base(name, entries, subs)
         { }
     }
 }

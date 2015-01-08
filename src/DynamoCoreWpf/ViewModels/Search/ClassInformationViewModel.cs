@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 
 namespace Dynamo.Wpf.ViewModels
 {
-    public class ClassInformationViewModel : BrowserItemViewModel
+    public class ClassInformationViewModel : NodeCategoryViewModel
     {
         private bool hideClassDetails = false;
 
@@ -88,59 +87,52 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        private List<BrowserInternalElement> createMembers;
-        public IEnumerable<BrowserInternalElement> CreateMembers
+        private List<NodeSearchElementViewModel> createMembers;
+        public IEnumerable<NodeSearchElementViewModel> CreateMembers
         {
             get { return this.createMembers; }
         }
 
-        private List<BrowserInternalElement> actionMembers;
-        public IEnumerable<BrowserInternalElement> ActionMembers
+        private List<NodeSearchElementViewModel> actionMembers;
+        public IEnumerable<NodeSearchElementViewModel> ActionMembers
         {
             get { return this.actionMembers; }
         }
 
-        private List<BrowserInternalElement> queryMembers;
-        public IEnumerable<BrowserInternalElement> QueryMembers
+        private List<NodeSearchElementViewModel> queryMembers;
+        public IEnumerable<NodeSearchElementViewModel> QueryMembers
         {
             get { return this.queryMembers; }
         }
 
         public ClassInformationViewModel()
+            : base("")
         {
-            createMembers = new List<BrowserInternalElement>();
-            actionMembers = new List<BrowserInternalElement>();
-            queryMembers = new List<BrowserInternalElement>();
+            createMembers = new List<NodeSearchElementViewModel>();
+            actionMembers = new List<NodeSearchElementViewModel>();
+            queryMembers = new List<NodeSearchElementViewModel>();
         }
 
-        public void PopulateMemberCollections(BrowserItem element)
+        public void PopulateMemberCollections(NodeCategoryViewModel element)
         {
             createMembers.Clear();
             actionMembers.Clear();
             queryMembers.Clear();
 
-            foreach (var subElement in element.Items)
+            foreach (var subElement in element.Entries)
             {
-                var nodeSearchEle = subElement as NodeSearchElement;
-                // nodeSearchEle is null means that our subelement 
-                // is not a leaf of nodes tree.
-                // Normally we shouldn't have this situation.
-                // TODO: discuss with product management.
-                if (nodeSearchEle == null)
-                    continue;
-
-                switch (nodeSearchEle.Group)
+                switch (subElement.Model.Group)
                 {
                     case SearchElementGroup.Create:
-                        createMembers.Add(subElement as BrowserInternalElement);
+                        createMembers.Add(subElement);
                         break;
 
                     case SearchElementGroup.Action:
-                        actionMembers.Add(subElement as BrowserInternalElement);
+                        actionMembers.Add(subElement);
                         break;
 
                     case SearchElementGroup.Query:
-                        queryMembers.Add(subElement as BrowserInternalElement);
+                        queryMembers.Add(subElement);
                         break;
                 }
             }

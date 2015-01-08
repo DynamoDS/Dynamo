@@ -6,7 +6,6 @@ using Dynamo.UI;
 
 namespace Dynamo.Search
 {
-#if false
     public class SearchCategory
     {
         private readonly ObservableCollection<BrowserItem> classes;
@@ -33,6 +32,8 @@ namespace Dynamo.Search
 
         internal void AddMemberToGroup(NodeSearchElement memberNode)
         {
+            // TODO(Vladimir): take a look.
+            /*
             string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
                 memberNode.Group);
             string shortenedCategory = SearchModel.ShortenCategoryName(categoryWithGroup);
@@ -45,6 +46,7 @@ namespace Dynamo.Search
             }
 
             group.AddMember(memberNode);
+             */
         }
 
         internal void AddClassToGroup(BrowserInternalElement memberNode)
@@ -96,5 +98,4 @@ namespace Dynamo.Search
             MemberGroups.ToList().ForEach(x => x.Sort());
         }
     }
-#endif
 }
