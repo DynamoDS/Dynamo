@@ -1415,4 +1415,12 @@ Click CANCEL to cancel the update.</value>
   <data name="InstallMessageCaption" xml:space="preserve">
     <value>Install Dynamo</value>
   </data>
+  <data name="DynamoGeometryButtonToolTip" xml:space="preserve">
+    <value>Geometry</value>
+    <comment>Geometry display tooltip</comment>
+  </data>
+  <data name="DynamoNodeButtonToolTip" xml:space="preserve">
+    <value>Node</value>
+    <comment>Node display tooltip</comment>
+  </data>
 </root>
