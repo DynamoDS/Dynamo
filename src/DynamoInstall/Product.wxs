@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <Product Id="F295EB3F-AAD2-4514-B466-6F0375AAEEE5"
+  <Product Id="A0A6A915-F284-4CB4-90D3-C1356052D456"
            Name="Dynamo 0.7.5"
            Language="1033"
            Version="0.7.5"
