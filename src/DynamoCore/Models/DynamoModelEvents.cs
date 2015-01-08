@@ -18,8 +18,8 @@ namespace Dynamo.Models
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public event ActionHandler RequestDispatcherInvoke;
-        public virtual void OnRequestDispatcherInvoke(Action action)
+        public static event ActionHandler RequestDispatcherInvoke;
+        public static void OnRequestDispatcherInvoke(Action action)
         {
             // if a dispatcher is attached, invoke it
             if (RequestDispatcherInvoke != null)
@@ -29,8 +29,8 @@ namespace Dynamo.Models
                 action();
         }
 
-        public event ActionHandler RequestDispatcherBeginInvoke;
-        public virtual void OnRequestDispatcherBeginInvoke(Action action)
+        public static event ActionHandler RequestDispatcherBeginInvoke;
+        public static void OnRequestDispatcherBeginInvoke(Action action)
         {
             // if a dispatcher is attached, invoke it
             if (RequestDispatcherBeginInvoke != null)
