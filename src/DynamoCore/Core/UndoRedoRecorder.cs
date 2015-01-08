@@ -452,16 +452,16 @@ namespace Dynamo.Core
         {
             private readonly NodeModel node;
             private readonly UndoRedoRecorder recorder;
-            private readonly List<ConnectorModel> existingConnectors;
-            private readonly List<ConnectorModel> remainingConnectors;
+            private readonly Dictionary<Guid, XmlElement> existingConnectors;
+            private readonly Dictionary<Guid, ConnectorModel> remainingConnectors;
 
             public NodeModificationUndoHelper(UndoRedoRecorder recorder, NodeModel node)
             {
                 this.node = node;
                 this.recorder = recorder;
 
-                existingConnectors = new List<ConnectorModel>();
-                remainingConnectors = new List<ConnectorModel>();
+                existingConnectors = new Dictionary<Guid, XmlElement>();
+                remainingConnectors = new Dictionary<Guid, ConnectorModel>();
 
                 using (this.recorder.BeginActionGroup())
                 {
@@ -474,15 +474,25 @@ namespace Dynamo.Core
                 }
 
                 // Record the existing connectors...
-                existingConnectors.AddRange(node.AllConnectors);
+                foreach (var connectorModel in node.AllConnectors)
+                {
+                    var element = connectorModel.Serialize(
+                        recorder.document, SaveContext.Undo);
+
+                    existingConnectors.Add(connectorModel.GUID, element);
+                }
             }
 
             public void Dispose()
             {
                 // Connectors after node is modified.
-                remainingConnectors.AddRange(node.AllConnectors);
+                foreach (var connectorModel in node.AllConnectors)
+                {
+                    var model = connectorModel;
+                    remainingConnectors.Add(model.GUID, model);
+                }
 
-                var removed = new List<ConnectorModel>();
+                var removed = new List<XmlElement>();
                 var added = new List<ConnectorModel>();
                 if (!ComputeDifference(removed, added))
                     return; // No difference in connectors.
@@ -498,9 +508,13 @@ namespace Dynamo.Core
                 // affecting the node and its connectors.
                 using (recorder.BeginActionGroup())
                 {
+                    // For each of the deleted connectors, record its respective
+                    // XmlElement that was serialized before they were deleted.
+                    var deletionString = UserAction.Deletion.ToString();
                     foreach (var connector in removed)
                     {
-                        recorder.RecordDeletionForUndo(connector);
+                        recorder.SetNodeAction(connector, deletionString);
+                        recorder.currentActionGroup.AppendChild(connector);
                     }
 
                     foreach (XmlNode childNode in previousGroup.ChildNodes)
@@ -524,15 +538,18 @@ namespace Dynamo.Core
                 }
             }
 
-            private bool ComputeDifference(
-                List<ConnectorModel> removed,
-                List<ConnectorModel> added)
+            private bool ComputeDifference(List<XmlElement> removed, List<ConnectorModel> added)
             {
                 // Whatever that was in the existing set but no longer exist...
-                removed.AddRange(existingConnectors.Except(remainingConnectors));
+                var deletedKeys = existingConnectors.Keys.Except(remainingConnectors.Keys);
+                removed.AddRange(deletedKeys.Select(key => existingConnectors[key]));
 
                 // Whatever that did not originally exist but got created...
-                added.AddRange(remainingConnectors.Except(existingConnectors));
+                var addedConnectors = remainingConnectors.Keys.Except(
+                    existingConnectors.Keys);
+
+                added.AddRange(addedConnectors.Select(
+                    connectorKey => remainingConnectors[connectorKey]));
 
                 return removed.Any() || added.Any();
             }
