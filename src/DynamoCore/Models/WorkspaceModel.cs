@@ -1152,8 +1152,10 @@ namespace Dynamo.Models
 
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
-                NodeGraph.LoadConnectorFromXml(modelData,
+                var connector = NodeGraph.LoadConnectorFromXml(modelData,
                     Nodes.ToDictionary(node => node.GUID));
+
+                OnConnectorAdded(connector); // Update view-model and view.
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
