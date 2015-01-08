@@ -1,5 +1,6 @@
 ﻿﻿using System.Diagnostics;
-using Dynamo.Nodes;
+﻿using Dynamo.Core;
+﻿using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views;
@@ -25,17 +26,12 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class CodeBlockEditor : UserControl
     {
+        private bool createdForNewCodeBlock;
         private readonly NodeViewModel nodeViewModel;
         private readonly DynamoViewModel dynamoViewModel;
         private readonly CodeBlockNodeModel nodeModel;
         private CompletionWindow completionWindow;
         private CodeBlockMethodInsightWindow insightWindow;
-
-        internal CodeBlockEditor(DynamoViewModel dynamoViewModel)
-        {
-            this.dynamoViewModel = dynamoViewModel;
-            InitializeComponent();
-        }
 
         public CodeBlockEditor()
         {
@@ -50,6 +46,16 @@ namespace Dynamo.UI.Controls
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
             this.nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
+            if (nodeModel == null)
+            {
+                throw new InvalidOperationException(
+                    "Should not be used for nodes other than code block");
+            }
+
+            // Determines if this editor is created for a new code block node.
+            // In cases like an undo/redo operation, the editor is created for 
+            // an existing code block node.
+            createdForNewCodeBlock = string.IsNullOrEmpty(nodeModel.Code);
 
             // Register text editing events            
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
@@ -91,11 +97,6 @@ namespace Dynamo.UI.Controls
 
             return engineController.CodeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix).
                 Select(x => new CodeBlockInsightItem(x));
-        }
-
-        internal string GetDescription()
-        {
-            return "";
         }
 
         internal new bool Focus()
@@ -383,35 +384,15 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
-            var codeBlockNode = nodeViewModel.NodeModel as CodeBlockNodeModel;
-            if (codeBlockNode == null)
-                throw new InvalidOperationException("Unknown node type used");
+            InnerTextEditor.TextArea.ClearSelection();
+            var recorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
 
-            var isNewCodeBlockNode = string.IsNullOrEmpty(codeBlockNode.Code);
+            if (string.IsNullOrEmpty(InnerTextEditor.Text))
+                DiscardChangesAndOptionallyRemoveNode(recorder);
+            else
+                CommitChanges(recorder);
 
-            this.InnerTextEditor.TextArea.ClearSelection();
-            this.nodeViewModel.DynamoViewModel.ExecuteCommand(
-                   new DynCmd.UpdateModelValueCommand(
-                       this.nodeViewModel.NodeModel.GUID, "Code", this.InnerTextEditor.Text));
-
-            if (isNewCodeBlockNode)
-            {
-                // If this editing was started due to a new code block node, 
-                // then by this point there would have been two action groups 
-                // recorded on the undo-stack: one for node creation, and 
-                // another one for node editing (as part of the command above).
-                var recorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-
-                // Pop off the two action groups...
-                recorder.PopFromUndoGroup(); // Pop off modification action.
-                recorder.PopFromUndoGroup(); // Pop off creation action.
-
-                // ... and record this new node as creation.
-                using (recorder.BeginActionGroup())
-                {
-                    recorder.RecordCreationForUndo(codeBlockNode);
-                }
-            }
+            createdForNewCodeBlock = false; // First commit is now over.
         }
 
         void InnerTextEditor_TextChanged(object sender, EventArgs e)
@@ -452,6 +433,58 @@ namespace Dynamo.UI.Controls
                     new DynCmd.DeleteModelCommand(this.nodeViewModel.NodeModel.GUID));             
             }
         }
+        private void CommitChanges(UndoRedoRecorder recorder)
+        {
+            nodeViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(nodeModel.GUID,
+                    /*NXLT*/"Code", InnerTextEditor.Text));
+
+            if (createdForNewCodeBlock)
+            {
+                // If this editing was started due to a new code block node, 
+                // then by this point there would have been two action groups 
+                // recorded on the undo-stack: one for node creation, and 
+                // another for node editing (as part of ExecuteCommand above).
+                // Pop off the two action groups...
+                // 
+                recorder.PopFromUndoGroup(); // Pop off modification action.
+                recorder.PopFromUndoGroup(); // Pop off creation action.
+
+                // ... and record this new node as new creation.
+                using (recorder.BeginActionGroup())
+                {
+                    recorder.RecordCreationForUndo(nodeModel);
+                }
+            }
+        }
+
+        private void DiscardChangesAndOptionallyRemoveNode(UndoRedoRecorder recorder)
+        {
+            if (!string.IsNullOrEmpty(InnerTextEditor.Text))
+            {
+                throw new InvalidOperationException(
+                    /*NXLT*/"This method is meant only for empty text box");
+            }
+
+            if (createdForNewCodeBlock)
+            {
+                // If this editing was started due to a new code block node, 
+                // then by this point the creation of the node would have been 
+                // recorded, we need to pop that off the undo stack.
+                recorder.PopFromUndoGroup();
+
+                // The empty code block node needs to be removed from workspace.
+                nodeViewModel.WorkspaceViewModel.Model.RemoveNode(nodeModel);
+            }
+            else
+            {
+                // If the editing was started for an existing code block node,
+                // and user deletes the text contents, it should be restored to 
+                // the original codes.
+                InnerTextEditor.Text = nodeModel.Code;
+            }
+        }
+
         #endregion
 
         #region Key Press Event Handlers
@@ -467,10 +500,6 @@ namespace Dynamo.UI.Controls
                 {
                     OnRequestReturnFocusToSearch();
                 }
-            }
-            else if (e.Key == Key.Escape)
-            {
-                HandleEscape();
             }
         }
 
