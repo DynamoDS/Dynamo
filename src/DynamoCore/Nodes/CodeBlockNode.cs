@@ -43,8 +43,7 @@ namespace Dynamo.Nodes
             internal set { shouldFocus = value; }
         }
 
-        private readonly DynamoLogger logger;
-        private ElementResolver elementResolver;
+        protected ElementResolver elementResolver;
 
         private struct Formatting
         {

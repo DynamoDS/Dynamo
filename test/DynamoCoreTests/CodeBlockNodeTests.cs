@@ -8,12 +8,14 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.DSASM;
 using Dynamo.Models;
+using ProtoCore.Namespace;
 using DynCmd = Dynamo.Models.DynamoModel;
 using ProtoCore.Mirror;
 using Dynamo.DSEngine;
 using ProtoCore.Utils;
 using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.UI;
+using System.Xml;
 
 namespace Dynamo.Tests
 {
@@ -759,6 +761,26 @@ b = c[w][x][y][z];";
         
         #endregion
 
+        #region Codeblock Namespace Resolution Tests
+
+        [Test]
+        public void SerializeResolutionMap_SaveFile()
+        {
+            string code = "a : int;";
+
+            var cbn = new CodeBlockNodeTester(ViewModel.Model.LibraryServices);
+            
+            UpdateCodeBlockNodeContent(cbn, code);
+
+            XmlDocument xmlDoc = new XmlDocument();
+            var element = cbn.Serialize(xmlDoc, SaveContext.File);
+
+            cbn.Deserialize(element, SaveContext.File);
+        }
+
+        #endregion
+
+
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
             var cbn = new CodeBlockNodeModel(ViewModel.Model.LibraryServices);
@@ -774,6 +796,17 @@ b = c[w][x][y][z];";
         {
             var command = new DynCmd.UpdateModelValueCommand(cbn.GUID, "Code", value);
             ViewModel.ExecuteCommand(command);
+        }
+    }
+
+    internal class CodeBlockNodeTester : CodeBlockNodeModel
+    {
+        internal CodeBlockNodeTester(LibraryServices ls) : base(ls)
+        {
+            elementResolver = new ElementResolver();
+            elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
+            elementResolver.AddToResolutionMap("Rhino.Point", "Rhino.Geometry.Point", "Rhynamo.dll");
+            
         }
     }
 
