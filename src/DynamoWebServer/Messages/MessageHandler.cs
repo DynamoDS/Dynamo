@@ -448,7 +448,7 @@ namespace DynamoWebServer.Messages
                 
                 var elements = cachedValue.GetElements().ConvertAll(e => wrappedValue(e));
                 
-                return "[" + elements.Aggregate((i, j) => i + ", " + j) + "]";
+                return "[" + string.Join(", ", elements) + "]";
             }
             else if (cachedValue.Data != null)
             {
