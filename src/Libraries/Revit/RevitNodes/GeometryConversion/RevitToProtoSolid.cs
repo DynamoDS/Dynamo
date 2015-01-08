@@ -13,6 +13,7 @@ using Face = Autodesk.Revit.DB.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Solid = Autodesk.DesignScript.Geometry.Solid;
 using UV = Autodesk.DesignScript.Geometry.UV;
+using Surface = Autodesk.DesignScript.Geometry.Surface;
 
 namespace Revit.GeometryConversion
 {

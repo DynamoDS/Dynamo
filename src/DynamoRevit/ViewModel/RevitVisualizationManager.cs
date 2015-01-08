@@ -19,6 +19,7 @@ using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using PolyCurve = Autodesk.DesignScript.Geometry.PolyCurve;
+using Surface = Autodesk.DesignScript.Geometry.Surface;
 
 namespace Dynamo
 {
