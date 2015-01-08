@@ -77,7 +77,7 @@ namespace Dynamo.Applications.Models
         {
             // where necessary, assign defaults
             if (string.IsNullOrEmpty(configuration.Context))
-                configuration.Context = Core.Context.REVIT_2015;
+                configuration.Context = Core.Context.REVIT_2016;
             if (string.IsNullOrEmpty(configuration.DynamoCorePath))
             {
                 var asmLocation = Assembly.GetExecutingAssembly().Location;

@@ -37,7 +37,8 @@ namespace Dynamo
         public RevitVisualizationManager(DynamoModel dynamoModel) : base(dynamoModel)
         {
             if (dynamoModel.Context == Context.VASARI_2014 ||
-                dynamoModel.Context == Context.REVIT_2015)
+                dynamoModel.Context == Context.REVIT_2015 ||
+                dynamoModel.Context == Context.REVIT_2016)
             {
                 AlternateDrawingContextAvailable = true;
                 DrawToAlternateContext = false;
