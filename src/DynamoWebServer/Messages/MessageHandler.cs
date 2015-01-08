@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Threading;
 using Dynamo.Core.Threading;
+using ProtoCore.Mirror;
 
 namespace DynamoWebServer.Messages
 {
@@ -439,19 +440,30 @@ namespace DynamoWebServer.Messages
             }
         }
 
+        private string GetValueFromMirrorData(MirrorData cachedValue)
+        {
+            if (cachedValue.IsCollection)
+            {
+                Func<MirrorData, string> wrappedValue = (el) => "\"" + GetValueFromMirrorData(el) + "\"";
+                
+                var elements = cachedValue.GetElements().ConvertAll(e => wrappedValue(e));
+                
+                return "[" + elements.Aggregate((i, j) => i + ", " + j) + "]";
+            }
+            else if (cachedValue.Data != null)
+            {
+                return cachedValue.Data.ToString();
+            }
+
+            return "null";
+        }
+
         private string GetValue(NodeModel node)
         {
             string data = "null";
             if (node.CachedValue != null)
             {
-                if (node.CachedValue.IsCollection)
-                {
-                    data = "Array";
-                }
-                else if (node.CachedValue.Data != null)
-                {
-                    data = node.CachedValue.Data.ToString();
-                }
+                data = GetValueFromMirrorData(node.CachedValue);
             }
             else if (node is DoubleInput)
             {

@@ -35,6 +35,12 @@ namespace DynamoWebServer.Messages
         public string Data { get; private set; }
 
         /// <summary>
+        /// String representing if the result object is array
+        /// </summary>
+        [DataMember]
+        public bool IsArray { get; private set; }
+
+        /// <summary>
         /// Indicates whether the result object should be drawn on the canvas
         /// </summary>
         [DataMember]
@@ -46,6 +52,7 @@ namespace DynamoWebServer.Messages
             this.State = node.State.ToString();
             this.StateMessage = node.ToolTipText;
             this.Data = data;
+            this.IsArray = node.CachedValue != null && node.CachedValue.IsCollection;
             this.ContainsGeometryData = node.HasRenderPackages;
         }
     }
