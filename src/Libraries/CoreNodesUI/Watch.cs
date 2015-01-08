@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 
 using Dynamo.Controls;
+using Dynamo.Core.Threading;
+using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.ViewModels;
@@ -62,8 +64,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public Watch(WorkspaceModel ws)
-            : base(ws)
+        public Watch()
         {
             InPortData.Add(new PortData(String.Empty, Resources.WatchPortDataInputToolTip));
             OutPortData.Add(new PortData(String.Empty, Resources.WatchPortDataResultToolTip));
@@ -74,8 +75,11 @@ namespace Dynamo.Nodes
 
             foreach (PortModel p in InPorts)
             {
-                p.PortConnected += InputPortConnected;
+                PortModel p1 = p;
+                p.PortConnected += _ => InputPortConnected(p1);
             }
+
+            ShouldDisplayPreviewCore = false;
         }
 
         private void EvaluationCompleted(object o)
@@ -96,18 +100,10 @@ namespace Dynamo.Nodes
             );
         }
 
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
-        }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
         }
 
         /// <summary>
@@ -115,10 +111,10 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void InputPortConnected(object sender, EventArgs e)
+        private void InputPortConnected(PortModel sender)
         {
             Tuple<int, NodeModel> input;
-            if (TryGetInput(InPorts.IndexOf(sender as PortModel), out input))
+            if (TryGetInput(InPorts.IndexOf(sender), out input))
             {
                 var oldId = astBeingWatched;
                 astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
@@ -209,7 +205,7 @@ namespace Dynamo.Nodes
                 ? AstIdentifierForPreview.Name
                 : InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
-            var core = Workspace.DynamoModel.EngineController.LiveRunnerCore;
+            var core = DynamoViewModel.EngineController.LiveRunnerCore;
 
             if (Root != null)
             {
@@ -219,25 +215,15 @@ namespace Dynamo.Nodes
                     inputVar,
                     Root.ShowRawData);
             }
-            else
-                return DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
+            return DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(CachedValue, core, inputVar);
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
-        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
+        protected override void RequestVisualUpdateAsyncCore(
+            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
-            return; // No visualization update is required for this node type.
+            // Do nothing
         }
-
-#else
-        public override void UpdateRenderPackage(int maxTessDivs)
-        {
-            //do nothing
-            //a watch should not draw its outputs
-        }
-#endif
-
+        
         #endregion
     }
 }

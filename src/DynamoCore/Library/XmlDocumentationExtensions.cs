@@ -157,7 +157,7 @@ namespace Dynamo.DSEngine
         {
             char prefixCode;
 
-            string memberName = member.ClassName + "." + member.Name;
+            string memberName = member.ClassName + "." + member.FunctionName;
 
             switch (member.Type)
             {

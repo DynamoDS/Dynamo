@@ -22,8 +22,7 @@ namespace DSCoreNodesUI
             }
         }
 
-        public WebRequest(WorkspaceModel workspace)
-            : base(workspace)
+        public WebRequest()
         {
             InPortData.Add(new PortData(/*NXLT*/"url", Resources.WebRequestPortDataUrlToolTip));
             OutPortData.Add(new PortData(/*NXLT*/"result", Resources.WebRequestPortDataResultToolTip));
@@ -32,7 +31,7 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            RequiresRecalc = true;
+            OnAstUpdated();
 
             var functionCall = AstFactory.BuildFunctionCall(new Func<string, string>(Web.WebRequestByUrl), inputAstNodes);
 

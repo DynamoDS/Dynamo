@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using DSCoreNodesUI.Properties;
@@ -15,7 +14,7 @@ namespace DSCoreNodesUI.HigherOrder
     [IsDesignScriptCompatible]
     public class ApplyFunction : VariableInputNode
     {
-        public ApplyFunction(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public ApplyFunction() : base()
         {
             InPortData.Add(new PortData(/*NXLT*/"func", Resources.ApplyPortDataFuncToolTip));
             OutPortData.Add(new PortData(/*NXLT*/"func(args)", Resources.ApplyPortDataFuncArgToolTip));
@@ -71,8 +70,7 @@ namespace DSCoreNodesUI.HigherOrder
     [IsDesignScriptCompatible]
     public class ComposeFunctions : VariableInputNode
     {
-        public ComposeFunctions(WorkspaceModel workspaceModel)
-            : base(workspaceModel)
+        public ComposeFunctions()
         {
             InPortData.Add(new PortData(/*NXLT*/"func0", Resources.ComposePortDataFunc0ToolTip));
             InPortData.Add(new PortData(/*NXLT*/"func1", Resources.ComposePortDataFunc1ToolTip));

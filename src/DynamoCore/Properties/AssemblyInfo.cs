@@ -22,4 +22,3 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoRevitDS")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
 [assembly: InternalsVisibleTo("DSCoreNodesUI")]
-

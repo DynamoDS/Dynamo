@@ -52,7 +52,6 @@ pushd %cwd%\temp\bin\%OPT_Language%\
 rename README.md README.txt
 popd 
 
-robocopy %cwd%\..\..\doc\distrib\dynamo_packages %cwd%\temp\dynamo_packages /e
 robocopy %cwd%\..\..\doc\distrib\migration_nodes %cwd%\temp\definitions /e
 robocopy %cwd%\..\..\doc\distrib\Samples %cwd%\temp\Samples /s
 

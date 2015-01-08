@@ -3,27 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Forms;
-using System.Windows.Media;
-using Dynamo.Controls;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.UI;
+using DSCoreNodesUI.Properties;
+
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
-using DSCoreNodesUI.Properties;
 
 namespace DSCore.File
 {
     [SupressImportIntoVM]
     public abstract class FileSystemBrowser : DSCoreNodesUI.String
     {
-        protected FileSystemBrowser(WorkspaceModel workspace, string tip)
-            : base(workspace)
+        protected FileSystemBrowser(string tip)
+            : base()
         {
             OutPortData[0].ToolTipString = tip;
             RegisterAllPorts();
@@ -34,37 +29,27 @@ namespace DSCore.File
 
     [NodeName(/*NXLT*/"File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(/*NXLT*/"FilePathDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"Allows you to select a file on the system to get its filename.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
     {
-        public Filename(WorkspaceModel workspace) : base(workspace, /*NXLT*/"Filename") { }
-
-        protected override bool ShouldDisplayPreviewCore
+        public Filename() : base(/*NXLT*/"Filename")
         {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
+            ShouldDisplayPreviewCore = false;
         }
     }
 
     [NodeName(/*NXLT*/"Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(/*NXLT*/"DirectoryPathDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"Allows you to select a directory on the system to get its path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
     {
-        public Directory(WorkspaceModel workspace) : base(workspace, /*NXLT*/"Directory") { }
-
-        protected override bool ShouldDisplayPreviewCore
+        public Directory() : base(/*NXLT*/"Directory")
         {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
+            ShouldDisplayPreviewCore = false;
         }
     }
 
@@ -81,15 +66,14 @@ namespace DSCore.File
         private IEnumerable<IDisposable> registrations = Enumerable.Empty<IDisposable>();
         private readonly Func<string, T> func;
 
-        protected FileSystemObject(WorkspaceModel workspaceModel, Func<string, T> func)
-            : base(workspaceModel)
+        protected FileSystemObject(Func<string, T> func)
         {
             this.func = func;
         }
 
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
             StopWatching();
         }
 
@@ -143,7 +127,7 @@ namespace DSCore.File
             protected void Modified()
             {
                 node.ForceReExecuteOfNode = true;
-                node.RequiresRecalc = true;
+                node.OnAstUpdated();
             }
 
             public abstract void Dispose();
@@ -182,13 +166,13 @@ namespace DSCore.File
 
     [NodeName(/*NXLT*/"File.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription(/*NXLT*/"FileFromPathDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"Creates a file object from a path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
     {
-        public FileObject(WorkspaceModel workspaceModel)
-            : base(workspaceModel, IO.File.FromPath)
+        public FileObject()
+            : base(IO.File.FromPath)
         {
             InPortData.Add(new PortData(/*NXLT*/"path", Resources.FileObjectPortDataPathToolTip));
             OutPortData.Add(new PortData(/*NXLT*/"file", Resources.FileObjectPortDataResultToolTip));
@@ -236,13 +220,13 @@ namespace DSCore.File
 
     [NodeName(/*NXLT*/"Directory.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription(/*NXLT*/"DirectoryFromPathDescription", typeof(Resources))]
+    [NodeDescription(/*NXLT*/"Creates a directory object from a path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
     {
-        public DirectoryObject(WorkspaceModel workspaceModel)
-            : base(workspaceModel, IO.Directory.FromPath)
+        public DirectoryObject()
+            : base(IO.Directory.FromPath)
         {
             InPortData.Add(new PortData(/*NXLT*/"path", Resources.DirectoryObjectPortDataPathToolTip));
             OutPortData.Add(new PortData(/*NXLT*/"directory", Resources.DirectoryObjectPortDataResultToolTip));

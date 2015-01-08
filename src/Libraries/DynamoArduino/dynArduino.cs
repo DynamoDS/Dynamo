@@ -72,7 +72,7 @@ namespace Dynamo.Nodes
     {
         public SerialPort Port { get; private set; }
 
-        public Arduino(WorkspaceModel workspace) : base(workspace)
+        public Arduino()
         {
             InPortData.Add(new PortData(/*NXLT*/"exec", Resources.ArduinoPortDataExecToolTip));
             OutPortData.Add(new PortData(/*NXLT*/"arduino", Resources.ArduinoPortDataOutputToolTip));
@@ -87,7 +87,7 @@ namespace Dynamo.Nodes
             Port = new SerialPort { BaudRate = 9600, NewLine = /*NXLT*/"\r\n", DtrEnable = true };
         }
 
-        public override void Cleanup()
+        public override void Dispose()
         {
             if (Port != null)
             {
@@ -97,16 +97,18 @@ namespace Dynamo.Nodes
             Port = null;
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.SerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Port.PortName);
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             Port.PortName =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name == typeof(double).FullName && subNode.Attributes != null)
@@ -151,8 +153,7 @@ namespace Dynamo.Nodes
     {
         SerialPort port;
 
-        public ArduinoRead(WorkspaceModel workspace)
-            : base(workspace)
+        public ArduinoRead()
         {
             InPortData.Add(new PortData(/*NXLT*/"arduino", Resources.PortDataArduinoToolTip));
             InPortData.Add(new PortData(/*NXLT*/"delimiter", Resources.ArduionReadPortDataDelimiterToolTip));
@@ -166,13 +167,7 @@ namespace Dynamo.Nodes
             string data = port.ReadExisting();
 
             string[] allData = data.Split(delim.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            if (allData.Any())
-            {
-                //don't return last value. it is often truncated
-                return allData[allData.Count()-2];
-            }
-
-            return string.Empty;
+            return allData.Any() ? allData[allData.Count()-2] : string.Empty;
         }
 
 
@@ -211,8 +206,7 @@ namespace Dynamo.Nodes
     {
         SerialPort port;
 
-        public ArduinoWrite(WorkspaceModel workspace)
-            : base(workspace)
+        public ArduinoWrite()
         {
             InPortData.Add(new PortData(/*NXLT*/"arduino", Resources.PortDataArduinoToolTip));
             InPortData.Add(new PortData(/*NXLT*/"text", Resources.ArduionWritePortDataTextToolTip));

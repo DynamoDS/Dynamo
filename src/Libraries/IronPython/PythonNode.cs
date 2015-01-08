@@ -7,15 +7,14 @@ using System.Windows.Input;
 using System.Xml;
 using DSIronPython;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 
 using ProtoCore.AST.AssociativeAST;
 using Autodesk.DesignScript.Runtime;
-using DSIronPythonNode.Properties;
 
 namespace DSIronPythonNode
 {
@@ -28,8 +27,8 @@ namespace DSIronPythonNode
         {
             base.CustomizeView(nodeModel, nodeView);
 
-            this.model = nodeModel;
-            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            model = nodeModel;
+            dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
             var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(editWindowItem);
@@ -55,16 +54,17 @@ namespace DSIronPythonNode
             bool? acceptChanged = editWindow.ShowDialog();
             if (acceptChanged.HasValue && acceptChanged.Value)
             {
-                model.RequiresRecalc = true;
+                model.ForceReExecuteOfNode = true;
+                model.OnAstUpdated();
             }
         }
     }
 
     public abstract class PythonNodeBase : VariableInputNode
     {
-        protected PythonNodeBase(WorkspaceModel workspace) : base(workspace)
+        protected PythonNodeBase()
         {
-            OutPortData.Add(new PortData(/*NXLT*/"OUT", Resources.PythonNodePortDataOutputToolTip));
+            OutPortData.Add(new PortData(/*NXLT*/"OUT", Properties.Resources.PythonNodePortDataOutputToolTip));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -108,12 +108,12 @@ namespace DSIronPythonNode
 
     [NodeName(/*NXLT*/"Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription(/*NXLT*/"PythonScriptDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"PythonScriptDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
-        public PythonNode(WorkspaceModel workspace) : base(workspace)
+        public PythonNode()
         {
             script = "import clr\nclr.AddReference('ProtoGeometry')\n"
                 + "from Autodesk.DesignScript.Geometry import *\n"
@@ -153,7 +153,7 @@ namespace DSIronPythonNode
             };
         }
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             if (name == /*NXLT*/"ScriptContent")
             {
@@ -161,29 +161,28 @@ namespace DSIronPythonNode
                 return true;
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
 
-        #region Save/Load
+        #region SerializeCore/DeserializeCore
 
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.SaveNode(xmlDoc, nodeElement, context);
+            base.SerializeCore(element, context);
 
-            XmlElement script = xmlDoc.CreateElement("Script");
+            XmlElement script = element.OwnerDocument.CreateElement("Script");
             //script.InnerText = this.tb.Text;
             script.InnerText = this.script;
-            nodeElement.AppendChild(script);
+            element.AppendChild(script);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.LoadNode(nodeElement);
+            base.DeserializeCore(nodeElement, context);
 
             var scriptNode =
                 nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == /*NXLT*/"Script");
-            
+
             if (scriptNode != null)
             {
                 script = scriptNode.InnerText;
@@ -191,37 +190,18 @@ namespace DSIronPythonNode
         }
 
         #endregion
-
-        #region SerializeCore/DeserializeCore
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context);
-            var helper = new XmlElementHelper(element);
-            helper.SetAttribute("Script", Script);
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context);
-            var helper = new XmlElementHelper(element);
-            var script = helper.ReadString(/*NXLT*/"Script", string.Empty);
-            this.script = script;
-        }
-
-        #endregion
     }
 
     [NodeName(/*NXLT*/"Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription(/*NXLT*/"PythonScriptFromStringDescription",typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"PythonScriptFromStringDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase
     {
-        public PythonStringNode(WorkspaceModel workspace) : base(workspace)
+        public PythonStringNode()
         {
-            InPortData.Add(new PortData(/*NXLT*/"script", Resources.PythonStringPortDataScriptToolTip));
+            InPortData.Add(new PortData(/*NXLT*/"script", Properties.Resources.PythonStringPortDataScriptToolTip));
             AddInput();
             RegisterAllPorts();
         }
