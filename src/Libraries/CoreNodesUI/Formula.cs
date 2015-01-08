@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
-using DSCoreNodesUI.Properties;
 
 using NCalc;
 using ProtoCore;
@@ -16,7 +15,7 @@ using Expression = NCalc.Expression;
 namespace DSCoreNodesUI
 {
     [NodeName(/*NXLT*/"Formula")]
-    [NodeDescription(/*NXLT*/"FormulaDescription", typeof(Properties.Resources))]
+    [NodeDescription(/*NXLT*/"Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     //[NodeDeprecated]
@@ -39,13 +38,9 @@ namespace DSCoreNodesUI
                     {
                         ElementState oldState = State;
                         {
-                            DisableReporting();
                             ProcessFormula();
                             RaisePropertyChanged(/*NXLT*/"FormulaString");
-                            RequiresRecalc = true;
-                            EnableReporting();
-                            if (Workspace != null)
-                                Workspace.Modified();
+                            OnAstUpdated();
                         }
 
                         if (oldState != State)
@@ -55,15 +50,14 @@ namespace DSCoreNodesUI
             }
         }
 
-        public Formula(WorkspaceModel workspace)
-            : base(workspace)
+        public Formula()
         {
             ArgumentLacing = LacingStrategy.Shortest;
-            OutPortData.Add(new PortData(string.Empty, Resources.FormulaPortDataResultToolTip));
+            OutPortData.Add(new PortData(string.Empty, Properties.Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             if (name == /*NXLT*/"FormulaString")
             {
@@ -71,18 +65,23 @@ namespace DSCoreNodesUI
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        #region Serialization/Deserialization methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            var formStringNode = xmlDoc.CreateElement(/*NXLT*/"FormulaText");
+            base.SerializeCore(element, context); //Base implementation must be called
+            var formStringNode = element.OwnerDocument.CreateElement(/*NXLT*/"FormulaText");
             formStringNode.InnerText = FormulaString;
-            nodeElement.AppendChild(formStringNode);
+            element.AppendChild(formStringNode);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context); //Base implementation must be called
+
             if (nodeElement.Attributes != null)
             {
                 var formulaAttr = nodeElement.Attributes[/*NXLT*/"formula"];
@@ -94,32 +93,9 @@ namespace DSCoreNodesUI
             }
 
             var formStringNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(childNode => childNode.Name == /*NXLT*/"FormulaText");
-            FormulaString = formStringNode != null 
-                ? formStringNode.InnerText 
+            FormulaString = formStringNode != null
+                ? formStringNode.InnerText
                 : nodeElement.InnerText;
-        }
-
-        #region Serialization/Deserialization methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); //Base implementation must be called
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute(/*NXLT*/"formulaString", FormulaString);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); //Base implementation must be called
-
-            if (context == SaveContext.Undo)
-            {
-                var helper = new XmlElementHelper(element);
-                FormulaString = helper.ReadString(/*NXLT*/"formulaString");
-            }
         }
 
         #endregion
@@ -194,7 +170,7 @@ namespace DSCoreNodesUI
 
             foreach (var p in parameters)
             {
-                InPortData.Add(new PortData(p, Resources.PortDataVariableToolTip));
+                InPortData.Add(new PortData(p, /*NXLT*/"variable"));
             }
 
             RegisterInputPorts();

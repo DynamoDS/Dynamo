@@ -1,187 +1,327 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Xml;
 
-using Dynamo.DSEngine;
-using Dynamo.Nodes;
+using DSCoreNodesUI;
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
-    internal class NodeFactory
+    /// <summary>
+    ///     An object which can load a NodeModel from Xml.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface INodeLoader<out T> where T : NodeModel
     {
-        private readonly DynamoModel dynamoModel;
-        private readonly WorkspaceModel workspaceModel;
+        /// <summary>
+        ///     Create a new NodeModel from its serialized form.
+        /// </summary>
+        /// <param name="elNode">Serialized NodeModel</param>
+        /// <param name="context">Serialization context</param>
+        /// <returns></returns>
+        T CreateNodeFromXml(XmlElement elNode, SaveContext context);
+    }
 
-        internal NodeFactory(WorkspaceModel workspaceModel, DynamoModel dynamoModel)
+    /// <summary>
+    ///     An object which can create a new NodeModel.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface INodeFactory<out T> where T : NodeModel
+    {
+        /// <summary>
+        ///     Creates a new NodeModel instance.
+        /// </summary>
+        /// <returns></returns>
+        T CreateNode();
+    }
+
+    /// <summary>
+    ///     Manages factories and loaders for NodeModels. Can use registered factories
+    ///     and loaders to instantiate and load new NodeModels.
+    /// </summary>
+    public class NodeFactory : LogSourceBase
+    {
+        private readonly Dictionary<Type, INodeFactory<NodeModel>> nodeFactories =
+            new Dictionary<Type, INodeFactory<NodeModel>>();
+
+        private readonly Dictionary<Type, INodeLoader<NodeModel>> nodeLoaders =
+            new Dictionary<Type, INodeLoader<NodeModel>>();
+
+        private readonly Dictionary<string, Type> alsoKnownAsMappings =
+            new Dictionary<string, Type>();
+
+        /// <summary>
+        ///     Adds a node loader to this manager.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="loader"></param>
+        public void AddLoader<T>(INodeLoader<T> loader) where T : NodeModel
         {
-            this.dynamoModel = dynamoModel;
-            this.workspaceModel = workspaceModel;
+            AddLoader(typeof(T), loader);
         }
 
         /// <summary>
-        ///     Create a NodeModel from a function descriptor name, a NodeModel name, a NodeModel nickname, or a custom node name
+        ///     Adds a node loader to this manager, for the given type.
         /// </summary>
-        /// <param name="name">A name</param>
-        /// <returns>If the name is valid, a new NodeModel.  Otherwise, null.</returns>
-        internal NodeModel CreateNodeInstance(string name)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="nodeType"></param>
+        /// <param name="loader"></param>
+        public void AddLoader<T>(Type nodeType, INodeLoader<T> loader) where T : NodeModel
         {
-            NodeModel node;
+            if (!nodeType.IsSubclassOf(typeof(NodeModel)))
+                throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
 
-            // Depending on node type, get a node instance
-            FunctionDescriptor functionItem = (dynamoModel.EngineController.GetFunctionDescriptor(name));
-            if (functionItem != null)
-            {
-                node = GetDSFunctionFromFunctionItem(functionItem);
-            }
-            else if (dynamoModel.BuiltInTypesByName.ContainsKey(name))
-            {
-                node = GetNodeModelInstanceByName(name);
-            }
-            else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(name))
-            {
-                node = GetNodeModelInstanceByNickName(name);
-            }
-            else
-            {
-                node = GetCustomNodeByName(name);
-            }
-
-            return node;
+            nodeLoaders[nodeType] = loader;
+            alsoKnownAsMappings[nodeType.FullName] = nodeType;
         }
 
         /// <summary>
-        ///     Create a NodeModel with a given type as the method generic parameter
+        ///     Adds a node factory to this manager.
         /// </summary>
-        /// <returns> The newly instantiated NodeModel with a new guid</returns>
-        internal T CreateNodeInstance<T>() where T : NodeModel
+        /// <typeparam name="T"></typeparam>
+        /// <param name="loader"></param>
+        public void AddFactory<T>(INodeFactory<T> loader) where T : NodeModel
         {
-            var node = this.GetNodeModelInstanceByType<T>();
-            if (node == null) return node;
-
-            node.GUID = Guid.NewGuid();
-
-            return node;
+            AddFactory(typeof(T), loader);
         }
 
         /// <summary>
-        ///     Create a NodeModel from a type object
+        ///     Adds a node factory to this manager, for a given type.
         /// </summary>
-        /// <param name="data"> The Type object from which the node can be activated </param>
-        /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
-        /// <param name="signature"> The signature of the function along with parameter information </param>
-        /// <param name="guid"> The unique identifier for the node in the workspace. </param>
-        /// <returns> The newly instantiated NodeModel</returns>
-        internal NodeModel CreateNodeInstance(TypeLoadData data, string nickName, string signature, Guid guid)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="nodeType"></param>
+        /// <param name="loader"></param>
+        public void AddFactory<T>(Type nodeType, INodeFactory<T> loader) where T : NodeModel
         {
-            object createdNode = GetNodeModelInstance(data);
+            if (!nodeType.IsSubclassOf(typeof(NodeModel)))
+                throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
 
-            // The attempt to create node instance may fail due to "elementType"
-            // being something else other than "NodeModel" derived object type. 
-            // This is possible since some legacy nodes have been made to derive
-            // from "MigrationNode" object that is not derived from "NodeModel".
-            // 
-            var node = createdNode as NodeModel;
-            if (node == null)
-                return null;
+            nodeFactories[nodeType] = loader;
+            alsoKnownAsMappings[nodeType.FullName] = nodeType;
+        }
 
-            if (!string.IsNullOrEmpty(signature))
+        /// <summary>
+        ///     Attempts to create a new factory and loader for a given type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public bool AddTypeFactoryAndLoader<T>() where T : NodeModel
+        {
+            return AddTypeFactoryAndLoader(typeof(T));
+        }
+
+        /// <summary>
+        ///     Attempts to create a new factory and loader for a given type.
+        /// </summary>
+        /// <param name="nodeType"></param>
+        public bool AddTypeFactoryAndLoader(Type nodeType)
+        {
+            if (!nodeType.IsSubclassOf(typeof(NodeModel)))
+                throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
+
+            try
             {
-                var libraryServices = dynamoModel.EngineController.LibraryServices;
-                node.NickName = libraryServices.NicknameFromFunctionSignatureHint(signature);
+                var loader = new NodeModelTypeLoader(nodeType);
+                AddLoader(nodeType, loader);
+                AddFactory(nodeType, loader); // We don't re-use alsoKnownAs here, they are already registered from AddLoader.
+                return true;
             }
-            else if (!string.IsNullOrEmpty(nickName)) 
+            catch (Exception e)
             {
-                node.NickName = nickName;
+                Log(e);
+                return false;
             }
-            else
+        }
+
+        /// <summary>
+        ///     Registers a type with another name that it may go by.
+        /// </summary>
+        /// <param name="realType"></param>
+        /// <param name="aka"></param>
+        /// <param name="overwrite"></param>
+        public void AddAlsoKnownAs(Type realType, string aka, bool overwrite = false)
+        {
+            Type old;
+            if (!overwrite && alsoKnownAsMappings.TryGetValue(aka, out old) && old != realType)
             {
-                var elNameAttrib =
-                    node.GetType().GetCustomAttributes(typeof(NodeNameAttribute), true)[0] as NodeNameAttribute;
-                if (elNameAttrib != null)
+                Log(
+                    new InvalidOperationException(
+                        string.Format(/*NXLT*/"There already exists an AlsoKnownAs mapping for {0}.", aka)));
+                return;
+            }
+            alsoKnownAsMappings[aka] = realType;
+        }
+
+        /// <summary>
+        ///     Registers a type with other names that it may go by.
+        /// </summary>
+        /// <param name="realType"></param>
+        /// <param name="names"></param>
+        /// <param name="overwrite"></param>
+        public void AddAlsoKnownAs(Type realType, IEnumerable<string> names, bool overwrite = false)
+        {
+            foreach (var aka in names)
+                AddAlsoKnownAs(realType, aka, overwrite);
+        }
+
+        private sealed class NodeModelTypeLoader : INodeLoader<NodeModel>, INodeFactory<NodeModel>
+        {
+            private readonly Func<NodeModel> constructor;
+
+            public NodeModelTypeLoader(Type t)
+            {
+                constructor = t.GetDefaultConstructor<NodeModel>();
+            }
+
+            public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
+            {
+                var node = CreateNode();
+                node.Deserialize(elNode, context);
+                return node;
+            }
+
+            public NodeModel CreateNode()
+            {
+                return constructor();
+            }
+        }
+
+        private bool GetNodeSourceFromType(Type type, out INodeLoader<NodeModel> data)
+        {
+            if (GetNodeSourceFromTypeHelper(type, out data))
+                return true; // Found among built-in types, return it.
+
+            Log(string.Format(/*NXLT*/"Could not load node of type: {0}", type.FullName));
+
+            return false;
+        }
+
+        private bool GetNodeSourceFromTypeHelper(Type type, out INodeLoader<NodeModel> data)
+        {
+            while (true)
+            {
+                if (type == null || type == typeof(NodeModel))
                 {
-                    node.NickName = elNameAttrib.Name;
+                    data = null;
+                    return false;
                 }
+
+                if (nodeLoaders.TryGetValue(type, out data))
+                    return true; // Found among built-in types, return it.
+
+                type = type.BaseType;
+            }
+        }
+
+        private bool LoadNodeModelInstanceByType(Type type, XmlElement elNode, SaveContext context, out NodeModel node)
+        {
+            INodeLoader<NodeModel> data;
+            if (!GetNodeSourceFromType(type, out data))
+            {
+                node = null;
+                return false;
             }
 
-            node.GUID = guid;
-
-            return node;
+            node = data.CreateNodeFromXml(elNode, context);
+            return true;
         }
 
-        #region Helper methods
-
-        private NodeModel GetDSFunctionFromFunctionItem(FunctionDescriptor functionItem)
+        private bool GetNodeFactoryFromType(Type type, out INodeFactory<NodeModel> data)
         {
-            if (functionItem.IsVarArg)
-                return new DSVarArgFunction(this.workspaceModel, functionItem);
-            return new DSFunction(this.workspaceModel, functionItem);
+            if (GetNodeFactoryFromTypeHelper(type, out data))
+                return true; // Found among built-in types, return it.
+
+            Log(string.Format(/*NXLT*/"Could not load node of type: {0}", type.FullName));
+            return false;
         }
 
-        private NodeModel GetCustomNodeByName(string name)
+        private bool GetNodeFactoryFromTypeHelper(Type type, out INodeFactory<NodeModel> data)
         {
-            CustomNodeDefinition def;
-
-            if (dynamoModel.CustomNodeManager.GetDefinition(Guid.Parse(name), out def))
+            while (true)
             {
-                return new Function(this.workspaceModel, def)
+                if (type == null || type == typeof(NodeModel))
                 {
-                    NickName = def.WorkspaceModel.Name
-                };
+                    data = null;
+                    return false;
+                }
+
+                if (nodeFactories.TryGetValue(type, out data))
+                    return true; // Found among built-in types, return it.
+
+                type = type.BaseType;
             }
-
-            dynamoModel.Logger.Log(/*NXLT*/"Failed to find CustomNodeDefinition!");
-            return null;
         }
 
-        private NodeModel GetNodeModelInstanceByName(string name)
+        private bool CreateNodeModelInstanceByType(Type type, out NodeModel node)
         {
-            TypeLoadData tld = dynamoModel.BuiltInTypesByName[name];
-            return this.GetNodeModelInstance(tld);
-        }
-
-        private NodeModel GetNodeModelInstanceByNickName(string name)
-        {
-            TypeLoadData tld = dynamoModel.BuiltInTypesByNickname[name];
-            return this.GetNodeModelInstance(tld);
-        }
-
-        private T GetNodeModelInstanceByType<T>() where T : NodeModel
-        {
-            try
+            INodeFactory<NodeModel> data;
+            if (!GetNodeFactoryFromType(type, out data))
             {
-                return (T) typeof(T).GetInstance(this.workspaceModel);
+                node = null;
+                return false;
             }
-            catch (Exception ex)
-            {
-                dynamoModel.Logger.Log(/*NXLT*/"Failed to load built-in type");
-                dynamoModel.Logger.Log(ex);
-                return null;
-            }
+
+            node = data.CreateNode();
+            return true;
         }
 
-        private NodeModel GetNodeModelInstanceByType(Type type)
+        /// <summary>
+        ///     Given a type name, attempts to get the type associated with that name.
+        /// </summary>
+        /// <param name="fullyQualifiedName"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool ResolveType(string fullyQualifiedName, out Type type)
         {
-            try
-            {
-                return (NodeModel) type.GetInstance(this.workspaceModel);
-            }
-            catch (Exception ex)
-            {
-                dynamoModel.Logger.Log(/*NXLT*/"Failed to load built-in type");
-                dynamoModel.Logger.Log(ex);
-                return null;
-            }
-            
+            if (fullyQualifiedName == null)
+                throw new ArgumentNullException(@"fullyQualifiedName");
+
+            if (alsoKnownAsMappings.TryGetValue(fullyQualifiedName, out type))
+                return true;
+
+            type = Type.GetType(fullyQualifiedName);
+            return type != null;
         }
 
-        private NodeModel GetNodeModelInstance(TypeLoadData type)
+        /// <summary>
+        ///     Creates and Loads a new NodeModel from its Serialized form, using the node loaders
+        ///     registered in this factory. If loading fails, a Dummy Node is produced.
+        /// </summary>
+        /// <param name="elNode"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
         {
-            var node = GetNodeModelInstanceByType(type.Type);
-            if (type.IsObsolete)
-                node.Warning(type.ObsoleteMessage);
+            XmlAttribute typeAttrib = elNode.Attributes["type"];
+            string typeName = Nodes.Utilities.PreprocessTypeName(typeAttrib.Value);
+
+            Type type;
+            NodeModel node;
+            if (ResolveType(typeName, out type)
+                && LoadNodeModelInstanceByType(type, elNode, context, out node))
+            {
+                return node;
+            }
+
+            node = new DummyNode(1, 1, typeName, elNode, "", DummyNode.Nature.Deprecated);
             return node;
         }
 
-        #endregion
+        /// <summary>
+        ///     Creates a new NodeModel from its typeName, using the node factories registered
+        ///     in this factory.
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public bool CreateNodeFromTypeName(string typeName, out NodeModel node)
+        {
+            Type type;
+            if (ResolveType(typeName, out type) && CreateNodeModelInstanceByType(type, out node))
+                return true;
 
+            node = null;
+            return false;
+        }
     }
 }

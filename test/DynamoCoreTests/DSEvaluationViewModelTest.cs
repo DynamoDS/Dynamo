@@ -49,12 +49,12 @@ namespace Dynamo.Tests
         public void RunModel(string relativeDynFilePath)
         {
             OpenModel(relativeDynFilePath);
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         public void RunCurrentModel() // Run currently loaded model.
         {
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         /// <summary>
@@ -656,7 +656,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
 
         }
@@ -672,7 +672,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
 
@@ -687,7 +687,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
 
@@ -702,7 +702,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
 
@@ -718,7 +718,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
 
@@ -762,7 +762,7 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\dsevaluation\BasicRuntimeWarning.dyn");
             var guid = System.Guid.Parse("0fc83562-2cfe-4a63-84f8-f6836cbaf9c5");
-            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
             Assert.IsTrue(node.State == Models.ElementState.Warning);
         }
 
@@ -795,7 +795,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
             AssertPreviewValue("0ffe94bd-f926-4e81-83f7-7975e67a3713",
                 new int[] { 2, 4, 6, 8 });
         }
@@ -813,22 +813,21 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count());
 
             model.AddToSelection(ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                 ("5a7f7549-fbef-4c3f-8578-c67471eaa87f"));
 
-            model.Copy(null);
-
-            model.Paste(null);
+            model.Copy();
+            model.Paste();
 
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             //run the graph after copy paste
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
-            var nodes = ViewModel.Model.Nodes.OfType<DSVarArgFunction>();
+            var nodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<DSVarArgFunction>();
             foreach (var item in nodes)
             {
                 AssertPreviewValue(item.GUID.ToString(), new string[] { "Dynamo", "DS" });   
@@ -1053,7 +1052,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\createCube_codeBlockNode.dyn");
             AssertPreviewValue("3669d05c-c741-44f9-87ab-8961e7f5f112", 150);
             var guid = System.Guid.Parse("3669d05c-c741-44f9-87ab-8961e7f5f112");
-            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
             Assert.IsTrue(node.State != Models.ElementState.Warning);
 
 
@@ -1066,7 +1065,7 @@ namespace Dynamo.Tests
             //verify  Warning converting double to int is removed
             RunModel(@"core\dsevaluation\DoubleToInt_5109.dyn");
             var guid = System.Guid.Parse("d66d3d3e-e13b-460e-a8a7-056c434ee620");
-            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
             Assert.IsTrue(node.State != Models.ElementState.Warning);
         }
        
@@ -1107,7 +1106,7 @@ namespace Dynamo.Tests
 
             RunModel(dynFilePath);
             var guid = System.Guid.Parse("88f376fa-634b-422e-b853-6afa8af8d286");
-            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
            
             Assert.IsTrue(node.State == Models.ElementState.Warning);
         }
@@ -1122,8 +1121,6 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             AssertPreviewValue("6a0207d9-78d7-4fd3-829f-d19644acdc1b", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
-       
-        
     }
 
     [Category("DSCustomNode")]
@@ -1135,9 +1132,12 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "NoInput.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(examplePath, "NoInput.dyf"),
+                    true,
+                    out info));
 
             string openPath = Path.Combine(examplePath, "TestNoInput.dyn");
             //model.Open(openPath);
@@ -1145,7 +1145,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
 
             AssertPreviewValue("f9c6aa7f-3fb4-40df-b4c5-6694e8c437cd", 
@@ -1157,9 +1157,12 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "CNWithInput.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(examplePath, "CNWithInput.dyf"),
+                    true,
+                    out info));
 
             string openPath = Path.Combine(examplePath, "TestCNWithInput.dyn");
             //model.Open(openPath);
@@ -1176,9 +1179,12 @@ namespace Dynamo.Tests
         {
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Centroid.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(examplePath, "Centroid.dyf"),
+                    true,
+                    out info));
             string openPath = Path.Combine(examplePath, "TestCentroid.dyn");
 
             RunModel(openPath);
@@ -1194,7 +1200,8 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
             var dyfPath = Path.Combine(examplePath, "Poly.dyf");
-            Assert.IsNotNull(ViewModel.Model.CustomNodeManager.AddFileToPath(dyfPath));
+            CustomNodeInfo info;
+            Assert.IsTrue(ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(dyfPath, true, out info));
 
             RunModel(Path.Combine(examplePath, "TestPoly.dyn"));
             
@@ -1208,9 +1215,9 @@ namespace Dynamo.Tests
         {
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Conditional.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(examplePath, "Conditional.dyf"), true, out info));
 
             string openPath = Path.Combine(examplePath, "TestConditional.dyn");
             //model.Open(openPath);
@@ -1233,9 +1240,9 @@ namespace Dynamo.Tests
             // compilation of that proxy custom node should have any problem.
             var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "bar.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(examplePath, "bar.dyf"), true, out info));
 
             string openPath = Path.Combine(examplePath, "foobar.dyn");
 
@@ -1255,8 +1262,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
 
             // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
-            ViewModel.Model.ResetEngine(true);
-            ViewModel.Model.RunExpression();
+            ViewModel.Model.ForceRun();
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }

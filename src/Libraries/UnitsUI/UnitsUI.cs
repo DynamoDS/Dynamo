@@ -13,6 +13,7 @@ using DSCoreNodesUI;
 
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
@@ -71,7 +72,7 @@ namespace UnitsUI
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            tb.OnChangeCommitted += delegate { model.RequiresRecalc = true; };
+            tb.OnChangeCommitted += model.OnAstUpdated;
 
             (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
         }
@@ -84,7 +85,7 @@ namespace UnitsUI
                 e.PropertyName == /*NXLT*/"NumberFormat")
             {
                 this.mesBaseModel.ForceValueRaisePropertyChanged();
-                this.mesBaseModel.RequiresRecalc = true;
+                this.mesBaseModel.OnAstUpdated();
             }
         }
 
@@ -107,16 +108,14 @@ namespace UnitsUI
 
         public void Dispose()
         {
-            tb.OnChangeCommitted += delegate { this.mesBaseModel.RequiresRecalc = true; };
+            tb.OnChangeCommitted += mesBaseModel.OnAstUpdated;
         }
     }
 
     public abstract class MeasurementInputBase : NodeModel
     {
         public SIUnit Measure { get; protected set; }
-
-        protected MeasurementInputBase(WorkspaceModel workspaceModel) : base(workspaceModel) { }
-
+        
         public double Value
         {
             get
@@ -135,15 +134,17 @@ namespace UnitsUI
             RaisePropertyChanged(/*NXLT*/"Value");
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            base.SerializeCore(nodeElement, context);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 // this node now stores a double, having previously stored a measure type
@@ -172,7 +173,7 @@ namespace UnitsUI
             }
         }
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             if (name == "Value")
             {
@@ -181,7 +182,7 @@ namespace UnitsUI
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
 
     }
@@ -202,7 +203,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
-        public LengthFromString(WorkspaceModel ws) : base(ws)
+        public LengthFromString()
         {
             Measure = Length.FromDouble(0.0);
             OutPortData.Add(new PortData(/*NXLT*/"length", Resources.LengthFromStringPortDataLengthToolTip));
@@ -251,7 +252,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
     {
-        public AreaFromString(WorkspaceModel workspaceModel) : base(workspaceModel) 
+        public AreaFromString()
         {
             Measure = Area.FromDouble(0.0);
             OutPortData.Add(new PortData(/*NXLT*/"area", Resources.AreaFromStringPortDataAreaToolTip));
@@ -282,7 +283,7 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
     {
-        public VolumeFromString(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public VolumeFromString()
         {
             Measure = Volume.FromDouble(0.0);
             OutPortData.Add(new PortData(/*NXLT*/"volume", Resources.VolumeFromStringPortDataVolumeToolTip));
@@ -304,8 +305,6 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
-        public UnitTypes(WorkspaceModel workspace) : base(workspace) { }
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);

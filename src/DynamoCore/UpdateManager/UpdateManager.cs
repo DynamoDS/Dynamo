@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Dynamo.Core;
+using Dynamo.UI;
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.ComponentModel;
 using System.Reflection;
 
 using System.Xml.Serialization;
 using System.Xml.Linq;
-
-using Dynamo.Core;
-
 
 namespace Dynamo.UpdateManager
 {
@@ -100,7 +99,7 @@ namespace Dynamo.UpdateManager
         string Data { get; set; }
         string Error { get; set; }
         Uri Path { get; set; }
-        Action<IAsynchronousRequest>  OnRequestCompleted { get; set; }
+        Action<IAsynchronousRequest> OnRequestCompleted { get; set; }
     }
 
     public class AppVersionInfo : IAppVersionInfo
@@ -262,7 +261,7 @@ namespace Dynamo.UpdateManager
                     updateManager.OnLog(
                         new LogEventArgs(
                             string.Format(
-                        Properties.Resources.FailedToLoad,
+                                Properties.Resources.FailedToLoad,
                                 filePath,
                                 ex.Message),
                             LogLevel.Console));
@@ -328,7 +327,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
-    public sealed class UpdateManager: NotificationObject, IUpdateManager
+    public sealed class UpdateManager : NotificationObject, IUpdateManager
     {
         #region Private Class Data Members
 
@@ -387,7 +386,7 @@ namespace Dynamo.UpdateManager
                 // Dirty patch: A version is available only when the update has been downloaded.
                 // This causes the UI to display the update button only after the download has
                 // completed.
-                return downloadedUpdateInfo == null 
+                return downloadedUpdateInfo == null
                     ? ProductVersion : updateInfo.Version;
             }
         }
@@ -414,7 +413,7 @@ namespace Dynamo.UpdateManager
                 {
                     OnLog(new LogEventArgs(string.Format(Properties.Resources.UpdateAvailable, value.Version), LogLevel.Console));
                 }
-                
+
                 updateInfo = value;
                 RaisePropertyChanged(/*NXLT*/"UpdateInfo");
             }
@@ -552,7 +551,7 @@ namespace Dynamo.UpdateManager
 
             //If there is error data or the request data is empty
             //bail out.
-            if (!string.IsNullOrEmpty(request.Error) || 
+            if (!string.IsNullOrEmpty(request.Error) ||
                 string.IsNullOrEmpty(request.Data))
             {
                 OnLog(new LogEventArgs(String.Format(Properties.Resources.CouldNotGetUpdateData, request.Path), LogLevel.Console));
@@ -683,20 +682,20 @@ namespace Dynamo.UpdateManager
                 return;
 
             string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
-            OnLog(new LogEventArgs("UpdateManager-OnDownloadFileCompleted", LogLevel.File));
+            OnLog(new LogEventArgs(Properties.Resources.UpdateDownloadComplete, LogLevel.Console));
             OnLog(new LogEventArgs(errorMessage, LogLevel.File));
 
             UpdateFileLocation = string.Empty;
-            
-            if (e.Error != null) 
+
+            if (e.Error != null)
                 return;
 
             // Dirty patch: this ensures that we have a property that reflects the update status 
             // only after the update has been downloaded.
             DownloadedUpdateInfo = UpdateInfo;
-            
+
             UpdateFileLocation = (string)e.UserState;
-            OnLog(new LogEventArgs(Properties.Resources.UpdateDownloadComplete, LogLevel.Console));
+            OnLog(new LogEventArgs("Update download complete.", LogLevel.Console));
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
@@ -759,8 +758,8 @@ namespace Dynamo.UpdateManager
 
             string latestBuild = string.Empty;
             latestBuild = checkDailyBuilds ?
-                fileNames.FirstOrDefault(x => IsDailyBuild(InstallNameBase, x) || IsDailyBuild(OldDailyInstallNameBase, x)) : 
-                fileNames.FirstOrDefault(x=>IsStableBuild(InstallNameBase, x));
+                fileNames.FirstOrDefault(x => IsDailyBuild(InstallNameBase, x) || IsDailyBuild(OldDailyInstallNameBase, x)) :
+                fileNames.FirstOrDefault(x => IsStableBuild(InstallNameBase, x));
 
             return latestBuild;
         }
@@ -811,7 +810,7 @@ namespace Dynamo.UpdateManager
             // If we're looking at dailies, latest build version will simply be
             // the current build version without a build or revision, ex. 0.6
             var v = Assembly.GetExecutingAssembly().GetName().Version;
-            return BinaryVersion.FromString(string.Format("{0}.{1}.{2}", v.Major, v.Minor,v.Build));
+            return BinaryVersion.FromString(string.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Build));
         }
 
         /// <summary>
@@ -895,7 +894,7 @@ namespace Dynamo.UpdateManager
             {
                 return false;
             }
-            return !IsDailyBuild(installNameBase,fileName);
+            return !IsDailyBuild(installNameBase, fileName);
         }
 
         /// <summary>
@@ -975,7 +974,7 @@ namespace Dynamo.UpdateManager
 
         void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            if (e.ProgressPercentage % 10 == 0 && 
+            if (e.ProgressPercentage % 10 == 0 &&
                 e.ProgressPercentage > currentDownloadProgress)
             {
                 OnLog(new LogEventArgs(string.Format(Properties.Resources.UpdateDownloadProgress, e.ProgressPercentage), LogLevel.Console));

@@ -1,41 +1,40 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
+
+using Dynamo.Core;
 using Dynamo.Utilities;
 namespace Dynamo.Models
 {
-    public class NoteModel:ModelBase
+    public class NoteModel : ModelBase
     {
-
-        private readonly WorkspaceModel workspaceModel;
-
-        private string _text;
+        private string text;
         public string Text
         {
-            get { return _text; }
+            get { return text; }
             set
             {
-                _text = value;
+                text = value;
                 RaisePropertyChanged(/*NXLT*/"Text");
             }
         }
 
-        public NoteModel(WorkspaceModel workspace, double x, double y)
+        public NoteModel(double x, double y, string text, Guid guid)
         {
-            this.workspaceModel = workspace;
             X = x;
             Y = y;
+            Text = text;
+            GUID = guid;
         }
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name == /*NXLT*/"Text")
-            {
-                this.Text = value;
-                return true;
-            }
-
-            return base.UpdateValueCore(name, value);
+            if (name != /*NXLT*/"Text") 
+                return base.UpdateValueCore(name, value, recorder);
+            
+            Text = value;
+            return true;
         }
 
         #endregion
@@ -44,20 +43,20 @@ namespace Dynamo.Models
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute(/*NXLT*/"guid", this.GUID);
-            helper.SetAttribute(/*NXLT*/"text", this.Text);
-            helper.SetAttribute(/*NXLT*/"x", this.X);
-            helper.SetAttribute(/*NXLT*/"y", this.Y);
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute(/*NXLT*/"guid", GUID);
+            helper.SetAttribute(/*NXLT*/"text", Text);
+            helper.SetAttribute(/*NXLT*/"x", X);
+            helper.SetAttribute(/*NXLT*/"y", Y);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            XmlElementHelper helper = new XmlElementHelper(element);
-            this.GUID = helper.ReadGuid(/*NXLT*/"guid", this.GUID);
-            this.Text = helper.ReadString(/*NXLT*/"text", /*NXLT*/"New Note");
-            this.X = helper.ReadDouble(/*NXLT*/"x", 0.0);
-            this.Y = helper.ReadDouble(/*NXLT*/"y", 0.0);
+            var helper = new XmlElementHelper(nodeElement);
+            GUID = helper.ReadGuid(/*NXLT*/"guid", GUID);
+            Text = helper.ReadString(/*NXLT*/"text", /*NXLT*/"New Note");
+            X = helper.ReadDouble(/*NXLT*/"x", 0.0);
+            Y = helper.ReadDouble(/*NXLT*/"y", 0.0);
         }
 
         #endregion

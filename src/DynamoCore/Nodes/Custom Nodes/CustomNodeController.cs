@@ -1,45 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
 using Dynamo.Models;
-using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
     /// <summary>
     ///     Controller that synchronizes a node with a custom node definition.
     /// </summary>
-    public class CustomNodeController : FunctionCallNodeController
+    public class CustomNodeController<T> : FunctionCallNodeController<T>
+        where T : CustomNodeDefinition
     {
-        private readonly DynamoModel dynamoModel;
-
-        public CustomNodeController(DynamoModel dynamoModel, CustomNodeDefinition def) : base(def)
-        {
-            this.dynamoModel = dynamoModel;
-        }
-
-        /// <summary>
-        ///     Definition of a custom node.
-        /// </summary>
-        public new CustomNodeDefinition Definition
-        {
-            get { return base.Definition as CustomNodeDefinition; }
-            internal set { base.Definition = value; }
-        }
-
+        public CustomNodeController(T def) : base(def) { }
+        
         protected override void InitializeInputs(NodeModel model)
         {
             model.InPortData.Clear();
 
-            if (Definition.Parameters == null) return;
+            if (Definition.DisplayParameters == null) return;
 
-            foreach (string arg in Definition.Parameters)
-                model.InPortData.Add(new PortData(arg, Dynamo.Properties.Resources.PortDataParameterToolTip));
+            foreach (string arg in Definition.DisplayParameters)
+                model.InPortData.Add(new PortData(arg, "parameter"));
         }
 
         protected override void InitializeOutputs(NodeModel model)
@@ -48,10 +32,10 @@ namespace Dynamo.Nodes
             if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
                 foreach (string key in Definition.ReturnKeys)
-                    model.OutPortData.Add(new PortData(key, Resources.PortDataReturnValueToolTip));
+                    model.OutPortData.Add(new PortData(key, "return value"));
             }
             else
-                model.OutPortData.Add(new PortData(string.Empty, Resources.PortDataReturnValueToolTip));
+                model.OutPortData.Add(new PortData("", "return value"));
         }
 
         protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
@@ -59,7 +43,7 @@ namespace Dynamo.Nodes
             if (!model.IsPartiallyApplied)
                 return AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
 
-            var count = Definition.Parameters.Count();
+            var count = Definition.DisplayParameters.Count();
             return AstFactory.BuildFunctionObject(
                 Definition.FunctionName,
                 count,
@@ -103,7 +87,7 @@ namespace Dynamo.Nodes
 
         protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
         {
-            if (Definition.IsProxy)
+            if (Definition == null)
             {
                 var lhs = model.AstIdentifierForPreview;
                 var rhs = AstFactory.BuildNullNode();
@@ -117,67 +101,21 @@ namespace Dynamo.Nodes
 
         public override void SyncNodeWithDefinition(NodeModel model)
         {
-            if (!IsInSyncWithNode(model))
-            {
-                model.DisableReporting();
-                base.SyncNodeWithDefinition(model);
-                model.EnableReporting();
-                model.RequiresRecalc = true;
-            }
+            if (IsInSyncWithNode(model)) 
+                return;
+            
+            base.SyncNodeWithDefinition(model);
+            model.OnAstUpdated();
         }
 
-        public override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext saveContext)
+        public override void SerializeCore(XmlElement nodeElement, SaveContext saveContext)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = xmlDoc.CreateElement("ID");
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement("ID");
 
             outEl.SetAttribute("value", Definition.FunctionId.ToString());
             nodeElement.AppendChild(outEl);
             nodeElement.SetAttribute("nickname", NickName);
-        }
-
-        public override void LoadNode(XmlNode nodeElement)
-        {
-            XmlNode idNode =
-                nodeElement.ChildNodes.Cast<XmlNode>()
-                    .LastOrDefault(subNode => subNode.Name.Equals("ID"));
-
-            if (idNode == null || idNode.Attributes == null) return;
-            
-            string id = idNode.Attributes[0].Value;
-
-            string nickname = nodeElement.Attributes["nickname"].Value;
-            
-            Guid funcId;
-            if (!Guid.TryParse(id, out funcId) && nodeElement.Attributes != null)
-            {
-                funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nickname);
-            }
-
-            if (!VerifyFuncId(ref funcId, nickname))
-                LoadProxyCustomNode(funcId, nickname);
-            
-            Definition = this.dynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
-        }
-
-        public override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context);
-
-            var helper = new XmlElementHelper(element);
-            var nickname = helper.ReadString(/*NXLT*/"functionName");
-
-            Guid funcId;
-            if (!Guid.TryParse(helper.ReadString(/*NXLT*/"functionId"), out funcId))
-                funcId = GuidUtility.Create(GuidUtility.UrlNamespace, nickname);
-
-            if (!VerifyFuncId(ref funcId, nickname))
-            {
-                LoadProxyCustomNode(funcId, nickname);
-                return;
-            }
-
-            Definition = this.dynamoModel.CustomNodeManager.GetFunctionDefinition(funcId);
         }
 
         /// <summary>
@@ -187,49 +125,14 @@ namespace Dynamo.Nodes
         /// </summary>
         public bool IsInSyncWithNode(NodeModel model)
         {
-            return Definition != null
-                && ((Definition.Parameters == null
-                    || (Definition.Parameters.Count() == model.InPortData.Count()
-                        && Definition.Parameters.SequenceEqual(
-                            model.InPortData.Select(p => p.NickName))))
-                    && (Definition.ReturnKeys == null
-                        || Definition.ReturnKeys.Count() == model.OutPortData.Count()
-                            && Definition.ReturnKeys.SequenceEqual(
-                                model.OutPortData.Select(p => p.NickName))));
-        }
-
-        private bool VerifyFuncId(ref Guid funcId, string nickname)
-        {
-            if (funcId == null) return false;
-
-            // if the dyf does not exist on the search path...
-            if (this.dynamoModel.CustomNodeManager.Contains(funcId))
-                return true;
-
-            CustomNodeManager manager = this.dynamoModel.CustomNodeManager;
-
-            // if there is a node with this name, use it instead
-            if (!manager.Contains(nickname)) return false;
-
-            funcId = manager.GetGuidFromName(nickname);
-            return true;
-        }
-
-        private void LoadProxyCustomNode(Guid funcId, string nickname)
-        {
-            var proxyDef = new CustomNodeDefinition(funcId)
-            {
-                WorkspaceModel =
-                    new CustomNodeWorkspaceModel(this.dynamoModel, nickname, "Custom Nodes") { FileName = null },
-                IsProxy = true
-            };
-
-            string userMsg = String.Format(Properties.Resources.FailedToLoadCustomNode, nickname);
-
-            this.dynamoModel.Logger.Log(userMsg);
-
-            // tell custom node loader, but don't provide path, forcing user to resave explicitly
-            this.dynamoModel.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+            return Definition == null || (Definition.DisplayParameters == null
+                || (Definition.DisplayParameters.Count() == model.InPortData.Count()
+                    && Definition.DisplayParameters.SequenceEqual(
+                        model.InPortData.Select(p => p.NickName))))
+                && (Definition.ReturnKeys == null
+                    || Definition.ReturnKeys.Count() == model.OutPortData.Count()
+                        && Definition.ReturnKeys.SequenceEqual(
+                            model.OutPortData.Select(p => p.NickName)));
         }
     }
 }

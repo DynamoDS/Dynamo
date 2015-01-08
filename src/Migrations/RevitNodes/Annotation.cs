@@ -94,20 +94,20 @@ namespace Dynamo.Nodes
             #region Move Connectors Onto the New Nodes
 
             // Move connector for "text" over to the new node.
-            PortId oldInPort = new PortId(oldNodeId, 0, PortType.INPUT);
-            PortId newInPort = new PortId(dsModelTextId, 0, PortType.INPUT);
+            PortId oldInPort = new PortId(oldNodeId, 0, PortType.Input);
+            PortId newInPort = new PortId(dsModelTextId, 0, PortType.Input);
             XmlElement connector = data.FindFirstConnector(oldInPort);
             data.ReconnectToPort(connector, newInPort);
 
             // Move connector for "position" over to "Plane" node.
-            oldInPort = new PortId(oldNodeId, 1, PortType.INPUT);
-            newInPort = new PortId(planeId, 0, PortType.INPUT);
+            oldInPort = new PortId(oldNodeId, 1, PortType.Input);
+            newInPort = new PortId(planeId, 0, PortType.Input);
             connector = data.FindFirstConnector(oldInPort);
             data.ReconnectToPort(connector, newInPort);
 
             // Move connector for "normal" over to "Plane" node.
-            oldInPort = new PortId(oldNodeId, 2, PortType.INPUT);
-            newInPort = new PortId(pointAsVector0Id, 0, PortType.INPUT);
+            oldInPort = new PortId(oldNodeId, 2, PortType.Input);
+            newInPort = new PortId(pointAsVector0Id, 0, PortType.Input);
             connector = data.FindFirstConnector(oldInPort);
             data.ReconnectToPort(connector, newInPort);
             data.CreateConnector(pointAsVector0, 0, plane, 1);
@@ -118,18 +118,18 @@ namespace Dynamo.Nodes
             // Connect from "SketchPlane" to the new node.
             data.CreateConnector(dsSketchPlane, 0, dsModelText, 1);
 
-            oldInPort = new PortId(oldNodeId, 3, PortType.INPUT);
+            oldInPort = new PortId(oldNodeId, 3, PortType.Input);
             data.RemoveFirstConnector(oldInPort);
 
             // Move connector for "depth" over to the new node.
-            oldInPort = new PortId(oldNodeId, 4, PortType.INPUT);
-            newInPort = new PortId(dsModelTextId, 4, PortType.INPUT);
+            oldInPort = new PortId(oldNodeId, 4, PortType.Input);
+            newInPort = new PortId(dsModelTextId, 4, PortType.Input);
             connector = data.FindFirstConnector(oldInPort);
             data.ReconnectToPort(connector, newInPort);
 
             // Move connector for "text type name" over to "ModelTextType" node.
-            oldInPort = new PortId(oldNodeId, 5, PortType.INPUT);
-            newInPort = new PortId(dsModelTextTypeId, 0, PortType.INPUT);
+            oldInPort = new PortId(oldNodeId, 5, PortType.Input);
+            newInPort = new PortId(dsModelTextTypeId, 0, PortType.Input);
             connector = data.FindFirstConnector(oldInPort);
             data.ReconnectToPort(connector, newInPort);
 

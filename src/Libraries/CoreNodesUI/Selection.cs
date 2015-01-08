@@ -7,13 +7,15 @@ using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.UI.Commands;
 using DSCoreNodesUI.Properties;
+
+using Microsoft.Practices.Prism.Commands;
+
 
 namespace Dynamo.Nodes
 {
     public delegate List<string> ElementsSelectionDelegate(string message,
-    SelectionType selectionType, SelectionObjectType objectType, ILogger logger);
+    SelectionType selectionType, SelectionObjectType objectType);
 
 
     /// <summary>
@@ -31,9 +33,7 @@ namespace Dynamo.Nodes
         private readonly SelectionObjectType selectionObjectType;
 
         private const string SELECTION_SUGGESTION = "Select something in the model.";
-
-        protected ILogger Logger;
-
+        
         #region public properties
 
         public IEnumerable<TSelection> Selection { get { return selection; } } 
@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
                 {
                     selectionResults = value.ToList();
                     ForceReExecuteOfNode = true;
-                    RequiresRecalc = true;
+                    OnAstUpdated();
                 }
                 else
                     selectionResults = null;
@@ -102,12 +102,11 @@ namespace Dynamo.Nodes
 
         #region protected constructors
 
-        protected SelectionBase(WorkspaceModel workspaceModel,
+        protected SelectionBase(
             SelectionType selectionType,
             SelectionObjectType selectionObjectType,
             string message,
             string prefix)
-            : base(workspaceModel)
         {
             selectionMessage = message;
 
@@ -120,7 +119,9 @@ namespace Dynamo.Nodes
             SelectCommand = new DelegateCommand(Select, CanBeginSelect);
             Prefix = prefix;
 
-            State = ElementState.Warning;
+            State = ElementState.Warning; 
+            
+            ShouldDisplayPreviewCore = false;
         }
 
         #endregion
@@ -157,7 +158,7 @@ namespace Dynamo.Nodes
                 State = ElementState.Active;
         }
 
-        protected bool CanBeginSelect(object parameter)
+        protected bool CanBeginSelect()
         {
             return CanSelect;
         }
@@ -188,28 +189,28 @@ namespace Dynamo.Nodes
                     SelectionHelper.RequestSelectionOfType(
                         selectionMessage,
                         selectionType,
-                        selectionObjectType,
-                        Logger);
+                        selectionObjectType);
 
                 // If there is a sub element selector, then run it
                 // using the selection as an input. If not, attempt
                 // to cast the temp selection type to the 
                 // stored collection type.
                 UpdateSelection(newSelection);
-
+                
                 CanSelect = true;
             }
             catch (Exception e)
             {
                 CanSelect = true;
-                Logger.Log(e);
+                Log(LogMessage.Error(e));
             }
         }
 
         protected abstract IEnumerable<TResult> ExtractSelectionResults(TSelection selections);
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.SerializeCore(nodeElement, context);
             if (!SelectionResults.Any()) return;
 
             var uuidsSelection =
@@ -217,14 +218,15 @@ namespace Dynamo.Nodes
 
             foreach (var id in uuidsSelection)
             {
-                XmlElement outEl = xmlDoc.CreateElement("instance");
+                XmlElement outEl = nodeElement.OwnerDocument.CreateElement("instance");
                 outEl.SetAttribute("id", id);
                 nodeElement.AppendChild(outEl);
             }
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             var savedUuids =
                 nodeElement.ChildNodes.Cast<XmlNode>()
                     .Where(subNode => subNode.Name.Equals(/*NXLT*/"instance") && subNode.Attributes != null)
@@ -238,16 +240,8 @@ namespace Dynamo.Nodes
 
             UpdateSelection(loadedSelection);
 
-            RequiresRecalc = true;
+            OnAstUpdated();
             RaisePropertyChanged(/*NXLT*/"SelectionResults");
-        }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
         }
 
         /// <summary>

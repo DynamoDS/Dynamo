@@ -11,48 +11,45 @@ using DynamoUtilities;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageLoader
+    public class PackageLoader : LogSourceBase
     {
         public string RootPackagesDirectory { get; private set; }
+        
+        public PackageLoader()
+            : this(Path.Combine(DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages))
+        { }
 
-        private readonly ILogger logger;
-        private readonly DynamoLoader loader;
-
-        public PackageLoader(DynamoLoader dynamoLoader, ILogger logger)
-            : this(dynamoLoader, logger, Path.Combine(DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages))
+        public PackageLoader(string overridePackageDirectory)
         {
+            RootPackagesDirectory = overridePackageDirectory;
+            if (!Directory.Exists(RootPackagesDirectory))
+                Directory.CreateDirectory(RootPackagesDirectory);
         }
 
-        public PackageLoader(DynamoLoader dynamoLoader, ILogger logger, string overridePackageDirectory)
-        {
-            this.loader = dynamoLoader;
-            this.logger = logger;
-
-            this.RootPackagesDirectory = overridePackageDirectory;
-            if (!Directory.Exists(this.RootPackagesDirectory))
-            {
-                Directory.CreateDirectory(this.RootPackagesDirectory);
-            }
-        }
-
-        private ObservableCollection<Package> _localPackages = new ObservableCollection<Package>();
-        public ObservableCollection<Package> LocalPackages { get { return _localPackages; } }
+        private readonly ObservableCollection<Package> localPackages = new ObservableCollection<Package>();
+        public ObservableCollection<Package> LocalPackages { get { return localPackages; } }
 
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackagesIntoDynamo( IPreferences preferences, LibraryServices libraryServices )
+        public void LoadPackagesIntoDynamo(
+            IPreferences preferences, LibraryServices libraryServices, DynamoLoader loader, string context,
+            bool isTestMode, CustomNodeManager customNodeManager)
         {
-            this.ScanAllPackageDirectories( preferences );
+            ScanAllPackageDirectories(preferences);
 
             foreach (var pkg in LocalPackages)
-            {
                 DynamoPathManager.Instance.AddResolutionPath(pkg.BinaryDirectory);
-            }
 
             foreach (var pkg in LocalPackages)
             {
-                pkg.LoadIntoDynamo(loader, logger, libraryServices);
+                pkg.LoadIntoDynamo(
+                    loader,
+                    AsLogger(),
+                    libraryServices,
+                    context,
+                    isTestMode,
+                    customNodeManager);
             }
         }
 
@@ -62,7 +59,8 @@ namespace Dynamo.PackageManager
                 Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
             {
                 var pkg = ScanPackageDirectory(dir);
-                if (preferences.PackageDirectoriesToUninstall.Contains(dir)) pkg.MarkForUninstall(preferences);
+                if (preferences.PackageDirectoriesToUninstall.Contains(dir)) 
+                    pkg.MarkForUninstall(preferences);
             }
         }
 
@@ -70,21 +68,19 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                var headerPath = Path.Combine(directory, /*NXLT*/"pkg.json");
+                var headerPath = Path.Combine(directory, "pkg.json");
 
-                Package discoveredPkg = null;
+                Package discoveredPkg;
 
                 // get the package name and the installed version
                 if (File.Exists(headerPath))
                 {
-                    discoveredPkg = Package.FromJson(headerPath, this.logger);
+                    discoveredPkg = Package.FromJson(headerPath, AsLogger());
                     if (discoveredPkg == null)
                         throw new Exception(String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
-                {
-                    throw new Exception(String.Format(Properties.Resources.NoHeaderPackage,headerPath));
-                }
+                    throw new Exception(String.Format(Properties.Resources.NoHeaderPackage, headerPath));
 
                 // prevent duplicates
                 if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
@@ -92,19 +88,15 @@ namespace Dynamo.PackageManager
                     LocalPackages.Add(discoveredPkg);
                     return discoveredPkg; // success
                 }
-                else
-                {
-                    throw new Exception(String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
-                }
+                throw new Exception(String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
             catch (Exception e)
             {
-                this.logger.Log(String.Format(Properties.Resources.ExceptionEncountered, this.RootPackagesDirectory));
-                this.logger.Log(e.GetType() + ": " + e.Message);
+                Log(String.Format(Properties.Resources.ExceptionEncountered, this.RootPackagesDirectory), WarningLevel.Error);
+                Log(e);
             }
 
             return null;
-
         }
 
         /// <summary>
@@ -152,9 +144,9 @@ namespace Dynamo.PackageManager
             return LocalPackages.Any(ele => ele.ContainsFile(path));
         }
 
-        public bool IsUnderPackageControl(CustomNodeDefinition def)
+        public bool IsUnderPackageControl(CustomNodeInfo def)
         {
-            return IsUnderPackageControl(def.WorkspaceModel.FileName);
+            return IsUnderPackageControl(def.Path);
         }
 
         public bool IsUnderPackageControl(Type t)
@@ -177,9 +169,9 @@ namespace Dynamo.PackageManager
             return LocalPackages.FirstOrDefault(package => package.LoadedTypes.Contains(t));
         }
 
-        public Package GetOwnerPackage(CustomNodeDefinition def)
+        public Package GetOwnerPackage(CustomNodeInfo def)
         {
-            return GetOwnerPackage(def.WorkspaceModel.FileName);
+            return GetOwnerPackage(def.Path);
         }
 
         public Package GetOwnerPackage(string path)
@@ -187,31 +179,33 @@ namespace Dynamo.PackageManager
             return LocalPackages.FirstOrDefault(ele => ele.ContainsFile(path));
         }
 
-        private static bool hasAttemptedUninstall = false;
+        private static bool hasAttemptedUninstall;
 
-        internal void DoCachedPackageUninstalls( IPreferences preferences )
+        internal void DoCachedPackageUninstalls(IPreferences preferences)
         {
             // this can only be run once per app run
             if (hasAttemptedUninstall) return;
             hasAttemptedUninstall = true;
 
-            var pkgDirsRemoved = new List<string>();
+            var pkgDirsRemoved = new HashSet<string>();
             foreach (var pkgNameDirTup in preferences.PackageDirectoriesToUninstall)
             {
                 try
                 {
                     Directory.Delete(pkgNameDirTup, true);
                     pkgDirsRemoved.Add(pkgNameDirTup);
-                    this.logger.Log(String.Format(/*NXLT*/"Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
+                    Log(String.Format(/*NXLT*/"Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
                 }
                 catch
                 {
-                    this.logger.LogWarning(
-                        String.Format(/*NXLT*/"Failed to delete package directory at \"{0}\", you may need to delete the directory manually.", 
-                        pkgNameDirTup), WarningLevel.Moderate);
+                    Log(
+                        String.Format(
+                        /*NXLT*/"Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
+                            pkgNameDirTup),
+                        WarningLevel.Moderate);
                 }
             }
-            
+
             preferences.PackageDirectoriesToUninstall.RemoveAll(pkgDirsRemoved.Contains);
         }
     }

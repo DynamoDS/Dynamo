@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         // test class
         private sealed class TwoScopedInputs: ScopedNodeModel
         {
-            public TwoScopedInputs(WorkspaceModel workspaceModel) : base(workspaceModel)
+            public TwoScopedInputs()
             {
                 InPortData.Add(new PortData("port1", "Port1 block"));
                 InPortData.Add(new PortData("port2", "Port2 block"));
@@ -48,8 +48,10 @@ namespace Dynamo.Tests
             //         n5 in its scope (for input port 1)
             // For s2, s1, n6, n7 in its scope for input port 0
             DynamoModel model = ViewModel.Model;
-            Func<string, CodeBlockNodeModel> createCbn = 
-                s => new CodeBlockNodeModel(s, Guid.NewGuid(), model.CurrentWorkspace, 0, 0);
+
+
+            Func<string, CodeBlockNodeModel> createCbn =
+                s => new CodeBlockNodeModel(s, 0, 0, model.LibraryServices);
 
             var cbn1 = createCbn("n1;");
 
@@ -64,7 +66,7 @@ namespace Dynamo.Tests
 
             var cbn5 = createCbn("n5;");
 
-            var s1 = new TwoScopedInputs(model.CurrentWorkspace);
+            var s1 = new TwoScopedInputs();
             s1.ConnectInput(0, 0, cbn4);
             s1.ConnectInput(1, 0, cbn5);
 
@@ -85,7 +87,7 @@ namespace Dynamo.Tests
             var cbn7 = createCbn("n7;");
             cbn7.ConnectInput(0, 0, cbn6);
 
-            var s2 = new TwoScopedInputs(model.CurrentWorkspace);
+            var s2 = new TwoScopedInputs();
             s2.ConnectInput(0, 0, cbn7);
 
             scopedNodes = s2.GetInScopeNodesForInport(0).ToList();
@@ -114,7 +116,7 @@ namespace Dynamo.Tests
             // For s1, none is in its scope 
             DynamoModel model = ViewModel.Model;
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, Guid.NewGuid(), model.CurrentWorkspace, 0, 0);
+                s => new CodeBlockNodeModel(s, 0, 0, model.LibraryServices);
 
             var cbn1 = createCbn("n1;");
 
@@ -130,7 +132,7 @@ namespace Dynamo.Tests
             var cbn5 = createCbn("n5;");
             cbn5.ConnectInput(0, 0, cbn4);
 
-            var s1 = new TwoScopedInputs(model.CurrentWorkspace);
+            var s1 = new TwoScopedInputs();
             s1.ConnectInput(0, 0, cbn4);
 
             var scopedNodes = s1.GetInScopeNodesForInport(0);
@@ -151,7 +153,7 @@ namespace Dynamo.Tests
             // For s1, n3, n4 are in its scope
             DynamoModel model = ViewModel.Model;
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, Guid.NewGuid(), model.CurrentWorkspace, 0, 0);
+                s => new CodeBlockNodeModel(s, 0, 0, model.LibraryServices);
 
             var cbn1 = createCbn("n1;");
 
@@ -167,7 +169,7 @@ namespace Dynamo.Tests
             var cbn5 = createCbn("n5;");
             cbn5.ConnectInput(0, 0, cbn2);
 
-            var s1 = new TwoScopedInputs(model.CurrentWorkspace);
+            var s1 = new TwoScopedInputs();
             s1.ConnectInput(0, 0, cbn4);
 
             var scopedNodes = s1.GetInScopeNodesForInport(0).ToList();

@@ -1,9 +1,8 @@
 ﻿using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using DSCoreNodesUI.Properties;
 
 namespace DSCoreNodesUI.StringNodes
@@ -14,8 +13,7 @@ namespace DSCoreNodesUI.StringNodes
     /// </summary>
     public class ToStringNodeBase : NodeModel
     {
-        public ToStringNodeBase(WorkspaceModel workspace, string functionName)
-            : base(workspace)
+        public ToStringNodeBase(string functionName)
         {
             this.functionName = functionName;
         }
@@ -63,8 +61,7 @@ namespace DSCoreNodesUI.StringNodes
     [IsDesignScriptCompatible]
     public class FromObject: ToStringNodeBase 
     {
-        public FromObject(WorkspaceModel workspace)
-            : base(workspace, /*NXLT*/"__ToStringFromObject")
+        public FromObject() : base(/*NXLT*/"__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData(/*NXLT*/"obj", Resources.FromObjectPortDataObjToolTip));
@@ -80,8 +77,7 @@ namespace DSCoreNodesUI.StringNodes
     [IsDesignScriptCompatible]
     public class FromArray : ToStringNodeBase 
     {
-        public FromArray(WorkspaceModel workspace)
-            : base(workspace, /*NXLT*/"__ToStringFromArray")
+        public FromArray() : base(/*NXLT*/"__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPortData.Add(new PortData(/*NXLT*/"arr", Resources.FromArrayPortDataArrayToolTip));

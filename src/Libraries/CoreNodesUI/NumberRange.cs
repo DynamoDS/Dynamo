@@ -2,10 +2,8 @@
 using Dynamo.Nodes;
 using Dynamo.Properties;
 using ProtoCore.AST.AssociativeAST;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DSCoreNodesUI
 {
@@ -15,8 +13,7 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class NumberRange : NodeModel
     {
-        public NumberRange(WorkspaceModel workspace)
-            : base(workspace)
+        public NumberRange()
         {
             InPortData.Add(new PortData(/*NXLT*/"start", Resources.NumberRangePortDataStartToolTip));
             InPortData.Add(new PortData(/*NXLT*/"end", Resources.NumberRangePortDataEndToolTip));
@@ -52,8 +49,7 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class NumberSeq : NodeModel
     {
-        public NumberSeq(WorkspaceModel workspace)
-            : base(workspace)
+        public NumberSeq()
         {
             InPortData.Add(new PortData(/*NXLT*/"start", Resources.NumberRangePortDataStartToolTip));
             InPortData.Add(new PortData(/*NXLT*/"amount", Resources.NumberRangePortDataAmountToolTip));
