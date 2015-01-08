@@ -13,6 +13,7 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Reference = Autodesk.Revit.DB.Reference;
+using Surface = Autodesk.DesignScript.Geometry.Surface;
 
 namespace Revit.Elements
 {

@@ -19,6 +19,7 @@ using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using PolyCurve = Autodesk.DesignScript.Geometry.PolyCurve;
+using Surface = Autodesk.DesignScript.Geometry.Surface;
 
 namespace Dynamo
 {
@@ -36,7 +37,8 @@ namespace Dynamo
         public RevitVisualizationManager(DynamoModel dynamoModel) : base(dynamoModel)
         {
             if (dynamoModel.Context == Context.VASARI_2014 ||
-                dynamoModel.Context == Context.REVIT_2015)
+                dynamoModel.Context == Context.REVIT_2015 ||
+                dynamoModel.Context == Context.REVIT_2016)
             {
                 AlternateDrawingContextAvailable = true;
                 DrawToAlternateContext = false;

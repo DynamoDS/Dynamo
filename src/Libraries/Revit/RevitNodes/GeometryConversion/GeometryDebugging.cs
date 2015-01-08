@@ -8,6 +8,7 @@ using Autodesk.Revit.DB;
 
 using Element = Revit.Elements.Element;
 using Face = Autodesk.Revit.DB.Face;
+using Surface = Autodesk.DesignScript.Geometry.Surface;
 
 namespace Revit.GeometryConversion
 {
