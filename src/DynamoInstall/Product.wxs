@@ -41,6 +41,7 @@
     <!--Property used to define on which version of Revit to install.-->
     <Property Id="INSTALL_FOR_REVIT_2014">1</Property>
     <Property Id="INSTALL_FOR_REVIT_2015">1</Property>
+    <Property Id="INSTALL_FOR_REVIT_2016">1</Property>
 
     <!--Find Revit installations by finding the uninstall registry key.-->
     <Property Id="VASARI">
@@ -66,6 +67,26 @@
     <Property Id="REVIT_ARCHITECTURE_2015">
       <RegistrySearch Id='RevitRegistry_Architecture_2015' Type='raw' Win64='yes'
         Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2015' Name='InstallLocation' />
+    </Property>
+    
+    <Property Id="REVIT_2016">
+      <RegistrySearch Id='RevitRegistry_2016' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit 2016' Name='InstallLocation' />
+    </Property>
+
+    <Property Id="REVIT_ARCHITECTURE_2016">
+      <RegistrySearch Id='RevitRegistry_Architecture_2016' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture 2016' Name='InstallLocation' />
+    </Property>
+    
+    <Property Id="REVIT_COPERNICUS">
+      <RegistrySearch Id='RevitRegistry_Copernicus' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Copernicus' Name='InstallLocation' />
+    </Property>
+
+    <Property Id="REVIT_ARCHITECTURE_COPERNICUS">
+      <RegistrySearch Id='RevitRegistry_Architecture_Copernicus' Type='raw' Win64='yes'
+        Root='HKLM' Key='SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Autodesk Revit Architecture Copernicus' Name='InstallLocation' />
     </Property>
 
     <Property Id='DYNAMO_INSTALLDIR'></Property>
@@ -98,6 +119,13 @@
       <ComponentGroupRef Id="REVIT_2015"/>
       <Condition Level="0">(REVIT_2015="" AND REVIT_ARCHITECTURE_2015="") OR INSTALL_FOR_REVIT_2015=0</Condition>
     </Feature>
+    
+    <Feature Id="DYNAMO_REVIT_2016"
+             Title="Dynamo for Revit 2016"
+             Level="1">
+      <ComponentGroupRef Id="REVIT_2016"/>
+      <Condition Level="0">(REVIT_2016="" AND REVIT_ARCHITECTURE_2016="" AND REVIT_COPERNICUS="" AND REVIT_ARCHITECTURE_COPERNICUS="") OR INSTALL_FOR_REVIT_2016=0</Condition>
+    </Feature>
 
     <Icon Id="DynamoInstaller.ico" SourceFile="$(var.base)\tools\install\Extra\DynamoInstaller.ico"/>
     <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
@@ -117,6 +145,8 @@
               <Directory Id="ADDINS_2014" Name="2014">
               </Directory>
               <Directory Id="ADDINS_2015" Name="2015">
+              </Directory>
+              <Directory Id="ADDINS_2016" Name="2016">
               </Directory>
             </Directory>
           </Directory>
@@ -150,13 +180,18 @@
     
     <!-- Install the Addin files-->
     <ComponentGroup Id="REVIT_2014" Directory="ADDINS_2014">
-      <Component Id="DynamoForRevit2015.addin" Guid="976a5fd6-0a53-4530-b9c8-1004fc7a6200">
-        <File Id="DynamoForRevit2015.addin" Name="Dynamo.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2014.addin"/>
+      <Component Id="DynamoForRevit2014.addin" Guid="976a5fd6-0a53-4530-b9c8-1004fc7a6200">
+        <File Id="DynamoForRevit2014.addin" Name="Dynamo.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2014.addin"/>
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="REVIT_2015" Directory="ADDINS_2015">
-      <Component Id="DynamoForRevit2014.addin" Guid="fde9dc0b-4b8c-46d3-9950-42c9f66b5e60">
-        <File Id="DynamoForRevit2014.addin" Name="Dynamo.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2015.addin"></File>
+      <Component Id="DynamoForRevit2015.addin" Guid="fde9dc0b-4b8c-46d3-9950-42c9f66b5e60">
+        <File Id="DynamoForRevit2015.addin" Name="Dynamo.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2015.addin"></File>
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="REVIT_2016" Directory="ADDINS_2016">
+      <Component Id="DynamoForRevit2016.addin" Guid="7DAC9F4B-DAAB-466B-9B5A-0CA2CB9D940F">
+        <File Id="DynamoForRevit2016.addin" Name="Dynamo.addin" Source="$(var.base)\tools\install\Extra\DynamoForRevit2016.addin"></File>
       </Component>
     </ComponentGroup>
   </Fragment>
