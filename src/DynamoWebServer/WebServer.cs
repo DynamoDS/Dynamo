@@ -120,7 +120,8 @@ namespace DynamoWebServer
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
             // Close connection if not from localhost
-            if (!session.RemoteEndPoint.Address.Equals(IPAddress.Loopback))
+            if (!session.RemoteEndPoint.Address.Equals(IPAddress.Loopback) ||
+                webSocket.GetSessionCount() > 1)
             {
                 session.Close();
                 return;
