@@ -425,14 +425,8 @@ namespace Dynamo.UI.Controls
                 OnRequestReturnFocusToSearch();
             else
                 this.InnerTextEditor.Text = (DataContext as CodeBlockNodeModel).Code;
-
-            //Delete the empty code block node on esc press
-            if (text == "")
-            {
-                this.nodeViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.DeleteModelCommand(this.nodeViewModel.NodeModel.GUID));             
-            }
         }
+
         private void CommitChanges(UndoRedoRecorder recorder)
         {
             nodeViewModel.DynamoViewModel.ExecuteCommand(
@@ -500,6 +494,10 @@ namespace Dynamo.UI.Controls
                 {
                     OnRequestReturnFocusToSearch();
                 }
+            }
+            else if (e.Key == Key.Escape)
+            {
+                HandleEscape();
             }
         }
 
