@@ -15,11 +15,11 @@ namespace Dynamo.Controls
         {
             if (item is NodeSearchElementViewModel)
                 return MemberTemplate;
-            // TODO(Vladimir): take a look.
-            //if (item is BrowserInternalElementForClassesViewModel)
-            //    return SubclassesTemplate;
 
-            if (item is BrowserRootElementViewModel || item is BrowserInternalElementViewModel)
+            if (item is ClassesNodeCategoryViewModel)
+                return SubclassesTemplate;
+
+            if (item is NodeCategoryViewModel)
                 return NestedCategoryTemplate;
 
             const string message = "Unknown object bound to collection";

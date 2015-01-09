@@ -234,6 +234,8 @@ namespace Dynamo.ViewModels
 
             libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
+
+            InsertClassesIntoTree(LibraryRootCategories);
         }
 
         private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -262,6 +264,24 @@ namespace Dynamo.ViewModels
                         });
             tempRoot.Dispose();
             return result;
+        }
+
+        private static void InsertClassesIntoTree(ObservableCollection<NodeCategoryViewModel> tree)
+        {
+            foreach (var item in tree)
+            {
+                var classes = item.SubCategories.Where(cat => cat.SubCategories.Count == 0).ToList();
+
+                foreach (var item2 in classes)
+                    item.SubCategories.Remove(item2);
+
+                InsertClassesIntoTree(item.SubCategories);
+
+                var container = new ClassesNodeCategoryViewModel();
+                container.SubCategories.AddRange(classes);
+
+                item.SubCategories.Insert(0, container);
+            }
         }
 
         private void RemoveEntry(NodeSearchElement entry)

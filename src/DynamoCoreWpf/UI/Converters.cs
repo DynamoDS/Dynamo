@@ -1883,7 +1883,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value is BrowserRootElementViewModel);
+            return (value is RootNodeCategoryViewModel);
         }
 
         public object ConvertBack(
@@ -1897,7 +1897,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value is BrowserInternalElementViewModel);
+            return false;// (value is NodeCategoryViewModel);
         }
 
         public object ConvertBack(
@@ -1988,8 +1988,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var nodeCategory = value as NodeCategoryViewModel;
-            if (nodeCategory.SubCategories.Count == 0)
+            if (value is ClassesNodeCategoryViewModel)
                 return Visibility.Collapsed;
 
             return Visibility.Visible;

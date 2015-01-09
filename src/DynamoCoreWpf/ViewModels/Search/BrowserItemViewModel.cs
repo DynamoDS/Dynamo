@@ -436,4 +436,9 @@ namespace Dynamo.Wpf.ViewModels
             : base(name, entries, subs)
         { }
     }
+
+    public class ClassesNodeCategoryViewModel : NodeCategoryViewModel
+    {
+        public ClassesNodeCategoryViewModel() : base("") { }
+    }
 }

@@ -18,6 +18,7 @@ namespace Dynamo.Search.SearchElements
         private string fullCategoryName;
         private string description;
         private string name;
+        private SearchElementGroup group;
         private bool isVisibleInSearch = true;
 
         /// <summary>
@@ -140,11 +141,17 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
-        /// Group property </summary>
-        /// <value>
-        /// Group to which Node belongs to</value>
-        private SearchElementGroup group;
-        public SearchElementGroup Group { get { return group; } }
+        ///     Group to which Node belongs to 
+        /// </summary>        
+        public SearchElementGroup Group
+        {
+            get { return group; }
+            set
+            {
+                if (value == group) return;
+                group = value;
+            }
+        }
 
         protected List<Tuple<string, string>> inputParameters;
         public IEnumerable<Tuple<string, string>> InputParameters

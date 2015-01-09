@@ -708,46 +708,7 @@ namespace Dynamo.Search
 
             if (category != null && category.IsExpanded != isExpanded)
                 category.IsExpanded = isExpanded;
-        }
-
-        /// <summary>
-        /// Call this method to assign a default grouping information if a given category 
-        /// does not have any. A node category's group can either be "Create", "Query" or
-        /// "Actions". If none of the group names above is assigned to the category, it 
-        /// will be assigned a default one that is "Actions".
-        /// 
-        /// For examples:
-        /// 
-        ///     "Core.Evaluate" will be renamed as "Core.Evaluate.Actions"
-        ///     "Core.List.Create" will remain as "Core.List.Create"
-        /// 
-        /// </summary>
-        public string ProcessNodeCategory(string category, ref SearchElementGroup group)
-        {
-            if (string.IsNullOrEmpty(category))
-                return category;
-
-            int index = category.LastIndexOf(Configurations.CategoryDelimiter);
-
-            // If "index" is "-1", then the whole "category" will be used as-is.            
-            switch (category.Substring(index + 1))
-            {
-                case Configurations.CategoryGroupAction:
-                    group = SearchElementGroup.Action;
-                    break;
-                case Configurations.CategoryGroupCreate:
-                    group = SearchElementGroup.Create;
-                    break;
-                case Configurations.CategoryGroupQuery:
-                    group = SearchElementGroup.Query;
-                    break;
-                default:
-                    group = SearchElementGroup.Action;
-                    return category;
-            }
-
-            return category.Substring(0, index);
-        }
+        }                
 #endif
     }
 

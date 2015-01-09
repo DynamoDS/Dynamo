@@ -23,7 +23,7 @@ namespace Dynamo.Controls
         /// </summary>
         private int selectedClassProspectiveIndex = -2;
         private double classObjectWidth = double.NaN;
-        private ObservableCollection<NodeCategoryViewModel> collection;
+        private ObservableCollection<ISearchEntryViewModel> collection;
         private NodeCategoryViewModel currentClass;
         private ListView classListView;
 
@@ -59,7 +59,7 @@ namespace Dynamo.Controls
         {
             // ListView should never be null.
             classListView = WpfUtilities.FindUpVisualTree<ListView>(this);
-            collection = classListView.ItemsSource as ObservableCollection<NodeCategoryViewModel>;
+            collection = classListView.ItemsSource as ObservableCollection<ISearchEntryViewModel>;
             collection.Add(new ClassInformationViewModel());
             classListView.SelectionChanged += OnClassViewSelectionChanged;
 
@@ -280,7 +280,7 @@ namespace Dynamo.Controls
                 (collection[classInfoIndex] as ClassInformationViewModel).ClassDetailsVisibility = true;
             }
 
-            currentClass = collection[selectedIndex];
+            currentClass = collection[selectedIndex] as NodeCategoryViewModel;
             OrderListItems(); // Selection change, we may need to reorder items.
         }
 
