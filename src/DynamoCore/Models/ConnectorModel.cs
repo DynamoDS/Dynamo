@@ -54,6 +54,29 @@ namespace Dynamo.Models
 
         #endregion
 
+        #region operators
+
+        public static bool operator ==(ConnectorModel lhs, ConnectorModel rhs)
+        {
+            if (ReferenceEquals(lhs, rhs))
+                return true;
+
+            if ((object)lhs == null || (object)rhs == null)
+                return false;
+
+            return ((lhs.Start.Owner.GUID == rhs.Start.Owner.GUID)
+                && (lhs.End.Owner.GUID == rhs.End.Owner.GUID)
+                && (lhs.Start.Index == rhs.Start.Index)
+                && (lhs.End.Index == rhs.End.Index));
+        }
+
+        public static bool operator !=(ConnectorModel lhs, ConnectorModel rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        #endregion
+
         private void Connect(PortModel p)
         {
             //test if the port that you are connecting too is not the start port or the end port
