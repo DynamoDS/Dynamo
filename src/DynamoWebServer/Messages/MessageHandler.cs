@@ -540,7 +540,7 @@ namespace DynamoWebServer.Messages
             stringBuilder.Append(inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "");
             stringBuilder.Append("], \"OutPorts\": [");
             stringBuilder.Append(outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "");
-            stringBuilder.Append("], \"Data\": \"" + GetValue(node) + "\"}");
+            stringBuilder.Append("]}");
 
             return stringBuilder.ToString();
         }
