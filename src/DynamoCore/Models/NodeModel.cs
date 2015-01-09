@@ -295,6 +295,7 @@ namespace Dynamo.Models
                 {
                     argumentLacing = value;
                     RaisePropertyChanged("ArgumentLacing");
+                    ForceReExecuteOfNode = true;
                     OnAstUpdated();
                 }
             }
