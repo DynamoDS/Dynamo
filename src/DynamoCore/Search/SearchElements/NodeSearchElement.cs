@@ -19,6 +19,7 @@ namespace Dynamo.Search.SearchElements
         private string description;
         private string name;
         private SearchElementGroup group;
+        private string assembly;
         private bool isVisibleInSearch = true;
 
         /// <summary>
@@ -61,9 +62,13 @@ namespace Dynamo.Search.SearchElements
                     .Where(x => x != CATEGORY_DELIMITER.ToString() && !String.IsNullOrEmpty(x));
         }
 
-        // TODO(Vladimir): check if this property needed.
-        //private string _fullName;
-        //public string FullName { get { return _fullName; } }
+        /// <summary>
+        ///     The full name of entry which consists of category name and entry name.
+        /// </summary>
+        public string FullName
+        {
+            get { return FullCategoryName + "." + Name; }
+        }
 
         /// <summary>
         ///     The category name of this node.
@@ -153,6 +158,27 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        /// <summary>
+        ///     Group to which Node belongs to 
+        /// </summary>        
+        public string Assembly
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(assembly))
+                    return assembly;
+
+                // If there wasn't any assembly, then it's builtin function, operator or custom node.
+                // Icons for these members are in DynamoCore project.
+                return "DynamoCore";
+            }
+            set
+            {
+                if (value == assembly) return;
+                assembly = value;
+            }
+        }
+
         protected List<Tuple<string, string>> inputParameters;
         public IEnumerable<Tuple<string, string>> InputParameters
         {
@@ -165,7 +191,7 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        protected List<string> outputParameters = new List<String>();
+        protected List<string> outputParameters;
         public List<string> OutputParameters
         {
             get

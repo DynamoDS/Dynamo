@@ -175,7 +175,7 @@
                            Width="32"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center"
-                           Source="{Binding Model.SmallIcon}"
+                           Source="{Binding SmallIcon}"
                            Name="SmallIcon" />
                     <TextBlock Name="memberName"
                                HorizontalAlignment="Left"
@@ -231,7 +231,7 @@
                                 <ColumnDefinition Width="90" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Image Source="{Binding Path=Model.SmallIcon}"
+                            <Image Source="{Binding Path=SmallIcon}"
                                    Width="32"
                                    Height="32"
                                    Margin="8"

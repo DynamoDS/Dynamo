@@ -15,6 +15,7 @@ namespace Dynamo.Search.SearchElements
                 SearchKeywords.Add(aka);
             FullCategoryName = typeLoadData.Category;
             Description = typeLoadData.Description;
+            Assembly = typeLoadData.Assembly.Location;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Dynamo.Search.SearchElements
             Name = displayName;
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
+            Assembly = functionDescriptor.Assembly;
             foreach (var tag in functionDescriptor.GetSearchTags())
                 SearchKeywords.Add(tag);
         }

@@ -36,7 +36,6 @@ namespace Dynamo.Search.SearchElements
             SyncWithCustomNodeInfo(info);
         }
 
-        // TODO(Vladimir): make sure Group property is specified in constructor.
         /// <summary>
         ///     Updates the properties of this search element.
         /// </summary>
@@ -118,16 +117,5 @@ namespace Dynamo.Search.SearchElements
 
             return outputParameters;
         }
-
-        // TODO(Vladimir): move function to ViewModel.
-#if false
-        protected override BitmapSource LoadDefaultIcon(ResourceType resourceType)
-        {
-            string postfix = resourceType == ResourceType.SmallIcon ?
-                Configurations.SmallIconPostfix : Configurations.LargeIconPostfix;
-
-            return GetIcon(Configurations.DefaultCustomNodeIcon + postfix);
-        }
-#endif
     }
 }

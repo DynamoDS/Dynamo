@@ -104,7 +104,7 @@ namespace Dynamo.UI.Views
 
             FrameworkElement fromSender = sender as FrameworkElement;
             libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.SetDataContext((fromSender.DataContext as NodeSearchElementViewModel).Model);
+            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -125,8 +125,9 @@ namespace Dynamo.UI.Views
 
             var selectedElement = e.OriginalSource as FrameworkElement;
             var selectedClass = selectedElement.DataContext as NodeCategoryViewModel;
-            // Continue work with real class: not null, child of BrowserInternalElementForClasses.
-            if (selectedClass == null || selectedClass.SubCategories.Count > 0)
+            // Continue work with real class: not null, not ClassInformationViewModel.
+            if (selectedClass == null || selectedClass is ClassInformationViewModel ||
+                selectedClass.SubCategories.Count > 0)
                 return;
 
             // Go through all available for current top category LibraryWrapPanel.

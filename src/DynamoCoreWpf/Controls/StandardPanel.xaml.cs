@@ -62,6 +62,8 @@ namespace Dynamo.UI.Controls
             }
 
             TruncateSecondaryMembers();
+
+            e.Handled = true;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -89,10 +91,10 @@ namespace Dynamo.UI.Controls
 
         private void ExecuteSearchElement(ListBoxItem listBoxItem)
         {
-            var searchElement = listBoxItem.DataContext as SearchElementBase;
+            var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
             if (searchElement != null)
             {
-                searchElement.Execute();
+                searchElement.ClickedCommand.Execute(null);
                 libraryToolTipPopup.SetDataContext(null, true);
             }
         }
