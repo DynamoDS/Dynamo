@@ -241,7 +241,7 @@
                               Margin="4,4,0,4"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-states.png"
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png"
-                              ToolTip="{x:Static p:Resources.DynamoGeometryButtonToolTip}"
+                              ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}"
                               >
                 <ui:ImageCheckBox.IsChecked>
                     <Binding Path="DataContext.CanNavigateBackground"
@@ -253,7 +253,7 @@
                               Margin="0,4,4,4"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-states.png"
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png"
-                              ToolTip="{x:Static p:Resources.DynamoNodeButtonToolTip}">
+                              ToolTip="{x:Static p:Resources.InCanvasNodeButtonToolTip}">
                 <ui:ImageCheckBox.IsChecked>
                     <Binding Path="DataContext.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"

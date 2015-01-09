@@ -1415,12 +1415,12 @@ Click CANCEL to cancel the update.</value>
   <data name="InstallMessageCaption" xml:space="preserve">
     <value>Install Dynamo</value>
   </data>
-  <data name="DynamoGeometryButtonToolTip" xml:space="preserve">
-    <value>Geometry</value>
-    <comment>Geometry display tooltip</comment>
+  <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
+    <value>Enable background 3D preview navigation (Ctrl + G)</value>
+    <comment>Enable background 3D preview navigation</comment>
   </data>
-  <data name="DynamoNodeButtonToolTip" xml:space="preserve">
-    <value>Node</value>
-    <comment>Node display tooltip</comment>
+  <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
+    <value>Enable graph View Navigation (Ctrl + G)</value>
+    <comment>Enable graph view navigation</comment>
   </data>
 </root>

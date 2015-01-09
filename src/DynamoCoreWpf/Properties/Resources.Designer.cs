@@ -378,24 +378,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Geometry.
-        /// </summary>
-        public static string DynamoGeometryButtonToolTip {
-            get {
-                return ResourceManager.GetString("DynamoGeometryButtonToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Node.
-        /// </summary>
-        public static string DynamoNodeButtonToolTip {
-            get {
-                return ResourceManager.GetString("DynamoNodeButtonToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A Dynamo update is available. Click to install..
         /// </summary>
         public static string DynamoUpdateAvailabeToolTip {
@@ -1553,6 +1535,24 @@ namespace Dynamo.Wpf.Properties {
         public static string ImportLibraryDialogTitle {
             get {
                 return ResourceManager.GetString("ImportLibraryDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable background 3D preview navigation (Ctrl + G).
+        /// </summary>
+        public static string InCanvasGeomButtonToolTip {
+            get {
+                return ResourceManager.GetString("InCanvasGeomButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable graph View Navigation (Ctrl + G).
+        /// </summary>
+        public static string InCanvasNodeButtonToolTip {
+            get {
+                return ResourceManager.GetString("InCanvasNodeButtonToolTip", resourceCulture);
             }
         }
         
