@@ -1548,7 +1548,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable graph View Navigation (Ctrl + G).
+        ///   Looks up a localized string similar to Enable graph view navigation (Ctrl + G).
         /// </summary>
         public static string InCanvasNodeButtonToolTip {
             get {

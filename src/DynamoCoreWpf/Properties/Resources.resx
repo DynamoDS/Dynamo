@@ -1420,7 +1420,7 @@ Click CANCEL to cancel the update.</value>
     <comment>Enable background 3D preview navigation</comment>
   </data>
   <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
-    <value>Enable graph View Navigation (Ctrl + G)</value>
+    <value>Enable graph view navigation (Ctrl + G)</value>
     <comment>Enable graph view navigation</comment>
   </data>
 </root>
