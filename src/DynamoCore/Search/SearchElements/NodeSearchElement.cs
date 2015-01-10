@@ -140,11 +140,6 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        public bool HasDescription
-        {
-            get { return (!string.IsNullOrEmpty(description)); }
-        }
-
         /// <summary>
         ///     Group to which Node belongs to 
         /// </summary>        

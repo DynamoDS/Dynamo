@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -79,6 +80,21 @@ namespace Dynamo.Wpf.ViewModels
         public string Description
         {
             get { return Model.Description; }
+        }
+
+        public bool HasDescription
+        {
+            get { return (!string.IsNullOrEmpty(Model.Description)); }
+        }
+
+        public IEnumerable<Tuple<string, string>> InputParameters
+        {
+            get { return Model.InputParameters; }
+        }
+
+        public List<string> OutputParameters
+        {
+            get { return Model.OutputParameters; }
         }
 
         protected enum ResourceType
