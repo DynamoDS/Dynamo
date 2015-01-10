@@ -236,6 +236,7 @@ namespace Dynamo.ViewModels
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
             InsertClassesIntoTree(LibraryRootCategories);
+            DefineCategoriesFullCategoryName(LibraryRootCategories, "");
         }
 
         private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -266,7 +267,7 @@ namespace Dynamo.ViewModels
             return result;
         }
 
-        private static void InsertClassesIntoTree(ObservableCollection<NodeCategoryViewModel> tree)
+        private void InsertClassesIntoTree(ObservableCollection<NodeCategoryViewModel> tree)
         {
             foreach (var item in tree)
             {
@@ -281,6 +282,17 @@ namespace Dynamo.ViewModels
                 container.SubCategories.AddRange(classes);
 
                 item.SubCategories.Insert(0, container);
+            }
+        }
+
+        private void DefineCategoriesFullCategoryName(ObservableCollection<NodeCategoryViewModel> tree, string path)
+        {
+            foreach (var item in tree)
+            {
+                item.FullCategoryName = string.IsNullOrEmpty(path) ? item.Name : 
+                    path + Configurations.CategoryDelimiter + item.Name;
+
+                DefineCategoriesFullCategoryName(item.SubCategories, item.FullCategoryName);
             }
         }
 
