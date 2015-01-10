@@ -140,7 +140,7 @@
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
-        <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
         <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
         <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
 
@@ -785,7 +785,7 @@
                 <Binding ElementName="libraryToolTipPopup"
                          Path="DataContext"
                          Mode="OneWay"
-                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
+                         Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
             </uicontrols:LibraryToolTipPopup.IsOpen>
         </uicontrols:LibraryToolTipPopup>
     </Grid>

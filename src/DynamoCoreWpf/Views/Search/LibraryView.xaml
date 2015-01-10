@@ -23,9 +23,9 @@
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
-            <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+            <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
             <controls:RootElementVMToBoolConverter x:Key="RootElementToBoolConverter" />
-            <controls:BrowserInternalElementVMToBoolConverter x:Key="BrowserInternalElementToBoolConverter" />
+            <controls:NodeCategoryVMToBoolConverter x:Key="NodeCategoryVMToBoolConverter" />
             <!--Depending on the number of points in FullCategoryName margin will be done.-->
             <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
             <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
@@ -180,7 +180,7 @@
                     <TextBlock Name="memberName"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
-                               Text="{Binding Model.Name}"
+                               Text="{Binding Name}"
                                Margin="5,0,0,0"
                                Foreground="#989898"
                                FontSize="13" />
@@ -654,7 +654,7 @@
                                                             <DataTrigger.Binding>
                                                                 <Binding RelativeSource="{RelativeSource Self}"
                                                                          Path="DataContext"
-                                                                         Converter="{StaticResource BrowserInternalElementToBoolConverter}" />
+                                                                         Converter="{StaticResource NodeCategoryVMToBoolConverter}" />
                                                             </DataTrigger.Binding>
                                                             <Setter Property="Height"
                                                                     Value="32" />
@@ -919,6 +919,7 @@
                         </ControlTemplate>
                     </TreeView.Template>
                 </TreeView>
+                <!-- Do not remove. Possibly Addons TreeView will be return later. -->
                 <uicontrols:AddonsTreeView Grid.Row="1"
                                            DataContext="{Binding}">
                     <uicontrols:AddonsTreeView.Visibility>
@@ -999,7 +1000,7 @@
                 <Binding ElementName="libraryToolTipPopup"
                          Path="DataContext"
                          Mode="OneWay"
-                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
+                         Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
             </uicontrols:LibraryToolTipPopup.IsOpen>
         </uicontrols:LibraryToolTipPopup>
     </Grid>

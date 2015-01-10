@@ -765,7 +765,7 @@ namespace Dynamo.Controls
         }
     }
 
-    public class BrowserItemToBooleanConverter : IValueConverter
+    public class NodeSearchElementVMToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -1834,21 +1834,16 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // TODO(Vladimir): take a look.
-#if false
-            if (value is NodeSearchElementViewModel) 
+            if (value is NodeSearchElementViewModel)
                 return false;
-            if (value is BrowserInternalElementViewModel)
-                return true;
-            if (value is BrowserInternalElementForClassesViewModel)
+            if (value is RootNodeCategoryViewModel)
+            {
+                var rootElement = value as RootNodeCategoryViewModel;
+                return !rootElement.SubCategories.OfType<ClassesNodeCategoryViewModel>().Any();
+            }
+            if (value is NodeCategoryViewModel)
                 return true;
 
-            if (value is BrowserRootElementViewModel)
-            {
-                var rootElement = value as BrowserRootElementViewModel;
-                return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
-            }
-#endif
             return false;
         }
 
@@ -1893,11 +1888,13 @@ namespace Dynamo.Controls
         }
     }
 
-    public class BrowserInternalElementVMToBoolConverter : IValueConverter
+    public class NodeCategoryVMToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return false;// (value is NodeCategoryViewModel);
+            return (value is NodeCategoryViewModel) &&
+                (!(value is RootNodeCategoryViewModel)) &&
+                (!(value is ClassesNodeCategoryViewModel));
         }
 
         public object ConvertBack(
@@ -1952,9 +1949,13 @@ namespace Dynamo.Controls
         {
             var incomingString = value as string;
 
-            if (string.IsNullOrEmpty(incomingString)) return new Thickness(5, 0, 0, 0);
+            if (string.IsNullOrEmpty(incomingString))
+                throw new ArgumentException("value string should not be empty.");
 
             var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
+            if (numberOfPoints == 0)
+                return new Thickness(5, 0, 0, 0);
+
             return new Thickness(5 + 20 * numberOfPoints, 0, 20, 0);
         }
 

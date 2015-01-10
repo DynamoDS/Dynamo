@@ -383,7 +383,7 @@ namespace Dynamo.Tests
         [Test]
         public void BrowserInternalElementToBoolConverterTest()
         {
-            var converter = new BrowserInternalElementVMToBoolConverter();
+            var converter = new NodeCategoryVMToBoolConverter();
             var elementVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
             object result;
 
