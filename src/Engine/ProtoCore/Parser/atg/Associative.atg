@@ -1951,7 +1951,7 @@ Associative_Number<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         float   
         (.  
             double value;
-            if (Double.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+            if (Double.TryParse(t.val, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out value))
             {
                 node = new ProtoCore.AST.AssociativeAST.DoubleNode(value * sign);
             }

@@ -380,13 +380,13 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
 
             var path = model.CurrentWorkspace.NodeFromWorkspace<StringInput>("84693240-90f3-45f3-9cb3-88207499f0bc");
             path.Value = GetNewFileNameOnTempPath(".txt");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
         }
 
         [Test]
@@ -398,13 +398,13 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 
             var filename = model.CurrentWorkspace.NodeFromWorkspace<StringInput>("0aaae6d6-f84b-4e61-888b-14936343d80a");
             filename.Value = GetNewFileNameOnTempPath(".png");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
         }
     }
 
@@ -420,10 +420,10 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue("8527c4f5-f8e1-491e-b446-64c495fa1848", 4.54606056566195);
         }

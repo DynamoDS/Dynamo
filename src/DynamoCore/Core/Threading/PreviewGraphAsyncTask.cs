@@ -1,4 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
+﻿
 using System;
 using System.Collections.Generic;
 
@@ -20,6 +20,7 @@ namespace Dynamo.Core.Threading
         private GraphSyncData graphSyncData;
         private EngineController engineController;
         private IEnumerable<NodeModel> modifiedNodes;
+        private bool verboseLogging;
         public List<Guid> previewGraphData;
         
         internal override TaskPriority Priority
@@ -36,9 +37,10 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal PreviewGraphAsyncTask(DynamoScheduler scheduler)
+        internal PreviewGraphAsyncTask(IScheduler scheduler, bool verboseLogging1)
             : base(scheduler)
         {
+            verboseLogging = verboseLogging;
         }
 
         /// <summary>
@@ -62,7 +64,7 @@ namespace Dynamo.Core.Threading
                 engineController = controller;
                 TargetedWorkspace = workspace;                
                 modifiedNodes = ComputeModifiedNodes(workspace);                
-                previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes);
+                previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes,verboseLogging);
                 return previewGraphData;
             }
             catch (Exception e)
@@ -103,4 +105,3 @@ namespace Dynamo.Core.Threading
     }
 }
 
-#endif
