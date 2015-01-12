@@ -84,6 +84,7 @@ namespace UnitsUI
                 e.PropertyName == "NumberFormat")
             {
                 this.mesBaseModel.ForceValueRaisePropertyChanged();
+                
                 this.mesBaseModel.OnAstUpdated();
             }
         }

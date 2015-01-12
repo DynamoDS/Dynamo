@@ -105,6 +105,7 @@ namespace Dynamo.Nodes
                 return;
             
             base.SyncNodeWithDefinition(model);
+            
             model.OnAstUpdated();
         }
 

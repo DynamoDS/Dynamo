@@ -118,14 +118,7 @@ namespace Dynamo.Models
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            foreach (var node in Nodes)
-            {
-                // Mark all nodes as dirty so that AST for the whole graph will be
-                // regenerated.
-                node.ForceReExecuteOfNode = true;
-            }
-
-            OnAstUpdated();
+            MarkAllNodesForUpdate();
         }
 
         public override void OnAstUpdated()
@@ -174,9 +167,7 @@ namespace Dynamo.Models
             
             if (markNodesAsDirty)
             {
-                foreach (var node in Nodes)
-                    node.ForceReExecuteOfNode = true;
-                OnAstUpdated();
+                MarkAllNodesForUpdate();
             }
 
             if (DynamicRunEnabled)
@@ -227,7 +218,10 @@ namespace Dynamo.Models
                 modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
 
             foreach (var n in Nodes)
-                n.ForceReExecuteOfNode = false;
+            {
+                n.ExecutionHintFlag &= ~NodeModel.ExecutionHint.ForceExecute;
+            }
+              
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.

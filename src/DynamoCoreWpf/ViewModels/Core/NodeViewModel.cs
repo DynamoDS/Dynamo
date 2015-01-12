@@ -255,7 +255,10 @@ namespace Dynamo.ViewModels
 
         public bool WillForceReExecuteOfNode
         {
-            get { return NodeModel.ForceReExecuteOfNode; }
+            get
+            {
+                return NodeModel.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.ForceExecute);
+            }
         }
 
         #endregion

@@ -54,7 +54,7 @@ namespace DSIronPythonNode
             bool? acceptChanged = editWindow.ShowDialog();
             if (acceptChanged.HasValue && acceptChanged.Value)
             {
-                model.ForceReExecuteOfNode = true;
+                // Mark node for update
                 model.OnAstUpdated();
             }
         }

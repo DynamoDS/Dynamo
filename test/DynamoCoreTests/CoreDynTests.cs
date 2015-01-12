@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 
 using DSCore.File;
-
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -443,7 +443,10 @@ namespace Dynamo.Tests
 
             // Pretend we never ran
             foreach (var node in model.CurrentWorkspace.Nodes)
-                node.ForceReExecuteOfNode = true;
+            {
+                node.ExecutionHintFlag |= NodeModel.ExecutionHint.ForceExecute;
+            }
+              
 
             // Make sure results are still consistent
             ViewModel.HomeSpace.Run();

@@ -26,7 +26,7 @@ namespace Dynamo.Models
     {
         #region private members
 
-        private bool forceReExec;
+        //private bool forceReExec;
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
@@ -295,7 +295,8 @@ namespace Dynamo.Models
                 {
                     argumentLacing = value;
                     RaisePropertyChanged("ArgumentLacing");
-                    ForceReExecuteOfNode = true;
+
+                    // Mark node for update
                     OnAstUpdated();
                 }
             }
@@ -542,7 +543,8 @@ namespace Dynamo.Models
             IsVisible = true;
             IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
-            forceReExec = true;
+            //forceReExec = true;
+            ExecutionHintFlag = ExecutionHint.GenerateAst;
 
             PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
             {
@@ -610,6 +612,7 @@ namespace Dynamo.Models
         public event Action AstUpdated;
         public virtual void OnAstUpdated()
         {
+            ExecutionHintFlag |= ExecutionHint.GenerateAst;
             var handler = AstUpdated;
             if (handler != null) handler();
         }
@@ -1154,7 +1157,9 @@ namespace Dynamo.Models
                     p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                     {
                         if (args.PropertyName == "UsingDefaultValue")
+                        {
                             OnAstUpdated();
+                        }
                     };
 
                     InPorts.Add(p);
@@ -1204,7 +1209,8 @@ namespace Dynamo.Models
                 ConnectInput(data, outData, startPort.Owner);
                 startPort.Owner.ConnectOutput(outData, data, this);
                 OnConnectorAdded(connector);
-                ForceReExecuteOfNode = true;
+
+                // Mark node for update
                 OnAstUpdated();
             }
         }
@@ -1434,16 +1440,37 @@ namespace Dynamo.Models
         ///     This property forces all AST nodes that generated from this node
         ///     to be executed, even there is no change in AST nodes.
         /// </summary>
-        public virtual bool ForceReExecuteOfNode
+        //public virtual bool ForceReExecuteOfNode
+        //{
+        //    get
+        //    {
+        //        return forceReExec;
+        //    }
+        //    set
+        //    {
+        //        forceReExec = value;
+        //        RaisePropertyChanged("ForceReExecuteOfNode");
+        //    }
+        //}
+
+        [Flags]
+        public enum ExecutionHint
+        {
+            None = 0,
+            GenerateAst = 1,
+            ForceExecute = 3
+        }
+
+        private ExecutionHint executionHint = ExecutionHint.None;
+        public virtual ExecutionHint ExecutionHintFlag
         {
             get
             {
-                return forceReExec;
+                return executionHint;
             }
             set
             {
-                forceReExec = value;
-                RaisePropertyChanged("ForceReExecuteOfNode");
+                executionHint = value;
             }
         }
 

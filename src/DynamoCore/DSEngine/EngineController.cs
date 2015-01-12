@@ -310,7 +310,7 @@ namespace Dynamo.DSEngine
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = new HashSet<Guid>(
-                nodes.Where(n => n.ForceReExecuteOfNode)
+                nodes.Where(n => n.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.ForceExecute))
                      .Select(n => n.GUID));
 
             if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)

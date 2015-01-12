@@ -196,7 +196,29 @@ namespace Dynamo.DSEngine
 
             if (isDeltaExecution)
             {
-                sortedNodes = sortedNodes.Where(n => n.ForceReExecuteOfNode);
+                foreach (var node in sortedNodes)
+                {
+                    var scopedNode = node as ScopedNodeModel;
+                    if (scopedNode != null)
+                    {
+                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.ForceExecute));
+                        if (dirtyInScopeNodes.Any())
+                        {
+                            scopedNode.ExecutionHintFlag |= NodeModel.ExecutionHint.GenerateAst;
+                        }   
+                        else
+                        {
+                            scopedNode.ExecutionHintFlag &= ~NodeModel.ExecutionHint.GenerateAst;
+                        }
+                        foreach (var dirtyNode in dirtyInScopeNodes)
+                        {
+                            dirtyNode.ExecutionHintFlag &= ~NodeModel.ExecutionHint.GenerateAst;
+                        }
+                    }
+                }
+
+                sortedNodes = sortedNodes.Where(n => n.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.ForceExecute));
+                
             }
 
             var result = new List<AssociativeNode>();
@@ -204,6 +226,9 @@ namespace Dynamo.DSEngine
             foreach (NodeModel node in sortedNodes)
             {
                 _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging);
+
+                if (isDeltaExecution)
+                    node.ExecutionHintFlag &= ~NodeModel.ExecutionHint.GenerateAst;
             }
 
             return result;

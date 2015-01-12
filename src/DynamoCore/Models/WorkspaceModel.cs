@@ -553,11 +553,25 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Mark all nodes in workspace for AST update
+        /// </summary>
+        public virtual void MarkAllNodesForUpdate()
+        {
+            // Mark all nodes as dirty so that AST for the whole graph will be
+            // regenerated.
+            foreach (var node in Nodes)
+            {
+                node.ExecutionHintFlag |= NodeModel.ExecutionHint.GenerateAst;
+            }
+            OnAstUpdated();
+        }
+
+        /// <summary>
         ///     Indicates that this workspace's DesignScript AST has been updated.
         /// </summary>
         public virtual void OnAstUpdated()
         {
-
+            
         }
 
         /// <summary>

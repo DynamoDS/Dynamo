@@ -125,7 +125,7 @@ namespace DSCore.File
 
             protected void Modified()
             {
-                node.ForceReExecuteOfNode = true;
+                node.ExecutionHintFlag |= ExecutionHint.ForceExecute;
                 node.OnAstUpdated();
             }
 

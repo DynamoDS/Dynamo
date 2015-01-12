@@ -49,7 +49,8 @@ namespace Dynamo.Nodes
                 if (dirty)
                 {
                     selectionResults = value.ToList();
-                    ForceReExecuteOfNode = true;
+                    
+                    ExecutionHintFlag |= ExecutionHint.ForceExecute;
                     OnAstUpdated();
                 }
                 else

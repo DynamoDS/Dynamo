@@ -208,8 +208,10 @@ namespace Dynamo.Nodes
                 }
 
                 RaisePropertyChanged("Code");
-                ForceReExecuteOfNode = true;
+                
+                // Mark node for update
                 OnAstUpdated();
+                
                 ReportPosition();
 
                 ClearRuntimeError();
@@ -361,7 +363,8 @@ namespace Dynamo.Nodes
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
-            ForceReExecuteOfNode = true;
+            
+            // Mark node for update
             OnAstUpdated();
             
             ClearRuntimeError();

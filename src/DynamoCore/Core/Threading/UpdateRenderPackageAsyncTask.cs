@@ -76,7 +76,7 @@ namespace Dynamo.Core.Threading
                 throw new ArgumentNullException("initParams.DrawableIds");
 
             var nodeModel = initParams.Node;
-            if (!nodeModel.IsUpdated)
+            if (!nodeModel.IsUpdated && !nodeModel.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.GenerateAst))
                 return false; // Not has not been updated at all.
 
             // If a node is in either of the following states, then it will not 

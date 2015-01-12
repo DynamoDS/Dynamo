@@ -5,6 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Wpf;
 
@@ -35,7 +36,10 @@ namespace DSCoreNodesUI
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
-                    model.OnAstUpdated();
+                {
+                    model.OnAstUpdated(); 
+                }
+                  
             };
 
             combo.DropDownClosed += delegate
