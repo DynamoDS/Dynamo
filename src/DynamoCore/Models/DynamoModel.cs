@@ -92,6 +92,11 @@ namespace Dynamo.Models
                 ShutdownCompleted(this);
         }
 
+        internal void OnGetExecutingNodes()
+        {
+          ((HomeWorkspaceModel)CurrentWorkspace).GetExecutingNodes(Logger,ShowNodeExecution);
+        }
+
         #endregion
 
         #region static properties
@@ -277,6 +282,18 @@ namespace Dynamo.Models
         /// </summary>
         public readonly List<WorkspaceModel> Workspaces =
             new List<WorkspaceModel>();
+
+        private bool showNodeExecution;
+
+        public bool ShowNodeExecution
+        {
+            get { return showNodeExecution; }
+            set
+            {
+                showNodeExecution = value;      
+                OnGetExecutingNodes();
+            }
+        }
 
         #endregion
 

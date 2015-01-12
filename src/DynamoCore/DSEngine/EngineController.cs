@@ -228,7 +228,7 @@ namespace Dynamo.DSEngine
             }
 
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
-            List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata);
+            List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata, verboseLogging);
 
              lock (previewGraphQueue)
              {
