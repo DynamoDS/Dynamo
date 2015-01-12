@@ -23,8 +23,6 @@ namespace Dynamo.Nodes
             Min = 0;
             Max = 100;
             Value = 0;
-
-            ShouldDisplayPreviewCore = false;
         }
 
         //Value property has to be changed for over flow condition
@@ -35,8 +33,7 @@ namespace Dynamo.Nodes
             get { return _value; }
             set
             {
-                _value = value;
-                RequiresRecalc = true;
+                _value = value;               
                 RaisePropertyChanged("Value");
             }
         }
@@ -100,16 +97,7 @@ namespace Dynamo.Nodes
         }
         
         #region Serialization/Deserialization Methods
-
-<<<<<<< HEAD
-
-        #region Load/Save
-
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-=======
         protected override void SerializeCore(XmlElement element, SaveContext context)
->>>>>>> f8be37756a6f9a1412ce19b1b141e3935df6efad
         {
             base.SerializeCore(element, context); // Base implementation must be called.
 
@@ -149,66 +137,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        #endregion
-<<<<<<< HEAD
-
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context); // Base implementation must be called.
-
-            if (context == SaveContext.Undo)
-            {
-                var xmlDocument = element.OwnerDocument;
-                XmlElement subNode = xmlDocument.CreateElement("Range");
-                subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-                subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-                element.AppendChild(subNode);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context); // Base implementation must be called.
-
-            if (context == SaveContext.Undo)
-            {
-                foreach (XmlNode subNode in element.ChildNodes)
-                {
-                    if (!subNode.Name.Equals("Range"))
-                        continue;
-                    if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
-                        continue;
-
-                    int min = Min;
-                    int max = Max;
-
-                    foreach (XmlAttribute attr in subNode.Attributes)
-                    {
-                        if (attr.Name.Equals("min"))
-                            min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
-                            max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
-                    }
-
-                    Min = min;
-                    Max = max;
-                }
-            }
-        }
-
-        #endregion
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
-        }
-
-=======
->>>>>>> f8be37756a6f9a1412ce19b1b141e3935df6efad
+        #endregion        
     }
 }
