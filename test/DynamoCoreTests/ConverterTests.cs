@@ -210,58 +210,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void DisplayModeToBackgroundConverterTest()
-        {
-            var converter = new DisplayModeToBackgroundConverter();
-            var isSecondaryHeaderRightVisible = false;
-            var displayMode = ClassInformationViewModel.DisplayMode.None;
-            var parameter = "";
-            object[] array = { displayMode, isSecondaryHeaderRightVisible };
-            object result;
-
-            //1. Array is null.
-            //2. Parameter is null.
-            //3. Right secondary header is invisible. Display mode is "None". Parameter is empty.
-            //4. Right secondary header is invisible. Display mode is "Query". Parameter is empty.
-            //5. Right secondary header is invisible. Display mode is "Action". Parameter is empty.
-            //6. Right secondary header is visible. Display mode is "Action". Parameter is "Action".
-            //7. Right secondary header is visible. Display mode is "Action". Parameter is "None".
-
-            // 1 case
-            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, null, null); });
-
-            // 2 case
-            result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(converter.ActiveColor, result);
-
-            // 3 case
-            result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(converter.ActiveColor, result);
-
-            // 4 case
-            array[0] = ClassInformationViewModel.DisplayMode.Query;
-            result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(converter.ActiveColor, result);
-
-            // 5 case
-            array[0] = ClassInformationViewModel.DisplayMode.Action;
-            result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(converter.ActiveColor, result);
-
-            // 6 case
-            parameter = "Action";
-            isSecondaryHeaderRightVisible = true;
-            array[1] = isSecondaryHeaderRightVisible;
-            result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(converter.ActiveColor, result);
-
-            // 7 case
-            parameter = "None";
-            result = converter.Convert(array, null, parameter, null);
-            Assert.AreEqual(converter.NormalColor, result);
-        }
-
-        [Test]
         public void ViewModeToVisibilityConverterTest()
         {
             ViewModeToVisibilityConverter converter = new ViewModeToVisibilityConverter();
@@ -587,21 +535,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void LeftSecondaryHeaderStyleConverterTest()
+        public void SelectedItemToActiveConverterTest()
         {
-            var converter = new LeftSecondaryHeaderStyleConverter();
+            var converter = new SelectedItemToActiveConverter();
+            converter.NormalColor = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            converter.ActiveColor = new SolidColorBrush(Color.FromRgb(0, 0, 0));
 
-            var styleA = new Style();
-            styleA.Setters.Add(new Setter(Button.BorderThicknessProperty, new Thickness(1)));
+            Assert.Throws<NullReferenceException>(() => { converter.Convert(null, null, null, null); });
 
-            var styleB = new Style();
-            styleB.Setters.Add(new Setter(Button.BackgroundProperty, new SolidColorBrush(Color.FromRgb(255, 0, 0))));
+            var array = new object[] { 5 };
+            Assert.Throws<ArgumentException>(() => { converter.Convert(array, null, null, null); });
 
-            converter.PrimaryHeaderStyle = styleA;
-            converter.SecondaryHeaderStyle = styleB;
+            array = new object[] { -1, 1 };
+            var result = converter.Convert(array, null, null, null);
+            Assert.AreEqual(converter.NormalColor, result);
 
-            Assert.AreEqual(styleB, converter.Convert(true, null, null, null));
-            Assert.AreEqual(styleA, converter.Convert(false, null, null, null));
+            array = new object[] { "string", "string" };
+            result = converter.Convert(array, null, null, null);
+            Assert.AreEqual(converter.ActiveColor, result);
         }
     }
 }

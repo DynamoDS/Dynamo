@@ -269,6 +269,11 @@
                          Handler="OnMouseLeftButtonDown" />
 
             <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="#404040" />
+                </Trigger>
                 <Trigger Property="IsSelected"
                          Value="True">
                     <Setter Property="Background"
@@ -534,6 +539,8 @@
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                              ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}"
                              KeyDown="OnMemberButtonKeyDown"
+                             MouseEnter="OnTopResultMouseEnter"
+                             MouseLeave="OnTopResultMouseLeave"
                              TargetUpdated="OnTopResultTargetUpdated">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -565,7 +572,9 @@
                             <Expander Header="{Binding Path=Name}"
                                       OverridesDefaultStyle="True"
                                       Template="{StaticResource CategoryExpanderTemplate}"
-                                      IsExpanded="True">
+                                      IsExpanded="True"
+                                      Expanded="OnCategoryExpanderExpanded"
+                                      Collapsed="OnCategoryExpanderCollapsed">
                                 <StackPanel Orientation="Vertical"
                                             KeyDown="OnCategoryContentKeyDown">
 

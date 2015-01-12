@@ -11,7 +11,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
-using Dynamo.Wpf.ViewModels;
 
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
@@ -79,8 +78,11 @@ namespace Dynamo.Search
             SearchTextBox.PreviewKeyDown += OnSearchBoxPreviewKeyDown;
             SearchTextBox.KeyDown += OnSearchBoxKeyDown;
 
+
             viewModel.RequestFocusSearch += OnSearchViewModelRequestFocusSearch;
             viewModel.RequestReturnFocusToSearch += OnSearchViewModelRequestReturnFocusToSearch;
+
+            this.librarySearchView.SearchTextBox = SearchTextBox;
         }
 
         private void OnSearchViewMouseLeave(object sender, MouseEventArgs e)
@@ -128,7 +130,6 @@ namespace Dynamo.Search
         /// <param name="e">Parameters describing the key push</param>
         public void KeyHandler(object sender, KeyEventArgs e)
         {
-
             // ignore the key command if modifiers are present
             if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) ||
                 e.KeyboardDevice.IsKeyDown(Key.RightCtrl) ||
@@ -239,20 +240,20 @@ namespace Dynamo.Search
         // Not used anywhere.
         public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ((SearchViewModel) DataContext).Execute();
+            ((SearchViewModel)DataContext).Execute();
         }
 
         // Not used anywhere.
         public void ListBoxItem_Click(object sender, RoutedEventArgs e)
         {
-            ((ListBoxItem) sender).IsSelected = true;
+            ((ListBoxItem)sender).IsSelected = true;
             Keyboard.Focus(SearchTextBox);
         }
 
         // Not used anywhere.
         private void Back_Click(object sender, RoutedEventArgs e)
         {
-            ((SearchViewModel) DataContext).RemoveLastPartOfSearchText();
+            ((SearchViewModel)DataContext).RemoveLastPartOfSearchText();
             Keyboard.Focus(SearchTextBox);
         }
 
@@ -288,7 +289,7 @@ namespace Dynamo.Search
             BitmapImage bmi = new BitmapImage(collapsestateSource);
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
             collapsestate.Source = new BitmapImage(collapsestateSource);
-            
+
             Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
         }
 
@@ -302,7 +303,7 @@ namespace Dynamo.Search
             Image collapsestate = (Image)(b).Content;
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
-            
+
             Cursor = null;
         }
 
@@ -328,7 +329,7 @@ namespace Dynamo.Search
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
         }
-        
+
         private void TextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             if (viewModel != null)

@@ -233,6 +233,9 @@ namespace Dynamo.UI
         #region StandardPanel
 
         public const string MoreButtonTextFormat = "SHOW MORE ({0})";
+        public const string HeaderCreate = "CREATE";
+        public const string HeaderAction = "ACTIONS";
+        public const string HeaderQuery = "QUERY";
 
         #endregion
 
