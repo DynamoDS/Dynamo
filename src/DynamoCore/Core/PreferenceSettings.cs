@@ -21,12 +21,12 @@ namespace Dynamo
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences
     {
-        public static string DYNAMO_TEST_PATH = null;
+        public static string DynamoTestPath = null;
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
-        private LengthUnit _lengthUnit;
-        private AreaUnit _areaUnit;
-        private VolumeUnit _volumeUnit;
-        private string _numberFormat;
+        private LengthUnit lengthUnit;
+        private AreaUnit areaUnit;
+        private VolumeUnit volumeUnit;
+        private string numberFormat;
         private string lastUpdateDownloadPath;
 
         // Variables of the settings that will be persistent
@@ -44,20 +44,20 @@ namespace Dynamo
 
         public string NumberFormat
         {
-            get { return _numberFormat; }
+            get { return numberFormat; }
             set
             {
-                _numberFormat = value;
+                numberFormat = value;
                 RaisePropertyChanged("NumberFormat");
             }
         }
 
         public LengthUnit LengthUnit
         {
-            get { return _lengthUnit; }
+            get { return lengthUnit; }
             set
             {
-                _lengthUnit = value;
+                lengthUnit = value;
                 RaisePropertyChanged("LengthUnit");
             }
         }
@@ -68,31 +68,26 @@ namespace Dynamo
             set { }
         }
 
-        private List<string> _recentFiles = new List<string>();
-        public List<string> RecentFiles
-        {
-            get { return _recentFiles; }
-            set { _recentFiles = value; }
-        }
+        public List<string> RecentFiles { get; set; }
 
         public List<string> PackageDirectoriesToUninstall { get; set; }
 
         public AreaUnit AreaUnit
         {
-            get { return _areaUnit; }
+            get { return areaUnit; }
             set
             {
-                _areaUnit = value;
+                areaUnit = value;
                 RaisePropertyChanged("AreaUnit");
             }
         }
 
         public VolumeUnit VolumeUnit
         {
-            get { return _volumeUnit; }
+            get { return volumeUnit; }
             set
             {
-                _volumeUnit = value;
+                volumeUnit = value;
                 RaisePropertyChanged("VolumeUnit");
             }
         }
@@ -105,21 +100,12 @@ namespace Dynamo
         public string LastUpdateDownloadPath
         {
             get { return lastUpdateDownloadPath; }
-            set
-            {
-                if (!File.Exists(value))
-                {
-                    lastUpdateDownloadPath = "";
-                }
-                else
-                {
-                    lastUpdateDownloadPath = value; 
-                }
-            }
+            set { lastUpdateDownloadPath = !File.Exists(value) ? "" : value; }
         }
 
         public PreferenceSettings()
         {
+            RecentFiles = new List<string>();
             WindowH = 768;
             WindowW = 1024;
             WindowY = 0.0;
@@ -173,12 +159,7 @@ namespace Dynamo
         /// <returns>Whether file is saved or error occurred.</returns>
         public bool Save()
         {
-            if ( DYNAMO_TEST_PATH == null )
-                // Save in User Directory Path
-                return Save(GetSettingsFilePath());
-            else
-                // Support Testing
-                return Save(DYNAMO_TEST_PATH);
+            return Save(DynamoTestPath ?? GetSettingsFilePath());
         }
 
         /// <summary>
@@ -220,12 +201,7 @@ namespace Dynamo
         /// </returns>
         public static PreferenceSettings Load()
         {
-            if ( DYNAMO_TEST_PATH == null )
-                // Save in User Directory Path
-                return Load(GetSettingsFilePath());
-            else
-                // Support Testing
-                return Load(DYNAMO_TEST_PATH);
+            return Load(DynamoTestPath ?? GetSettingsFilePath());
         }
 
         /// <summary>

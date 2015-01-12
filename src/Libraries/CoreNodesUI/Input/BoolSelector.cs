@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
 
@@ -9,8 +8,6 @@ namespace DSCoreNodesUI
 {
     public abstract class Bool : BasicInteractive<bool>
     {
-        protected Bool(WorkspaceModel workspace) : base(workspace) { }
-
         protected override bool DeserializeValue(string val)
         {
             try
@@ -25,7 +22,7 @@ namespace DSCoreNodesUI
 
         protected override string SerializeValue()
         {
-            return this.Value.ToString();
+            return Value.ToString();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -44,18 +41,10 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class BoolSelector : Bool
     {
-        public BoolSelector(WorkspaceModel workspace) : base(workspace)
+        public BoolSelector()
         {
             Value = false;
+            ShouldDisplayPreviewCore = false;
         }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
-        }
-
     }
 }

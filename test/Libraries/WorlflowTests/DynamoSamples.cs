@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
+using System.Linq;
 using Autodesk.DesignScript.Geometry;
 
 namespace Dynamo.Tests
@@ -17,7 +18,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -35,7 +36,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -58,7 +59,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -84,7 +85,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -132,7 +133,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -166,7 +167,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -197,7 +198,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -234,7 +235,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(19, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -275,7 +276,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -302,7 +303,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -331,7 +332,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -358,7 +359,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -403,7 +404,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -424,7 +425,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -462,7 +463,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(35, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(24, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(24, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -487,7 +488,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(32, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(37, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(37, model.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 

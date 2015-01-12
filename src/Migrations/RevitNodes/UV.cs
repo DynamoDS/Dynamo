@@ -82,12 +82,12 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(flattenNode);
 
             // Update connectors
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
-            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
-            PortId newInPort0 = new PortId(codeBlockNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(codeBlockNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(codeBlockNodeId, 2, PortType.INPUT);
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.Input);
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.Input);
+            PortId newInPort0 = new PortId(codeBlockNodeId, 0, PortType.Input);
+            PortId newInPort1 = new PortId(codeBlockNodeId, 1, PortType.Input);
+            PortId newInPort2 = new PortId(codeBlockNodeId, 2, PortType.Input);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
             XmlElement connector2 = data.FindFirstConnector(oldInPort2);
@@ -133,12 +133,12 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(uvNode);
 
             // Update connectors
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
-            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
-            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
-            PortId newInPort0 = new PortId(codeBlockNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(codeBlockNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(codeBlockNodeId, 2, PortType.INPUT);
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.Input);
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.Input);
+            PortId newInPort0 = new PortId(codeBlockNodeId, 0, PortType.Input);
+            PortId newInPort1 = new PortId(codeBlockNodeId, 1, PortType.Input);
+            PortId newInPort2 = new PortId(codeBlockNodeId, 2, PortType.Input);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
             XmlElement connector2 = data.FindFirstConnector(oldInPort2);
