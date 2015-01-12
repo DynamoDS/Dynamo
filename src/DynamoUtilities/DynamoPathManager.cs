@@ -150,7 +150,8 @@ namespace DynamoUtilities
                 Directory.CreateDirectory(CommonDefinitions);
             }
 
-            CommonSamples = Path.Combine(commonData, /*NXLT*/"samples");
+            var UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
+            CommonSamples = Path.Combine(commonData, /*NXLT*/"samples", UICulture);
             if (!Directory.Exists(CommonSamples))
             {
                 Directory.CreateDirectory(CommonSamples);
