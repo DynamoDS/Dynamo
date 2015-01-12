@@ -403,6 +403,8 @@ namespace Dynamo.UI.Controls
         private void LoadMainDynamoWindow(object sender, RoutedEventArgs e)
         {
             var mainDynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            if (mainDynamoWindow == null)
+                return;
 
             // When Dynamo window goes behind another app, the tool-tip should be hidden right 
             // away. We cannot use CloseLibraryToolTipPopup because it only hides the tool-tip 

@@ -263,24 +263,6 @@ namespace Dynamo.Search.SearchElements
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // TODO(Vladimir): function should be moved to ViewModel
-#if false 
-        /// <summary>
-        /// This method is called to obtain the resource name for this NodeSearchElement.
-        /// Typical NodeSearchElement includes 'ColorRange' or 'File.Directory'. Since these 
-        /// elements do not have overloads, the parameter 'disambiguate' is not checked.
-        /// </summary>
-        protected override string GetResourceName(ResourceType resourceType, bool disambiguate = false)
-        {
-            switch (resourceType)
-            {
-                case ResourceType.SmallIcon: return this._fullName;
-                case ResourceType.LargeIcon: return this._fullName;
-            }
-
-            throw new InvalidOperationException("Unhandled resourceType");
-        }
-#endif
         protected virtual List<string> GenerateOutputParameters()
         {
             if (outputParameters == null)
@@ -290,7 +272,6 @@ namespace Dynamo.Search.SearchElements
             }
             return outputParameters;
         }
-
 
         protected virtual List<Tuple<string, string>> GenerateInputParameters()
         {

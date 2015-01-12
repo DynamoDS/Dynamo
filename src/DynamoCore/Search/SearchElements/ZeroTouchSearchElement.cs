@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -23,6 +25,11 @@ namespace Dynamo.Search.SearchElements
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
+
+            if (functionDescriptor.InputParameters != null)
+                inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
+            outputParameters = new List<string>() { functionDescriptor.ReturnType };
+
             foreach (var tag in functionDescriptor.GetSearchTags())
                 SearchKeywords.Add(tag);
         }
