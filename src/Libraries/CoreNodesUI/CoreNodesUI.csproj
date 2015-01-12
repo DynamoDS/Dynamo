@@ -59,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\BaseTypes.cs" />
-    <Compile Include="Input\ISlider.cs" />
+    <Compile Include="Input\SliderBase.cs" />
     <Compile Include="Input\SliderViewModel.cs" />
     <Compile Include="UI\DirectoryNodeViewCustomization.cs" />
     <Compile Include="Input\Double.cs" />

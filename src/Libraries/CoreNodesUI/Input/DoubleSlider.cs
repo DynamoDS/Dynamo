@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 
@@ -8,6 +9,8 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 
+using ProtoCore.AST.AssociativeAST;
+
 namespace DSCoreNodesUI.Input
 {
     [NodeName("Number Slider")]
@@ -16,12 +19,8 @@ namespace DSCoreNodesUI.Input
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [NodeSearchTags(new[] { "double", "number", "float", "integer", "slider" })]
-    public class DoubleSlider : DSCoreNodesUI.Double, ISlider<double>
+    public class DoubleSlider : SliderBase<double>
     {
-        private double max;
-        private double min;
-        private double step;
-
         public DoubleSlider()
         {
             Min = 0;
@@ -31,34 +30,29 @@ namespace DSCoreNodesUI.Input
             ShouldDisplayPreviewCore = false;
         }
 
-        public double Max
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            get { return max; }
-            set
+            var rhs = AstFactory.BuildDoubleNode(Value);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+
+            return new[] { assignment };
+        }
+
+        protected override double DeserializeValue(string val)
+        {
+            try
             {
-                max = value; 
-                RaisePropertyChanged("Max");
+                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return 0;
             }
         }
 
-        public double Min
+        protected override string SerializeValue()
         {
-            get { return min; }
-            set
-            {
-                min = value; 
-                RaisePropertyChanged("Min");
-            }
-        }
-
-        public double Step
-        {
-            get { return step; }
-            set
-            {
-                step = value; 
-                RaisePropertyChanged("Step");
-            }
+            return Value.ToString(CultureInfo.InvariantCulture);
         }
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
@@ -120,8 +114,6 @@ namespace DSCoreNodesUI.Input
         {
             base.SerializeCore(element, context); // Base implementation must be called.
 
-            if (context != SaveContext.Undo) return;
-
             var xmlDocument = element.OwnerDocument;
             XmlElement subNode = xmlDocument.CreateElement("Range");
             subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
@@ -133,8 +125,6 @@ namespace DSCoreNodesUI.Input
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
-
-            if (context != SaveContext.Undo) return;
 
             foreach (XmlNode subNode in element.ChildNodes)
             {

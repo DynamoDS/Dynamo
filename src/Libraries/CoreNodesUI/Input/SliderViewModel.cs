@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Globalization;
 
 using Dynamo.Core;
@@ -15,7 +14,7 @@ namespace DSCoreNodesUI.Input
     /// </summary>
     public class SliderViewModel<T> : NotificationObject where T: IComparable<T>
     {
-        private ISlider<T> model;
+        private SliderBase<T> model;
 
         public string MaxText
         {
@@ -67,7 +66,7 @@ namespace DSCoreNodesUI.Input
             }
         }
 
-        public SliderViewModel(ISlider<T> sliderBaseModel)
+        public SliderViewModel(SliderBase<T> sliderBaseModel)
         {
             model = sliderBaseModel;
             model.PropertyChanged += model_PropertyChanged;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 
@@ -8,6 +9,8 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 
+using ProtoCore.AST.AssociativeAST;
+
 namespace DSCoreNodesUI.Input
 {
     [NodeName("Integer Slider")]
@@ -15,12 +18,8 @@ namespace DSCoreNodesUI.Input
     [NodeDescription("A slider that produces integer values.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    public class IntegerSlider : DSCoreNodesUI.Integer, ISlider<int>
+    public class IntegerSlider : SliderBase<int>
     {
-        private int max;
-        private int min;
-        private int step;
-
         public IntegerSlider()
         {
             RegisterAllPorts();
@@ -30,36 +29,6 @@ namespace DSCoreNodesUI.Input
             Step = 1;
             Value = 0;
             ShouldDisplayPreviewCore = false;
-        }
-
-        public int Max
-        {
-            get { return max; }
-            set
-            {
-                max = value;
-                RaisePropertyChanged("Max");
-            }
-        }
-
-        public int Min
-        {
-            get { return min; }
-            set
-            {
-                min = value;
-                RaisePropertyChanged("Min");
-            }
-        }
-
-        public int Step
-        {
-            get { return step; }
-            set
-            {
-                step = value;
-                RaisePropertyChanged("Step");
-            }
         }
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
@@ -115,13 +84,36 @@ namespace DSCoreNodesUI.Input
             return base.UpdateValueCore(name, value, recorder);
         }
 
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var rhs = AstFactory.BuildIntNode(Value);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+
+            return new[] { assignment };
+        }
+
+        protected override int DeserializeValue(string val)
+        {
+            try
+            {
+                return Convert.ToInt32(val, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        protected override string SerializeValue()
+        {
+            return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context); // Base implementation must be called.
-
-            if (context != SaveContext.Undo) return;
 
             var xmlDocument = element.OwnerDocument;
             XmlElement subNode = xmlDocument.CreateElement("Range");
@@ -134,8 +126,6 @@ namespace DSCoreNodesUI.Input
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
-
-            if (context != SaveContext.Undo) return;
 
             foreach (XmlNode subNode in element.ChildNodes)
             {
