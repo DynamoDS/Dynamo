@@ -1,22 +1,26 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.Search
 {
     public class SearchCategory
     {
-        private readonly ObservableCollection<BrowserItem> classes;
+        // TODO(Vladimir): classes functionality.
+        //private readonly ObservableCollection<NodeCategoryViewModel> classes;
         private readonly List<SearchMemberGroup> memberGroups;
 
         public string Name { get; private set; }
 
-        public ObservableCollection<BrowserItem> Classes
-        {
-            get { return classes; }
-        }
+        // TODO(Vladimir): classes functionality.
+        //                 All functionality marked as 'classes functionality'
+        //                 Should be implemented as classes are shown in search results.
+        //public ObservableCollection<NodeCategoryViewModel> Classes
+        //{
+        //    get { return classes; }
+        //}
 
         public IEnumerable<SearchMemberGroup> MemberGroups
         {
@@ -26,14 +30,13 @@ namespace Dynamo.Search
         internal SearchCategory(string name)
         {
             Name = name;
-            classes = new ObservableCollection<BrowserItem>();
+            // TODO(Vladimir): classes functionality.
+            //classes = new ObservableCollection<NodeCategoryViewModel>();
             memberGroups = new List<SearchMemberGroup>();
         }
 
         internal void AddMemberToGroup(NodeSearchElement memberNode)
         {
-            // TODO(Vladimir): take a look.
-            /*
             string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
                 memberNode.Group);
             string shortenedCategory = SearchModel.ShortenCategoryName(categoryWithGroup);
@@ -45,36 +48,33 @@ namespace Dynamo.Search
                 memberGroups.Add(group);
             }
 
-            group.AddMember(memberNode);
-             */
+            group.AddMember(new NodeSearchElementViewModel(memberNode));
         }
 
-        internal void AddClassToGroup(BrowserInternalElement memberNode)
+        // TODO(Vladimir): classes functionality.
+        internal void AddClassToGroup(NodeCategoryViewModel memberNode)
         {
             // TODO(Vladimir): The following limit of displaying only two classes are 
             // temporary, it should be updated whenever the design intent has been finalized.
 
-            const int maxClassesCount = 2;
-            if (classes.Count >= maxClassesCount)
-                return;
+            //const int maxClassesCount = 2;
+            //if (classes.Count >= maxClassesCount)
+            //    return;
 
             // Parent should be of 'BrowserInternalElement' type or derived.
-            // Root category can't be added to classes list.
-            var parent = memberNode.Parent as BrowserInternalElement;
-            if (parent == null)
-                return;
-
-            if (!classes.Any(cl => cl.Name == parent.Name))
-                classes.Add(parent);
+            // Root category can't be added to classes list. 
+            // TODO(Vladimir): Implement the logic when classes are shown in search results.
         }
 
-        public bool ContainsClassOrMember(BrowserInternalElement member)
+        public bool ContainsClassOrMember(NodeSearchElement member)
         {
-            // Search among classes.
-            if (Classes.Any(cl => cl.Equals(member))) return true;
+            var memberViewModel = new NodeSearchElementViewModel(member);
+
+            // TODO(Vladimir): classes functionality.
+            //if (Classes.Any(cl => cl.Equals(member))) return true;
 
             // Search among member groups.
-            return MemberGroups.Any(group => group.ContainsMember(member));
+            return MemberGroups.Any(group => group.ContainsMember(memberViewModel));
         }
 
         private string AddGroupToCategory(string category, SearchElementGroup group)
@@ -94,7 +94,8 @@ namespace Dynamo.Search
 
         public void SortChildren()
         {
-            Classes.ToList().ForEach(x => x.RecursivelySort());
+            // TODO(Vladimir): classes functionality.
+            //Classes.ToList().ForEach(x => x.RecursivelySort());
             MemberGroups.ToList().ForEach(x => x.Sort());
         }
     }

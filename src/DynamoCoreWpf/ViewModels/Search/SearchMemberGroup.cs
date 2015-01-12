@@ -2,12 +2,13 @@
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.UI;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.Search
 {
     public class SearchMemberGroup : NotificationObject
     {
-        private List<BrowserInternalElement> members;
+        private List<NodeSearchElementViewModel> members;
 
         public string FullyQualifiedName { get; private set; }
 
@@ -39,27 +40,23 @@ namespace Dynamo.Search
             }
         }
 
-        public IEnumerable<BrowserInternalElement> Members
+        public IEnumerable<NodeSearchElementViewModel> Members
         {
             get
             {
-                // TODO(Vladimir): take a look.
-                /*
                 if (!showAllMembers)
                     return members;
 
-                if (members.Count == 0) return new List<BrowserInternalElement>();
+                if (members.Count == 0) return new List<NodeSearchElementViewModel>();
 
-                var firstMember = members[0] as NodeSearchElement;
+                //var firstMember = members[0] as NodeSearchElement;
 
-                // Parent items can contain 3 type of groups all together: create, action and query.
-                // We have to show only those elements, that are in the same group.
-                var siblings = firstMember.Parent.Items.OfType<BrowserInternalElement>().
-                        Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group);
+                //// Parent items can contain 3 type of groups all together: create, action and query.
+                //// We have to show only those elements, that are in the same group.
+                //var siblings = firstMember.Parent.Items.OfType<BrowserInternalElement>().
+                //        Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group);
 
-                return siblings;
-                 */
-                return null;
+                return members;
             }
         }
 
@@ -69,17 +66,17 @@ namespace Dynamo.Search
         internal SearchMemberGroup(string fullyQualifiedName)
         {
             FullyQualifiedName = fullyQualifiedName;
-            members = new List<BrowserInternalElement>();
+            members = new List<NodeSearchElementViewModel>();
         }
 
         //some UI properties which control style of one MemberGroup
 
-        internal void AddMember(BrowserInternalElement node)
+        internal void AddMember(NodeSearchElementViewModel node)
         {
             members.Add(node);
         }
 
-        public bool ContainsMember(BrowserInternalElement member)
+        public bool ContainsMember(NodeSearchElementViewModel member)
         {
             return Members.Contains(member);
         }

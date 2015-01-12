@@ -167,20 +167,11 @@ namespace Dynamo.ViewModels
 
         public Typeface RegularTypeface { get; private set; }
 
-        // TODO(Vladimir)
-        //public ObservableCollection<BrowserRootElementViewModel> BrowserRootCategories
-        //{
-        //    get;
-        //    private set;
-        //}
-
-        // TODO(Vladimir)
-        //public ObservableCollection<SearchCategory> SearchRootCategories
-        //{
-        //    get { return Model.SearchRootCategories; }
-        //}
-
-        public ObservableCollection<NodeCategoryViewModel> SearchRootCategories { get; private set; }
+        private ObservableCollection<SearchCategory> searchRootCategories;
+        public ObservableCollection<SearchCategory> SearchRootCategories
+        {
+            get { return searchRootCategories; }
+        }
 
         public ObservableCollection<NodeCategoryViewModel> LibraryRootCategories
         {
@@ -191,7 +182,7 @@ namespace Dynamo.ViewModels
 
         public ObservableCollection<NodeCategoryViewModel> BrowserRootCategories
         {
-            get { return string.IsNullOrWhiteSpace(SearchText) ? LibraryRootCategories : SearchRootCategories; }
+            get { return LibraryRootCategories; }
         }
 
         public NodeSearchModel Model { get; private set; }
@@ -213,9 +204,7 @@ namespace Dynamo.ViewModels
         private void InitializeCore()
         {
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>();
-            SearchRootCategories = new ObservableCollection<NodeCategoryViewModel>();
-
-            //BrowserRootCategories = new ObservableCollection<BrowserRootElementViewModel>();
+            searchRootCategories = new ObservableCollection<SearchCategory>();
 
             Visible = false;
             searchText = "";
@@ -289,7 +278,7 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in tree)
             {
-                item.FullCategoryName = string.IsNullOrEmpty(path) ? item.Name : 
+                item.FullCategoryName = string.IsNullOrEmpty(path) ? item.Name :
                     path + Configurations.CategoryDelimiter + item.Name;
 
                 DefineCategoriesFullCategoryName(item.SubCategories, item.FullCategoryName);
@@ -392,22 +381,20 @@ namespace Dynamo.ViewModels
             if (string.IsNullOrEmpty(query))
                 return;
 
+            var foundNodes = Search(query);
+            RaisePropertyChanged("SearchRootCategories");
+            //SearchRootCategories.Clear();
 
-            foreach (var category in SearchRootCategories)
-                category.DisposeTree();
+            //if (string.IsNullOrEmpty(query))
+            //    return;
 
-            SearchRootCategories.Clear();
+            //var result =
+            //    Model.Search(query).Where(r => r.IsVisibleInSearch).Take(MaxNumSearchResults).ToList();
 
-            if (string.IsNullOrEmpty(query))
-                return;
-
-            var result =
-                Model.Search(query).Where(r => r.IsVisibleInSearch).Take(MaxNumSearchResults).ToList();
-
-            // Add top result
-            var firstRes = result.FirstOrDefault();
-            if (firstRes == null)
-                return; //No results
+            //// Add top result
+            //var firstRes = result.FirstOrDefault();
+            //if (firstRes == null)
+            //    return; //No results
 
             // TODO(Vladimir): master implementation
 #if false
@@ -457,6 +444,64 @@ namespace Dynamo.ViewModels
             // It is populated for making connected tests as successful.
             SearchResults = new ObservableCollection<SearchElementBaseViewModel>(foundNodes.Select(node => new NodeSearchElementViewModel(node as NodeSearchElement)));
 #endif
+        }
+
+
+        /// <summary>
+        ///     Performs a search using the given string as query.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
+        internal IEnumerable<NodeSearchElementViewModel> Search(string search)
+        {
+            if (string.IsNullOrEmpty(search))
+            {
+                return SearchResults;
+            }
+
+            return Search(search, MaxNumSearchResults);
+        }
+
+        private IEnumerable<NodeSearchElementViewModel> Search(string search, int maxNumSearchResults)
+        {
+            var foundNodes = Model.Search(search).Take(15);
+
+            ClearSearchCategories();
+            PopulateSearchCategories(foundNodes);
+
+            return foundNodes.Select(MakeNodeSearchElementVM);
+        }
+
+        private void PopulateSearchCategories(IEnumerable<NodeSearchElement> nodes)
+        {
+            foreach (NodeSearchElement node in nodes)
+            {
+                var rootCategoryName = NodeSearchElement.SplitCategoryName(node.FullCategoryName).FirstOrDefault();
+
+                var category = searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
+                if (category == null)
+                {
+                    category = new SearchCategory(rootCategoryName);
+                    searchRootCategories.Add(category);
+                }
+
+                category.AddMemberToGroup(node);
+            }
+
+            // Order found categories by name.
+            searchRootCategories = new ObservableCollection<SearchCategory>(searchRootCategories.OrderBy(x => x.Name));
+
+            SortSearchCategoriesChildren();
+        }
+
+        private void SortSearchCategoriesChildren()
+        {
+            searchRootCategories.ToList().ForEach(x => x.SortChildren());
+        }
+
+        private void ClearSearchCategories()
+        {
+            searchRootCategories.Clear();
         }
 
         private static IEnumerable<NodeSearchElementViewModel> GetVisibleSearchResults(NodeCategoryViewModel category)

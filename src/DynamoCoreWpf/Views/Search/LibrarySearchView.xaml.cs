@@ -6,6 +6,7 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.UI.Views
 {
@@ -275,7 +276,7 @@ namespace Dynamo.UI.Views
             if ((e.Key != Key.Down) && (e.Key != Key.Up))
                 return;
 
-            var selectedMember = HighlightedItem.DataContext as BrowserInternalElement;
+            var selectedMember = HighlightedItem.DataContext as NodeSearchElementViewModel;
             var memberGroups = (sender as ListBox).Items;
             var memberGroupListBox = sender as ListBox;
 

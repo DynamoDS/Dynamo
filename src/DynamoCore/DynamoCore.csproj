@@ -182,8 +182,6 @@ limitations under the License.
     <Compile Include="PackageManager\PackageUtilities.cs" />
     <Compile Include="Search\Legacy\BrowserItem.cs" />
     <Compile Include="Search\Legacy\CategoryBuilder.cs" />
-    <Compile Include="Search\SearchCategory.cs" />
-    <Compile Include="Search\SearchMemberGroup.cs" />
     <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
