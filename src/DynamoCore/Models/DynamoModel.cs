@@ -94,7 +94,7 @@ namespace Dynamo.Models
 
         internal void OnGetExecutingNodes()
         {
-          ((HomeWorkspaceModel)CurrentWorkspace).GetExecutingNodes(Logger,ShowNodeExecution);
+          ((HomeWorkspaceModel)CurrentWorkspace).GetExecutingNodes(Logger);
         }
 
         #endregion
@@ -283,7 +283,7 @@ namespace Dynamo.Models
         public readonly List<WorkspaceModel> Workspaces =
             new List<WorkspaceModel>();
 
-        private bool showNodeExecution;
+        public static bool showNodeExecution;
 
         public bool ShowNodeExecution
         {
@@ -294,7 +294,7 @@ namespace Dynamo.Models
                 OnGetExecutingNodes();
             }
         }
-
+       
         #endregion
 
         #region initialization and disposal

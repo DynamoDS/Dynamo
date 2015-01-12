@@ -139,6 +139,9 @@ namespace Dynamo.Models
             {
                 DynamoModel.OnRequestDispatcherBeginInvoke(Run);
             }
+
+            //Find the next executing nodes
+            GetExecutingNodes(null);
         }
 
         /// <summary>
@@ -224,7 +227,13 @@ namespace Dynamo.Models
 
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
                 modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+                if (modifiedNode.State != ElementState.Error && modifiedNode.State != ElementState.Warning)
+                {
+                    modifiedNode.IsNodeExecuted = false;
+                }
+            }
 
             foreach (var n in Nodes)
                 n.ForceReExecuteOfNode = false;
@@ -295,10 +304,11 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        internal void GetExecutingNodes(DynamoLogger logger, bool showNodeExecution)
+        internal void GetExecutingNodes(DynamoLogger logger)
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
-            //The Graph is executed and Show node execution is checked on the Debug menu
+            bool showNodeExecution = DynamoModel.showNodeExecution;
+           //The Graph is executed and Show node execution is checked on the Debug menu
             if (graphExecuted && showNodeExecution)
             {
                 if (task.Initialize(EngineController, this, logger) != null)

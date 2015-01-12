@@ -599,13 +599,6 @@ namespace Dynamo.Models
         /// </summary>
         public void SetNickNameFromAttribute()
         {
-
-            //if (IsReportingModifications && Workspace != null)
-            //{
-            //    Workspace.FindNextExecutingNodes();
-            //    Workspace.Modified();
-            //}
-
             var elNameAttrib = GetType().GetCustomAttributes<NodeNameAttribute>(false).FirstOrDefault();
             if (elNameAttrib != null)
                 NickName = elNameAttrib.Name;
@@ -1439,31 +1432,9 @@ namespace Dynamo.Models
         #endregion
 
         #region Dirty Management
-
-
         //TODO: Refactor Property into Automatic with private(?) setter
         //TODO: Add RequestRecalc() method to replace setter --steve
 
-        private bool dirty = true;
-
-        /// <summary>
-        ///     Does this Element need to be regenerated? Setting this to true will trigger a modification event
-        ///     for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
-        ///     trigger an evaluation.
-        /// </summary>
-        public bool RequiresRecalc 
-        {
-            get { return dirty; }
-            set
-            {
-                dirty = value;
-                if (dirty)
-                {
-                    //ReportModification();                    
-                }
-            } 
-        }
-       
         private bool isNodeExecuted = true;
 
         /// <summary>
