@@ -318,14 +318,8 @@
                                 </Setter.Value>
                             </Setter>
 
-                            <!--Make class details not focusable-->
-                            <Setter Property="Focusable">
-                                <Setter.Value>
-                                    <Binding RelativeSource="{RelativeSource Self}"
-                                             Path="DataContext"
-                                             Converter="{StaticResource ElementTypeToBoolConverter}" />
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Focusable"
+                                    Value="False" />
 
                             <Style.Triggers>
                                 <Trigger Property="IsSelected"

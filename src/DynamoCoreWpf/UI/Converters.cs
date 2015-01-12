@@ -10,19 +10,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
-using Dynamo.UI;
 using Dynamo.Models;
-
-using Dynamo.ViewModels;
 using Dynamo.PackageManager;
-using System.Windows.Controls;
-
-using Dynamo.Wpf.ViewModels;
-
-using DynamoUnits;
-
-using Dynamo.UI.Controls;
-using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
