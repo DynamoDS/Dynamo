@@ -698,17 +698,7 @@ namespace Dynamo.Search
 
                 parent.AppendChild(element);
             }
-        }
-
-        internal void ChangeCategoryExpandState(string categoryName, bool isExpanded)
-        {
-            BrowserItem category = BrowserCategoriesBuilder.GetCategoryByName(categoryName);
-            if (category == null)
-                category = AddonCategoriesBuilder.GetCategoryByName(categoryName);
-
-            if (category != null && category.IsExpanded != isExpanded)
-                category.IsExpanded = isExpanded;
-        }                
+        }                               
 #endif
     }
 

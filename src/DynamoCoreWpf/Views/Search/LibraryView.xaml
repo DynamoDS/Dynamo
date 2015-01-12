@@ -246,9 +246,9 @@
                                        Grid.Row="2"
                                        Grid.Column="1"
                                        FontSize="13">
-                                <!--Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"-->
                                 <TextBlock.Text>
                                     <Binding Path="Name"
+                                             Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
                                              ConverterParameter="ClassButton" />
                                 </TextBlock.Text>
                             </TextBlock>

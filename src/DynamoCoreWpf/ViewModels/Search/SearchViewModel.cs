@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
@@ -96,8 +97,8 @@ namespace Dynamo.ViewModels
         /// <value>
         ///     This is used for aligment search icon and text.
         /// </value>
-        private System.Windows.HorizontalAlignment searchIconAlignment;
-        public System.Windows.HorizontalAlignment SearchIconAlignment
+        private HorizontalAlignment searchIconAlignment;
+        public HorizontalAlignment SearchIconAlignment
         {
             get { return searchIconAlignment; }
             set
@@ -128,7 +129,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                // TODO(Vladimir)
+                // TODO(Vladimir): uncomment when Addons are shown.
                 return false;//AddonRootCategories.Any(cat => cat.Visibility);
             }
         }
@@ -223,6 +224,8 @@ namespace Dynamo.ViewModels
 
             InsertClassesIntoTree(LibraryRootCategories);
             DefineCategoriesFullCategoryName(LibraryRootCategories, "");
+
+            ChangeCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
 
         private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -250,7 +253,7 @@ namespace Dynamo.ViewModels
                             IsExpanded = expanded
                         });
             tempRoot.Dispose();
-            return result;
+            return result.OrderBy(cat => cat.Name);
         }
 
         private void InsertClassesIntoTree(ObservableCollection<NodeCategoryViewModel> tree)
@@ -280,6 +283,13 @@ namespace Dynamo.ViewModels
 
                 DefineCategoriesFullCategoryName(item.SubCategories, item.FullCategoryName);
             }
+        }
+
+        private void ChangeCategoryExpandState(string categoryName, bool isExpanded)
+        {
+            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
+            if (category != null && category.IsExpanded != isExpanded)
+                category.IsExpanded = isExpanded;
         }
 
         private void RemoveEntry(NodeSearchElement entry)
