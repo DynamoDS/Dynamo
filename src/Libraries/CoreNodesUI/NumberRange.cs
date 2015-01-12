@@ -1,10 +1,8 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DSCoreNodesUI
 {
@@ -14,8 +12,7 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class NumberRange : NodeModel
     {
-        public NumberRange(WorkspaceModel workspace)
-            : base(workspace)
+        public NumberRange()
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at"));
             InPortData.Add(new PortData("end", "Number to end the sequence at"));
@@ -51,8 +48,7 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class NumberSeq : NodeModel
     {
-        public NumberSeq(WorkspaceModel workspace)
-            : base(workspace)
+        public NumberSeq()
         {
             InPortData.Add(new PortData("start", "Number to start the sequence at"));
             InPortData.Add(new PortData("amount", "Amount of numbers in the sequence"));

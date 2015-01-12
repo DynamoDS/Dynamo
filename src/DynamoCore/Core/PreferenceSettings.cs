@@ -100,17 +100,7 @@ namespace Dynamo
         public string LastUpdateDownloadPath
         {
             get { return lastUpdateDownloadPath; }
-            set
-            {
-                if (!File.Exists(value))
-                {
-                    lastUpdateDownloadPath = "";
-                }
-                else
-                {
-                    lastUpdateDownloadPath = value; 
-                }
-            }
+            set { lastUpdateDownloadPath = !File.Exists(value) ? "" : value; }
         }
 
         public PreferenceSettings()
@@ -169,12 +159,7 @@ namespace Dynamo
         /// <returns>Whether file is saved or error occurred.</returns>
         public bool Save()
         {
-            if ( DynamoTestPath == null )
-                // Save in User Directory Path
-                return Save(GetSettingsFilePath());
-            else
-                // Support Testing
-                return Save(DynamoTestPath);
+            return Save(DynamoTestPath ?? GetSettingsFilePath());
         }
 
         /// <summary>
@@ -216,12 +201,7 @@ namespace Dynamo
         /// </returns>
         public static PreferenceSettings Load()
         {
-            if ( DynamoTestPath == null )
-                // Save in User Directory Path
-                return Load(GetSettingsFilePath());
-            else
-                // Support Testing
-                return Load(DynamoTestPath);
+            return Load(DynamoTestPath ?? GetSettingsFilePath());
         }
 
         /// <summary>

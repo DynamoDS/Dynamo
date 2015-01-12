@@ -30,7 +30,7 @@ namespace Dynamo.Nodes
                                            IValueConverter numberDisplayConverter)
         {
             //add a slider control to the input grid of the control
-            var tbSlider = new DynamoSlider(nodeModel)
+            var tbSlider = new DynamoSlider(nodeModel, nodeUI.ViewModel.WorkspaceViewModel.Model.UndoRecorder)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,

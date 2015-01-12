@@ -4,6 +4,7 @@ using System.Xml;
 using Autodesk.DesignScript.Runtime;
 
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 
 namespace Dynamo.Nodes
@@ -15,13 +16,15 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class IntegerSlider : DSCoreNodesUI.Integer
     {
-        public IntegerSlider(WorkspaceModel workspace) : base(workspace)
+        public IntegerSlider()
         {
             RegisterAllPorts();
 
             Min = 0;
             Max = 100;
             Value = 0;
+
+            ShouldDisplayPreviewCore = false;
         }
 
         //Value property has to be changed for over flow condition
@@ -69,7 +72,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
             var converter = new IntegerDisplay();
             switch (name)
@@ -93,26 +96,32 @@ namespace Dynamo.Nodes
                     return true;
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(name, value, recorder);
         }
+        
+        #region Serialization/Deserialization Methods
 
+<<<<<<< HEAD
 
         #region Load/Save
 
         protected override void SaveNode(
             XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+=======
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+>>>>>>> f8be37756a6f9a1412ce19b1b141e3935df6efad
         {
-            base.SaveNode(xmlDoc, nodeElement, context);
+            base.SerializeCore(element, context); // Base implementation must be called.
 
-            XmlElement outEl = xmlDoc.CreateElement("Range");
+            XmlElement outEl = element.OwnerDocument.CreateElement("Range");
             outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
             outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-            nodeElement.AppendChild(outEl);
+            element.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.LoadNode(nodeElement);
+            base.DeserializeCore(nodeElement, context); // Base implementation must be called.
 
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
@@ -141,6 +150,7 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+<<<<<<< HEAD
 
         #region Serialization/Deserialization Methods
 
@@ -198,5 +208,7 @@ namespace Dynamo.Nodes
             }
         }
 
+=======
+>>>>>>> f8be37756a6f9a1412ce19b1b141e3935df6efad
     }
 }

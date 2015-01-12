@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 
 using Dynamo.Controls;
-using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 
@@ -73,7 +72,7 @@ namespace Dynamo.Wpf
 
             nodeView.MainContextMenu.Items.Add(rawDataMenuItem);
 
-            watchNodeModel.Workspace.DynamoModel.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             watchNodeModel.Root.PropertyChanged += Root_PropertyChanged;
 
             DataBridge.Instance.RegisterCallback(watchNodeModel.GUID.ToString(), EvaluationCompleted);
@@ -140,7 +139,7 @@ namespace Dynamo.Wpf
 
         public void Dispose()
         {
-            watchNodeModel.Workspace.DynamoModel.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+            dynamoViewModel.Model.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             watchNodeModel.Root.PropertyChanged -= Root_PropertyChanged;
         }
 

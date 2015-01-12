@@ -6,9 +6,9 @@ namespace Dynamo.Core.Threading
     class DynamoSchedulerThread : ISchedulerThread
     {
         private Thread internalThread;
-        private DynamoScheduler scheduler;
+        private IScheduler scheduler;
 
-        public void Initialize(DynamoScheduler owningScheduler)
+        public void Initialize(IScheduler owningScheduler)
         {
             scheduler = owningScheduler;
             internalThread = new Thread(ThreadProc)
