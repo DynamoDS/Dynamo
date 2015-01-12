@@ -75,6 +75,10 @@ namespace DSCoreNodesUI.Input
                         Max = Min;
                         Value = Max;
                     }
+                    if (Min > Value)
+                    {
+                        Value = Min;
+                    }
                     return true; // UpdateValueCore handled.
                 case "Max":
                 case "MaxText":
@@ -83,6 +87,10 @@ namespace DSCoreNodesUI.Input
                     {
                         Min = Max;
                         Value = Min;
+                    }
+                    if (Max < Value)
+                    {
+                        Value = Max;
                     }
                     return true; // UpdateValueCore handled.
                 case "Value":

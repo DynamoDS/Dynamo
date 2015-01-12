@@ -1,9 +1,10 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Shapes;
 
-using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Controls
 {
@@ -13,12 +14,14 @@ namespace Dynamo.UI.Controls
     public partial class DynamoSlider : UserControl
     {
         readonly NodeModel nodeModel;
-
-        public DynamoSlider(NodeModel model, NodeView nodeUI)
+        private IViewModelView<NodeViewModel> ui;
+ 
+        public DynamoSlider(NodeModel model, IViewModelView<NodeViewModel> nodeUI)
         {
             InitializeComponent();
 
             nodeModel = model;
+            ui = nodeUI;
 
             slider.PreviewMouseUp += delegate
             {
@@ -31,7 +34,8 @@ namespace Dynamo.UI.Controls
 
         private void Slider_OnDragStarted(object sender, DragStartedEventArgs e)
         {
-            //WorkspaceModel.RecordModelForModification(nodeModel, recorder);
+            var undoRecorder = ui.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+            WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
         }
 
         private void Slider_OnDragCompleted(object sender, DragCompletedEventArgs e)
@@ -41,9 +45,10 @@ namespace Dynamo.UI.Controls
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            //base.OnPreviewMouseLeftButtonDown(e);
-            //if (e.OriginalSource is Rectangle)
-            //    WorkspaceModel.RecordModelForModification(nodeModel, recorder);
+            var undoRecorder = ui.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+            base.OnPreviewMouseLeftButtonDown(e);
+            if (e.OriginalSource is Rectangle)
+                WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
         }
         
         #endregion
