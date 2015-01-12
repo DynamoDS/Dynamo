@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
+using DSNodeServices;
+
 class TracedHogManager
 {
     private static int hogID = 0;
@@ -69,7 +71,7 @@ public class HogID : ISerializable
 
 
 [DSNodeServices.RegisterForTrace]
-public class TracedHog
+public class TracedHog : IDisposable
 {
     //TODO(lukechurch): This really should have been moved into the attribute already
     private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
@@ -92,6 +94,13 @@ public class TracedHog
         this.ID = id;
 
         TracedHogManager.RegisterHogForID(id, this);
+
+        WorkspaceEvents.WorkspaceOpened += WorkspaceEvents_WorkspaceOpened;
+    }
+
+    void WorkspaceEvents_WorkspaceOpened(WorkspaceOpenedEventArgs args)
+    {
+        // What does a hog do when a workspace is opened?
     }
 
     public static TracedHog ByPoint(double x, double y)
@@ -120,4 +129,9 @@ public class TracedHog
         return String.Format("{0}: ({1}, {2})", ID, X, Y);
     }
 
+    public void Dispose()
+    {
+        // Unhook the workspace event handler.
+        WorkspaceEvents.WorkspaceOpened -= WorkspaceEvents_WorkspaceOpened;
+    }
 }

@@ -788,6 +788,7 @@ namespace Dynamo.Models
                     {
                         AddWorkspace(ws);
                         CurrentWorkspace = ws;
+                        WorkspaceEvents.OnWorkspaceOpened(ws.Name);
                         return;
                     }
                 }
