@@ -11,7 +11,7 @@ namespace Dynamo.Models
     {
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
-
+        private bool graphExecuted;
         public bool RunEnabled
         {
             get { return runEnabled; }
@@ -258,6 +258,7 @@ namespace Dynamo.Models
         /// </summary>
         public void Run()
         {
+            graphExecuted = true;
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
@@ -292,6 +293,47 @@ namespace Dynamo.Models
         {
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
+        }
+
+        internal void GetExecutingNodes(DynamoLogger logger, bool showNodeExecution)
+        {
+            var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
+            //The Graph is executed and Show node execution is checked on the Debug menu
+            if (graphExecuted && showNodeExecution)
+            {
+                if (task.Initialize(EngineController, this, logger) != null)
+                {
+                    task.Completed += OnPreviewGraphCompleted;
+                    scheduler.ScheduleForExecution(task);
+                }
+            }
+            //Show node exection is checked but the graph has not RUN
+            else
+            {
+                foreach (var nodeModel in Nodes)
+                {
+                    nodeModel.IsNodeExecuted = showNodeExecution;
+                }
+            }
+        }
+
+        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
+        {
+            var updateTask = asyncTask as PreviewGraphAsyncTask;
+            if (updateTask != null)
+            {
+                var nodeGuids = updateTask.previewGraphData;
+                foreach (var nodeModel in Nodes)
+                {
+                    foreach (Guid t in nodeGuids)
+                    {
+                        if (nodeModel.GUID == t)
+                        {
+                            nodeModel.IsNodeExecuted = true;
+                        }
+                    }
+                }
+            }            
         }
 
         #endregion

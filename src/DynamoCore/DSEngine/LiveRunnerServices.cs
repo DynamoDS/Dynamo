@@ -76,10 +76,10 @@ namespace Dynamo.DSEngine
         /// Preview graph with graph sync data.
         /// </summary>
         /// <param name="graphData"></param>
-        public List<Guid> PreviewGraph(GraphSyncData graphData)
+        public List<Guid> PreviewGraph(GraphSyncData graphData, bool verboseLogging)
         {
-            if (dynamoModel.DebugSettings.VerboseLogging)
-                dynamoModel.Logger.Log("LRS.PreviewGraph: " + graphData);
+            if (verboseLogging)
+               Log("LRS.PreviewGraph: " + graphData);
 
             return liveRunner.PreviewGraph(graphData);
         }
