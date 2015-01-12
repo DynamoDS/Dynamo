@@ -554,6 +554,8 @@ namespace Dynamo.Models
         {
             node.AstUpdated += OnAstUpdated;
             node.ConnectorAdded += OnConnectorAdded;
+            node.UpdateShowNodeExecution += OnUpdateShowNodeExecution;
+            node.OnUpdateShowNodeExecution(node);
         }
 
         /// <summary>
@@ -562,6 +564,11 @@ namespace Dynamo.Models
         public virtual void OnAstUpdated()
         {
 
+        }
+
+        public virtual void OnUpdateShowNodeExecution(NodeModel node)
+        {
+            
         }
 
         /// <summary>
@@ -581,6 +588,7 @@ namespace Dynamo.Models
         {
             model.ConnectorAdded -= OnConnectorAdded;
             model.AstUpdated -= OnAstUpdated;
+            model.UpdateShowNodeExecution -= OnUpdateShowNodeExecution;
             OnNodeRemoved(model);
         }
 
@@ -640,12 +648,6 @@ namespace Dynamo.Models
             RaisePropertyChanged("Position");
         }
 
-        public void FindNextExecutingNodes()
-        {
-            //DynamoModel.
-        }
-
-      
         #endregion
 
         #region private/internal methods

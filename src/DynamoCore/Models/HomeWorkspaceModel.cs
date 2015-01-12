@@ -153,6 +153,11 @@ namespace Dynamo.Models
             PreloadedTraceData = null;
         }
 
+        public override void OnUpdateShowNodeExecution(NodeModel node)
+        {
+            node.IsNodeExecuted = DynamoModel.showNodeExecution;
+        }
+
         #region evaluation
         /// <summary>
         /// Call this method to reset the virtual machine, avoiding a race 

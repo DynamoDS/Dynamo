@@ -570,9 +570,7 @@ namespace Dynamo.Models
 
             IsSelected = false;
             State = ElementState.Dead;
-            ArgumentLacing = LacingStrategy.Disabled;
-            //IsNodeExecuted = workspaceModel.DynamoModel.ShowNodeExecution;
-
+            ArgumentLacing = LacingStrategy.Disabled;         
             //IsReportingModifications = true;
         }
 
@@ -615,6 +613,13 @@ namespace Dynamo.Models
         {
             var handler = AstUpdated;
             if (handler != null) handler();
+        }
+
+        public event Action<NodeModel> UpdateShowNodeExecution;
+        public void OnUpdateShowNodeExecution(NodeModel node)
+        {
+            var handler = UpdateShowNodeExecution;
+            if (handler != null) handler(node);
         }
 
         #endregion
