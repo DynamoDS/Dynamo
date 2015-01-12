@@ -26,7 +26,6 @@ namespace Dynamo.Models
     {
         #region private members
 
-        //private bool forceReExec;
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
@@ -543,8 +542,7 @@ namespace Dynamo.Models
             IsVisible = true;
             IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
-            //forceReExec = true;
-            ExecutionHintFlag = ExecutionHint.GenerateAst;
+            executionHint = ExecutionHint.GenerateAst;
 
             PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
             {
@@ -1440,19 +1438,6 @@ namespace Dynamo.Models
         ///     This property forces all AST nodes that generated from this node
         ///     to be executed, even there is no change in AST nodes.
         /// </summary>
-        //public virtual bool ForceReExecuteOfNode
-        //{
-        //    get
-        //    {
-        //        return forceReExec;
-        //    }
-        //    set
-        //    {
-        //        forceReExec = value;
-        //        RaisePropertyChanged("ForceReExecuteOfNode");
-        //    }
-        //}
-
         [Flags]
         public enum ExecutionHint
         {

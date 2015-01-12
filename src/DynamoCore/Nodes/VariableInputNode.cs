@@ -155,7 +155,7 @@ namespace Dynamo.Nodes
             if (count > 0)
                 model.InPortData.RemoveAt(count - 1);
 
-            //MarkNodeForUpdate();
+            MarkNodeForUpdate();
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace Dynamo.Nodes
             var idx = GetInputIndexFromModel();
             model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
 
-            //MarkNodeForUpdate();
+            MarkNodeForUpdate();
         }
 
         /// <summary>

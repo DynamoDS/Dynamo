@@ -13,13 +13,6 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel
     {
-        //public override bool ForceReExecuteOfNode
-        //{
-        //    get
-        //    {
-        //        return true;
-        //    }
-        //}
         public override ExecutionHint ExecutionHintFlag
         {
             get

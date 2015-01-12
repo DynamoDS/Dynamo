@@ -201,7 +201,7 @@ namespace Dynamo.DSEngine
                     var scopedNode = node as ScopedNodeModel;
                     if (scopedNode != null)
                     {
-                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.ForceExecute));
+                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.GenerateAst));
                         if (dirtyInScopeNodes.Any())
                         {
                             scopedNode.ExecutionHintFlag |= NodeModel.ExecutionHint.GenerateAst;
@@ -217,7 +217,7 @@ namespace Dynamo.DSEngine
                     }
                 }
 
-                sortedNodes = sortedNodes.Where(n => n.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.ForceExecute));
+                sortedNodes = sortedNodes.Where(n => n.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.GenerateAst));
                 
             }
 
