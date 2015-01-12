@@ -1,16 +1,12 @@
 ﻿using Dynamo.DSEngine.CodeCompletion;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
-using ProtoCore.Mirror;
+using Microsoft.Practices.Prism.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 
 namespace Dynamo.UI
 {
@@ -217,13 +213,11 @@ namespace Dynamo.UI
     /// This class represents the individual item in the list of 
     /// function overload items in the function signature insight window
     /// </summary>
-    sealed class CodeBlockInsightItem : INotifyPropertyChanged
+    sealed class CodeBlockInsightItem : NotificationObject
     {
         public readonly string Signature;
 
         public readonly string MethodName;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public CodeBlockInsightItem(CompletionData completionData)
         {
@@ -239,7 +233,7 @@ namespace Dynamo.UI
                 if (header == null)
                 {
                     header = Signature;
-                    OnPropertyChanged("Header");
+                    RaisePropertyChanged("Header");
                 }
                 return header;
             }
@@ -255,12 +249,6 @@ namespace Dynamo.UI
             {
                 return content;
             }
-        }
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }

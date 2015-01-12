@@ -76,12 +76,11 @@
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
     <Compile Include="UI\FrozenResources.cs" />
-    <Compile Include="UI\VisualCodeBlockUtils.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
-    <Compile Include="Commands.cs" />
+    <Compile Include="Utilities\DelegateCommand.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
@@ -156,89 +155,89 @@
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
-    <Compile Include="ViewModels\BrowserInternalElementViewModel.cs" />
-    <Compile Include="ViewModels\BrowserItemViewModel.cs" />
-    <Compile Include="ViewModels\BrowserRootElementViewModel.cs" />
-    <Compile Include="ViewModels\NodeSearchElementViewModel.cs" />
-    <Compile Include="ViewModels\StateMachine.cs" />
+    <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
+    <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
+    <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
+    <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
+    <Compile Include="ViewModels\Core\StateMachine.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
-    <Compile Include="Views\AboutWindow.xaml.cs">
+    <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CodeBlockCompletionData.cs" />
-    <Compile Include="Views\CodeBlockEditor.xaml.cs">
+    <Compile Include="Views\CodeBlocks\CodeBlockCompletionData.cs" />
+    <Compile Include="Views\CodeBlocks\CodeBlockEditor.xaml.cs">
       <DependentUpon>CodeBlockEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CodeBlockMethodInsightWindow.cs" />
-    <Compile Include="Views\CodeBlockEditorUtils.cs" />
-    <Compile Include="Views\DynamoView.xaml.cs">
+    <Compile Include="Views\CodeBlocks\CodeBlockMethodInsightWindow.cs" />
+    <Compile Include="Views\CodeBlocks\CodeBlockEditorUtils.cs" />
+    <Compile Include="Views\Core\DynamoView.xaml.cs">
       <DependentUpon>DynamoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\InfoBubbleView.xaml.cs">
+    <Compile Include="Views\Preview\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\InstalledPackagesView.xaml.cs">
+    <Compile Include="Views\PackageManager\InstalledPackagesView.xaml.cs">
       <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\LibraryContainerView.xaml.cs">
+    <Compile Include="Views\Search\LibraryContainerView.xaml.cs">
       <DependentUpon>LibraryContainerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\NodeView.xaml.cs">
+    <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\NoteView.xaml.cs">
+    <Compile Include="Views\Core\NoteView.xaml.cs">
       <DependentUpon>NoteView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PackageManagerSearchView.xaml.cs">
+    <Compile Include="Views\PackageManager\PackageManagerSearchView.xaml.cs">
       <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PreviewControl.xaml.cs">
+    <Compile Include="Views\Preview\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PublishPackageView.xaml.cs">
+    <Compile Include="Views\PackageManager\PublishPackageView.xaml.cs">
       <DependentUpon>PublishPackageView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Watch3DView.xaml.cs">
+    <Compile Include="Views\Preview\Watch3DView.xaml.cs">
       <DependentUpon>Watch3DView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WatchTree.xaml.cs">
+    <Compile Include="Views\Preview\WatchTree.xaml.cs">
       <DependentUpon>WatchTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WorkspaceView.xaml.cs">
+    <Compile Include="Views\Core\WorkspaceView.xaml.cs">
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="Controls\ZoomBorder.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\Extensions.cs" />
-    <Compile Include="ViewModels\ConnectorViewModel.cs" />
-    <Compile Include="ViewModels\DynamoViewModel.cs" />
-    <Compile Include="ViewModels\DynamoViewModelDelegateCommands.cs" />
-    <Compile Include="ViewModels\DynamoViewModelDelegates.cs" />
-    <Compile Include="ViewModels\DynamoViewModelEventArgs.cs" />
-    <Compile Include="ViewModels\DynamoViewModelEvents.cs" />
-    <Compile Include="ViewModels\EndlessGridViewModel.cs" />
-    <Compile Include="ViewModels\InfoBubbleViewModel.cs" />
-    <Compile Include="ViewModels\InstalledPackagesViewModel.cs" />
-    <Compile Include="ViewModels\IWatchViewModel.cs" />
-    <Compile Include="ViewModels\NodeViewModel.cs" />
-    <Compile Include="ViewModels\NoteViewModel.cs" />
-    <Compile Include="ViewModels\PackageItemInternalViewModel.cs" />
-    <Compile Include="ViewModels\PackageItemLeafViewModel.cs" />
-    <Compile Include="ViewModels\PackageItemRootViewModel.cs" />
-    <Compile Include="ViewModels\PackageItemViewModel.cs" />
-    <Compile Include="ViewModels\PackageManagerClientViewModel.cs" />
-    <Compile Include="ViewModels\PackageManagerSearchElementViewModel.cs" />
-    <Compile Include="ViewModels\PackageManagerSearchViewModel.cs" />
-    <Compile Include="ViewModels\PackageViewModel.cs" />
-    <Compile Include="ViewModels\PortViewModel.cs" />
-    <Compile Include="ViewModels\PublishPackageViewModel.cs" />
-    <Compile Include="ViewModels\SearchViewModel.cs" />
+    <Compile Include="ViewModels\Core\ConnectorViewModel.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModel.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelDelegateCommands.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelDelegates.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelEventArgs.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelEvents.cs" />
+    <Compile Include="ViewModels\Core\EndlessGridViewModel.cs" />
+    <Compile Include="ViewModels\Preview\InfoBubbleViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
+    <Compile Include="ViewModels\Preview\IWatchViewModel.cs" />
+    <Compile Include="ViewModels\Core\NodeViewModel.cs" />
+    <Compile Include="ViewModels\Core\NoteViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemInternalViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemLeafViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemRootViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerClientViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerSearchElementViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerSearchViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageViewModel.cs" />
+    <Compile Include="ViewModels\Core\PortViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PublishPackageViewModel.cs" />
+    <Compile Include="ViewModels\Search\SearchViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
-    <Compile Include="ViewModels\WatchViewModel.cs" />
-    <Compile Include="ViewModels\WorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
+    <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
     <Compile Include="VisualizationManager\octree\FastSerialization.cs" />
     <Compile Include="VisualizationManager\octree\IOctree.cs" />
     <Compile Include="VisualizationManager\octree\Octree.cs" />
@@ -866,78 +865,78 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\AboutWindow.xaml">
+    <Page Include="Views\About\AboutWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\CodeBlockEditor.xaml">
+    <Page Include="Views\CodeBlocks\CodeBlockEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\DynamoView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Views\InfoBubbleView.xaml">
+    <Page Include="Views\Core\DynamoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\InstalledPackagesView.xaml">
+    <Page Include="Views\Preview\InfoBubbleView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\LibraryContainerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\NodeView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Views\NoteView.xaml">
+    <Page Include="Views\PackageManager\InstalledPackagesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\PackageManagerSearchView.xaml">
+    <Page Include="Views\Search\LibraryContainerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Core\NodeView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Core\NoteView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\PreviewControl.xaml">
+    <Page Include="Views\PackageManager\PackageManagerSearchView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\PublishPackageView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Watch3DView.xaml">
+    <Page Include="Views\Preview\PreviewControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\WatchTree.xaml">
+    <Page Include="Views\PackageManager\PublishPackageView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Preview\Watch3DView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\WorkspaceView.xaml">
+    <Page Include="Views\Preview\WatchTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Core\WorkspaceView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

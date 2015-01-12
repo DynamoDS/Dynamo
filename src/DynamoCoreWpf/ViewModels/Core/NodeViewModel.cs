@@ -751,7 +751,7 @@ namespace Dynamo.ViewModels
 
         private void ValidateConnections(object parameter)
         {
-            DynamoViewModel.Model.OnRequestDispatcherBeginInvoke(nodeLogic.ValidateConnections);
+            DynamoModel.OnRequestDispatcherBeginInvoke(nodeLogic.ValidateConnections);
         }
 
         private bool CanValidateConnections(object parameter)
