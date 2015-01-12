@@ -59,10 +59,10 @@ namespace Dynamo.UI.Views
 
         private void ExecuteSearchElement(ListBoxItem listBoxItem)
         {
-            var searchElement = listBoxItem.DataContext as SearchElementBase;
+            var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
             if (searchElement != null)
             {
-                searchElement.Execute();
+                searchElement.ClickedCommand.Execute(null);
                 libraryToolTipPopup.SetDataContext(null, true);
             }
         }
@@ -71,7 +71,7 @@ namespace Dynamo.UI.Views
 
         #region ClassButton
 
-        private void OnClassButtonCollapse(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnClassButtonCollapse(object sender, MouseButtonEventArgs e)
         {
             var classButton = sender as ListViewItem;
             if ((classButton == null) || !classButton.IsSelected) return;
@@ -94,7 +94,7 @@ namespace Dynamo.UI.Views
 
         #endregion
 
-        private void OnPreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
@@ -142,7 +142,7 @@ namespace Dynamo.UI.Views
             ShowTooltip(sender);
         }
 
-        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        private void OnPopupMouseLeave(object sender, MouseEventArgs e)
         {
             libraryToolTipPopup.SetDataContext(null);
         }
@@ -208,9 +208,9 @@ namespace Dynamo.UI.Views
             if (target == null)
             {
                 // During search, backing data collections typically get updated frequently.
-                // This may result in corresponding BrowserInternalElement being removed or 
+                // This may result in corresponding NodeSearchElementViewModel being removed or 
                 // updated. When that happens, the visual element 'HighlightedItem' that gets 
-                // bound to the original BrowserInternalElement then becomes DisconnectedItem.
+                // bound to the original NodeSearchElementViewModel then becomes DisconnectedItem.
                 // In such cases, we will reset the HighlightedItem to 'topResultListBox'.
                 HighlightedItem = GetSelectedListBoxItem(topResultListBox);
                 if (HighlightedItem == null) return;
@@ -240,14 +240,14 @@ namespace Dynamo.UI.Views
         // This event is used to move inside members.
         private void OnMembersListBoxKeyDown(object sender, KeyEventArgs e)
         {
-            var selectedMember = HighlightedItem.DataContext as BrowserInternalElement;
+            var selectedMember = HighlightedItem.DataContext as NodeSearchElementViewModel;
             var membersListBox = sender as ListBox;
             var members = membersListBox.Items;
 
             int selectedMemberIndex = 0;
             for (int i = 0; i < members.Count; i++)
             {
-                var member = members[i] as BrowserInternalElement;
+                var member = members[i] as NodeSearchElementViewModel;
                 if (member.Equals(selectedMember))
                 {
                     selectedMemberIndex = i;
@@ -341,7 +341,7 @@ namespace Dynamo.UI.Views
             var searchCategoryElement = sender as FrameworkElement;
 
             // selectedMember is method button.
-            if (selectedMember.DataContext is NodeSearchElement)
+            if (selectedMember.DataContext is NodeSearchElementViewModel)
             {
                 var searchCategoryContent = searchCategoryElement.DataContext as SearchCategory;
 
@@ -371,7 +371,7 @@ namespace Dynamo.UI.Views
             }
 
             // selectedMember is class button.
-            if (selectedMember.DataContext is BrowserInternalElement)
+            if (selectedMember.DataContext is NodeCategoryViewModel)
             {
                 // We are at the first row of class list. User presses up, we have to move to previous category.
                 // We handle it further.
@@ -418,19 +418,18 @@ namespace Dynamo.UI.Views
 
             // Selected member(in this scenario) can be only first/last member button or class button at the first row.
             var selectedMember = HighlightedItem;
-            var selectedMemberContext = selectedMember.DataContext as BrowserInternalElement;
+            var selectedMemberContext = selectedMember.DataContext as NodeSearchElementViewModel;
             var categoryListView = sender as ListView;
 
             int categoryIndex = 0;
             for (int i = 0; i < categoryListView.Items.Count; i++)
             {
-                //TODO(Vladimir): take a look.
-                /*var category = categoryListView.Items[i] as SearchCategory;
-                if (category.ContainsClassOrMember(selectedMemberContext))
+                var category = categoryListView.Items[i] as SearchCategory;
+                if (category.ContainsClassOrMember(selectedMemberContext.Model))
                 {
                     categoryIndex = i;
                     break;
-                }*/
+                }
             }
 
             if (e.Key == Key.Down)

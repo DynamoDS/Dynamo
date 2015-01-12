@@ -79,8 +79,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        //TODO(Vladimir): uncomments when SearchMemberGroup is reverted.
-#if false
         private SearchMemberGroup topResult;
         public SearchMemberGroup TopResult
         {
@@ -91,7 +89,6 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("TopResult");
             }
         }
-#endif
 
         /// <summary>
         ///     SearchIconAlignment property
@@ -382,6 +379,8 @@ namespace Dynamo.ViewModels
                 return;
 
             var foundNodes = Search(query);
+
+            UpdateTopResult();
             RaisePropertyChanged("SearchRootCategories");
             //SearchRootCategories.Clear();
 
@@ -431,8 +430,7 @@ namespace Dynamo.ViewModels
             //sw.Start();
 
             var foundNodes = this.Model.Search(query);
-            this.UpdateTopResult();
-
+            
             //sw.Stop();
 
             //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
@@ -566,9 +564,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateTopResult()
         {
-            // TODO(Vladimir): take a look.
-#if false
-            if (!Model.SearchRootCategories.Any())
+            if (!SearchRootCategories.Any())
             {
                 TopResult = null;
 
@@ -576,14 +572,12 @@ namespace Dynamo.ViewModels
             }
 
             // If SearchRootCategories has at least 1 element, it has at least 1 member. 
-            var firstMemberGroup = Model.SearchRootCategories.First().
-                MemberGroups.First();
+            var firstMemberGroup = SearchRootCategories.First().MemberGroups.First();
 
             var topMemberGroup = new SearchMemberGroup(firstMemberGroup.FullyQualifiedName);
             topMemberGroup.AddMember(firstMemberGroup.Members.First());
 
             TopResult = topMemberGroup;
-#endif
         }
 
         #endregion

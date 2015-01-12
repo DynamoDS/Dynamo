@@ -78,7 +78,7 @@ namespace Dynamo.Search
 
         public bool ContainsMember(NodeSearchElementViewModel member)
         {
-            return Members.Contains(member);
+            return Members.Any(m => m.Model.FullName == member.Model.FullName);
         }
 
         public void ExpandAllMembers()
