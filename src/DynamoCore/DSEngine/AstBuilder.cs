@@ -201,23 +201,23 @@ namespace Dynamo.DSEngine
                     var scopedNode = node as ScopedNodeModel;
                     if (scopedNode != null)
                     {
-                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.GenerateAst));
+                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.ExecutionHint.HasFlag(NodeModel.ExecutionHints.GenerateAst));
                         if (dirtyInScopeNodes.Any())
                         {
-                            scopedNode.ExecutionHintFlag |= NodeModel.ExecutionHint.GenerateAst;
+                            scopedNode.MarkAsDirty(forceExecute:false);
                         }   
                         else
                         {
-                            scopedNode.ExecutionHintFlag &= ~NodeModel.ExecutionHint.GenerateAst;
+                            scopedNode.ClearDirtyFlag();
                         }
                         foreach (var dirtyNode in dirtyInScopeNodes)
                         {
-                            dirtyNode.ExecutionHintFlag &= ~NodeModel.ExecutionHint.GenerateAst;
+                            dirtyNode.ClearDirtyFlag();
                         }
                     }
                 }
 
-                sortedNodes = sortedNodes.Where(n => n.ExecutionHintFlag.HasFlag(NodeModel.ExecutionHint.GenerateAst));
+                sortedNodes = sortedNodes.Where(n => n.ExecutionHint.HasFlag(NodeModel.ExecutionHints.GenerateAst));
                 
             }
 
@@ -228,7 +228,7 @@ namespace Dynamo.DSEngine
                 _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging);
 
                 if (isDeltaExecution)
-                    node.ExecutionHintFlag &= ~NodeModel.ExecutionHint.GenerateAst;
+                    node.ClearDirtyFlag();
             }
 
             return result;

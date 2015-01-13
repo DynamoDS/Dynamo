@@ -13,11 +13,11 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel
     {
-        public override ExecutionHint ExecutionHintFlag
+        public override ExecutionHints ExecutionHint
         {
             get
             {
-                return ExecutionHint.ForceExecute;
+                return ExecutionHints.ForceExecute;
             }
         }
 

@@ -50,7 +50,7 @@ namespace Dynamo.Nodes
                 {
                     selectionResults = value.ToList();
                     
-                    ExecutionHintFlag |= ExecutionHint.ForceExecute;
+                    MarkAsDirty(forceExecute:true);
                     OnAstUpdated();
                 }
                 else

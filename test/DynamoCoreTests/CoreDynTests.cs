@@ -444,7 +444,7 @@ namespace Dynamo.Tests
             // Pretend we never ran
             foreach (var node in model.CurrentWorkspace.Nodes)
             {
-                node.ExecutionHintFlag |= NodeModel.ExecutionHint.ForceExecute;
+                node.MarkAsDirty(forceExecute:true);
             }
               
 

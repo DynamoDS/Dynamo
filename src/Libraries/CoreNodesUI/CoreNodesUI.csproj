@@ -81,7 +81,6 @@
     <Compile Include="UI\ElementSelectionControl.xaml.cs">
       <DependentUpon>ElementSelectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\DropDownNodeViewCustomization.cs" />
     <Compile Include="UI\DummyNodeNodeViewCustomization.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="Formula.cs" />

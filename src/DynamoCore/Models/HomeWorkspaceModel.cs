@@ -219,7 +219,7 @@ namespace Dynamo.Models
 
             foreach (var n in Nodes)
             {
-                n.ExecutionHintFlag &= ~NodeModel.ExecutionHint.ForceExecute;
+                n.ClearDirtyFlag();
             }
               
 

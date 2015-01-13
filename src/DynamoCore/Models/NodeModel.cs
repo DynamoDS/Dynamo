@@ -542,7 +542,7 @@ namespace Dynamo.Models
             IsVisible = true;
             IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
-            executionHint = ExecutionHint.GenerateAst;
+            executionHint = ExecutionHints.GenerateAst;
 
             PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
             {
@@ -610,7 +610,7 @@ namespace Dynamo.Models
         public event Action AstUpdated;
         public virtual void OnAstUpdated()
         {
-            ExecutionHintFlag |= ExecutionHint.GenerateAst;
+            MarkAsDirty(forceExecute:false);
             var handler = AstUpdated;
             if (handler != null) handler();
         }
@@ -1439,24 +1439,33 @@ namespace Dynamo.Models
         ///     to be executed, even there is no change in AST nodes.
         /// </summary>
         [Flags]
-        public enum ExecutionHint
+        public enum ExecutionHints
         {
             None = 0,
             GenerateAst = 1,
             ForceExecute = 3
         }
 
-        private ExecutionHint executionHint = ExecutionHint.None;
-        public virtual ExecutionHint ExecutionHintFlag
+        private ExecutionHints executionHint = ExecutionHints.None;
+        public virtual ExecutionHints ExecutionHint
         {
             get
             {
                 return executionHint;
             }
-            set
-            {
-                executionHint = value;
-            }
+        }
+
+        public void MarkAsDirty(bool forceExecute)
+        {
+            executionHint = ExecutionHints.GenerateAst;
+
+            if(forceExecute)
+                executionHint |= ExecutionHints.ForceExecute;
+        }
+
+        public void ClearDirtyFlag()
+        {
+            executionHint = ExecutionHints.None;
         }
 
         #endregion
