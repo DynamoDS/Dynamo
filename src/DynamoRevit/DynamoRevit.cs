@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 using Dynamo.Applications;
@@ -86,6 +87,8 @@ namespace Dynamo.Applications
      Regeneration(RegenerationOption.Manual)]
     public class DynamoRevit : IExternalCommand
     {
+        private static List<Action> actions = new List<Action>();
+
         private static ExternalCommandData extCommandData;
         private static DynamoViewModel dynamoViewModel;
         private static RevitDynamoModel revitDynamoModel;
@@ -114,6 +117,8 @@ namespace Dynamo.Applications
 
                 TryOpenWorkspaceInCommandData(extCommandData);
                 SubscribeApplicationEvents(extCommandData);
+
+                extCommandData.Application.Idling += Application_Idling;
 #else
 
                 IdlePromise.ExecuteOnIdleAsync(
@@ -147,6 +152,22 @@ namespace Dynamo.Applications
             }
 
             return Result.Succeeded;
+        }
+
+        private static void Application_Idling(object sender, IdlingEventArgs e)
+        {
+            Action action = null;
+            lock (actions)
+            {
+                if (!actions.Any())
+                    return;
+
+                action = actions[0];
+                actions.RemoveAt(0);
+            }
+
+            if (action != null)
+                action();
         }
 
         public static RevitDynamoModel RevitDynamoModel
@@ -214,8 +235,13 @@ namespace Dynamo.Applications
 
             revitDynamoModel.ShutdownStarted += (drm) =>
             {
-                var uiApplication = DocumentManager.Instance.CurrentUIApplication;
-                uiApplication.Idling += DeleteKeeperElementOnce;
+                lock (actions)
+                {
+                    DynamoRevit.actions.Add(DeleteKeeperElement);
+                }
+
+                // var uiApplication = DocumentManager.Instance.CurrentUIApplication;
+                // uiApplication.Idling += DeleteKeeperElementOnce;
             };
 
 #else

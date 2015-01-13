@@ -7,6 +7,7 @@ namespace RevitServices.Threading
 {
     public class RevitSchedulerThread : ISchedulerThread
     {
+        private bool shutdownRequested;
         private DynamoScheduler scheduler;
         private readonly UIApplication revitApplication;
 
@@ -23,7 +24,8 @@ namespace RevitServices.Threading
 
         public void Shutdown()
         {
-            revitApplication.Idling -= OnRevitIdle; // Stop getting called.
+            shutdownRequested = true;
+            // revitApplication.Idling -= OnRevitIdle; // Stop getting called.
         }
 
         /// <summary>
@@ -36,6 +38,12 @@ namespace RevitServices.Threading
         /// 
         private void OnRevitIdle(object sender, IdlingEventArgs e)
         {
+            if (shutdownRequested)
+            {
+                revitApplication.Idling -= OnRevitIdle; // Stop getting called.
+                return;
+            }
+
             const bool waitIfTaskQueueIsEmpty = false;
             while (scheduler.ProcessNextTask(waitIfTaskQueueIsEmpty))
             {
