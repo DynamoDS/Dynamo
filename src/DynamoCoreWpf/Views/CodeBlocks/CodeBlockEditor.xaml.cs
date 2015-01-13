@@ -429,9 +429,16 @@ namespace Dynamo.UI.Controls
 
         private void CommitChanges(UndoRedoRecorder recorder)
         {
-            nodeViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.UpdateModelValueCommand(nodeModel.GUID,
-                    /*NXLT*/"Code", InnerTextEditor.Text));
+            // Code block editor can lose focus in many scenarios (e.g. switching 
+            // of tabs or application), if there has not been any changes, do not
+            // commit the change.
+            // 
+            if (!nodeModel.Code.Equals(InnerTextEditor.Text))
+            {
+                nodeViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(nodeModel.GUID,
+                        /*NXLT*/"Code", InnerTextEditor.Text));
+            }
 
             if (createdForNewCodeBlock)
             {
