@@ -196,29 +196,7 @@ namespace Dynamo.DSEngine
 
             if (isDeltaExecution)
             {
-                foreach (var node in sortedNodes)
-                {
-                    var scopedNode = node as ScopedNodeModel;
-                    if (scopedNode != null)
-                    {
-                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.ExecutionHint.HasFlag(NodeModel.ExecutionHints.GenerateAst));
-                        if (dirtyInScopeNodes.Any())
-                        {
-                            scopedNode.MarkAsDirty(forceExecute:false);
-                        }   
-                        else
-                        {
-                            scopedNode.ClearDirtyFlag();
-                        }
-                        foreach (var dirtyNode in dirtyInScopeNodes)
-                        {
-                            dirtyNode.ClearDirtyFlag();
-                        }
-                    }
-                }
-
                 sortedNodes = sortedNodes.Where(n => n.ExecutionHint.HasFlag(NodeModel.ExecutionHints.GenerateAst));
-                
             }
 
             var result = new List<AssociativeNode>();
