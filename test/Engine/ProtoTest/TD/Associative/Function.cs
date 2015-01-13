@@ -605,7 +605,7 @@ x = (a != null) ? 1 : 0;
             string code = @"    
 def f(a = 1)
 {
-    return = a
+    return = a;
 }
 x = f();
 ";
@@ -619,7 +619,7 @@ x = f();
             string code = @"    
 def f(a = true)
 {
-    return = a
+    return = a;
 }
 x = f();
 ";
