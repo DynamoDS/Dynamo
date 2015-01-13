@@ -370,8 +370,9 @@
                    StrokeThickness="8"
                    StrokeLineJoin="Round"
                    IsHitTestVisible="False"                   
-                   Canvas.ZIndex="50"
-                   Margin="-10">
+                   Canvas.ZIndex="100"
+                   Opacity="2"
+                   Margin="-8">
             <Rectangle.Visibility>
                 <Binding Path="IsNodeExecuted"
                          UpdateSourceTrigger="PropertyChanged"

@@ -554,9 +554,8 @@ namespace Dynamo.Models
         private void RegisterNode(NodeModel node)
         {
             node.AstUpdated += OnAstUpdated;
-            node.ConnectorAdded += OnConnectorAdded;
-            node.UpdateShowNodeExecution += OnUpdateShowNodeExecution;
-            node.OnUpdateShowNodeExecution(node);
+            node.ConnectorAdded += OnConnectorAdded;           
+            GetShowNodeExecution(node);
         }
 
         /// <summary>
@@ -567,7 +566,7 @@ namespace Dynamo.Models
 
         }
 
-        public virtual void OnUpdateShowNodeExecution(NodeModel node)
+        public virtual void GetShowNodeExecution(NodeModel node)
         {
             
         }
@@ -588,8 +587,7 @@ namespace Dynamo.Models
         protected void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
-            model.AstUpdated -= OnAstUpdated;
-            model.UpdateShowNodeExecution -= OnUpdateShowNodeExecution;
+            model.AstUpdated -= OnAstUpdated;           
             OnNodeRemoved(model);
         }
 

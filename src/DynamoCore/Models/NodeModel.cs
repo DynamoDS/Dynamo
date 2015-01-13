@@ -613,15 +613,7 @@ namespace Dynamo.Models
         {
             var handler = AstUpdated;
             if (handler != null) handler();
-        }
-
-        public event Action<NodeModel> UpdateShowNodeExecution;
-        public void OnUpdateShowNodeExecution(NodeModel node)
-        {
-            var handler = UpdateShowNodeExecution;
-            if (handler != null) handler(node);
-        }
-
+        }       
         #endregion
 
         #region ProtoAST Compilation

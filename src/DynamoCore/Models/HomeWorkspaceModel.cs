@@ -153,7 +153,7 @@ namespace Dynamo.Models
             PreloadedTraceData = null;
         }
 
-        public override void OnUpdateShowNodeExecution(NodeModel node)
+        public override void GetShowNodeExecution(NodeModel node)
         {
             node.IsNodeExecuted = DynamoModel.showNodeExecution;
         }
