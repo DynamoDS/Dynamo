@@ -332,7 +332,17 @@ namespace Dynamo.ViewModels
             {
                 var next = nameStack.Pop();
                 var categories = target.SubCategories;
-                var newTarget = categories.FirstOrDefault(c => c.Name == next);
+                NodeCategoryViewModel targetClassSuccessor = null;
+                var newTarget = categories.FirstOrDefault(c =>
+                {
+                    if (c is ClassesNodeCategoryViewModel)
+                    {
+                        targetClassSuccessor = c.SubCategories.FirstOrDefault(c2 => c2.Name == next);
+                        return targetClassSuccessor != null;
+                    }
+
+                    return c.Name == next;
+                });
                 if (newTarget == default(NodeCategoryViewModel))
                 {
                     newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
@@ -340,7 +350,10 @@ namespace Dynamo.ViewModels
                     PlaceInNewCategory(entry, newTarget, nameStack);
                     return;
                 }
-                target = newTarget;
+                if (targetClassSuccessor != null)
+                    target = targetClassSuccessor;
+                else
+                    target = newTarget;
                 isRoot = false;
             }
             target.Entries.Add(entry);
@@ -350,8 +363,11 @@ namespace Dynamo.ViewModels
             NodeSearchElementViewModel entry, NodeCategoryViewModel target,
             IEnumerable<string> categoryNames)
         {
-            var newTargets =
-                categoryNames.Select(name => new NodeCategoryViewModel(name));
+            //var path = "";
+            var newTargets = categoryNames.Select(name => new NodeCategoryViewModel(name)).ToList();
+
+            int indexToInsertClass = newTargets.Count - 1 > 0 ? newTargets.Count - 1 : 0;
+            newTargets.Insert(indexToInsertClass, new ClassesNodeCategoryViewModel());
 
             foreach (var newTarget in newTargets)
             {
