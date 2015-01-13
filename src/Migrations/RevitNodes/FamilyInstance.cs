@@ -41,14 +41,14 @@ namespace Dynamo.Nodes
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
             //create and reconnect the connecters
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
 
-            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.Input);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
+            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.Input);
+            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.Input);
 
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort0);
@@ -76,18 +76,18 @@ namespace Dynamo.Nodes
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
             //create and reconnect the connecters
-            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
 
-            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.Input);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.Input);
             XmlElement connector2 = data.FindFirstConnector(oldInPort2);
 
-            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
-            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
+            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.Input);
+            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.Input);
+            PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.Input);
 
             data.ReconnectToPort(connector0, newInPort1);
             data.ReconnectToPort(connector1, newInPort0);

@@ -35,7 +35,7 @@ namespace DSCoreNodesUI
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
-                    model.RequiresRecalc = true;
+                    model.OnAstUpdated();
             };
 
             combo.DropDownClosed += delegate

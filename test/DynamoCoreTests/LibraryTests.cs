@@ -4,6 +4,8 @@ using System.Linq;
 using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -56,15 +58,11 @@ namespace Dynamo.Tests
 
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
-            var nodeGuid = Guid.NewGuid();
-            var command = new DynCmd.CreateNodeCommand(
-                nodeGuid, "Code Block", 0, 0, true, false);
+            var cbn = new CodeBlockNodeModel(ViewModel.Model.LibraryServices);
 
+            var command = new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false);
             ViewModel.ExecuteCommand(command);
-            var workspace = ViewModel.Model.CurrentWorkspace;
-            var cbn = workspace.NodeFromWorkspace<CodeBlockNodeModel>(nodeGuid);
 
-            Assert.IsNotNull(cbn);
             return cbn;
         }
 
@@ -87,7 +85,7 @@ namespace Dynamo.Tests
             // at some point, so if it's already thre, don't try and reload it
             if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                libraryServices.ImportLibrary(libraryPath);
                 Assert.IsTrue(LibraryLoaded);
             }
 
@@ -124,7 +122,7 @@ namespace Dynamo.Tests
 
             File.Copy(libraryPath, tempLibraryPath);
 
-            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(tempLibraryPath);
 
             Assert.IsTrue(LibraryLoaded);
         }
@@ -157,7 +155,7 @@ namespace Dynamo.Tests
 
             // The proper behavior is for ImportLibrary to ignore the migrations file if it's badly formatted
 
-            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(tempLibraryPath);
 
             Assert.IsTrue(LibraryLoaded);
         }
@@ -191,7 +189,7 @@ namespace Dynamo.Tests
 
             // The proper behavior is for ImportLibrary to ignore the migrations file if it has errors
 
-            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(tempLibraryPath);
 
             Assert.IsTrue(LibraryLoaded);
         }
@@ -208,7 +206,7 @@ namespace Dynamo.Tests
             // at some point, so if it's already thre, don't try and reload it
             if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                libraryServices.ImportLibrary(libraryPath);
                 Assert.IsTrue(LibraryLoaded);
             }
 
@@ -217,21 +215,19 @@ namespace Dynamo.Tests
                                             .SelectMany(x => x.Functions)
                                             .Where(y => y.ClassName.Contains("FFITarget.ClassWithRefParams"));
 
-            Assert.IsTrue(functions.Select(x => x.Name).Contains("ClassWithRefParams"));
+            Assert.IsTrue(functions.Select(x => x.FunctionName).Contains("ClassWithRefParams"));
 
             foreach (var function in functions)
             {
-                string functionName = function.Name;
+                string functionName = function.FunctionName;
                 Assert.IsTrue(functionName != "MethodWithRefParameter" && functionName != "MethodWithOutParameter" && functionName != "MethodWithRefOutParameters");
             }
-
         }
 
         [Test]
         [Category("UnitTests")]
         public void LibraryLoaded_PrecompileCBN_ShowConflictWarnings()
         {
-
             var model = ViewModel.Model;
 
             // Create the initial code block node.
@@ -239,10 +235,10 @@ namespace Dynamo.Tests
             UpdateCodeBlockNodeContent(codeBlockNodeOne, "Point.ByCoordinates();");
 
             // We should have one code block node by now.
-            Assert.AreEqual(1, model.Nodes.Count());
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
 
             // Run 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             string libraryPath = "FFITarget.dll";
 
@@ -252,9 +248,8 @@ namespace Dynamo.Tests
             // at some point, so if it's already thre, don't try and reload it
             if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                libraryServices.ImportLibrary(libraryPath);
             }
-
 
             // Assert that once a library with classname conflicts is loaded the CBN
             // displays the warning
@@ -274,7 +269,7 @@ namespace Dynamo.Tests
             // at some point, so if it's already here, don't try and reload it
             if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                libraryServices.ImportLibrary(libraryPath);
                 Assert.IsTrue(LibraryLoaded);
             }
 
@@ -291,18 +286,16 @@ namespace Dynamo.Tests
                 {
                     // Obsolete, not visible and "GetType" functions are not presented in UI tree.
                     // So they are should not be presented in dump.
-                    if (function.IsObsolete || !function.IsVisibleInLibrary || function.Name.Contains("GetType"))
+                    if (function.IsObsolete || !function.IsVisibleInLibrary || function.FunctionName.Contains("GetType"))
                         continue;
 
                     node = document.SelectSingleNode(string.Format(
-                    "//Dynamo.Search.SearchElements.DSFunctionNodeSearchElement[FullCategoryName='{0}' and Name='{1}']", function.Category, function.Name));
+                        "//{0}[FullCategoryName='{1}' and Name='{2}']", 
+                        typeof(ZeroTouchSearchElement).FullName,
+                        function.Category, function.FunctionName));
                     Assert.IsNotNull(node);
 
                     // 'FullCategoryName' is already checked.
-
-                    subNode = node.SelectSingleNode("FullName");
-                    Assert.IsNotNull(subNode);
-
                     // 'Name' is already checked.
 
                     subNode = node.SelectSingleNode("Description");

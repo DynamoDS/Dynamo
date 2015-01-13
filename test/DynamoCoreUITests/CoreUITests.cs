@@ -9,6 +9,7 @@ using SystemTestServices;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.ViewModels;
@@ -417,14 +418,8 @@ namespace DynamoCoreUITests
         private void CreateNodeOnCurrentWorkspace()
         {
             // Create number node
-            ViewModel.Model.CurrentWorkspace.AddNode(Guid.NewGuid(), "Number", 0, 0, true, false);
-            var numNode = ViewModel.Model.Nodes[0];
-
-            // Add to current workspace
-            ViewModel.CurrentSpaceViewModel.Model.Nodes.Add(numNode);
-            int nodeIndex = ViewModel.CurrentSpaceViewModel.Model.Nodes.Count - 1;
-            ViewModel.CurrentSpaceViewModel.Model.Nodes[nodeIndex].X = 100;
-            ViewModel.CurrentSpaceViewModel.Model.Nodes[nodeIndex].Y = 100;
+            var numNode = new DoubleInput { X = 100, Y = 100 };
+            ViewModel.Model.CurrentWorkspace.AddNode(numNode, true);
         }
 
         #endregion
@@ -547,7 +542,7 @@ namespace DynamoCoreUITests
             }
 
             // Setup Temp PreferenceSetting Location for testing
-            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()

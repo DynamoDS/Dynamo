@@ -1,6 +1,4 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 using Dynamo.DSEngine;
@@ -33,7 +31,7 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal CompileCustomNodeAsyncTask(DynamoScheduler scheduler)
+        internal CompileCustomNodeAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }
@@ -91,5 +89,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif

@@ -77,9 +77,9 @@ namespace Dynamo.TestInfrastructure
             var att = (MutationTestAttribute)Attribute.GetCustomAttribute(mutator.GetType(), 
                 typeof(MutationTestAttribute));
 
-            var nodes = dynamoViewModel.Model.Nodes;
+            var nodes = dynamoViewModel.Model.CurrentWorkspace.Nodes.ToList();
             if (type != typeof(NodeModel))
-                nodes = dynamoViewModel.Model.Nodes.Where(t => t.GetType() == type).ToList();
+                nodes = dynamoViewModel.Model.CurrentWorkspace.Nodes.Where(t => t.GetType() == type).ToList();
 
             if (nodes.Count == 0)
                 return;
@@ -102,7 +102,7 @@ namespace Dynamo.TestInfrastructure
 
                         dynamoViewModel.ExecuteCommand(runCancel);
                     }));
-                    while (dynamoViewModel.Model.Runner.Running)
+                    while (!dynamoViewModel.RunEnabled)
                     {
                         Thread.Sleep(10);
                     }
@@ -110,7 +110,10 @@ namespace Dynamo.TestInfrastructure
                     writer.WriteLine("### - Eval complete");
                     writer.Flush();
 
-                    passed = mutator.RunTest(node, writer);
+                    var engineController =
+                        dynamoViewModel.EngineController;
+
+                    passed = mutator.RunTest(node, engineController, writer);
 
                     if (!passed)
                     {
