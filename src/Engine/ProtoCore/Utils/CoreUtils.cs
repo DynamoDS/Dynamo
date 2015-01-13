@@ -862,12 +862,11 @@ namespace ProtoCore.Utils
             {
                 InlineConditionalNode inlineNode = node as InlineConditionalNode;
                 AssociativeNode condition = inlineNode.ConditionExpression;
-                AssociativeNode trueBody = inlineNode.ConditionExpression;
-                AssociativeNode falseBody = inlineNode.ConditionExpression;
+                AssociativeNode trueBody = inlineNode.TrueExpression;
+                AssociativeNode falseBody = inlineNode.FalseExpression;
                 RewriteASTWithResolvedName(classTable, ref condition);
                 RewriteASTWithResolvedName(classTable, ref trueBody);
                 RewriteASTWithResolvedName(classTable, ref falseBody);
-                
             }
             else if (node is IdentifierListNode)
             {
