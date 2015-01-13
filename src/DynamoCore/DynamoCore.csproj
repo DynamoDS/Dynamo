@@ -331,6 +331,7 @@ xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)\$(UICulture)
 xcopy  /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
 xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
+xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples" "$(OutputPath)samples\$(UICulture)\"
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
