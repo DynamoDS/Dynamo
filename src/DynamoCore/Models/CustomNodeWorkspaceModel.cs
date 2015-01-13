@@ -32,7 +32,7 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, double x, double y, Guid customNodeId,
-            NodeFactory factory, string fileName)
+            NodeFactory factory, string fileName="")
             : this(
                 name,
                 category,
@@ -46,7 +46,7 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, Guid customNodeId, string fileName) 
+            double x, double y, Guid customNodeId, string fileName="") 
             : base(name, e, n, x, y, factory, fileName)
         {
             CustomNodeId = customNodeId;

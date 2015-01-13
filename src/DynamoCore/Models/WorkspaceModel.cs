@@ -400,7 +400,7 @@ namespace Dynamo.Models
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, string fileName)
+            double x, double y, NodeFactory factory, string fileName="")
         {
             Name = name;
 
