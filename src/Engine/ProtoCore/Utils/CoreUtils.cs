@@ -849,6 +849,26 @@ namespace ProtoCore.Utils
                     RewriteASTWithResolvedName(classTable, ref argNode);
                 }
             }
+            else if (node is ExprListNode)
+            {
+                ExprListNode exprList = node as ExprListNode;
+                for (int n = 0; n < exprList.list.Count; ++n)
+                {
+                    AssociativeNode exprNode = exprList.list[n];
+                    RewriteASTWithResolvedName(classTable, ref exprNode);
+                }
+            }
+            else if (node is InlineConditionalNode)
+            {
+                InlineConditionalNode inlineNode = node as InlineConditionalNode;
+                AssociativeNode condition = inlineNode.ConditionExpression;
+                AssociativeNode trueBody = inlineNode.ConditionExpression;
+                AssociativeNode falseBody = inlineNode.ConditionExpression;
+                RewriteASTWithResolvedName(classTable, ref condition);
+                RewriteASTWithResolvedName(classTable, ref trueBody);
+                RewriteASTWithResolvedName(classTable, ref falseBody);
+                
+            }
             else if (node is IdentifierListNode)
             {
                 IdentifierListNode identListNode = node as IdentifierListNode;
