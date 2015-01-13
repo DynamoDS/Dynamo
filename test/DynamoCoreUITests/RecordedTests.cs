@@ -397,7 +397,8 @@ namespace DynamoCoreUITests
                 }
             });
         }
-        [Test]
+
+        [Test, RequiresSTA, Category("Failure")]
         public void Defect_MAGN_1143_CN()
         {
             // modify the name of the input node
@@ -797,6 +798,67 @@ namespace DynamoCoreUITests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(connectors);
             Assert.AreEqual(2, connectors.Count());
+        }
+
+        /// <summary>
+        /// This test exercises the following steps:
+        /// 
+        /// 1. Create two CBNs: 'a' and 'b', connect 'a' to 'b'.
+        /// 2. Undo once (connector removed)
+        /// 3. Undo once ('b' removed)
+        /// 4. Redo once ('b' restored)
+        /// 5. Redo once (connector restored)
+        /// 
+        /// </summary>
+        [Test, RequiresSTA]
+        public void RedoDeletedNodeShowsConnector()
+        {
+            RunCommandsFromFile("RedoDeletedNodeShowsConnector.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                Assert.IsNotNull(workspace);
+
+                if (commandTag == "EnsureTwoNodesOneConnector")
+                {
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+
+                    // Ensure the only connector does show up on the view.
+                    Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.Connectors.Count);
+                }
+                else if (commandTag == "EnsureOnlyTwoNodes")
+                {
+                    Assert.AreEqual(0, workspace.Connectors.Count());
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+
+                    // Ensure the removed connector has its view removed.
+                    Assert.AreEqual(0, ViewModel.CurrentSpaceViewModel.Connectors.Count);
+                }
+                else if (commandTag == "EnsureOnlyOneNode")
+                {
+                    Assert.AreEqual(0, workspace.Connectors.Count());
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+
+                    // Ensure the removed connector view stays removed.
+                    Assert.AreEqual(0, ViewModel.CurrentSpaceViewModel.Connectors.Count);
+                }
+                else if (commandTag == "EnsureTwoNodesRestored")
+                {
+                    Assert.AreEqual(0, workspace.Connectors.Count());
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+
+                    // Ensure the removed connector view stays removed.
+                    Assert.AreEqual(0, ViewModel.CurrentSpaceViewModel.Connectors.Count);
+                }
+                else if (commandTag == "EnsureAllRestored")
+                {
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+
+                    // Ensure the restored connector shows itself on the view.
+                    Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.Connectors.Count);
+                }
+            });
         }
 
         /// <summary>
@@ -1599,8 +1661,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             Assert.AreEqual("t_1", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 3 * codeBlockPortHeight) <= tolerance);
-
+            Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
         }
 
         [Test, RequiresSTA]

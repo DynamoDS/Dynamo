@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:controls="clr-namespace:Dynamo.Controls"
+        xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
         d:DataContext="{d:DesignData Source=./SampleData/PackageManagerSearchViewModelSampleData.xaml}"
         mc:Ignorable="d" 
         Title="Online Package Search" Name="PackageSearch"  Height="600" Width="480" MinWidth="480" MaxWidth="480">
@@ -154,7 +155,7 @@
 
                 <ListBox.ItemTemplate >
 
-                    <DataTemplate>
+                    <DataTemplate DataType="viewModels:PackageManagerSearchElementViewModel">
                         <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0" Background="#333">
 
                             <StackPanel Width ="445" Name="SearchEle">

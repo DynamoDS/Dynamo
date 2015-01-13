@@ -822,23 +822,26 @@ namespace Dynamo.UpdateManager
         internal static BinaryVersion GetBinaryVersionFromFilePath(string installNameBase, string filePath)
         {
             // Filename format is DynamoInstall0.7.1.YYYYMMDDT0000.exe
-
-            if (!filePath.Contains(installNameBase))
-            {
+            var index = filePath.IndexOf(installNameBase, StringComparison.Ordinal);
+            if (index < 0)
                 return null;
-            }
 
-            var fileName = Path.GetFileNameWithoutExtension(filePath).Replace(installNameBase, "");
-            var splits = fileName.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+            // Skip past the 'installNameBase' since we are only interested 
+            // in getting the version numbers that come after the base name.
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            var version = fileName.Substring(index + installNameBase.Length);
 
-            if (splits.Count() < 3)
-            {
+            var splits = version.Split(new [] { "." }, StringSplitOptions.RemoveEmptyEntries);
+            if (splits.Count() < 3) // This can be 4 if it includes revision number.
                 return null;
-            }
 
-            var major = ushort.Parse(splits[0]);
-            var minor = ushort.Parse(splits[1]);
-            var build = ushort.Parse(splits[2]);
+            ushort major, minor, build;
+            if (!ushort.TryParse(splits[0], out major))
+                return null;
+            if (!ushort.TryParse(splits[1], out minor))
+                return null;
+            if (!ushort.TryParse(splits[2], out build))
+                return null;
 
             return BinaryVersion.FromString(string.Format("{0}.{1}.{2}.0", major, minor, build));
         }

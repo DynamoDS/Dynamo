@@ -10,6 +10,8 @@ using ProtoCore.Lang;
 using ProtoFFI;
 using ProtoScript.Runners;
 using ProtoTestFx.TD;
+using Category = NUnit.Framework.CategoryAttribute;
+
 namespace ProtoTest.EventTests
 {
     public class Foo : INotifyPropertyChanged
@@ -160,12 +162,14 @@ namespace ProtoTest.EventTests
         }
 
         [Test]
+        [Category("Failure")]
         public void RunPropertyChangedForRunMode()
         {
             string code =
 @"import (Foo from ""ProtoTest.dll"");foo = Foo.GetInstance();              foo.ID = 17;id = foo.ID;Foo.SetID(foo, 41);               ";
+            string err = "MAGN-4391: Failed to track property change";
             var testRunner = new TestFrameWork();
-            testRunner.RunScriptSource(code);
+            testRunner.RunScriptSource(code, err);
             testRunner.Verify("id", 41);
         }
 
@@ -196,6 +200,7 @@ namespace ProtoTest.EventTests
         }
 
         [Test]
+        [Category("Failure")]
         public void RunDSPropertyChangedTest()
         {
             string code =

@@ -59,6 +59,11 @@ namespace Dynamo.ViewModels
             get { return model; }
         }
 
+        public PreferenceSettings PreferenceSettings
+        {
+            get { return Model.PreferenceSettings; }
+        }
+
         public System.Windows.Point TransformOrigin
         {
             get { return transformOrigin; }
@@ -542,14 +547,12 @@ namespace Dynamo.ViewModels
 
         private void SubscribeModelUiEvents()
         {
-            CodeBlockUtils.RequestLogicalToVisualLineIndexMap += VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
             model.RequestBugReport += ReportABug;
             model.RequestDownloadDynamo += DownloadDynamo;
         }
 
         private void UnsubscribeModelUiEvents()
         {
-            CodeBlockUtils.RequestLogicalToVisualLineIndexMap -= VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
             model.RequestBugReport -= ReportABug;
             model.RequestDownloadDynamo -= DownloadDynamo;
         }
@@ -582,14 +585,14 @@ namespace Dynamo.ViewModels
 
         private void SubscribeDispatcherHandlers()
         {
-            this.Model.RequestDispatcherBeginInvoke += TryDispatcherBeginInvoke;
-            this.Model.RequestDispatcherInvoke += TryDispatcherInvoke;
+            DynamoModel.RequestDispatcherBeginInvoke += TryDispatcherBeginInvoke;
+            DynamoModel.RequestDispatcherInvoke += TryDispatcherInvoke;
         }
 
         private void UnsubscribeDispatcherEvents()
         {
-            this.Model.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
-            this.Model.RequestDispatcherInvoke -= TryDispatcherInvoke;
+            DynamoModel.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
+            DynamoModel.RequestDispatcherInvoke -= TryDispatcherInvoke;
         }
 
         #endregion

@@ -103,7 +103,7 @@ namespace Dynamo.Services
                     InstrumentationLogger.LogPiiInfo("Node-usage", usage);
                     InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
 
-                    dynamoModel.OnRequestDispatcherInvoke(
+                    DynamoModel.OnRequestDispatcherInvoke(
                         () =>
                         {
                             string workspace =

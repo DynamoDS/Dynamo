@@ -137,7 +137,7 @@ namespace Dynamo.Models
             // shutting down so we check that shutdown has not been requested.
             if (DynamicRunEnabled && EngineController != null)
             {
-                Run();
+                DynamoModel.OnRequestDispatcherBeginInvoke(Run);
             }
         }
 

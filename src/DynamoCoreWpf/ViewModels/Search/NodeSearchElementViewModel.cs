@@ -51,6 +51,11 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.IsVisibleInSearch; }
         }
 
+        public bool IsExpanded
+        {
+            get { return true; }
+        }
+
         public bool IsSelected
         {
             get { return isSelected; }
