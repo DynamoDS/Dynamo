@@ -43,6 +43,8 @@ namespace Dynamo.UI.Controls
             }
 
             TruncateSecondaryMembers();
+
+            e.Handled = true;
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -70,10 +72,10 @@ namespace Dynamo.UI.Controls
 
         private void ExecuteSearchElement(ListBoxItem listBoxItem)
         {
-            var searchElement = listBoxItem.DataContext as SearchElementBase;
+            var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
             if (searchElement != null)
             {
-                searchElement.Execute();
+                searchElement.ClickedCommand.Execute(null);
                 libraryToolTipPopup.SetDataContext(null, true);
             }
         }
@@ -160,7 +162,7 @@ namespace Dynamo.UI.Controls
 
         private void OnMoreButtonClick(object sender, RoutedEventArgs e)
         {
-            IEnumerable<BrowserInternalElement> collection = castedDataContext.ActionMembers;
+            IEnumerable<NodeSearchElementViewModel> collection = castedDataContext.ActionMembers;
             if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
                 collection = castedDataContext.QueryMembers;
 
@@ -174,7 +176,7 @@ namespace Dynamo.UI.Controls
             if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.None)
                 return;
 
-            IEnumerable<BrowserInternalElement> collection = castedDataContext.ActionMembers;
+            IEnumerable<NodeSearchElementViewModel> collection = castedDataContext.ActionMembers;
             if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
                 collection = castedDataContext.QueryMembers;
 

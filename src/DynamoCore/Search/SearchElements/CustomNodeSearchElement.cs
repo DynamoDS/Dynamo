@@ -1,95 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media.Imaging;
 using System.Xml;
-using Dynamo.UI;
-using Dynamo.Utilities;
+using Dynamo.Interfaces;
+using Dynamo.Models;
 
 namespace Dynamo.Search.SearchElements
 {
-    public class CustomNodeSearchElement : NodeSearchElement, IEquatable<CustomNodeSearchElement>
+    /// <summary>
+    ///     Search element for custom nodes.
+    /// </summary>
+    public class CustomNodeSearchElement : NodeSearchElement
     {
-        public Guid Guid { get; internal set; }
+        public Guid ID { get; private set; }
+        private readonly ICustomNodeSource customNodeManager;
+        private string path;
 
-        private string _path;
+        /// <summary>
+        ///     Path to this custom node in disk, used in the Edit context menu.
+        /// </summary>
         public string Path
         {
-            get { return _path; }
-            set
+            get { return path; }
+            private set
             {
-                _path = value;
-                RaisePropertyChanged("Path");
+                if (value == path) return;
+                path = value;
+                OnPropertyChanged("Path");
             }
         }
 
-        public override string Type { get { return "Custom Node"; } }
-
-        List<Tuple<string, string>> inputParameters;
-        List<string> outputParameters;
-
-        protected override List<Tuple<string, string>> GenerateInputParameters()
+        public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
-            TryLoadDocumentation();
-
-            if (!inputParameters.Any())
-                inputParameters.Add(Tuple.Create("", "none"));
-
-            return inputParameters;
+            this.customNodeManager = customNodeManager;
+            SyncWithCustomNodeInfo(info);
         }
 
-        protected override List<string> GenerateOutputParameters()
+        /// <summary>
+        ///     Updates the properties of this search element.
+        /// </summary>
+        /// <param name="info"></param>        
+        public void SyncWithCustomNodeInfo(CustomNodeInfo info)
         {
-            TryLoadDocumentation();
-
-            if (!outputParameters.Any())
-                outputParameters.Add("none");
-
-            return outputParameters;
+            ID = info.FunctionId;
+            Name = info.Name;
+            FullCategoryName = info.Category;
+            Description = info.Description;
+            Path = info.Path;
         }
 
-        public CustomNodeSearchElement(CustomNodeInfo info, SearchElementGroup group)
-            : base(info.Name, info.Description, new List<string>(), group)
+        protected override NodeModel ConstructNewNodeModel()
         {
-            this.Node = null;
-            this.FullCategoryName = info.Category;
-            this.ElementType = SearchModel.ElementType.CustomNode;
-            this.Guid = info.Guid;
-            this._path = info.Path;
-        }
-
-        public override NodeSearchElement Copy()
-        {
-            var copiedNode = new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name,
-                this.FullCategoryName, this.Description, this.Path), Group);
-            copiedNode.ElementType = this.ElementType;
-
-            return copiedNode;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            return this.Equals(obj as NodeSearchElement);
-        }
-
-        public override int GetHashCode()
-        {
-            return this.Guid.GetHashCode() + this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
-        }
-
-        public bool Equals(CustomNodeSearchElement other)
-        {
-            return other.Guid == this.Guid;
-        }
-
-        public new bool Equals(NodeSearchElement other)
-        {
-            return other is CustomNodeSearchElement && this.Equals(other as CustomNodeSearchElement);
+            return customNodeManager.CreateCustomNodeInstance(ID);
         }
 
         private void TryLoadDocumentation()
@@ -115,7 +77,7 @@ namespace Dynamo.Search.SearchElements
                 {
                     foreach (var subNode in
                         elNode.ChildNodes.Cast<XmlNode>()
-                            .Where(subNode =>(subNode.Name == "Symbol")))
+                            .Where(subNode => (subNode.Name == "Symbol")))
                     {
                         var parameter = subNode.Attributes[0].Value;
                         if (parameter != string.Empty)
@@ -136,12 +98,24 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        protected override BitmapSource LoadDefaultIcon(ResourceType resourceType)
-        {   
-            string postfix = resourceType == ResourceType.SmallIcon ?
-                Configurations.SmallIconPostfix : Configurations.LargeIconPostfix;
+        protected override List<Tuple<string, string>> GenerateInputParameters()
+        {
+            TryLoadDocumentation();
 
-            return GetIcon(Configurations.DefaultCustomNodeIcon + postfix);
+            if (!inputParameters.Any())
+                inputParameters.Add(Tuple.Create("", "none"));
+
+            return inputParameters;
+        }
+
+        protected override List<string> GenerateOutputParameters()
+        {
+            TryLoadDocumentation();
+
+            if (!outputParameters.Any())
+                outputParameters.Add("none");
+
+            return outputParameters;
         }
     }
 }

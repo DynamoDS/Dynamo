@@ -22,8 +22,7 @@ namespace DSCoreNodesUI
                 RequestChangeColorRange(sender, e);
         }
 
-        public ColorRange(WorkspaceModel workspace)
-            : base(workspace)
+        public ColorRange()
         {
             InPortData.Add(new PortData("start", "The start color."));
             InPortData.Add(new PortData("end", "The end color."));
@@ -32,7 +31,9 @@ namespace DSCoreNodesUI
 
             RegisterAllPorts();
 
-            this.PropertyChanged += ColorRange_PropertyChanged;
+            this.PropertyChanged += ColorRange_PropertyChanged; 
+            
+            ShouldDisplayPreviewCore = false;
         }
 
         void ColorRange_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -58,14 +59,5 @@ namespace DSCoreNodesUI
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)
             };
         }
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
-        }
-
     }
 }

@@ -9,10 +9,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+
 using Dynamo.Models;
 using Dynamo.PackageManager;
-using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
@@ -33,7 +32,7 @@ namespace Dynamo.Controls
             {
                 var trimIndex = tooltip.LastIndexOf(' ', MaxChars - 5);
                 return tooltip.Remove(trimIndex > 0 ? trimIndex : MaxChars - 5) + " ...";
-            } 
+            }
             return value;
         }
 
@@ -73,7 +72,7 @@ namespace Dynamo.Controls
         {
             if (value is PackageManagerSearchViewModel.PackageSearchState)
             {
-                var st = (PackageManagerSearchViewModel.PackageSearchState) value;
+                var st = (PackageManagerSearchViewModel.PackageSearchState)value;
 
                 if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
                 {
@@ -153,9 +152,9 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value is PackageDownloadHandle.State )
+            if (value is PackageDownloadHandle.State)
             {
-                var st = ( PackageDownloadHandle.State ) value;
+                var st = (PackageDownloadHandle.State)value;
 
                 if (st == PackageDownloadHandle.State.Downloaded)
                 {
@@ -177,7 +176,7 @@ namespace Dynamo.Controls
                 {
                     return "Installing";
                 }
-                else  if (st == PackageDownloadHandle.State.Uninitialized)
+                else if (st == PackageDownloadHandle.State.Uninitialized)
                 {
                     return "Starting";
                 }
@@ -274,7 +273,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             PortType portType = ((PortType)value);
-            if (((PortType)value) == PortType.INPUT)
+            if (((PortType)value) == PortType.Input)
                 return DynamoToolTip.Side.Left;
 
             return DynamoToolTip.Side.Right;
@@ -293,7 +292,7 @@ namespace Dynamo.Controls
         {
             if (value is string && !string.IsNullOrEmpty(value as string))
             {
-                    return value as string;   
+                return value as string;
             }
 
             return ">";
@@ -322,7 +321,7 @@ namespace Dynamo.Controls
                 double bottom = port.MarginThickness.Bottom;
                 switch (type)
                 {
-                    case PortType.INPUT:
+                    case PortType.Input:
                         thickness = new Thickness(left - 25, top + 3, right + 0, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
                             thickness = new Thickness(left - 25, top - 10, right + 0, bottom - 10);
@@ -332,7 +331,7 @@ namespace Dynamo.Controls
                             thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
                         break;
 
-                    case PortType.OUTPUT:
+                    case PortType.Output:
                         thickness = new Thickness(left + 0, top + 3, right - 25, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
                             thickness = new Thickness(left + 0, top - 10, right - 25, bottom - 10);
@@ -371,11 +370,11 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is string && !string.IsNullOrEmpty(value as string) )
+            if (value is string && !string.IsNullOrEmpty(value as string))
             {
                 // convert to path, get file name
-                return Path.GetFileName((string) value);
-            } 
+                return Path.GetFileName((string)value);
+            }
 
             return "Unsaved";
         }
@@ -430,7 +429,7 @@ namespace Dynamo.Controls
         public Color HomeBackgroundColor { get; set; }
         public Color CustomBackgroundColor { get; set; }
 
-        public object Convert(object value, Type targetType, object parameter,CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //parameter will contain a true or false
             //whether this is the home space
@@ -473,8 +472,8 @@ namespace Dynamo.Controls
 
     public class BooleanToBrushConverter : IValueConverter
     {
-        public SolidColorBrush TrueBrush{get;set;}
-        public SolidColorBrush FalseBrush{get;set;}
+        public SolidColorBrush TrueBrush { get; set; }
+        public SolidColorBrush FalseBrush { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -664,7 +663,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             ObservableCollection<PortViewModel> ports = (ObservableCollection<PortViewModel>)value;
-            return Math.Max(30, ports.Count * 20 + 10); //spacing for inputs + title space + bottom space
+            return Math.Max(30, ports.Count * 20 + 10); //spacing for Inputs + title space + bottom space
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -717,7 +716,7 @@ namespace Dynamo.Controls
             var rowColumn = parameter as string;
             if (rowColumn == null || (!rowColumn.Equals("Row") && (!rowColumn.Equals("Column"))))
             {
-                var message = "'AttachmentToRowColumnConverter' expects a " + 
+                var message = "'AttachmentToRowColumnConverter' expects a " +
                     "'ConverterParameter' value to be either 'Row' or 'Column'";
 
                 throw new ArgumentException(message);
@@ -755,11 +754,13 @@ namespace Dynamo.Controls
         }
     }
 
-    public class BrowserItemToBooleanConverter : IValueConverter
+    public class NodeSearchElementVMToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is NodeSearchElement || value is NodeSearchElementViewModel)
+            if (value is NodeSearchElementViewModel)
+                // TODO(Vladimir): Check if bug returns. Earlier line was:
+                //if (value is NodeSearchElement || value is NodeSearchElementViewModel)
                 return true;
 
             return false;
@@ -776,7 +777,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             List<object> list = (List<object>)value;
-            return list.Count > 0; //spacing for inputs + title space + bottom space
+            return list.Count > 0; //spacing for Inputs + title space + bottom space
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -995,7 +996,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             //PortType p = (PortType)value;
-            //if (p == PortType.INPUT)
+            //if (p == PortType.Input)
             //{
             //    return new Thickness(20, 0, 0, 0);
             //}
@@ -1018,7 +1019,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             PortType p = (PortType)value;
-            if (p == PortType.INPUT)
+            if (p == PortType.Input)
             {
                 return HorizontalAlignment.Left;
             }
@@ -1039,7 +1040,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             PortType p = (PortType)value;
-            if (p == PortType.INPUT)
+            if (p == PortType.Input)
             {
                 return 2;
             }
@@ -1060,9 +1061,9 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             PortType p = (PortType)value;
-            if (p == PortType.INPUT)
+            if (p == PortType.Input)
             {
-                return new Rect(0,0,10,20);
+                return new Rect(0, 0, 10, 20);
             }
             else
             {
@@ -1545,13 +1546,13 @@ namespace Dynamo.Controls
         }
     }
 
-    public sealed class WarningLevelToColorConverter:IValueConverter
+    public sealed class WarningLevelToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is WarningLevel)
             {
-                var level = (WarningLevel) value;
+                var level = (WarningLevel)value;
                 switch (level)
                 {
                     case WarningLevel.Mild:
@@ -1575,9 +1576,9 @@ namespace Dynamo.Controls
     public class TabSizeConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {           
+        {
             TabControl tabControl = values[0] as TabControl;
-            
+
             double tabControlActualWidth = tabControl.ActualWidth - Configurations.TabControlMenuWidth; // Need to factor in tabControlMenu
 
             int visibleTabsNumber = tabControl.Items.Count;
@@ -1589,7 +1590,7 @@ namespace Dynamo.Controls
 
             if ((tabControlActualWidth - tabControl.Items.Count * Configurations.TabDefaultWidth) >= 0 || width > Configurations.TabDefaultWidth)
                 width = Configurations.TabDefaultWidth;
-            
+
             //Subtract 1, otherwise we could overflow to two rows.
             return (width <= Configurations.TabControlMenuWidth) ? Configurations.TabControlMenuWidth : (width - 1);
         }
@@ -1629,7 +1630,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var measure = (SIUnit) parameter;
+            var measure = (SIUnit)parameter;
             measure.SetValueFromString(value.ToString());
             return measure.Value;
         }
@@ -1639,11 +1640,11 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool) value != true) return "(Up-to-date)";
+            if ((bool)value != true) return "(Up-to-date)";
 
             var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
 
-            return latest != null? latest.ToString() : "Could not get version.";
+            return latest != null ? latest.ToString() : "Could not get version.";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1658,11 +1659,11 @@ namespace Dynamo.Controls
         {
             SolidColorBrush brush;
 
-            brush = (bool) value
+            brush = (bool)value
                 ? (SolidColorBrush)
                     SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpdateAvailableBrush"]
-                : (SolidColorBrush) SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpToDateBrush"];
-                
+                : (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpToDateBrush"];
+
             return brush;
         }
 
@@ -1790,18 +1791,16 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is NodeSearchElementViewModel) 
+            if (value is NodeSearchElementViewModel)
                 return false;
-            if (value is BrowserInternalElementViewModel)
-                return true;
-            if (value is BrowserInternalElementForClassesViewModel)
+            if (value is RootNodeCategoryViewModel)
+            {
+                var rootElement = value as RootNodeCategoryViewModel;
+                return !rootElement.SubCategories.OfType<ClassesNodeCategoryViewModel>().Any();
+            }
+            if (value is NodeCategoryViewModel)
                 return true;
 
-            if (value is BrowserRootElementViewModel)
-            {
-                var rootElement = value as BrowserRootElementViewModel;
-                return !rootElement.Items.OfType<BrowserInternalElementForClasses>().Any();
-            }
             return false;
         }
 
@@ -1836,7 +1835,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value is BrowserRootElementViewModel);
+            return (value is RootNodeCategoryViewModel);
         }
 
         public object ConvertBack(
@@ -1846,11 +1845,13 @@ namespace Dynamo.Controls
         }
     }
 
-    public class BrowserInternalElementVMToBoolConverter : IValueConverter
+    public class NodeCategoryVMToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value is BrowserInternalElementViewModel);
+            return (value is NodeCategoryViewModel) &&
+                (!(value is RootNodeCategoryViewModel)) &&
+                (!(value is ClassesNodeCategoryViewModel));
         }
 
         public object ConvertBack(
@@ -1865,10 +1866,11 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is BrowserRootElementViewModel) return true;
-            if (value is BrowserInternalElementViewModel)
+            if (value is RootNodeCategoryViewModel) return true;
+            if (value is NodeCategoryViewModel)
             {
-                return (value as BrowserInternalElementViewModel).CastedModel.Parent is BrowserRootElement;
+                // TODO(Vladimir): take a look.
+                return false; //(value as BrowserInternalElementViewModel).CastedModel.Parent is BrowserRootElement;
             }
             else return false;
         }
@@ -1904,9 +1906,13 @@ namespace Dynamo.Controls
         {
             var incomingString = value as string;
 
-            if (string.IsNullOrEmpty(incomingString)) return new Thickness(5, 0, 0, 0);
+            if (string.IsNullOrEmpty(incomingString))
+                throw new ArgumentException("value string should not be empty.");
 
             var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
+            if (numberOfPoints == 0)
+                return new Thickness(5, 0, 0, 0);
+
             return new Thickness(5 + 20 * numberOfPoints, 0, 20, 0);
         }
 
@@ -1940,7 +1946,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is BrowserInternalElementForClassesViewModel)
+            if (value is ClassesNodeCategoryViewModel)
                 return Visibility.Collapsed;
 
             return Visibility.Visible;
@@ -2007,6 +2013,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            // TODO(Vladimir): rework when ElementType returned.
+#if false
             var elementType = (SearchModel.ElementType)value;
 
             switch (elementType)
@@ -2023,6 +2031,8 @@ namespace Dynamo.Controls
                 //      next line should be used.
                 //throw new Exception("Incorrect value provided to converter");
             }
+#endif
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

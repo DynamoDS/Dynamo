@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
-
+using System.Windows.Shapes;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -15,6 +14,10 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
+using System.Windows.Controls.Primitives;
+using Dynamo.Core;
+using Thickness = System.Windows.Thickness;
+using System.Windows.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -74,20 +77,20 @@ namespace Dynamo.Nodes
 
         public event Action OnChangeCommitted;
 
-        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255, 255, 255));
-        private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
+        private static Brush clear = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255));
+        private static Brush highlighted = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255));
 
         private NodeViewModel nodeViewModel;
         private NodeViewModel NodeViewModel
         {
             get
             {
-                if (this.nodeViewModel != null) return this.nodeViewModel;
+                if (nodeViewModel != null) return nodeViewModel;
 
                 var f = WpfUtilities.FindUpVisualTree<NodeView>(this);
                 if (f != null) this.nodeViewModel = f.ViewModel;
 
-                return this.nodeViewModel;
+                return nodeViewModel;
             }
         }
 
@@ -102,13 +105,13 @@ namespace Dynamo.Nodes
         {
             //turn off the border
             Background = clear;
-            BorderThickness = new System.Windows.Thickness(1);
+            BorderThickness = new Thickness(1);
             GotFocus += OnGotFocus;
             LostFocus += OnLostFocus;
             LostKeyboardFocus += OnLostFocus;
-            Padding = new System.Windows.Thickness(3);
+            Padding = new Thickness(3);
             base.Text = initialText;
-            this.Pending = false;
+            Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];
             MinHeight = 20;
 
@@ -117,14 +120,14 @@ namespace Dynamo.Nodes
 
         private void TryFocusSearch()
         {
-            if (this.NodeViewModel == null) return;
+            if (NodeViewModel == null) return;
 
-            this.NodeViewModel.DynamoViewModel.ReturnFocusToSearch();
+            NodeViewModel.DynamoViewModel.ReturnFocusToSearch();
         }
 
-        public void BindToProperty(System.Windows.Data.Binding binding)
+        public void BindToProperty(Binding binding)
         {
-            this.SetBinding(TextBox.TextProperty, binding);
+            SetBinding(TextProperty, binding);
             UpdateDataSource(false);
         }
 
@@ -174,7 +177,7 @@ namespace Dynamo.Nodes
             Pending = true;
         }
 
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             if (e.Key == Key.Return || e.Key == Key.Enter)
             {
@@ -193,7 +196,7 @@ namespace Dynamo.Nodes
 
         private void UpdateDataSource(bool recordForUndo)
         {
-            if (this.Pending)
+            if (Pending)
             {
                 var expr = GetBindingExpression(TextProperty);
 
@@ -217,8 +220,8 @@ namespace Dynamo.Nodes
                     {
                         string propName = expr.ParentBinding.Path.Path;
                         nvm.DynamoViewModel.ExecuteCommand(
-                            new DynCmd.UpdateModelValueCommand(
-                                nvm.NodeModel.GUID, propName, this.Text));
+                            new DynamoModel.UpdateModelValueCommand(
+                                nvm.NodeModel.GUID, propName, Text));
                     }
                 }
 
@@ -251,7 +254,7 @@ namespace Dynamo.Nodes
 
         #region Class Event Handlers
 
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             // This method is overridden so that the base implementation will 
             // not be called (the base class commits changes once <Enter> key
@@ -263,121 +266,37 @@ namespace Dynamo.Nodes
 
     public class DynamoSlider : Slider
     {
-        NodeModel nodeModel;
-        public DynamoSlider(NodeModel model)
+        readonly NodeModel nodeModel;
+        private readonly UndoRedoRecorder recorder;
+
+        public DynamoSlider(NodeModel model, UndoRedoRecorder undoRecorder)
         {
             nodeModel = model;
+            recorder = undoRecorder;
         }
 
         #region Event Handlers
-        protected override void OnThumbDragStarted(System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        protected override void OnThumbDragStarted(DragStartedEventArgs e)
         {
             base.OnThumbDragStarted(e);
-            nodeModel.Workspace.RecordModelForModification(nodeModel);
-            (nodeModel as IBlockingModel).OnBlockingStarted(EventArgs.Empty);
+            WorkspaceModel.RecordModelForModification(nodeModel, recorder);
         }
 
-        protected override void OnThumbDragCompleted(System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        protected override void OnThumbDragCompleted(DragCompletedEventArgs e)
         {
             base.OnThumbDragCompleted(e);
-            (nodeModel as IBlockingModel).OnBlockingEnded(EventArgs.Empty);
-            nodeModel.RequiresRecalc = true;
+            nodeModel.OnAstUpdated();
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseLeftButtonDown(e);
-            if (e.OriginalSource is System.Windows.Shapes.Rectangle)
-                nodeModel.Workspace.RecordModelForModification(nodeModel);
+            if (e.OriginalSource is Rectangle)
+                WorkspaceModel.RecordModelForModification(nodeModel, recorder);
         }
         #endregion
     }
 
-    public class CodeNodeTextBox : DynamoTextBox
-    {
-
-        bool shift, enter;
-        public CodeNodeTextBox(string s)
-            : base(s)
-        {
-            shift = enter = false;
-
-            //Remove the select all when focused feature
-            RemoveHandler(GotKeyboardFocusEvent, focusHandler);
-
-            //Allow for event processing after textbook has been focused to
-            //help set the Caret position
-            selectAllWhenFocused = false;
-
-            //Set style for Watermark
-            this.SetResourceReference(TextBox.StyleProperty, "CodeBlockNodeTextBox");
-            this.Tag = "Your code goes here";
-        }
-
-
-        /// <summary>
-        /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
-        /// and sets them when pressed/released
-        /// </summary>
-        #region Key Press Event Handlers
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
-            {
-                shift = true;
-            }
-            else if (e.Key == Key.Enter || e.Key == Key.Return)
-            {
-                enter = true;
-            }
-            else if (e.Key == Key.Escape)
-            {
-                HandleEscape();
-            }
-            if (shift == true && enter == true)
-            {
-                OnRequestReturnFocusToSearch();
-                shift = enter = false;
-            }
-        }
-        protected override void OnPreviewKeyUp(KeyEventArgs e)
-        {
-            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
-            {
-                shift = false;
-            }
-            else if (e.Key == Key.Enter || e.Key == Key.Return)
-            {
-                enter = false;
-            }
-        }
-        #endregion
-
-        protected override void OnTextChanged(TextChangedEventArgs e)
-        {
-            e.Handled = true; //hide base
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override void OnLostFocus(RoutedEventArgs e)
-        {
-            Pending = true;
-            base.OnLostFocus(e);
-        }
-
-        private void HandleEscape()
-        {
-            var text = this.Text;
-            var cb = DataContext as CodeBlockNodeModel;
-
-            if (cb == null || cb.Code != null && text.Equals(cb.Code))
-                OnRequestReturnFocusToSearch();
-            else
-                (this as TextBox).Text = (DataContext as CodeBlockNodeModel).Code;
-        }
-    }
 }
 
 namespace Dynamo.UI.Controls
@@ -395,8 +314,8 @@ namespace Dynamo.UI.Controls
     {
         public static readonly DependencyProperty AttachmentSideProperty =
             DependencyProperty.Register("AttachmentSide",
-            typeof(DynamoToolTip.Side), typeof(DynamoToolTip),
-            new PropertyMetadata(DynamoToolTip.Side.Left));
+            typeof(Side), typeof(DynamoToolTip),
+            new PropertyMetadata(Side.Left));
 
         public enum Side
         {
@@ -405,8 +324,8 @@ namespace Dynamo.UI.Controls
 
         public DynamoToolTip()
         {
-            this.Placement = PlacementMode.Custom;
-            this.CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
+            Placement = PlacementMode.Custom;
+            CustomPopupPlacementCallback = new CustomPopupPlacementCallback(PlacementCallback);
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
@@ -415,7 +334,7 @@ namespace Dynamo.UI.Controls
             double gap = Configurations.ToolTipTargetGapInPixels;
             PopupPrimaryAxis primaryAxis = PopupPrimaryAxis.None;
 
-            switch (this.AttachmentSide)
+            switch (AttachmentSide)
             {
                 case Side.Left:
                     x = -(popup.Width + gap);
@@ -484,6 +403,8 @@ namespace Dynamo.UI.Controls
         private void LoadMainDynamoWindow(object sender, RoutedEventArgs e)
         {
             var mainDynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            if (mainDynamoWindow == null)
+                return;
 
             // When Dynamo window goes behind another app, the tool-tip should be hidden right 
             // away. We cannot use CloseLibraryToolTipPopup because it only hides the tool-tip 

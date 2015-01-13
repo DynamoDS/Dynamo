@@ -2,23 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using System.Collections.ObjectModel;
 using Dynamo.Core;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
-using Dynamo.DSEngine;
 
-using System.Xml;
-using DynamoUtilities;
 using Dynamo.UI;
-using System.Collections.Specialized;
 
 namespace Dynamo.Search
 {
+
     public class SearchModel : NotificationObject
     {
+
+        internal static string ShortenCategoryName(string fullCategoryName)
+        {
+            if (string.IsNullOrEmpty(fullCategoryName))
+                return string.Empty;
+
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
+
+            // if the category name is too long, we strip off the interior categories
+            if (catName.Length > 50)
+            {
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
+                if (s.Count() > 4)
+                {
+                    s = new List<string>()
+                                        {
+                                            s[0],
+                                            "...",
+                                            s[s.Count - 3],
+                                            s[s.Count - 2],
+                                            s[s.Count - 1]
+                                        };
+                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
+                }
+            }
+
+            return catName;
+        }
+#if false
         #region Events
 
         /// <summary>
@@ -131,7 +152,7 @@ namespace Dynamo.Search
 
         private readonly DynamoModel DynamoModel;
 
-        #endregion
+    #endregion
 
         #region Initialization
 
@@ -173,7 +194,7 @@ namespace Dynamo.Search
             browserCategoriesBuilder.AddRootCategory("Migration");
         }
 
-        #endregion
+    #endregion
 
         #region Context-specific hiding
 
@@ -205,7 +226,7 @@ namespace Dynamo.Search
             if (updateSearch) this.OnRequestSync();
         }
 
-        #endregion
+    #endregion
 
         #region Search
 
@@ -262,7 +283,7 @@ namespace Dynamo.Search
             _searchRootCategories.Clear();
         }
 
-        #endregion
+    #endregion
 
         #region Categories
 
@@ -346,35 +367,9 @@ namespace Dynamo.Search
             _searchRootCategories.ToList().ForEach(x => x.SortChildren());
         }
 
-        internal static string ShortenCategoryName(string fullCategoryName)
-        {
-            if (string.IsNullOrEmpty(fullCategoryName))
-                return string.Empty;
+        
 
-            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
-
-            // if the category name is too long, we strip off the interior categories
-            if (catName.Length > 50)
-            {
-                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
-                if (s.Count() > 4)
-                {
-                    s = new List<string>()
-                                        {
-                                            s[0],
-                                            "...",
-                                            s[s.Count - 3],
-                                            s[s.Count - 2],
-                                            s[s.Count - 1]
-                                        };
-                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
-                }
-            }
-
-            return catName;
-        }
-
-        #endregion
+    #endregion
 
         #region Add
 
@@ -562,7 +557,7 @@ namespace Dynamo.Search
             return true;
         }
 
-        #endregion
+    #endregion
 
         #region Execution
 
@@ -575,7 +570,7 @@ namespace Dynamo.Search
             }
         }
 
-        #endregion
+    #endregion
 
         #region Remove
 
@@ -643,7 +638,7 @@ namespace Dynamo.Search
             }
         }
 
-        #endregion
+    #endregion
 
         #region Refactoring
 
@@ -653,7 +648,7 @@ namespace Dynamo.Search
             return this.Add(nodeInfo);
         }
 
-        #endregion
+    #endregion
 
         internal void DumpLibraryToXml(string fileName)
         {
@@ -703,55 +698,8 @@ namespace Dynamo.Search
 
                 parent.AppendChild(element);
             }
-        }
-
-        internal void ChangeCategoryExpandState(string categoryName, bool isExpanded)
-        {
-            BrowserItem category = BrowserCategoriesBuilder.GetCategoryByName(categoryName);
-            if (category == null)
-                category = AddonCategoriesBuilder.GetCategoryByName(categoryName);
-
-            if (category != null && category.IsExpanded != isExpanded)
-                category.IsExpanded = isExpanded;
-        }
-
-        /// <summary>
-        /// Call this method to assign a default grouping information if a given category 
-        /// does not have any. A node category's group can either be "Create", "Query" or
-        /// "Actions". If none of the group names above is assigned to the category, it 
-        /// will be assigned a default one that is "Actions".
-        /// 
-        /// For examples:
-        /// 
-        ///     "Core.Evaluate" will be renamed as "Core.Evaluate.Actions"
-        ///     "Core.List.Create" will remain as "Core.List.Create"
-        /// 
-        /// </summary>
-        public string ProcessNodeCategory(string category, ref SearchElementGroup group)
-        {
-            if (string.IsNullOrEmpty(category))
-                return category;
-
-            int index = category.LastIndexOf(Configurations.CategoryDelimiter);
-
-            // If "index" is "-1", then the whole "category" will be used as-is.            
-            switch (category.Substring(index + 1))
-            {
-                case Configurations.CategoryGroupAction:
-                    group = SearchElementGroup.Action;
-                    break;
-                case Configurations.CategoryGroupCreate:
-                    group = SearchElementGroup.Create;
-                    break;
-                case Configurations.CategoryGroupQuery:
-                    group = SearchElementGroup.Query;
-                    break;
-                default:
-                    group = SearchElementGroup.Action;
-                    return category;
-            }
-
-            return category.Substring(0, index);
-        }
+        }                               
+#endif
     }
+
 }

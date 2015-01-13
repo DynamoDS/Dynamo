@@ -19,8 +19,6 @@ namespace Dynamo.DSEngine
 
         public string QualifiedName { get; private set; }
 
-        public Search.SearchModel.ElementType ElementType { get; set; }
-
         public IEnumerable<FunctionDescriptor> Functions
         {
             get { return functions; }

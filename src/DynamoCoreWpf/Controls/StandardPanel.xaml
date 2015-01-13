@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
-        <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
         <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
                                           TrueBrush="#333333"
                                           FalseBrush="#272727" />
@@ -212,7 +212,7 @@
                     <Binding ElementName="libraryToolTipPopup"
                              Path="DataContext"
                              Mode="OneWay"
-                             Converter="{StaticResource BrowserItemToBooleanConverter}" />
+                             Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
                 </uicontrols:LibraryToolTipPopup.IsOpen>
             </uicontrols:LibraryToolTipPopup>
         </Grid>

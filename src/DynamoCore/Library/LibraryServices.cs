@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+
 using Dynamo.Interfaces;
 using Dynamo.Library;
-using Dynamo.Search;
+using Dynamo.Utilities;
 using DynamoUtilities;
+
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoFFI;
+
 using Operator = ProtoCore.DSASM.Operator;
 
 namespace Dynamo.DSEngine
@@ -20,7 +23,7 @@ namespace Dynamo.DSEngine
     ///     LibraryServices is a singleton class which manages builtin libraries
     ///     as well as imported libraries. It is across different sessions.
     /// </summary>
-    public class LibraryServices : IDisposable
+    public class LibraryServices : LogSourceBase, IDisposable
     {
         private readonly Dictionary<string, FunctionGroup> builtinFunctionGroups =
             new Dictionary<string, FunctionGroup>();
@@ -28,17 +31,16 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> importedFunctionGroups =
             new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
 
-        private readonly Dictionary<string, SearchModel.ElementType> importedLibraries =
-            new Dictionary<string, SearchModel.ElementType>();
+        private readonly List<string> importedLibraries = new List<string>();
 
-        private readonly ProtoCore.Core libraryManagementCore;
+        public readonly ProtoCore.Core LibraryManagementCore;
 
-        private Dictionary<string, string> priorNameHints =
+        private readonly Dictionary<string, string> priorNameHints =
             new Dictionary<string, string>();
 
         public LibraryServices(ProtoCore.Core libraryManagementCore)
         {
-            this.libraryManagementCore = libraryManagementCore;
+            LibraryManagementCore = libraryManagementCore;
 
             PreloadLibraries();
             PopulateBuiltIns();
@@ -52,13 +54,13 @@ namespace Dynamo.DSEngine
             importedFunctionGroups.Clear();
             importedLibraries.Clear();
         }
-
+        
         /// <summary>
         ///     Get a list of imported libraries.
         /// </summary>
         public IEnumerable<string> ImportedLibraries
         {
-            get { return importedLibraries.Keys; }
+            get { return importedLibraries; }
         }
 
         /// <summary>
@@ -84,11 +86,10 @@ namespace Dynamo.DSEngine
 
         private void PreloadLibraries()
         {
-            foreach (var library in DynamoPathManager.Instance.PreloadLibraries)
-            {
-                importedLibraries.Add(library, SearchModel.ElementType.Regular);
-                CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library);
-            }
+            importedLibraries.AddRange(DynamoPathManager.Instance.PreloadLibraries);
+
+            foreach (var library in importedLibraries)
+                CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
         }
 
         public string NicknameFromFunctionSignatureHint(string functionSignature)
@@ -142,25 +143,20 @@ namespace Dynamo.DSEngine
 
             Dictionary<string, FunctionGroup> functionGroups;
             if (importedFunctionGroups.TryGetValue(library, out functionGroups))
-            {
-                if (importedLibraries[library] == SearchModel.ElementType.CustomDll)
-                {
-                    var modifiedFGroups = functionGroups.Values.ToList();
-                    for (int i = 0; i < modifiedFGroups.Count; i++)
-                        modifiedFGroups[i].ElementType = SearchModel.ElementType.CustomDll;
-
-                    return modifiedFGroups;
-                }
-                else
-                {
-                    return functionGroups.Values;
-                }
-            }
+                return functionGroups.Values;
 
             // Return an empty list instead of 'null' as some of the caller may
             // not have the opportunity to check against 'null' enumerator (for
             // example, an inner iterator in a nested LINQ statement).
             return new List<FunctionGroup>();
+        }
+
+        /// <summary>
+        /// Return all function groups.
+        /// </summary>
+        public IEnumerable<FunctionGroup> GetAllFunctionGroups()
+        {
+            return BuiltinFunctionGroups.Union(ImportedLibraries.SelectMany(GetFunctionGroups));
         }
 
         /// <summary>
@@ -249,8 +245,7 @@ namespace Dynamo.DSEngine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library"></param>
-        public void ImportLibrary(string library, ILogger logger,
-            SearchModel.ElementType elementType = SearchModel.ElementType.CustomDll)
+        public bool ImportLibrary(string library)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -260,21 +255,21 @@ namespace Dynamo.DSEngine
             {
                 const string errorMessage = "Invalid library format.";
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                return;
+                return false;
             }
 
             if (importedFunctionGroups.ContainsKey(library))
             {
                 string errorMessage = string.Format("Library {0} has been loaded.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                return;
+                return false;
             }
 
             if (!DynamoPathManager.Instance.ResolveLibraryPath(ref library))
             {
                 string errorMessage = string.Format("Cannot find library path: {0}.", library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                return;
+                return false;
             }
 
             OnLibraryLoading(new LibraryLoadingEventArgs(library));
@@ -283,26 +278,26 @@ namespace Dynamo.DSEngine
             {
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
 
-                var functionTable = libraryManagementCore.CodeBlockList[0].procedureTable;
-                var classTable = libraryManagementCore.ClassTable;
+                var functionTable = LibraryManagementCore.CodeBlockList[0].procedureTable;
+                var classTable = LibraryManagementCore.ClassTable;
 
                 int functionNumber = functionTable.procList.Count;
                 int classNumber = classTable.ClassNodes.Count;
 
-                CompilerUtils.TryLoadAssemblyIntoCore(libraryManagementCore, library);
+                CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
 
-                if (libraryManagementCore.BuildStatus.ErrorCount > 0)
+                if (LibraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format("Build error for library: {0}", library);
-                    logger.LogWarning(errorMessage, WarningLevel.Moderate);
-                    foreach (ErrorEntry error in libraryManagementCore.BuildStatus.Errors)
+                    Log(errorMessage, WarningLevel.Moderate);
+                    foreach (ErrorEntry error in LibraryManagementCore.BuildStatus.Errors)
                     {
-                        logger.LogWarning(error.Message, WarningLevel.Moderate);
+                        Log(error.Message, WarningLevel.Moderate);
                         errorMessage += error.Message + "\n";
                     }
 
                     OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                    return;
+                    return false;
                 }
 
                 var loadedClasses = classTable.ClassNodes.Skip(classNumber);
@@ -320,10 +315,11 @@ namespace Dynamo.DSEngine
             catch (Exception e)
             {
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
-                return;
+                return false;
             }
 
-            OnLibraryLoaded(new LibraryLoadedEventArgs(library, elementType));
+            OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+            return true;
         }
 
         private void ParseLibraryMigrations(string library)
@@ -361,7 +357,7 @@ namespace Dynamo.DSEngine
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return; // if the XML file is badly formatted, return like it doesn't exist
             }
@@ -428,7 +424,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
-            var builtins = libraryManagementCore.CodeBlockList[0]
+            var builtins = LibraryManagementCore.CodeBlockList[0]
                                                 .procedureTable
                                                 .procList
                                                 .Where(p =>
@@ -459,13 +455,10 @@ namespace Dynamo.DSEngine
             AddBuiltinFunctions(functions);
         }
 
-        private static List<TypedParameter> GetBinaryFuncArgs()
+        private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            return new List<TypedParameter>
-            {
-                new TypedParameter(null, "x", string.Empty),
-                new TypedParameter(null, "y", string.Empty),
-            };
+            yield return new TypedParameter(null, "x", string.Empty);
+            yield return new TypedParameter(null, "y", string.Empty);
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
@@ -480,35 +473,23 @@ namespace Dynamo.DSEngine
         {
             var args = GetBinaryFuncArgs();
 
-            var functions = new List<FunctionDescriptor>
+            var ops = new[]
             {
-                new FunctionDescriptor(Op.GetOpFunction(Operator.add), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.sub), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.mul), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.div), args, FunctionType.GenericFunction),
-
-                //add new operators
-                new FunctionDescriptor(Op.GetOpFunction(Operator.eq), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.ge), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.gt), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.mod), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.le), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.lt), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.and), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.or), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.nq), args, FunctionType.GenericFunction),
-                /*
-                new FunctionDescriptor(Op.GetOpFunction(Operator.assign), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.bitwiseand), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.bitwiseor), args, FunctionType.GenericFunction),
-                new FunctionDescriptor(Op.GetOpFunction(Operator.bitwisexor), args, FunctionType.GenericFunction),
-                */
-
-                new FunctionDescriptor(
-                    Op.GetUnaryOpFunction(UnaryOperator.Not),
-                    GetUnaryFuncArgs(),
-                    FunctionType.GenericFunction),
+                Op.GetOpFunction(Operator.add), Op.GetOpFunction(Operator.sub), Op.GetOpFunction(Operator.mul),
+                Op.GetOpFunction(Operator.div), Op.GetOpFunction(Operator.eq), Op.GetOpFunction(Operator.ge),
+                Op.GetOpFunction(Operator.gt), Op.GetOpFunction(Operator.mod), Op.GetOpFunction(Operator.le),
+                Op.GetOpFunction(Operator.lt), Op.GetOpFunction(Operator.and), Op.GetOpFunction(Operator.or),
+                Op.GetOpFunction(Operator.nq),
             };
+
+            var functions =
+                ops.Select(op => new FunctionDescriptor(op, args, FunctionType.GenericFunction, false))
+                    .Concat(
+                        new FunctionDescriptor(
+                            Op.GetUnaryOpFunction(UnaryOperator.Not),
+                            GetUnaryFuncArgs(),
+                            FunctionType.GenericFunction,
+                            false).AsSingleton());
 
             AddBuiltinFunctions(functions);
         }
@@ -518,7 +499,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulatePreloadLibraries()
         {
-            foreach (ClassNode classNode in libraryManagementCore.ClassTable.ClassNodes)
+            foreach (ClassNode classNode in LibraryManagementCore.ClassTable.ClassNodes)
             {
                 if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
                 {
@@ -545,9 +526,9 @@ namespace Dynamo.DSEngine
             MethodAttributes methodAttribute = proc.MethodAttribute;
             ClassAttributes classAttribute = null;
 
-            if (classScope != ProtoCore.DSASM.Constants.kGlobalScope)
+            if (classScope != Constants.kGlobalScope)
             {
-                var classNode = libraryManagementCore.ClassTable.ClassNodes[classScope];
+                var classNode = LibraryManagementCore.ClassTable.ClassNodes[classScope];
 
                 classAttribute = classNode.ClassAttributes;
                 className = classNode.name;
@@ -568,7 +549,7 @@ namespace Dynamo.DSEngine
 
             FunctionType type;
 
-            if (classScope == ProtoCore.DSASM.Constants.kGlobalScope)
+            if (classScope == Constants.kGlobalScope)
             {
                 type = FunctionType.GenericFunction;
             }
@@ -636,6 +617,7 @@ namespace Dynamo.DSEngine
                 arguments,
                 proc.returntype.ToString(),
                 type,
+                false,
                 isVisible,
                 returnKeys,
                 proc.isVarArg,
@@ -666,7 +648,7 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            importedLibraries.Add(e.LibraryPath, e.ElementType);
+            importedLibraries.Add(e.LibraryPath);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
@@ -696,14 +678,12 @@ namespace Dynamo.DSEngine
 
         public class LibraryLoadedEventArgs : EventArgs
         {
-            public LibraryLoadedEventArgs(string libraryPath, SearchModel.ElementType elementType)
+            public LibraryLoadedEventArgs(string libraryPath)
             {
                 LibraryPath = libraryPath;
-                ElementType = elementType;
             }
 
             public string LibraryPath { get; private set; }
-            public SearchModel.ElementType ElementType { get; private set; }
         }
 
         public class LibraryLoadingEventArgs : EventArgs

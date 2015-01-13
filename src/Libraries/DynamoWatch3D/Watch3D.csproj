@@ -50,7 +50,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
@@ -64,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
-      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+      <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
       <Name>DynamoCoreWpf</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -88,8 +87,8 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>  
-  <Target Name="AfterBuild">    
+  </Target>
+  <Target Name="AfterBuild">
   </Target>
   -->
 </Project>

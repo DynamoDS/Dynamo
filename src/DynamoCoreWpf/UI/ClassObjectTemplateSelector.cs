@@ -15,7 +15,7 @@ namespace Dynamo.Controls
             if (item is ClassInformationViewModel)
                 return ClassDetailsTemplate;
 
-            if (item is BrowserInternalElementViewModel)
+            if (item is NodeCategoryViewModel)
                 return ClassObjectTemplate;
 
             const string message = "Unknown object bound to collection";

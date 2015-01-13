@@ -16,7 +16,7 @@
 
         <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
-        <controls:BrowserItemToBooleanConverter x:Key="BrowserItemToBooleanConverter" />
+        <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
         <controls:RootElementVMToBoolConverter x:Key="RootElementToBoolConverter" />
         <controls:HasParentRootElement x:Key="HasParentRootElement" />
         <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
@@ -586,7 +586,7 @@
                 <Binding ElementName="libraryToolTipPopup"
                          Path="DataContext"
                          Mode="OneWay"
-                         Converter="{StaticResource BrowserItemToBooleanConverter}" />
+                         Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
             </uicontrols:LibraryToolTipPopup.IsOpen>
         </uicontrols:LibraryToolTipPopup>
     </StackPanel>

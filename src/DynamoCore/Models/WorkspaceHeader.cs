@@ -2,30 +2,28 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
-
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
     public class WorkspaceHeader
     {
-        private WorkspaceHeader()
-        {
+        private WorkspaceHeader() { }
 
-        }
-
-        public static WorkspaceHeader FromPath(DynamoModel dynamoModel, string path)
+        public static bool FromXmlDocument(
+            XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceHeader workspaceInfo)
         {
             try
             {
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(path);
-
                 string funName = null;
                 double cx = 0;
                 double cy = 0;
                 double zoom = 1.0;
                 string id = "";
+                string category = "";
+                string description = "";
+                string version = "";
 
                 var topNode = xmlDoc.GetElementsByTagName("Workspace");
 
@@ -49,9 +47,13 @@ namespace Dynamo.Models
                         else if (att.Name.Equals("Name"))
                             funName = att.Value;
                         else if (att.Name.Equals("ID"))
-                        {
                             id = att.Value;
-                        }
+                        else if (att.Name.Equals("Category"))
+                            category = att.Value;
+                        else if (att.Name.Equals("Description"))
+                            description = att.Value;
+                        else if (att.Name.Equals("Version"))
+                            version = att.Value;
                     }
                 }
 
@@ -63,32 +65,48 @@ namespace Dynamo.Models
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
 
-                return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FileName = path };
-
+                workspaceInfo = new WorkspaceHeader
+                {
+                    ID = id,
+                    Name = funName,
+                    X = cx,
+                    Y = cy,
+                    Zoom = zoom,
+                    FileName = path,
+                    Category = category,
+                    Description = description,
+                    Version = version
+                };
+                return true;
             }
             catch (Exception ex)
             {
-                dynamoModel.Logger.Log("There was an error opening the workbench.");
-                dynamoModel.Logger.Log(ex);
+                logger.Log("There was an error opening the workspace.");
+                logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 
-                if (DynamoModel.IsTestMode)
-                    throw ex; // Rethrow for NUnit.
+                //TODO(Steve): Need a better way to handle this kind of thing. -- MAGN-5712
+                if (isTestMode)
+                    throw; // Rethrow for NUnit.
 
-                return null;
+                workspaceInfo = null;
+                return false;
             }
         }
 
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Zoom { get; set; }
-        public string Name { get; set; }
-        public string ID { get; set; }
-        public string FileName { get; set; }
+        public string Version { get; private set; }
+        public string Description { get; private set; }
+        public string Category { get; private set; }
+        public double X { get; private set; }
+        public double Y { get; private set; }
+        public double Zoom { get; private set; }
+        public string Name { get; private set; }
+        public string ID { get; private set; }
+        public string FileName { get; private set; }
 
-        public bool IsCustomNodeWorkspace()
+        public bool IsCustomNodeWorkspace
         {
-            return !String.IsNullOrEmpty(ID);
+            get { return !string.IsNullOrEmpty(ID); }
         }
     }
 }

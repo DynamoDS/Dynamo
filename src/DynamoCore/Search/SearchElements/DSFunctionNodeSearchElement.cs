@@ -7,6 +7,7 @@ using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Search.SearchElements
 {
+#if false
     public class DSFunctionNodeSearchElement : NodeSearchElement, IEquatable<DSFunctionNodeSearchElement>
     {
         internal readonly FunctionDescriptor FunctionDescriptor;
@@ -111,4 +112,5 @@ namespace Dynamo.Search.SearchElements
             return inputParameters;
         }
     }
+#endif
 }
