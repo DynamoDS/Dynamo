@@ -20,10 +20,8 @@ namespace Dynamo.Nodes
         {
             model.InPortData.Clear();
 
-            if (Definition.DisplayParameters == null) return;
-
             foreach (var p in Definition.Parameters)
-                model.InPortData.Add(new PortData(p.Name, p.Type.ToShortString(), p.DefaultValue));
+                model.InPortData.Add(new PortData(p.Name, p.DisplayTypeName, p.DefaultValue));
         }
 
         protected override void InitializeOutputs(NodeModel model)

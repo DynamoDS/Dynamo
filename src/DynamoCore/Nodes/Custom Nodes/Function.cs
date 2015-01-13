@@ -11,6 +11,7 @@ using ProtoCore;
 using ProtoCore.DSASM;
 using DynamoUtilities;
 using Dynamo.Library;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Nodes
 {
@@ -181,7 +182,7 @@ namespace Dynamo.Nodes
     public class Symbol : NodeModel
     {
         private string inputSymbol = String.Empty;
-        private string nickName = String.Empty; 
+        private string nickName = String.Empty;
 
         public Symbol()
         {
@@ -191,7 +192,7 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
 
-            InputSymbol = String.Empty; 
+            InputSymbol = String.Empty;
         }
 
         public string InputSymbol
@@ -271,7 +272,7 @@ namespace Dynamo.Nodes
         {
             return
                 AstFactory.BuildIdentifier(
-                    nickName == null ? AstIdentifierBase : nickName + "__" + AstIdentifierBase);
+                    string.IsNullOrEmpty(nickName) ? AstIdentifierBase : nickName + "__" + AstIdentifierBase);
         }
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
@@ -321,8 +322,7 @@ namespace Dynamo.Nodes
 
             ParseParam parseParam = new ParseParam(this.GUID, parseString);
 
-            /*
-            if (DynamoModel.EngineController.TryParseCode(ref parseParam) &&
+            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
                 parseParam.ParsedNodes != null &&
                 parseParam.ParsedNodes.Any())
             {
@@ -338,7 +338,6 @@ namespace Dynamo.Nodes
                     return identifier != null;
                 }
             }
-            */
 
             return false;
         }
