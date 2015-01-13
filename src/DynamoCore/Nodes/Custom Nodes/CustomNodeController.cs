@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
@@ -20,8 +21,12 @@ namespace Dynamo.Nodes
         {
             model.InPortData.Clear();
 
-            foreach (var p in Definition.Parameters)
-                model.InPortData.Add(new PortData(p.Name, p.DisplayTypeName, p.DefaultValue));
+            if (Definition.DisplayParameters == null || Definition.Parameters == null)
+                return;
+
+            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.DisplayTypeName, p.DefaultValue));
+            foreach (var p in inputs)
+                model.InPortData.Add(new PortData(p.Item1, p.Item2, p.Item3));
         }
 
         protected override void InitializeOutputs(NodeModel model)
