@@ -278,8 +278,7 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in tree)
             {
-                item.FullCategoryName = string.IsNullOrEmpty(path) ? item.Name :
-                    path + Configurations.CategoryDelimiter + item.Name;
+                item.FullCategoryName = AddToFullPath(path, item.Name);
 
                 DefineCategoriesFullCategoryName(item.SubCategories, item.FullCategoryName);
             }
@@ -328,9 +327,12 @@ namespace Dynamo.ViewModels
             var nameStack = new Stack<string>(categoryNames.Reverse());
             var target = libraryRoot;
             bool isRoot = true;
+            string path = "";
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
+                path = AddToFullPath(path, next);
+
                 var categories = target.SubCategories;
                 NodeCategoryViewModel targetClassSuccessor = null;
                 var newTarget = categories.FirstOrDefault(c =>
@@ -346,6 +348,13 @@ namespace Dynamo.ViewModels
                 if (newTarget == default(NodeCategoryViewModel))
                 {
                     newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
+                    newTarget.FullCategoryName = path;
+                    if (nameStack.Count == 0 && target.SubCategories[0] is ClassesNodeCategoryViewModel)
+                    {
+                        target.SubCategories[0].SubCategories.Add(newTarget);
+                        newTarget.Entries.Add(entry);
+                        return;
+                    }
                     target.SubCategories.Add(newTarget);
                     PlaceInNewCategory(entry, newTarget, nameStack);
                     return;
@@ -354,6 +363,7 @@ namespace Dynamo.ViewModels
                     target = targetClassSuccessor;
                 else
                     target = newTarget;
+
                 isRoot = false;
             }
             target.Entries.Add(entry);
@@ -363,11 +373,19 @@ namespace Dynamo.ViewModels
             NodeSearchElementViewModel entry, NodeCategoryViewModel target,
             IEnumerable<string> categoryNames)
         {
-            //var path = "";
-            var newTargets = categoryNames.Select(name => new NodeCategoryViewModel(name)).ToList();
+            var path = target.FullCategoryName;
+            var newTargets = categoryNames.Select(name =>
+            {
+                path = AddToFullPath(path, name);
+
+                var cat = new NodeCategoryViewModel(name);
+                cat.FullCategoryName = path;
+                return cat;
+            }).ToList();
 
             int indexToInsertClass = newTargets.Count - 1 > 0 ? newTargets.Count - 1 : 0;
             newTargets.Insert(indexToInsertClass, new ClassesNodeCategoryViewModel());
+            newTargets[indexToInsertClass].FullCategoryName = Configurations.ClassesDefaultName;
 
             foreach (var newTarget in newTargets)
             {
@@ -376,6 +394,12 @@ namespace Dynamo.ViewModels
             }
 
             target.Entries.Add(entry);
+        }
+
+        private static string AddToFullPath(string path, string addition)
+        {
+            return string.IsNullOrEmpty(path) ? addition :
+                path + Configurations.CategoryDelimiter + addition;
         }
 
         #endregion
