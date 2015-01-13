@@ -134,7 +134,7 @@ namespace Dynamo.Nodes
             return model.InPortData.Count;
         }
 
-        private void MarkNodeForUpdate()
+        private void MarkNodeDirty()
         {
             var dirty = model.InPortData.Count != inputAmtLastBuild
                 || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
@@ -155,7 +155,7 @@ namespace Dynamo.Nodes
             if (count > 0)
                 model.InPortData.RemoveAt(count - 1);
 
-            MarkNodeForUpdate();
+            MarkNodeDirty();
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace Dynamo.Nodes
             var idx = GetInputIndexFromModel();
             model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
 
-            MarkNodeForUpdate();
+            MarkNodeDirty();
         }
 
         /// <summary>

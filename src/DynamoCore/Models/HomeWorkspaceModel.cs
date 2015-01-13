@@ -118,7 +118,7 @@ namespace Dynamo.Models
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            MarkAllNodesForUpdate();
+            MarkAllNodesDirty();
         }
 
         public override void OnAstUpdated()
@@ -167,7 +167,7 @@ namespace Dynamo.Models
             
             if (markNodesAsDirty)
             {
-                MarkAllNodesForUpdate();
+                MarkAllNodesDirty();
             }
 
             if (DynamicRunEnabled)
@@ -217,11 +217,7 @@ namespace Dynamo.Models
             foreach (var modifiedNode in updateTask.ModifiedNodes)
                 modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
 
-            foreach (var n in Nodes)
-            {
-                n.ClearDirtyFlag();
-            }
-              
+            MarkAllNodesClean();
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.

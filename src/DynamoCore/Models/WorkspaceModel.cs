@@ -555,7 +555,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Mark all nodes in workspace for AST update
         /// </summary>
-        protected void MarkAllNodesForUpdate()
+        protected void MarkAllNodesDirty()
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
@@ -564,6 +564,14 @@ namespace Dynamo.Models
                 node.MarkAsDirty(forceExecute:false);
             }
             OnAstUpdated();
+        }
+
+        protected void MarkAllNodesClean()
+        {
+            foreach (var node in Nodes)
+            {
+                node.ClearDirtyFlag();
+            }
         }
 
         /// <summary>
