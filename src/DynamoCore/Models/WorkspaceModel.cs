@@ -400,7 +400,7 @@ namespace Dynamo.Models
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory)
+            double x, double y, NodeFactory factory, string fileName="")
         {
             Name = name;
 
@@ -408,7 +408,7 @@ namespace Dynamo.Models
             notes = new ObservableCollection<NoteModel>(n);
             X = x;
             Y = y;
-
+            FileName = fileName;
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
