@@ -102,7 +102,7 @@ public class TracedHog
 
         if (hid == null)
         {
-            //Trace didn't give us a hog, it's a new one
+            // Trace didn't give us a hog, it's a new one.
             tHog = new TracedHog(x, y);
         }
         else
@@ -110,6 +110,8 @@ public class TracedHog
             tHog = TracedHogManager.GetHogByID(hid.IntID);
         }
 
+        // Set the trace data on the return to be this hog.
+        DSNodeServices.TraceUtils.SetTraceData(REVIT_TRACE_ID, new HogID { IntID = tHog.ID });
         return tHog;
     }
 

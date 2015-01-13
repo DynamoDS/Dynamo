@@ -15,6 +15,7 @@ using Dynamo.Utilities;
 
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
+using NodeModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.NodeModificationUndoHelper;
 
 namespace Dynamo.Models
 {
@@ -771,10 +772,12 @@ namespace Dynamo.Models
 
         internal void SendModelEvent(Guid modelGuid, string eventName)
         {
-            ModelBase model = GetModelInternal(modelGuid);
-            if (null != model)
+            var model = GetModelInternal(modelGuid) as NodeModel;
+            if (model == null)
+                throw new InvalidOperationException("Unexpected model type");
+
+            using (new NodeModificationUndoHelper(undoRecorder, model))
             {
-                RecordModelForModification(model, UndoRecorder);
                 if (!model.HandleModelEvent(eventName, undoRecorder))
                 {
                     string type = model.GetType().FullName;
@@ -790,17 +793,19 @@ namespace Dynamo.Models
                     // is intended for.
                     throw new InvalidOperationException(message);
                 }
-
-                HasUnsavedChanges = true;
             }
+
+            HasUnsavedChanges = true;
         }
 
         internal void UpdateModelValue(Guid modelGuid, string propertyName, string value)
         {
-            ModelBase model = GetModelInternal(modelGuid);
-            if (null != model)
+            var model = GetModelInternal(modelGuid) as NodeModel;
+            if (model == null)
+                throw new InvalidOperationException("Unexpected model type");
+
+            using (new NodeModificationUndoHelper(undoRecorder, model))
             {
-                RecordModelForModification(model, UndoRecorder);
                 if (!model.UpdateValue(propertyName, value, undoRecorder))
                 {
                     string type = model.GetType().FullName;
@@ -817,9 +822,9 @@ namespace Dynamo.Models
                     // is intended for.
                     throw new InvalidOperationException(message);
                 }
-
-                HasUnsavedChanges = true;
             }
+
+            HasUnsavedChanges = true;
         }
 
         [Obsolete("Node to Code not enabled, API subject to change.")]
@@ -1152,11 +1157,10 @@ namespace Dynamo.Models
 
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
-                ConnectorModel connector;
-                NodeGraph.LoadConnectorFromXml(
-                    modelData,
-                    Nodes.ToDictionary(node => node.GUID),
-                    out connector);
+                var connector = NodeGraph.LoadConnectorFromXml(modelData,
+                    Nodes.ToDictionary(node => node.GUID));
+
+                OnConnectorAdded(connector); // Update view-model and view.
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
@@ -1167,6 +1171,7 @@ namespace Dynamo.Models
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
+                RegisterNode(nodeModel);
             }
         }
 
