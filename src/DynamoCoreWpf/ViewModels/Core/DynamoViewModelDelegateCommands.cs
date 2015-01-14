@@ -34,7 +34,8 @@ namespace Dynamo.ViewModels
             ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
-            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
+            AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
+            DisplayPreviewsCommand = new DelegateCommand(DisplayPreviews, CanDisplayPreviews);
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_ => model.Copy(), CanCopy);
@@ -131,6 +132,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand PublishNewPackageCommand { get; set; }
         public DelegateCommand PublishCurrentWorkspaceCommand { get; set; }
         public DelegateCommand PublishSelectedNodesCommand { get; set; }
+        public DelegateCommand DisplayPreviewsCommand { get; set; }
         public DelegateCommand PanCommand { get; set; }
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }

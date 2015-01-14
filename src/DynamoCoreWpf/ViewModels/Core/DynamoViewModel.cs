@@ -765,6 +765,7 @@ namespace Dynamo.ViewModels
             PublishSelectedNodesCommand.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
+            DisplayPreviewsCommand.RaiseCanExecuteChanged();
         }
 
         void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1330,6 +1331,15 @@ namespace Dynamo.ViewModels
         internal bool CanAlignSelected(object param)
         {
             return this.CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
+        }
+
+        private void DisplayPreviews(object parameter)
+        {
+        }
+
+        private bool CanDisplayPreviews(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
         }
 
         public void DoGraphAutoLayout(object parameter)

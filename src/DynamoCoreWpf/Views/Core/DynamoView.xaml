@@ -492,6 +492,14 @@
                                   Name="publishCurrent" />
                     </MenuItem>
 
+                    <MenuItem Header="Selec_tion"
+                              Focusable="False">
+                        <MenuItem Name="DisplayPreviews"
+                                  Header="Display _Previews"
+                                  Focusable="False"
+                                  Command="{Binding Path=DisplayPreviewsCommand}" />
+                    </MenuItem>
+
                     <MenuItem Header="_Settings"
                               Name="SettingsMenu"
                               Focusable="False"
