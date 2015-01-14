@@ -6081,6 +6081,10 @@ namespace ProtoCore.DSASM
             Properties = PopInterpreterProps();
 
             ProcedureNode procNode = GetProcedureNode(blockId, ci, fi);
+            if (explicitCall)
+            {
+                DebugReturn(procNode, pc);
+            }
             // This resotring execution states is only permitted if the current scope is still in a function
             //if (currentScopeFunction != Constants.kGlobalScope)
             {
