@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Threading;
-
+using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.UI;
 using Dynamo.Interfaces;
@@ -1335,6 +1335,11 @@ namespace Dynamo.ViewModels
 
         private void DisplayPreviews(object parameter)
         {
+            if (DynamoSelection.Instance.Selection.Count <= 0)
+                return;
+
+            var selection = DynamoSelection.Instance.Selection;
+            OnRequestDisplayPreviews(selection.OfType<NodeModel>());
         }
 
         private bool CanDisplayPreviews(object parameter)
