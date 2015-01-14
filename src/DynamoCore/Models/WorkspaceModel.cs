@@ -12,7 +12,7 @@ using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-
+using ProtoCore.AST;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
 using NodeModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.NodeModificationUndoHelper;
@@ -400,7 +400,7 @@ namespace Dynamo.Models
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory)
+            double x, double y, NodeFactory factory, string fileName="")
         {
             Name = name;
 
@@ -408,7 +408,7 @@ namespace Dynamo.Models
             notes = new ObservableCollection<NoteModel>(n);
             X = x;
             Y = y;
-
+            FileName = fileName;
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
@@ -772,27 +772,40 @@ namespace Dynamo.Models
 
         internal void SendModelEvent(Guid modelGuid, string eventName)
         {
-            var model = GetModelInternal(modelGuid) as NodeModel;
-            if (model == null)
-                throw new InvalidOperationException("Unexpected model type");
+            var retrievedModel = GetModelInternal(modelGuid);
+            if (retrievedModel == null)
+                throw new InvalidOperationException("SendModelEvent: Model not found");
 
-            using (new NodeModificationUndoHelper(undoRecorder, model))
+            var handled = false;
+            var nodeModel = retrievedModel as NodeModel;
+            if (nodeModel != null)
             {
-                if (!model.HandleModelEvent(eventName, undoRecorder))
+                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
                 {
-                    string type = model.GetType().FullName;
-                    string message = string.Format(
-                        "ModelBase.HandleModelEvent call not handled.\n\n" +
-                        "Model type: {0}\n" +
-                        "Model GUID: {1}\n" +
-                        "Event name: {2}",
-                        type, modelGuid, eventName);
-
-                    // All 'HandleModelEvent' calls must be handled by one of 
-                    // the ModelBase derived classes that the 'SendModelEvent'
-                    // is intended for.
-                    throw new InvalidOperationException(message);
+                    handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
                 }
+            }
+            else
+            {
+                // Perform generic undo recording for models other than node.
+                RecordModelForModification(retrievedModel, UndoRecorder);
+                handled = retrievedModel.HandleModelEvent(eventName, undoRecorder);
+            }
+
+            if (!handled) // Method call was not handled by any derived class.
+            {
+                string type = retrievedModel.GetType().FullName;
+                string message = string.Format(
+                    "ModelBase.HandleModelEvent call not handled.\n\n" +
+                    "Model type: {0}\n" +
+                    "Model GUID: {1}\n" +
+                    "Event name: {2}",
+                    type, modelGuid, eventName);
+
+                // All 'HandleModelEvent' calls must be handled by one of 
+                // the ModelBase derived classes that the 'SendModelEvent'
+                // is intended for.
+                throw new InvalidOperationException(message);
             }
 
             HasUnsavedChanges = true;
@@ -800,28 +813,41 @@ namespace Dynamo.Models
 
         internal void UpdateModelValue(Guid modelGuid, string propertyName, string value)
         {
-            var model = GetModelInternal(modelGuid) as NodeModel;
-            if (model == null)
-                throw new InvalidOperationException("Unexpected model type");
+            var retrievedModel = GetModelInternal(modelGuid);
+            if (retrievedModel == null)
+                throw new InvalidOperationException("UpdateModelValue: Model not found");
 
-            using (new NodeModificationUndoHelper(undoRecorder, model))
+            var handled = false;
+            var nodeModel = retrievedModel as NodeModel;
+            if (nodeModel != null)
             {
-                if (!model.UpdateValue(propertyName, value, undoRecorder))
+                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
                 {
-                    string type = model.GetType().FullName;
-                    string message = string.Format(
-                        "ModelBase.UpdateValue call not handled.\n\n" +
-                        "Model type: {0}\n" +
-                        "Model GUID: {1}\n" +
-                        "Property name: {2}\n" +
-                        "Property value: {3}",
-                        type, modelGuid, propertyName, value);
-
-                    // All 'UpdateValue' calls must be handled by one of the 
-                    // ModelBase derived classes that the 'UpdateModelValue'
-                    // is intended for.
-                    throw new InvalidOperationException(message);
+                    handled = nodeModel.UpdateValue(propertyName, value, undoRecorder);
                 }
+            }
+            else
+            {
+                // Perform generic undo recording for models other than node.
+                RecordModelForModification(retrievedModel, UndoRecorder);
+                handled = retrievedModel.UpdateValue(propertyName, value, undoRecorder);
+            }
+
+            if (!handled) // Method call was not handled by any derived class.
+            {
+                string type = retrievedModel.GetType().FullName;
+                string message = string.Format(
+                    "ModelBase.UpdateValue call not handled.\n\n" +
+                    "Model type: {0}\n" +
+                    "Model GUID: {1}\n" +
+                    "Property name: {2}\n" +
+                    "Property value: {3}",
+                    type, modelGuid, propertyName, value);
+
+                // All 'UpdateValue' calls must be handled by one of the 
+                // ModelBase derived classes that the 'UpdateModelValue'
+                // is intended for.
+                throw new InvalidOperationException(message);
             }
 
             HasUnsavedChanges = true;
