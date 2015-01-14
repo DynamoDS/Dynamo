@@ -1,0 +1,26 @@
+<Workspace Version="0.7.6.3454" X="0" Y="0" zoom="1" Description="" Category="Builtin Functions" Name="TestCustomNode" ID="0af1432e-397b-f756-a19c-c512d6e10933">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="dd3dc1ad-9b3c-abbc-6184-bee63a5629d0" nickname="Point.ByCoordinates" x="4169" y="4172.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9814373c-bc23-0da9-407e-658da76862b8" nickname="Circle.ByCenterPointRadius" x="4463" y="4329.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0c41af5a-6a84-28e8-f59b-1822d75d6bf7" nickname="Input" x="4156" y="4489.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Symbol value="Radius" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2a4ff41b-0706-9756-338b-3edd2b1c2b23" nickname="Output" x="4924" y="4283.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Symbol value="Filled circle" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b2ef37f8-2edc-d4f7-3fa7-aaa853675a9c" nickname="Surface.ByPatch" x="4642" y="4563.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Surface.ByPatch@Autodesk.DesignScript.Geometry.Curve" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="dd3dc1ad-9b3c-abbc-6184-bee63a5629d0" start_index="0" end="9814373c-bc23-0da9-407e-658da76862b8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9814373c-bc23-0da9-407e-658da76862b8" start_index="0" end="b2ef37f8-2edc-d4f7-3fa7-aaa853675a9c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0c41af5a-6a84-28e8-f59b-1822d75d6bf7" start_index="0" end="9814373c-bc23-0da9-407e-658da76862b8" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2ef37f8-2edc-d4f7-3fa7-aaa853675a9c" start_index="0" end="2a4ff41b-0706-9756-338b-3edd2b1c2b23" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

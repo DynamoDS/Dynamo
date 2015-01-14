@@ -1,0 +1,302 @@
+{
+  "type":"RunCommandsMessage",
+  "Commands":[
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "nodeName":"Number",
+      "x":4305, "y":4388,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "name":"Value",
+      "value":1
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "name":"ArgumentLacing",
+      "value":"Disabled"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "name":"UsingDefaultValue",
+      "value":""
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"a17317bc-8af6-0e9c-5341-212b5ffb11e9",
+      "nodeName":"+@,",
+      "x":4683, "y":4301,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"a17317bc-8af6-0e9c-5341-212b5ffb11e9",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"a17317bc-8af6-0e9c-5341-212b5ffb11e9",
+      "name":"UsingDefaultValue",
+      "value":"true;true"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "nodeName":"Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "x":5029, "y":4185,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "name":"UsingDefaultValue",
+      "value":"true;false"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"1935effc-c04c-8bbd-1969-22762f317056",
+      "nodeName":"Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "x":4625, "y":4174,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"1935effc-c04c-8bbd-1969-22762f317056",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"1935effc-c04c-8bbd-1969-22762f317056",
+      "name":"UsingDefaultValue",
+      "value":"false;false"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"2fc3072a-34b5-694c-0433-a42819e23f56",
+      "nodeName":"Code Block",
+      "x":4334, "y":4287,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"2fc3072a-34b5-694c-0433-a42819e23f56",
+      "name":"Code",
+      "value":"0..10..3;"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"2fc3072a-34b5-694c-0433-a42819e23f56",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"2fc3072a-34b5-694c-0433-a42819e23f56",
+      "name":"UsingDefaultValue",
+      "value":""
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"7e47db1d-afea-50ed-67b4-25ca2d122e36",
+      "nodeName":"Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double",
+      "x":5155, "y":4444,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"7e47db1d-afea-50ed-67b4-25ca2d122e36",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"7e47db1d-afea-50ed-67b4-25ca2d122e36",
+      "name":"UsingDefaultValue",
+      "value":"false;false;false"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"6a7a03ab-0053-492a-fb52-e16825e19508",
+      "nodeName":"Number",
+      "x":4563, "y":4637,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"6a7a03ab-0053-492a-fb52-e16825e19508",
+      "name":"Value",
+      "value":10
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"6a7a03ab-0053-492a-fb52-e16825e19508",
+      "name":"ArgumentLacing",
+      "value":"Disabled"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"6a7a03ab-0053-492a-fb52-e16825e19508",
+      "name":"UsingDefaultValue",
+      "value":""
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"6f9ddfb7-a475-01b5-0670-80eac0758346",
+      "nodeName":"Boolean",
+      "x":4722, "y":4776.5,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"6f9ddfb7-a475-01b5-0670-80eac0758346",
+      "name":"Value",
+      "value":true
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"6f9ddfb7-a475-01b5-0670-80eac0758346",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"6f9ddfb7-a475-01b5-0670-80eac0758346",
+      "name":"UsingDefaultValue",
+      "value":""
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"a17317bc-8af6-0e9c-5341-212b5ffb11e9",
+      "portIndex":1,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"a17317bc-8af6-0e9c-5341-212b5ffb11e9",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"7e47db1d-afea-50ed-67b4-25ca2d122e36",
+      "portIndex":1,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"a17317bc-8af6-0e9c-5341-212b5ffb11e9",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "portIndex":1,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"a17317bc-8af6-0e9c-5341-212b5ffb11e9",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"7e47db1d-afea-50ed-67b4-25ca2d122e36",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"1935effc-c04c-8bbd-1969-22762f317056",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"2fc3072a-34b5-694c-0433-a42819e23f56",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"1935effc-c04c-8bbd-1969-22762f317056",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"6a7a03ab-0053-492a-fb52-e16825e19508",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"7e47db1d-afea-50ed-67b4-25ca2d122e36",
+      "portIndex":2,
+      "portType":"INPUT",
+      "mode":"End"
+    }
+  ],
+  "WorkspaceGuid":"00000000-0000-0000-0000-000000000000"
+}

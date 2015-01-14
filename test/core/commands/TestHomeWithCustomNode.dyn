@@ -1,0 +1,22 @@
+<Workspace Version="0.7.6.3454" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f5359dfc-04da-78a7-09a1-6ea5b234108d" nickname="TestCustomNode" x="4400" y="4185" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <ID value="0af1432e-397b-f756-a19c-c512d6e10933" />
+      <Name value="TestCustomNode" />
+      <Description value="" />
+      <Inputs>
+        <Input value="Radius" />
+      </Inputs>
+      <Outputs>
+        <Output value="Filled circle" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="9d33e2c4-7418-e452-6170-3b196ea4789e" nickname="Number" x="4110" y="4244" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="15" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9d33e2c4-7418-e452-6170-3b196ea4789e" start_index="0" end="f5359dfc-04da-78a7-09a1-6ea5b234108d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
