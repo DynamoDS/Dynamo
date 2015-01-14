@@ -222,8 +222,8 @@ namespace Dynamo.ViewModels
             libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
-            InsertClassesIntoTree(LibraryRootCategories);
             DefineCategoriesFullCategoryName(LibraryRootCategories, "");
+            InsertClassesIntoTree(LibraryRootCategories);
 
             ChangeCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
@@ -262,12 +262,17 @@ namespace Dynamo.ViewModels
             {
                 var classes = item.SubCategories.Where(cat => cat.SubCategories.Count == 0).ToList();
 
+                if (classes.Count == 0)
+                    continue;
+
                 foreach (var item2 in classes)
                     item.SubCategories.Remove(item2);
 
                 InsertClassesIntoTree(item.SubCategories);
 
                 var container = new ClassesNodeCategoryViewModel();
+                container.Parent = item;
+                container.FullCategoryName = Configurations.ClassesDefaultName;
                 container.SubCategories.AddRange(classes);
 
                 item.SubCategories.Insert(0, container);
@@ -328,6 +333,7 @@ namespace Dynamo.ViewModels
             var target = libraryRoot;
             bool isRoot = true;
             string path = "";
+            ClassesNodeCategoryViewModel targetClass = null;
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
@@ -339,6 +345,7 @@ namespace Dynamo.ViewModels
                 {
                     if (c is ClassesNodeCategoryViewModel)
                     {
+                        targetClass = c as ClassesNodeCategoryViewModel;
                         targetClassSuccessor = c.SubCategories.FirstOrDefault(c2 => c2.Name == next);
                         return targetClassSuccessor != null;
                     }
@@ -349,11 +356,32 @@ namespace Dynamo.ViewModels
                 {
                     newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
                     newTarget.FullCategoryName = path;
-                    if (nameStack.Count == 0 && target.SubCategories[0] is ClassesNodeCategoryViewModel)
+                    if (nameStack.Count == 0 && target.SubCategories.Count > 0 &&
+                        target.SubCategories[0] is ClassesNodeCategoryViewModel)
                     {
                         target.SubCategories[0].SubCategories.Add(newTarget);
                         newTarget.Entries.Add(entry);
                         return;
+                    }
+
+                    if (targetClass != null)
+                    {
+                        targetClass.SubCategories.Remove(target);
+                        targetClass.Parent.SubCategories.Add(target);
+                        if (targetClass.SubCategories.Count == 0)
+                            targetClass.Parent.SubCategories.RemoveAt(0);
+
+                        targetClass.Dispose();
+
+                        if (nameStack.Count == 0)
+                        {
+                            targetClass = new ClassesNodeCategoryViewModel();
+                            targetClass.FullCategoryName = Configurations.ClassesDefaultName;
+                            targetClass.Parent = target;
+
+                            target.SubCategories.Add(targetClass);
+                            target = targetClass;
+                        }
                     }
                     target.SubCategories.Add(newTarget);
                     PlaceInNewCategory(entry, newTarget, nameStack);
@@ -373,6 +401,12 @@ namespace Dynamo.ViewModels
             NodeSearchElementViewModel entry, NodeCategoryViewModel target,
             IEnumerable<string> categoryNames)
         {
+            if (!categoryNames.Any())
+            {
+                target.Entries.Add(entry);
+                return;
+            }
+
             var path = target.FullCategoryName;
             var newTargets = categoryNames.Select(name =>
             {
@@ -383,8 +417,9 @@ namespace Dynamo.ViewModels
                 return cat;
             }).ToList();
 
-            int indexToInsertClass = newTargets.Count - 1 > 0 ? newTargets.Count - 1 : 0;
+            int indexToInsertClass = newTargets.Count - 1;
             newTargets.Insert(indexToInsertClass, new ClassesNodeCategoryViewModel());
+            (newTargets[indexToInsertClass] as ClassesNodeCategoryViewModel).Parent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : target;
             newTargets[indexToInsertClass].FullCategoryName = Configurations.ClassesDefaultName;
 
             foreach (var newTarget in newTargets)
