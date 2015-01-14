@@ -17,51 +17,31 @@ namespace Dynamo.Wpf
     {
         private DynamoViewModel dynamoViewModel;
         private Nodes.Watch watchNodeModel;
+        private WatchViewModel root;
         private WatchTree watchTree;
 
         public void CustomizeView(Nodes.Watch nodeModel, NodeView nodeView)
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-
-            // TODO(Peter): Watch should not know about the ViewModel layer MAGN-5590
-            nodeModel.DynamoViewModel = this.dynamoViewModel;
             this.watchNodeModel = nodeModel;
 
             watchTree = new WatchTree();
+            root = new WatchViewModel(this.dynamoViewModel.VisualizationManager);
 
-            // MAGN-2446: Fixes the maximum width/height of watch node so it won't 
-            // go too crazy on us. Note that this is only applied to regular watch 
-            // node so it won't be limiting the size of image/3D watch nodes.
-            // 
+            // Fix the maximum width/height of watch node.
             nodeView.PresentationGrid.MaxWidth = Configurations.MaxWatchNodeWidth;
             nodeView.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
-            if (watchNodeModel.Root == null)
-                watchNodeModel.Root = new WatchViewModel(this.dynamoViewModel.VisualizationManager);
-
-            watchTree.DataContext = watchNodeModel.Root;
-
-            watchNodeModel.RequestBindingUnhook += delegate
-            {
-                BindingOperations.ClearAllBindings(watchTree.treeView1);
-            };
-
-            watchNodeModel.RequestBindingRehook += delegate
-            {
-                var sourceBinding = new Binding("Children")
-                {
-                    Mode = BindingMode.TwoWay,
-                    Source = watchNodeModel.Root,
-                };
-                watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
-            };
+            nodeModel.InPorts[0].PortConnected += InputPortConnected;
+            
+            watchTree.DataContext = root;
 
             var checkedBinding = new Binding("ShowRawData")
             {
                 Mode = BindingMode.TwoWay,
-                Source = watchNodeModel.Root
+                Source = root
             };
 
             var rawDataMenuItem = new MenuItem
@@ -73,28 +53,60 @@ namespace Dynamo.Wpf
 
             nodeView.MainContextMenu.Items.Add(rawDataMenuItem);
 
-            watchNodeModel.Workspace.DynamoModel.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
-            watchNodeModel.Root.PropertyChanged += Root_PropertyChanged;
+            this.dynamoViewModel.Model.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            root.PropertyChanged += Root_PropertyChanged;
 
             DataBridge.Instance.RegisterCallback(watchNodeModel.GUID.ToString(), EvaluationCompleted);
         }
 
-        private void EvaluationCompleted(object o)
+        /// <summary>
+        ///     Callback for port connection. Handles clearing the watch.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void InputPortConnected(object sender, EventArgs e)
         {
-            watchNodeModel.CachedValue = o;
-            watchNodeModel.DispatchOnUIThread(
-                delegate
+            Tuple<int, NodeModel> input;
+            if (watchNodeModel.TryGetInput(watchNodeModel.InPorts.IndexOf(sender as PortModel), out input))
+            {
+                var oldId = astBeingWatched;
+                astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
+                if (oldId != null && astBeingWatched.Value != oldId.Value)
                 {
-                    //unhook the binding
-                    watchNodeModel.OnRequestBindingUnhook(EventArgs.Empty);
-
-                    watchNodeModel.Root.Children.Clear();
-                    watchNodeModel.Root.Children.Add(watchNodeModel.GetWatchNode());
-
-                    //rehook the binding
-                    watchNodeModel.OnRequestBindingRehook(EventArgs.Empty);
+                    CachedValue = null;
+                    if (Root != null)
+                        Root.Children.Clear();
                 }
-                );
+            }
+        }
+
+        /// <summary>
+        /// This method returns a WatchNode for it's preview AST node.
+        /// This method gets called on ui thread when "IsUpdated" property
+        /// change is notified. This method is responsible for populating the 
+        /// watch node with evaluated value of the input. Gets the MirrorData
+        /// for the input/preview AST and then processes the mirror data to
+        /// render the watch content properly.
+        /// </summary>
+        /// <returns>WatchNode</returns>
+        internal WatchViewModel GetWatchNode()
+        {
+            var inputVar = watchNodeModel.IsPartiallyApplied
+                ? watchNodeModel.AstIdentifierForPreview.Name
+                : watchNodeModel.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
+
+            var core = this.dynamoViewModel.Model.EngineController.LiveRunnerCore;
+
+            if (root != null)
+            {
+                return this.dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
+                    watchNodeModel.CachedValue,
+                    core,
+                    inputVar,
+                    root.ShowRawData);
+            }
+            else
+                return this.dynamoViewModel.GenerateWatchViewModelForData(CachedValue, core, inputVar);
         }
 
         void Root_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -118,30 +130,38 @@ namespace Dynamo.Wpf
             }
         }
 
+        protected void OnBuilt()
+        {
+            DataBridge.Instance.RegisterCallback(watchNodeModel.GUID.ToString(), EvaluationCompleted);
+        }
+
+        private void EvaluationCompleted(object o)
+        {
+            watchNodeModel.CachedValue = o;
+            ResetWatch();
+        }
+
         private void ResetWatch()
         {
-            int count = 0;
             watchNodeModel.DispatchOnUIThread(
                 delegate
                 {
-                    //unhook the binding
-                    watchNodeModel.OnRequestBindingUnhook(EventArgs.Empty);
+                    var temp = root;
+                    root = null;
 
-                    watchNodeModel.Root.Children.Clear();
+                    temp.Children.Clear();
+                    temp.Children.Add(this.GetWatchNode());
 
-                    watchNodeModel.Root.Children.Add(watchNodeModel.GetWatchNode());
-
-                    count++;
-
-                    //rehook the binding
-                    watchNodeModel.OnRequestBindingRehook(EventArgs.Empty);
+                    root = temp;
                 });
         }
 
         public void Dispose()
         {
-            watchNodeModel.Workspace.DynamoModel.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
-            watchNodeModel.Root.PropertyChanged -= Root_PropertyChanged;
+            nodeModel.InPorts[0].PortConnected += InputPortConnected;
+            dynamoViewModel.Model.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+            root.PropertyChanged -= Root_PropertyChanged;
+            DataBridge.Instance.UnregisterCallback(watchNodeModel.GUID.ToString());
         }
 
     }

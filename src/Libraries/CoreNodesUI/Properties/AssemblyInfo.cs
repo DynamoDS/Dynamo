@@ -12,3 +12,4 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]
+[assembly: InternalsVisibleTo("CoreNodesWpf")]
