@@ -270,9 +270,7 @@ namespace Dynamo.ViewModels
 
                 InsertClassesIntoTree(item.SubCategories);
 
-                var container = new ClassesNodeCategoryViewModel();
-                container.Parent = item;
-                container.FullCategoryName = Configurations.ClassesDefaultName;
+                var container = new ClassesNodeCategoryViewModel(Configurations.ClassesDefaultName, item);
                 container.SubCategories.AddRange(classes);
 
                 item.SubCategories.Insert(0, container);
@@ -375,9 +373,8 @@ namespace Dynamo.ViewModels
 
                         if (nameStack.Count == 0)
                         {
-                            targetClass = new ClassesNodeCategoryViewModel();
-                            targetClass.FullCategoryName = Configurations.ClassesDefaultName;
-                            targetClass.Parent = target;
+                            targetClass =
+                                new ClassesNodeCategoryViewModel(Configurations.ClassesDefaultName, target);
 
                             target.SubCategories.Add(targetClass);
                             target = targetClass;
@@ -418,9 +415,9 @@ namespace Dynamo.ViewModels
             }).ToList();
 
             int indexToInsertClass = newTargets.Count - 1;
-            newTargets.Insert(indexToInsertClass, new ClassesNodeCategoryViewModel());
-            (newTargets[indexToInsertClass] as ClassesNodeCategoryViewModel).Parent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : target;
-            newTargets[indexToInsertClass].FullCategoryName = Configurations.ClassesDefaultName;
+            var classParent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : target;
+            var newClass = new ClassesNodeCategoryViewModel(Configurations.ClassesDefaultName, classParent);
+            newTargets.Insert(indexToInsertClass, newClass);
 
             foreach (var newTarget in newTargets)
             {
