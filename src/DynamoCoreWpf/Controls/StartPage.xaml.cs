@@ -159,19 +159,19 @@ namespace Dynamo.UI.Controls
 
             #region Reference List
 
-            references.Add(new StartPageListItem(Resources.StartPageWrittenTutorials, "icon-reference.png")
+            references.Add(new StartPageListItem(Resources.StartPageAdvancedTutorials, /*NXLT*/"icon-reference.png")
             {
-                ContextData = Configurations.DynamoWrittenTutorials,
+                ContextData = Configurations.DynamoAdvancedTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            references.Add(new StartPageListItem(Resources.StartPageVideoTutorials, "icon-video.png")
+            references.Add(new StartPageListItem(Resources.StartPageVideoTutorials, /*NXLT*/"icon-video.png")
             {
                 ContextData = Configurations.DynamoVideoTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            references.Add(new StartPageListItem(Resources.StartPageMoreSamples, "icons-more-samples.png")
+            references.Add(new StartPageListItem(Resources.StartPageMoreSamples, /*NXLT*/"icons-more-samples.png")
             {
                 ContextData = Configurations.DynamoMoreSamples,
                 ClickAction = StartPageListItem.Action.ExternalUrl

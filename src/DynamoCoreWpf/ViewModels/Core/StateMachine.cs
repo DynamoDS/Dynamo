@@ -548,7 +548,10 @@ namespace Dynamo.ViewModels
                     // We'll see if there is any node being clicked on. If so, 
                     // then the state machine should initiate a drag operation.
                     if (null != GetSelectableFromPoint(mouseDownPos))
+                    {
                         InitiateDragSequence();
+                        returnFocusToSearch = ShouldDraggingReturnFocusToSearch();
+                    }
                     else
                     {
                         if ((e.Source is Dynamo.Controls.EndlessGrid) == false)
@@ -801,6 +804,30 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException();
 
                 SetCurrentState(State.DragSetup);
+            }
+
+            private bool ShouldDraggingReturnFocusToSearch()
+            {
+                if (currentState != State.DragSetup)
+                    throw new InvalidOperationException();
+
+                // If there is only one node being dragged, and that node is a 
+                // code block node, then do not set the focus back to search. 
+                // This is to prevent code block editor losing its focus, causing 
+                // the newly created code block to be deleted (when user is just 
+                // trying to reposition the newly created node before editing its 
+                // contents. User reported issue can be found here:
+                // 
+                //      https://github.com/DynamoDS/Dynamo/issues/1447
+                // 
+                if (DynamoSelection.Instance.Selection.Count == 1)
+                {
+                    var selectedNode = DynamoSelection.Instance.Selection[0];
+                    if (selectedNode is CodeBlockNodeModel)
+                        return false;
+                }
+
+                return true; // Return focus to search box.
             }
 
             private void InitiateWindowSelectionSequence()

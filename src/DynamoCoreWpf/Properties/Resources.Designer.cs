@@ -2945,6 +2945,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced Tutorials.
+        /// </summary>
+        public static string StartPageAdvancedTutorials {
+            get {
+                return ResourceManager.GetString("StartPageAdvancedTutorials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASK.
         /// </summary>
         public static string StartPageAsk {
@@ -3094,15 +3103,6 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageVisitDynamoBim {
             get {
                 return ResourceManager.GetString("StartPageVisitDynamoBim", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Written Tutorials.
-        /// </summary>
-        public static string StartPageWrittenTutorials {
-            get {
-                return ResourceManager.GetString("StartPageWrittenTutorials", resourceCulture);
             }
         }
         

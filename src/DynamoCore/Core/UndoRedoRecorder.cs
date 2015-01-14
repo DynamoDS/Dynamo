@@ -112,20 +112,6 @@ namespace Dynamo.Core
             return new ActionGroupDisposable(this);
         }
 
-        private sealed class ActionGroupDisposable : IDisposable
-        {
-            private readonly UndoRedoRecorder recorder;
-            public ActionGroupDisposable(UndoRedoRecorder recorder)
-            {
-                this.recorder = recorder;
-            }
-            
-            public void Dispose()
-            {
-                recorder.EndActionGroup();
-            }
-        }
-
         /// <summary>
         /// Call this method to close the currently opened action group, wrapping 
         /// all recorded actions as part of the group. Actions in an action group
@@ -242,7 +228,9 @@ namespace Dynamo.Core
         /// recent item that was pushed onto the undo stack (and that it does 
         /// not accidentally pop an action that is irrelevant).
         /// </summary>
-        public void PopFromUndoGroup()
+        /// <returns>Returns the XmlElement representing the action group that 
+        /// is on top of the stack at the time pop is requested.</returns>
+        public XmlElement PopFromUndoGroup()
         {
             if (redoStack.Count > 0)
             {
@@ -250,7 +238,7 @@ namespace Dynamo.Core
                     /*NXLT*/"UndoStack cannot be popped with non-empty RedoStack");
             }
 
-            PopActionGroupFromUndoStack();
+            return PopActionGroupFromUndoStack();
         }
 
         #endregion
@@ -440,6 +428,131 @@ namespace Dynamo.Core
             }
 
             undoStack.Push(newGroup);
+        }
+
+        #endregion
+
+        #region Nested Undo Helper Classes
+
+        private sealed class ActionGroupDisposable : IDisposable
+        {
+            private readonly UndoRedoRecorder recorder;
+            public ActionGroupDisposable(UndoRedoRecorder recorder)
+            {
+                this.recorder = recorder;
+            }
+
+            public void Dispose()
+            {
+                recorder.EndActionGroup();
+            }
+        }
+
+        internal class NodeModificationUndoHelper : IDisposable
+        {
+            private readonly NodeModel node;
+            private readonly UndoRedoRecorder recorder;
+            private readonly Dictionary<Guid, XmlElement> existingConnectors;
+            private readonly Dictionary<Guid, ConnectorModel> remainingConnectors;
+
+            public NodeModificationUndoHelper(UndoRedoRecorder recorder, NodeModel node)
+            {
+                this.node = node;
+                this.recorder = recorder;
+
+                existingConnectors = new Dictionary<Guid, XmlElement>();
+                remainingConnectors = new Dictionary<Guid, ConnectorModel>();
+
+                using (this.recorder.BeginActionGroup())
+                {
+                    // Assuming no connectors will be modified as part of this, we 
+                    // record the node prior to it being modified. If for some 
+                    // reason connectors are dropped/created along the way, then 
+                    // this particular action group will be pop off the undo stack.
+                    // 
+                    this.recorder.RecordModificationForUndo(node);
+                }
+
+                // Record the existing connectors...
+                foreach (var connectorModel in node.AllConnectors)
+                {
+                    var element = connectorModel.Serialize(
+                        recorder.document, SaveContext.Undo);
+
+                    existingConnectors.Add(connectorModel.GUID, element);
+                }
+            }
+
+            public void Dispose()
+            {
+                // Connectors after node is modified.
+                foreach (var connectorModel in node.AllConnectors)
+                {
+                    var model = connectorModel;
+                    remainingConnectors.Add(model.GUID, model);
+                }
+
+                var removed = new List<XmlElement>();
+                var added = new List<ConnectorModel>();
+                if (!ComputeDifference(removed, added))
+                    return; // No difference in connectors.
+
+                // If there are differences in connector count, some connectors must 
+                // have been dropped or created. In this case the originally recorded
+                // entry on the undo stack must be discarded, and recreated in the 
+                // same action group as these connectors.
+                // 
+                var previousGroup = recorder.PopFromUndoGroup();
+
+                // Create a new action group to record changes 
+                // affecting the node and its connectors.
+                using (recorder.BeginActionGroup())
+                {
+                    // For each of the deleted connectors, record its respective
+                    // XmlElement that was serialized before they were deleted.
+                    var deletionString = UserAction.Deletion.ToString();
+                    foreach (var connector in removed)
+                    {
+                        recorder.SetNodeAction(connector, deletionString);
+                        recorder.currentActionGroup.AppendChild(connector);
+                    }
+
+                    foreach (XmlNode childNode in previousGroup.ChildNodes)
+                    {
+                        // Record the node modification itself.
+                        recorder.currentActionGroup.AppendChild(childNode);
+                    }
+
+                    foreach (var connector in added)
+                    {
+                        recorder.RecordCreationForUndo(connector);
+                    }
+
+                    // When a new action group is recorded for undo,
+                    // the redo stack should always be cleared.
+                    if (recorder.redoStack.Count > 0)
+                    {
+                        throw new InvalidOperationException(
+                            "Redo stack should be empty after recording!");
+                    }
+                }
+            }
+
+            private bool ComputeDifference(List<XmlElement> removed, List<ConnectorModel> added)
+            {
+                // Whatever that was in the existing set but no longer exist...
+                var deletedKeys = existingConnectors.Keys.Except(remainingConnectors.Keys);
+                removed.AddRange(deletedKeys.Select(key => existingConnectors[key]));
+
+                // Whatever that did not originally exist but got created...
+                var addedConnectors = remainingConnectors.Keys.Except(
+                    existingConnectors.Keys);
+
+                added.AddRange(addedConnectors.Select(
+                    connectorKey => remainingConnectors[connectorKey]));
+
+                return removed.Any() || added.Any();
+            }
         }
 
         #endregion
