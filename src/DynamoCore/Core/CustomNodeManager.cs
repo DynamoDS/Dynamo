@@ -489,7 +489,7 @@ namespace Dynamo.Utilities
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                functionId);
+                functionId, workspaceInfo.FileName);
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -598,7 +598,7 @@ namespace Dynamo.Utilities
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
-            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory);
+            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, string.Empty);
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
@@ -1025,7 +1025,7 @@ namespace Dynamo.Utilities
                     Enumerable.Empty<NoteModel>(),
                     0,
                     0,
-                    newId);
+                    newId, string.Empty);
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 
