@@ -869,33 +869,30 @@ namespace Dynamo.Utilities
                         node = new Symbol
                         {
                             InputSymbol = inputReceiverNode.InPortData[inputReceiverData].NickName,
-                            X = 0,
+                            X = 0
                         };
 
                         // Try to figure out the type of input of custom node 
                         // from the type of input of selected node. There are
                         // two kinds of nodes whose input type are available:
-                        // function node and custom node. In the long term, we
-                        // may add type information to all nodes. 
-                        List<string> paramTypes = null;
+                        // function node and custom node. 
+                        List<Library.TypedParameter> parameters = null;
                         if (inputReceiverNode is Function) 
                         {
-                            var functionCallNode = inputReceiverNode as Function; 
-                            var definition = functionCallNode.Controller.Definition;
-                            paramTypes = definition.Parameters.Select(p => p.Type.ToShortString()).ToList();
+                            var func = inputReceiverNode as Function; 
+                            parameters =  func.Controller.Definition.Parameters.ToList(); 
                         }
                         else if (inputReceiverNode is DSFunctionBase)
                         {
-                            var functionCallNode = inputReceiverNode as DSFunctionBase;
-                            var definition = functionCallNode.Controller.Definition;
-                            paramTypes = definition.Parameters.Select(p => p.DisplayTypeName).ToList();
+                            var dsFunc = inputReceiverNode as DSFunctionBase;
+                            parameters = dsFunc.Controller.Definition.Parameters.ToList(); 
                         }
 
                         // so the input of custom node has format 
                         //    input_var_name : type
-                        if (paramTypes != null && paramTypes.Count() > inputReceiverData)
+                        if (parameters != null && parameters.Count() > inputReceiverData)
                         {
-                            var typeName = paramTypes[inputReceiverData];
+                            var typeName = parameters[inputReceiverData].DisplayTypeName;
                             if (!string.IsNullOrEmpty(typeName))
                             {
                                 node.InputSymbol += " : " + typeName;
