@@ -25,7 +25,6 @@ namespace RevitServices.Threading
         public void Shutdown()
         {
             shutdownRequested = true;
-            // revitApplication.Idling -= OnRevitIdle; // Stop getting called.
         }
 
         /// <summary>
