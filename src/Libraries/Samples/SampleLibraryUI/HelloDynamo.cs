@@ -5,7 +5,6 @@ using Autodesk.DesignScript.Runtime;
 
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.UI;
 using Dynamo.UI.Commands;
 using Dynamo.Wpf;
 using ProtoCore.AST.AssociativeAST;
@@ -70,7 +69,7 @@ namespace SamplesLibraryUI
                 awesome = value;
                 RaisePropertyChanged("Awesome");
 
-                RequiresRecalc = true;
+                OnAstUpdated();
             }
         }
 
@@ -108,8 +107,7 @@ namespace SamplesLibraryUI
         /// the input and output ports and specify the argument
         /// lacing.
         /// </summary>
-        /// <param name="workspace"></param>
-        public HelloDynamo(WorkspaceModel workspace) : base(workspace)
+        public HelloDynamo()
         {
             // When you create a UI node, you need to do the
             // work of setting up the ports yourself. To do this,
@@ -194,14 +192,14 @@ namespace SamplesLibraryUI
 
         #region command methods
 
-        private bool CanShowMessage(object obj)
+        private static bool CanShowMessage(object obj)
         {
             // I can't think of any reason you wouldn't want to say Hello Dynamo!
             // so I'll just return true.
             return true;
         }
 
-        private void ShowMessage(object obj)
+        private static void ShowMessage(object obj)
         {
             MessageBox.Show("Hello Dynamo!");
         }
@@ -209,6 +207,9 @@ namespace SamplesLibraryUI
         #endregion
     }
 
+    /// <summary>
+    ///     View customizer for HelloDynamo Node Model.
+    /// </summary>
     public class HelloDynamoNodeViewCustomization : INodeViewCustomization<HelloDynamo>
     {
         /// <summary>
@@ -219,7 +220,7 @@ namespace SamplesLibraryUI
         /// properties on this node as the DataContext.
         /// </summary>
         /// <param name="model">The NodeModel representing the node's core logic.</param>
-        /// <param name="view">The NodeView representing the node in the graph.</param>
+        /// <param name="nodeView">The NodeView representing the node in the graph.</param>
         public void CustomizeView(HelloDynamo model, NodeView nodeView)
         {
             // The view variable is a reference to the node's view.
@@ -242,8 +243,7 @@ namespace SamplesLibraryUI
         /// Here you can do any cleanup you require if you've assigned callbacks for particular 
         /// UI events on your node.
         /// </summary>
-        public void Dispose()
-        {}
+        public void Dispose() { }
     }
 
 }

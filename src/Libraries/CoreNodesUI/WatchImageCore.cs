@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
+
+using Dynamo.Core.Threading;
+using Dynamo.DSEngine;
 using Dynamo.Models;
+
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
@@ -15,13 +17,14 @@ namespace Dynamo.Nodes
     {
         private System.Windows.Controls.Image image;
 
-        public WatchImageCore(WorkspaceModel ws)
-            : base(ws)
+        public WatchImageCore()
         {
             InPortData.Add(new PortData("image", "image"));
             OutPortData.Add(new PortData("image", "image"));
 
-            RegisterAllPorts();
+            RegisterAllPorts(); 
+            
+            ShouldDisplayPreviewCore = false;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -29,29 +32,10 @@ namespace Dynamo.Nodes
             yield return AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0]);
         }
 
-#if ENABLE_DYNAMO_SCHEDULER
-
-        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
+        protected override void RequestVisualUpdateAsyncCore(
+            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
-            return; // No visualization update is required for this node type.
-        }
-
-#else
-
-        public override void UpdateRenderPackage(int maxTessDivisions)
-        {
-            //do nothing
-            //a watch should not draw its outputs
-        }
-
-#endif
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
+            //Do nothing
         }
     }
 

@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
+
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
@@ -14,8 +16,8 @@ namespace DSCore.File
     [SupressImportIntoVM]
     public abstract class FileSystemBrowser : DSCoreNodesUI.String
     {
-        protected FileSystemBrowser(WorkspaceModel workspace, string tip)
-            : base(workspace)
+        protected FileSystemBrowser(string tip)
+            : base()
         {
             OutPortData[0].ToolTipString = tip;
             RegisterAllPorts();
@@ -31,14 +33,9 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
     {
-        public Filename(WorkspaceModel workspace) : base(workspace, "Filename") { }
-
-        protected override bool ShouldDisplayPreviewCore
+        public Filename() : base("Filename")
         {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
+            ShouldDisplayPreviewCore = false;
         }
     }
 
@@ -49,14 +46,9 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
     {
-        public Directory(WorkspaceModel workspace) : base(workspace, "Directory") { }
-
-        protected override bool ShouldDisplayPreviewCore
+        public Directory() : base("Directory")
         {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
+            ShouldDisplayPreviewCore = false;
         }
     }
 
@@ -73,15 +65,14 @@ namespace DSCore.File
         private IEnumerable<IDisposable> registrations = Enumerable.Empty<IDisposable>();
         private readonly Func<string, T> func;
 
-        protected FileSystemObject(WorkspaceModel workspaceModel, Func<string, T> func)
-            : base(workspaceModel)
+        protected FileSystemObject(Func<string, T> func)
         {
             this.func = func;
         }
 
-        public override void Destroy()
+        public override void Dispose()
         {
-            base.Destroy();
+            base.Dispose();
             StopWatching();
         }
 
@@ -135,7 +126,7 @@ namespace DSCore.File
             protected void Modified()
             {
                 node.ForceReExecuteOfNode = true;
-                node.RequiresRecalc = true;
+                node.OnAstUpdated();
             }
 
             public abstract void Dispose();
@@ -179,8 +170,8 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
     {
-        public FileObject(WorkspaceModel workspaceModel)
-            : base(workspaceModel, IO.File.FromPath)
+        public FileObject()
+            : base(IO.File.FromPath)
         {
             InPortData.Add(new PortData("path", "Path to the file."));
             OutPortData.Add(new PortData("file", "File object"));
@@ -233,8 +224,8 @@ namespace DSCore.File
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
     {
-        public DirectoryObject(WorkspaceModel workspaceModel)
-            : base(workspaceModel, IO.Directory.FromPath)
+        public DirectoryObject()
+            : base(IO.Directory.FromPath)
         {
             InPortData.Add(new PortData("path", "Path to the directory."));
             OutPortData.Add(new PortData("directory", "Directory object."));

@@ -69,8 +69,8 @@ namespace ProtoTest.LiveRunner
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid>{guid2};
-            AssertPreview(reachableGuidList, expectedGuid, 1);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
         [Test]
@@ -124,8 +124,8 @@ namespace ProtoTest.LiveRunner
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid2, guid3 };
-            AssertPreview(reachableGuidList, expectedGuid, 2);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
         [Test]
@@ -188,8 +188,8 @@ namespace ProtoTest.LiveRunner
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid3, guid4 };
-            AssertPreview(reachableGuidList, expectedGuid, 2);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3, guid4 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
         [Test]
@@ -258,8 +258,8 @@ namespace ProtoTest.LiveRunner
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid3, guid4, guid5 };
-            AssertPreview(reachableGuidList, expectedGuid, 3);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3, guid4, guid5 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
         [Test]
@@ -311,8 +311,8 @@ namespace ProtoTest.LiveRunner
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid2, guid3 };
-            AssertPreview(reachableGuidList, expectedGuid, 2);
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3 };
+            AssertPreview(reachableGuidList, expectedGuid);
         }
 
 
@@ -371,27 +371,23 @@ namespace ProtoTest.LiveRunner
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
 
             // Check if the the affected guids are in the list
-            List<Guid> expectedGuid = new List<Guid> { guid2, guid3, guid4 };
-            AssertPreview(reachableGuidList, expectedGuid, 3); 
+            List<Guid> expectedGuid = new List<Guid> { guid1, guid2, guid3, guid4 };
+            AssertPreview(reachableGuidList, expectedGuid); 
         }
 
 
 
         /// <summary>
         /// Verifies that expectedGuidList is contained within previewGuidList
-        /// Verifies the expected count of  expectedGuidList
         /// </summary>
         /// <param name="previewGuidList"></param>
         /// <param name="expectedGuidList"></param>
-        /// <param name="expectedPreviewCount"></param>
-        public static void AssertPreview(List<Guid> previewGuidList, List<Guid> expectedGuidList, int expectedPreviewCount)
+        public static void AssertPreview(List<Guid> previewGuidList, List<Guid> expectedGuidList)
         {
-            Assert.IsTrue(previewGuidList.Count == expectedPreviewCount);
             foreach (Guid expectedGuid in expectedGuidList)
             {
                 Assert.IsTrue(previewGuidList.Contains(expectedGuid));
             }
         }
     }
-
 }

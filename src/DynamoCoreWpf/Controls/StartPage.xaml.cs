@@ -158,9 +158,9 @@ namespace Dynamo.UI.Controls
 
             #region Reference List
 
-            references.Add(new StartPageListItem("Written Tutorials", "icon-reference.png")
+            references.Add(new StartPageListItem("Advanced Tutorials", "icon-reference.png")
             {
-                ContextData = Configurations.DynamoWrittenTutorials,
+                ContextData = Configurations.DynamoAdvancedTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
@@ -469,7 +469,7 @@ namespace Dynamo.UI.Controls
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Note that you can have more than one file.
-                var homespace = dynamoViewModel.Model.HomeSpace;
+                var homespace = dynamoViewModel.HomeSpace;
                 if (homespace.HasUnsavedChanges && 
                     !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(homespace))
                 {

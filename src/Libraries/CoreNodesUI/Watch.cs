@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Dynamo.Interfaces;
+﻿using System.Collections.Generic;
+using Dynamo.Core.Threading;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 
 using ProtoCore.AST.AssociativeAST;
@@ -20,8 +19,7 @@ namespace Dynamo.Nodes
         private IdentifierNode astBeingWatched;
         public new object CachedValue { get; internal set; }
 
-        public Watch(WorkspaceModel ws)
-            : base(ws)
+        public Watch()
         {
             InPortData.Add(new PortData("", "Node to evaluate."));
             OutPortData.Add(new PortData("", "Watch contents."));
@@ -29,14 +27,8 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-        }
 
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
+            ShouldDisplayPreviewCore = false;
         }
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
@@ -82,9 +74,11 @@ namespace Dynamo.Nodes
             return resultAst;
         }
 
-        protected override void RequestVisualUpdateAsyncCore(int maxTesselationDivisions)
+        protected override void RequestVisualUpdateAsyncCore(
+            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
-            return; // No visualization update is required for this node type.
+            // Do nothing
         }
+        
     }
 }

@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Wpf;
 
 using Image = System.Windows.Controls.Image;
 
@@ -69,7 +65,7 @@ namespace Dynamo.Wpf
         {
             if (this.nodeModel.InPorts[0].Connectors.Count == 0) return null;
 
-            var mirror = this.nodeModel.Workspace.DynamoModel.EngineController.GetMirror(this.nodeModel.AstIdentifierForPreview.Name);
+            var mirror = nodeView.ViewModel.DynamoViewModel.EngineController.GetMirror(this.nodeModel.AstIdentifierForPreview.Name);
 
             if (null == mirror)
                 return null;

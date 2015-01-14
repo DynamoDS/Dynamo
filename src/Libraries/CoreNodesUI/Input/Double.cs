@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-using Dynamo.Models;
-
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
     public abstract class Double : BasicInteractive<double>
     {
-        protected Double(WorkspaceModel workspace) : base(workspace) { }
-
         public override bool IsConvertible
         {
             get { return true; }

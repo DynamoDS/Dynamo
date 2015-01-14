@@ -2,6 +2,7 @@
 using Dynamo.ViewModels;
 using System;
 using System.IO;
+using Dynamo.DSEngine;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -25,7 +26,7 @@ namespace Dynamo.TestInfrastructure
         public abstract int Mutate(NodeModel node);
                                                                                                    
 
-        public abstract bool RunTest(NodeModel node, StreamWriter writer);
+        public abstract bool RunTest(NodeModel node, EngineController engine, StreamWriter writer);
 
         public virtual Type GetNodeType()
         {

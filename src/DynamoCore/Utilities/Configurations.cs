@@ -22,7 +22,7 @@ namespace Dynamo.UI
         public static string DynamoWikiLink = "https://github.com/DynamoDS/Dynamo/wiki";
         public static string DynamoBimForum = "http://dynamobim.org/forums/forum/dyn/";
         public static string DynamoTeamEmail = "mailto:team@dynamobim.org";
-        public static string DynamoWrittenTutorials = "http://dynamobim.org/learn/#124";
+        public static string DynamoAdvancedTutorials = "http://dynamobim.org/learn/#7570";
         public static string DynamoVideoTutorials = "http://dynamobim.org/learn/#161";
         public static string DynamoMoreSamples = "http://dynamobim.org/learn/#159";
         public static string DynamoDownloadLink = "http://dynamobim.org/download/";
@@ -37,7 +37,6 @@ namespace Dynamo.UI
 
         // Generic Constants
         public static readonly double PortHeightInPixels = 26;
-        public static readonly double CodeBlockPortHeightInPixels = 17.563333333333336;
 
         // Grid Settings
         public static readonly int GridSpacing = 100;
@@ -155,9 +154,8 @@ namespace Dynamo.UI
 
         #region CodeBlockNode
 
+        public static readonly double CodeBlockPortHeightInPixels = 17.563333333333336;
         public static readonly int CBNMaxPortNameLength = 24;
-        public static readonly double CBNMaxTextBoxWidth = 500;
-        public static readonly double CBNFontSize = 15;
         public static readonly string HighlightingFile =
             "DesignScript.Resources.SyntaxHighlighting.xshd";
 

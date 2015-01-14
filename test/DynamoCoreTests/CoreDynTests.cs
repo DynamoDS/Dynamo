@@ -27,7 +27,7 @@ namespace Dynamo.Tests
 
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(28, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(28, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(28, model.CurrentWorkspace.Nodes.Count);
 
             // check an input value
@@ -38,7 +38,7 @@ namespace Dynamo.Tests
             
             // run the expression
             //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -106,11 +106,11 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -132,11 +132,11 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -340,7 +340,7 @@ namespace Dynamo.Tests
 
             //open and run the expression
             ViewModel.OpenCommand.Execute(openPath);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             AssertPreviewValue(watch.GUID.ToString(), new[] { 5, 5, 5, 5, 5 });
@@ -348,7 +348,7 @@ namespace Dynamo.Tests
             //change the value of the list
             var numNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<DoubleInput>().Last();
             numNode.Value = "3";
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue(watch.GUID.ToString(), new[] { 5, 5, 5 });
         }
@@ -367,7 +367,7 @@ namespace Dynamo.Tests
 
             //test the negative case
             numNode.Value = "-1";
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             AssertPreviewValue(watch.GUID.ToString(), null);
         }
 
@@ -436,20 +436,17 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
-            var expectedValue = new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
+            var expectedValue = new[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
             var oldVal = watch.CachedValue;
             Assert.IsTrue(oldVal is ICollection);
             Assert.AreEqual(oldVal, expectedValue);
 
             // Pretend we never ran
-            model.Nodes.ForEach(
-                x =>
-                {
-                    x.RequiresRecalc = true;
-                });
+            foreach (var node in model.CurrentWorkspace.Nodes)
+                node.ForceReExecuteOfNode = true;
 
             // Make sure results are still consistent
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var newVal = watch.CachedValue;
             Assert.IsTrue(newVal is ICollection);
@@ -471,7 +468,7 @@ namespace Dynamo.Tests
                 //"af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8"
             }.Select(guid => model.CurrentWorkspace.NodeFromWorkspace<Watch>(guid));
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             foreach (var watch in watches)
             {
@@ -524,7 +521,7 @@ namespace Dynamo.Tests
             const string textAndFileName = @"test.txt";
             model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             File.Delete(textAndFileName);
 

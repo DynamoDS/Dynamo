@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.ViewModels;
@@ -34,7 +35,7 @@ namespace Dynamo.Wpf
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
-            nodeModel.InPorts[0].PortConnected += InputPortConnected;
+            nodeModel.ConnectorAdded += ConnectorAdded;
             
             watchTree.DataContext = root;
 
@@ -59,12 +60,7 @@ namespace Dynamo.Wpf
             DataBridge.Instance.RegisterCallback(watchNodeModel.GUID.ToString(), EvaluationCompleted);
         }
 
-        /// <summary>
-        ///     Callback for port connection. Handles clearing the watch.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void InputPortConnected(object sender, EventArgs e)
+        private void ConnectorAdded(ConnectorModel connectorModel)
         {
             Tuple<int, NodeModel> input;
             if (watchNodeModel.TryGetInput(watchNodeModel.InPorts.IndexOf(sender as PortModel), out input))
@@ -73,11 +69,21 @@ namespace Dynamo.Wpf
                 astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
                 if (oldId != null && astBeingWatched.Value != oldId.Value)
                 {
-                    CachedValue = null;
-                    if (Root != null)
-                        Root.Children.Clear();
+                    watchNodeModel.CachedValue = null;
+                    if (root != null)
+                        root.Children.Clear();
                 }
             }
+        }
+
+        /// <summary>
+        ///     Callback for port connection. Handles clearing the watch.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void InputPortConnected(object sender, EventArgs e)
+        {
+
         }
 
         /// <summary>
@@ -106,7 +112,7 @@ namespace Dynamo.Wpf
                     root.ShowRawData);
             }
             else
-                return this.dynamoViewModel.GenerateWatchViewModelForData(CachedValue, core, inputVar);
+                return this.dynamoViewModel.WatchHandler.GenerateWatchViewModelForData(watchNodeModel.CachedValue, core, inputVar);
         }
 
         void Root_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -158,7 +164,7 @@ namespace Dynamo.Wpf
 
         public void Dispose()
         {
-            nodeModel.InPorts[0].PortConnected += InputPortConnected;
+            watchNodeModel.ConnectorAdded -= ConnectorAdded;
             dynamoViewModel.Model.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             root.PropertyChanged -= Root_PropertyChanged;
             DataBridge.Instance.UnregisterCallback(watchNodeModel.GUID.ToString());
