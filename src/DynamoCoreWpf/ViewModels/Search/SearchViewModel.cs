@@ -358,7 +358,7 @@ namespace Dynamo.ViewModels
                     newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
                     newTarget.FullCategoryName = path;
                     // Situation when we to add only one new category and item as it child.
-                    // New category shoul be added to existing ClassesNodeCategoryViewModel.
+                    // New category should be added to existing ClassesNodeCategoryViewModel.
                     // Make notice: ClassesNodeCategoryViewModel is always first item in 
                     // all subcategories.
                     if (nameStack.Count == 0 && target.SubCategories.Count > 0 &&
@@ -383,7 +383,7 @@ namespace Dynamo.ViewModels
                         targetClass.Dispose();
 
                         // Situation when we need to add only one new category and item.
-                        // We before adding it we need create new ClassesNodeCategoryViewModel
+                        // Before adding of it we need create new ClassesNodeCategoryViewModel
                         // as soon as new category will be a class.
                         if (nameStack.Count == 0)
                         {
