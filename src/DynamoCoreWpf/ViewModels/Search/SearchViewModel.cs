@@ -341,9 +341,12 @@ namespace Dynamo.ViewModels
                 NodeCategoryViewModel targetClassSuccessor = null;
                 var newTarget = categories.FirstOrDefault(c =>
                 {
+                    // Each path has one class. We should find and save it.                    
                     if (c is ClassesNodeCategoryViewModel)
                     {
                         targetClass = c as ClassesNodeCategoryViewModel;
+                        // As soon as ClassesNodeCategoryViewModel is found we should search 
+                        // through all it classes and save result.
                         targetClassSuccessor = c.SubCategories.FirstOrDefault(c2 => c2.Name == next);
                         return targetClassSuccessor != null;
                     }
@@ -354,6 +357,10 @@ namespace Dynamo.ViewModels
                 {
                     newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
                     newTarget.FullCategoryName = path;
+                    // Situation when we to add only one new category and item as it child.
+                    // New category shoul be added to existing ClassesNodeCategoryViewModel.
+                    // Make notice ClassesNodeCategoryViewModel is always first item in 
+                    // all subcategories.
                     if (nameStack.Count == 0 && target.SubCategories.Count > 0 &&
                         target.SubCategories[0] is ClassesNodeCategoryViewModel)
                     {
@@ -362,6 +369,10 @@ namespace Dynamo.ViewModels
                         return;
                     }
 
+                    // We are here when target is the class. New category should be added
+                    // as child of it. So class will turn into usual category.
+                    // Here we are take class, remove it from ClassesNodeCategoryViewModel
+                    // and attach to it parrent.
                     if (targetClass != null)
                     {
                         targetClass.SubCategories.Remove(target);
@@ -371,6 +382,9 @@ namespace Dynamo.ViewModels
 
                         targetClass.Dispose();
 
+                        // Situation when we need to add only one new category and item.
+                        // We before adding it we need create new ClassesNodeCategoryViewModel
+                        // as soon as new category will be a class.
                         if (nameStack.Count == 0)
                         {
                             targetClass =
@@ -384,6 +398,8 @@ namespace Dynamo.ViewModels
                     PlaceInNewCategory(entry, newTarget, nameStack);
                     return;
                 }
+                // If we meet ClassesNodecategoryViewModel during the search of newtarget,
+                // next newTarget is specified in targetClassSuccessor.
                 if (targetClassSuccessor != null)
                     target = targetClassSuccessor;
                 else
@@ -414,6 +430,8 @@ namespace Dynamo.ViewModels
                 return cat;
             }).ToList();
 
+            // Last category in path is class. Should be created and inserted to collections 
+            // classes container ClassesNodeCategoryViewModel
             int indexToInsertClass = newTargets.Count - 1;
             var classParent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : target;
             var newClass = new ClassesNodeCategoryViewModel(Configurations.ClassesDefaultName, classParent);
