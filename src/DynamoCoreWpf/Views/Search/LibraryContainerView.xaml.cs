@@ -12,6 +12,8 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Models;
+
 
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
@@ -45,6 +47,12 @@ namespace Dynamo.Search
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
             };
+        }
+
+        enum ButtonId
+        {
+            Remove = 43420,
+            Cancel
         }
 
         private void OnSearchViewUnloaded(object sender, EventArgs e)
@@ -318,8 +326,7 @@ namespace Dynamo.Search
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
         }
-
-
+ 
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
@@ -330,8 +337,36 @@ namespace Dynamo.Search
                 {
                     if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
                         dynamoViewModel.OpenCommand.Execute(element.Path);
+                    else
+                    {
+                        var description = string.Format("The custom node that you are looking for seems to have been\n" +
+                                                        "relocated or removed from the original location.\n\n" +
+                                                        "Would you like to remove it from the library list?");
+
+                        const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+                        const string summary = ""; 
+
+                        var args = new TaskDialogEventArgs( 
+                             new Uri(imageUri, UriKind.Relative),
+                            "File not found",
+                            summary,
+                            description);
+
+                        args.AddRightAlignedButton((int)ButtonId.Remove, "Remove");
+                        args.AddRightAlignedButton((int)ButtonId.Cancel, "Cancel");
+
+                        dynamoViewModel.Model.OnRequestTaskDialog(null, args); 
+                        
+                        if (args.ClickedButtonId == (int)ButtonId.Remove)
+                        {
+                            CustomNodeManager manager = dynamoViewModel.Model.CustomNodeManager;
+                            manager.Remove(element.Model.ID);
+                        }
+                    }
                 }
+                
             }
+            
         }
 
     }
