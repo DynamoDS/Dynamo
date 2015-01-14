@@ -132,7 +132,7 @@ namespace Dynamo.Nodes
         public bool IsInSyncWithNode(NodeModel model)
         {
             if (Definition == null)
-                return false;
+                return true;
 
             if (Definition.Parameters != null)
             {
