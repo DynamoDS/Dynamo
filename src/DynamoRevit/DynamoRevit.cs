@@ -156,7 +156,7 @@ namespace Dynamo.Applications
 
         private static void OnApplicationIdle(object sender, IdlingEventArgs e)
         {
-            if (!idleActions.Any())
+            if (idleActions.Count == 0)
                     return;
 
             Action pendingAction = null;
