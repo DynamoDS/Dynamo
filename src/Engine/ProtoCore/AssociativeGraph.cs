@@ -102,8 +102,6 @@ namespace ProtoCore.AssociativeEngine
             bool recursiveSearch,
             bool propertyChanged = false)
         {
-            InterpreterProperties Properties = executive.Properties;
-            List<AssociativeGraph.GraphNode> deferedGraphNodes = executive.deferedGraphNodes;
             AssociativeGraph.DependencyGraph dependencyGraph = executive.exe.instrStreamList[languageBlockID].dependencyGraph;
             List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>();
 
@@ -144,7 +142,7 @@ namespace ProtoCore.AssociativeEngine
                     isSSAAssign = false; // Remove references to this when ssa flag is removed
 
                     // Do not update if its a property change and the current graphnode is the same expression
-                    if (propertyChanged && graphNode.exprUID == Properties.executingGraphNode.exprUID)
+                    if (propertyChanged && graphNode.exprUID == executingGraphNode.exprUID)
                     {
                         continue;
                     }
@@ -156,7 +154,7 @@ namespace ProtoCore.AssociativeEngine
                     allowUpdateWithinSSA = !withinSSAStatement;
                 }
 
-                if (!allowUpdateWithinSSA || (propertyChanged && graphNode == Properties.executingGraphNode))
+                if (!allowUpdateWithinSSA || (propertyChanged && graphNode == executingGraphNode))
                 {
                     continue;
                 }
@@ -179,22 +177,6 @@ namespace ProtoCore.AssociativeEngine
                     if (!graphNode.DependsOn(noderef, ref matchingNode))
                     {
                         continue;
-                    }
-
-                    // Jun: only allow update to other expr id's (other statements) if this is the final SSA assignment
-                    if (executeSSA && !propertyChanged)
-                    {
-                        if (null != Properties.executingGraphNode && Properties.executingGraphNode.IsSSANode())
-                        {
-                            // This is still an SSA statement, if a node of another statement depends on it, ignore it
-                            if (graphNode.exprUID != Properties.executingGraphNode.exprUID)
-                            {
-                                // Defer this update until the final non-ssa node
-                                Validity.Assert(deferedGraphNodes != null);
-                                deferedGraphNodes.Add(graphNode);
-                                continue;
-                            }
-                        }
                     }
 
                     // @keyu: if we are modifying an object's property, e.g.,
