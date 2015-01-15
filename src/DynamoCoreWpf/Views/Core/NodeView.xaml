@@ -366,13 +366,13 @@
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
                    Fill="Transparent"
-                   Stroke="#7E43F041"
-                   StrokeThickness="8"
+                   Stroke="#FFF000"
+                   StrokeThickness="5"
                    StrokeLineJoin="Round"
                    IsHitTestVisible="False"                   
                    Canvas.ZIndex="100"
                    Opacity="2"
-                   Margin="-8">
+                   Margin="-1">
             <Rectangle.Visibility>
                 <Binding Path="ShowExecutionPreview"
                          UpdateSourceTrigger="PropertyChanged"
