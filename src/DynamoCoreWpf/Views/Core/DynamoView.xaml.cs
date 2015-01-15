@@ -1,6 +1,7 @@
 //#define __NO_SAMPLES_MENU
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,7 @@ using Dynamo.UI;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using Dynamo.Wpf;
 
 using DynamoUtilities;
@@ -306,6 +308,24 @@ namespace Dynamo.Controls
             }
         }
 
+        private void DynamoViewModelRequestDisplayPreviews(IEnumerable<NodeModel> nodes)
+        {
+            if (!nodes.Any())
+                return;
+
+            var firstWorkspace = WorkspaceTabs.ChildrenOfType<WorkspaceView>().First();
+            var nodeViews = firstWorkspace.ChildrenOfType<NodeView>();
+
+            var selectedModels = nodes.ToList();
+            var selectedViews = nodeViews.Where(v => 
+                selectedModels.Contains(v.ViewModel.NodeModel));
+
+            foreach (var selectedView in selectedViews)
+            {
+                selectedView.ExpandPreviewControl();
+            }
+        }
+
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
 
@@ -316,6 +336,7 @@ namespace Dynamo.Controls
             dynamoViewModel = (DataContext as DynamoViewModel);
             dynamoViewModel.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation += DynamoViewModelRequestViewOperation;
+            dynamoViewModel.RequestDisplayPreviews += DynamoViewModelRequestDisplayPreviews;
             dynamoViewModel.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
@@ -717,6 +738,7 @@ namespace Dynamo.Controls
 
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
+            dynamoViewModel.RequestDisplayPreviews -= DynamoViewModelRequestDisplayPreviews;
 
             //PACKAGE MANAGER
             dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;

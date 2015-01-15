@@ -441,6 +441,15 @@ namespace Dynamo.Controls
             }
         }
 
+        internal void ExpandPreviewControl()
+        {
+            if (!PreviewControl.IsHidden) // Force preview control creation.
+                return; // We only expand the preview control if it's hidden.
+
+            PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+        }
+
         #endregion
     }
 }
