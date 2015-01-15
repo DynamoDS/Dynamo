@@ -175,6 +175,10 @@ namespace Dynamo.UI.Controls
         {
             InnerTextEditor.TextArea.ClearSelection();
 
+            var lastInput = (nodeViewModel.NodeModel as Symbol).InputSymbol;
+            if (lastInput.Equals(InnerTextEditor.Text))
+                return;
+
             nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
                     nodeViewModel.NodeModel.GUID, "InputSymbol",
