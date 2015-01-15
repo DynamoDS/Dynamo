@@ -21,6 +21,8 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public RuntimeCore runtimeCore {get; private set;}
+
         public Executable exe { get; set; }
         private Language executingLanguage;
 
@@ -82,8 +84,10 @@ namespace ProtoCore.DSASM
         private Dictionary<string, List<int>> symbolArrayIndexMap = new Dictionary<string,List<int>>();
 #endif
 
-        public Executive(Core core, bool isFep = false)
+        public Executive(Core core, RuntimeCore rtCore, bool isFep = false)
         {
+            runtimeCore = rtCore;
+
             IsExplicitCall = false;
             Validity.Assert(core != null);
             this.core = core;
@@ -93,8 +97,6 @@ namespace ProtoCore.DSASM
             istream = null;
 
             fepRun = isFep;
-            //executingGraphNode = null;
-            //nodeExecutedSameTimes = new List<AssociativeGraph.GraphNode>();
             Properties = new InterpreterProperties();
 
             rmem = core.Rmem;
@@ -106,9 +108,6 @@ namespace ProtoCore.DSASM
             bounceType = CallingConvention.BounceType.kImplicit;
 
             deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
-
-            // Execute DS Debug watch
-            //debugFlags = (int)DebugFlags.ENABLE_LOG | (int)DebugFlags.SPAWN_DEBUGGER;
         }
 
         /// <summary>
@@ -805,7 +804,7 @@ namespace ProtoCore.DSASM
                         core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
                     }
 
-                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
+                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeCore, runtimeContext);
                 }
                 else
                 {
@@ -913,7 +912,7 @@ namespace ProtoCore.DSASM
                 }
                 else
 #endif
-                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
+                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeCore, runtimeContext);
 
                 if (sv.IsExplicitCall)
                 {
@@ -1056,6 +1055,7 @@ namespace ProtoCore.DSASM
                                                  repGuides,
                                                  stackFrame,
                                                  core,
+                                                 runtimeCore,
                                                  new Runtime.Context());
 
             isExplicitCall = sv.IsExplicitCall;
@@ -3026,7 +3026,7 @@ namespace ProtoCore.DSASM
                     SymbolNode symbol = GetSymbolNode(blockId, (int)op2.opdata, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(symbol);
                     rmem.SetSymbolValue(symbol, opVal);
-                    core.UpdatedSymbols.Add(symbol);
+                    runtimeCore.UpdatedSymbols.Add(symbol);
 
                     if (IsDebugRun())
                     {
@@ -3044,7 +3044,7 @@ namespace ProtoCore.DSASM
                     var staticMember = GetSymbolNode( blockId, Constants.kGlobalScope, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(staticMember);
                     rmem.SetSymbolValue(staticMember, opVal);
-                    core.UpdatedSymbols.Add(staticMember);
+                    runtimeCore.UpdatedSymbols.Add(staticMember);
 
                     if (IsDebugRun())
                     {
@@ -5409,12 +5409,12 @@ namespace ProtoCore.DSASM
                 StackValue newSV;
                 if (opdata1.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata2, core, rmem);
+                    newSV = StringUtils.ConvertToString(opdata2, core, runtimeCore, rmem);
                     opdata2 = StringUtils.ConcatString(newSV, opdata1, core);
                 }
                 else if (opdata2.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata1, core, rmem);
+                    newSV = StringUtils.ConvertToString(opdata1, core, runtimeCore, rmem);
                     opdata2 = StringUtils.ConcatString(opdata2, newSV, core);
                 }
             }

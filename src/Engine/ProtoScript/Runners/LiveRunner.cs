@@ -929,6 +929,7 @@ namespace ProtoScript.Runners
     public interface ILiveRunner
     {
         ProtoCore.Core Core { get; }
+        ProtoCore.RuntimeCore RTCore { get; }
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
@@ -1024,6 +1025,7 @@ namespace ProtoScript.Runners
         private ProtoScriptTestRunner runner;
         private ProtoRunner.ProtoVMState vmState;
         private ProtoCore.Core runnerCore = null;
+        private ProtoCore.RuntimeCore runtimeCore = null;
         public ProtoCore.Core Core
         {
             get
@@ -1033,6 +1035,18 @@ namespace ProtoScript.Runners
             private set
             {
                 runnerCore = value;
+            }
+        }
+
+        public ProtoCore.RuntimeCore RTCore
+        {
+            get
+            {
+                return runtimeCore;
+            }
+            private set
+            {
+                runtimeCore = value;
             }
         }
 
@@ -1131,6 +1145,7 @@ namespace ProtoScript.Runners
                 runnerCore.Configurations[item.Key] = item.Value;
             }
 
+            runtimeCore = new RuntimeCore();
             vmState = null;
         }
 
@@ -1253,7 +1268,7 @@ namespace ProtoScript.Runners
                     {
                         //return GetWatchValue(nodeName);
                         const int blockID = 0;
-                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runnerCore);
+                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runnerCore, runtimeCore);
                         return runtimeMirror;
                     }
                 }
@@ -1273,7 +1288,7 @@ namespace ProtoScript.Runners
             //  Exelist, Globals symbols
 
             ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
-            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
+            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore, runtimeCore);
             Executable exe = exec.exe;
 
             // Only display symbols defined in the default top-most langauge block;
@@ -1512,7 +1527,7 @@ namespace ProtoScript.Runners
 
             try
             {
-                runner.Execute(runnerCore, runtimeContext);
+                runner.Execute(runnerCore, runtimeCore, runtimeContext);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
@@ -1522,7 +1537,7 @@ namespace ProtoScript.Runners
 
             // ExecutionMirror mirror = new ExecutionMirror(runnerCore.CurrentExecutive.CurrentDSASMExec, runnerCore);
 
-            return new ProtoRunner.ProtoVMState(runnerCore);
+            return new ProtoRunner.ProtoVMState(runnerCore, runtimeCore);
         }
 
         private bool CompileAndExecute(string code)
@@ -1573,8 +1588,9 @@ namespace ProtoScript.Runners
         /// </summary>
         private void SuppressResovledUnboundVariableWarnings()
         {
-            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.UpdatedSymbols);
-            runnerCore.UpdatedSymbols.Clear();
+            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runtimeCore.UpdatedSymbols);
+
+            runtimeCore.UpdatedSymbols.Clear();
         }
 
         private void ApplyUpdate()

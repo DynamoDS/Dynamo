@@ -19,6 +19,7 @@ namespace ProtoScript.Runners
         private bool executionsuspended;
         private VMState lastState;
         private ProtoCore.Core core;
+        private ProtoCore.RuntimeCore runtimeCore;
         private String code;
         private List<Dictionary<DebugInfo, Instruction>> diList;
         private readonly List<Instruction> allbreakPoints = new List<Instruction>();
@@ -39,9 +40,10 @@ namespace ProtoScript.Runners
         public Instruction CurrentInstruction { get; private set; }  
 
         int resumeBlockID;
-        public DebugRunner(ProtoCore.Core core)
+        public DebugRunner(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
             this.core = core;
+            this.runtimeCore = runtimeCore;
             this.core.Options.IDEDebugMode = true;
             RegisteredBreakpoints = new List<Breakpoint>();
             core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
@@ -233,7 +235,7 @@ namespace ProtoScript.Runners
             }
             finally
             {
-                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core, runtimeCore);
                 vms = new VMState(execMirror, core);
                 vms.isEnded = isEnded;
                 ProtoCore.CodeModel.CodePoint start = new ProtoCore.CodeModel.CodePoint();
@@ -551,9 +553,9 @@ namespace ProtoScript.Runners
                 StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                 core.DebugProps.FirstStackFrame.TX = svCallConvention;
             }
-            core.Bounce(resumeBlockID, programCounterToExecuteFrom, context, breakpoints, core.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);
+            core.Bounce(runtimeCore, resumeBlockID, programCounterToExecuteFrom, context, breakpoints, core.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);
 
-            return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+            return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core, runtimeCore);
 
         }
         /// <summary>

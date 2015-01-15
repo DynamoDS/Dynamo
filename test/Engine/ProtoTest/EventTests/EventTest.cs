@@ -62,13 +62,13 @@ namespace ProtoTest.EventTests
             base.Setup();
             runconfig = new ProtoScript.Config.RunConfiguration();
             runconfig.IsParrallel = false;
-            runner = new DebugRunner(core);
+            runner = new DebugRunner(core, runtimeCore);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
         private Obj GetWatchValue(ProtoCore.Core core, string watchExpression)
         {
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(watchExpression);
             return mirror.GetWatchValue();
         }
@@ -77,7 +77,11 @@ namespace ProtoTest.EventTests
         public void RunPropertyChangedTest()
         {
             string code =
-@"import (Foo from ""ProtoTest.dll"");foo = Foo.GetInstance();              id = foo.ID;                           t = 1;                                ";
+@"import (Foo from ""ProtoTest.dll"");
+foo = Foo.GetInstance();              
+id = foo.ID;                           
+t = 1;                                
+";
             runner.PreStart(code, runconfig);
             Foo fooSingleton = Foo.GetInstance();
             fooSingleton.ID = 101;
@@ -104,7 +108,16 @@ namespace ProtoTest.EventTests
         public void RunPropertyChangedInOtherScopeTest()
         {
             string code =
-@"import (Foo from ""ProtoTest.dll"");def ding(){    return = null;}foo = Foo.GetInstance();              id = foo.ID;                           r = ding();t = 1;                                ";
+@"import (Foo from ""ProtoTest.dll"");
+def ding()
+{
+    return = null;
+}
+foo = Foo.GetInstance();              
+id = foo.ID;                           
+r = ding();
+t = 1;                                
+";
             runner.PreStart(code, runconfig);
             Foo fooSingleton = Foo.GetInstance();
             fooSingleton.ID = 101;
@@ -131,7 +144,13 @@ namespace ProtoTest.EventTests
         public void RunPropertyChangedForSameObjectTest()
         {
             string code =
-@"import (Foo from ""ProtoTest.dll"");foo = Foo.GetInstance();              bar = foo;id1 = foo.ID;                           id2 = bar.ID;t = 1;                         ";
+@"import (Foo from ""ProtoTest.dll"");
+foo = Foo.GetInstance();              
+bar = foo;
+id1 = foo.ID;                           
+id2 = bar.ID;
+t = 1;                         
+";
             runner.PreStart(code, runconfig);
             Foo fooSingleton = Foo.GetInstance();
             fooSingleton.ID = 101;
@@ -166,7 +185,12 @@ namespace ProtoTest.EventTests
         public void RunPropertyChangedForRunMode()
         {
             string code =
-@"import (Foo from ""ProtoTest.dll"");foo = Foo.GetInstance();              foo.ID = 17;id = foo.ID;Foo.SetID(foo, 41);               ";
+@"import (Foo from ""ProtoTest.dll"");
+foo = Foo.GetInstance();              
+foo.ID = 17;
+id = foo.ID;
+Foo.SetID(foo, 41);               
+";
             string err = "MAGN-4391: Failed to track property change";
             var testRunner = new TestFrameWork();
             testRunner.RunScriptSource(code, err);
@@ -177,7 +201,13 @@ namespace ProtoTest.EventTests
         public void RunPropertyChangedNegative()
         {
             string code =
-@"import (Foo from ""ProtoTest.dll"");foo = Foo.GetInstance();              foo.ID = 17;id = foo.ID;id = bar.ID;        // RedefinitionFoo.SetID(foo, 41);               ";
+@"import (Foo from ""ProtoTest.dll"");
+foo = Foo.GetInstance();              
+foo.ID = 17;
+id = foo.ID;
+id = bar.ID;        // Redefinition
+Foo.SetID(foo, 41);               
+";
             var testRunner = new TestFrameWork();
             testRunner.RunScriptSource(code);
             testRunner.Verify("id", null);
@@ -204,7 +234,13 @@ namespace ProtoTest.EventTests
         public void RunDSPropertyChangedTest()
         {
             string code =
-@"class Foo{    x;}f = Foo();f.x = 41;";
+@"class Foo
+{
+    x;
+}
+f = Foo();
+f.x = 41;
+";
             runner.PreStart(code, runconfig);
             PropertyChangedVerifier v = new PropertyChangedVerifier();
             // ProtoFFI.FFIPropertyChangedMonitor.GetInstance().RegisterDSPropertyChangedHandler("f", "x", v.DSPropertyChanged);

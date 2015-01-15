@@ -29,6 +29,8 @@ namespace ProtoCore
             //
             private ProtoCore.Core core;
 
+            private ProtoCore.RuntimeCore runtimeCore;
+
             /// <summary>
             /// 
             /// </summary>
@@ -38,9 +40,10 @@ namespace ProtoCore
             /// Experimental constructor that takes in a core object
             /// </summary>
             /// <param name="sv"></param>
-            public MirrorData(ProtoCore.Core core, StackValue sv)
+            public MirrorData(ProtoCore.Core core, RuntimeCore rtCore, StackValue sv)
             {
                 this.core = core;
+                this.runtimeCore = rtCore;
                 svData = sv;
             }
 
@@ -62,7 +65,7 @@ namespace ProtoCore
                 List<IGraphicItem> graphicItems = new List<IGraphicItem>();
                 foreach (var sv in values)
                 {
-                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.core);
+                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.core, this.runtimeCore);
                     if (items != null && (items.Count > 0))
                         graphicItems.AddRange(items);
                 }
@@ -146,7 +149,7 @@ namespace ProtoCore
                 if (!this.IsCollection)
                     return null;
 
-                return ArrayUtils.GetValues(svData, core).Select(x => new MirrorData(this.core, x)).ToList();
+                return ArrayUtils.GetValues(svData, core).Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
             }
 
             /// <summary>
@@ -163,7 +166,7 @@ namespace ProtoCore
             /// <param name="sv">StackValue</param>
             /// <param name="core">ProtoCore.Core</param>
             /// <returns>System.Object</returns>
-            internal static object GetData(StackValue sv, Core core)
+            internal static object GetData(StackValue sv, Core core, RuntimeCore runtimeCore)
             {
                 switch (sv.optype)
                 {
@@ -176,9 +179,9 @@ namespace ProtoCore
                     case AddressType.Char:
                         return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(sv.opdata);
                     case AddressType.String:
-                        return StringUtils.GetStringValue(sv, core);
+                        return StringUtils.GetStringValue(sv, core, runtimeCore);
                     case AddressType.Pointer:
-                        return dataProvider.GetCLRObject(sv, core);
+                        return dataProvider.GetCLRObject(sv, core, runtimeCore);
                     default:
                         break;
                 }
@@ -222,7 +225,7 @@ namespace ProtoCore
                 get
                 {
                     if (null == clrdata)
-                        clrdata = GetData(svData, core);
+                        clrdata = GetData(svData, core, runtimeCore);
 
                     return clrdata;
                 }

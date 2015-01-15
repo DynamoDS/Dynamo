@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-
+using System.Linq;
+using ProtoCore.AssociativeGraph;
 using ProtoCore.AssociativeEngine;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
@@ -16,9 +17,6 @@ using ProtoCore.Lang.Replication;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoFFI;
-
-using ProtoCore.AssociativeGraph;
-using System.Linq;
 
 using StackFrame = ProtoCore.DSASM.StackFrame;
 
@@ -932,17 +930,6 @@ namespace ProtoCore
 
     public class Core
     {
-        #region RUNTIME_PROPERTIES
-
-        /// <summary>
-        ///  These are the list of symbols updated by the VM after an execution cycle
-        /// </summary>
-        public HashSet<SymbolNode> UpdatedSymbols { get; private set; }
-
-        #endregion
-
-        public const int FIRST_CORE_ID = 0;
-
         public int ID { get; private set; }
         //recurtion
         public List<FunctionCounter> recursivePoint { get; set; }
@@ -1351,12 +1338,6 @@ namespace ProtoCore
             ForLoopBlockIndex = Constants.kInvalidIndex;
         }
 
-
-        private void ResetAllRuntimeProperties()
-        {
-            UpdatedSymbols = new HashSet<SymbolNode>();
-        }
-
         private void ResetAll(Options options)
         {
             Validity.AssertExpiry();
@@ -1374,8 +1355,6 @@ namespace ProtoCore
             watchStack = new List<StackValue>();
             watchSymbolList = new List<SymbolNode>();
             watchFramePointer = Constants.kInvalidIndex;
-
-            ID = FIRST_CORE_ID;
 
             //recurtion
             recursivePoint = new List<FunctionCounter>();
@@ -1778,7 +1757,6 @@ namespace ProtoCore
         public Core(Options options)
         {
             ResetAll(options);
-            ResetAllRuntimeProperties();
         }
 
         public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)
@@ -1972,7 +1950,7 @@ namespace ProtoCore
             return codeblock;
         }
 
-        public StackValue Bounce(int exeblock, int entry, Context context, StackFrame stackFrame, int locals = 0, EventSink sink = null)
+        public StackValue Bounce(RuntimeCore runtimeCore, int exeblock, int entry, Context context, StackFrame stackFrame, int locals = 0, EventSink sink = null)
         {
             if (stackFrame != null)
             {
@@ -1995,11 +1973,11 @@ namespace ProtoCore
 
             Language id = DSExecutable.instrStreamList[exeblock].language;
             CurrentExecutive = Executives[id];
-            StackValue sv = Executives[id].Execute(exeblock, entry, context, sink);
+            StackValue sv = Executives[id].Execute(runtimeCore, exeblock, entry, context, sink);
             return sv;
         }
 
-        public StackValue Bounce(int exeblock, int entry, Context context, List<Instruction> breakpoints, StackFrame stackFrame, int locals = 0, 
+        public StackValue Bounce(RuntimeCore runtimeCore, int exeblock, int entry, Context context, List<Instruction> breakpoints, StackFrame stackFrame, int locals = 0, 
             DSASM.Executive exec = null, EventSink sink = null, bool fepRun = false)
         {
             if (stackFrame != null)
@@ -2025,7 +2003,7 @@ namespace ProtoCore
             Language id = DSExecutable.instrStreamList[exeblock].language;
             CurrentExecutive = Executives[id];
 
-            StackValue sv = Executives[id].Execute(exeblock, entry, context, breakpoints, sink, fepRun);
+            StackValue sv = Executives[id].Execute(runtimeCore, exeblock, entry, context, breakpoints, sink, fepRun);
             return sv;
         }
 

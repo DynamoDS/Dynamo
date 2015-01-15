@@ -111,7 +111,8 @@ namespace ProtoTestFx
 
             //Run
 
-            mirror = fsr.Execute(code, core);
+            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
+            mirror = fsr.Execute(code, core, runtimeCore);
 
             //sw.Close();
 

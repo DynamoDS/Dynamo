@@ -25,7 +25,7 @@ namespace ProtoTest.DebugTests
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core);
+            fsr = new DebugRunner(core, runtimeCore);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
@@ -48,13 +48,13 @@ b = 20;
             vms = fsr.Step();
 
             // Execute and verify the watch window expression script
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 watchRunner.Execute(@"%");
             });
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 1);
@@ -63,13 +63,13 @@ b = 20;
             vms = fsr.Step();
 
             // Execute and verify the watch window expression script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 watchRunner.Execute(@"%");
             });
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 20);
@@ -135,7 +135,7 @@ p = Vector.Vector();
             Assert.AreEqual(true, vms.isEnded);
 
             // Execute and verify the watch window expression script
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute("p.x");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -204,7 +204,7 @@ p = Vector.Vector();
             Assert.AreEqual(true, vms.isEnded);
 
             // Execute and verify the watch window expression script
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"p.y + 2");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -237,7 +237,7 @@ c = 3;
                 // This is to simulate the event when "a" is added into the watch window
                 // before it gets assigned a value. This should not cause subsequent stepping
                 // to go wrong.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -251,7 +251,7 @@ c = 3;
 
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -298,7 +298,7 @@ b = { a, 1 };       // Line 3
             // Get the value of "m[0]".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m[0]");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -314,7 +314,7 @@ b = { a, 1 };       // Line 3
             // Get the value of "m[0]".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m[0]");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -356,7 +356,7 @@ bbb = foo();
             // Get the value of "aaa".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"aaa");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -374,7 +374,7 @@ bbb = foo();
             // Get the value of "aaa".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"aaa");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -410,7 +410,7 @@ bbb = foo();
             // Get the value of "result".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"result");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -422,7 +422,7 @@ bbb = foo();
             // Get the value of "test".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"test");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -436,7 +436,7 @@ bbb = foo();
             // Get the value of "result".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"result");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -448,7 +448,7 @@ bbb = foo();
             // Get the value of "test".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"test");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -462,7 +462,7 @@ bbb = foo();
             // Get the value of "result".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"result");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -474,7 +474,7 @@ bbb = foo();
             // Get the value of "test".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"test");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -488,7 +488,7 @@ bbb = foo();
             // Get the value of "result".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"result");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -500,7 +500,7 @@ bbb = foo();
             // Get the value of "test".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"test");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -538,7 +538,7 @@ n = func(1);
             // Get the value of "m".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -550,7 +550,7 @@ n = func(1);
             // Get the value of "temp".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"temp");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -564,7 +564,7 @@ n = func(1);
             // Get the value of "m".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -576,7 +576,7 @@ n = func(1);
             // Get the value of "temp".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"temp");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -590,7 +590,7 @@ n = func(1);
             // Get the value of "m".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -602,7 +602,7 @@ n = func(1);
             // Get the value of "temp".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"temp");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -616,7 +616,7 @@ n = func(1);
             // Get the value of "m".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -628,7 +628,7 @@ n = func(1);
             // Get the value of "temp".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"temp");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -642,7 +642,7 @@ n = func(1);
             // Get the value of "m".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -654,7 +654,7 @@ n = func(1);
             // Get the value of "temp".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"temp");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -692,7 +692,7 @@ n = func(1);
                 // This is to simulate the event when "first" is added into the watch window
                 // before it gets assigned a value. This should not cause subsequent stepping
                 // to go wrong.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"first");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -710,7 +710,7 @@ n = func(1);
 
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"first");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -729,7 +729,7 @@ n = func(1);
 
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"second");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -765,7 +765,7 @@ n = func(1);
             vms = fsr.Step();
 
             // Execute and verify the watch window expression script
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 1);
@@ -774,7 +774,7 @@ n = func(1);
             vms = fsr.Step();
 
             // Execute and verify the watch window expression script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 20);
@@ -851,7 +851,7 @@ class Vector
             Assert.AreEqual(2, vms.ExecutionCursor.EndExclusive.CharNo);
 
             // Execute and verify the watch window expression script
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"p.x");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 10);
@@ -890,7 +890,7 @@ class Vector
             // Get the value of "eee".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"eee");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -908,7 +908,7 @@ class Vector
             // Get the value of "eee".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"eee");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -961,7 +961,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -975,7 +975,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -988,7 +988,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1001,7 +1001,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1015,7 +1015,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1029,7 +1029,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1043,7 +1043,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1057,7 +1057,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1071,7 +1071,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1085,7 +1085,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1099,7 +1099,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1113,7 +1113,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1127,7 +1127,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1141,7 +1141,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1155,7 +1155,7 @@ y = { a1.a1, a1.a4 };
             // Get the value of "a2".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a2");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1201,7 +1201,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1213,7 +1213,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1227,7 +1227,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1239,7 +1239,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1253,7 +1253,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1267,7 +1267,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1281,7 +1281,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1293,7 +1293,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1307,7 +1307,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1319,7 +1319,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1333,7 +1333,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1345,7 +1345,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1359,7 +1359,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1371,7 +1371,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1385,7 +1385,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1397,7 +1397,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1411,7 +1411,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1423,7 +1423,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1437,7 +1437,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1449,7 +1449,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1463,7 +1463,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1477,7 +1477,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1491,7 +1491,7 @@ b = a.foo();
             // Get the value of "a".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1505,7 +1505,7 @@ b = a.foo();
             // Get the value of "b".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1538,7 +1538,7 @@ b = 33;
             // Get the value of "a.x".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a.x");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1552,7 +1552,7 @@ b = 33;
             // Get the value of "a.x".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a.y");
                 Obj objExecVal = mirror.GetWatchValue();
                 Assert.AreNotEqual(null, objExecVal);
@@ -1571,7 +1571,7 @@ b = 33;
             // Get the value of "a.x".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a.y");
                 Obj objExecVal = mirror.GetWatchValue();
                 Assert.AreNotEqual(null, objExecVal);
@@ -1590,7 +1590,7 @@ b = 33;
             // Get the value of "a.x".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a.y");
                 Obj objExecVal = mirror.GetWatchValue();
                 Assert.AreNotEqual(null, objExecVal);
@@ -1610,7 +1610,7 @@ b = 33;
             // Get the value of "a.x".
             {
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a.y");
                 Obj objExecVal = mirror.GetWatchValue();
                 Assert.AreNotEqual(null, objExecVal);
@@ -1666,7 +1666,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1678,7 +1678,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1690,7 +1690,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1705,7 +1705,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1717,7 +1717,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1729,7 +1729,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1743,7 +1743,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1757,7 +1757,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1769,7 +1769,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1783,7 +1783,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1795,7 +1795,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1807,7 +1807,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1821,7 +1821,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1835,7 +1835,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1847,7 +1847,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1861,7 +1861,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1875,7 +1875,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1887,7 +1887,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1901,7 +1901,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1915,7 +1915,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1927,7 +1927,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1941,7 +1941,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1955,7 +1955,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1969,7 +1969,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1983,7 +1983,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -1997,7 +1997,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2011,7 +2011,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2025,7 +2025,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2039,7 +2039,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2053,7 +2053,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2067,7 +2067,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2079,7 +2079,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2091,7 +2091,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2105,7 +2105,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2117,7 +2117,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2129,7 +2129,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2143,7 +2143,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2155,7 +2155,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2167,7 +2167,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2182,7 +2182,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2194,7 +2194,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2206,7 +2206,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2220,7 +2220,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2234,7 +2234,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2246,7 +2246,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2260,7 +2260,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2272,7 +2272,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2284,7 +2284,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2298,7 +2298,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2312,7 +2312,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2324,7 +2324,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2338,7 +2338,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2352,7 +2352,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2364,7 +2364,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2378,7 +2378,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2392,7 +2392,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2404,7 +2404,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2418,7 +2418,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2432,7 +2432,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2446,7 +2446,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2460,7 +2460,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2474,7 +2474,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2488,7 +2488,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2502,7 +2502,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2516,7 +2516,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2530,7 +2530,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2544,7 +2544,7 @@ c2 = [Associative]
             {
                 // 1. Get the value of "a".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2556,7 +2556,7 @@ c2 = [Associative]
             {
                 // 2. Get the value of "b".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2568,7 +2568,7 @@ c2 = [Associative]
             {
                 // 3.Get the value of "c".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2603,7 +2603,7 @@ c2 = [Associative]
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"i");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -2617,7 +2617,7 @@ c2 = [Associative]
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"i");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -6684,7 +6684,7 @@ a1 = A.A();
             vms = fsr.Step();
             vms = fsr.Step();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a1.count");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 1);
@@ -7881,7 +7881,7 @@ test = foo();";
 
             DebugRunner.VMState vms = fsr.Step();   // test = foo();
             //Obj o = vms.mirror.GetDebugValue("gg");
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"gg");
             Obj o = mirror.GetWatchValue();
             Assert.IsTrue((Int64)o.Payload == 0);
@@ -7890,7 +7890,7 @@ test = foo();";
 
             vms = fsr.Step();
             //o = vms.mirror.GetDebugValue("arr");
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"arr");
             //Assert.IsTrue(vms.mirror.GetType("arr") == "array");
             Assert.IsTrue(mirror.GetType("arr") == "array");
@@ -7901,21 +7901,21 @@ test = foo();";
 
             vms = fsr.Step();   // gg = i;
             //o = vms.mirror.GetDebugValue("i");
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"i");
             o = mirror.GetWatchValue();
             Assert.IsTrue((Int64)o.Payload == 0);
 
             vms = fsr.Step();   // arr[i] = {1, 2};
             //o = vms.mirror.GetDebugValue("gg");
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"gg");
             o = mirror.GetWatchValue();
             Assert.IsTrue((Int64)o.Payload == 0);
 
             vms = fsr.Step();
             //o = vms.mirror.GetDebugValue("arr");
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"arr");
             o = mirror.GetWatchValue();
 
@@ -7932,21 +7932,21 @@ test = foo();";
             vms = fsr.Step();
             fsr.Step();     // gg = i;
             //o = vms.mirror.GetDebugValue("i");
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"i");
             o = mirror.GetWatchValue();
             Assert.IsTrue((Int64)o.Payload == 1);
 
             vms = fsr.Step();   // arr[i] = {1, 2};
             //o = vms.mirror.GetDebugValue("gg");
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"gg");
             o = mirror.GetWatchValue();
             Assert.IsTrue((Int64)o.Payload == 1);
 
             vms = fsr.Step();
             //o = vms.mirror.GetDebugValue("arr");
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"arr");
             o = mirror.GetWatchValue();
             ol = vms.mirror.GetArrayElements(o);
@@ -7965,7 +7965,7 @@ test = foo();";
             vms = fsr.Step();
             fsr.Step();
             //o = vms.mirror.GetDebugValue("test");
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"test");
             o = mirror.GetWatchValue();
             ol = vms.mirror.GetArrayElements(o);
@@ -8205,12 +8205,12 @@ surf = makeSurf(ps);
             fsr.Step();
             vms = fsr.Step();   // a1.a = -1;
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b[0]");
             Obj o1 = mirror.GetWatchValue();
             Assert.AreEqual(1, (Int64)o1.Payload);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b[1]");
             o1 = mirror.GetWatchValue();
             Assert.AreEqual(2, (Int64)o1.Payload);
@@ -8218,7 +8218,7 @@ surf = makeSurf(ps);
             fsr.Step();
             vms = fsr.Step();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b[0]");
             o1 = mirror.GetWatchValue();
             Assert.AreEqual(-1, (Int64)o1.Payload);
@@ -8460,12 +8460,12 @@ b = 2;";
 
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"arr[0]");
             Obj o1 = mirror.GetWatchValue();
             Assert.AreEqual(99, (Int64)o1.Payload);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"arr[1]");
             o1 = mirror.GetWatchValue();
             Assert.AreEqual(87, (Int64)o1.Payload);
@@ -8508,22 +8508,22 @@ val = GetValue(arr);";
 
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"arr[0].value");
             Obj o1 = mirror.GetWatchValue();
             Assert.AreEqual(5, (Int64)o1.Payload);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"arr[1].value");
             o1 = mirror.GetWatchValue();
             Assert.AreEqual(5, (Int64)o1.Payload);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"arr[2].value");
             o1 = mirror.GetWatchValue();
             Assert.AreEqual(5, (Int64)o1.Payload);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"arr[3].value");
             o1 = mirror.GetWatchValue();
             Assert.AreEqual(5, (Int64)o1.Payload);
@@ -8555,12 +8555,12 @@ def f(a : int)
 
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"arr[0]");
             Obj o1 = mirror.GetWatchValue();
             Assert.AreEqual(99, (Int64)o1.Payload);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"arr[1]");
             o1 = mirror.GetWatchValue();
             Assert.AreEqual(87, (Int64)o1.Payload);
@@ -9153,7 +9153,7 @@ b = 2;";
 
             {
 
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
                 //TestFrameWork.Verify(mirror, "a", 44, 1);
@@ -9163,7 +9163,7 @@ b = 2;";
             }
             vms = fsr.StepOver();
             {
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
                 //TestFrameWork.Verify(mirror, "b", 2, 1);
@@ -9197,7 +9197,7 @@ b = 2;";
 
             {
 
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
                 TestFrameWork.Verify(mirror, "a", 277, 1);
@@ -9205,7 +9205,7 @@ b = 2;";
             }
             vms = fsr.StepOver();
             {
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
                 TestFrameWork.Verify(mirror, "b", 2, 1);
@@ -9237,7 +9237,7 @@ b = 2;";
 
             {
 
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
                 //TestFrameWork.Verify(mirror, "a", 266, 1);
@@ -9247,7 +9247,7 @@ b = 2;";
             }
             vms = fsr.StepOver();
             {
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
                 //TestFrameWork.Verify(mirror, "b", 2, 1);
@@ -9281,7 +9281,7 @@ b = 2;";
 
             {
 
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
                 //TestFrameWork.Verify(mirror, "a", 277, 1);
@@ -9291,7 +9291,7 @@ b = 2;";
             }
             vms = fsr.StepOver();
             {
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
                 //TestFrameWork.Verify(mirror, "b", 2, 1);
@@ -9322,7 +9322,7 @@ b = 2;";
 
             {
 
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
                 TestFrameWork.Verify(mirror, "a", 0.5, 1);
@@ -9330,7 +9330,7 @@ b = 2;";
             }
             vms = fsr.StepOver();
             {
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
                 TestFrameWork.Verify(mirror, "b", 22, 1);
@@ -9359,7 +9359,7 @@ b = 2;";
 
             {
 
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
                 TestFrameWork.Verify(mirror, "a", 0.707106, 1);
@@ -9367,7 +9367,7 @@ b = 2;";
             }
             vms = fsr.StepOver();
             {
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
                 TestFrameWork.Verify(mirror, "b", 22, 1);
@@ -9395,7 +9395,7 @@ b = 2;";
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             {
 
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
                 //TestFrameWork.Verify(mirror, "a", 10, 0);
@@ -9406,7 +9406,7 @@ b = 2;";
 
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             {
-                ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror2 = watchRunner2.Execute(@"b");
                 Obj objExecVal2 = mirror2.GetWatchValue();
                 //TestFrameWork.Verify(mirror2, "b", 3, 0);
@@ -9418,7 +9418,7 @@ b = 2;";
             vms = fsr.Step();
             Assert.AreEqual(4, vms.ExecutionCursor.StartInclusive.LineNo);
             {
-                ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror3 = watchRunner3.Execute(@"x");
                 Obj objExecVal3 = mirror3.GetWatchValue();
                 //TestFrameWork.Verify(mirror3, "x", 10, 0);
@@ -9430,7 +9430,7 @@ b = 2;";
             vms = fsr.Step();
             Assert.AreEqual(6, vms.ExecutionCursor.StartInclusive.LineNo);
             {
-                ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror4 = watchRunner4.Execute(@"c1");
                 Obj objExecVal4 = mirror4.GetWatchValue();
                 //TestFrameWork.Verify(mirror4, "c1", 10, 0);
@@ -9461,7 +9461,7 @@ b = 2;";
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             {
 
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
                 //TestFrameWork.Verify(mirror, "a", 10, 0);
@@ -9472,7 +9472,7 @@ b = 2;";
 
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             {
-                ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror2 = watchRunner2.Execute(@"b");
                 Obj objExecVal2 = mirror2.GetWatchValue();
                 //     TestFrameWork.Verify(mirror2, "b", 3, 0);
@@ -9487,7 +9487,7 @@ b = 2;";
             vms = fsr.Step();
 
             {
-                ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror4 = watchRunner4.Execute(@"c1");
                 Obj objExecVal4 = mirror4.GetWatchValue();
                 TestFrameWork.Verify(mirror4, "c1", 10, 0);
@@ -9520,7 +9520,7 @@ b = 2;";
 
             {
 
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
                 //TestFrameWork.Verify(mirror, "a", 10, 2);
@@ -9531,7 +9531,7 @@ b = 2;";
 
 
             {
-                ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror2 = watchRunner2.Execute(@"b");
                 Obj objExecVal2 = mirror2.GetWatchValue();
                 //TestFrameWork.Verify(mirror2, "b", 3, 2);
@@ -9542,7 +9542,7 @@ b = 2;";
             vms = fsr.Step();
             vms = fsr.Step();
             {
-                ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror3 = watchRunner3.Execute(@"x");
                 Obj objExecVal3 = mirror3.GetWatchValue();
                 //TestFrameWork.Verify(mirror3, "x", 10, 2);
@@ -9555,7 +9555,7 @@ b = 2;";
             vms = fsr.Step();
 
             {
-                ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror4 = watchRunner4.Execute(@"c1");
                 Obj objExecVal4 = mirror4.GetWatchValue();
                 TestFrameWork.Verify(mirror4, "c1", 10, 1);
@@ -9605,7 +9605,7 @@ b = 2;";
 
             fsr.Run();
             Assert.AreEqual(fsr.isEnded, true);
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             //TestFrameWork.Verify(mirror, "b", null, 0);
             TestFrameWork.VerifyRuntimeWarning(core, ProtoCore.RuntimeData.WarningID.kCyclicDependency);
@@ -9675,7 +9675,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"i");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -9689,7 +9689,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"i");
                 Obj objExecVal = mirror.GetWatchValue();
                 // It should not be available.
@@ -9736,7 +9736,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"i");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -9754,7 +9754,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"b");
                 Obj objExecVal = mirror.GetWatchValue();
                 // It should not be available.
@@ -9801,7 +9801,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -9819,7 +9819,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"x");
                 Obj objExecVal = mirror.GetWatchValue();
                 // It should not be available.
@@ -9867,7 +9867,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -9885,7 +9885,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"x");
                 Obj objExecVal = mirror.GetWatchValue();
                 // It should not be available.
@@ -9932,7 +9932,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -9950,7 +9950,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"x");
                 Obj objExecVal = mirror.GetWatchValue();
                 // It should not be available.
@@ -10000,7 +10000,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a.a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10016,7 +10016,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10033,7 +10033,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a.a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10082,7 +10082,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a.a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10098,7 +10098,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"c");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10115,7 +10115,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"a.a");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10154,7 +10154,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10167,7 +10167,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"temp");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10207,7 +10207,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10220,7 +10220,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"temp");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10267,7 +10267,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10280,7 +10280,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"temp");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10328,7 +10328,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"m");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10341,7 +10341,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"temp");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10377,7 +10377,7 @@ b = 2;";
             {
                 // Get the value of "i".
                 // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                 ExecutionMirror mirror = watchRunner.Execute(@"result");
                 Obj objExecVal = mirror.GetWatchValue();
 
@@ -10411,7 +10411,7 @@ b = 2;";
             vms = fsr.Step();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -10442,7 +10442,7 @@ b = 2;";
 
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"testSolid.Radius");
 
             Obj objExecVal = mirror.GetWatchValue();
@@ -10489,14 +10489,14 @@ return = a;
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"testSolid.Radius");
             Obj objExecVal = mirror.GetWatchValue();
 
 
             // It should not be available.
             Assert.AreEqual(10.3, (Double)objExecVal.Payload);
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror11 = watchRunner.Execute(@"testSolid.CenterPoint.X");
             Obj objExecVal11 = mirror11.GetWatchValue();
 
@@ -10509,7 +10509,7 @@ return = a;
             vms = fsr.Step();
             vms = fsr.Step();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror2 = watchRunner.Execute(@"a");
             Obj objExecVal2 = mirror2.GetWatchValue();
 
@@ -10524,7 +10524,7 @@ return = a;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror3 = watchRunner.Execute(@"z");
             Obj objExecVal3 = mirror3.GetWatchValue();
 
@@ -10572,14 +10572,14 @@ return = a;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"testSolid.Radius");
             Obj objExecVal = mirror.GetWatchValue();
 
 
             // It should not be available.
             Assert.AreEqual(10.3, (Double)objExecVal.Payload);
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror11 = watchRunner.Execute(@"testSolid.CenterPoint.X");
 
             Obj objExecVal11 = mirror11.GetWatchValue();
@@ -10593,7 +10593,7 @@ return = a;
             vms = fsr.Step();
             vms = fsr.Step();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror2 = watchRunner.Execute(@"a");
             Obj objExecVal2 = mirror2.GetWatchValue();
             // It should not be available.
@@ -10607,7 +10607,7 @@ return = a;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror3 = watchRunner.Execute(@"z");
             Obj objExecVal3 = mirror3.GetWatchValue();
 
@@ -10653,14 +10653,14 @@ return = a;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"testSolid.Radius");
             Obj objExecVal = mirror.GetWatchValue();
 
 
             // It should not be available.
             Assert.AreEqual(10.3, (Double)objExecVal.Payload);
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror11 = watchRunner.Execute(@"testSolid.CenterPoint.X");
 
             Obj objExecVal11 = mirror11.GetWatchValue();
@@ -10674,7 +10674,7 @@ return = a;
             vms = fsr.Step();
             vms = fsr.Step();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror2 = watchRunner.Execute(@"a");
             Obj objExecVal2 = mirror2.GetWatchValue();
             // It should not be available.
@@ -10688,7 +10688,7 @@ return = a;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror3 = watchRunner.Execute(@"z");
             Obj objExecVal3 = mirror3.GetWatchValue();
 
@@ -10739,7 +10739,7 @@ class test
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"testSolid.Radius");
             Obj objExecVal = mirror.GetWatchValue();
             //  Assert.AreNotEqual(null, objExecVal);
@@ -10749,7 +10749,7 @@ class test
             vms = fsr.StepOver();
             vms = fsr.StepOver();
             vms = fsr.StepOver();
-            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror2 = watchRunner2.Execute(@"a");
             Obj objExecVal2 = mirror.GetWatchValue();
             //  Assert.AreNotEqual(null, objExecVal);
@@ -11636,7 +11636,7 @@ c = 3;
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "b", 1234, 1);
@@ -11692,7 +11692,7 @@ c = 3;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "b", 1, 0);
@@ -11753,7 +11753,7 @@ c = 3;
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "b", 1234, 1);
@@ -11799,7 +11799,7 @@ c = 3;
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             vms = fsr.StepOver();
@@ -11842,7 +11842,7 @@ a;b;
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -11891,7 +11891,7 @@ r = 0;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"k");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -11951,7 +11951,7 @@ r = 0;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"k");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -12015,7 +12015,7 @@ r = 0;
             vms = fsr.Step();
             vms = fsr.Step();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"k");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -12065,7 +12065,7 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
             vms = fsr.StepOver();    // p = 0..10..#5;
             vms = fsr.StepOver();    // isPass5 = Count ( p ) == 5 ? true : false ;  
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"p");
             //Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "p", new object[] { 0.000000, 2.500000, 5.000000, 7.500000, 10.000000 }, 0);
@@ -12122,7 +12122,7 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
             vms = fsr.Step();
             vms = fsr.Step();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"p");
             //Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "p", new object[] { 0.000000, 2.500000, 5.000000, 7.500000, 10.000000 }, 0);
@@ -12173,7 +12173,7 @@ a;
             DebugRunner.VMState vms = fsr.Step();    // x = 330;
 
             vms = fsr.StepOver();    // a = x > 20 ?  foo(44) : 55 ;
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
@@ -12210,7 +12210,7 @@ a;
             vms = fsr.Step();    // a = x > 20 ?  foo(44) : 55 ;
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
@@ -12256,7 +12256,7 @@ a;
             vms = fsr.StepOver();    // a = x > 20 ?  foo(44) : 55 ;
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
@@ -12298,7 +12298,7 @@ b;
             vms = fsr.Step();    // a = x > 20 ?  foo(44) : 55 ;
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             //   Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
@@ -12306,7 +12306,7 @@ b;
             TestFrameWork.Verify(mirror, "a", null, 0);
             vms = fsr.Step();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -12348,7 +12348,7 @@ b;
             vms = fsr.Step();    // a = x > 20 ?  foo(44) : 55 ;
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             //   Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
@@ -12356,7 +12356,7 @@ b;
             TestFrameWork.Verify(mirror, "a", null, 0);
             vms = fsr.Step();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -12403,7 +12403,7 @@ a;
             vms = fsr.StepOver();    // a = x > 20 ?  foo(44) : 55 ;
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
@@ -12446,7 +12446,7 @@ def foo(y : int)
             vms = fsr.StepOver();    // a = x > 20 ?  foo(44) : 55 ;
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             //Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
@@ -12488,13 +12488,13 @@ def foo(y : int)
 
             vms = fsr.Step();    // a = x > 20 ?  foo(44) : 55 ;
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             //Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
 
             vms = fsr.Step();    // return = y + 222;
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -12546,7 +12546,7 @@ def foo(y : int)
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             //Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
@@ -12585,13 +12585,13 @@ def foo(y : int)
             vms = fsr.Step();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             //Obj objExecVal = mirror.GetWatchValue();
 
             TestFrameWork.Verify(mirror, "x", 330, 0);
             vms = fsr.Step();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -12603,7 +12603,7 @@ def foo(y : int)
             vms = fsr.Step();
 
             vms = fsr.Step();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y");
             objExecVal = mirror.GetWatchValue();
 
@@ -12649,7 +12649,7 @@ def foo(y : int)
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 330, 0);
@@ -12688,7 +12688,7 @@ def foo(y : int)
             vms = fsr.Step();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             // Obj objExecVal = mirror.GetWatchValue();
 
@@ -12696,7 +12696,7 @@ def foo(y : int)
             vms = fsr.Step();
 
             //TestFrameWork.Verify(mirror, "y", 20, 0);
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -12707,7 +12707,7 @@ def foo(y : int)
             vms = fsr.Step();
             vms = fsr.Step();
             //TestFrameWork.Verify(mirror, "y", 44, 0);
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y");
             objExecVal = mirror.GetWatchValue();
 
@@ -12760,7 +12760,7 @@ c = 90;
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             // Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "b1", 1, 0);
@@ -12812,7 +12812,7 @@ c = 90;
             DebugRunner.VMState vms = fsr.Step();    // b1 = 1;
 
             vms = fsr.Step();    // a1 = 4;
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b1");
             TestFrameWork.Verify(mirror, "b1", 1, 0);
 
@@ -12824,7 +12824,7 @@ c = 90;
             // Obj objExecVal = mirror.GetWatchValue();
             vms = fsr.Step();
             //TestFrameWork.Verify(mirror, "x", 1, 0);
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x");
             Obj o = mirror.GetWatchValue();
             Assert.AreNotEqual(null, o);
@@ -12886,7 +12886,7 @@ a =
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             // Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 1, 0);
@@ -12937,7 +12937,7 @@ a =
             vms = fsr.Step();    // x > 10 ? true : false => a1;
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             // Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 1, 0);
@@ -12947,7 +12947,7 @@ a =
             vms = fsr.Step();
             //TestFrameWork.Verify(mirror, "x1", false, 0);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x1");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -12995,7 +12995,7 @@ a = x > foo(22) ? foo(1) : A.foo(4);
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             // Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 33, 0);
@@ -13037,13 +13037,13 @@ a = x > foo(22) ? foo(1) : A.foo(4);
 
             vms = fsr.Step();    // a = x > foo(22) ? foo(1) : A.foo(4);
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             TestFrameWork.Verify(mirror, "x", 33, 0);
 
             vms = fsr.Step();    // return = y + 222;
             //TestFrameWork.Verify(mirror, "y", 22, 0);
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -13055,7 +13055,7 @@ a = x > foo(22) ? foo(1) : A.foo(4);
             vms = fsr.Step();    // a = x > foo(22) ? foo(1) : A.foo(4);
             vms = fsr.Step();    // return = y * 2;
             //TestFrameWork.Verify(mirror, "y", 4, 0);
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y");
             objExecVal = mirror.GetWatchValue();
 
@@ -13092,7 +13092,7 @@ list3 = GetCoor(list1);
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"list1");
             // Obj objExecVal = mirror.GetWatchValue();
 
@@ -13130,7 +13130,7 @@ list3 = GetCoor(list1);
             vms = fsr.Step();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"list1");
             // Obj objExecVal = mirror.GetWatchValue();
 
@@ -13174,7 +13174,7 @@ a =
             DebugRunner.VMState vms = fsr.Step();    // x = 1;
 
             vms = fsr.StepOver();    // x > 10 ? true : false => a1;
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"x");
             // Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "x", 1, 0);
@@ -13237,7 +13237,7 @@ n = 22;
             vms = fsr.Step();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             // Obj objExecVal = mirror.GetWatchValue();
             /* TestFrameWork.Verify(mirror, "a", 0, 0);*/
@@ -13475,7 +13475,7 @@ s = Print(results);
             vms = fsr.Step();
             vms = fsr.Step();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"k");
 
             mirror = watchRunner.Execute(@"k");
@@ -13560,7 +13560,7 @@ i[4] = Point.ByCoordinates(0, 5, 1);
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"c");
             mirror = watchRunner.Execute(@"c");
             Obj objExecVal = mirror.GetWatchValue();
@@ -13631,7 +13631,7 @@ s;
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"c");
             mirror = watchRunner.Execute(@"c");
             Obj objExecVal = mirror.GetWatchValue();
@@ -13666,13 +13666,13 @@ c = 2;
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();   // a = A.A();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
 
             vms = fsr.StepOver();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -13680,13 +13680,13 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             vms = fsr.StepOver();   // c = 2;
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == -1);
 
             vms = fsr.StepOver();   // end of script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -13721,7 +13721,7 @@ c = 2;
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();   // foo();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
@@ -13729,7 +13729,7 @@ c = 2;
             fsr.Step();   // a = A.A();
             fsr.StepOver();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -13737,13 +13737,13 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             vms = fsr.StepOver();   // c = 2;
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == -1);
 
             vms = fsr.StepOver();   // end of script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -13780,14 +13780,14 @@ c = 2;
 
             vms = fsr.StepOver();                   // g = { 1, 2, 3 };
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
 
             vms = fsr.StepOver();                         // foo(g);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"g");
             objExecVal = mirror.GetWatchValue();
             List<Obj> lo = mirror.GetArrayElements(objExecVal);
@@ -13796,13 +13796,13 @@ c = 2;
             Assert.IsTrue((Int64)lo[2].Payload == 3);
 
             vms = fsr.StepOver();   // c = 2;
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == -3);
 
             vms = fsr.StepOver();   // end of script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -13839,14 +13839,14 @@ c = 2;
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();   // p = A.A();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
 
             fsr.StepOver(); // p.foo();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"p");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -13856,7 +13856,7 @@ c = 2;
             fsr.Step(); // a = A.A();
             fsr.StepOver();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -13864,13 +13864,13 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             vms = fsr.StepOver();   // c = 2;
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == -1);
 
             vms = fsr.StepOver();   // end of script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -13907,13 +13907,13 @@ c = 2;
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();   // arr = { 1,2 };
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
 
             vms = fsr.StepOver();   // for(i in arr)
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"arr");
             objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(mirror.GetType(objExecVal), "array");
@@ -13925,14 +13925,14 @@ c = 2;
             fsr.StepOver();
             fsr.StepOver();
             vms = fsr.StepOver();   // a = A.A();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"i");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 1);
 
             fsr.StepOver();
             // check for "a"
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -13940,7 +13940,7 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             fsr.StepOver();         // for(i in arr)
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
@@ -13950,14 +13950,14 @@ c = 2;
 
             fsr.StepOver();
             vms = fsr.StepOver();   // a = A.A();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"i");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
 
             fsr.StepOver();
             // check for "a"
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -13965,7 +13965,7 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             fsr.StepOver();         // for(i in arr)
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
@@ -13976,7 +13976,7 @@ c = 2;
             fsr.StepOver();
             fsr.StepOver();
             fsr.StepOver();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -14012,14 +14012,14 @@ c = 2;
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();   // if(b == 0)
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
 
             vms = fsr.StepOver();   // a = A.A()
             fsr.StepOver();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -14027,7 +14027,7 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             fsr.StepOver();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
@@ -14037,7 +14037,7 @@ c = 2;
 
             vms = fsr.StepOver();   // c = 2;
             vms = fsr.StepOver();   // end of script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -14077,14 +14077,14 @@ c = 2;
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();   // if(b == 1)
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
 
             vms = fsr.StepOver();   // a = A.A()
             fsr.StepOver();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -14092,7 +14092,7 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             fsr.StepOver();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
@@ -14102,7 +14102,7 @@ c = 2;
 
             vms = fsr.StepOver();   // c = 2;
             vms = fsr.StepOver();   // end of script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -14139,7 +14139,7 @@ c = 2;
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();   // a = A.A();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
@@ -14147,7 +14147,7 @@ c = 2;
             vms = fsr.Step();   // closing brace of A's ctor
             fsr.Step();         // a = A.A();
             fsr.Step();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -14155,13 +14155,13 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             vms = fsr.StepOver();   // c = 2;
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == -1);
 
             vms = fsr.StepOver();   // end of script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -14199,18 +14199,18 @@ c = 2;
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();   // a = A.A().foo();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
 
             vms = fsr.StepOver();   // c = 2;
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(objExecVal.Payload, 89);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
@@ -14219,7 +14219,7 @@ c = 2;
             }
 
             vms = fsr.StepOver();   // end of script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -14253,7 +14253,7 @@ c = 2;
             DebugRunner.VMState vms = fsr.Step();   // b = 0;
 
             vms = fsr.StepOver();   // a = A.A().foo();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 0);
@@ -14264,12 +14264,12 @@ c = 2;
             fsr.Step();         // a = A.A().foo();
             fsr.Step();         // c = 2;
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(objExecVal.Payload, 89);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
@@ -14278,7 +14278,7 @@ c = 2;
             }
 
             vms = fsr.StepOver();   // end of script
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"c");
             objExecVal = mirror.GetWatchValue();
             Assert.IsTrue((Int64)objExecVal.Payload == 2);
@@ -14323,7 +14323,7 @@ myNeTwst = myTest.Transform(1);
 
             fsr.Run();  // closing brace of Transform()            
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"this");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -14332,7 +14332,7 @@ myNeTwst = myTest.Transform(1);
 
             vms = fsr.StepOver();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"this");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -14354,14 +14354,14 @@ b = 2;
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a.DummyProperty");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(2, (Int64)objExecVal.Payload);
 
             vms = fsr.Step();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a.DummyProperty");
             objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(2, (Int64)objExecVal.Payload);
@@ -14392,20 +14392,20 @@ a : Dummy = null;
             fsr.Step();
             fsr.StepOver();                         // a = a@final;
 
-            /*ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            /*ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a@final.DummyProperty");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(2, (Int64)objExecVal.Payload);*/
 
             vms = fsr.Step();                       // closing brace of assoc block
 
-            /*watchRunner = new ExpressionInterpreterRunner(core);
+            /*watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a.DummyProperty");
             objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(2, (Int64)objExecVal.Payload);*/
 
             fsr.Step();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a.DummyProperty");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(2, (Int64)objExecVal.Payload);
@@ -14445,13 +14445,13 @@ a : Dummy = null;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal.Payload);
 
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal.Payload);
@@ -14479,14 +14479,14 @@ a : Dummy = null;
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(10, objExecVal.Payload);
             vms = fsr.StepOver();
 
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(20, objExecVal.Payload);
@@ -14514,14 +14514,14 @@ a : Dummy = null;
             vms = fsr.Step();   // surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);
             vms = fsr.Step();
             vms = fsr.Step();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(10, objExecVal.Payload);
             vms = fsr.Step();
 
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(20, objExecVal.Payload);
@@ -14554,13 +14554,13 @@ a : Dummy = null;
             vms = fsr.Step();
             vms = fsr.Step();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(10, objExecVal.Payload);
             vms = fsr.Step();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(20, objExecVal.Payload);
@@ -14591,13 +14591,13 @@ a : Dummy = null;
             vms = fsr.Step();
             vms = fsr.Step();
             vms = fsr.Step();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(10, objExecVal.Payload);
             vms = fsr.Step();
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"a");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(20, objExecVal.Payload);
@@ -14630,7 +14630,7 @@ z = { A.A(), A.A() };
             fsr.StepOver();                         // end of script
 
             // Watch "z.a"
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"z.a[0]");
             Obj objExecVal = mirror.GetWatchValue();
             /*List<Obj> lo = mirror.GetArrayElements(objExecVal);
@@ -14655,7 +14655,7 @@ z = { A.A(), A.A() };
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"variableName");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(null, objExecVal);
@@ -14693,7 +14693,7 @@ z = { A.A(), A.A() };
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -14730,7 +14730,7 @@ z = { A.A(), A.A() };
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -14768,7 +14768,7 @@ z = { A.A(), A.A() };
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -14806,7 +14806,7 @@ z = { A.A(), A.A() };
             vms = fsr.StepOver();
 
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -14846,7 +14846,7 @@ x = y.add();
 
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -14867,7 +14867,7 @@ x = y.add();
             Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.LineNo);
             Assert.AreEqual(20, vms.ExecutionCursor.EndExclusive.CharNo);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -14878,13 +14878,13 @@ x = y.add();
             vms = fsr.Step();        // x = y.add();
 
             vms = fsr.Step();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
             Assert.AreEqual(objExecVal.Payload, 10);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y.x");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -14927,7 +14927,7 @@ x = y.add();
 
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -14948,7 +14948,7 @@ x = y.add();
             Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.LineNo);
             Assert.AreEqual(20, vms.ExecutionCursor.EndExclusive.CharNo);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x[1][2]");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -14959,13 +14959,13 @@ x = y.add();
             vms = fsr.Step();        // x = y.add();
 
             vms = fsr.Step();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
             Assert.AreEqual(objExecVal.Payload, 1);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y.x[1][2]");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -15009,7 +15009,7 @@ x = add(y);
 
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -15030,7 +15030,7 @@ x = add(y);
             Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.LineNo);
             Assert.AreEqual(20, vms.ExecutionCursor.EndExclusive.CharNo);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x[1][2]");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -15041,13 +15041,13 @@ x = add(y);
             vms = fsr.Step();        // x = y.add();
 
             vms = fsr.Step();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
             Assert.AreEqual(objExecVal.Payload, 1);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y.x[1][2]");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -15094,7 +15094,7 @@ x = add(y);
 
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"y");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -15115,7 +15115,7 @@ x = add(y);
             Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.LineNo);
             Assert.AreEqual(20, vms.ExecutionCursor.EndExclusive.CharNo);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x[1][2]");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -15126,13 +15126,13 @@ x = add(y);
             vms = fsr.Step();        // x = y.add();
 
             vms = fsr.Step();
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"x");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
             Assert.AreEqual(objExecVal.Payload, 1);
 
-            watchRunner = new ExpressionInterpreterRunner(core);
+            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             mirror = watchRunner.Execute(@"y.x[1][2]");
             objExecVal = mirror.GetWatchValue();
             Assert.IsNotNull(objExecVal);
@@ -15162,23 +15162,23 @@ x = add(y);
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"z");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal.Payload);
 
-            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror2 = watchRunner2.Execute(@"z");
             Obj objExecVal2 = mirror2.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal2.Payload);
 
 
-            ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror3 = watchRunner3.Execute(@"z.a");
             Obj objExecVal3 = mirror3.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal3.Payload);
 
-            ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror4 = watchRunner4.Execute(@"z.a");
             Obj objExecVal4 = mirror4.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal3.Payload);
@@ -15212,23 +15212,23 @@ x = add(y);
             DebugRunner.VMState vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"z");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal.Payload);
 
-            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror2 = watchRunner2.Execute(@"z");
             Obj objExecVal2 = mirror2.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal2.Payload);
 
 
-            ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror3 = watchRunner3.Execute(@"z.a");
             Obj objExecVal3 = mirror3.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal3.Payload);
 
-            ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror4 = watchRunner4.Execute(@"z.a");
             Obj objExecVal4 = mirror4.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal3.Payload);
@@ -15264,23 +15264,23 @@ x = add(y);
             vms = fsr.Step();
             vms = fsr.Step();
             vms = fsr.Step();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"z");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal.Payload);
 
-            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror2 = watchRunner2.Execute(@"z");
             Obj objExecVal2 = mirror2.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal2.Payload);
 
 
-            ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror3 = watchRunner3.Execute(@"z.a");
             Obj objExecVal3 = mirror3.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal3.Payload);
 
-            ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror4 = watchRunner4.Execute(@"z.a");
             Obj objExecVal4 = mirror4.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal3.Payload);
@@ -15319,23 +15319,23 @@ x = add(y);
             vms = fsr.Step();
             vms = fsr.Step();
             vms = fsr.Step();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"z");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal.Payload);
 
-            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner2 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror2 = watchRunner2.Execute(@"z");
             Obj objExecVal2 = mirror2.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal2.Payload);
 
 
-            ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner3 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror3 = watchRunner3.Execute(@"z.a");
             Obj objExecVal3 = mirror3.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal3.Payload);
 
-            ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner4 = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror4 = watchRunner4.Execute(@"z.a");
             Obj objExecVal4 = mirror4.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal3.Payload);
@@ -15347,6 +15347,7 @@ x = add(y);
     public class BasicUseCaseTests
     {
         public ProtoCore.Core core;
+        public ProtoCore.RuntimeCore runtimeCore;
         private DebugRunner fsr;
         private ProtoScript.Config.RunConfiguration runnerConfig;
         private string testPath = @"..\..\..\test\Engine\ProtoTest\ImportFiles\";
@@ -15363,9 +15364,11 @@ x = add(y);
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
 
+            runtimeCore = new ProtoCore.RuntimeCore();
+
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core);
+            fsr = new DebugRunner(core, runtimeCore);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
@@ -15445,7 +15448,7 @@ d = b[0..(Count(b) - 1)..2]; // rnage expression used for indexing into a collec
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
 
             Obj objExecVal = mirror.GetWatchValue();
@@ -15484,7 +15487,7 @@ a = a < 5 ? 3 : 4;
 
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
 
             Obj objExecVal = mirror.GetWatchValue();
@@ -15522,7 +15525,7 @@ b : int;
 
 
             DebugRunner.VMState vms = fsr.Step();
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             Obj objExecVal = mirror.GetWatchValue();
 
@@ -15565,7 +15568,7 @@ b : int;
 
             DebugRunner.VMState vms = fsr.Step();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             TestFrameWork.Verify(mirror, "a", null, 0);
 
@@ -15621,7 +15624,7 @@ b = t1.Equals(t2);
             vms = fsr.StepOver();
             vms = fsr.StepOver();
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"b");
             Obj objExecVal = mirror.GetWatchValue();
             TestFrameWork.Verify(mirror, "b", true, 0);

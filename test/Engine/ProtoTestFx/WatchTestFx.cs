@@ -15,9 +15,9 @@ namespace ProtoTestFx
 {
     public class InjectionExecutiveProvider : IExecutiveProvider
     {
-        public ProtoCore.DSASM.Executive CreateExecutive(Core core, bool isFep)
+        public ProtoCore.DSASM.Executive CreateExecutive(Core core, ProtoCore.RuntimeCore runtimeCore, bool isFep)
         {
-            return new InjectionExecutive(core, isFep);
+            return new InjectionExecutive(core, runtimeCore, isFep);
         }
     }
 
@@ -39,7 +39,7 @@ namespace ProtoTestFx
     public class InjectionExecutive : ProtoCore.DSASM.Executive
     {
 
-        public InjectionExecutive(Core core, bool isFep = false) : base(core, isFep) { }
+        public InjectionExecutive(Core core, RuntimeCore runtimeCore, bool isFep = false) : base(core, runtimeCore, isFep) { }
 
         public static int callrLineNo { get; private set; }
         public static bool IsPopToPropertyArray { get; set; }
@@ -56,7 +56,7 @@ namespace ProtoTestFx
         internal void Print(StackValue sv, int lineNo, string symbolName, int ci = Constants.kInvalidIndex)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core, runtimeCore);
             string result = mirror.GetStringValue(sv, Core.Heap, 0, true);
 
             TextOutputStream tStream = Core.BuildStatus.MessageHandler as TextOutputStream;
@@ -383,8 +383,8 @@ namespace ProtoTestFx
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
             //Run
-
-            Mirror = fsr.Execute(code, core);
+            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
+            Mirror = fsr.Execute(code, core, runtimeCore);
 
             //sw.Close();
             core.Cleanup();
@@ -428,7 +428,9 @@ namespace ProtoTestFx
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core);
+
+            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
+            fsr = new DebugRunner(core, runtimeCore);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
@@ -524,7 +526,7 @@ namespace ProtoTestFx
                                 string lhsName = m.Groups[1].Value;
                                 if (lhsName.Equals(symbolName))
                                 {
-                                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                                     ProtoCore.DSASM.Mirror.ExecutionMirror mirror = watchRunner.Execute(lhsString);
                                     Obj obj = mirror.GetWatchValue();
 
@@ -598,7 +600,9 @@ namespace ProtoTestFx
                 }                            
                 if (lhsName.Equals(symbolName))
                 {
-                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+
+                    ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
+                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                     ProtoCore.DSASM.Mirror.ExecutionMirror mirror = watchRunner.Execute(exp);
                     Obj obj = mirror.GetWatchValue();
                     

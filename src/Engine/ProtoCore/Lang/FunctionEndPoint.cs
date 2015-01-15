@@ -317,7 +317,7 @@ namespace ProtoCore
         }
 
         public abstract bool DoesPredicateMatch(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, List<ReplicationInstruction> replicationInstructions);
-        public abstract StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core);
+        public abstract StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core, RuntimeCore runtimeCore);
 
         /// <summary>
         /// Convert the parameters passed to the types specified in this fep

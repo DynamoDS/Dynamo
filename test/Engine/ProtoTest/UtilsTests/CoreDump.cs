@@ -20,7 +20,7 @@ namespace ProtoTest.UtilsTests
         public void TestArrayCoreDump01()
         {
             string sourceCode = @"                class A                {                    c : int = 0;                        constructor B(v : int)                    {                        c = v;                    }                }                values = A.B(1..20..1);";
-            ExecutionMirror mirror = coreRunner.Execute(sourceCode, core);
+            ExecutionMirror mirror = coreRunner.Execute(sourceCode, core, runtimeCore);
             List<string> globalVariables = null;
             mirror.GetCoreDump(out globalVariables, 7, 4);
             Assert.AreEqual(1, globalVariables.Count);
@@ -30,7 +30,7 @@ namespace ProtoTest.UtilsTests
         public void TestArrayCoreDump02() // Test array truncation size being an even number.
         {
             string sourceCode = @"                class A                {                    c : int = 0;                        constructor B(v : int)                    {                        c = v;                    }                }                under = A.B(1..7..1);                match = A.B(1..8..1);                over = A.B(1..9..1);";
-            ExecutionMirror mirror = coreRunner.Execute(sourceCode, core);
+            ExecutionMirror mirror = coreRunner.Execute(sourceCode, core, runtimeCore);
             List<string> globalVariables = null;
             mirror.GetCoreDump(out globalVariables, 8, 4);
             Assert.AreEqual(3, globalVariables.Count);
@@ -42,7 +42,7 @@ namespace ProtoTest.UtilsTests
         public void TestArrayCoreDump03() // Test array truncation size being an odd number.
         {
             string sourceCode = @"                class A                {                    c : int = 0;                        constructor B(v : int)                    {                        c = v;                    }                }                under = A.B(1..6..1);                match = A.B(1..7..1);                over = A.B(1..8..1);";
-            ExecutionMirror mirror = coreRunner.Execute(sourceCode, core);
+            ExecutionMirror mirror = coreRunner.Execute(sourceCode, core, runtimeCore);
             List<string> globalVariables = null;
             mirror.GetCoreDump(out globalVariables, 7, 4);
             Assert.AreEqual(3, globalVariables.Count);
@@ -54,7 +54,7 @@ namespace ProtoTest.UtilsTests
         public void TestRecursiveCoreDump()
         {
             string sourceCode = @"                class A                {                    x;                }                a = A.A();                x = a.x;                a.x = a;";
-            ExecutionMirror mirror = coreRunner.Execute(sourceCode, core);
+            ExecutionMirror mirror = coreRunner.Execute(sourceCode, core, runtimeCore);
             List<string> globalVariables = null;
             mirror.GetCoreDump(out globalVariables, 7, 4);
             // Fix: http://adsk-oss.myjetbrains.com/youtrack/issue/IDE-398

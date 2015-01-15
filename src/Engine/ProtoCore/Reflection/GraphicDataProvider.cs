@@ -132,18 +132,18 @@ namespace ProtoCore.Mirror
             }
         }
 
-        internal List<IGraphicItem> GetGraphicItems(DSASM.StackValue svData, Core core)
+        internal List<IGraphicItem> GetGraphicItems(DSASM.StackValue svData, Core core, RuntimeCore runtimeCore)
         {
             Validity.Assert(svData.IsPointer);
 
-            object obj = GetCLRObject(svData, core);
+            object obj = GetCLRObject(svData, core, runtimeCore);
             if (obj != null)
                 return GetGraphicItems(obj);
 
             return null;
         }
 
-        internal object GetCLRObject(StackValue svData, Core core)
+        internal object GetCLRObject(StackValue svData, Core core, RuntimeCore runtimeCore)
         {
             if (null == core.DSExecutable.classTable)
                 return null;
@@ -158,7 +158,7 @@ namespace ProtoCore.Mirror
 
             try
             {
-                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, false);
+                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, runtimeCore, false);
                 var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
                 var marshaler = helper.GetMarshaller(core);
                 return marshaler.UnMarshal(svData, null, interpreter, typeof(object));

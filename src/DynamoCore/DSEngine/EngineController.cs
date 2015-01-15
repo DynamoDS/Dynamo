@@ -88,12 +88,24 @@ namespace Dynamo.DSEngine
         
         /// <summary>
         /// Get DesignScript core.
+        /// This will be superceeded by the runtime core
         /// </summary>
         public ProtoCore.Core LiveRunnerCore
         {
             get
             {
                 return liveRunnerServices.Core;
+            }
+        }
+
+        /// <summary>
+        /// Get DesignScript runtime core.
+        /// </summary>
+        public ProtoCore.RuntimeCore LiveRunnerRuntimeCore
+        {
+            get
+            {
+                return liveRunnerServices.RTCore;
             }
         }
 

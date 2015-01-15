@@ -57,7 +57,7 @@ namespace Dynamo.Interfaces
             this.preferences = preferences;
         }
 
-        private WatchViewModel ProcessThing(object value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(object value, ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             WatchViewModel node;
 
@@ -78,7 +78,7 @@ namespace Dynamo.Interfaces
 
                 if (stackValue.IsFunctionPointer)
                 {
-                    stringValue = StringUtils.GetStringValue(stackValue, core);
+                    stringValue = StringUtils.GetStringValue(stackValue, core, runtimeCore);
                 }
                 else
                 {

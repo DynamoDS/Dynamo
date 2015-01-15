@@ -10,6 +10,7 @@ namespace ProtoTest
     abstract class ProtoTestBase
     {
         protected ProtoCore.Core core;
+        protected ProtoCore.RuntimeCore runtimeCore;
         protected TestFrameWork thisTest = new TestFrameWork();
 
         [SetUp]
@@ -18,6 +19,8 @@ namespace ProtoTest
             core = new ProtoCore.Core(new ProtoCore.Options());
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+
+            runtimeCore = new ProtoCore.RuntimeCore();
         }
 
         [TearDown]

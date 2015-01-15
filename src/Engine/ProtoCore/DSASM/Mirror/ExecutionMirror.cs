@@ -30,6 +30,7 @@ namespace ProtoCore.DSASM.Mirror
     public class ExecutionMirror
     {
         private readonly ProtoCore.Core core;
+        private readonly RuntimeCore runtimeCore;
         public Executive MirrorTarget { get; private set; }
         private OutputFormatParameters formatParams;
         private Dictionary<string, List<string>> propertyFilter;
@@ -38,11 +39,12 @@ namespace ProtoCore.DSASM.Mirror
         /// Create a mirror for a given executive
         /// </summary>
         /// <param name="exec"></param>
-        public ExecutionMirror(ProtoCore.DSASM.Executive exec, ProtoCore.Core coreObj)
+        public ExecutionMirror(ProtoCore.DSASM.Executive exec, ProtoCore.Core coreObj, RuntimeCore rtCore)
         {
             Validity.Assert(exec != null, "Can't mirror a null executive");
 
             core = coreObj;
+            runtimeCore = rtCore;
             MirrorTarget = exec;
 
             LoadPropertyFilters();
@@ -942,7 +944,7 @@ namespace ProtoCore.DSASM.Mirror
                         // Register TX is used for this.
                         stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kImplicit); 
 
-                        core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, new ProtoCore.DebugServices.ConsoleEventSink());
+                        core.Bounce(runtimeCore, codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, new ProtoCore.DebugServices.ConsoleEventSink());
                     }
                 }
                 catch

@@ -19,6 +19,7 @@ namespace ProtoCore
         public abstract class MirrorObject
         {
             protected ProtoCore.Core core = null;
+            protected ProtoCore.RuntimeCore runtimeCore = null;
             protected static ProtoCore.Core staticCore = null;
 
             protected MirrorObject() { }
@@ -28,9 +29,10 @@ namespace ProtoCore
             //    this.core = core;
             //}
 
-            protected MirrorObject(ProtoCore.Core core, ProtoCore.Core staticCore = null)
+            protected MirrorObject(ProtoCore.Core core, RuntimeCore rtCore, ProtoCore.Core staticCore = null)
             {
                 this.core = core;
+                this.runtimeCore = rtCore;
                 MirrorObject.staticCore = staticCore;
             }
         }
@@ -73,20 +75,20 @@ namespace ProtoCore
             /// </summary>
             /// <param name="mirrorData"></param>
             /// <param name="core"></param>
-            public RuntimeMirror(MirrorData mirrorData, ProtoCore.Core core, ProtoCore.Core staticCore = null)
-                : base(core, staticCore)
+            public RuntimeMirror(MirrorData mirrorData, ProtoCore.Core core, RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
+                : base(core, runtimeCore, staticCore)
             {
                 Validity.Assert(this.core != null);
                 TargetExecutive = core.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core);
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core, runtimeCore);
                 this.mirrorData = mirrorData;
             }
 
-            public RuntimeMirror(string varname, int blockDecl, ProtoCore.Core core)
-                : base(core)
+            public RuntimeMirror(string varname, int blockDecl, ProtoCore.Core core, RuntimeCore runtimeCore)
+                : base(core, runtimeCore)
             {
                 TargetExecutive = core.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core);
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core, runtimeCore);
 
                 Validity.Assert(this.core != null);
 
@@ -94,7 +96,7 @@ namespace ProtoCore
                 blockDeclaration = blockDecl;
                 StackValue svData = deprecateThisMirror.GetValue(variableName, blockDeclaration).DsasmValue;
 
-                mirrorData = new MirrorData(this.core, svData);
+                mirrorData = new MirrorData(this.core, runtimeCore, svData);
             }
 
             /// <summary>

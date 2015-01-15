@@ -33,11 +33,20 @@ namespace Dynamo.DSEngine
                 disposable.Dispose();
         }
 
+        // To be superceeded by runtime core
         public ProtoCore.Core Core
         {
             get
             {
                 return liveRunner.Core;
+            }
+        }
+
+        public ProtoCore.RuntimeCore RTCore
+        {
+            get
+            {
+                return liveRunner.RTCore;
             }
         }
 

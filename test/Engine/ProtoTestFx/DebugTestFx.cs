@@ -78,8 +78,8 @@ namespace ProtoTestFx
             CLRModuleType.ClearTypes();
 
             //Run
-
-            fsr.Execute(code, core);
+            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
+            fsr.Execute(code, core, runtimeCore);
 
             return core;
         }
@@ -105,7 +105,9 @@ namespace ProtoTestFx
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core);
+
+            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
+            fsr = new DebugRunner(core, runtimeCore);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
@@ -144,7 +146,9 @@ namespace ProtoTestFx
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core);
+
+            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
+            fsr = new DebugRunner(core, runtimeCore);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
@@ -184,7 +188,9 @@ namespace ProtoTestFx
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core);
+
+            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
+            fsr = new DebugRunner(core, runtimeCore);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
@@ -212,9 +218,9 @@ namespace ProtoTestFx
                 {
 
                     ExecutionMirror runExecMirror = new ExecutionMirror(c1.CurrentExecutive.CurrentDSASMExec,
-                                                                        c1);
+                                                                        c1, null);
                     ExecutionMirror debugExecMirror =
-                        new ExecutionMirror(c2.CurrentExecutive.CurrentDSASMExec, c2);
+                        new ExecutionMirror(c2.CurrentExecutive.CurrentDSASMExec, c2, null);
 
                     bool lookupOk = false;
                     StackValue runValue = StackValue.Null;

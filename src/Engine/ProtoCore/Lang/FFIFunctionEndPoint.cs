@@ -44,7 +44,7 @@ namespace ProtoCore.Lang
             return true;
         }
 
-        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core, RuntimeCore runtimeCore)
         {   //  ensure there is no data race, function resolution and execution happens in parallel
             //  but for FFI we want it to be serial cause the code we are calling into may not cope
             //  with parallelism.
@@ -54,7 +54,7 @@ namespace ProtoCore.Lang
             //  
             lock (FFIHandlers)
             {
-                Interpreter interpreter = new Interpreter(core, true);
+                Interpreter interpreter = new Interpreter(core, runtimeCore, true);
 
                 // Setup the stack frame data
                 StackValue svThisPtr = stackFrame.ThisPtr;

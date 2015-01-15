@@ -1117,7 +1117,7 @@ namespace ProtoCore
         //Inbound methods
 
         public StackValue JILDispatchViaNewInterpreter(ProtoCore.Runtime.Context context, List<StackValue> arguments, List<List<ProtoCore.ReplicationGuide>> replicationGuides,
-                                                       StackFrame stackFrame, Core core)
+                                                       StackFrame stackFrame, Core core, RuntimeCore runtimeCore)
         {
 #if DEBUG
 
@@ -1126,11 +1126,11 @@ namespace ProtoCore
 
             // Dispatch method
             context.IsImplicitCall = true;
-            return DispatchNew(context, arguments, replicationGuides, stackFrame, core);
+            return DispatchNew(context, arguments, replicationGuides, stackFrame, core, runtimeCore);
         }
 
         public StackValue JILDispatch(List<StackValue> arguments, List<List<ProtoCore.ReplicationGuide>> replicationGuides,
-                                      StackFrame stackFrame, Core core, Runtime.Context context)
+                                      StackFrame stackFrame, Core core, RuntimeCore runtimeCore, Runtime.Context context)
         {
 #if DEBUG
 
@@ -1138,7 +1138,7 @@ namespace ProtoCore
 #endif
 
             // Dispatch method
-            return DispatchNew(context, arguments, replicationGuides, stackFrame, core);
+            return DispatchNew(context, arguments, replicationGuides, stackFrame, core, runtimeCore);
         }
 
 
@@ -1146,7 +1146,7 @@ namespace ProtoCore
 
         //Dispatch
         private StackValue DispatchNew(ProtoCore.Runtime.Context context, List<StackValue> arguments,
-                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, Core core)
+                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, Core core, RuntimeCore runtimeCore)
         {
 
             // Update the CallsiteExecutionState with 
@@ -1234,7 +1234,7 @@ namespace ProtoCore
                 return ReportMethodNotFoundForArguments(core, arguments);
             }
 
-            StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, core, funcGroup);
+            StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, core, runtimeCore, funcGroup);
 
             return ret;
         }
@@ -1244,7 +1244,7 @@ namespace ProtoCore
         private StackValue Execute(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                    List<StackValue> formalParameters,
                                    List<ReplicationInstruction> replicationInstructions, DSASM.StackFrame stackFrame,
-                                   Core core, FunctionGroup funcGroup)
+                                   Core core, RuntimeCore runtimeCore, FunctionGroup funcGroup)
         {
             for (int i = 0; i < formalParameters.Count; ++i)
             {
@@ -1274,7 +1274,7 @@ namespace ProtoCore
 
                 SingleRunTraceData newTraceData = new SingleRunTraceData();
 
-                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup,
+                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, runtimeCore, funcGroup,
                     singleRunTraceData, newTraceData);
 
 
@@ -1312,7 +1312,7 @@ namespace ProtoCore
 
                 c.IsReplicating = true;
                 ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame,
-                                         core, funcGroup, singleRunTraceData, newTraceData);
+                                         core, runtimeCore, funcGroup, singleRunTraceData, newTraceData);
 
                 //Do a trace save here
                 if (invokeCount < traceData.Count)
@@ -1358,7 +1358,7 @@ namespace ProtoCore
         private StackValue ExecWithRISlowPath(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                               List<StackValue> formalParameters,
                                               List<ReplicationInstruction> replicationInstructions,
-                                              StackFrame stackFrame, Core core, FunctionGroup funcGroup, 
+                                              StackFrame stackFrame, Core core, RuntimeCore runtimeCore, FunctionGroup funcGroup, 
             SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             if (core.Options.ExecutionMode == ExecutionMode.Parallel)
@@ -1367,7 +1367,7 @@ namespace ProtoCore
 
             //Recursion base case
             if (replicationInstructions.Count == 0)
-                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, funcGroup, previousTraceData, newTraceData);
+                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, core, runtimeCore, funcGroup, previousTraceData, newTraceData);
 
             //Get the replication instruction that this call will deal with
             ReplicationInstruction ri = replicationInstructions[0];
@@ -1502,7 +1502,7 @@ namespace ProtoCore
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core, runtimeCore,
                                                     funcGroup, lastExecTrace, cleanRetTrace);
 
 
@@ -1566,7 +1566,7 @@ namespace ProtoCore
                     List<StackValue> newFormalParams = new List<StackValue>();
                     newFormalParams.AddRange(formalParameters);
 
-                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
+                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core, runtimeCore,
                                                 funcGroup, previousTraceData, newTraceData);
                 }
 
@@ -1665,7 +1665,7 @@ namespace ProtoCore
                     //previousTraceData = lastExecTrace;
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core, runtimeCore,
                                                     funcGroup, lastExecTrace, cleanRetTrace);
 
 
@@ -1691,7 +1691,7 @@ namespace ProtoCore
         /// Dispatch without replication
         /// </summary>
         private StackValue ExecWithZeroRI(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
-                                          List<StackValue> formalParameters, StackFrame stackFrame, Core core,
+                                          List<StackValue> formalParameters, StackFrame stackFrame, Core core, RuntimeCore runtimeCore,
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             if(core.CancellationPending)
@@ -1740,7 +1740,7 @@ namespace ProtoCore
             }
 
             //EXECUTE
-            StackValue ret = finalFep.Execute(c, coercedParameters, stackFrame, core);
+            StackValue ret = finalFep.Execute(c, coercedParameters, stackFrame, core, runtimeCore);
 
             if (ret.IsNull)
             {

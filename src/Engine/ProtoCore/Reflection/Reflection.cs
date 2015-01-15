@@ -11,9 +11,9 @@ namespace ProtoCore
             ///  Returns a runtime mirror that can be reflected upon
             /// </summary>
             /// <returns></returns>
-            public static RuntimeMirror Reflect(string varname, int blockDecl, ProtoCore.Core core)
+            public static RuntimeMirror Reflect(string varname, int blockDecl, ProtoCore.Core core, RuntimeCore runtimeCore)
             {
-                return new RuntimeMirror(varname, blockDecl, core);
+                return new RuntimeMirror(varname, blockDecl, core, runtimeCore);
             }
 
             

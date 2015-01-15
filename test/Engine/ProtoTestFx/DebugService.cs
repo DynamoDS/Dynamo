@@ -58,6 +58,7 @@ namespace ProtoTestFx
             System.IO.StringWriter stringStream = new StringWriter();
             executionLog = new StringBuilder();
             ProtoCore.Core core = null;
+            ProtoCore.RuntimeCore runtimeCore = null;
             try
             {
                 var options = new ProtoCore.Options();
@@ -72,8 +73,11 @@ namespace ProtoTestFx
                 core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
+                
                 ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-                ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core);
+                runtimeCore = new ProtoCore.RuntimeCore();
+
+                ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core, runtimeCore);
                 executionLog.AppendLine("Script executed successfully.");
 
                 executionLog.AppendLine();
@@ -144,7 +148,9 @@ namespace ProtoTestFx
                 core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
-                ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core);
+
+                ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore();
+                ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core, runtimeCore);
                 ProtoScript.Config.RunConfiguration runnerConfig = new ProtoScript.Config.RunConfiguration();
                 runnerConfig.IsParrallel = false; 
                 ExecutionMirror mirror; 
