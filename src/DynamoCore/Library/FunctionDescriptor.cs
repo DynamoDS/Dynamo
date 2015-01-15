@@ -8,6 +8,7 @@ using Dynamo.Library;
 
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using ProtoCore;
 
 namespace Dynamo.DSEngine
 {
@@ -48,12 +49,12 @@ namespace Dynamo.DSEngine
         private string summary;
 
         public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type, bool isOverloaded)
-            : this(null, null, name, parameters, null, type, isOverloaded)
+            : this(null, null, name, parameters, TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar), type, isOverloaded)
         { }
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, IEnumerable<TypedParameter> parameters,
-            string returnType, FunctionType type, bool isOverloaded, bool isVisibleInLibrary = true,
+            ProtoCore.Type returnType, FunctionType type, bool isOverloaded, bool isVisibleInLibrary = true,
             IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
             : this(
                 assembly,
@@ -71,7 +72,7 @@ namespace Dynamo.DSEngine
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, string summary,
-            IEnumerable<TypedParameter> parameters, string returnType, FunctionType type, bool isOverloaded,
+            IEnumerable<TypedParameter> parameters, ProtoCore.Type returnType, FunctionType type, bool isOverloaded,
             bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
         {
             this.summary = summary;
@@ -92,7 +93,7 @@ namespace Dynamo.DSEngine
                     });
             }
 
-            ReturnType = returnType == null ? "var[]..[]" : returnType.Split('.').Last();
+            ReturnType = returnType.ToShortString();
             Type = type;
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;

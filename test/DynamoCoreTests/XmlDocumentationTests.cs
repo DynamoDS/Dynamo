@@ -52,7 +52,7 @@ namespace Dynamo.Tests
                 "Autodesk.DesignScript.Geometry.Geometry",
                 "Translate",
                 parms,
-                "Autodesk.DesignScript.Geometry.Geometry",
+                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
                 FunctionType.InstanceMethod,
                 false);
 

@@ -449,7 +449,7 @@ namespace Dynamo.DSEngine
                                                                 null,
                                                                 method.name,
                                                                 arguments,
-                                                                method.returntype.ToString(),
+                                                                method.returntype,
                                                                 FunctionType.GenericFunction,
                                                                 visibleInLibrary);
 
@@ -616,7 +616,7 @@ namespace Dynamo.DSEngine
                 className,
                 procName,
                 arguments,
-                proc.returntype.ToString(),
+                proc.returntype,
                 type,
                 false,
                 isVisible,
