@@ -1339,7 +1339,8 @@ namespace Dynamo.ViewModels
                 return;
 
             var selection = DynamoSelection.Instance.Selection;
-            OnRequestDisplayPreviews(selection.OfType<NodeModel>());
+            var subset = selection.OfType<NodeModel>().Where(n => n.ShouldDisplayPreview);
+            OnRequestDisplayPreviews(subset);
         }
 
         private bool CanDisplayPreviews(object parameter)
