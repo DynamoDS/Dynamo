@@ -258,9 +258,9 @@ namespace Dynamo.ViewModels
             get { return NodeModel.ForceReExecuteOfNode; }
         }
 
-        public bool IsNodeExecuted
+        public bool ShowNodeExecution
         {
-            get { return NodeModel.IsNodeExecuted; }
+            get { return NodeModel.ShowNodeExecution; }
         }
 
         #endregion

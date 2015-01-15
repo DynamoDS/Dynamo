@@ -4,6 +4,7 @@ using System.Linq;
 
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+using ProtoCore.AST;
 
 namespace Dynamo.Models
 {
@@ -155,7 +156,8 @@ namespace Dynamo.Models
 
         public override void GetShowNodeExecution(NodeModel node)
         {
-            node.IsNodeExecuted = DynamoModel.showNodeExecution;
+            node.ShowNodeExecution = DynamoModel.showNodeExecution;
+            node.IsNodeAddedRecently = true;
         }
 
         #region evaluation
@@ -236,7 +238,8 @@ namespace Dynamo.Models
                 modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
                 if (modifiedNode.State != ElementState.Error && modifiedNode.State != ElementState.Warning)
                 {
-                    modifiedNode.IsNodeExecuted = false;
+                    modifiedNode.ShowNodeExecution = false;
+                    modifiedNode.IsNodeAddedRecently = false;
                 }
             }
 
@@ -327,7 +330,7 @@ namespace Dynamo.Models
             {
                 foreach (var nodeModel in Nodes)
                 {
-                    nodeModel.IsNodeExecuted = showNodeExecution;
+                    nodeModel.ShowNodeExecution = showNodeExecution;
                 }
             }
         }
@@ -344,9 +347,13 @@ namespace Dynamo.Models
                     {
                         if (nodeModel.GUID == t)
                         {
-                            nodeModel.IsNodeExecuted = true;
-                        }
+                            nodeModel.ShowNodeExecution = true;
+                            nodeModel.IsNodeAddedRecently = false;
+                        }                       
                     }
+                    /* Color the recently added nodes */
+                    if (nodeModel.IsNodeAddedRecently && !nodeModel.ShowNodeExecution)
+                        nodeModel.ShowNodeExecution = true;
                 }
             }            
         }

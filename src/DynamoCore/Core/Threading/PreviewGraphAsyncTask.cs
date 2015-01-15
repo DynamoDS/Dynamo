@@ -54,9 +54,9 @@ namespace Dynamo.Core.Threading
         /// <param name="workspace">Reference to the WorkspaceModel from which a 
         /// set of updated nodes is computed. The EngineController generates the 
         /// resulting GraphSyncData from this list of updated nodes.</param>
+        /// <param name="dynamoLogger"> Logs the error message</param>
         /// <returns>Returns the list of node id's that will be executed in the next run
         /// for execution).</returns>
-        /// 
         internal List<Guid> Initialize(EngineController controller, WorkspaceModel workspace,ILogger dynamoLogger)
         {
             try
