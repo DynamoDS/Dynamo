@@ -212,6 +212,11 @@ namespace DSCore
                 totalArea += a;
             }
 
+            if (totalArea == 0.0)
+            {
+                return ByARGB();
+            }
+
             return ByARGB((int)(num[0] / totalArea),
                 (int)(num[1] / totalArea),
                 (int)(num[2] / totalArea),
