@@ -47,13 +47,13 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
-        public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type, bool isOverloaded)
-            : this(null, null, name, parameters, null, type, isOverloaded)
+        public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
+            : this(null, null, name, parameters, null, type)
         { }
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, IEnumerable<TypedParameter> parameters,
-            string returnType, FunctionType type, bool isOverloaded, bool isVisibleInLibrary = true,
+            string returnType, FunctionType type, bool isVisibleInLibrary = true,
             IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
             : this(
                 assembly,
@@ -63,7 +63,6 @@ namespace Dynamo.DSEngine
                 parameters,
                 returnType,
                 type,
-                isOverloaded,
                 isVisibleInLibrary,
                 returnKeys,
                 isVarArg,
@@ -71,11 +70,10 @@ namespace Dynamo.DSEngine
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, string summary,
-            IEnumerable<TypedParameter> parameters, string returnType, FunctionType type, bool isOverloaded,
+            IEnumerable<TypedParameter> parameters, string returnType, FunctionType type,
             bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
         {
             this.summary = summary;
-            IsOverloaded = isOverloaded;
             Assembly = assembly;
             ClassName = className;
             FunctionName = functionName;
