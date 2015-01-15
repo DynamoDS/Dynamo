@@ -447,6 +447,9 @@ namespace Dynamo.Controls
             if (!PreviewControl.IsHidden) // Force preview control creation.
                 return; // We only expand the preview control if it's hidden.
 
+            if (PreviewControl.IsDataBound == false)
+                PreviewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
+
             PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             PreviewControl.TransitionToState(PreviewControl.State.Expanded);
         }
