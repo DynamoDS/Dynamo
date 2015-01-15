@@ -183,11 +183,33 @@ namespace Dynamo.UI.Controls
             if (this.IsInTransition || (queuedRequest.Count <= 0))
                 return; // Still in transition or nothing else to do.
 
-            State requestedState = queuedRequest.Dequeue();
+            // The following conditions check to see if the next request attempts
+            // to jump from one extreme (Hidden) to another extreme (Expanded)
+            // without first going through the intermediate state (Condensed). If
+            // so, first jump to the intermediate state (Condensed) and leave the 
+            // entry in 'queuedRequest' for subsequent processing.
+            // 
+            State requestedState = queuedRequest.Peek();
+            if (requestedState == State.Hidden && (currentState == State.Expanded))
+            {
+                requestedState = State.Condensed;
+            }
+            else if (requestedState == State.Expanded && (currentState == State.Hidden))
+            {
+                requestedState = State.Condensed;
+            }
+            else
+            {
+                // If we're not jumping too far, process it.
+                requestedState = queuedRequest.Dequeue();
+            }
+
             while (requestedState == this.currentState)
             {
                 if (queuedRequest.Count <= 0)
                     return; // There's no more request for now.
+
+                requestedState = queuedRequest.Dequeue();
             }
 
             if (requestedState == State.Hidden)
