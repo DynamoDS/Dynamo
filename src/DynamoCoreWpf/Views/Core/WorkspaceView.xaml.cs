@@ -152,9 +152,8 @@ namespace Dynamo.Views
 
         void OnSelectionCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            if (ViewModel == null) return;
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
-            // KILLDYNSETTINGS
-            //ViewModel.NodeToCodeCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>

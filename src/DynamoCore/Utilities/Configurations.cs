@@ -22,7 +22,7 @@ namespace Dynamo.UI
         public static string DynamoWikiLink = /*NXLT*/"https://github.com/DynamoDS/Dynamo/wiki";
         public static string DynamoBimForum = /*NXLT*/"http://dynamobim.org/forums/forum/dyn/";
         public static string DynamoTeamEmail = /*NXLT*/"mailto:team@dynamobim.org";
-        public static string DynamoWrittenTutorials = /*NXLT*/"http://dynamobim.org/learn/#124";
+        public static string DynamoAdvancedTutorials = /*NXLT*/"http://dynamobim.org/learn/#124";
         public static string DynamoVideoTutorials = /*NXLT*/"http://dynamobim.org/learn/#161";
         public static string DynamoMoreSamples = /*NXLT*/"http://dynamobim.org/learn/#159";
         public static string DynamoDownloadLink = /*NXLT*/"http://dynamobim.org/download/";
