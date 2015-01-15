@@ -374,7 +374,7 @@
                    Opacity="2"
                    Margin="-8">
             <Rectangle.Visibility>
-                <Binding Path="ShowNodeExecution"
+                <Binding Path="ShowExecutionPreview"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
                          Converter="{StaticResource BooleanToVisibilityConverter}">

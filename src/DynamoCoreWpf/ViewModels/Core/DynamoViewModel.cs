@@ -414,13 +414,13 @@ namespace Dynamo.ViewModels
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
-        public bool ShowNodeExecution
+        public bool ShowRunPreview
         {
-            get { return model.ShowNodeExecution; }
+            get { return model.ShowRunPreview; }
             set
             {
-                model.ShowNodeExecution = value;
-                RaisePropertyChanged("ShowNodeExecution");
+                model.ShowRunPreview = value;
+                RaisePropertyChanged("ShowRunPreview");
             }
         }
         #endregion

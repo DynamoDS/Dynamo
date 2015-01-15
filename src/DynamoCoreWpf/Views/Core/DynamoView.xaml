@@ -510,7 +510,7 @@
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&#x0a;It does not contain your graph or any personal data"
                                   Focusable="False"/>
-                        <MenuItem Focusable="False" Name="ShowNodeExecution" IsCheckable="True" IsChecked="{Binding ShowNodeExecution}" Header="Show Node Execution"/>                       
+                        <MenuItem Focusable="False" Name="ShowNodeExecution" IsCheckable="True" IsChecked="{Binding ShowRunPreview}" Header="Show Run preview"/>                       
 
                         <MenuItem Focusable="False"
                                   Header="Length Display Units"

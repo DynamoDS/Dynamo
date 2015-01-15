@@ -555,7 +555,7 @@ namespace Dynamo.Models
         {
             node.AstUpdated += OnAstUpdated;
             node.ConnectorAdded += OnConnectorAdded;           
-            GetShowNodeExecution(node);
+            SetShowExecutionPreview(node);
         }
 
         /// <summary>
@@ -566,7 +566,7 @@ namespace Dynamo.Models
 
         }
 
-        public virtual void GetShowNodeExecution(NodeModel node)
+        public virtual void SetShowExecutionPreview(NodeModel node)
         {
             
         }

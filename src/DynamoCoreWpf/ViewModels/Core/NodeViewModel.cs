@@ -258,9 +258,9 @@ namespace Dynamo.ViewModels
             get { return NodeModel.ForceReExecuteOfNode; }
         }
 
-        public bool ShowNodeExecution
+        public bool ShowExecutionPreview
         {
-            get { return NodeModel.ShowNodeExecution; }
+            get { return NodeModel.ShowExecutionPreview; }
         }
 
         #endregion
@@ -469,8 +469,8 @@ namespace Dynamo.ViewModels
                 case "ForceReExecuteOfNode":
                     RaisePropertyChanged("WillForceReExecuteOfNode");
                     break;
-                case "IsNodeExecuted":
-                    RaisePropertyChanged("IsNodeExecuted");
+                case "ShowExecutionPreview":
+                    RaisePropertyChanged("ShowExecutionPreview");
                     break;
             }
         }

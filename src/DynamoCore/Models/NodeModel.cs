@@ -1432,8 +1432,8 @@ namespace Dynamo.Models
         //TODO: Refactor Property into Automatic with private(?) setter
         //TODO: Add RequestRecalc() method to replace setter --steve
 
-        private bool showNodeExecution = true;
-        private bool isNodeNewlyAdded;
+        private bool showExecutionPreview = true;
+        private bool isNodeNewlyAdded  = true;
 
         /// <summary>
         ///     This property forces all AST nodes that generated from this node
@@ -1453,16 +1453,16 @@ namespace Dynamo.Models
         }
 
 
-        public virtual bool ShowNodeExecution
+        public virtual bool ShowExecutionPreview
         {
             get
             {
-                return showNodeExecution;
+                return showExecutionPreview;
             }
             set
             {
-                showNodeExecution = value;
-                RaisePropertyChanged("IsNodeExecuted");
+                showExecutionPreview = value;
+                RaisePropertyChanged("ShowExecutionPreview");
             }
         }
 

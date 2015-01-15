@@ -283,14 +283,14 @@ namespace Dynamo.Models
         public readonly List<WorkspaceModel> Workspaces =
             new List<WorkspaceModel>();
 
-        public static bool showNodeExecution;
+        public static bool showRunPreview;
 
-        public bool ShowNodeExecution
+        public bool ShowRunPreview
         {
-            get { return showNodeExecution; }
+            get { return showRunPreview; }
             set
             {
-                showNodeExecution = value;      
+                showRunPreview = value;      
                 OnGetExecutingNodes();
             }
         }

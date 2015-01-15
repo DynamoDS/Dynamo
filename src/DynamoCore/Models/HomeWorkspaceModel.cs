@@ -154,9 +154,9 @@ namespace Dynamo.Models
             PreloadedTraceData = null;
         }
 
-        public override void GetShowNodeExecution(NodeModel node)
+        public override void SetShowExecutionPreview(NodeModel node)
         {
-            node.ShowNodeExecution = DynamoModel.showNodeExecution;
+            node.ShowExecutionPreview = DynamoModel.showRunPreview;
             node.IsNodeAddedRecently = true;
         }
 
@@ -238,7 +238,7 @@ namespace Dynamo.Models
                 modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
                 if (modifiedNode.State != ElementState.Error && modifiedNode.State != ElementState.Warning)
                 {
-                    modifiedNode.ShowNodeExecution = false;
+                    modifiedNode.ShowExecutionPreview = false;
                     modifiedNode.IsNodeAddedRecently = false;
                 }
             }
@@ -315,9 +315,9 @@ namespace Dynamo.Models
         internal void GetExecutingNodes(DynamoLogger logger)
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
-            bool showNodeExecution = DynamoModel.showNodeExecution;
+            bool showRunPreview = DynamoModel.showRunPreview;
            //The Graph is executed and Show node execution is checked on the Debug menu
-            if (graphExecuted && showNodeExecution)
+            if (graphExecuted && showRunPreview)
             {
                 if (task.Initialize(EngineController, this, logger) != null)
                 {
@@ -330,7 +330,7 @@ namespace Dynamo.Models
             {
                 foreach (var nodeModel in Nodes)
                 {
-                    nodeModel.ShowNodeExecution = showNodeExecution;
+                    nodeModel.ShowExecutionPreview = showRunPreview;
                 }
             }
         }
@@ -347,13 +347,13 @@ namespace Dynamo.Models
                     {
                         if (nodeModel.GUID == t)
                         {
-                            nodeModel.ShowNodeExecution = true;
+                            nodeModel.ShowExecutionPreview = true;
                             nodeModel.IsNodeAddedRecently = false;
                         }                       
                     }
                     /* Color the recently added nodes */
-                    if (nodeModel.IsNodeAddedRecently && !nodeModel.ShowNodeExecution)
-                        nodeModel.ShowNodeExecution = true;
+                    if (nodeModel.IsNodeAddedRecently && !nodeModel.ShowExecutionPreview)
+                        nodeModel.ShowExecutionPreview = true;
                 }
             }            
         }
