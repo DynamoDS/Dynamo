@@ -25,6 +25,7 @@ using System.Reflection;
 using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Exceptions;
 
 using Executive = ProtoAssociative.Executive;
@@ -94,7 +95,7 @@ namespace Dynamo.Models
 
         internal void OnGetExecutingNodes()
         {
-          ((HomeWorkspaceModel)CurrentWorkspace).GetExecutingNodes(Logger);
+          ((HomeWorkspaceModel)CurrentWorkspace).GetExecutingNodes();
         }
 
         #endregion
@@ -293,8 +294,7 @@ namespace Dynamo.Models
                 showRunPreview = value;      
                 OnGetExecutingNodes();
             }
-        }
-       
+        }   
         #endregion
 
         #region initialization and disposal

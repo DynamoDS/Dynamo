@@ -57,7 +57,7 @@ namespace Dynamo.Core.Threading
         /// <param name="dynamoLogger"> Logs the error message</param>
         /// <returns>Returns the list of node id's that will be executed in the next run
         /// for execution).</returns>
-        internal List<Guid> Initialize(EngineController controller, WorkspaceModel workspace,ILogger dynamoLogger)
+        internal List<Guid> Initialize(EngineController controller, WorkspaceModel workspace)
         {
             try
             {
@@ -68,8 +68,7 @@ namespace Dynamo.Core.Threading
                 return previewGraphData;
             }
             catch (Exception e)
-            {
-                dynamoLogger.Log(e.GetType() + ": " + e.Message);
+            {             
                 return null;
             }
         }

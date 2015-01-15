@@ -5,6 +5,8 @@ using System.Linq;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using ProtoCore.AST;
+using Dynamo.Core;
+using DynamoUtilities;
 
 namespace Dynamo.Models
 {
@@ -142,7 +144,7 @@ namespace Dynamo.Models
             }
 
             //Find the next executing nodes
-            GetExecutingNodes(null);
+            GetExecutingNodes();
         }
 
         /// <summary>
@@ -312,14 +314,14 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        internal void GetExecutingNodes(DynamoLogger logger)
+        internal void GetExecutingNodes()
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
-            bool showRunPreview = DynamoModel.showRunPreview;
-           //The Graph is executed and Show node execution is checked on the Debug menu
+            bool showRunPreview = DynamoModel.showRunPreview;           
+            //The Graph is executed and Show node execution is checked on the Debug menu
             if (graphExecuted && showRunPreview)
             {
-                if (task.Initialize(EngineController, this, logger) != null)
+                if (task.Initialize(EngineController, this) != null)
                 {
                     task.Completed += OnPreviewGraphCompleted;
                     scheduler.ScheduleForExecution(task);
