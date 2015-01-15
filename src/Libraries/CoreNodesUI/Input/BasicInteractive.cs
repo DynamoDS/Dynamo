@@ -22,7 +22,11 @@ namespace DSCoreNodesUI
                     this.value = value;
                     if (!Equals(value, null))
                     {
-                        OnAstUpdated();
+                        OnNodeModified();
+                    }
+                    else
+                    {
+                        ClearDirtyFlag();
                     }
                     RaisePropertyChanged("Value");
                 }

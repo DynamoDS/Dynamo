@@ -257,7 +257,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return NodeModel.ExecutionHint.HasFlag(NodeModel.ExecutionHints.ForceExecute);
+                return NodeModel.NeedsForceExecution;
             }
         }
 

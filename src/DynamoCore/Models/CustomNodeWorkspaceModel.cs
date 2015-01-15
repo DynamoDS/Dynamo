@@ -150,9 +150,9 @@ namespace Dynamo.Models
         }
         private string description;
 
-        public override void OnAstUpdated()
+        public override void OnNodesModified()
         {
-            base.OnAstUpdated();
+            base.OnNodesModified();
             HasUnsavedChanges = true;
             OnDefinitionUpdated();
         }

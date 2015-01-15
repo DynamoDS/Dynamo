@@ -125,8 +125,7 @@ namespace DSCore.File
 
             protected void Modified()
             {
-                node.MarkAsDirty(forceExecute:true);
-                node.OnAstUpdated();
+                node.OnNodeModified(forceExecute: true);
             }
 
             public abstract void Dispose();

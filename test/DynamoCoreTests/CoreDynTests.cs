@@ -444,7 +444,7 @@ namespace Dynamo.Tests
             // Pretend we never ran
             foreach (var node in model.CurrentWorkspace.Nodes)
             {
-                node.MarkAsDirty(forceExecute:true);
+                node.MarkNodeAsModified(forceExecute:true);
             }
               
 

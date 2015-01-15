@@ -548,36 +548,14 @@ namespace Dynamo.Models
 
         private void RegisterNode(NodeModel node)
         {
-            node.AstUpdated += OnAstUpdated;
+            node.NodeModified += OnNodesModified;
             node.ConnectorAdded += OnConnectorAdded;
-        }
-
-        /// <summary>
-        ///     Mark all nodes in workspace for AST update
-        /// </summary>
-        protected void MarkAllNodesDirty()
-        {
-            // Mark all nodes as dirty so that AST for the whole graph will be
-            // regenerated.
-            foreach (var node in Nodes)
-            {
-                node.MarkAsDirty(forceExecute:false);
-            }
-            OnAstUpdated();
-        }
-
-        protected void MarkAllNodesClean()
-        {
-            foreach (var node in Nodes)
-            {
-                node.ClearDirtyFlag();
-            }
         }
 
         /// <summary>
         ///     Indicates that this workspace's DesignScript AST has been updated.
         /// </summary>
-        public virtual void OnAstUpdated()
+        public virtual void OnNodesModified()
         {
             
         }
@@ -591,14 +569,14 @@ namespace Dynamo.Models
             if (nodes.Remove(model))
             {
                 DisposeNode(model);
-                OnAstUpdated();
+                OnNodesModified();
             }
         }
 
         protected void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
-            model.AstUpdated -= OnAstUpdated;
+            model.NodeModified -= OnNodesModified;
             OnNodeRemoved(model);
         }
 
@@ -934,7 +912,7 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
-            OnAstUpdated();
+            OnNodesModified();
         }
 
         #endregion

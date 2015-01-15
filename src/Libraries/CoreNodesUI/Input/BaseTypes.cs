@@ -183,7 +183,11 @@ namespace Dynamo.Nodes
 
                 if (value != null)
                 {
-                    OnAstUpdated();
+                    OnNodeModified();
+                }
+                else
+                {
+                    ClearDirtyFlag();
                 }
                 
                 RaisePropertyChanged("Value");

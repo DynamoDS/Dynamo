@@ -196,7 +196,7 @@ namespace Dynamo.DSEngine
 
             if (isDeltaExecution)
             {
-                sortedNodes = sortedNodes.Where(n => n.ExecutionHint.HasFlag(NodeModel.ExecutionHints.GenerateAst));
+                sortedNodes = sortedNodes.Where(n => n.IsModified);
             }
 
             var result = new List<AssociativeNode>();
@@ -205,8 +205,8 @@ namespace Dynamo.DSEngine
             {
                 _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging);
 
-                if (isDeltaExecution)
-                    node.ClearDirtyFlag();
+                //if (isDeltaExecution)
+                //    node.ClearDirtyFlag();
             }
 
             return result;

@@ -71,7 +71,7 @@ namespace UnitsUI
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            tb.OnChangeCommitted += model.OnAstUpdated;
+            tb.OnChangeCommitted += () => model.OnNodeModified();
 
             (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
         }
@@ -84,8 +84,8 @@ namespace UnitsUI
                 e.PropertyName == "NumberFormat")
             {
                 this.mesBaseModel.ForceValueRaisePropertyChanged();
-                
-                this.mesBaseModel.OnAstUpdated();
+
+                this.mesBaseModel.OnNodeModified();
             }
         }
 
@@ -108,7 +108,7 @@ namespace UnitsUI
 
         public void Dispose()
         {
-            tb.OnChangeCommitted += mesBaseModel.OnAstUpdated;
+            tb.OnChangeCommitted += () => mesBaseModel.OnNodeModified();
         }
     }
 

@@ -296,7 +296,7 @@ namespace Dynamo.Models
                     RaisePropertyChanged("ArgumentLacing");
 
                     // Mark node for update
-                    OnAstUpdated();
+                    OnNodeModified();
                 }
             }
         }
@@ -542,7 +542,7 @@ namespace Dynamo.Models
             IsVisible = true;
             IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
-            executionHint = ExecutionHints.GenerateAst;
+            executionHint = ExecutionHints.Modified;
 
             PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
             {
@@ -607,11 +607,11 @@ namespace Dynamo.Models
         /// <summary>
         ///     Event fired when the DesignScript AST produced by this node has changed.
         /// </summary>
-        public event Action AstUpdated;
-        public virtual void OnAstUpdated()
+        public event Action NodeModified;
+        public virtual void OnNodeModified(bool forceExecute = false)
         {
-            MarkAsDirty(forceExecute:false);
-            var handler = AstUpdated;
+            MarkNodeAsModified(forceExecute);
+            var handler = NodeModified;
             if (handler != null) handler();
         }
 
@@ -787,7 +787,8 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
-            OnAstUpdated();
+
+            OnNodeModified();
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -800,7 +801,8 @@ namespace Dynamo.Models
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
-            OnAstUpdated();
+
+            OnNodeModified();
         }
 
         /// <summary>
@@ -1156,7 +1158,7 @@ namespace Dynamo.Models
                     {
                         if (args.PropertyName == "UsingDefaultValue")
                         {
-                            OnAstUpdated();
+                            OnNodeModified();
                         }
                     };
 
@@ -1209,7 +1211,8 @@ namespace Dynamo.Models
                 OnConnectorAdded(connector);
 
                 // Mark node for update
-                OnAstUpdated();
+                //MarkAsDirty();
+                //OnAstUpdated();
             }
         }
 
@@ -1439,25 +1442,28 @@ namespace Dynamo.Models
         ///     to be executed, even there is no change in AST nodes.
         /// </summary>
         [Flags]
-        public enum ExecutionHints
+        protected enum ExecutionHints
         {
             None = 0,
-            GenerateAst = 1,
+            Modified = 1,
             ForceExecute = 3
         }
 
-        private ExecutionHints executionHint = ExecutionHints.None;
-        public virtual ExecutionHints ExecutionHint
+        private ExecutionHints executionHint;
+
+        public bool IsModified
         {
-            get
-            {
-                return executionHint;
-            }
+            get { return GetExecutionHintsCore().HasFlag(ExecutionHints.Modified); }
         }
 
-        public void MarkAsDirty(bool forceExecute)
+        public bool NeedsForceExecution
         {
-            executionHint = ExecutionHints.GenerateAst;
+            get { return GetExecutionHintsCore().HasFlag(ExecutionHints.ForceExecute); }
+        }
+
+        public void MarkNodeAsModified(bool forceExecute = false)
+        {
+            executionHint = ExecutionHints.Modified;
 
             if(forceExecute)
                 executionHint |= ExecutionHints.ForceExecute;
@@ -1466,6 +1472,11 @@ namespace Dynamo.Models
         public void ClearDirtyFlag()
         {
             executionHint = ExecutionHints.None;
+        }
+
+        protected virtual ExecutionHints GetExecutionHintsCore()
+        {
+            return executionHint;
         }
 
         #endregion

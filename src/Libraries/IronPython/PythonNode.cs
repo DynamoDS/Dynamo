@@ -55,7 +55,7 @@ namespace DSIronPythonNode
             if (acceptChanged.HasValue && acceptChanged.Value)
             {
                 // Mark node for update
-                model.OnAstUpdated();
+                model.OnNodeModified();
             }
         }
     }

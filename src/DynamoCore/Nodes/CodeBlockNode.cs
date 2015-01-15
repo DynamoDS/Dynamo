@@ -210,7 +210,7 @@ namespace Dynamo.Nodes
                 RaisePropertyChanged("Code");
                 
                 // Mark node for update
-                OnAstUpdated();
+                OnNodeModified();
                 
                 ReportPosition();
 
@@ -365,7 +365,7 @@ namespace Dynamo.Nodes
             RaisePropertyChanged("Code");
             
             // Mark node for update
-            OnAstUpdated();
+            OnNodeModified();
             
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
