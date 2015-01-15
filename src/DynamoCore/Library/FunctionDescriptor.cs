@@ -100,7 +100,7 @@ namespace Dynamo.DSEngine
             ObsoleteMessage = obsoleteMsg;
         }
 
-        public bool IsOverloaded { get; private set; }
+        public bool IsOverloaded { get; set; }
 
         /// <summary>
         ///     Full path to the assembly the defined this function
