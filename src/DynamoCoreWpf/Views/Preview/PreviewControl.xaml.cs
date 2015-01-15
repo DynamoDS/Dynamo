@@ -149,6 +149,7 @@ namespace Dynamo.UI.Controls
         internal bool IsCondensed { get { return currentState == State.Condensed; } }
         internal bool IsExpanded { get { return currentState == State.Expanded; } }
         internal bool IsInTransition { get { return currentState == State.InTransition; } }
+        internal bool HasPendingStateChangeRequests { get { return queuedRequest.Count > 0; } }
 
         private Canvas HostingCanvas
         {
