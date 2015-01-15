@@ -73,13 +73,11 @@ namespace Dynamo.Nodes
         protected virtual void RemoveInput()
         {
             VariableInputController.RemoveInputBase();
-            //OnAstUpdated();
         }
 
         protected virtual void AddInput()
         {
             VariableInputController.AddInputBase();
-            //OnAstUpdated();
         }
 
         protected virtual int GetInputIndex()

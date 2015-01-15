@@ -1,4 +1,4 @@
-<Commands ExitAfterPlayback="false" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <CreateNodeCommand NodeId="308100d3-a47f-431c-b99b-d53b9f8aa01a" NodeName="DSIronPythonNode.PythonNode" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <UpdateModelValueCommand ModelGuid="308100d3-a47f-431c-b99b-d53b9f8aa01a" Name="ScriptContent" Value="import clr&#xA;clr.AddReference('ProtoGeometry')&#xA;from Autodesk.DesignScript.Geometry import *&#xA;#The inputs to this node will be stored as a list in the IN variable.&#xA;dataEnteringNode = IN&#xA;sum=0;&#xA;&#xA;    &#xA;for item in IN:&#xA;	sum=sum+item&#xA;#Assign your output to the OUT variable&#xA;OUT = sum" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />

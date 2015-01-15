@@ -204,9 +204,6 @@ namespace Dynamo.DSEngine
             foreach (NodeModel node in sortedNodes)
             {
                 _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging);
-
-                //if (isDeltaExecution)
-                //    node.ClearDirtyFlag();
             }
 
             return result;

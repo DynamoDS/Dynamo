@@ -118,8 +118,6 @@ namespace Dynamo.Models
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            // Mark all nodes as dirty so that AST for the whole graph will be
-            // regenerated.
             foreach (var node in Nodes)
             {
                 node.MarkNodeAsModified();

@@ -1210,9 +1210,7 @@ namespace Dynamo.Models
                 startPort.Owner.ConnectOutput(outData, data, this);
                 OnConnectorAdded(connector);
 
-                // Mark node for update
-                //MarkAsDirty();
-                //OnAstUpdated();
+                // OnNodeModified();
             }
         }
 
@@ -1438,15 +1436,14 @@ namespace Dynamo.Models
         #region Dirty Management
 
         /// <summary>
-        ///     This property forces all AST nodes that generated from this node
-        ///     to be executed, even there is no change in AST nodes.
+        /// Execution scenarios for a Node to be re-executed
         /// </summary>
         [Flags]
         protected enum ExecutionHints
         {
             None = 0,
-            Modified = 1,
-            ForceExecute = 3
+            Modified = 1,       // Marks as modified, but execution is optional if AST is unchanged.
+            ForceExecute = 3    // Marks as modified, force execution even if AST is unchanged.
         }
 
         private ExecutionHints executionHint;
