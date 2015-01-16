@@ -480,11 +480,11 @@ namespace DynamoCoreUITests
                     Description = "",
                     Name = "__VisualizationTest__",
                     Success = true
-                });
+                }) as CustomNodeWorkspaceModel;
             ViewModel.HomeSpace.Run();
 
             // Switch to custom workspace
-            model.CurrentWorkspace = customWorkspace;
+            model.OpenCustomNodeWorkspace(customWorkspace.CustomNodeId);
 
             // Select that node
             DynamoSelection.Instance.Selection.Add(node);

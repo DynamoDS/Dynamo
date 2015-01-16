@@ -186,7 +186,6 @@
     <Compile Include="Utils\ClassUtils.cs" />
     <Compile Include="Utils\CoreUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
-    <Compile Include="Utils\GCUtils.cs" />
     <Compile Include="Utils\MathUtils.cs" />
     <Compile Include="Utils\LegacyUtils.cs" />
     <Compile Include="Utils\LexUtils.cs" />

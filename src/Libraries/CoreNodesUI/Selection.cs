@@ -44,8 +44,8 @@ namespace Dynamo.Nodes
                 if (dirty)
                 {
                     selectionResults = value.ToList();
-                    ForceReExecuteOfNode = true;
-                    OnAstUpdated();
+                    
+                    OnNodeModified(forceExecute:true);
                 }
                 else
                     selectionResults = null;
@@ -230,7 +230,7 @@ namespace Dynamo.Nodes
 
             UpdateSelection(loadedSelection);
 
-            OnAstUpdated();
+            OnNodeModified();
             RaisePropertyChanged("SelectionResults");
         }
 

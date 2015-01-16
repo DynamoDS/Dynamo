@@ -205,8 +205,10 @@ namespace Dynamo.Nodes
                 LoadAndCreateConnectors(inportConnections, outportConnections);
 
                 RaisePropertyChanged("Code");
-                ForceReExecuteOfNode = true;
-                OnAstUpdated();
+                
+                // Mark node for update
+                OnNodeModified();
+                
                 ReportPosition();
 
                 ClearRuntimeError();
@@ -355,8 +357,9 @@ namespace Dynamo.Nodes
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
-            ForceReExecuteOfNode = true;
-            OnAstUpdated();
+            
+            // Mark node for update
+            OnNodeModified();
             
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
