@@ -18,6 +18,7 @@ namespace Dynamo.Nodes
     public class Watch : NodeModel
     {
         public event Action<Object> EvaluationComplete;
+        public new object CachedValue;
 
         public Watch()
         {
@@ -45,6 +46,8 @@ namespace Dynamo.Nodes
 
         private void OnEvaluationComplete(object obj)
         {
+            this.CachedValue = obj;
+
             if (EvaluationComplete != null)
             {
                 EvaluationComplete(obj);
