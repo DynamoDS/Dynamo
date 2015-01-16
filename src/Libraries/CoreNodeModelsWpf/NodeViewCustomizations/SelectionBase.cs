@@ -3,7 +3,7 @@ using Dynamo.Controls;
 
 using Microsoft.Practices.Prism.Commands;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     // Note: Because this is a generic class, it can't be a NodeViewCustomization!
     //       We have to supply a non-generic implementation for NodeViewCustomization
@@ -16,6 +16,7 @@ namespace Dynamo.Wpf
 
         public void CustomizeView(SelectionBase<TSelection, TResult> model, NodeView nodeView)
         {
+            Model = model;
             SelectCommand = new DelegateCommand(() => Model.Select(null), Model.CanBeginSelect);
 
             var selectionControl = new ElementSelectionControl { DataContext = this };

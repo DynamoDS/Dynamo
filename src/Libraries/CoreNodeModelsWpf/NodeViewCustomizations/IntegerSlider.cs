@@ -5,7 +5,7 @@ using Dynamo.Wpf;
 using Dynamo.Controls;
 using Dynamo.Wpf;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class IntegerSliderNodeViewCustomization : INodeViewCustomization<IntegerSlider>
     {

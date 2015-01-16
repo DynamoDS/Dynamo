@@ -11,7 +11,7 @@ using Dynamo.Nodes;
 
 using Image = System.Windows.Controls.Image;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     internal class WatchImageNodeViewCustomization : INodeViewCustomization<WatchImageCore>
     {
@@ -19,7 +19,7 @@ namespace Dynamo.Wpf
         private NodeModel nodeModel;
         private NodeView nodeView;
 
-        public void CustomizeView(Nodes.WatchImageCore nodeModel, NodeView nodeView)
+        public void CustomizeView(WatchImageCore nodeModel, NodeView nodeView)
         {
             this.nodeModel = nodeModel;
             this.nodeView = nodeView;

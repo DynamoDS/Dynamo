@@ -12,7 +12,7 @@ using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using ProtoCore.AST.AssociativeAST;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class WatchNodeViewCustomization : INodeViewCustomization<Watch>
     {
@@ -85,7 +85,6 @@ namespace Dynamo.Wpf
             rootWatchViewModel.PropertyChanged += RootWatchViewModelOnPropertyChanged;
 
             watch.InPorts[0].PortConnected += OnPortConnected;
-            watch.InPorts[0].PortDisconnected += OnPortDisconnected;
         }
 
         public void Dispose()
@@ -95,7 +94,6 @@ namespace Dynamo.Wpf
             rootWatchViewModel.PropertyChanged -= RootWatchViewModelOnPropertyChanged;
 
             watch.InPorts[0].PortConnected -= OnPortConnected;
-            watch.InPorts[0].PortDisconnected -= OnPortDisconnected;
         }
 
         private void OnPortConnected(PortModel port, ConnectorModel connectorModel)
@@ -108,15 +106,11 @@ namespace Dynamo.Wpf
                 astBeingWatched = input.Item2.GetAstIdentifierForOutputIndex(input.Item1);
                 if (oldId != null && astBeingWatched.Value != oldId.Value)
                 {
+                    // the input node has changed, we clear preview
                     cachedValue = null;
                     rootWatchViewModel.Children.Clear();
                 }
             }
-        }
-
-        private void OnPortDisconnected(PortModel port)
-        {
-            rootWatchViewModel.Children.Clear();
         }
 
         private WatchViewModel GetWatchViewModel()

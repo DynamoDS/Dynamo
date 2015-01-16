@@ -8,7 +8,7 @@ using Dynamo.Controls;
 
 using Color = DSCore.Color;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class ColorRangeNodeViewCustomization : INodeViewCustomization<ColorRange>
     {

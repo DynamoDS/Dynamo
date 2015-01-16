@@ -4,7 +4,7 @@ using System.Windows.Media.Imaging;
 using DSCoreNodesUI;
 using Dynamo.Wpf;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class DummyNodeNodeViewCustomization : INodeViewCustomization<DummyNode>
     {

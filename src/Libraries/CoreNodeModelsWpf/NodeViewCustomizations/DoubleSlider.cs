@@ -9,7 +9,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class DoubleSliderNodeViewCustomization : INodeViewCustomization<DoubleSlider>
     {

@@ -6,7 +6,7 @@ using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
     {

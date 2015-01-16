@@ -31,9 +31,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodes", "Libraries\CoreNodes\CoreNodes.csproj", "{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
+	EndProjectSection 
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModels", "Libraries\CoreNodesUI\CoreNodeModels.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModels", "Libraries\CoreNodeModels\CoreNodeModels.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModelsWpf", "Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj", "{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino", "Libraries\DynamoArduino\Arduino.csproj", "{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -184,8 +186,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibraryTests", "Libraries\Samples\SampleLibraryTests\SampleLibraryTests.csproj", "{933B8108-4E74-470A-86C7-4B7F633115B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpf", "DynamoCoreWpf\DynamoCoreWpf.csproj", "{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModelsWpf", "Libraries\CoreNodesWpf\CoreNodeModelsWpf.csproj", "{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

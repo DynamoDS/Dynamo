@@ -8,7 +8,7 @@ using Dynamo.Controls;
 using Dynamo.UI;
 using Dynamo.Wpf;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class DropDownNodeViewCustomization : INodeViewCustomization<DSDropDownBase>
     {

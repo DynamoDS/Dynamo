@@ -9,7 +9,7 @@ using Dynamo.ViewModels;
 using Binding = System.Windows.Data.Binding;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class StringInputNodeViewCustomization : INodeViewCustomization<StringInput>
     {

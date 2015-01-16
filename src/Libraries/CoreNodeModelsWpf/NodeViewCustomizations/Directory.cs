@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using DSCore.File;
 using Dynamo.Controls;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class DirectoryNodeViewCustomization : FileSystemBrowserNodeViewCustomization, INodeViewCustomization<Directory>
     {

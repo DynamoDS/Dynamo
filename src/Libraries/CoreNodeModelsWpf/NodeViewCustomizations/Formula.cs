@@ -7,7 +7,7 @@ using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Nodes
 {
     public class FormulaNodeViewCustomization : INodeViewCustomization<Formula>
     {
