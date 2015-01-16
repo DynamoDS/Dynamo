@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Wpf
 {
     /// <summary>
     /// Interaction logic for ElementSelectionControl.xaml

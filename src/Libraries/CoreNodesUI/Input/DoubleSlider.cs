@@ -4,7 +4,6 @@ using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
 
-using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 
@@ -95,19 +94,25 @@ namespace Dynamo.Nodes
 
         #endregion
 
+        private static double ConvertBack(string value)
+        {
+            double val = 0.0;
+            double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out val);
+            return val;
+        }
+
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            var converter = new DoubleDisplay();
             switch (name)
             {
                 case "Min":
-                    Min = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    Min = ConvertBack(value);
                     return true; // UpdateValueCore handled.
                 case "Max":
-                    Max = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    Max = ConvertBack(value);
                     return true; // UpdateValueCore handled.
                 case "Value":
-                    Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    Value = ConvertBack(value);
                     if (Value >= Max)
                     {
                         this.Max = Value;

@@ -6,9 +6,9 @@ using System.Windows.Data;
 
 using Dynamo.Controls;
 using Dynamo.ViewModels;
-using Dynamo.Wpf;
+using DSCoreNodesUI;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Wpf
 {
     public class BoolSelectorNodeViewCustomization : INodeViewCustomization<BoolSelector>
     {

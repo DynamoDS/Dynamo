@@ -52,7 +52,7 @@
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Private>False</Private>
-      <Name>..\..\..\DynamoCore\DynamoCore.csproj</Name>
+      <Name>DynamoCore</Name>
     </ProjectReference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -68,9 +68,9 @@
       <Name>ProtoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
+    <ProjectReference Include="..\..\src\Libraries\CoreNodesUI\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>CoreNodesUI</Name>
+      <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

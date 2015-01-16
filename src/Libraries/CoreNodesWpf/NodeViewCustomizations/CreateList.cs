@@ -1,6 +1,6 @@
-using Dynamo.Wpf;
+using DSCoreNodesUI;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Wpf
 {
     public class CreateListNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<CreateList>
     {

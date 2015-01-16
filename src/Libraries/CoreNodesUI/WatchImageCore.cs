@@ -15,8 +15,6 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class WatchImageCore : NodeModel
     {
-        private System.Windows.Controls.Image image;
-
         public WatchImageCore()
         {
             InPortData.Add(new PortData("image", "image"));

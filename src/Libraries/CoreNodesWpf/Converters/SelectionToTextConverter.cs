@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Wpf.Converters
 {
     public class SelectionToTextConverter : IValueConverter
     {

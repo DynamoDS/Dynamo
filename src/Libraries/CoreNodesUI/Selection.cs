@@ -57,8 +57,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        public DelegateCommand SelectCommand { get; set; }
-
         public string Prefix { get; set; }
 
         /// <summary>
@@ -109,7 +107,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("Elements", "The selected elements."));
             RegisterAllPorts();
 
-            SelectCommand = new DelegateCommand(Select, CanBeginSelect);
             Prefix = prefix;
 
             State = ElementState.Warning; 
@@ -151,7 +148,7 @@ namespace Dynamo.Nodes
                 State = ElementState.Active;
         }
 
-        protected bool CanBeginSelect()
+        public bool CanBeginSelect()
         {
             return CanSelect;
         }
@@ -171,7 +168,7 @@ namespace Dynamo.Nodes
         /// Callback when selection button is clicked. 
         /// Calls the selection action, and stores the ElementId(s) of the selected objects.
         /// </summary>
-        protected virtual void Select(object parameter)
+        public virtual void Select(object parameter)
         {
             try
             {

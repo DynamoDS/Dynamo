@@ -1,10 +1,10 @@
 using System;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-
+using DSCoreNodesUI;
 using Dynamo.Wpf;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Wpf
 {
     public class DummyNodeNodeViewCustomization : INodeViewCustomization<DummyNode>
     {

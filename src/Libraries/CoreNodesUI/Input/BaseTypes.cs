@@ -124,7 +124,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ShouldDisplayPreviewCore = false;
-            _convertToken = Convert;
+            ConvertToken = Convert;
 
             //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
@@ -146,7 +146,7 @@ namespace Dynamo.Nodes
 
         private List<IDoubleSequence> _parsed;
         private string _value;
-        protected ConversionDelegate _convertToken;
+        protected ConversionDelegate ConvertToken;
 
         public string Value
         {
@@ -162,7 +162,7 @@ namespace Dynamo.Nodes
 
                 try
                 {
-                    _parsed = ParseValue(value, new[] { '\n' }, idList, _convertToken);
+                    _parsed = ParseValue(value, new[] { '\n' }, idList, ConvertToken);
 
                     InPortData.Clear();
 

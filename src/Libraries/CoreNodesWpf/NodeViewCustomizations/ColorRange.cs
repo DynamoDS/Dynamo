@@ -3,13 +3,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
+using DSCoreNodesUI;
 using Dynamo.Controls;
-using Dynamo.Wpf;
 
 using Color = DSCore.Color;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Wpf
 {
     public class ColorRangeNodeViewCustomization : INodeViewCustomization<ColorRange>
     {

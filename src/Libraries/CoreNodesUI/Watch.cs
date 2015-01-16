@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -16,8 +17,7 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class Watch : NodeModel
     {
-        private IdentifierNode astBeingWatched;
-        public new object CachedValue { get; internal set; }
+        public event Action<Object> EvaluationComplete;
 
         public Watch()
         {
@@ -29,6 +29,26 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             ShouldDisplayPreviewCore = false;
+        }
+
+        protected override void OnBuilt()
+        {
+            base.OnBuilt();
+            DataBridge.Instance.RegisterCallback(GUID.ToString(), OnEvaluationComplete);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
+        private void OnEvaluationComplete(object obj)
+        {
+            if (EvaluationComplete != null)
+            {
+                EvaluationComplete(obj);
+            }
         }
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
@@ -79,6 +99,5 @@ namespace Dynamo.Nodes
         {
             // Do nothing
         }
-        
     }
 }

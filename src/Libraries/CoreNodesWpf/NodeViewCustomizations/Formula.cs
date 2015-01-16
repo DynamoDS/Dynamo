@@ -2,12 +2,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-
+using DSCoreNodesUI;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Wpf
 {
     public class FormulaNodeViewCustomization : INodeViewCustomization<Formula>
     {

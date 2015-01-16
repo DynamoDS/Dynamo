@@ -3,26 +3,26 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Dynamo.Controls;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Wpf
 {
     /// <summary>
-    /// Interaction logic for SliderSettingsControl.xaml
+    /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class DoubleSliderSettingsControl : UserControl
+    public partial class IntegerSliderSettingsControl : UserControl
     {
-        public DoubleSliderSettingsControl()
+        public IntegerSliderSettingsControl()
         {
             InitializeComponent();
-            this.Loaded += DoubleSliderSettingsControl_Loaded;
+            this.Loaded += IntegerSliderSettingsControl_Loaded;
         }
 
-        void DoubleSliderSettingsControl_Loaded(object sender, RoutedEventArgs e)
+        void IntegerSliderSettingsControl_Loaded(object sender, RoutedEventArgs e)
         {
             MaxTb.BindToProperty(
                 new Binding("Max")
                 {
                     Mode = BindingMode.TwoWay,
-                    Converter = new DoubleDisplay(),
+                    Converter = new IntegerDisplay(),
                     UpdateSourceTrigger = UpdateSourceTrigger.Explicit
                 });
 
@@ -30,7 +30,7 @@ namespace DSCoreNodesUI
                 new Binding("Min")
                 {
                     Mode = BindingMode.TwoWay,
-                    Converter = new DoubleDisplay(),
+                    Converter = new IntegerDisplay(),
                     UpdateSourceTrigger = UpdateSourceTrigger.Explicit
                 });
         }

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="DSCoreNodesUI.IntegerSliderSettingsControl"
+﻿<UserControl x:Class="Dynamo.Wpf.DoubleSliderSettingsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,7 +7,7 @@
              xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,7 +15,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-
+    
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -26,7 +26,7 @@
                 <RowDefinition Height="30"></RowDefinition>
                 <RowDefinition Height="30"></RowDefinition>
             </Grid.RowDefinitions>
-
+                    
             <Label Grid.Column="0" Grid.Row="0" Content="Min" VerticalContentAlignment="Center"></Label>
             <Label Grid.Column="0" Grid.Row="1" Content="Max" VerticalContentAlignment="Center"></Label>
             <nodes:DynamoTextBox Name="MinTb" Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center"/>

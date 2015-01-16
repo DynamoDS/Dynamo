@@ -1,11 +1,11 @@
 ﻿using System.Globalization;
-
-using DSCoreNodesUI;
+using Dynamo.Nodes;
+using Dynamo.Wpf;
 
 using Dynamo.Controls;
 using Dynamo.Wpf;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Wpf
 {
     public class IntegerSliderNodeViewCustomization : INodeViewCustomization<IntegerSlider>
     {

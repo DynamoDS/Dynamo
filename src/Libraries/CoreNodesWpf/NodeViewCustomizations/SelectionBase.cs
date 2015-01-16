@@ -1,9 +1,9 @@
-using DSCoreNodesUI;
-
+using Dynamo.Nodes;
 using Dynamo.Controls;
-using Dynamo.Wpf;
 
-namespace Dynamo.Nodes
+using Microsoft.Practices.Prism.Commands;
+
+namespace Dynamo.Wpf
 {
     // Note: Because this is a generic class, it can't be a NodeViewCustomization!
     //       We have to supply a non-generic implementation for NodeViewCustomization
@@ -11,9 +11,14 @@ namespace Dynamo.Nodes
     public abstract class SelectionBaseNodeViewCustomization<TSelection, TResult>
         : INodeViewCustomization<SelectionBase<TSelection, TResult>>
     {
+        public SelectionBase<TSelection, TResult> Model { get; set; }
+        public DelegateCommand SelectCommand { get; set; }
+
         public void CustomizeView(SelectionBase<TSelection, TResult> model, NodeView nodeView)
         {
-            var selectionControl = new ElementSelectionControl { DataContext = model };
+            SelectCommand = new DelegateCommand(() => Model.Select(null), Model.CanBeginSelect);
+
+            var selectionControl = new ElementSelectionControl { DataContext = this };
             nodeView.inputGrid.Children.Add(selectionControl);
         }
 

@@ -82,6 +82,11 @@ namespace Dynamo.Tests
                 ++count;
             }
         }
+
+        private WatchViewModel MakeWatchViewModel()
+        {
+            
+        }
         
         
         [Test]

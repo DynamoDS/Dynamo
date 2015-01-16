@@ -18,7 +18,6 @@ namespace DSCoreNodesUI
     [NodeDescription("Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
-    //[NodeDeprecated]
     public class Formula : NodeModel
     {
         private string formulaString = "";

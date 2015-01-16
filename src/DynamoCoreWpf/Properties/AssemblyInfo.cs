@@ -36,5 +36,6 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
-[assembly: InternalsVisibleTo("DSCoreNodesUI")]
-[assembly: InternalsVisibleTo("DSCoreNodesWpf")]
+[assembly: InternalsVisibleTo("CoreNodesUI")]
+[assembly: InternalsVisibleTo("CoreNodesWpf")]
+[assembly: InternalsVisibleTo("CoreNodeModelsWpf")]

@@ -12,8 +12,6 @@ namespace Dynamo.Models
     /// <summary>
     /// Interaction logic for dynPort.xaml
     /// </summary>
-    public delegate void PortConnectedHandler(object sender, EventArgs e);
-    public delegate void PortDisconnectedHandler(object sender, EventArgs e);
     public enum PortType { Input, Output };
 
     public class PortModel : ModelBase
@@ -23,12 +21,12 @@ namespace Dynamo.Models
         /// <summary>
         /// Event triggered when a port is connected.
         /// </summary>
-        public event Action<ConnectorModel> PortConnected;
+        public event Action<PortModel, ConnectorModel> PortConnected;
 
         /// <summary>
         /// Event triggered when a port is disconnected.
         /// </summary>
-        public event PortConnectedHandler PortDisconnected;
+        public event Action<PortModel> PortDisconnected;
 
         #endregion
 
@@ -236,7 +234,7 @@ namespace Dynamo.Models
                 return;
             
             //throw the event for a connection
-            OnPortDisconnected(EventArgs.Empty);
+            OnPortDisconnected();
 
             connectors.Remove(connector);
             
@@ -257,17 +255,17 @@ namespace Dynamo.Models
         protected virtual void OnPortConnected(ConnectorModel connector)
         {
             if (PortConnected != null)
-                PortConnected(connector);
+                PortConnected(this, connector);
         }
 
         /// <summary>
         /// Called when a port is disconnected.
         /// </summary>
         /// <param name="e"></param>
-        protected virtual void OnPortDisconnected(EventArgs e)
+        protected virtual void OnPortDisconnected()
         {
             if (PortDisconnected != null)
-                PortDisconnected(this, e);
+                PortDisconnected(this);
         }
 
         #region Serialization/Deserialization Methods

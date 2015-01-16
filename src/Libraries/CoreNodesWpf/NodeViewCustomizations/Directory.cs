@@ -1,15 +1,15 @@
 ﻿using System.Windows;
 using System.Windows.Forms;
+using DSCore.File;
+using Dynamo.Controls;
 
-using Dynamo.Wpf;
-
-namespace DSCore.File
+namespace Dynamo.Wpf
 {
     public class DirectoryNodeViewCustomization : FileSystemBrowserNodeViewCustomization, INodeViewCustomization<Directory>
     {
         private Directory model;
 
-        public void CustomizeView(Directory model, Dynamo.Controls.NodeView nodeView)
+        public void CustomizeView(Directory model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
             this.model = model;

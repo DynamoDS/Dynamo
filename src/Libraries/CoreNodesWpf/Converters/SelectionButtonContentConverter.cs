@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Wpf.Converters
 {
     public class SelectionButtonContentConverter : IValueConverter
     {

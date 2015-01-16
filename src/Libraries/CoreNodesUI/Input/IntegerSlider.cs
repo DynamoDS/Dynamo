@@ -55,19 +55,25 @@ namespace Dynamo.Nodes
             }
         }
 
+        private static int ConvertBack(string value)
+        {
+            int val = 0;
+            int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out val);
+            return val;
+        }
+
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            var converter = new IntegerDisplay();
             switch (name)
             {
                 case "Value":
-                    Value = ((int)converter.ConvertBack(value, typeof(int), null, null));
+                    Value = ConvertBack(value);
                     return true; // UpdateValueCore handled.
                 case "Max":
-                    Max = ((int)converter.ConvertBack(value, typeof(int), null, null));
+                    Max = ConvertBack(value);
                     return true; // UpdateValueCore handled.
                 case "Min":
-                    Min = ((int)converter.ConvertBack(value, typeof(int), null, null));
+                    Min = ConvertBack(value);
                     if (Value >= Max)
                     {
                         this.Max = Value;
