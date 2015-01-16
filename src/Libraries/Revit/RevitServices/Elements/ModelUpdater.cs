@@ -22,12 +22,10 @@ using RevitServices.Persistence;
 
 namespace RevitServices.Elements
 {
-    public class RevitServicesUpdater : IDisposable
+    public class RevitServicesUpdater
     {
         //TODO: To handle multiple documents, should store unique ids as opposed to ElementIds.
-
-        private readonly ControlledApplication application;
-
+        
         public event ElementUpdateDelegate ElementsAdded;
         public event ElementUpdateDelegateElementId ElementAddedForID;
         public event ElementUpdateDelegate ElementsModified;
@@ -62,12 +60,8 @@ namespace RevitServices.Elements
 
         #endregion
 
-        // constructor takes the AddInId for the add-in associated with this updater
-        public RevitServicesUpdater(/*AddInId id, */ControlledApplication app, IEnumerable<IUpdater> updaters)
+        public RevitServicesUpdater(IEnumerable<IUpdater> updaters)
         {
-            application = app;
-            application.DocumentChanged += ApplicationDocumentChanged;
-
             foreach (var updater in updaters)
             {
                 ((ElementTypeSpecificUpdater)updater).Updated += RevitServicesUpdater_Updated;
@@ -87,11 +81,6 @@ namespace RevitServices.Elements
             var modified = args.Modified.Select(x => doc.GetElement(x).UniqueId).ToList();
             var deleted = args.Deleted;
             ProcessUpdates(doc, modified, deleted, added, addedIds);
-        }
-
-        public void Dispose()
-        {
-            application.DocumentChanged -= ApplicationDocumentChanged;
         }
 
         //TODO: remove once we are using unique ids
@@ -124,7 +113,7 @@ namespace RevitServices.Elements
             OnElementsAdded(doc, addedIds);
         }
 
-        void ApplicationDocumentChanged(object sender, DocumentChangedEventArgs args)
+        public void ApplicationDocumentChanged(object sender, DocumentChangedEventArgs args)
         {
             var doc = args.GetDocument();
             var added = args.GetAddedElementIds().Select(x => doc.GetElement(x).UniqueId);

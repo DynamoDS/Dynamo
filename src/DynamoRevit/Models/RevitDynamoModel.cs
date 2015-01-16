@@ -100,7 +100,7 @@ namespace Dynamo.Applications.Models
             string corePath = configuration.DynamoCorePath;
             bool isTestMode = configuration.StartInTestMode;
 
-            RevitServicesUpdater = new RevitServicesUpdater(DynamoRevitApp.ControlledApplication, DynamoRevitApp.Updaters);
+            RevitServicesUpdater = DynamoRevitApp.RevitServicesUpdater;
             SubscribeRevitServicesUpdaterEvents();
 
             InitializeDocumentManager();
