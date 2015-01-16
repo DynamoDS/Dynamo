@@ -967,7 +967,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal IEnumerable<Guid> ModelGuids { get; private set; }
+            internal IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
             internal string Name { get; private set; }
             internal string Value { get; private set; }
 
