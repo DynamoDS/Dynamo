@@ -222,17 +222,15 @@ namespace Dynamo.Applications.Models
         {
             if (shutdownHost)
             {
-                var uiApplication = DocumentManager.Instance.CurrentUIApplication;
-                uiApplication.Idling += ShutdownRevitHostOnce;
+                DynamoRevit.AddIdleAction(ShutdownRevitHostOnce);
             }
 
             base.PreShutdownCore(shutdownHost);
         }
 
-        private static void ShutdownRevitHostOnce(object sender, IdlingEventArgs idlingEventArgs)
+        private static void ShutdownRevitHostOnce()
         {
             var uiApplication = DocumentManager.Instance.CurrentUIApplication;
-            uiApplication.Idling -= ShutdownRevitHostOnce;
             RevitDynamoModel.ShutdownRevitHost();
         }
 
