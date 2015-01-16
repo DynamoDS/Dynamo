@@ -1246,11 +1246,6 @@ namespace ProtoCore
                                    List<ReplicationInstruction> replicationInstructions, DSASM.StackFrame stackFrame,
                                    Core core, RuntimeCore runtimeCore, FunctionGroup funcGroup)
         {
-            for (int i = 0; i < formalParameters.Count; ++i)
-            {
-                GCUtils.GCRetain(formalParameters[i], core);
-            }
-
             StackValue ret;
 
             if (replicationInstructions.Count == 0)
@@ -1322,16 +1317,6 @@ namespace ProtoCore
                     traceData.Add(newTraceData);
                 }
             }
-
-            // Explicit calls require the GC of arguments in the function return instruction
-            if (!ret.IsExplicitCall)
-            {
-                for (int i = 0; i < formalParameters.Count; ++i)
-                {
-                    GCUtils.GCRelease(formalParameters[i], core);
-                }
-            }
-
 
             invokeCount++; //We've completed this invocation
 
@@ -1512,7 +1497,6 @@ namespace ProtoCore
                 }
 
                 StackValue ret = core.Heap.AllocateArray(retSVs, null);
-                GCUtils.GCRetain(ret, core);
                 return ret;
             }
             else
@@ -1678,7 +1662,6 @@ namespace ProtoCore
                 }
 
                 StackValue ret = core.Heap.AllocateArray(retSVs, null);
-                GCUtils.GCRetain(ret, core);
                 return ret;
 
             }
@@ -1846,25 +1829,17 @@ namespace ProtoCore
             {
                 int promotionsRequired = listOfGuidesCounts[i] - maxDepths[i];
                 StackValue oldSv = newArgs[i];
-
                 
                 for (int p = 0; p < promotionsRequired; p++)
                 {
-
                     StackValue newSV = core.Heap.AllocateArray( new StackValue[1] { oldSv } , null);
-
-                    GCUtils.GCRetain(newSV, core);
-                    // GCUtils.GCRelease(oldSv, core);
-
                     oldSv = newSV;
                 }
 
                 newArgs[i] = oldSv;
-
             }
 
             return newArgs;
-
         }
 
         public static StackValue PerformReturnTypeCoerce(ProcedureNode procNode, Core core, StackValue ret)
@@ -1885,9 +1860,6 @@ namespace ProtoCore
                 else
                 {
                     StackValue coercedRet = TypeSystem.Coerce(ret, procNode.returntype, core);
-                        //IT was a var type, so don't cast
-                    GCUtils.GCRetain(coercedRet, core);
-                    GCUtils.GCRelease(ret, core);
                     return coercedRet;
                 }
             }
@@ -1900,23 +1872,17 @@ namespace ProtoCore
                 retType.IsIndexable)
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
-                GCUtils.GCRetain(coercedRet, core);
-                GCUtils.GCRelease(ret, core);
                 return coercedRet;
             }
-
 
             if (ret.metaData.type == retType.UID)
             {
                 return ret;
             }
 
-
             if (ret.IsArray && procNode.returntype.IsIndexable)
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
-                GCUtils.GCRetain(coercedRet, core);
-                GCUtils.GCRelease(ret, core);
                 return coercedRet;
             }
 
@@ -1932,8 +1898,6 @@ namespace ProtoCore
             else
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
-                GCUtils.GCRetain(coercedRet, core);
-                GCUtils.GCRelease(ret, core);
                 return coercedRet;
             }
         }
