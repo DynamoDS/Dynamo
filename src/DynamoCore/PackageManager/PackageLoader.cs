@@ -55,8 +55,8 @@ namespace Dynamo.PackageManager
 
         private void ScanAllPackageDirectories(IPreferences preferences)
         { 
-            foreach (var dir in 
-                Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
+            foreach (var dir in
+                Directory.EnumerateDirectories(RootPackagesDirectory, /*NXLT*/"*", SearchOption.TopDirectoryOnly))
             {
                 var pkg = ScanPackageDirectory(dir);
                 if (preferences.PackageDirectoriesToUninstall.Contains(dir)) 
@@ -68,7 +68,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                var headerPath = Path.Combine(directory, "pkg.json");
+                var headerPath = Path.Combine(directory, /*NXLT*/"pkg.json");
 
                 Package discoveredPkg;
 

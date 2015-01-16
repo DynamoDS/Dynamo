@@ -137,7 +137,7 @@ namespace Dynamo.Core.Threading
                 {
                     var package = new RenderPackage(isNodeSelected, displayLabels)
                     {
-                        Tag = labelMap.Count > count ? labelMap[count] : "?",
+                        Tag = labelMap.Count > count ? labelMap[count] : /*NXLT*/"?",
                     };
 
                     try
@@ -197,7 +197,7 @@ namespace Dynamo.Core.Threading
                 var elements = data.GetElements();
                 foreach (var element in elements)
                 {
-                    var newTag = string.Format("{0}:{1}", tag, index++);
+                    var newTag = string.Format(/*NXLT*/"{0}:{1}", tag, index++);
                     AddToLabelMap(element, map, newTag);
                 }
             }
@@ -217,7 +217,7 @@ namespace Dynamo.Core.Threading
             int count = 0;
             foreach (var obj in list)
             {
-                var newTag = string.Format("{0}:{1}", tag, count++);
+                var newTag = string.Format(/*NXLT*/"{0}:{1}", tag, count++);
 
                 if (obj is IEnumerable)
                 {

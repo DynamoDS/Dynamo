@@ -44,10 +44,10 @@ namespace Dynamo.Utilities
             if (!type.IsSubclassOf(typeof(T)))
             {
                 var msg = string.Format(
-                    @"Cannot make constructor returning a ""{0}"" given type ""{1}""",
+                    /*NXLT*/@"Cannot make constructor returning a ""{0}"" given type ""{1}""",
                     typeof(T).FullName,
                     type.FullName);
-                throw new ArgumentException(msg, "type");
+                throw new ArgumentException(msg, /*NXLT*/"type");
             }
             return Expression.Lambda<Func<T>>(Expression.New(type)).Compile();
         }

@@ -37,17 +37,17 @@ namespace Dynamo.PackageManager
 
         public string CustomNodeDirectory
         {
-            get { return Path.Combine(RootDirectory, "dyf"); }
+            get { return Path.Combine(RootDirectory, /*NXLT*/"dyf"); }
         }
 
         public string BinaryDirectory
         {
-            get { return Path.Combine(RootDirectory, "bin"); }
+            get { return Path.Combine(RootDirectory, /*NXLT*/"bin"); }
         }
 
         public string ExtraDirectory
         {
-            get { return Path.Combine(RootDirectory, "extra"); }
+            get { return Path.Combine(RootDirectory, /*NXLT*/"extra"); }
         }
 
         public bool Loaded { get; private set; }
@@ -187,7 +187,7 @@ namespace Dynamo.PackageManager
             catch (Exception e)
             {
                 logger.Log(/*NXLT*/"Failed to form package from json header.");
-                logger.Log(e.GetType() + ": " + e.Message);
+                logger.Log(e.GetType() + /*NXLT*/": " + e.Message);
                 return null;
             }
 
@@ -219,7 +219,7 @@ namespace Dynamo.PackageManager
             catch (Exception e)
             {
                 Log(/*NXLT*/"Exception when attempting to load package " + Name + /*NXLT*/" from " + RootDirectory);
-                Log(e.GetType() + ": " + e.Message);
+                Log(e.GetType() + /*NXLT*/": " + e.Message);
             }
         }
 
@@ -229,7 +229,7 @@ namespace Dynamo.PackageManager
 
             var nonDyfDllFiles = Directory.EnumerateFiles(
                 RootDirectory,
-                "*",
+                /*NXLT*/"*",
                 SearchOption.AllDirectories)
                 .Where(x => !x.ToLower().EndsWith(/*NXLT*/".dyf") && !x.ToLower().EndsWith(/*NXLT*/".dll") && !x.ToLower().EndsWith(/*NXLT*/"pkg.json") && !x.ToLower().EndsWith(/*NXLT*/".backup"))
                 .Select(x => new PackageFileInfo(RootDirectory, x));
@@ -348,7 +348,7 @@ namespace Dynamo.PackageManager
         internal bool ContainsFile(string path)
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return false;
-            return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
+            return Directory.EnumerateFiles(RootDirectory, /*NXLT*/"*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
         internal bool InUse(DynamoModel dynamoModel)
@@ -412,7 +412,7 @@ namespace Dynamo.PackageManager
             catch (Exception e)
             {
                 Log(/*NXLT*/"Exception when attempting to uninstall the package " + Name + /*NXLT*/" from " + RootDirectory);
-                Log(e.GetType() + ": " + e.Message);
+                Log(e.GetType() + /*NXLT*/": " + e.Message);
                 throw;
             }
         }

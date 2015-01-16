@@ -186,7 +186,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public virtual IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes, bool verboseLogging, AstBuilder builder)
         {
-            throw new NotImplementedException("BuildOutputAstInScope");
+            throw new NotImplementedException(/*NXLT*/"BuildOutputAstInScope");
         }
 
         /// <summary>

@@ -132,8 +132,10 @@ namespace Dynamo.DSEngine
                 }
                 catch (Exception ex)
                 {
-                    Log(/*NXLT*/"Failed to get mirror for variable: " + variableName + /*NXLT*/"; reason: " +
-                        ex.Message);
+
+                    Log(string.Format(Properties.Resources.WorkbenchNotOpen,variableName, //FailedToGetMirrorVariable, variableName,
+                        ex.Message));
+
                 }
 
                 return mirror;
@@ -444,7 +446,7 @@ namespace Dynamo.DSEngine
                 var node = nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
-                    string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
+                    string warningMessage = string.Join(/*NXLT*/"\n", item.Value.Select(w => w.Message));
                     node.Warning(warningMessage);
                 }
             }
@@ -460,7 +462,7 @@ namespace Dynamo.DSEngine
                 var node = nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
-                    string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
+                    string warningMessage = string.Join(/*NXLT*/"\n", item.Value.Select(w => w.Message));
                     node.Warning(warningMessage);
                 }
             }
@@ -509,7 +511,7 @@ namespace Dynamo.DSEngine
 
         #region Node2Code
 
-        [Obsolete("Node2Code disabled, API subject to change.")]
+        [Obsolete(/*NXLT*/"Node2Code disabled, API subject to change.")]
         public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string, string> variableNames, bool verboseLogging)
         {
             variableNames = new Dictionary<string, string>();

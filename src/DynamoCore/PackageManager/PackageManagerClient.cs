@@ -116,14 +116,14 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        private static readonly string serverUrl = "https://www.dynamopackages.com/";
+        private static readonly string serverUrl = /*NXLT*/"https://www.dynamopackages.com/";
         
         public PackageManagerClient(string rootPkgDir,  CustomNodeManager customNodeManager)
         {
             this.rootPkgDir = rootPkgDir;
             this.customNodeManager = customNodeManager;
 
-            Client = new Client(null, "http://www.dynamopackages.com");
+            Client = new Client(null, /*NXLT*/"http://www.dynamopackages.com");
         }
 
         //public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
@@ -281,7 +281,7 @@ namespace Dynamo.PackageManager
                 }
                 catch (Exception e)
                 {
-                    packageUploadHandle.Error(e.GetType() + ": " + e.Message);
+                    packageUploadHandle.Error(e.GetType() + /*NXLT*/": " + e.Message);
                 }
             });
 
@@ -343,13 +343,13 @@ namespace Dynamo.PackageManager
 
             try
             {
-                var nv = new Greg.Requests.Deprecate(name, "dynamo");
+                var nv = new Greg.Requests.Deprecate(name, /*NXLT*/"dynamo");
                 var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }
             catch
             {
-                return new PackageManagerResult("Failed to send.", false);
+                return new PackageManagerResult(/*NXLT*/"Failed to send.", false);
             }
         }
 
@@ -359,13 +359,13 @@ namespace Dynamo.PackageManager
 
             try
             {
-                var nv = new Greg.Requests.Undeprecate(name, "dynamo");
+                var nv = new Greg.Requests.Undeprecate(name, /*NXLT*/"dynamo");
                 var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }
             catch
             {
-                return new PackageManagerResult("Failed to send.", false);
+                return new PackageManagerResult(/*NXLT*/"Failed to send.", false);
             }
         }
 

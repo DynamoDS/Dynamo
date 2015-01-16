@@ -70,7 +70,7 @@ namespace Dynamo.Models
         public void AddLoader<T>(Type nodeType, INodeLoader<T> loader) where T : NodeModel
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
-                throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
+                throw new ArgumentException(/*NXLT*/@"Given type is not a subclass of NodeModel.", /*NXLT*/"nodeType");
 
             nodeLoaders[nodeType] = loader;
             alsoKnownAsMappings[nodeType.FullName] = nodeType;
@@ -95,7 +95,7 @@ namespace Dynamo.Models
         public void AddFactory<T>(Type nodeType, INodeFactory<T> loader) where T : NodeModel
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
-                throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
+                throw new ArgumentException(/*NXLT*/@"Given type is not a subclass of NodeModel.", /*NXLT*/"nodeType");
 
             nodeFactories[nodeType] = loader;
             alsoKnownAsMappings[nodeType.FullName] = nodeType;
@@ -117,7 +117,7 @@ namespace Dynamo.Models
         public bool AddTypeFactoryAndLoader(Type nodeType)
         {
             if (!nodeType.IsSubclassOf(typeof(NodeModel)))
-                throw new ArgumentException(@"Given type is not a subclass of NodeModel.", "nodeType");
+                throw new ArgumentException(/*NXLT*/@"Given type is not a subclass of NodeModel.", /*NXLT*/"nodeType");
 
             try
             {
@@ -274,7 +274,7 @@ namespace Dynamo.Models
         public bool ResolveType(string fullyQualifiedName, out Type type)
         {
             if (fullyQualifiedName == null)
-                throw new ArgumentNullException(@"fullyQualifiedName");
+                throw new ArgumentNullException(/*NXLT*/@"fullyQualifiedName");
 
             if (alsoKnownAsMappings.TryGetValue(fullyQualifiedName, out type))
                 return true;
@@ -292,7 +292,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
         {
-            XmlAttribute typeAttrib = elNode.Attributes["type"];
+            XmlAttribute typeAttrib = elNode.Attributes[/*NXLT*/"type"];
             string typeName = Nodes.Utilities.PreprocessTypeName(typeAttrib.Value);
 
             Type type;

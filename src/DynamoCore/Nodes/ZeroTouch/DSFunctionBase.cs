@@ -143,7 +143,7 @@ namespace Dynamo.Nodes
             {
                 foreach (var key in Definition.ReturnKeys)
                 {
-                    model.OutPortData.Add(new PortData(key, "var"));
+                    model.OutPortData.Add(new PortData(key, /*NXLT*/"var"));
                 }
             }
             else
@@ -167,8 +167,8 @@ namespace Dynamo.Nodes
                 asmPath = Utilities.MakeRelativePath(docPath, asmPath);
             }
 
-            element.SetAttribute("assembly", asmPath);
-            element.SetAttribute("function", Definition.MangledName ?? "");
+            element.SetAttribute(/*NXLT*/"assembly", asmPath);
+            element.SetAttribute(/*NXLT*/"function", Definition.MangledName ?? "");
         }
 
         public override void SyncNodeWithDefinition(NodeModel model)

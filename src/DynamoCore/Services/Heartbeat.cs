@@ -100,8 +100,8 @@ namespace Dynamo.Services
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
 
-                    InstrumentationLogger.LogPiiInfo("Node-usage", usage);
-                    InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
+                    InstrumentationLogger.LogPiiInfo(/*NXLT*/"Node-usage", usage);
+                    InstrumentationLogger.LogPiiInfo(/*NXLT*/"Nodes-with-errors", errors);
 
                     DynamoModel.OnRequestDispatcherInvoke(
                         () =>
@@ -109,7 +109,7 @@ namespace Dynamo.Services
                             string workspace =
                                 dynamoModel.CurrentWorkspace
                                     .GetStringRepOfWorkspace();
-                            InstrumentationLogger.LogPiiInfo("Workspace", workspace);
+                            InstrumentationLogger.LogPiiInfo(/*NXLT*/"Workspace", workspace);
                         });
 
                 }
@@ -158,9 +158,9 @@ namespace Dynamo.Services
             foreach (String key in frequencies.Keys)
             {
                 sb.Append(key);
-                sb.Append(":");
+                sb.Append(/*NXLT*/":");
                 sb.Append(frequencies[key]);
-                sb.Append(",");
+                sb.Append(/*NXLT*/",");
             }
 
             String ret = sb.ToString();

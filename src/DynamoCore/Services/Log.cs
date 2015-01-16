@@ -17,7 +17,7 @@ namespace net.riversofdata.dhlogger
     public class Log : IDisposable
     {
         private const string URL = /*NXLT*/"https://dynamoinstr.appspot.com/rpc";
-        //private const string URL = "http://192.168.1.68:8080/rpc";
+        //private const string URL = /*NXLT*/"http://192.168.1.68:8080/rpc";
         
         private const int MAX_DATA_LENGTH = 500000;
         private const int MAX_NAME_LENGTH = 256;
@@ -197,7 +197,7 @@ namespace net.riversofdata.dhlogger
         public void Debug(string tag, string text)
         {
             ValidateInput(tag, text);
-            PrepAndPushItem(tag, "Debug", text);
+            PrepAndPushItem(tag, /*NXLT*/"Debug", text);
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace net.riversofdata.dhlogger
         public void Error(string tag, string text)
         {
             ValidateInput(tag, text);
-            PrepAndPushItem(tag, "Error", text);
+            PrepAndPushItem(tag, /*NXLT*/"Error", text);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace net.riversofdata.dhlogger
         public void Info(string tag, string text)
         {
             ValidateInput(tag, text);
-            PrepAndPushItem(tag, "Info", text);
+            PrepAndPushItem(tag, /*NXLT*/"Info", text);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace net.riversofdata.dhlogger
         public void Verbose(string tag, string text)
         {
             ValidateInput(tag, text);
-            PrepAndPushItem(tag, "Verbose", text);
+            PrepAndPushItem(tag, /*NXLT*/"Verbose", text);
         }
 
         #endregion
@@ -264,7 +264,7 @@ namespace net.riversofdata.dhlogger
                 for (int i = 0; i < splitText.Count; i++)
                 {
                     PrepAndPushItem(
-                        tag + "-" + g.ToString() + "-" + i.ToString(),
+                        tag + /*NXLT*/"-" + g.ToString() + /*NXLT*/"-" + i.ToString(),
                         priority,
                         splitText[i]);
                 }
@@ -285,14 +285,14 @@ namespace net.riversofdata.dhlogger
 
             var item = new Dictionary<string, string>
             {
-                { "Tag", tag },
-                { "Priority", priority },
-                { "AppIdent", AppName },
-                { "UserID", UserID },
-                { "SessionID", SessionID },
-                { "DateTime", dateTime },
-                { "MicroTime", microTime },
-                { "Data", safeStr }
+                { /*NXLT*/"Tag", tag },
+                { /*NXLT*/"Priority", priority },
+                { /*NXLT*/"AppIdent", AppName },
+                { /*NXLT*/"UserID", UserID },
+                { /*NXLT*/"SessionID", SessionID },
+                { /*NXLT*/"DateTime", dateTime },
+                { /*NXLT*/"MicroTime", microTime },
+                { /*NXLT*/"Data", safeStr }
             };
 
             PushItem(item);
@@ -374,36 +374,36 @@ namespace net.riversofdata.dhlogger
             {
 
                 StringBuilder sb = new StringBuilder();
-                sb.Append("[\"BasicStore\", {");
+                sb.Append(/*NXLT*/"[\"BasicStore\", {");
 
                 bool first = true;
 
                 foreach (string key in item.Keys)
                 {
                     if (!first)
-                        sb.Append(",");
+                        sb.Append(/*NXLT*/",");
                     else
                         first = false;
 
-                    sb.Append("\"");
+                    sb.Append(/*NXLT*/"\"");
                     sb.Append(key);
-                    sb.Append("\" : \"");
+                    sb.Append(/*NXLT*/"\" : \"");
                     sb.Append(item[key]);
-                    sb.Append("\"");
+                    sb.Append(/*NXLT*/"\"");
 
                 }
 
-                sb.Append("}]");
+                sb.Append(/*NXLT*/"}]");
 
                 if (this.EnableDiagnosticsOutput)
                     System.Diagnostics.Debug.WriteLine(sb.ToString());
 
                 WebRequest request = WebRequest.Create(URL);
 
-                request.Method = "POST";
+                request.Method = /*NXLT*/"POST";
                 byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
 
-                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentType = /*NXLT*/"application/x-www-form-urlencoded";
                 request.ContentLength = byteArray.Length;
                 Stream dataStream = request.GetRequestStream();
                 dataStream.Write(byteArray, 0, byteArray.Length);

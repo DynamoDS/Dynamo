@@ -150,7 +150,7 @@ namespace Dynamo.Models
                     () =>
                     {
                         throw new InvalidOperationException(
-                            "Evaluation success, no error message recorded.");
+                            /*NXLT*/"Evaluation success, no error message recorded.");
                     });
             }
         }

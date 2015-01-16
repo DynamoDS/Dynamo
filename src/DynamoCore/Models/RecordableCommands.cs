@@ -970,7 +970,7 @@ namespace Dynamo.Models
             #endregion
         }
 
-        [Obsolete("Node to Code not enabled, API subject to change.")]
+        [Obsolete(/*NXLT*/"Node to Code not enabled, API subject to change.")]
         public class ConvertNodesToCodeCommand : RecordableCommand
         {
             #region Public Class Methods

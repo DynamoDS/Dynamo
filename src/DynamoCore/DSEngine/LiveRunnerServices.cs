@@ -53,7 +53,9 @@ namespace Dynamo.DSEngine
             var mirror = liveRunner.InspectNodeValue(var);
 
             if (verboseLogging)
-                Log(/*NXLT*/"LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
+
+                Log(Properties.Resources.LRSGetMirror +/*NXLT*/" " + var + /*NXLT*/" " + (mirror != null ? mirror.GetStringData() : /*NXLT*/"null"));
+
 
             return mirror;
 
@@ -68,7 +70,9 @@ namespace Dynamo.DSEngine
         {
 
             if (verboseLogging)
-                Log(/*NXLT*/"LRS.UpdateGraph: " + graphData);
+
+                Log(Properties.Resources.LRSUpdateGraph + /*NXLT*/" " + graphData);
+
 
             liveRunner.UpdateGraph(graphData);
         }

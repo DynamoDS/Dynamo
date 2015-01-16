@@ -25,24 +25,24 @@ namespace Dynamo.Models.NodeLoaders
         {
             string assembly = "";
             string function;
-            var nickname = nodeElement.Attributes["nickname"].Value;
+            var nickname = nodeElement.Attributes[/*NXLT*/"nickname"].Value;
 
             FunctionDescriptor descriptor;
 
-            Trace.Assert(nodeElement.Attributes != null, "nodeElement.Attributes != null");
+            Trace.Assert(nodeElement.Attributes != null, /*NXLT*/"nodeElement.Attributes != null");
 
-            if (nodeElement.Attributes["assembly"] == null)
+            if (nodeElement.Attributes[/*NXLT*/"assembly"] == null)
             {
                 assembly = DetermineAssemblyName(nodeElement);
-                function = nickname.Replace(".get", ".");
+                function = nickname.Replace(/*NXLT*/".get", /*NXLT*/".");
             }
             else
             {
-                var xmlAttribute = nodeElement.Attributes["assembly"];
+                var xmlAttribute = nodeElement.Attributes[/*NXLT*/"assembly"];
                 if (xmlAttribute != null)
                     assembly = xmlAttribute.Value;
 
-                string xmlSignature = nodeElement.Attributes["function"].Value;
+                string xmlSignature = nodeElement.Attributes[/*NXLT*/"function"].Value;
 
                 string hintedSigniture =
                     libraryServices.FunctionSignatureFromFunctionSignatureHint(xmlSignature);
@@ -102,37 +102,37 @@ namespace Dynamo.Models.NodeLoaders
             // "DSVarArgFunction" is a "VariableInputNode", therefore it will 
             // have "inputcount" as one of the attributes. If such attribute 
             // does not exist, throw an ArgumentException.
-            if (element.Name.Equals("Dynamo.Nodes.DSVarArgFunction"))
+            if (element.Name.Equals(/*NXLT*/"Dynamo.Nodes.DSVarArgFunction"))
             {
-                var inputCountAttrib = element.Attributes["inputcount"];
+                var inputCountAttrib = element.Attributes[/*NXLT*/"inputcount"];
 
                 if (inputCountAttrib == null)
                 {
                     throw new ArgumentException(string.Format(
-                        "Function inputs cannot be determined ({0}).",
-                        element.GetAttribute("nickname")));
+                        /*NXLT*/"Function inputs cannot be determined ({0}).",
+                        element.GetAttribute(/*NXLT*/"nickname")));
                 }
 
                 return Convert.ToInt32(inputCountAttrib.Value);
             }
 
             var signature = string.Empty;
-            var signatureAttrib = element.Attributes["function"];
+            var signatureAttrib = element.Attributes[/*NXLT*/"function"];
             if (signatureAttrib != null)
                 signature = signatureAttrib.Value;
             else if (element.ChildNodes.Count > 0)
             {
                 // We have an old file format with "FunctionItem" child element.
                 var childElement = element.ChildNodes[0] as XmlElement;
-                signature = string.Format("{0}@{1}",
-                                          childElement.GetAttribute("DisplayName"),
-                                          childElement.GetAttribute("Parameters").Replace(';', ','));
+                signature = string.Format(/*NXLT*/"{0}@{1}",
+                                          childElement.GetAttribute(/*NXLT*/"DisplayName"),
+                                          childElement.GetAttribute(/*NXLT*/"Parameters").Replace(';', ','));
 
                 // We need one more port for instance methods/properties.
-                switch (childElement.GetAttribute("Type"))
+                switch (childElement.GetAttribute(/*NXLT*/"Type"))
                 {
-                    case "InstanceMethod":
-                    case "InstanceProperty":
+                    case /*NXLT*/"InstanceMethod":
+                    case /*NXLT*/"InstanceProperty":
                         additionalPort = 1; // For taking the instance itself.
                         break;
                 }
@@ -140,7 +140,7 @@ namespace Dynamo.Models.NodeLoaders
 
             if (string.IsNullOrEmpty(signature))
             {
-                const string message = "Function signature cannot be determined.";
+                const string message = /*NXLT*/"Function signature cannot be determined.";
                 throw new ArgumentException(message);
             }
 
@@ -158,14 +158,14 @@ namespace Dynamo.Models.NodeLoaders
         private static string DetermineAssemblyName(XmlElement element)
         {
             var assemblyName = string.Empty;
-            var assemblyAttrib = element.Attributes["assembly"];
+            var assemblyAttrib = element.Attributes[/*NXLT*/"assembly"];
             if (assemblyAttrib != null)
                 assemblyName = assemblyAttrib.Value;
             else if (element.ChildNodes.Count > 0)
             {
                 // We have an old file format with "FunctionItem" child element.
                 var childElement = element.ChildNodes[0] as XmlElement;
-                var funcItemAsmAttrib = childElement.Attributes["Assembly"];
+                var funcItemAsmAttrib = childElement.Attributes[/*NXLT*/"Assembly"];
                 if (funcItemAsmAttrib != null)
                     assemblyName = funcItemAsmAttrib.Value;
             }

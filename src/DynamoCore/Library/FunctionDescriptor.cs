@@ -92,7 +92,7 @@ namespace Dynamo.DSEngine
                     });
             }
 
-            ReturnType = returnType == null ? "var[]..[]" : returnType.Split('.').Last();
+            ReturnType = returnType == null ? /*NXLT*/"var[]..[]" : returnType.Split('.').Last();
             Type = type;
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;
@@ -157,7 +157,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         public string Description
         {
-            get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
+            get { return !String.IsNullOrEmpty(Summary) ? Summary + /*NXLT*/"\n\n" + Signature : Signature; }
         }
 
         /// <summary>
@@ -173,19 +173,19 @@ namespace Dynamo.DSEngine
                 {
                     case FunctionType.Constructor:
                         categoryBuf.Append(
-                            "." + UnqualifedClassName + "." + LibraryServices.Categories.Constructors);
+                            /*NXLT*/"." + UnqualifedClassName + /*NXLT*/"." + LibraryServices.Categories.Constructors);
                         break;
 
                     case FunctionType.StaticMethod:
                     case FunctionType.InstanceMethod:
                         categoryBuf.Append(
-                            "." + UnqualifedClassName + "." + LibraryServices.Categories.MemberFunctions);
+                            /*NXLT*/"." + UnqualifedClassName + /*NXLT*/"." + LibraryServices.Categories.MemberFunctions);
                         break;
 
                     case FunctionType.StaticProperty:
                     case FunctionType.InstanceProperty:
                         categoryBuf.Append(
-                            "." + UnqualifedClassName + "." + LibraryServices.Categories.Properties);
+                            /*NXLT*/"." + UnqualifedClassName + /*NXLT*/"." + LibraryServices.Categories.Properties);
                         break;
                 }
                 return categoryBuf.ToString();
@@ -201,7 +201,7 @@ namespace Dynamo.DSEngine
             {
                 return FunctionType.GenericFunction == Type
                     ? UserFriendlyName
-                    : ClassName + "." + UserFriendlyName;
+                    : ClassName + /*NXLT*/"." + UserFriendlyName;
             }
         }
 
@@ -214,7 +214,7 @@ namespace Dynamo.DSEngine
             get
             {
                 return Parameters != null && Parameters.Any()
-                    ? QualifiedName + "@" + string.Join(",", Parameters.Select(p => p.Type))
+                    ? QualifiedName + /*NXLT*/"@" + string.Join(/*NXLT*/",", Parameters.Select(p => p.Type))
                     : QualifiedName;
             }
         }
@@ -231,16 +231,16 @@ namespace Dynamo.DSEngine
 
                 if (Parameters != null && Parameters.Any())
                 {
-                    string signature = string.Join(", ", Parameters.Select(p => p.ToString()));
-                    descBuf.Append(" (");
+                    string signature = string.Join(/*NXLT*/", ", Parameters.Select(p => p.ToString()));
+                    descBuf.Append(/*NXLT*/" (");
                     descBuf.Append(signature);
-                    descBuf.Append(")");
+                    descBuf.Append(/*NXLT*/")");
                 }
                 else if (FunctionType.InstanceProperty != Type && FunctionType.StaticProperty != Type)
-                    descBuf.Append(" ( )");
+                    descBuf.Append(/*NXLT*/" ( )");
 
                 if (!string.IsNullOrEmpty(ReturnType))
-                    descBuf.Append(": " + ReturnType);
+                    descBuf.Append(/*NXLT*/": " + ReturnType);
 
                 return descBuf.ToString();
             }
@@ -281,7 +281,7 @@ namespace Dynamo.DSEngine
                 int idx = ClassName.LastIndexOf('.');
                 return idx < 0
                     ? QualifiedName
-                    : string.Format("{0}.{1}", ClassName.Substring(idx + 1), UserFriendlyName);
+                    : string.Format(/*NXLT*/"{0}.{1}", ClassName.Substring(idx + 1), UserFriendlyName);
             }
         }
 
@@ -347,7 +347,7 @@ namespace Dynamo.DSEngine
 
             string filename = Path.GetFileNameWithoutExtension(Assembly);
 
-            return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
+            return string.IsNullOrEmpty(Namespace) ? filename : filename + /*NXLT*/"." + Namespace;
         }
     }
 }

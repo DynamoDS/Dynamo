@@ -18,12 +18,13 @@ using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore.Utils;
 using Dynamo.UI;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Code Block")]
+    [NodeName(/*NXLT*/"Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows for DesignScript code to be authored directly")]
+    [NodeDescription(/*NXLT*/"CodeBlockDescription",typeof(Resources))]
     [IsDesignScriptCompatible]
     public class CodeBlockNodeModel : NodeModel
     {
@@ -207,7 +208,7 @@ namespace Dynamo.Nodes
                     LoadAndCreateConnectors(inportConnections, outportConnections, recorder);
                 }
 
-                RaisePropertyChanged("Code");
+                RaisePropertyChanged(/*NXLT*/"Code");
                 ForceReExecuteOfNode = true;
                 OnAstUpdated();
                 ReportPosition();
@@ -262,8 +263,8 @@ namespace Dynamo.Nodes
         {
             base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
-            helper.SetAttribute("CodeText", code);
-            helper.SetAttribute("ShouldFocus", shouldFocus);
+            helper.SetAttribute(/*NXLT*/"CodeText", code);
+            helper.SetAttribute(/*NXLT*/"ShouldFocus", shouldFocus);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -403,7 +404,7 @@ namespace Dynamo.Nodes
 
                 if (parseParam.Errors != null && parseParam.Errors.Any())
                 {
-                    errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
+                    errorMessage = string.Join(/*NXLT*/"\n", parseParam.Errors.Select(m => m.Message));
                     ProcessError();
                     CreateInputOutputPorts();
                     return;
@@ -424,7 +425,7 @@ namespace Dynamo.Nodes
 
                     if (warnings.Any())
                     {
-                        warningMessage = string.Join("\n", warnings.Select(m => m.Message));
+                        warningMessage = string.Join(/*NXLT*/"\n", warnings.Select(m => m.Message));
                     }
                 }
 
@@ -841,8 +842,8 @@ namespace Dynamo.Nodes
 
         private string LocalizeIdentifier(string identifierName)
         {
-            var guid = GUID.ToString().Replace("-", string.Empty);
-            return string.Format("{0}_{1}", identifierName, guid);
+            var guid = GUID.ToString().Replace(/*NXLT*/"-", string.Empty);
+            return string.Format(/*NXLT*/"{0}_{1}", identifierName, guid);
         }
 
         #endregion
@@ -995,7 +996,7 @@ namespace Dynamo.Nodes
                 var currentNode = astNode as BinaryExpressionNode;
                 if (currentNode.Optr != Operator.assign)
                     throw new ArgumentException();
-                if (!(currentNode.LeftNode.Name.StartsWith("temp") && currentNode.LeftNode.Name.Length > 10))
+                if (!(currentNode.LeftNode.Name.StartsWith(/*NXLT*/"temp") && currentNode.LeftNode.Name.Length > 10))
                     return StatementType.Expression;
                 if (currentNode.RightNode is IdentifierNode)
                     return StatementType.AssignmentVar;

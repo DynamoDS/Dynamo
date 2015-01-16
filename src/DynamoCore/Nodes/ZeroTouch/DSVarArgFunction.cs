@@ -82,7 +82,7 @@ namespace Dynamo.Nodes
             protected override string GetInputTooltip(int index)
             {
                 var type = nodeController.Definition.Parameters.Last().Type;
-                return (string.IsNullOrEmpty(type) ? "var" : type);
+                return (string.IsNullOrEmpty(type) ? /*NXLT*/"var" : type);
             }
         }
         #endregion
@@ -105,7 +105,7 @@ namespace Dynamo.Nodes
             if (parameters.Any())
             {
                 var arg = parameters.Last();
-                var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
+                var argName = arg.Name.Remove(arg.Name.Length - 1) + /*NXLT*/"0";
                 model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
             }
         }
@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
             if (!model.IsPartiallyApplied)
             {
                 var paramCount = Definition.Parameters.Count();
-                var packId = "__var_arg_pack_" + model.GUID;
+                var packId = /*NXLT*/"__var_arg_pack_" + model.GUID;
                 resultAst.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(packId),

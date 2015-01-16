@@ -61,13 +61,13 @@ namespace Dynamo.Services
     internal static class StabilityCookie
     {
         // The name of the key must include a valid root.
-        private const string REG_KEY = "HKEY_CURRENT_USER\\Software\\DynamoStability";
-        private const string SHUTDOWN_TYPE_NAME = "CleanShutdown";
-        private const string UPTIME_NAME = "UptimeMS";
+        private const string REG_KEY = /*NXLT*/"HKEY_CURRENT_USER\\Software\\DynamoStability";
+        private const string SHUTDOWN_TYPE_NAME = /*NXLT*/"CleanShutdown";
+        private const string UPTIME_NAME = /*NXLT*/"UptimeMS";
 
-        private const string CLEAN_SHUTDOWN_VALUE = "clean";
-        private const string CRASHING_SHUTDOWN_VALUE = "crashing";
-        private const string ASSUMING_CRASHING_SHUTDOWN_VALUE = "assumingCrashing";
+        private const string CLEAN_SHUTDOWN_VALUE = /*NXLT*/"clean";
+        private const string CRASHING_SHUTDOWN_VALUE = /*NXLT*/"crashing";
+        private const string ASSUMING_CRASHING_SHUTDOWN_VALUE = /*NXLT*/"assumingCrashing";
 
         
         /// <summary>
@@ -141,7 +141,7 @@ namespace Dynamo.Services
 
                     default:
                         //Something went wrong, fail out with 'unknown' data.
-                        InstrumentationLogger.LogAnonymousEvent(/*NXLT*/"Unknown shutdown", "Stability");
+                        InstrumentationLogger.LogAnonymousEvent(/*NXLT*/"Unknown shutdown", /*NXLT*/"Stability");
                         Debug.WriteLine(/*NXLT*/"Unknown shutdown key value: " + cleanShutdownValue);
                         break;
                 }

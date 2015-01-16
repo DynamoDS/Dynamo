@@ -43,7 +43,7 @@ namespace Dynamo.Services
             string appVersion = dynamoModel.AppVersion;
 
             var mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
-                "Dynamo", appVersion);
+                /*NXLT*/"Dynamo", appVersion);
 
             sessionID = Guid.NewGuid().ToString();
             loggerImpl = new Log(/*NXLT*/"Dynamo", userID, sessionID);
@@ -103,9 +103,9 @@ namespace Dynamo.Services
         public static String GetUserID()
         {
             // The name of the key must include a valid root.
-            const string userRoot = "HKEY_CURRENT_USER";
-            const string subkey = "Software\\DynamoUXG";
-            const string keyName = userRoot + "\\" + subkey;
+            const string userRoot = /*NXLT*/"HKEY_CURRENT_USER";
+            const string subkey = /*NXLT*/"Software\\DynamoUXG";
+            const string keyName = userRoot + /*NXLT*/"\\" + subkey;
 
             // An int value can be stored without specifying the
             // registry data type, but long values will be stored
@@ -122,7 +122,7 @@ namespace Dynamo.Services
             }
             
             String newGUID = Guid.NewGuid().ToString();
-            Registry.SetValue(keyName, "InstrumentationGUID", newGUID);
+            Registry.SetValue(keyName, /*NXLT*/"InstrumentationGUID", newGUID);
             Debug.WriteLine(/*NXLT*/"New User id: " + newGUID);
             return newGUID;
         }
@@ -182,7 +182,7 @@ namespace Dynamo.Services
                 return;
 
             //Log PII containing version
-            loggerImpl.Error("StackTrace", e.ToString());
+            loggerImpl.Error(/*NXLT*/"StackTrace", e.ToString());
         }
 
         public static void FORCE_LogInfo(string tag, string data)

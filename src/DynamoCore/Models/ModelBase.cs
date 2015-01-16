@@ -128,7 +128,7 @@ namespace Dynamo.Models
             {
                 if (guid == null)
                 {
-                    throw new Exception("GUID on model must never be null");
+                    throw new Exception(/*NXLT*/"GUID on model must never be null");
                 }
                 return guid;
             }

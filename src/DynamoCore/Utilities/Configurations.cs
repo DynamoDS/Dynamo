@@ -161,10 +161,10 @@ namespace Dynamo.UI
 
         #region Externally Visible Strings
 
-        public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
-        public static readonly string NodeTraceDataXmlTag = "NodeTraceData";
-        public static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
-        public static readonly string NodeIdAttribName = "NodeId";
+        public static readonly string SessionTraceDataXmlTag = /*NXLT*/"SessionTraceData";
+        public static readonly string NodeTraceDataXmlTag = /*NXLT*/"NodeTraceData";
+        public static readonly string CallsiteTraceDataXmlTag = /*NXLT*/"CallsiteTraceData";
+        public static readonly string NodeIdAttribName = /*NXLT*/"NodeId";
 
         #endregion
 

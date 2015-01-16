@@ -241,7 +241,7 @@ namespace Dynamo.DSEngine
                  */
 
                 // return array, holds all outputs
-                string rtnName = /*NXLT*/"__temp_rtn_" + functionId.ToString().Replace("-", String.Empty);
+                string rtnName = /*NXLT*/"__temp_rtn_" + functionId.ToString().Replace(/*NXLT*/"-", String.Empty);
                 functionBody.Body.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(rtnName),
@@ -274,7 +274,7 @@ namespace Dynamo.DSEngine
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode
             {
-                Name = functionName.Replace("-", string.Empty),
+                Name = functionName.Replace(/*NXLT*/"-", string.Empty),
                 Signature =
                     new ArgumentSignatureNode
                     {

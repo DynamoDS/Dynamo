@@ -25,8 +25,8 @@ namespace Dynamo.Utilities
         /// 
         public static string NormalizeLineBreaks(string text)
         {
-            text = text.Replace("\r\n", "\n");
-            return text.Replace("\r", "\n");
+            text = text.Replace(/*NXLT*/"\r\n", /*NXLT*/"\n");
+            return text.Replace(/*NXLT*/"\r", /*NXLT*/"\n");
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Dynamo.Utilities
             {
                 string portName = name;
                 if (portName.Length > maxLength)
-                    portName = portName.Remove(maxLength - 3) + "...";
+                    portName = portName.Remove(maxLength - 3) + /*NXLT*/"...";
 
                 inputPorts.Add(new PortData(portName, name)
                 {
@@ -192,7 +192,7 @@ namespace Dynamo.Utilities
                     // the resulting statement list.
                     // 
                     var trimmed = line.TrimEnd(charsToTrim);
-                    statements.Add(trimmed + "\n");
+                    statements.Add(trimmed + /*NXLT*/"\n");
                 }
                 else
                 {
@@ -208,7 +208,7 @@ namespace Dynamo.Utilities
                     {
                         var trimmed = part.TrimEnd(charsToTrim);
                         if (!string.IsNullOrEmpty(trimmed))
-                            statements.Add(trimmed + ";\n");
+                            statements.Add(trimmed + /*NXLT*/";\n");
                     }
                 }
             }
@@ -226,8 +226,8 @@ namespace Dynamo.Utilities
             if (!string.IsNullOrEmpty(inputCode) && 
                 !CodeCompletionParser.IsInsideCommentOrString(inputCode, inputCode.Length))
             {
-                if (inputCode.EndsWith(";") == false)
-                    inputCode = inputCode + ";";
+                if (inputCode.EndsWith(/*NXLT*/";") == false)
+                    inputCode = inputCode + /*NXLT*/";";
             }
 
             return inputCode;
@@ -251,7 +251,7 @@ namespace Dynamo.Utilities
         private static string variableNamePattern = /*NXLT*/@"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
 
         private static string spacesOrNonePattern = /*NXLT*/@"(\s*)";
-        private static string colonPattern = ":";
+        private static string colonPattern = /*NXLT*/":";
 
         // This pattern matches with identifier lists such as Autodesk.DesignScript.Geometry.Point
         private static string identifierListPattern = string.Format(/*NXLT*/"{0}([.]({0})+)*", variableNamePattern);
@@ -395,7 +395,7 @@ namespace Dynamo.Utilities
             for (int i = 0; i < varDeclarations.Count; i++)
             {
                 var match = varDeclarations[i].Value;
-                match = Regex.Replace(match, @"\s", "");
+                match = Regex.Replace(match, /*NXLT*/@"\s", "");
                 var groups = match.Split(':');
 
                 // Overwrite variable type for a redefinition
@@ -454,12 +454,12 @@ namespace Dynamo.Utilities
                         else
                             functionPrefix = strPrefix.Substring(0, strPrefix.Length - functionName.Length - 1);
 
-                        expressionStack.Push(strPrefix + @"(");
+                        expressionStack.Push(strPrefix + /*NXLT*/@"(");
                     }
                     else
                     {
                         // simple expression
-                        expressionStack.Push(@"(");
+                        expressionStack.Push(/*NXLT*/@"(");
                     }
                     strPrefix = string.Empty;
                     break;
@@ -542,7 +542,7 @@ namespace Dynamo.Utilities
                         if (isInString || isInChar)
                             i++;
                         break;
-                    case '"':
+                    case /*NXLT*/'"':
                         if (isInSingleComment || isInMultiLineComment || isInChar)
                             break;
                         isInString = !isInString;

@@ -46,13 +46,13 @@ namespace Dynamo.Models
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals(/*NXLT*/"Name"))
                             funName = att.Value;
-                        else if (att.Name.Equals("ID"))
+                        else if (att.Name.Equals(/*NXLT*/"ID"))
                             id = att.Value;
-                        else if (att.Name.Equals("Category"))
+                        else if (att.Name.Equals(/*NXLT*/"Category"))
                             category = att.Value;
-                        else if (att.Name.Equals("Description"))
+                        else if (att.Name.Equals(/*NXLT*/"Description"))
                             description = att.Value;
-                        else if (att.Name.Equals("Version"))
+                        else if (att.Name.Equals(/*NXLT*/"Version"))
                             version = att.Value;
                     }
                 }
@@ -83,7 +83,7 @@ namespace Dynamo.Models
             {
                 logger.Log(Properties.Resources.OpenWorkbenchError);
                 logger.Log(ex);
-                Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
+                Debug.WriteLine(ex.Message + /*NXLT*/":" + ex.StackTrace);
 
                 //TODO(Steve): Need a better way to handle this kind of thing. -- MAGN-5712
                 if (isTestMode)

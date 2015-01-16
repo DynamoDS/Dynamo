@@ -171,7 +171,7 @@ namespace Dynamo.UpdateManager
             {
                 if (null == e || e.Error != null)
                 {
-                    Error = "Unspecified error";
+                    Error = /*NXLT*/"Unspecified error";
                     if (null != e && (null != e.Error))
                         Error = e.Error.Message;
                 }
@@ -201,8 +201,8 @@ namespace Dynamo.UpdateManager
     /// </summary>
     public class UpdateManagerConfiguration : IUpdateManagerConfiguration
     {
-        private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
-        private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
+        private const string PRODUCTION_SOURCE_PATH_S = /*NXLT*/"http://dyn-builds-data.s3.amazonaws.com/";
+        private const string PRODUCTION_SIG_SOURCE_PATH_S = /*NXLT*/"http://dyn-builds-data-sig.s3.amazonaws.com/";
         private const string DEFAULT_CONFIG_FILE_S = /*NXLT*/"UpdateManagerConfig.xml";
 
         /// <summary>
@@ -574,7 +574,7 @@ namespace Dynamo.UpdateManager
             var latestBuildDownloadUrl = Path.Combine(Configuration.DownloadSourcePath, latestBuildFilePath);
             var latestBuildSignatureUrl = Path.Combine(
                 Configuration.SignatureSourcePath,
-                Path.GetFileNameWithoutExtension(latestBuildFilePath) + ".sig");
+                Path.GetFileNameWithoutExtension(latestBuildFilePath) + /*NXLT*/".sig");
 
             BinaryVersion latestBuildVersion;
             var latestBuildTime = new DateTime();
@@ -681,7 +681,7 @@ namespace Dynamo.UpdateManager
             if (e == null)
                 return;
 
-            string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
+            string errorMessage = ((null == e.Error) ? /*NXLT*/"Successful" : e.Error.Message);
             OnLog(new LogEventArgs(Properties.Resources.UpdateDownloadComplete, LogLevel.Console));
             OnLog(new LogEventArgs(errorMessage, LogLevel.File));
 
@@ -695,7 +695,7 @@ namespace Dynamo.UpdateManager
             DownloadedUpdateInfo = UpdateInfo;
 
             UpdateFileLocation = (string)e.UserState;
-            OnLog(new LogEventArgs("Update download complete.", LogLevel.Console));
+            OnLog(new LogEventArgs(/*NXLT*/"Update download complete.", LogLevel.Console));
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
@@ -720,7 +720,7 @@ namespace Dynamo.UpdateManager
         /// <returns></returns>
         private string GetLatestBuildFromS3(IAsynchronousRequest request, bool checkDailyBuilds)
         {
-            XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
+            XNamespace ns = /*NXLT*/"http://s3.amazonaws.com/doc/2006-03-01/";
 
             XDocument doc = null;
             using (TextReader td = new StringReader(request.Data))
@@ -740,9 +740,9 @@ namespace Dynamo.UpdateManager
             // DynamoInstall, and optionally, those that include DynamoDailyInstall.
             // Order the results according to their LastUpdated field.
 
-            var bucketresult = doc.Element(ns + "ListBucketResult");
+            var bucketresult = doc.Element(ns + /*NXLT*/"ListBucketResult");
 
-            var builds = bucketresult.Descendants(ns + "LastModified").
+            var builds = bucketresult.Descendants(ns + /*NXLT*/"LastModified").
                 OrderByDescending(x => DateTime.Parse(x.Value)).
                 Where(x => x.Parent.Value.Contains(InstallNameBase) || x.Parent.Value.Contains(OldDailyInstallNameBase)).
                 Select(x => x.Parent);
@@ -754,7 +754,7 @@ namespace Dynamo.UpdateManager
                 return null;
             }
 
-            var fileNames = xElements.Select(x => x.Element(ns + "Key").Value);
+            var fileNames = xElements.Select(x => x.Element(ns + /*NXLT*/"Key").Value);
 
             string latestBuild = string.Empty;
             latestBuild = checkDailyBuilds ?
@@ -777,7 +777,7 @@ namespace Dynamo.UpdateManager
             DateTime dt;
             return DateTime.TryParseExact(
                 dtStr,
-                "yyyyMMddTHHmm",
+                /*NXLT*/"yyyyMMddTHHmm",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out dt) ? dt : DateTime.MinValue;
@@ -810,7 +810,7 @@ namespace Dynamo.UpdateManager
             // If we're looking at dailies, latest build version will simply be
             // the current build version without a build or revision, ex. 0.6
             var v = Assembly.GetExecutingAssembly().GetName().Version;
-            return BinaryVersion.FromString(string.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Build));
+            return BinaryVersion.FromString(string.Format(/*NXLT*/"{0}.{1}.{2}", v.Major, v.Minor, v.Build));
         }
 
         /// <summary>
@@ -831,7 +831,7 @@ namespace Dynamo.UpdateManager
             var fileName = Path.GetFileNameWithoutExtension(filePath);
             var version = fileName.Substring(index + installNameBase.Length);
 
-            var splits = version.Split(new [] { "." }, StringSplitOptions.RemoveEmptyEntries);
+            var splits = version.Split(new[] { /*NXLT*/"." }, StringSplitOptions.RemoveEmptyEntries);
             if (splits.Count() < 3) // This can be 4 if it includes revision number.
                 return null;
 
@@ -843,7 +843,7 @@ namespace Dynamo.UpdateManager
             if (!ushort.TryParse(splits[2], out build))
                 return null;
 
-            return BinaryVersion.FromString(string.Format("{0}.{1}.{2}.0", major, minor, build));
+            return BinaryVersion.FromString(string.Format(/*NXLT*/"{0}.{1}.{2}.0", major, minor, build));
         }
 
         private void SetUpdateInfo(BinaryVersion latestBuildVersion, string latestBuildDownloadUrl, string signatureUrl)
@@ -876,7 +876,7 @@ namespace Dynamo.UpdateManager
             DateTime dt;
             return DateTime.TryParseExact(
                 splits.Last(),
-                "yyyyMMddTHHmm",
+                /*NXLT*/"yyyyMMddTHHmm",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out dt);

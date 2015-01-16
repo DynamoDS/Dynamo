@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
             var missingAmt =
                 Enumerable.Range(0, model.InPortData.Count).Count(x => !model.HasInput(x));
             var tmp =
-                AstFactory.BuildIdentifier("__partial_" + model.GUID.ToString().Replace('-', '_'));
+                AstFactory.BuildIdentifier(/*NXLT*/"__partial_" + model.GUID.ToString().Replace('-', '_'));
             resultAst.Add(AstFactory.BuildAssignment(tmp, rhs));
             resultAst.AddRange(
                 (Definition.ReturnKeys ?? Enumerable.Empty<string>()).Select(
@@ -99,7 +99,7 @@ namespace Dynamo.Nodes
                             AstFactory.BuildAssignment(
                                 model.GetAstIdentifierForOutputIndex(index),
                                 AstFactory.BuildFunctionObject(
-                                    "__ComposeBuffered",
+                            /*NXLT*/"__ComposeBuffered",
                                     3,
                                     new[] { 0, 1 },
                                     new List<AssociativeNode>
@@ -108,7 +108,7 @@ namespace Dynamo.Nodes
                                             new List<AssociativeNode>
                                             {
                                                 AstFactory.BuildFunctionObject(
-                                                    "__GetOutput",
+                                                    /*NXLT*/"__GetOutput",
                                                     2,
                                                     new[] { 1 },
                                                     new List<AssociativeNode>

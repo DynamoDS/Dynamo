@@ -63,7 +63,7 @@ namespace Dynamo.PackageManager
         private string BuildInstallDirectoryString()
         {
             // <user>/appdata/roaming/packages/package_name
-            return DynamoPathManager.Instance.Packages + @"\" + this.Name.Replace("/", "_").Replace(@"\", "_");
+            return DynamoPathManager.Instance.Packages + /*NXLT*/@"\" + this.Name.Replace(/*NXLT*/"/", /*NXLT*/"_").Replace(/*NXLT*/@"\", /*NXLT*/"_");
         }
 
         public bool Extract(DynamoModel dynamoModel, out Package pkg)
@@ -81,11 +81,11 @@ namespace Dynamo.PackageManager
             Directory.CreateDirectory(installedPath);
 
             // Now create all of the directories
-            foreach (string dirPath in Directory.GetDirectories(unzipPath, "*", SearchOption.AllDirectories))
+            foreach (string dirPath in Directory.GetDirectories(unzipPath, /*NXLT*/"*", SearchOption.AllDirectories))
                 Directory.CreateDirectory(dirPath.Replace(unzipPath, installedPath));
 
             // Copy all the files
-            foreach (string newPath in Directory.GetFiles(unzipPath, "*.*", SearchOption.AllDirectories))
+            foreach (string newPath in Directory.GetFiles(unzipPath, /*NXLT*/"*.*", SearchOption.AllDirectories))
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 

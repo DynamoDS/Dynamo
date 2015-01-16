@@ -181,7 +181,7 @@ namespace Dynamo.Nodes
         /// <param name="amount"></param>
         public static void SerializeInputCount(XmlElement nodeElement, int amount)
         {
-            nodeElement.SetAttribute("inputcount", amount.ToString());
+            nodeElement.SetAttribute(/*NXLT*/"inputcount", amount.ToString());
         }
         
         #region Serialization/Deserialization Methods
@@ -195,7 +195,7 @@ namespace Dynamo.Nodes
         public void DeserializeCore(XmlElement element, SaveContext context)
         {
             //base.DeserializeCore(element, context); //Base implementation must be called
-            int amt = Convert.ToInt32(element.Attributes["inputcount"].Value);
+            int amt = Convert.ToInt32(element.Attributes[/*NXLT*/"inputcount"].Value);
             SetNumInputs(amt);
             model.RegisterAllPorts();
         }

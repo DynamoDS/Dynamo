@@ -47,28 +47,28 @@ namespace Dynamo.Nodes
 
             var xmlDoc = element.OwnerDocument;
 
-            var outEl = xmlDoc.CreateElement("Name");
-            outEl.SetAttribute("value", NickName);
+            var outEl = xmlDoc.CreateElement(/*NXLT*/"Name");
+            outEl.SetAttribute(/*NXLT*/"value", NickName);
             element.AppendChild(outEl);
 
-            outEl = xmlDoc.CreateElement("Description");
-            outEl.SetAttribute("value", Description);
+            outEl = xmlDoc.CreateElement(/*NXLT*/"Description");
+            outEl.SetAttribute(/*NXLT*/"value", Description);
             element.AppendChild(outEl);
 
-            outEl = xmlDoc.CreateElement("Inputs");
+            outEl = xmlDoc.CreateElement(/*NXLT*/"Inputs");
             foreach (string input in InPortData.Select(x => x.NickName))
             {
-                XmlElement inputEl = xmlDoc.CreateElement("Input");
-                inputEl.SetAttribute("value", input);
+                XmlElement inputEl = xmlDoc.CreateElement(/*NXLT*/"Input");
+                inputEl.SetAttribute(/*NXLT*/"value", input);
                 outEl.AppendChild(inputEl);
             }
             element.AppendChild(outEl);
 
-            outEl = xmlDoc.CreateElement("Outputs");
+            outEl = xmlDoc.CreateElement(/*NXLT*/"Outputs");
             foreach (string output in OutPortData.Select(x => x.NickName))
             {
-                XmlElement outputEl = xmlDoc.CreateElement("Output");
-                outputEl.SetAttribute("value", output);
+                XmlElement outputEl = xmlDoc.CreateElement(/*NXLT*/"Output");
+                outputEl.SetAttribute(/*NXLT*/"value", output);
                 outEl.AppendChild(outputEl);
             }
             element.AppendChild(outEl);
@@ -82,11 +82,11 @@ namespace Dynamo.Nodes
 
             XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals(/*NXLT*/"Name"));
             if (nameNode != null && nameNode.Attributes != null)
-                NickName = nameNode.Attributes["value"].Value;
+                NickName = nameNode.Attributes[/*NXLT*/"value"].Value;
 
             XmlNode descNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals(/*NXLT*/"Description"));
             if (descNode != null && descNode.Attributes != null)
-                Description = descNode.Attributes["value"].Value;
+                Description = descNode.Attributes[/*NXLT*/"value"].Value;
 
             if (!Controller.IsInSyncWithNode(this))
             {
@@ -105,7 +105,7 @@ namespace Dynamo.Nodes
                                        (outputNode, i) =>
                                            new
                                            {
-                                               data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1)),
+                                               data = new PortData(outputNode.Attributes[0].Value, Properties.Resources.ToolTipOutput + (i + 1)),
                                                idx = i
                                            });
 
@@ -125,7 +125,7 @@ namespace Dynamo.Nodes
                                        (inputNode, i) =>
                                            new
                                            {
-                                               data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1)),
+                                               data = new PortData(inputNode.Attributes[0].Value, Properties.Resources.ToolTipInput + (i + 1)),
                                                idx = i
                                            });
 
@@ -142,7 +142,7 @@ namespace Dynamo.Nodes
 
                     else if (subNode.Name.Equals(/*NXLT*/"Output"))
                     {
-                        var data = new PortData(subNode.Attributes[0].Value, "function output");
+                        var data = new PortData(subNode.Attributes[0].Value, Properties.Resources.ToolTipFunctionOutput);
 
                         if (OutPortData.Any())
                             OutPortData[0] = data;
@@ -184,7 +184,7 @@ namespace Dynamo.Nodes
 
         public Symbol()
         {
-            OutPortData.Add(new PortData("", "Symbol"));
+            OutPortData.Add(new PortData("", Properties.Resources.ToolTipSymbol));
 
             RegisterAllPorts();
 
@@ -206,15 +206,15 @@ namespace Dynamo.Nodes
         {
             return
                 AstFactory.BuildIdentifier(
-                    InputSymbol == null ? AstIdentifierBase : InputSymbol + "__" + AstIdentifierBase);
+                    InputSymbol == null ? AstIdentifierBase : InputSymbol + /*NXLT*/"__" + AstIdentifierBase);
         }
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.SerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
-            outEl.SetAttribute("value", InputSymbol);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(/*NXLT*/"Symbol");
+            outEl.SetAttribute(/*NXLT*/"value", InputSymbol);
             nodeElement.AppendChild(outEl);
         }
 
@@ -233,7 +233,7 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name == "InputSymbol")
+            if (name == /*NXLT*/"InputSymbol")
             {
                 InputSymbol = value;
                 return true; // UpdateValueCore handled.
@@ -296,8 +296,8 @@ namespace Dynamo.Nodes
         {
             base.SerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
-            outEl.SetAttribute("value", Symbol);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(/*NXLT*/"Symbol");
+            outEl.SetAttribute(/*NXLT*/"value", Symbol);
             nodeElement.AppendChild(outEl);
         }
 

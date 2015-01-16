@@ -23,7 +23,7 @@ namespace Dynamo.Models
                 OnFunctionIdChanged(oldId);
                 OnDefinitionUpdated();
                 OnInfoChanged();
-                RaisePropertyChanged("CustomNodeId");
+                RaisePropertyChanged(/*NXLT*/"CustomNodeId");
             }
         }
         private Guid customNodeId;
@@ -131,7 +131,7 @@ namespace Dynamo.Models
             set
             {
                 category = value;
-                RaisePropertyChanged("Category");
+                RaisePropertyChanged(/*NXLT*/"Category");
             }
         }
         private string category;
@@ -145,7 +145,7 @@ namespace Dynamo.Models
             set
             {
                 description = value;
-                RaisePropertyChanged("Description");
+                RaisePropertyChanged(/*NXLT*/"Description");
             }
         }
         private string description;

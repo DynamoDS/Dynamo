@@ -12,10 +12,10 @@ namespace Dynamo.Utilities
     public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged, INotifyPropertyChanged
     {
 
-        private const string CountString = "Count";
-        private const string IndexerName = "Item[]";
-        private const string KeysName = "Keys";
-        private const string ValuesName = "Values";
+        private const string CountString = /*NXLT*/"Count";
+        private const string IndexerName = /*NXLT*/"Item[]";
+        private const string KeysName = /*NXLT*/"Keys";
+        private const string ValuesName = /*NXLT*/"Values";
 
         private IDictionary<TKey, TValue> _Dictionary;
         protected IDictionary<TKey, TValue> Dictionary

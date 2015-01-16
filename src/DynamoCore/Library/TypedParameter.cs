@@ -45,8 +45,8 @@ namespace Dynamo.Library
             get
             {
                 return !String.IsNullOrEmpty(Summary)
-                    ? Summary + " (" + (string.IsNullOrEmpty(Type) ? /*NXLT*/"var" : DisplayTypeName) + ")"
-                    : (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName);
+                    ? Summary + /*NXLT*/" (" + (string.IsNullOrEmpty(Type) ? /*NXLT*/"var" : DisplayTypeName) + /*NXLT*/")"
+                    : (string.IsNullOrEmpty(Type) ? /*NXLT*/"var" : DisplayTypeName);
             }
         }
 
@@ -60,7 +60,7 @@ namespace Dynamo.Library
             string str = Name;
 
             if (!String.IsNullOrEmpty(Type))
-                str = Name + ": " + Type.Split('.').Last();
+                str = Name + /*NXLT*/": " + Type.Split('.').Last();
 
             if (DefaultValue != null)
             {
@@ -69,7 +69,7 @@ namespace Dynamo.Library
                 {
                     strDefaultValue = strDefaultValue.ToLower();
                 }
-                str = str + " = " + strDefaultValue;
+                str = str + /*NXLT*/" = " + strDefaultValue;
             }
 
             return str;

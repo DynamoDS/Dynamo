@@ -190,7 +190,7 @@ namespace Dynamo.Utilities
             List<TypeLoadData> migrationTypes)
         {
             if (assembly == null)
-                throw new ArgumentNullException("assembly");
+                throw new ArgumentNullException(/*NXLT*/"assembly");
 
             Type[] loadedTypes = null;
 

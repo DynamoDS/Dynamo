@@ -182,7 +182,7 @@ namespace Dynamo.Utilities
             {
                 get
                 {
-                    throw new InvalidOperationException("Cannot get LeftValue from Right Either type.");
+                    throw new InvalidOperationException(/*NXLT*/"Cannot get LeftValue from Right Either type.");
                 }
             }
 
@@ -233,7 +233,7 @@ namespace Dynamo.Utilities
             {
                 get
                 {
-                    throw new InvalidOperationException("Cannot get RightValue from Left Either type.");
+                    throw new InvalidOperationException(/*NXLT*/"Cannot get RightValue from Left Either type.");
                 }
             }
         }
@@ -396,7 +396,7 @@ namespace Dynamo.Utilities
 
             public T Value
             {
-                get { throw new InvalidOperationException("None type has no value."); }
+                get { throw new InvalidOperationException(/*NXLT*/"None type has no value."); }
             }
 
             public bool Equals(_None<T> other)

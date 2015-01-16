@@ -59,7 +59,7 @@ namespace DSCoreNodesUI
             if (nodeElement.ChildNodes != null)
             {
                 foreach (XmlNode childNode in nodeElement.ChildNodes)
-                    if (childNode.Name.Equals("OriginalNodeContent"))
+                    if (childNode.Name.Equals(/*NXLT*/"OriginalNodeContent"))
                         OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
             }
 
@@ -82,14 +82,14 @@ namespace DSCoreNodesUI
             InPortData.Clear();
             for (int input = 0; input < InputCount; input++)
             {
-                var name = string.Format("Port {0}", input + 1);
+                var name = string.Format(/*NXLT*/"Port {0}", input + 1);
                 InPortData.Add(new PortData(name, string.Empty));
             }
 
             OutPortData.Clear();
             for (int output = 0; output < OutputCount; output++)
             {
-                var name = string.Format("Port {0}", output + 1);
+                var name = string.Format(/*NXLT*/"Port {0}", output + 1);
                 OutPortData.Add(new PortData(name, string.Empty));
             }
 
@@ -110,7 +110,7 @@ namespace DSCoreNodesUI
 
                 if (OriginalNodeContent != null)
                 {
-                    XmlElement originalNode = xmlDoc.CreateElement("OriginalNodeContent");
+                    XmlElement originalNode = xmlDoc.CreateElement(/*NXLT*/"OriginalNodeContent");
                     XmlElement nodeContent = nodeElement.OwnerDocument.CreateElement(OriginalNodeContent.Name);
 
                     foreach (XmlAttribute attribute in OriginalNodeContent.Attributes)
@@ -139,9 +139,9 @@ namespace DSCoreNodesUI
                         originalNode.SetAttribute(attribute.Name, attribute.Value);
 
                     //overwrite the guid/x/y value of the original node.
-                    originalNode.SetAttribute(/*NXLT*/"guid", nodeElement.GetAttribute("guid"));
-                    originalNode.SetAttribute(/*NXLT*/"x", nodeElement.GetAttribute("x"));
-                    originalNode.SetAttribute(/*NXLT*/"y", nodeElement.GetAttribute("y"));
+                    originalNode.SetAttribute(/*NXLT*/"guid", nodeElement.GetAttribute(/*NXLT*/"guid"));
+                    originalNode.SetAttribute(/*NXLT*/"x", nodeElement.GetAttribute(/*NXLT*/"x"));
+                    originalNode.SetAttribute(/*NXLT*/"y", nodeElement.GetAttribute(/*NXLT*/"y"));
 
                     for (int i = 0; i < OriginalNodeContent.ChildNodes.Count; i++)
                     {

@@ -59,13 +59,13 @@ namespace Dynamo.Utilities
 			if (ci == null)
 				ci = CultureInfo.CurrentCulture;
 			string seperator = ci.NumberFormat.NumberDecimalSeparator;
-			if (seperator.Equals(","))
-				seperator = ";";
+            if (seperator.Equals(/*NXLT*/","))
+                seperator = /*NXLT*/";";
 			else
-				seperator = ",";
+                seperator = /*NXLT*/",";
 			object[] ob = { this.x, seperator, this.y };
 
-			return string.Format(formatProvider, "{0:" + format + "}{1}{2:" + format + "}", ob);
+            return string.Format(formatProvider, /*NXLT*/"{0:" + format + /*NXLT*/"}{1}{2:" + format + /*NXLT*/"}", ob);
 		}
 
 		string IFormattable.ToString (string format, IFormatProvider formatProvider)

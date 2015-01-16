@@ -157,7 +157,7 @@ namespace Dynamo.DSEngine
         {
             char prefixCode;
 
-            string memberName = member.ClassName + "." + member.FunctionName;
+            string memberName = member.ClassName + /*NXLT*/"." + member.FunctionName;
 
             switch (member.Type)
             {
@@ -171,11 +171,11 @@ namespace Dynamo.DSEngine
 
                     // parameters are listed according to their type, not their name
                     string paramTypesList = String.Join(
-                        ",",
+                        /*NXLT*/",",
                         member.Parameters.Select(x => x.Type).Select(PrimitiveMap).ToArray()
                         );
-                    
-                    if (!String.IsNullOrEmpty(paramTypesList)) memberName += "(" + paramTypesList + ")";
+
+                    if (!String.IsNullOrEmpty(paramTypesList)) memberName += /*NXLT*/"(" + paramTypesList + /*NXLT*/")";
                     break;
 
                 case FunctionType.StaticMethod:
@@ -191,11 +191,11 @@ namespace Dynamo.DSEngine
                     break;
 
                 default:
-                    throw new ArgumentException(/*NXLT*/"Unknown member type", "member");
+                    throw new ArgumentException(/*NXLT*/"Unknown member type", /*NXLT*/"member");
             }
 
             // elements are of the form "M:Namespace.Class.Method"
-            return String.Format("{0}:{1}", prefixCode, memberName);
+            return String.Format(/*NXLT*/"{0}:{1}", prefixCode, memberName);
         }
 
         #endregion
