@@ -296,8 +296,15 @@ namespace Dynamo.ViewModels
 
         private void RemoveEntry(NodeSearchElement entry)
         {
+            var categoriesList = entry.Categories.ToList();
+            // Path with one category (it is RootNodeCategoryViewModel) 
+            // doesn't contain classes container.
+            if (categoriesList.Count > 1)
+                categoriesList.Insert(categoriesList.Count - 1, Configurations.ClassesDefaultName);
+            categoriesList.Reverse();
+
             var treeStack = new Stack<NodeCategoryViewModel>();
-            var nameStack = new Stack<string>(entry.Categories);
+            var nameStack = new Stack<string>(categoriesList);
             var target = libraryRoot;
             while (nameStack.Any())
             {
@@ -321,6 +328,9 @@ namespace Dynamo.ViewModels
             {
                 var parent = treeStack.Pop();
                 parent.SubCategories.Remove(target);
+                // Remove ClassInformationViewmodel which is used for displaying StandardPanel.
+                if (parent.Items.Count == 1 && parent.Items[0] is ClassInformationViewModel)
+                    parent.Items.RemoveAt(0);
                 target = parent;
             }
         }

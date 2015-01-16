@@ -515,7 +515,7 @@ namespace Dynamo.Wpf.ViewModels
         public NodeCategoryViewModel Parent { get; private set; }
 
         public ClassesNodeCategoryViewModel(string fullCategoryName, NodeCategoryViewModel parent)
-            : base("")
+            : base(Configurations.ClassesDefaultName)
         {
             FullCategoryName = fullCategoryName;
             Parent = parent;
