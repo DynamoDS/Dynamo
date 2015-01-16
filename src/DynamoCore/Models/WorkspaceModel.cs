@@ -15,7 +15,7 @@ using Dynamo.Utilities;
 using ProtoCore.AST;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
-using NodeModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.NodeModificationUndoHelper;
+using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificationUndoHelper;
 
 namespace Dynamo.Models
 {
@@ -780,7 +780,7 @@ namespace Dynamo.Models
             var nodeModel = retrievedModel as NodeModel;
             if (nodeModel != null)
             {
-                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
+                using (new ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
                     handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
                 }
@@ -821,7 +821,7 @@ namespace Dynamo.Models
             var nodeModel = retrievedModel as NodeModel;
             if (nodeModel != null)
             {
-                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
+                using (new ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
                     handled = nodeModel.UpdateValue(propertyName, value, undoRecorder);
                 }
