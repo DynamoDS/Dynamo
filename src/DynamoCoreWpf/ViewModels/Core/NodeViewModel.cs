@@ -257,7 +257,10 @@ namespace Dynamo.ViewModels
 
         public bool WillForceReExecuteOfNode
         {
-            get { return NodeModel.ForceReExecuteOfNode; }
+            get
+            {
+                return NodeModel.NeedsForceExecution;
+            }
         }
 
         #endregion

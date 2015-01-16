@@ -196,7 +196,7 @@ namespace Dynamo.DSEngine
 
             if (isDeltaExecution)
             {
-                sortedNodes = sortedNodes.Where(n => n.ForceReExecuteOfNode);
+                sortedNodes = sortedNodes.Where(n => n.IsModified);
             }
 
             var result = new List<AssociativeNode>();
