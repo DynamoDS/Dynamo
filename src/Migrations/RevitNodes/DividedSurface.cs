@@ -9,8 +9,8 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
-                "DividedSurface.ByFaceAndUVDivisions",
-                "DividedSurface.ByFaceAndUVDivisions@FaceReference,int,int");
+                /*NXLT*/"DividedSurface.ByFaceAndUVDivisions",
+                /*NXLT*/"DividedSurface.ByFaceAndUVDivisions@FaceReference,int,int");
         }
     }
 }

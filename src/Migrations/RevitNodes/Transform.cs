@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateCustomNodeFrom(oldNode.OwnerDocument, oldNode,
-                "9a89dcea-3f52-48bc-ae41-b5a3ed1fd1bb",
+                /*NXLT*/"9a89dcea-3f52-48bc-ae41-b5a3ed1fd1bb",
                 "TransformOriginVectors",
                 "This node represents an upgrade of the 0.6.3 TransformOriginVectors node to 0.7.x",
                 new List<string>() {"origin", "up", "forward"},
@@ -68,18 +68,18 @@ namespace Dynamo.Nodes
             string vectorCrossToId = MigrationManager.GetGuidFromXmlElement(vectorCrossTo);
 
             XmlElement csFrom = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2,/*NXLT*/"ProtoGeometry.dll", "CoordinateSystem.ByOriginVectors",
-                "CoordinateSystem.ByOriginVectors@Autodesk.DesignScript.Geometry.Point,"
-                + "Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry"
-                + ".Vector,Autodesk.DesignScript.Geometry.Vector");
+                data.Document, oldNode, 2,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"CoordinateSystem.ByOriginVectors",
+                /*NXLT*/"CoordinateSystem.ByOriginVectors@Autodesk.DesignScript.Geometry.Point,"
+                + /*NXLT*/"Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry"
+                + /*NXLT*/".Vector,Autodesk.DesignScript.Geometry.Vector");
             string csFromId = MigrationManager.GetGuidFromXmlElement(csFrom);
             migrationData.AppendNode(csFrom);
 
             XmlElement csTo = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 3,/*NXLT*/"ProtoGeometry.dll", "CoordinateSystem.ByOriginVectors",
-                "CoordinateSystem.ByOriginVectors@Autodesk.DesignScript.Geometry.Point,"
-                + "Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry"
-                + ".Vector,Autodesk.DesignScript.Geometry.Vector");
+                data.Document, oldNode, 3,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"CoordinateSystem.ByOriginVectors",
+                /*NXLT*/"CoordinateSystem.ByOriginVectors@Autodesk.DesignScript.Geometry.Point,"
+                + /*NXLT*/"Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry"
+                + /*NXLT*/".Vector,Autodesk.DesignScript.Geometry.Vector");
             string csToId = MigrationManager.GetGuidFromXmlElement(csTo);
             migrationData.AppendNode(csTo);
 

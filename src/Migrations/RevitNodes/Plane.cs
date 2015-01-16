@@ -146,11 +146,11 @@ namespace Dynamo.Nodes
             {
                 // If the second or third output port is utilized, migrate to CBN
                 XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-                codeBlockNode.SetAttribute("CodeText",
-                    "p = Plane.ByBestFitThroughPoints(XYZs);\n" +
-                    "p.Normal.AsPoint();\n" +
-                    "p.Origin;");
-                codeBlockNode.SetAttribute("nickname", "Best Fit Plane");
+                codeBlockNode.SetAttribute(/*NXLT*/"CodeText",
+                    /*NXLT*/"p = Plane.ByBestFitThroughPoints(XYZs);\n" +
+                    /*NXLT*/"p.Normal.AsPoint();\n" +
+                    /*NXLT*/"p.Origin;");
+                codeBlockNode.SetAttribute(/*NXLT*/"nickname", "Best Fit Plane");
                 migrationData.AppendNode(codeBlockNode);
             }
             else

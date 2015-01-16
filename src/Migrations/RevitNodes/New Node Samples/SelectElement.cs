@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
             set
             {
                 _selected = value;
-                RaisePropertyChanged("SelectedElement");
+                RaisePropertyChanged(/*NXLT*/"SelectedElement");
             }
         }
 
@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
             set
             {
                 _canSelect = value;
-                RaisePropertyChanged("CanSelect");
+                RaisePropertyChanged(/*NXLT*/"CanSelect");
             }
         }
 
@@ -65,7 +65,7 @@ namespace Dynamo.Nodes
 
             selectButton.DataContext = this;
 
-            var buttonEnabledBinding = new Binding("CanSelect")
+            var buttonEnabledBinding = new Binding(/*NXLT*/"CanSelect")
             {
                 Mode = BindingMode.TwoWay
             };
@@ -105,7 +105,7 @@ namespace Dynamo.Nodes
         {
             return new FunctionCallNode
             {
-                Function = new IdentifierNode("DSRevitNodes.Elements.DSElementFactory.ByElementId"),
+                Function = new IdentifierNode(/*NXLT*/"DSRevitNodes.Elements.DSElementFactory.ByElementId"),
                 FormalArguments = new List<AssociativeNode>
                 {
                     new IntNode(SelectedElement.IntegerValue.ToString())

@@ -26,8 +26,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            codeBlockNode.SetAttribute("CodeText", "{min,max};");
-            codeBlockNode.SetAttribute("nickname", "Domain");
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText", "{min,max};");
+            codeBlockNode.SetAttribute(/*NXLT*/"nickname", "Domain");
 
             migrationData.AppendNode(codeBlockNode);
             return migrationData;
@@ -45,8 +45,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            codeBlockNode.SetAttribute("CodeText", /*NXLT*/"{{min.U,min.V},{max.U,max.V}};");
-            codeBlockNode.SetAttribute("nickname", "UV Domain");
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText", /*NXLT*/"{{min.U,min.V},{max.U,max.V}};");
+            codeBlockNode.SetAttribute(/*NXLT*/"nickname", "UV Domain");
 
             migrationData.AppendNode(codeBlockNode);
             return migrationData;
@@ -76,9 +76,9 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(uvNode);
 
             XmlElement flattenNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(flattenNode, "",
-                "Flatten", "Flatten");
-            flattenNode.SetAttribute("lacing", "Shortest");
+            MigrationManager.SetFunctionSignature(flattenNode, /*NXLT*/"",
+                /*NXLT*/"Flatten", /*NXLT*/"Flatten");
+            flattenNode.SetAttribute(/*NXLT*/"lacing", "Shortest");
             migrationData.AppendNode(flattenNode);
 
             // Update connectors
@@ -116,20 +116,20 @@ namespace Dynamo.Nodes
 
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(
                 data.Document, oldNode, 0,
-                "dom[0][0]+Math.RandomList\n" +
-                "(ucount*vcount)\n" +
-                "*(dom[1][0]-dom[0][0]);\n" +
-                "dom[0][1]+Math.RandomList\n" +
-                "(ucount*vcount)\n" +
-                "*(dom[1][1]-dom[0][1]);");
-            codeBlockNode.SetAttribute("nickname", "Random UV");
+                /*NXLT*/"dom[0][0]+Math.RandomList\n" +
+                /*NXLT*/"(ucount*vcount)\n" +
+                /*NXLT*/"*(dom[1][0]-dom[0][0]);\n" +
+                /*NXLT*/"dom[0][1]+Math.RandomList\n" +
+                /*NXLT*/"(ucount*vcount)\n" +
+                /*NXLT*/"*(dom[1][1]-dom[0][1]);");
+            codeBlockNode.SetAttribute(/*NXLT*/"nickname", "Random UV");
             migrationData.AppendNode(codeBlockNode);
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
             XmlElement uvNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(uvNode,/*NXLT*/"ProtoGeometry.dll",
                 /*NXLT*/"UV.ByCoordinates", /*NXLT*/"UV.ByCoordinates@double,double");
-            uvNode.SetAttribute("lacing", "Longest");
+            uvNode.SetAttribute(/*NXLT*/"lacing", "Longest");
             migrationData.AppendNode(uvNode);
 
             // Update connectors

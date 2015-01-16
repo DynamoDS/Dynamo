@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
             XmlElement planeNode = MigrationManager.CreateFunctionNode(
                 data.Document, oldNode, 1, "", /*NXLT*/"Plane.ByOriginNormal",
                 /*NXLT*/"Plane.ByOriginNormal@Point,Vector");
-            planeNode.SetAttribute("isVisible", "false");
+            planeNode.SetAttribute(/*NXLT*/"isVisible", "false");
             migrationData.AppendNode(planeNode);
             string planeNodeId = MigrationManager.GetGuidFromXmlElement(planeNode);
 

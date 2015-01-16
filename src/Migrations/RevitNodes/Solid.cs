@@ -146,7 +146,7 @@ namespace Dynamo.Nodes
             XmlElement createListNode = MigrationManager.CreateNode(data.Document,
                 oldNode, 0, /*NXLT*/"DSCoreNodesUI.CreateList", "Create List");
             migratedData.AppendNode(createListNode);
-            createListNode.SetAttribute("inputcount", "2");
+            createListNode.SetAttribute(/*NXLT*/"inputcount", "2");
             string createListNodeId = MigrationManager.GetGuidFromXmlElement(createListNode);
 
             //create and reconnect the connecters
@@ -185,7 +185,7 @@ namespace Dynamo.Nodes
         {
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
-            var index = oldNode.GetAttribute("index");
+            var index = oldNode.GetAttribute(/*NXLT*/"index");
             switch (index)
             {
                 case "1":
@@ -248,7 +248,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            codeBlockNode.SetAttribute("CodeText",
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText",
                 "p=Plane.ByOriginNormal(origin,axis.AsVector());\n"+
                 "cs=CoordinateSystem.ByPlane(p);\n"+
                 "Cylinder.ByRadiusHeight(cs,r,h);");
@@ -316,9 +316,9 @@ namespace Dynamo.Nodes
             {
                 var newChild = child.Clone() as XmlElement;
 
-                switch (newChild.GetAttribute("index"))
+                switch (newChild.GetAttribute(/*NXLT*/"index"))
                 {
-                    case "0":
+                    case /*NXLT*/"0":
                         PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
                         XmlElement connector0 = data.FindFirstConnector(oldInPort0);
                         if (connector0 != null) break;
@@ -329,7 +329,7 @@ namespace Dynamo.Nodes
                         data.CreateConnector(cbn0, 0, newNode, 0);
                         break;
 
-                    case "1":
+                    case /*NXLT*/"1":
                         newNode.AppendChild(newChild);
                         break;
 
@@ -363,9 +363,9 @@ namespace Dynamo.Nodes
             {
                 var newChild = child.Clone() as XmlElement;
 
-                switch (newChild.GetAttribute("index"))
+                switch (newChild.GetAttribute(/*NXLT*/"index"))
                 {
-                    case "0":
+                    case /*NXLT*/"0":
                         PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
                         XmlElement connector0 = data.FindFirstConnector(oldInPort0);
                         if (connector0 != null) break;
@@ -377,7 +377,7 @@ namespace Dynamo.Nodes
                         data.CreateConnector(zAxis0, 0, newNode, 0);
                         break;
 
-                    case "1":
+                    case /*NXLT*/"1":
                         PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.Input);
                         XmlElement connector1 = data.FindFirstConnector(oldInPort1);
                         if (connector1 != null) break;
@@ -388,7 +388,8 @@ namespace Dynamo.Nodes
                         data.CreateConnector(cbn1, 0, newNode, 1);
                         break;
 
-                    case "2": case "3":
+                    case /*NXLT*/"2":
+                    case /*NXLT*/"3":
                         newNode.AppendChild(newChild);
                         break;
 
@@ -421,9 +422,9 @@ namespace Dynamo.Nodes
             {
                 var newChild = child.Clone() as XmlElement;
 
-                switch (newChild.GetAttribute("index"))
+                switch (newChild.GetAttribute(/*NXLT*/"index"))
                 {
-                    case "0":
+                    case /*NXLT*/"0":
                         PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
                         XmlElement connector0 = data.FindFirstConnector(oldInPort0);
                         if (connector0 != null) break;
@@ -434,7 +435,7 @@ namespace Dynamo.Nodes
                         data.CreateConnector(cbn0, 0, newNode, 0);
                         break;
 
-                    case "1":
+                    case /*NXLT*/"1":
                         PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.Input);
                         XmlElement connector1 = data.FindFirstConnector(oldInPort1);
                         if (connector1 != null) break;
@@ -474,9 +475,9 @@ namespace Dynamo.Nodes
             {
                 var newChild = child.Clone() as XmlElement;
 
-                switch (newChild.GetAttribute("index"))
+                switch (newChild.GetAttribute(/*NXLT*/"index"))
                 {
-                    case "0":
+                    case /*NXLT*/"0":
                         PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
                         XmlElement connector0 = data.FindFirstConnector(oldInPort0);
                         if (connector0 != null) break;
@@ -487,7 +488,9 @@ namespace Dynamo.Nodes
                         data.CreateConnector(cbn, 0, newNode, 0);
                         break;
 
-                    case "1": case "2": case "3":
+                    case /*NXLT*/"1":
+                    case /*NXLT*/"2":
+                    case /*NXLT*/"3":
                         newNode.AppendChild(newChild);
                         break;
 

@@ -103,7 +103,7 @@ namespace Dynamo.Nodes
                 // Update connectors
                 PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.Input);
 
-                string nodeUVId = uvPortConnector.GetAttribute("start").ToString();
+                string nodeUVId = uvPortConnector.GetAttribute(/*NXLT*/"start").ToString();
                 data.ReconnectToPort(uvPortConnector, newInPortNodeU);
                 data.CreateConnector(nodeU, 0, newNode, 1);
                 data.CreateConnector(nodeV, 0, newNode, 2);
@@ -156,7 +156,7 @@ namespace Dynamo.Nodes
                 // Update connectors
                 PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.Input);
 
-                string nodeUVId = connector0.GetAttribute("start").ToString();
+                string nodeUVId = connector0.GetAttribute(/*NXLT*/"start").ToString();
                 data.ReconnectToPort(connector0, newInPortNodeU);
                 data.CreateConnector(nodeU, 0, newNode, 1);
                 data.CreateConnector(nodeV, 0, newNode, 2);
@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
                 // Update connectors
                 PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.Input);
 
-                string nodeUVId = connector0.GetAttribute("start").ToString();
+                string nodeUVId = connector0.GetAttribute(/*NXLT*/"start").ToString();
                 data.ReconnectToPort(connector0, newInPortNodeU);
                 data.CreateConnector(nodeU, 0, newNode, 1);
                 data.CreateConnector(nodeV, 0, newNode, 2);

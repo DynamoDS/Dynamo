@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
                 /*NXLT*/"Line.ByStartPointEndPoint", /*NXLT*/"Line.ByStartPointEndPoint@Point,Point");
-            newNode.SetAttribute("lacing", "Shortest");
+            newNode.SetAttribute(/*NXLT*/"lacing", "Shortest");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -230,7 +230,7 @@ namespace Dynamo.Nodes
             
             if (connector0 != null)
             {
-                string curveInputId = connector0.GetAttribute("start").ToString();
+                string curveInputId = connector0.GetAttribute(/*NXLT*/"start").ToString();
                 data.CreateConnectorFromId(curveInputId, 0, startParamId, 0);
                 data.CreateConnectorFromId(curveInputId, 0, endParamId, 0);
             }
@@ -297,8 +297,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            codeBlockNode.SetAttribute("CodeText", "{0,1};");
-            codeBlockNode.SetAttribute("nickname", "Get Curve Domain");
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText", "{0,1};");
+            codeBlockNode.SetAttribute(/*NXLT*/"nickname", "Get Curve Domain");
 
             migrationData.AppendNode(codeBlockNode);
             return migrationData;

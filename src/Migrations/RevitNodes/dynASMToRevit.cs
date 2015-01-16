@@ -20,7 +20,7 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("To Revit Element")]
+    [NodeName(/*NXLT*/"To Revit Element")]
     [NodeDescription("Converts ASM Geometry to a Revit Element.")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeSearchable(false)]
@@ -34,8 +34,8 @@ namespace Dynamo.Nodes
 
         public dynASMToRevitNode()
         {
-            InPortData.Add(new PortData("Geometry", "Input Geometry. Should have type of Autodesk.LibG...", typeof(Value.Container)));
-            OutPortData.Add(new PortData("Element", "Created Revit Element.", typeof(Value.Container)));
+            InPortData.Add(new PortData(/*NXLT*/"Geometry", /*NXLT*/"Input Geometry. Should have type of Autodesk.LibG...", typeof(Value.Container)));
+            OutPortData.Add(new PortData(/*NXLT*/"Element", /*NXLT*/"Created Revit Element.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }

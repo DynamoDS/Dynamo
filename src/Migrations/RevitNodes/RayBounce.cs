@@ -9,8 +9,8 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
-                "RayBounce.ByOriginDirection",
-                "Revit.References.RayBounce.ByOriginDirection@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,int,Revit.Elements.Views.View3D");
+                /*NXLT*/"RayBounce.ByOriginDirection",
+                /*NXLT*/"Revit.References.RayBounce.ByOriginDirection@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,int,Revit.Elements.Views.View3D");
         }
     }
 }

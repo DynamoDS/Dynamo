@@ -60,8 +60,8 @@ namespace Dynamo.Nodes
             // get uv parm
             if (faceInConnector != null)
             {
-                var faceInputNodeId = faceInConnector.Attributes["start"].Value;
-                var faceInputIndex = int.Parse(faceInConnector.Attributes["start_index"].Value);
+                var faceInputNodeId = faceInConnector.Attributes[/*NXLT*/"start"].Value;
+                var faceInputIndex = int.Parse(faceInConnector.Attributes[/*NXLT*/"start_index"].Value);
 
                 // get the parameter as a vector
                 var parmAtPt = MigrationManager.CreateFunctionNode(
@@ -87,8 +87,8 @@ namespace Dynamo.Nodes
             // get v parm
             if (crvInConnector != null)
             {
-                var crvInputNodeId = crvInConnector.Attributes["start"].Value;
-                var crvInputIndex = int.Parse(crvInConnector.Attributes["start_index"].Value);
+                var crvInputNodeId = crvInConnector.Attributes[/*NXLT*/"start"].Value;
+                var crvInputIndex = int.Parse(crvInConnector.Attributes[/*NXLT*/"start_index"].Value);
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
@@ -151,8 +151,8 @@ namespace Dynamo.Nodes
             // get u parm
             if (connector0 != null)
             {
-                var crvInputNodeId = connector0.Attributes["start"].Value;
-                var crvInputIndex = int.Parse(connector0.Attributes["start_index"].Value);
+                var crvInputNodeId = connector0.Attributes[/*NXLT*/"start"].Value;
+                var crvInputIndex = int.Parse(connector0.Attributes[/*NXLT*/"start_index"].Value);
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
@@ -178,8 +178,8 @@ namespace Dynamo.Nodes
             // get v parm
             if (connector1 != null)
             {
-                var crvInputNodeId = connector1.Attributes["start"].Value;
-                var crvInputIndex = int.Parse(connector1.Attributes["start_index"].Value);
+                var crvInputNodeId = connector1.Attributes[/*NXLT*/"start"].Value;
+                var crvInputIndex = int.Parse(connector1.Attributes[/*NXLT*/"start_index"].Value);
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(

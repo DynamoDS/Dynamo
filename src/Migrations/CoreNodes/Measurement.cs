@@ -14,7 +14,7 @@ namespace Dynamo.Nodes
 
             var oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CloneAndChangeName(
-                oldNode, /*NXLT*/"UnitsUI.LengthFromString", "Length From String");
+                oldNode, /*NXLT*/"UnitsUI.LengthFromString",/*NXLT*/"Length From String");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
 
             var oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CloneAndChangeName(
-                oldNode, /*NXLT*/"UnitsUI.AreaFromString", "Area From String");
+                oldNode, /*NXLT*/"UnitsUI.AreaFromString",/*NXLT*/"Area From String");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
 
             var oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CloneAndChangeName(
-                oldNode, /*NXLT*/"UnitsUI.VolumeFromString", "Volume From String");
+                oldNode, /*NXLT*/"UnitsUI.VolumeFromString",/*NXLT*/"Volume From String");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)

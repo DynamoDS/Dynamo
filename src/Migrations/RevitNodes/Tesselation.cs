@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"Tessellation.dll",
                 /*NXLT*/"Voronoi.ByParametersOnSurface",
                 /*NXLT*/"Voronoi.ByParametersOnSurface@IEnumerable<UV>,Surface");
-            newNode.SetAttribute("lacing", "Shortest");
+            newNode.SetAttribute(/*NXLT*/"lacing", "Shortest");
             migrationData.AppendNode(newNode);
 
             return migrationData;
@@ -36,7 +36,7 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"Tessellation.dll",
                 /*NXLT*/"Delaunay.ByParametersOnSurface",
                 /*NXLT*/"Delaunay.ByParametersOnSurface@IEnumerable<UV>,Surface");
-            newNode.SetAttribute("lacing", "Shortest");
+            newNode.SetAttribute(/*NXLT*/"lacing", "Shortest");
             migrationData.AppendNode(newNode);
 
             return migrationData;
@@ -55,7 +55,7 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"Tessellation.dll",
                 /*NXLT*/"ConvexHull.ByPoints",
                 /*NXLT*/"ConvexHull.ByPoints@IEnumerable<Point>");
-            newNode.SetAttribute("lacing", "Shortest");
+            newNode.SetAttribute(/*NXLT*/"lacing", "Shortest");
             migrationData.AppendNode(newNode);
 
             return migrationData;
@@ -74,7 +74,7 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"Tessellation.dll",
                 /*NXLT*/"Delaunay.ByPoints",
                 /*NXLT*/"Delaunay.ByPoints@IEnumerable<Point>");
-            newNode.SetAttribute("lacing", "Shortest");
+            newNode.SetAttribute(/*NXLT*/"lacing", "Shortest");
             migrationData.AppendNode(newNode);
 
             return migrationData;

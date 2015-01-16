@@ -7,7 +7,7 @@ namespace Dynamo.Nodes
 {
     class ColorBrightness : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"Color.Brightness", /*NXLT*/"Color.Brightness@DSColor");
@@ -16,7 +16,7 @@ namespace Dynamo.Nodes
 
     class ColorSaturation : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"Color.Saturation", /*NXLT*/"Color.Saturation@DSColor");
@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
 
     class Color : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -66,21 +66,21 @@ namespace Dynamo.Nodes
 
     class ColorRange : MigrationNode
     {
-        [NodeMigration(from: "0.6.2.0", to: "0.6.3.0")]
+        [NodeMigration(from:   /*NXLT*/"0.6.2.0", to:   /*NXLT*/"0.6.3.0")]
         public static NodeMigrationData Migrate_0620_to_0630(NodeMigrationData data)
         {
             var node = data.MigratedNodes.ElementAt(0);
 
             //if the laceability has been set on this node to disabled, then set it to longest
-            if (node.Attributes["lacing"].Value == "Disabled")
-                node.Attributes["lacing"].Value = "Longest";
+            if (node.Attributes[  /*NXLT*/"lacing"].Value == "Disabled")
+                node.Attributes[  /*NXLT*/"lacing"].Value =  "Longest";
 
             var migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(node);
             return migrationData;
         }
 
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
