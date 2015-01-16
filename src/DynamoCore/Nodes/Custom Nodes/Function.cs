@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
             if (!Controller.IsInSyncWithNode(this))
             {
                 Controller.SyncNodeWithDefinition(this);
-                OnAstUpdated();
+                OnNodeModified();
             }
             else
             {
@@ -257,7 +257,7 @@ namespace Dynamo.Nodes
 
                 Parameter = new TypedParameter(nickName, type, defaultValue);
 
-                OnAstUpdated();
+                OnNodeModified();
                 RaisePropertyChanged("InputSymbol");
             }
         }
@@ -379,7 +379,7 @@ namespace Dynamo.Nodes
             set
             {
                 symbol = value;
-                OnAstUpdated();
+                OnNodeModified();
                 RaisePropertyChanged("Symbol");
             }
         }

@@ -428,6 +428,16 @@
             Projects the input Geometry onto this Solid, in the direction of the input Vector
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.Fillet(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
+            <summary>
+            Fillets a Solid along input Edges with a given radius.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.Chamfer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
+            <summary>
+            Chamfers a Solid along input Edges with a given offset from the edge corner.
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Solid.Area">
             <summary>
             Returns the surface area -- sum of all the areas of all faces
@@ -813,6 +823,16 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.VertexCount">
             <summary>
             number of vertices of Polysurface
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Fillet(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
+            <summary>
+            Fillets a Solid along input Edges with a given radius.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Chamfer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
+            <summary>
+            Chamfers a Solid along input Edges with a given offset from the edge corner.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">

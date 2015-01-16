@@ -181,8 +181,15 @@ namespace Dynamo.Nodes
                     Error(e.Message);
                 }
 
-                ForceReExecuteOfNode = true;
-                OnAstUpdated();
+                if (value != null)
+                {
+                    OnNodeModified();
+                }
+                else
+                {
+                    ClearDirtyFlag();
+                }
+                
                 RaisePropertyChanged("Value");
             }
         }
