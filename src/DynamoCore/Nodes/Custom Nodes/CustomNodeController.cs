@@ -105,7 +105,8 @@ namespace Dynamo.Nodes
                 return;
             
             base.SyncNodeWithDefinition(model);
-            model.OnAstUpdated();
+
+            model.OnNodeModified();
         }
 
         public override void SerializeCore(XmlElement nodeElement, SaveContext saveContext)
