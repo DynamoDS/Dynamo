@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CoreNodesWpf")]
+[assembly: AssemblyTitle("CoreNodeModelsWpf")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Autodesk, Inc.")]
-[assembly: AssemblyProduct("CoreNodesWpf")]
-[assembly: AssemblyCopyright("Copyright © Autodesk, Inc. 2014")]
+[assembly: AssemblyProduct("CoreNodeModelsWpf")]
+[assembly: AssemblyCopyright("Copyright © Autodesk, Inc. 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
