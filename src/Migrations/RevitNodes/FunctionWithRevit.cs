@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
             foreach (XmlAttribute attribute in element.Attributes)
                 cloned.SetAttribute(attribute.Name, attribute.Value);
 
-            cloned.SetAttribute("type", type);
+            cloned.SetAttribute(/*NXLT*/"type", type);
             return cloned;
         }
 

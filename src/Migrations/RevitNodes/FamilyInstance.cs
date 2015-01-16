@@ -152,7 +152,7 @@ namespace Dynamo.Nodes
             {
                 if (childNode.Name == /*NXLT*/"Output")
                 {
-                    codeText += /*NXLT*/"element.GetParameterValueByName(param" + num++ + ");";
+                    codeText += /*NXLT*/"element.GetParameterValueByName(param" + num++ + /*NXLT*/");";
                     if (num > 1)
                         codeText += /*NXLT*/"\n";
                 }

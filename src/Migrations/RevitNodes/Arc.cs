@@ -42,8 +42,8 @@ namespace Dynamo.Nodes
             string zAxisNodeId = MigrationManager.GetGuidFromXmlElement(zAxisNode);
 
             XmlElement toDegreeNodeStart = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, /*NXLT*/"DSCoreNodes.dll", 
-                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
+                data.Document, oldNode, 1, /*NXLT*/"DSCoreNodes.dll",
+                /*NXLT*/"Math.RadiansToDegrees", /*NXLT*/"Math.RadiansToDegrees@double");
             migrationData.AppendNode(toDegreeNodeStart);
             string toDegreeNodeStartId = MigrationManager.GetGuidFromXmlElement(toDegreeNodeStart);
 

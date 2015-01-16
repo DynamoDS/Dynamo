@@ -10,8 +10,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll", "Line.ByStartPointEndPoint",
-                "Line.ByStartPointEndPoint@Point,Point");
+            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"Line.ByStartPointEndPoint",
+                /*NXLT*/"Line.ByStartPointEndPoint@Point,Point");
         }
     }
 
@@ -86,8 +86,8 @@ namespace Dynamo.Nodes
 
                 // Update connectors
                 PortId newInPortTranslate1 = new PortId(translateNodeId, 1, PortType.Input);
-                
-                string nodeOriginId = connector1.GetAttribute("start").ToString();
+
+                string nodeOriginId = connector1.GetAttribute(/*NXLT*/"start").ToString();
                 data.CreateConnector(translateNode, 0, newNode, 1);
                 data.CreateConnectorFromId(nodeOriginId, 0, translateNodeId, 0);
                 data.ReconnectToPort(connector0, newInPortTranslate1);
@@ -115,11 +115,11 @@ namespace Dynamo.Nodes
             {
                 // If the second output port is utilized, migrate to CBN
                 XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-                codeBlockNode.SetAttribute("CodeText",
-                    "Line.ByBestFitThroughPoints(XYZs)\n" +
-                    ".Direction.Normalized().AsPoint();\n" +
-                    "Point.ByCoordinates(Math.Average(XYZs.X),\n" +
-                    "Math.Average(XYZs.Y), Math.Average(XYZs.Z));");
+                codeBlockNode.SetAttribute(/*NXLT*/"CodeText",
+                    /*NXLT*/"Line.ByBestFitThroughPoints(XYZs)\n" +
+                    /*NXLT*/".Direction.Normalized().AsPoint();\n" +
+                    /*NXLT*/"Point.ByCoordinates(Math.Average(XYZs.X),\n" +
+                    /*NXLT*/"Math.Average(XYZs.Y), Math.Average(XYZs.Z));");
                 codeBlockNode.SetAttribute("nickname", "Best Fit Line");
                 migrationData.AppendNode(codeBlockNode);
             }

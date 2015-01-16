@@ -17,14 +17,14 @@ namespace Migrations
         {
             XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
             var element = MigrationManager.CreateFunctionNodeFrom(xmlNode);
-            element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
-            element.SetAttribute("function", funcName);
+            element.SetAttribute(/*NXLT*/"assembly", assembly);
+            element.SetAttribute(/*NXLT*/"nickname", nickname);
+            element.SetAttribute(/*NXLT*/"function", funcName);
 
-            var lacingAttribute = xmlNode.Attributes["lacing"];
+            var lacingAttribute = xmlNode.Attributes[/*NXLT*/"lacing"];
             if (lacingAttribute != null)
             {
-                element.SetAttribute("lacing", lacingAttribute.Value);
+                element.SetAttribute(/*NXLT*/"lacing", lacingAttribute.Value);
             }
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -37,10 +37,10 @@ namespace Migrations
         {
             XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
             var element = MigrationManager.CreateVarArgFunctionNodeFrom(xmlNode);
-            element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
-            element.SetAttribute("function", funcName);
-            element.SetAttribute("lacing", xmlNode.Attributes["lacing"].Value);
+            element.SetAttribute(/*NXLT*/"assembly", assembly);
+            element.SetAttribute(/*NXLT*/"nickname", nickname);
+            element.SetAttribute(/*NXLT*/"function", funcName);
+            element.SetAttribute(/*NXLT*/"lacing", xmlNode.Attributes[/*NXLT*/"lacing"].Value);
 
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(element);

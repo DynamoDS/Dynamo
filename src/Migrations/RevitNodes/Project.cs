@@ -35,8 +35,8 @@ namespace Dynamo.Nodes
             if ((connector0 != null) && (data.FindConnectors(oldDOut) != null))
             {
                 // Get the original output ports connected to input
-                var ptInputNodeId = connector0.Attributes["start"].Value;
-                var ptInputIndex = int.Parse(connector0.Attributes["start_index"].Value);
+                var ptInputNodeId = connector0.Attributes[/*NXLT*/"start"].Value;
+                var ptInputIndex = int.Parse(connector0.Attributes[/*NXLT*/"start_index"].Value);
 
                 // make distance to node
                 var distTo = MigrationManager.CreateFunctionNode(
@@ -58,8 +58,8 @@ namespace Dynamo.Nodes
 
             if ((connector1 != null) && (data.FindConnectors(oldTOut) != null))
             {
-                var crvInputNodeId = connector1.Attributes["start"].Value;
-                var crvInputIndex = int.Parse(connector1.Attributes["start_index"].Value);
+                var crvInputNodeId = connector1.Attributes[/*NXLT*/"start"].Value;
+                var crvInputIndex = int.Parse(connector1.Attributes[/*NXLT*/"start_index"].Value);
 
                 // make parm at point node 
                 var parmAtPt = MigrationManager.CreateFunctionNode(
@@ -149,8 +149,8 @@ namespace Dynamo.Nodes
             if (oldDConnectors != null && oldDConnectors.Any())
             {
                 // Get the original output ports connected to input
-                var ptInputNodeId = ptInConnector.Attributes["start"].Value;
-                var ptInputIndex = int.Parse(ptInConnector.Attributes["start_index"].Value);
+                var ptInputNodeId = ptInConnector.Attributes[/*NXLT*/"start"].Value;
+                var ptInputIndex = int.Parse(ptInConnector.Attributes[/*NXLT*/"start_index"].Value);
 
                 // make distance to node
                 var distTo = MigrationManager.CreateFunctionNode(

@@ -128,8 +128,8 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateCustomNodeFrom(oldNode.OwnerDocument, oldNode,
-                "1e10c22b-18f6-452c-8220-4b1407c80b7b",
-                "BoundingBoxXYZ",
+                /*NXLT*/"1e10c22b-18f6-452c-8220-4b1407c80b7b",
+                /*NXLT*/"BoundingBoxXYZ",
                 "This node represents an upgrade of the 0.6.3 BoundingBoxXYZ node to 0.7.x",
                 new List<string>() {"coordinate system", "width", "length", "height"},
                 new List<string>() {"bounding box"});
@@ -176,7 +176,7 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(MigrationManager.CloneAndChangeName(
-                data.MigratedNodes.ElementAt(0), "Dynamo.Nodes.WatchImageCore", "Watch Image"));
+                data.MigratedNodes.ElementAt(0), /*NXLT*/"Dynamo.Nodes.WatchImageCore", "Watch Image"));
 
             return migrationData;
         }

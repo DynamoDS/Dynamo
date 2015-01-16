@@ -40,11 +40,11 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateCustomNodeFrom(oldNode.OwnerDocument, oldNode,
-                "cc5f75c8-09a6-409c-b61d-2bf4b1b4091d",
+                /*NXLT*/"cc5f75c8-09a6-409c-b61d-2bf4b1b4091d",
                 "ModelCurveFromCurveLoop",
                 "This node represents an upgrade of the 0.6.3 ModelCurveFromCurveLoop node to 0.7.x",
-                new List<string>() { "polyCurve" },
-                new List<string>() { "modelCurve" });
+                new List<string>() { /*NXLT*/"polyCurve" },
+                new List<string>() { /*NXLT*/"modelCurve" });
 
             migratedData.AppendNode(newNode);
             return migratedData;

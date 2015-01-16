@@ -19,8 +19,8 @@ namespace Dynamo.Nodes
 
             XmlElement sunPathNode = MigrationManager.CloneAndChangeName(
                 oldNode, /*NXLT*/"DSRevitNodesUI.SunPathDirection", "SunPath Direction");
-            sunPathNode.SetAttribute("guid", Guid.NewGuid().ToString());
-            sunPathNode.SetAttribute("x", (Convert.ToDouble(oldNode.GetAttribute("x")) - 230).ToString());
+            sunPathNode.SetAttribute(/*NXLT*/"guid", Guid.NewGuid().ToString());
+            sunPathNode.SetAttribute(/*NXLT*/"x", (Convert.ToDouble(oldNode.GetAttribute(/*NXLT*/"x")) - 230).ToString());
 
             var vectorAsPoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(vectorAsPoint,/*NXLT*/"ProtoGeometry.dll",
@@ -46,7 +46,7 @@ namespace Dynamo.Nodes
                 /*NXLT*/"DSRevitNodesUI.SunSettings",
                 /*NXLT*/"SunSettings.Current");
             var sunSettingsNodeId = Guid.NewGuid().ToString();
-            sunSettingNode.SetAttribute("guid", sunSettingsNodeId);
+            sunSettingNode.SetAttribute(/*NXLT*/"guid", sunSettingsNodeId);
             migrationData.AppendNode(sunSettingNode);
 
             var sunPathNode = MigrationManager.CreateFunctionNodeFrom(oldNode);

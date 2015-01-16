@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
             
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
-            codeBlockNode.SetAttribute("CodeText",
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText",
                 "radius = Math.Sqrt(p.X*p.X + p.Y*p.Y);\n" +
                 "rotation = Math.DegreesToRadians\n" +
                 "(Math.Atan(p.Y/p.X));\n" +
@@ -102,9 +102,9 @@ namespace Dynamo.Nodes
             {
                 var newChild = child.Clone() as XmlElement;
 
-                switch (newChild.GetAttribute("index"))
+                switch (newChild.GetAttribute(/*NXLT*/"index"))
                 {
-                    case "0":
+                    case /*NXLT*/"0":
                         PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
                         XmlElement connector0 = data.FindFirstConnector(oldInPort0);
                         if (connector0 != null) break;
@@ -184,16 +184,16 @@ namespace Dynamo.Nodes
             foreach (XmlNode child in oldNode.ChildNodes)
             {
                 var newChild = child.Clone() as XmlElement;
-                switch (newChild.GetAttribute("index"))
+                switch (newChild.GetAttribute(/*NXLT*/"index"))
                 {
-                    case "0":
-                        newChild.SetAttribute("index", "3");
+                    case /*NXLT*/"0":
+                        newChild.SetAttribute(/*NXLT*/"index", "3");
                         break;
-                    case "1":
-                        newChild.SetAttribute("index", "2");
+                    case /*NXLT*/"1":
+                        newChild.SetAttribute(/*NXLT*/"index", "2");
                         break;
                     case "2":
-                        newChild.SetAttribute("index", "1");
+                        newChild.SetAttribute(/*NXLT*/"index", "1");
                         break;
                 }
                 newNode.AppendChild(newChild);
@@ -213,7 +213,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
 
-            codeBlockNode.SetAttribute("CodeText",
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText",
                 "radius = Math.Sqrt(p.X*p.X + p.Y*p.Y + p.Z*p.Z);\n" +
                 "xyrotation = (p.X == 0 && p.Y == 0) ? 0 : (p.X == 0) ?\n" +
                 "((p.Y > 0) ? Math.PI/2 : Math.PI*3/2)\n" +
@@ -221,7 +221,7 @@ namespace Dynamo.Nodes
                 "zrotation = (p.X == 0 && p.Y == 0) ? ((p.Z > 0) ? 0 : Math.PI) :\n" +
                 "Math.DegreesToRadians(Math.Acos(p.Z / radius));");
 
-            codeBlockNode.SetAttribute("nickname", "XYZ to Spherical Coordinates");
+            codeBlockNode.SetAttribute(/*NXLT*/"nickname", "XYZ to Spherical Coordinates");
 
             migrationData.AppendNode(codeBlockNode);
             return migrationData;
@@ -237,8 +237,8 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateCustomNodeFrom(oldNode.OwnerDocument, oldNode,
-                "d58a9edc-7623-424b-ac45-a71bfa40046d",
-                "XyzFromListOfNumbers",
+                /*NXLT*/"d58a9edc-7623-424b-ac45-a71bfa40046d",
+                /*NXLT*/"XyzFromListOfNumbers",
                 "This node represents an upgrade of the 0.6.3 XyzFromListOfNumbers node to 0.7.x",
                 new List<string>() { "list" },
                 new List<string>() { "list" });
@@ -267,9 +267,9 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
 
-            codeBlockNode.SetAttribute("CodeText", /*NXLT*/"p.X;\np.Y;\np.Z;");
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText", /*NXLT*/"p.X;\np.Y;\np.Z;");
 
-            codeBlockNode.SetAttribute("nickname", "XYZ Components");
+            codeBlockNode.SetAttribute(/*NXLT*/"nickname", "XYZ Components");
 
             migrationData.AppendNode(codeBlockNode);
             return migrationData;
@@ -323,7 +323,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
-                "Vector.Length", "Vector.Length");
+                /*NXLT*/"Vector.Length", /*NXLT*/"Vector.Length");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -400,8 +400,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, "",
-                "Equals", "Equals@var,var");
+            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"",
+                /*NXLT*/"Equals", /*NXLT*/"Equals@var,var");
 
             migratedData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
@@ -593,7 +593,7 @@ namespace Dynamo.Nodes
 
             if (connector2 != null)
             {
-                string baseInputId = connector2.GetAttribute("start").ToString();
+                string baseInputId = connector2.GetAttribute(/*NXLT*/"start").ToString();
                 data.CreateConnectorFromId(baseInputId, 0, pointAddId, 0);
             }
 
@@ -612,7 +612,7 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
-                "Point.Add", "Point.Add@Vector");
+                /*NXLT*/"Point.Add", /*NXLT*/"Point.Add@Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -883,8 +883,8 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateCustomNodeFrom(oldNode.OwnerDocument, oldNode,
-                "9215492a-4cb9-4ec1-a111-c18d7f6fd5b3",
-                "XyzGrid",
+                /*NXLT*/"9215492a-4cb9-4ec1-a111-c18d7f6fd5b3",
+                /*NXLT*/"XyzGrid",
                 "This node represents an upgrade of the 0.6.3 XyzGrid node to 0.7.x",
                 new List<string>() { "x-count", "y-count", "z-count", "x0", "y0", "z0", "x-space", "y-space", "z-space" },
                 new List<string>() { "Point[]" });
@@ -909,7 +909,7 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
                 /*NXLT*/"Curve.PointAtParameter",
                 /*NXLT*/"Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double");
-            newNode.SetAttribute("lacing", "CrossProduct");
+            newNode.SetAttribute(/*NXLT*/"lacing", "CrossProduct");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -920,8 +920,8 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(curveNode);
             string curveNodeId = MigrationManager.GetGuidFromXmlElement(curveNode);
 
-            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(data.Document,oldNode,1,"");            
-            codeBlockNode.SetAttribute("CodeText", "0..1..#x;");
+            XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(data.Document,oldNode,1,"");
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText", "0..1..#x;");
             migrationData.AppendNode(codeBlockNode);
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
@@ -958,7 +958,7 @@ namespace Dynamo.Nodes
             MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
                 /*NXLT*/"Curve.PointAtDistance",
                 /*NXLT*/"Autodesk.DesignScript.Geometry.Curve.PointAtDistance@double");
-            newNode.SetAttribute("lacing", "CrossProduct");
+            newNode.SetAttribute(/*NXLT*/"lacing", "CrossProduct");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -970,7 +970,7 @@ namespace Dynamo.Nodes
             string curveNodeId = MigrationManager.GetGuidFromXmlElement(curveNode);
 
             XmlElement codeBlockNode = MigrationManager.CreateCodeBlockNodeModelNode(data.Document, oldNode, 1, "");
-            codeBlockNode.SetAttribute("CodeText", "0..curve.Length..#count;");
+            codeBlockNode.SetAttribute(/*NXLT*/"CodeText", "0..curve.Length..#count;");
             migrationData.AppendNode(codeBlockNode);
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
