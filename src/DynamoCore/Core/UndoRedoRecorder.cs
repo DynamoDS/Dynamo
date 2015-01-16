@@ -450,19 +450,25 @@ namespace Dynamo.Core
 
         internal class NodeModificationUndoHelper : IDisposable
         {
-            private readonly NodeModel node;
+            private readonly List<NodeModel> nodes;
             private readonly UndoRedoRecorder recorder;
             private readonly Dictionary<Guid, XmlElement> existingConnectors;
             private readonly Dictionary<Guid, ConnectorModel> remainingConnectors;
 
             public NodeModificationUndoHelper(UndoRedoRecorder recorder, NodeModel node)
+                : this(recorder, new [] { node })
             {
-                this.node = node;
+            }
+
+            public NodeModificationUndoHelper(UndoRedoRecorder recorder, IEnumerable<NodeModel> nodes)
+            {
                 this.recorder = recorder;
 
+                this.nodes = new List<NodeModel>(nodes);
                 existingConnectors = new Dictionary<Guid, XmlElement>();
                 remainingConnectors = new Dictionary<Guid, ConnectorModel>();
 
+                var allConnectors = new List<ConnectorModel>();
                 using (this.recorder.BeginActionGroup())
                 {
                     // Assuming no connectors will be modified as part of this, we 
@@ -470,11 +476,15 @@ namespace Dynamo.Core
                     // reason connectors are dropped/created along the way, then 
                     // this particular action group will be pop off the undo stack.
                     // 
-                    this.recorder.RecordModificationForUndo(node);
+                    foreach (var nodeModel in this.nodes)
+                    {
+                        allConnectors.AddRange(nodeModel.AllConnectors);
+                        this.recorder.RecordModificationForUndo(nodeModel);
+                    }
                 }
 
                 // Record the existing connectors...
-                foreach (var connectorModel in node.AllConnectors)
+                foreach (var connectorModel in allConnectors)
                 {
                     var element = connectorModel.Serialize(
                         recorder.document, SaveContext.Undo);
@@ -485,10 +495,9 @@ namespace Dynamo.Core
 
             public void Dispose()
             {
-                // Connectors after node is modified.
-                foreach (var connectorModel in node.AllConnectors)
+                foreach (var model in nodes.SelectMany(nodeModel => nodeModel.AllConnectors))
                 {
-                    var model = connectorModel;
+                    // Connectors after node is modified.
                     remainingConnectors.Add(model.GUID, model);
                 }
 
@@ -533,7 +542,7 @@ namespace Dynamo.Core
                     if (recorder.redoStack.Count > 0)
                     {
                         throw new InvalidOperationException(
-                            "Redo stack should be empty after recording!");
+                            /*NXLT*/"Redo stack should be empty after recording!");
                     }
                 }
             }
