@@ -478,112 +478,6 @@ namespace ProtoCore.DSASM
 
 
         #region Reference counting APIs
-        [Conditional("GC_REFERENCE_COUNTING")]
-        public void IncRefCount(StackValue sv)
-        {
-            if (!sv.IsReferenceType)
-            {
-                return;
-            }
-
-            int ptr = (int)sv.opdata;
-
-            this.heapElements[ptr].Refcount++;
-            if (this.heapElements[ptr].Refcount > 0)
-            {
-                this.heapElements[ptr].Active = true;
-            }
-        }
-
-        [Conditional("GC_REFERENCE_COUNTING")]
-        public void DecRefCount(StackValue sv)
-        {
-            if (!sv.IsReferenceType)
-            {
-                return;
-            }
-
-            int ptr = (int)sv.opdata;
-            if (this.heapElements[ptr].Refcount > 0)
-            {
-                this.heapElements[ptr].Refcount--;
-            }
-            else
-            {
-#if HEAP_VERIFICATION
-                throw new Exception("Memory corrupted: Decrease reference count to negative (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
-#endif
-            }
-        }
-    
-        [Conditional("GC_REFERENCE_COUNTING")]
-        public void GCRelease(StackValue[] ptrList, Executive exe)
-        {
-            for (int n = 0; n < ptrList.Length; ++n)
-            {
-                StackValue svPtr = ptrList[n];
-                if (!svPtr.IsPointer && !svPtr.IsArray)
-                {
-                    continue;
-                }
-
-                int ptr = (int)svPtr.opdata;
-                if (ptr < 0 || ptr >= heapElements.Count)
-                {
-#if HEAP_VERIFICATION
-                    throw new Exception("Memory corrupted: Release invalid pointer (7364B8C2-FF34-4C67-8DFE-5DFA678BF50D).");
-#else
-                    continue;
-#endif
-                }
-                HeapElement hs = heapElements[ptr];
-
-                if (!hs.Active)
-                {
-#if HEAP_VERIFICATION
-                    throw new Exception("Memory corrupted: Release dead memory (7F70A6A1-FE99-476E-BE8B-CA7615EE1A3B).");
-#else
-                    continue;
-#endif
-                }
-                
-                // The reference count could be 0 if this heap object
-                // is a temporary heap object that hasn't been assigned
-                // to any variable yet, for example, Type.Coerce() may 
-                // allocate a new array and when this one is type converted
-                // again, it will be released. 
-                if (hs.Refcount > 0)
-                {
-                    hs.Refcount--;
-                }
-
-                // TODO Jun: If its a pointer to a primitive then dont decrease its refcount, just free it
-                if (hs.Refcount == 0)
-                {
-                    // if it is of class type, first call its destructor before clean its members
-                    if(svPtr.IsPointer)
-                        GCDisposeObject(svPtr, exe);
-
-                    if (svPtr.IsArray && hs.Dict != null)
-                    {
-                        foreach (var item in hs.Dict)
-                        {
-                            GCRelease(new StackValue[] {item.Key}, exe);
-                            GCRelease(new StackValue[] {item.Value}, exe);
-                        }
-                    }
-
-                    hs.Dict = null;
-                    hs.Active = false;
-
-                    GCRelease(hs.Stack, exe);
-#if !HEAP_VERIFICATION
-                    freeList.Add(ptr);
-#endif
-                }
-            }
-        }
-
         /// <summary>
         /// Checks if the heap contains at least 1 pointer element that points to itself
         /// This function is used as a diagnostic tool for detecting heap cycles and should never return true
@@ -629,21 +523,6 @@ namespace ProtoCore.DSASM
                 }
             }
             return false;
-        }
-
-        /// <summary>
-        /// Verify the heap integrity by performing tests on the current state of the heap
-        /// Throws an exception if the heap is corrupted
-        /// </summary>
-        /// <param name="core"></param>
-        [Conditional("GC_REFERENCE_COUNTING")]
-        public void Verify()
-        {
-            // Check the integrity of the heap memory layout
-            if (IsHeapCyclic())
-            {
-                throw new ProtoCore.Exceptions.HeapCorruptionException("Heap contains cyclic pointers.");
-            }
         }
         #endregion
     }

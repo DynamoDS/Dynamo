@@ -73,13 +73,11 @@ namespace Dynamo.Nodes
         protected virtual void RemoveInput()
         {
             VariableInputController.RemoveInputBase();
-            OnAstUpdated();
         }
 
         protected virtual void AddInput()
         {
             VariableInputController.AddInputBase();
-            OnAstUpdated();
         }
 
         protected virtual int GetInputIndex()
@@ -134,6 +132,18 @@ namespace Dynamo.Nodes
             return model.InPortData.Count;
         }
 
+        private void MarkNodeDirty()
+        {
+            var dirty = model.InPortData.Count != inputAmtLastBuild
+                || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
+
+            if (dirty)
+            {
+                model.OnNodeModified();
+            }
+              
+        }
+
         /// <summary>
         /// Removes an input from this node. Called when the '-' button is clicked.
         /// </summary>
@@ -142,6 +152,8 @@ namespace Dynamo.Nodes
             var count = model.InPortData.Count;
             if (count > 0)
                 model.InPortData.RemoveAt(count - 1);
+
+            MarkNodeDirty();
         }
 
         /// <summary>
@@ -151,6 +163,8 @@ namespace Dynamo.Nodes
         {
             var idx = GetInputIndexFromModel();
             model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
+
+            MarkNodeDirty();
         }
 
         /// <summary>

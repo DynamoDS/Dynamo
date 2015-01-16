@@ -17,6 +17,7 @@ namespace Dynamo.DSEngine
         private List<double> triangleVertices = new List<double>();
         private List<byte> triangleVertexColor = new List<byte>();
         private List<double> triangleNormals = new List<double>();
+        private List<double> triangleUVs = new List<double>(); 
 
         public bool Selected { get; set; }
 
@@ -46,6 +47,12 @@ namespace Dynamo.DSEngine
         {
             get { return triangleNormals; }
             set { triangleNormals = value; }
+        }
+
+        public List<double> TriangleUVs
+        {
+            get { return triangleUVs; }
+            set { triangleUVs = value; }
         }
 
         public List<byte> LineStripVertexColors
@@ -169,6 +176,12 @@ namespace Dynamo.DSEngine
             triangleNormals.Add(x);
             triangleNormals.Add(y);
             triangleNormals.Add(z);
+        }
+
+        public void PushTriangleVertexUV(double u, double v)
+        {
+            triangleUVs.Add(u);
+            triangleUVs.Add(v);
         }
 
         //public void AddToRenderDescription(NodeModel node, RenderDescription rd, Octree.OctreeSearch.Octree octree)
