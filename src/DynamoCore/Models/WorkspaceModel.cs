@@ -1232,6 +1232,21 @@ namespace Dynamo.Models
 
             return foundModel;
         }
+
+        private IEnumerable<ModelBase> GetModelsInternal(IEnumerable<Guid> modelGuids)
+        {
+            var foundModels = new List<ModelBase>();
+
+            foreach (var modelGuid in modelGuids)
+            {
+                var foundModel = GetModelInternal(modelGuid);
+                if (foundModel != null)
+                    foundModels.Add(foundModel);
+            }
+
+            return foundModels;
+        }
+
         #endregion
 
         #region Node To Code Reconnection
