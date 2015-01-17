@@ -222,7 +222,7 @@ namespace Dynamo.ViewModels
             libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
-            DefineCategoriesFullCategoryName(LibraryRootCategories, "");
+            DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
 
             ChangeCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
@@ -256,7 +256,7 @@ namespace Dynamo.ViewModels
             return result.OrderBy(cat => cat.Name);
         }
 
-        private void InsertClassesIntoTree(ObservableCollection<NodeCategoryViewModel> tree)
+        private static void InsertClassesIntoTree(ObservableCollection<NodeCategoryViewModel> tree)
         {
             foreach (var item in tree)
             {
@@ -277,13 +277,13 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void DefineCategoriesFullCategoryName(ObservableCollection<NodeCategoryViewModel> tree, string path)
+        private static void DefineFullCategoryNames(ObservableCollection<NodeCategoryViewModel> tree, string path)
         {
             foreach (var item in tree)
             {
-                item.FullCategoryName = AddToFullPath(path, item.Name);
+                item.FullCategoryName = MakeFullyQualifiedName(path, item.Name);
 
-                DefineCategoriesFullCategoryName(item.SubCategories, item.FullCategoryName);
+                DefineFullCategoryNames(item.SubCategories, item.FullCategoryName);
             }
         }
 
@@ -335,7 +335,7 @@ namespace Dynamo.ViewModels
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
-                path = AddToFullPath(path, next);
+                path = MakeFullyQualifiedName(path, next);
 
                 var categories = target.SubCategories;
                 NodeCategoryViewModel targetClassSuccessor = null;
@@ -395,7 +395,7 @@ namespace Dynamo.ViewModels
                         }
                     }
                     target.SubCategories.Add(newTarget);
-                    PlaceInNewCategory(entry, newTarget, nameStack);
+                    InsertEntryIntoNewCategory(newTarget, entry, nameStack);
                     return;
                 }
                 // If we meet ClassesNodecategoryViewModel during the search of newTarget,
@@ -410,8 +410,8 @@ namespace Dynamo.ViewModels
             target.Entries.Add(entry);
         }
 
-        private static void PlaceInNewCategory(
-            NodeSearchElementViewModel entry, NodeCategoryViewModel target,
+        private static void InsertEntryIntoNewCategory(
+            NodeCategoryViewModel target, NodeSearchElementViewModel entry,
             IEnumerable<string> categoryNames)
         {
             if (!categoryNames.Any())
@@ -423,7 +423,7 @@ namespace Dynamo.ViewModels
             var path = target.FullCategoryName;
             var newTargets = categoryNames.Select(name =>
             {
-                path = AddToFullPath(path, name);
+                path = MakeFullyQualifiedName(path, name);
 
                 var cat = new NodeCategoryViewModel(name);
                 cat.FullCategoryName = path;
@@ -446,7 +446,9 @@ namespace Dynamo.ViewModels
             target.Entries.Add(entry);
         }
 
-        private static string AddToFullPath(string path, string addition)
+        // Form a fully qualified name based on nested level of a "NodeCategoryViewModel" object.
+        // For example, `Core.File.Directory` is the fully qualified name for "Directory".
+        private static string MakeFullyQualifiedName(string path, string addition)
         {
             return string.IsNullOrEmpty(path) ? addition :
                 path + Configurations.CategoryDelimiter + addition;
