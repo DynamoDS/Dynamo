@@ -270,7 +270,7 @@ namespace Dynamo.ViewModels
 
                 InsertClassesIntoTree(item.SubCategories);
 
-                var container = new ClassesNodeCategoryViewModel(Configurations.ClassesDefaultName, item);
+                var container = new ClassesNodeCategoryViewModel(item);
                 container.SubCategories.AddRange(classes);
 
                 item.SubCategories.Insert(0, container);
@@ -329,13 +329,12 @@ namespace Dynamo.ViewModels
         {
             var nameStack = new Stack<string>(categoryNames.Reverse());
             var target = libraryRoot;
-            bool isRoot = true;
-            string path = "";
+            string fullyQualifiedCategoryName = "";
             ClassesNodeCategoryViewModel targetClass = null;
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
-                path = MakeFullyQualifiedName(path, next);
+                fullyQualifiedCategoryName = MakeFullyQualifiedName(fullyQualifiedCategoryName, next);
 
                 var categories = target.SubCategories;
                 NodeCategoryViewModel targetClassSuccessor = null;
@@ -353,10 +352,12 @@ namespace Dynamo.ViewModels
 
                     return c.Name == next;
                 });
-                if (newTarget == default(NodeCategoryViewModel))
+                if (newTarget == null)
                 {
-                    newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
-                    newTarget.FullCategoryName = path;
+                    // For the first iteration, this would be 'MyAssembly', and the second iteration 'MyNamespace'.
+                    var targetIsRoot = target == libraryRoot;
+                    newTarget = targetIsRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
+                    newTarget.FullCategoryName = fullyQualifiedCategoryName;
                     // Situation when we to add only one new category and item as it child.
                     // New category should be added to existing ClassesNodeCategoryViewModel.
                     // Make notice: ClassesNodeCategoryViewModel is always first item in 
@@ -387,14 +388,15 @@ namespace Dynamo.ViewModels
                         // as soon as new category will be a class.
                         if (nameStack.Count == 0)
                         {
-                            targetClass =
-                                new ClassesNodeCategoryViewModel(Configurations.ClassesDefaultName, target);
+                            targetClass = new ClassesNodeCategoryViewModel(target);
 
                             target.SubCategories.Add(targetClass);
                             target = targetClass;
                         }
                     }
+
                     target.SubCategories.Add(newTarget);
+
                     InsertEntryIntoNewCategory(newTarget, entry, nameStack);
                     return;
                 }
@@ -404,8 +406,6 @@ namespace Dynamo.ViewModels
                     target = targetClassSuccessor;
                 else
                     target = newTarget;
-
-                isRoot = false;
             }
             target.Entries.Add(entry);
         }
@@ -420,6 +420,13 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            // With the example of 'MyAssembly.MyNamespace.MyClass.Foo', 'path' would have been 
+            // set to 'MyAssembly' here. The Select statement below would store two entries into
+            // 'newTargets' variable:
+            // 
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
             var path = target.FullCategoryName;
             var newTargets = categoryNames.Select(name =>
             {
@@ -434,7 +441,7 @@ namespace Dynamo.ViewModels
             // classes container ClassesNodeCategoryViewModel
             int indexToInsertClass = newTargets.Count - 1;
             var classParent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : target;
-            var newClass = new ClassesNodeCategoryViewModel(Configurations.ClassesDefaultName, classParent);
+            var newClass = new ClassesNodeCategoryViewModel(classParent);
             newTargets.Insert(indexToInsertClass, newClass);
 
             foreach (var newTarget in newTargets)
