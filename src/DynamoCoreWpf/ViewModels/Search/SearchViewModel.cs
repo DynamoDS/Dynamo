@@ -325,6 +325,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Insert a new search element under the category.
+        /// </summary>
+        /// <param name="entry">This could represent a function of a given 
+        /// class. For example, 'MyAssembly.MyNamespace.MyClass.Foo'.</param>
+        /// <param name="categoryNames">A list of entries that make up the fully qualified
+        /// class name that contains function 'Foo', e.g. 'MyAssembly.MyNamespace.MyClass'.
+        /// </param>
         private void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
         {
             var nameStack = new Stack<string>(categoryNames.Reverse());
