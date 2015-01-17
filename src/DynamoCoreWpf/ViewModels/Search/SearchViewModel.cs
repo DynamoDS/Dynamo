@@ -445,8 +445,20 @@ namespace Dynamo.ViewModels
                 return cat;
             }).ToList();
 
-            // Last category in path is class. Should be created and inserted to collection 
-            // classes container ClassesNodeCategoryViewModel
+            // The last entry 'NodeCategoryViewModel' represents a class. For our example the 
+            // entries in 'newTargets' are:
+            // 
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
+            // Since all class entries are contained under a 'ClassesNodeCategoryViewModel', 
+            // we need to create a new 'ClassesNodeCategoryViewModel' instance, and insert it 
+            // right before the class entry itself to get the following list:
+            // 
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //      ClassesNodeCategoryViewModel("Classes")
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
             int indexToInsertClass = newTargets.Count - 1;
             var classParent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : target;
             var newClass = new ClassesNodeCategoryViewModel(classParent);
