@@ -110,6 +110,15 @@ namespace Dynamo.Models
             }
         }
 
+        public bool HasNodeThatPeriodicallyUpdates
+        {
+            get
+            {
+                var nodes = Nodes;
+                return nodes.Any(n => n.EnablePeriodicUpdate);
+            }
+        }
+
         protected override void OnNodeRemoved(NodeModel node)
         {
             base.OnNodeRemoved(node);

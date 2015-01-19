@@ -272,8 +272,11 @@ namespace Dynamo.Models
         {
             get
             {
-                var nodes = CurrentWorkspace.Nodes;
-                return nodes.Any(n => n.EnablePeriodicUpdate);
+                var workspace = currentWorkspace as HomeWorkspaceModel;
+                if (workspace == null)
+                    return false;
+
+                return workspace.HasNodeThatPeriodicallyUpdates;
             }
         }
 
