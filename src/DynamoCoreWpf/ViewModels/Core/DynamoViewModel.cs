@@ -140,7 +140,8 @@ namespace Dynamo.ViewModels
         {
             WorkspaceActualWidth = width;
             WorkspaceActualHeight = height;
-            RaisePropertyChanged("WorkspaceActualSize");
+            RaisePropertyChanged("WorkspaceActualHeight");
+            RaisePropertyChanged("WorkspaceActualWidth");
         }
 
         /// <summary>

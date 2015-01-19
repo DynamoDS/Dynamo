@@ -444,19 +444,6 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        ///     Is UI interaction enabled for this Node?
-        /// </summary>
-        public bool InteractionEnabled
-        {
-            get { return interactionEnabled; }
-            set
-            {
-                interactionEnabled = value;
-                RaisePropertyChanged("InteractionEnabled");
-            }
-        }
-
         public bool EnablePeriodicUpdate
         {
             get { return enablePeriodicUpdate; }

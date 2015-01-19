@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -25,15 +23,6 @@ using Dynamo.Utilities;
 using DynamoUnits;
 using DynamoUtilities;
 using ProtoCore;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
@@ -110,6 +99,8 @@ namespace Dynamo.Models
         private PulseMaker pulseMaker;
 
         #endregion
+
+        #region static properties
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
@@ -281,7 +272,7 @@ namespace Dynamo.Models
         {
             get
             {
-                var nodes = HomeSpace.Nodes;
+                var nodes = CurrentWorkspace.Nodes;
                 return nodes.Any(n => n.EnablePeriodicUpdate);
             }
         }

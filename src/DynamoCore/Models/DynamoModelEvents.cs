@@ -116,7 +116,7 @@ namespace Dynamo.Models
                     break;
             }
 
-            RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
+            OnPropertyChanged("HasNodeThatPeriodicallyUpdates");
         }
 
         private void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -124,7 +124,7 @@ namespace Dynamo.Models
             switch (e.PropertyName)
             {
                 case "EnablePeriodicUpdate":
-                    RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
+                    OnPropertyChanged("HasNodeThatPeriodicallyUpdates");
                     break;
             }
         }

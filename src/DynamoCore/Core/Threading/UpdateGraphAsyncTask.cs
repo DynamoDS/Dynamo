@@ -128,7 +128,7 @@ namespace Dynamo.Core.Threading
         private static IEnumerable<NodeModel> ComputeModifiedNodes(WorkspaceModel workspace)
         {
             var nodesToUpdate = new List<NodeModel>();
-            foreach (var node in workspace.Nodes.Where(n => n.RequiresRecalc))
+            foreach (var node in workspace.Nodes.Where(n => n.IsModified))
             {
                 GetDownstreamNodes(node, nodesToUpdate);
             }

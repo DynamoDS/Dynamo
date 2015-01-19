@@ -125,18 +125,24 @@ namespace Dynamo.Core
             // 
             evaluationInProgress = true;
 
-            dynamoModel.OnRequestDispatcherBeginInvoke(() =>
+            DynamoModel.OnRequestDispatcherBeginInvoke(() =>
             {
-                // Dirty selective nodes so they get included for evaluation.
-                var nodes = dynamoModel.CurrentWorkspace.Nodes;
-                var nodesToUpdate = nodes.Where(n => n.EnablePeriodicUpdate);
-                foreach (var nodeToUpdate in nodesToUpdate)
+                var workspace = dynamoModel.CurrentWorkspace;
+                var homeWorkspace = workspace as HomeWorkspaceModel;
+                if (homeWorkspace == null) // We only evaluate home workspace.
                 {
-                    nodeToUpdate.RequiresRecalc = true;
-                    nodeToUpdate.ForceReExecuteOfNode = true;
+                    evaluationInProgress = false;
+                    return;
                 }
 
-                dynamoModel.RunExpression();
+                // Dirty selective nodes so they get included for evaluation.
+                var nodesToUpdate = workspace.Nodes.Where(n => n.EnablePeriodicUpdate);
+                foreach (var nodeToUpdate in nodesToUpdate)
+                {
+                    nodeToUpdate.MarkNodeAsModified(true);
+                }
+
+                homeWorkspace.OnNodesModified();
             });
         }
 
