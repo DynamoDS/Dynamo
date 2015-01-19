@@ -930,6 +930,18 @@ namespace ProtoCore
 
     public class Core
     {
+
+        /// <summary>
+        /// Properties in under COMPILER_GENERATED_TO_RUNTIME_CORE, are generated at compile time, and passed to RuntimeCore/Exe
+        /// Only Core can initialize these
+        /// </summary>
+        #region COMPILER_GENERATED_TO_RUNTIME_CORE
+
+        public LangVerify Langverify { get; private set; }
+        public FunctionTable FunctionTable { get; private set; }
+
+        #endregion
+
         // This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries in Graph UI
         public bool IsParsingPreloadedAssembly { get; set; }
         
@@ -945,6 +957,7 @@ namespace ProtoCore
 
         // The root AST node obtained from parsing an expression in a Graph node in GraphUI
         public List<Node> AstNodeList { get; set; }
+
 
         public enum ErrorType
         {
@@ -1126,7 +1139,7 @@ namespace ProtoCore
         /// Sets the function to an inactive state where it can no longer be used by the front-end and backend
         /// </summary>
         /// <param name="functionDef"></param>
-        public void SetFunctionInactive(FunctionDefinitionNode functionDef)
+        public void SetFunctionInactive(FunctionDefinitionNode functionDef, RuntimeCore runtimeCore)
         {
             // DS language only supports function definition on the global and first language block scope 
             // TODO Jun: Determine if it is still required to combine function tables in the codeblocks and callsite
@@ -1178,7 +1191,7 @@ namespace ProtoCore
 
 
             // Update the function definition in global function tables
-            foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in FunctionTable.GlobalFuncTable)
+            foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in runtimeCore.FunctionTable.GlobalFuncTable)
             {
                 foreach (KeyValuePair<string, FunctionGroup> functionGroup in functionGroupList.Value)
                 {
@@ -1333,8 +1346,10 @@ namespace ProtoCore
             Validity.AssertExpiry();
             Options = options;
             Executives = new Dictionary<Language, Executive>();
-            FunctionTable = new FunctionTable();
             ClassIndex = Constants.kInvalidIndex;
+
+            FunctionTable = new FunctionTable(); 
+            Langverify = new LangVerify();
 
             Heap = new Heap();
             Rmem = new RuntimeMemory(Heap);
@@ -2227,9 +2242,10 @@ namespace ProtoCore
         /// <returns></returns>
         public CallSite GetCallSite(GraphNode graphNode, 
                                     int classScope, 
-                                    string methodName)
+                                    string methodName,
+                                    RuntimeCore runtimeCore)
         {
-            Validity.Assert(null != FunctionTable);
+            Validity.Assert(null != runtimeCore.FunctionTable);
             CallSite csInstance = null;
 
             // TODO Jun: Currently generates a new callsite for imperative and 
@@ -2245,8 +2261,8 @@ namespace ProtoCore
             if (isInternalFunction || isImperative)
             {
                 csInstance = new CallSite(classScope, 
-                                          methodName, 
-                                          FunctionTable, 
+                                          methodName,
+                                          runtimeCore.FunctionTable, 
                                           Options.ExecutionMode);
             }
             else if (!CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
@@ -2256,7 +2272,7 @@ namespace ProtoCore
 
                 csInstance = new CallSite(classScope,
                                           methodName,
-                                          FunctionTable,
+                                          runtimeCore.FunctionTable,
                                           Options.ExecutionMode,
                                           traceData);
 

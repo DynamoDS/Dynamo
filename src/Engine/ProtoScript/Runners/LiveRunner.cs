@@ -123,10 +123,12 @@ namespace ProtoScript.Runners
     public class ChangeSetApplier
     {
         private ProtoCore.Core core = null;
-        public void Apply(ProtoCore.Core core, ChangeSetData changeSet)
+        private ProtoCore.RuntimeCore runtimeCore = null;
+        public void Apply(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore , ChangeSetData changeSet)
         {
             Validity.Assert(null != changeSet);
             this.core = core;
+            this.runtimeCore = runtimeCore;
             ApplyChangeSetDeleted(changeSet);
             ApplyChangeSetModified(changeSet);
             ApplyChangeSetForceExecute(changeSet);
@@ -210,7 +212,7 @@ namespace ProtoScript.Runners
         {
             foreach (var funcDef in functionDefintions)
             {
-                core.SetFunctionInactive(funcDef as FunctionDefinitionNode);
+                core.SetFunctionInactive(funcDef as FunctionDefinitionNode, runtimeCore);
             }
         }
 
@@ -1673,7 +1675,7 @@ namespace ProtoScript.Runners
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
-            changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
+            changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
         }

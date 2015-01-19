@@ -40,7 +40,6 @@ namespace ProtoCore
 
 
         // These properties will need to be moved to DSExecutable
-        public LangVerify Langverify = new LangVerify();
         public FunctionTable FunctionTable { get; set; }
 
         #endregion

@@ -731,7 +731,7 @@ namespace ProtoCore.DSASM
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name);
+            CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name, runtimeCore);
             Validity.Assert(null != callsite);
 
             List<StackValue> registers = new List<StackValue>();
@@ -1004,7 +1004,8 @@ namespace ProtoCore.DSASM
 
             var callsite = core.GetCallSite(core.ExecutingGraphnode,
                                             classIndex,
-                                            procNode.name);
+                                            procNode.name,
+                                            runtimeCore);
             Validity.Assert(null != callsite);
 
             bool setDebugProperty = core.Options.IDEDebugMode &&
