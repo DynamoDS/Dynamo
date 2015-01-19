@@ -15,11 +15,8 @@ namespace ProtoCore.DSASM
         private const int kInitialSize = 5;
         private const double kReallocFactor = 0.5;
 
-        public bool Active { get; set; }
-        public int Symbol { get; set; }
         private int AllocSize { get; set; }
         public int VisibleSize { get; set; }
-        public int Refcount { get; set; }
         public Dictionary<StackValue, StackValue> Dict;
         public StackValue[] Stack;
         public MetaData MetaData { get; set; }
@@ -31,10 +28,7 @@ namespace ProtoCore.DSASM
 
         public HeapElement(int size, int symbolindex)
         {
-            Active = true;
-            Symbol = symbolindex;
             AllocSize = VisibleSize = size;
-            Refcount = 0;
             Dict = null; 
             Stack = new StackValue[AllocSize];
 
@@ -46,10 +40,7 @@ namespace ProtoCore.DSASM
 
         public HeapElement(StackValue[] arrayElements)
         {
-            Active = true;
-            Symbol = ProtoCore.DSASM.Constants.kInvalidIndex;
             AllocSize = VisibleSize = arrayElements.Length;
-            Refcount = 0;
             Stack = arrayElements;
         }
 
@@ -214,12 +205,6 @@ namespace ProtoCore.DSASM
 
     public class Heap
     {
-        public enum GCStrategies
-        {
-            kReferenceCounting,
-            kMarkAndSweep
-        }
-
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
         private bool isGarbageCollecting = false;
@@ -228,17 +213,6 @@ namespace ProtoCore.DSASM
         {
         }
 
-        public GCStrategies GCStrategy
-        {
-            get
-            {
-#if GC_MARK_AND_SWEEP
-                return Heap.GCStrategies.kMarkAndSweep;
-#else
-                return Heap.GCStrategies.kReferenceCounting;
-#endif
-            }
-        }
         public StackValue AllocateString(string str)
         {
             var chs = str.Select(c => StackValue.BuildChar(c)).ToArray();
@@ -293,15 +267,19 @@ namespace ProtoCore.DSASM
         {
             int index = (int)pointer.opdata;
             var heapElement = heapElements[index];
-
-            if (!heapElement.Active)
-            {
-#if HEAP_VERIFICATION
-                throw new Exception("Memory corrupted: Access dead memory (E4A2FC59-52DF-4F3B-8CD3-6C9E08F93AC5).");
-#endif
-            }
-
             return heapElement;
+        }
+
+        public bool TryGetHeapElement(StackValue pointer, out HeapElement heapElement)
+        {
+            heapElement = null;
+            int index = (int)pointer.opdata;
+
+            if (index >= 0 && index < heapElements.Count)
+            {
+                heapElement = heapElements[index];
+            }
+            return heapElement != null;
         }
 
         public void Free()
@@ -505,7 +483,7 @@ namespace ProtoCore.DSASM
         /// <returns> Returns true if the array contains a cycle </returns>
         private bool IsHeapCyclic(HeapElement heapElement, int HeapID)
         {
-            if (heapElement.Active && heapElement.VisibleSize > 0)
+            if (heapElement.VisibleSize > 0)
             {
                 // Traverse each element in the heap
                 foreach (StackValue sv in heapElement.Stack)
