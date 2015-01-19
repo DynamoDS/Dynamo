@@ -35,6 +35,7 @@ namespace Dynamo.Applications
         private static readonly string assemblyName = Assembly.GetExecutingAssembly().Location;
         private static ResourceManager res;
         public static ControlledApplication ControlledApplication;
+        public static RevitServicesUpdater RevitServicesUpdater;
         public static List<IUpdater> Updaters = new List<IUpdater>();
         internal static PushButton DynamoButton;
 
@@ -81,6 +82,9 @@ namespace Dynamo.Applications
                 DynamoButton.Image = bitmapSource;
 
                 RegisterAdditionalUpdaters(application);
+                RevitServicesUpdater = new RevitServicesUpdater(DynamoRevitApp.Updaters);
+                
+                SubscribeDocumentChangedEvent();
 
                 return Result.Succeeded;
             }
@@ -94,6 +98,7 @@ namespace Dynamo.Applications
         public Result OnShutdown(UIControlledApplication application)
         {
             UnsubscribeAssemblyResolvingEvent();
+            UnsubscribeDocumentChangedEvent();
 
             return Result.Succeeded;
         }
@@ -168,6 +173,16 @@ namespace Dynamo.Applications
         private void UnsubscribeAssemblyResolvingEvent()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.ResolveAssembly;
+        }
+
+        private void SubscribeDocumentChangedEvent()
+        {
+            ControlledApplication.DocumentChanged += RevitServicesUpdater.ApplicationDocumentChanged;
+        }
+
+        private void UnsubscribeDocumentChangedEvent()
+        {
+            ControlledApplication.DocumentChanged -= RevitServicesUpdater.ApplicationDocumentChanged;
         }
     }
 }
