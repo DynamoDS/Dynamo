@@ -229,10 +229,7 @@ namespace Dynamo.Search
             return query.Trim()
                 .Replace("\\", "\\\\")
                 .Replace(".", "\\.")
-                .Replace("*", "\\*")
-                .Replace("(", "\\(")
-                .Replace(")", "\\)")
-                .Replace("[", "\\[");
+                .Replace("*", "\\*");
         }
 
         private static string[] SplitOnWhiteSpace(string s)
