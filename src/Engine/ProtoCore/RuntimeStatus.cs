@@ -160,7 +160,7 @@ namespace ProtoCore
                 // internal graph node. 
                 if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
                 {
-                    executingGraphNode = core.ExecutingGraphnode;
+                    executingGraphNode = core.DSExecutable.RuntimeData.ExecutingGraphnode;
                 }
             }
 

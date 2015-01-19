@@ -23,7 +23,7 @@ using StackFrame = ProtoCore.DSASM.StackFrame;
 namespace ProtoCore
 {
     /// <summary>
-    /// The RuntimeCore is an object that contains properties that is consumed only by the runtime VM
+    /// The RuntimeData is an object that contains properties that is consumed only by the runtime VM
     /// It is instantiated prior to execution and is populated with information gathered from the CompileCore
     /// 
     /// The runtime VM is designed to run independently from the front-end (UI, compiler) 
@@ -86,6 +86,10 @@ namespace ProtoCore
         ///  These are the list of symbols updated by the VM after an execution cycle
         /// </summary>
         public HashSet<SymbolNode> UpdatedSymbols { get; private set; }
+
+        public GraphNode ExecutingGraphnode { get; set; }
+
+        public int RunningBlock { get; private set; }
 
         #endregion
 

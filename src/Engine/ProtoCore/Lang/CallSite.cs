@@ -1723,7 +1723,7 @@ namespace ProtoCore
             }
 
             //EXECUTE
-            StackValue ret = finalFep.Execute(c, coercedParameters, stackFrame, core, runtimeCore);
+            StackValue ret = finalFep.Execute(c, coercedParameters, stackFrame, core);
 
             if (ret.IsNull)
             {

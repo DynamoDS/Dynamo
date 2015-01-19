@@ -723,11 +723,11 @@ namespace ProtoCore.DSASM
 
             if (null != Properties.executingGraphNode)
             {
-                core.ExecutingGraphnode = Properties.executingGraphNode;
+                exe.RuntimeData.ExecutingGraphnode = Properties.executingGraphNode;
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            CallSite callsite = exe.RuntimeData.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name, exe, core.RunningBlock, core.Options, core.RuntimeStatus);
+            CallSite callsite = exe.RuntimeData.GetCallSite(exe.RuntimeData.ExecutingGraphnode, classIndex, fNode.name, exe, core.RunningBlock, core.Options, core.RuntimeStatus);
             Validity.Assert(null != callsite);
 
             List<StackValue> registers = new List<StackValue>();
@@ -998,7 +998,7 @@ namespace ProtoCore.DSASM
                                             registers,
                                             new List<bool>());
 
-            var callsite = exe.RuntimeData.GetCallSite(core.ExecutingGraphnode,
+            var callsite = exe.RuntimeData.GetCallSite(exe.RuntimeData.ExecutingGraphnode,
                                             classIndex,
                                             procNode.name,
                                             exe, core.RunningBlock, core.Options, core.RuntimeStatus);
@@ -5185,12 +5185,12 @@ namespace ProtoCore.DSASM
                 StackValue newSV;
                 if (opdata1.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata2, core, exe.RuntimeData, rmem);
+                    newSV = StringUtils.ConvertToString(opdata2, core, rmem);
                     opdata2 = StringUtils.ConcatString(newSV, opdata1, core);
                 }
                 else if (opdata2.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata1, core, exe.RuntimeData, rmem);
+                    newSV = StringUtils.ConvertToString(opdata1, core, rmem);
                     opdata2 = StringUtils.ConcatString(opdata2, newSV, core);
                 }
             }

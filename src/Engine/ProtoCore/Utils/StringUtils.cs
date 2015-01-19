@@ -47,7 +47,7 @@ namespace ProtoCore.Utils
             return mirror.GetStringValue(sv, core.Heap, 0, true);
         }
 
-        public static StackValue ConvertToString(StackValue sv, Core core, RuntimeData runtimeCore, ProtoCore.Runtime.RuntimeMemory rmem)
+        public static StackValue ConvertToString(StackValue sv, Core core, ProtoCore.Runtime.RuntimeMemory rmem)
         {
             StackValue returnSV;
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created

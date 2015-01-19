@@ -28,7 +28,7 @@ namespace ProtoCore.Lang
         }
 
 
-        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core, RuntimeData runtimeCore)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
         {
 
             ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core);
@@ -408,7 +408,7 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.kToString:
                 case BuiltInMethods.MethodID.kToStringFromObject:
                 case BuiltInMethods.MethodID.kToStringFromArray:
-                    ret = StringUtils.ConvertToString(formalParameters[0], core, runtimeCore, core.Rmem);
+                    ret = StringUtils.ConvertToString(formalParameters[0], core, core.Rmem);
                     break;
                 case BuiltInMethods.MethodID.kImportData:
                     ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], core, interpreter, c);
@@ -498,7 +498,7 @@ namespace ProtoCore.Lang
         private StackValue DotMethod(StackValue lhs, StackFrame stackFrame, DSASM.Executive runtime, Context context)
         {
             var core = runtime.Core;
-            var runtimeCore = runtime.exe.RuntimeData;
+            var runtimeData = runtime.exe.RuntimeData;
             var rmem = runtime.rmem;
 
             bool isValidThisPointer = true;
@@ -634,8 +634,8 @@ namespace ProtoCore.Lang
                                                stackFrame.GetRegisters(), 
                                                null);
 
-            ProtoCore.CallSite callsite = runtime.exe.RuntimeData.GetCallSite(
-                core.ExecutingGraphnode, thisObjectType, functionName, runtime.exe, core.RunningBlock, core.Options, core.RuntimeStatus);
+            ProtoCore.CallSite callsite = runtimeData.GetCallSite(
+                runtimeData.ExecutingGraphnode, thisObjectType, functionName, runtime.exe, core.RunningBlock, core.Options, core.RuntimeStatus);
             Validity.Assert(null != callsite);
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
@@ -657,7 +657,7 @@ namespace ProtoCore.Lang
                                                    thisObject);
             }
 
-            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, core, runtimeCore);
+            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, core, runtimeData);
 
             // Restore debug properties after returning from a CALL/CALLR
             if (core.Options.IDEDebugMode && 
