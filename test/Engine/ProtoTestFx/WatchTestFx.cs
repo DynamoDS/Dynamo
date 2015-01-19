@@ -383,8 +383,7 @@ namespace ProtoTestFx
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
             //Run
-            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
-            Mirror = fsr.Execute(code, core, runtimeCore);
+            Mirror = fsr.Execute(code, core);
 
             //sw.Close();
             core.Cleanup();
@@ -429,8 +428,7 @@ namespace ProtoTestFx
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
 
-            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
-            fsr = new DebugRunner(core, runtimeCore);
+            fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
@@ -526,7 +524,7 @@ namespace ProtoTestFx
                                 string lhsName = m.Groups[1].Value;
                                 if (lhsName.Equals(symbolName))
                                 {
-                                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
+                                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
                                     ProtoCore.DSASM.Mirror.ExecutionMirror mirror = watchRunner.Execute(lhsString);
                                     Obj obj = mirror.GetWatchValue();
 
@@ -600,9 +598,7 @@ namespace ProtoTestFx
                 }                            
                 if (lhsName.Equals(symbolName))
                 {
-
-                    ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
-                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
+                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
                     ProtoCore.DSASM.Mirror.ExecutionMirror mirror = watchRunner.Execute(exp);
                     Obj obj = mirror.GetWatchValue();
                     

@@ -29,8 +29,6 @@ namespace ProtoCore
             //
             private ProtoCore.Core core;
 
-            private ProtoCore.RuntimeCore runtimeCore;
-
             /// <summary>
             /// 
             /// </summary>
@@ -40,10 +38,9 @@ namespace ProtoCore
             /// Experimental constructor that takes in a core object
             /// </summary>
             /// <param name="sv"></param>
-            public MirrorData(ProtoCore.Core core, RuntimeCore rtCore, StackValue sv)
+            public MirrorData(ProtoCore.Core core, StackValue sv)
             {
                 this.core = core;
-                this.runtimeCore = rtCore;
                 svData = sv;
             }
 
@@ -149,7 +146,7 @@ namespace ProtoCore
                 if (!this.IsCollection)
                     return null;
 
-                return ArrayUtils.GetValues(svData, core).Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
+                return ArrayUtils.GetValues(svData, core).Select(x => new MirrorData(this.core, x)).ToList();
             }
 
             /// <summary>
@@ -166,7 +163,7 @@ namespace ProtoCore
             /// <param name="sv">StackValue</param>
             /// <param name="core">ProtoCore.Core</param>
             /// <returns>System.Object</returns>
-            internal static object GetData(StackValue sv, Core core, RuntimeCore runtimeCore)
+            internal static object GetData(StackValue sv, Core core)
             {
                 switch (sv.optype)
                 {
@@ -225,7 +222,7 @@ namespace ProtoCore
                 get
                 {
                     if (null == clrdata)
-                        clrdata = GetData(svData, core, runtimeCore);
+                        clrdata = GetData(svData, core);
 
                     return clrdata;
                 }

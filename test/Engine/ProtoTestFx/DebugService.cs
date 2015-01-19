@@ -58,7 +58,6 @@ namespace ProtoTestFx
             System.IO.StringWriter stringStream = new StringWriter();
             executionLog = new StringBuilder();
             ProtoCore.Core core = null;
-            ProtoCore.RuntimeCore runtimeCore = null;
             try
             {
                 var options = new ProtoCore.Options();
@@ -75,9 +74,8 @@ namespace ProtoTestFx
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
                 
                 ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-                runtimeCore = new ProtoCore.RuntimeCore();
 
-                ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core, runtimeCore);
+                ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core);
                 executionLog.AppendLine("Script executed successfully.");
 
                 executionLog.AppendLine();
@@ -149,8 +147,7 @@ namespace ProtoTestFx
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
 
-                ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore();
-                ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core, runtimeCore);
+                ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core);
                 ProtoScript.Config.RunConfiguration runnerConfig = new ProtoScript.Config.RunConfiguration();
                 runnerConfig.IsParrallel = false; 
                 ExecutionMirror mirror; 

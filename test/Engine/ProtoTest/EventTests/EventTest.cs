@@ -62,13 +62,13 @@ namespace ProtoTest.EventTests
             base.Setup();
             runconfig = new ProtoScript.Config.RunConfiguration();
             runconfig.IsParrallel = false;
-            runner = new DebugRunner(core, runtimeCore);
+            runner = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
         private Obj GetWatchValue(ProtoCore.Core core, string watchExpression)
         {
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
             ExecutionMirror mirror = watchRunner.Execute(watchExpression);
             return mirror.GetWatchValue();
         }

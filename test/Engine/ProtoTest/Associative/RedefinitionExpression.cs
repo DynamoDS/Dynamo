@@ -20,7 +20,7 @@ x = 1000;
 x = f(x);
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1001);
         }
 
@@ -43,7 +43,7 @@ p = C.C(p);
 x = p.mx;
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 11);
         }
 
@@ -70,7 +70,7 @@ p = C.C();
 x = p.f(x);
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 11);
         }
         //TestCase from Mark//
@@ -92,7 +92,7 @@ y = 10;
 x = f1(x, y) - f2(x, y); 
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 20);
         }
 
@@ -110,7 +110,7 @@ x = 2;
 x = f(x + f(x));
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 36);
         }
 
@@ -125,7 +125,7 @@ x = a[0];
 y = a[1];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 2);
         }
@@ -145,7 +145,7 @@ x = a[0];
 y = a[1];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 2);
         }
@@ -168,7 +168,7 @@ x = a[0];
 y = a[1];
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 7);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 3);
         }

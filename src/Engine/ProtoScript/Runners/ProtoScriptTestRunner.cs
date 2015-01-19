@@ -127,7 +127,7 @@ namespace ProtoScript.Runners
             return buildSucceeded;
         }
 
-        public void Execute(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, ProtoCore.Runtime.Context context)
+        public void Execute(ProtoCore.Core core, ProtoCore.Runtime.Context context)
         {
             try
             {
@@ -150,7 +150,7 @@ namespace ProtoScript.Runners
                     StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                     stackFrame.TX = svCallConvention;
 
-                    core.Bounce(runtimeCore, codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, EventSink);
+                    core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, EventSink);
                 }
                 core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
@@ -161,7 +161,7 @@ namespace ProtoScript.Runners
             }
         }
 
-        public ExecutionMirror Execute(string code, ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, Dictionary<string, Object> values, bool isTest = true)
+        public ExecutionMirror Execute(string code, ProtoCore.Core core, Dictionary<string, Object> values, bool isTest = true)
         {
             //Inject the context data values from external source.
             core.AddContextData(values);
@@ -173,7 +173,7 @@ namespace ProtoScript.Runners
                 core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
 
-                Execute(core, runtimeCore,  new ProtoCore.Runtime.Context());
+                Execute(core,  new ProtoCore.Runtime.Context());
 
                 if (!isTest) { core.Heap.Free(); }
             }
@@ -190,7 +190,7 @@ namespace ProtoScript.Runners
             return null;
         }
 
-        public ExecutionMirror Execute(ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext, ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, bool isTest = true)
+        public ExecutionMirror Execute(ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext, ProtoCore.Core core, bool isTest = true)
         {
             Validity.Assert(null != staticContext.SourceCode && String.Empty != staticContext.SourceCode);
             
@@ -204,7 +204,7 @@ namespace ProtoScript.Runners
                 core.InitializeContextGlobals(staticContext.GlobalVarList);
 
                 Validity.Assert(null != runtimeContext);
-                Execute(core, runtimeCore, runtimeContext);
+                Execute(core, runtimeContext);
                 if (!isTest)
                 {
                     core.Heap.Free();
@@ -223,7 +223,7 @@ namespace ProtoScript.Runners
             return null;
         }
 
-        public ExecutionMirror Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, bool isTest = true)
+        public ExecutionMirror Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
         {
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(astList, core, out blockId);
@@ -233,7 +233,7 @@ namespace ProtoScript.Runners
                 core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
 
-                Execute(core, runtimeCore, new ProtoCore.Runtime.Context());
+                Execute(core, new ProtoCore.Runtime.Context());
                 if (!isTest) 
                 { 
                     core.Heap.Free(); 
@@ -252,7 +252,7 @@ namespace ProtoScript.Runners
             return null;
         }
 
-        public ExecutionMirror Execute(string code, ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, bool isTest = true)
+        public ExecutionMirror Execute(string code, ProtoCore.Core core, bool isTest = true)
         {
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(code, core, out blockId);
@@ -264,7 +264,7 @@ namespace ProtoScript.Runners
 
                 try
                 {
-                    Execute(core, runtimeCore, new ProtoCore.Runtime.Context());
+                    Execute(core, new ProtoCore.Runtime.Context());
                 }
                 catch (ProtoCore.Exceptions.ExecutionCancelledException e)
                 {
@@ -289,7 +289,7 @@ namespace ProtoScript.Runners
             return null;
         }
 
-        public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, bool isTest = true)
+        public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, bool isTest = true)
         {
             System.IO.StreamReader reader = null;
             try
@@ -308,7 +308,7 @@ namespace ProtoScript.Runners
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;
-            Execute(strSource, core, runtimeCore);
+            Execute(strSource, core);
 
             if (isTest && !core.Options.CompileToLib)
                 return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);

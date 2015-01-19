@@ -339,12 +339,12 @@ namespace ProtoCore.Lang
                         {
                             blockCaller = core.DebugProps.CurrentBlockId;
                             StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(runtimeCore, blockId, 0, context, core.Breakpoints, bounceStackFrame, 0, core.CurrentExecutive.CurrentDSASMExec);
+                            ret = core.Bounce(blockId, 0, context, core.Breakpoints, bounceStackFrame, 0, core.CurrentExecutive.CurrentDSASMExec);
                         }
                         else
                         {
                             StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(runtimeCore, blockId, 0, context, bounceStackFrame);
+                            ret = core.Bounce(blockId, 0, context, bounceStackFrame);
                         }
 
                         core.RunningBlock = oldRunningBlockId;

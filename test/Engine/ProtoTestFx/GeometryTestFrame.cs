@@ -111,9 +111,7 @@ namespace ProtoTestFx
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
 
             //Run
-
-            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
-            mirror = fsr.Execute(code, core, runtimeCore);
+            mirror = fsr.Execute(code, core);
 
             //sw.Close();
 

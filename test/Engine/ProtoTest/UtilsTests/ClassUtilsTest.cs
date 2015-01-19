@@ -20,7 +20,7 @@ class B extends A {}
 class C extends B {}
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             int idA = core.ClassTable.IndexOf("A");
             int idB = core.ClassTable.IndexOf("B");
             int idC = core.ClassTable.IndexOf("C");

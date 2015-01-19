@@ -78,8 +78,7 @@ namespace ProtoTestFx
             CLRModuleType.ClearTypes();
 
             //Run
-            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
-            fsr.Execute(code, core, runtimeCore);
+            fsr.Execute(code, core);
 
             return core;
         }
@@ -106,8 +105,7 @@ namespace ProtoTestFx
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
 
-            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
-            fsr = new DebugRunner(core, runtimeCore);
+            fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
@@ -147,8 +145,7 @@ namespace ProtoTestFx
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
 
-            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
-            fsr = new DebugRunner(core, runtimeCore);
+            fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
@@ -189,8 +186,7 @@ namespace ProtoTestFx
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
 
-            ProtoCore.RuntimeCore runtimeCore = new RuntimeCore();
-            fsr = new DebugRunner(core, runtimeCore);
+            fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();

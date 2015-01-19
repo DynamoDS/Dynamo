@@ -54,7 +54,7 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
         public void TestCyclicPointer01()
         {
             var core = thisTest.GetTestCore();
-            DebugRunner fsr = new DebugRunner(core, runtimeCore);
+            DebugRunner fsr = new DebugRunner(core);
             // Execute and verify the main script in a debug session
             fsr.PreStart(
             @"

@@ -29,8 +29,7 @@ namespace ProtoTestConsoleRunner
 
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
 
-            RuntimeCore runtimeCore = new RuntimeCore();
-            ExecutionMirror mirror = runner.LoadAndExecute(filename, core, runtimeCore);
+            ExecutionMirror mirror = runner.LoadAndExecute(filename, core);
         }
 
         static void DevRun()
@@ -55,8 +54,7 @@ namespace ProtoTestConsoleRunner
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
 
             // Assuming current directory in test/debug mode is "...\Dynamo\bin\AnyCPU\Debug"
-            RuntimeCore runtimeCore = new RuntimeCore();
-            ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core, runtimeCore);
+            ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core);
 
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();

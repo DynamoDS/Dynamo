@@ -18,7 +18,7 @@ foo;
 }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
             Assert.IsTrue((Int64)o.Payload == 5);
         }
@@ -35,7 +35,7 @@ foo;
 }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 1);
@@ -54,7 +54,7 @@ foo;
 }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 1);
@@ -76,7 +76,7 @@ foo;
 }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 2);
@@ -98,7 +98,7 @@ foo;
 }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 2);
@@ -122,7 +122,7 @@ foo;
 }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             ProtoCore.Lang.Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 0);

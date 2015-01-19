@@ -20,7 +20,7 @@ namespace ProtoTest.RegressionTests
      x = a[0];  
 }";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("x");
             Assert.IsTrue((Int64)o.Payload == 1001);
         }

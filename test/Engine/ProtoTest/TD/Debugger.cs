@@ -20,7 +20,7 @@ namespace ProtoTest.TD
             base.Setup();
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new ProtoScript.Runners.DebugRunner(core, runtimeCore);
+            fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
         public override void TearDown()
@@ -108,7 +108,7 @@ myNeTwst = myTest.Transform(1);
             fsr.ToggleBreakpoint(cp);
             fsr.Run();  // line containing "this"            
 
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
             ExecutionMirror mirror = watchRunner.Execute(@"this");
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);
@@ -116,7 +116,7 @@ myNeTwst = myTest.Transform(1);
             Assert.AreEqual(mirror.GetType(objExecVal), "Test");
             vms = fsr.StepOver();
 
-            watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
+            watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"this");
             objExecVal = mirror.GetWatchValue();
             Assert.AreNotEqual(null, objExecVal);

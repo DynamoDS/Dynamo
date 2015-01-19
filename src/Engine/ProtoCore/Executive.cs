@@ -16,8 +16,8 @@ namespace ProtoCore
 
         public ProtoCore.DSASM.Executive CurrentDSASMExec { get; set; }
         public abstract bool Compile(out int blockId, ProtoCore.DSASM.CodeBlock parentBlock, ProtoCore.LanguageCodeBlock codeblock, ProtoCore.CompileTime.Context callContext, ProtoCore.DebugServices.EventSink sink = null, ProtoCore.AST.Node codeBlockNode = null, ProtoCore.AssociativeGraph.GraphNode graphNode = null);
-        public abstract StackValue Execute(ProtoCore.RuntimeCore runtimeCore, int codeblock, int entry, ProtoCore.Runtime.Context callContext, ProtoCore.DebugServices.EventSink sink = null);
-        public abstract StackValue Execute(ProtoCore.RuntimeCore runtimeCore, int codeblock, int entry, ProtoCore.Runtime.Context callContext, List<Instruction> breakpoints, ProtoCore.DebugServices.EventSink sink = null, bool fepRun = false);
+        public abstract StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, ProtoCore.DebugServices.EventSink sink = null);
+        public abstract StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, List<Instruction> breakpoints, ProtoCore.DebugServices.EventSink sink = null, bool fepRun = false);
 
 	}
 }

@@ -43,9 +43,8 @@ namespace ProtoFFITests
         protected int ExecuteAndVerify(String code, ValidationData[] data, Dictionary<string, Object> context, out int nErrors)
         {
             ProtoCore.Core core = Setup();
-            ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore();
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore, context);
+            ExecutionMirror mirror = fsr.Execute(code, core, context);
             int nWarnings = core.RuntimeStatus.WarningCount;
             nErrors = core.BuildStatus.ErrorCount;
             if (data == null)

@@ -23,7 +23,6 @@ namespace ProtoTestFx.TD
     public class TestFrameWork
     {
         private static ProtoCore.Core testCore;
-        private static ProtoCore.RuntimeCore testRuntimeCore;
         private ExecutionMirror testMirror;
         private readonly ProtoScriptTestRunner runner;
         private static string mErrorMessage = "";
@@ -43,10 +42,6 @@ namespace ProtoTestFx.TD
             return testCore;
         }
 
-        public ProtoCore.RuntimeCore GetTesRuntimetCore()
-        {
-            return testRuntimeCore;
-        }
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
@@ -59,8 +54,6 @@ namespace ProtoTestFx.TD
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
 //            testCore.Options.kDynamicCycleThreshold = 5;
-
-            testRuntimeCore = new ProtoCore.RuntimeCore();
             
             //FFI registration and cleanup
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
@@ -169,7 +162,7 @@ namespace ProtoTestFx.TD
                     Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
             }
-            testMirror = runner.LoadAndExecute(pathname, testCore, testRuntimeCore);
+            testMirror = runner.LoadAndExecute(pathname, testCore);
             SetErrorMessage(errorstring);
             return testMirror;
         }
@@ -260,7 +253,7 @@ namespace ProtoTestFx.TD
                     }
                 }
                 ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore();
-                testMirror = runner.Execute(sourceCode, testCore, runtimeCore);
+                testMirror = runner.Execute(sourceCode, testCore);
                 
                 if (dumpDS )
                 {
@@ -301,7 +294,7 @@ namespace ProtoTestFx.TD
                     Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
             }
-            testMirror = runner.Execute(astList, testCore, testRuntimeCore);
+            testMirror = runner.Execute(astList, testCore);
             SetErrorMessage(errorstring);
             return testMirror;
         }
@@ -596,7 +589,7 @@ namespace ProtoTestFx.TD
 
         public void Verify(string dsVariable, object expectedValue, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore, testRuntimeCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
             AssertValue(mirror.GetData(), expectedValue);
             //Verify(testMirror, dsVariable, expectedValue, startBlock);
         }
@@ -705,14 +698,14 @@ namespace ProtoTestFx.TD
 
         public static void AssertInfinity(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore, testRuntimeCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
             MirrorData data = mirror.GetData();
             Assert.IsTrue( Double.IsInfinity(Convert.ToDouble(data.Data)));
         }
 
         public static void AssertNan(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore, testRuntimeCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
             MirrorData data = mirror.GetData();
             Assert.IsTrue(Double.IsNaN(Convert.ToDouble(data.Data)));
         }
@@ -775,7 +768,7 @@ namespace ProtoTestFx.TD
 
         public void AssertPointer(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore, testRuntimeCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
             Assert.IsTrue(mirror.GetData().IsPointer);
         }
 

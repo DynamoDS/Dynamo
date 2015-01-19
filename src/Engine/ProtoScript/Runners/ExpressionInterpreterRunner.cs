@@ -11,13 +11,11 @@ namespace ProtoScript.Runners
     public class ExpressionInterpreterRunner
     {
         private ProtoCore.Core Core;
-        private ProtoCore.RuntimeCore runtimeCore;
         private readonly ProtoCore.DebugServices.EventSink EventSink = new ProtoCore.DebugServices.ConsoleEventSink();
 
-        public ExpressionInterpreterRunner(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
+        public ExpressionInterpreterRunner(ProtoCore.Core core)
         {
             this.Core = core;
-            this.runtimeCore = runtimeCore;
             core.ExecMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
         }
 
@@ -129,7 +127,7 @@ namespace ProtoScript.Runners
                     ProtoCore.DSASM.StackFrame stackFrame = null;
                     int locals = 0;
 
-                    StackValue sv = Core.Bounce(runtimeCore, blockId, Core.startPC, context, stackFrame, locals, EventSink);
+                    StackValue sv = Core.Bounce(blockId, Core.startPC, context, stackFrame, locals, EventSink);
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing
                     // it needs to be popped off at the end for stack alignment - pratapa

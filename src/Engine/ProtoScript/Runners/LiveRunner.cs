@@ -123,12 +123,10 @@ namespace ProtoScript.Runners
     public class ChangeSetApplier
     {
         private ProtoCore.Core core = null;
-        private ProtoCore.RuntimeCore runtimeCore = null;
-        public void Apply(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore , ChangeSetData changeSet)
+        public void Apply(ProtoCore.Core core, ChangeSetData changeSet)
         {
             Validity.Assert(null != changeSet);
             this.core = core;
-            this.runtimeCore = runtimeCore;
             ApplyChangeSetDeleted(changeSet);
             ApplyChangeSetModified(changeSet);
             ApplyChangeSetForceExecute(changeSet);
@@ -212,7 +210,7 @@ namespace ProtoScript.Runners
         {
             foreach (var funcDef in functionDefintions)
             {
-                core.SetFunctionInactive(funcDef as FunctionDefinitionNode, runtimeCore);
+                core.SetFunctionInactive(funcDef as FunctionDefinitionNode);
             }
         }
 
@@ -931,7 +929,6 @@ namespace ProtoScript.Runners
     public interface ILiveRunner
     {
         ProtoCore.Core Core { get; }
-        ProtoCore.RuntimeCore RTCore { get; }
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
@@ -1027,7 +1024,6 @@ namespace ProtoScript.Runners
         private ProtoScriptTestRunner runner;
         private ProtoRunner.ProtoVMState vmState;
         private ProtoCore.Core runnerCore = null;
-        private ProtoCore.RuntimeCore runtimeCore = null;
         public ProtoCore.Core Core
         {
             get
@@ -1037,18 +1033,6 @@ namespace ProtoScript.Runners
             private set
             {
                 runnerCore = value;
-            }
-        }
-
-        public ProtoCore.RuntimeCore RTCore
-        {
-            get
-            {
-                return runtimeCore;
-            }
-            private set
-            {
-                runtimeCore = value;
             }
         }
 
@@ -1147,7 +1131,6 @@ namespace ProtoScript.Runners
                 runnerCore.Configurations[item.Key] = item.Value;
             }
 
-            runtimeCore = new RuntimeCore();
             vmState = null;
         }
 
@@ -1270,7 +1253,7 @@ namespace ProtoScript.Runners
                     {
                         //return GetWatchValue(nodeName);
                         const int blockID = 0;
-                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runnerCore, runtimeCore);
+                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runnerCore);
                         return runtimeMirror;
                     }
                 }
@@ -1529,7 +1512,7 @@ namespace ProtoScript.Runners
 
             try
             {
-                runner.Execute(runnerCore, runtimeCore, runtimeContext);
+                runner.Execute(runnerCore, runtimeContext);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
@@ -1539,7 +1522,7 @@ namespace ProtoScript.Runners
 
             // ExecutionMirror mirror = new ExecutionMirror(runnerCore.CurrentExecutive.CurrentDSASMExec, runnerCore);
 
-            return new ProtoRunner.ProtoVMState(runnerCore, runtimeCore);
+            return new ProtoRunner.ProtoVMState(runnerCore);
         }
 
         private bool CompileAndExecute(string code)
@@ -1590,9 +1573,9 @@ namespace ProtoScript.Runners
         /// </summary>
         private void SuppressResovledUnboundVariableWarnings()
         {
-            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runtimeCore.UpdatedSymbols);
+            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.DSExecutable.RuntimeCore.UpdatedSymbols);
 
-            runtimeCore.UpdatedSymbols.Clear();
+            runnerCore.DSExecutable.RuntimeCore.UpdatedSymbols.Clear();
         }
 
         private void ApplyUpdate()
@@ -1675,7 +1658,7 @@ namespace ProtoScript.Runners
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
-            changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
+            changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
         }

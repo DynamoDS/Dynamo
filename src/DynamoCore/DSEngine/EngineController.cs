@@ -98,16 +98,6 @@ namespace Dynamo.DSEngine
             }
         }
 
-        /// <summary>
-        /// Get DesignScript runtime core.
-        /// </summary>
-        public ProtoCore.RuntimeCore LiveRunnerRuntimeCore
-        {
-            get
-            {
-                return liveRunnerServices.RTCore;
-            }
-        }
 
         /// <summary>
         /// Return libary service instance.

@@ -18,7 +18,7 @@ size;
 }
 ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("size");
             Assert.IsTrue((Int64)o.Payload == 5);
         }

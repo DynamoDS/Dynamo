@@ -21,7 +21,7 @@ namespace ProtoTest.TD.MultiLangTests
             base.Setup();
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new ProtoScript.Runners.DebugRunner(core, runtimeCore);
+            fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
         public override void TearDown()

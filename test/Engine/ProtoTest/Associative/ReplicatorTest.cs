@@ -20,7 +20,7 @@ namespace ProtoTest.Associative
             // Specify some of the requirements of IDE.
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core, runtimeCore);
+            fsr = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
