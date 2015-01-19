@@ -1456,7 +1456,6 @@ namespace ProtoCore.DSASM.Mirror
                 int size = sv.Length;
 
                 StackValue ptr = heap.AllocateArray(sv);
-                heap.IncRefCount(ptr);
                 return ptr;
             }
 

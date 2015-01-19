@@ -51,44 +51,6 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
         }
 
         [Test]
-        [Category("HeapCorruptionTests")]
-        public void TestBuildManualCyclicPointer01()
-        {
-            var core = thisTest.GetTestCore();
-            // Allocate a pointer
-            StackValue ptr = core.Rmem.Heap.AllocatePointer(Constants.kPointerSize);
-
-            // Build a pointer whose data points to its own heap element
-            core.Rmem.Heap.IncRefCount(ptr);
-            core.Rmem.Heap.GetHeapElement(ptr).Stack[0] = ptr;
-
-            // Verify the heap contains a cycle
-            Assert.IsTrue(thisTest.GetTestCore().Heap.IsHeapCyclic());
-        }
-
-        [Test]
-        [Category("HeapCorruptionTests")]
-        public void TestBuildManualCyclicPointer02()
-        {
-            // Allocate 2 pointers
-            var core = thisTest.GetTestCore();
-            StackValue ptr1 = core.Rmem.Heap.AllocatePointer(Constants.kPointerSize);
-            StackValue ptr2 = core.Rmem.Heap.AllocatePointer(Constants.kPointerSize);
-
-            // Build a pointer whose data points to its own heap element
-            core.Rmem.Heap.IncRefCount(ptr1);
-            core.Rmem.Heap.GetHeapElement(ptr1).Stack[0] = ptr1;
-
-
-            // Build a 2nd pointer that points to the first pointer
-            core.Rmem.Heap.IncRefCount(ptr1);
-            core.Rmem.Heap.GetHeapElement(ptr2).Stack[0] = ptr1;
-
-            // Verify the heap contains a cycle
-            Assert.IsTrue(core.Heap.IsHeapCyclic());
-        }
-
-        [Test]
         public void TestCyclicPointer01()
         {
             var core = thisTest.GetTestCore();

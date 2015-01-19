@@ -149,8 +149,6 @@ namespace ProtoCore.Lang
                 core.DebugProps.RestoreCallrForNoBreak(core, procNode);
             }
 
-            interpreter.runtime.DecRefCounter(rx);
-
             return rx;
         }
 

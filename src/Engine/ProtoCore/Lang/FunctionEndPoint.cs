@@ -333,7 +333,6 @@ namespace ProtoCore
                 Type targetType = FormalParams[i];
 
                 StackValue coercedParam = TypeSystem.Coerce(formalParam, targetType, core);
-                GCUtils.GCRetain(coercedParam, core);
                 fixedUpVersions.Add(coercedParam);
             }
 

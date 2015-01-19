@@ -283,7 +283,7 @@ namespace Dynamo.Nodes
         protected override void OnThumbDragCompleted(DragCompletedEventArgs e)
         {
             base.OnThumbDragCompleted(e);
-            nodeModel.OnAstUpdated();
+            nodeModel.OnNodeModified();
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
