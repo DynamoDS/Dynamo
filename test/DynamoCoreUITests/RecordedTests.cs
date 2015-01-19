@@ -1057,28 +1057,7 @@ namespace DynamoCoreUITests
 
             Assert.AreEqual("CBN", cbn.NickName);
         }
-
-        [Test, RequiresSTA, Category("Failure")]
-        public void ReExecuteASTTest()
-        {
-            RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
-            {
-                var workspace = ViewModel.Model.CurrentWorkspace;
-
-                if (commandTag == "FirstRun")
-                {
-                    AssertPreviewValue("cdaf568a-e830-4eb0-bce0-983a7a0903e1", 1);
-
-                }
-                else if (commandTag == "SecondRun")
-                {
-
-                    AssertPreviewValue("cdaf568a-e830-4eb0-bce0-983a7a0903e1", 1);
-
-                }
-            });
-        }
-        
+ 
         [Test, RequiresSTA]
         public void ErrorInCBN_3872()
         {
