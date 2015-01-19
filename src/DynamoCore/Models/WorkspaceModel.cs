@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -136,10 +137,12 @@ namespace Dynamo.Models
         ///     Event that is fired when a node is added to the workspace.
         /// </summary>
         public event Action<NodeModel> NodeAdded;
-        protected virtual void OnNodeAdded(NodeModel obj)
+        protected virtual void OnNodeAdded(NodeModel node)
         {
+            node.PropertyChanged += OnNodePropertyChanged;
+
             var handler = NodeAdded;
-            if (handler != null) handler(obj);
+            if (handler != null) handler(node);
         }
 
         /// <summary>
@@ -148,6 +151,8 @@ namespace Dynamo.Models
         public event Action<NodeModel> NodeRemoved;
         protected virtual void OnNodeRemoved(NodeModel node)
         {
+            node.PropertyChanged -= OnNodePropertyChanged;
+
             var handler = NodeRemoved;
             if (handler != null) handler(node);
         }
@@ -559,6 +564,10 @@ namespace Dynamo.Models
         public virtual void OnNodesModified()
         {
             
+        }
+
+        protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
         }
 
         /// <summary>

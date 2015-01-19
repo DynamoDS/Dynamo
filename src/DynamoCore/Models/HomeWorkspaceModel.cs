@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 using Dynamo.Core.Threading;
@@ -119,9 +120,17 @@ namespace Dynamo.Models
             }
         }
 
+        protected override void OnNodeAdded(NodeModel node)
+        {
+            base.OnNodeAdded(node);
+            RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
+        }
+
         protected override void OnNodeRemoved(NodeModel node)
         {
             base.OnNodeRemoved(node);
+            RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
+
             EngineController.NodeDeleted(node);
         }
 
@@ -147,6 +156,16 @@ namespace Dynamo.Models
             {
                 DynamoModel.OnRequestDispatcherBeginInvoke(Run);
             }
+        }
+
+        protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "EnablePeriodicUpdate")
+            {
+                RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
+            }
+
+            base.OnNodePropertyChanged(sender, e);
         }
 
         /// <summary>
