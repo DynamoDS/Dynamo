@@ -458,7 +458,7 @@ namespace Dynamo.Tests
         {
             ViewModel.SaveAsCommand.Execute(null);
 
-            Assert.IsNull(ViewModel.CurrentSpace.FileName);
+            Assert.AreEqual(ViewModel.CurrentSpace.FileName, string.Empty);
         }
 
         [Test]
@@ -478,7 +478,7 @@ namespace Dynamo.Tests
 
             ViewModel.SaveCommand.Execute(null);
 
-            Assert.IsNull(ViewModel.CurrentSpace.FileName);
+            Assert.AreEqual(ViewModel.CurrentSpace.FileName, string.Empty);
         }
 
 

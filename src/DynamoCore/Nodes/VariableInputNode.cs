@@ -73,13 +73,11 @@ namespace Dynamo.Nodes
         protected virtual void RemoveInput()
         {
             VariableInputController.RemoveInputBase();
-            OnAstUpdated();
         }
 
         protected virtual void AddInput()
         {
             VariableInputController.AddInputBase();
-            OnAstUpdated();
         }
 
         protected virtual int GetInputIndex()
@@ -134,6 +132,18 @@ namespace Dynamo.Nodes
             return model.InPortData.Count;
         }
 
+        private void MarkNodeDirty()
+        {
+            var dirty = model.InPortData.Count != inputAmtLastBuild
+                || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
+
+            if (dirty)
+            {
+                model.OnNodeModified();
+            }
+              
+        }
+
         /// <summary>
         /// Removes an input from this node. Called when the '-' button is clicked.
         /// </summary>
@@ -142,6 +152,8 @@ namespace Dynamo.Nodes
             var count = model.InPortData.Count;
             if (count > 0)
                 model.InPortData.RemoveAt(count - 1);
+
+            MarkNodeDirty();
         }
 
         /// <summary>
@@ -151,6 +163,8 @@ namespace Dynamo.Nodes
         {
             var idx = GetInputIndexFromModel();
             model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
+
+            MarkNodeDirty();
         }
 
         /// <summary>
@@ -239,17 +253,6 @@ namespace Dynamo.Nodes
 
             if (eventName == "RemoveInPort")
             {
-                // When an in-port is removed, it is possible that a connector 
-                // is almost removed along with it. Both node modification and 
-                // connector deletion have to be recorded as one action group.
-                // But before HandleModelEventCore is called, node modification 
-                // has already been recorded (in WorkspaceModel.SendModelEvent).
-                // For that reason, that entry on the undo-stack needs to be 
-                // popped (the node modification will be recorded here instead).
-                // 
-                recorder.PopFromUndoGroup();
-
-                RecordModels(recorder);
                 RemoveInputFromModel();
                 model.RegisterAllPorts();
                 return true; // Handled here.
