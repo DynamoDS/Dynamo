@@ -890,9 +890,8 @@ namespace Dynamo.ViewModels
         {
             workspaces.Remove(workspaces.First(x => x.Model == item));
 
-            // If a workspace is removed, reset this property to false 
-            // so that Run Automatic checkbox is unchecked by default
-            DynamicRunEnabled = false;
+            // Update the ViewModel property to reflect change in WorkspaceModel
+            RaisePropertyChanged("DynamicRunEnabled");
         }
 
         internal void AddToRecentFiles(string path)
@@ -1431,8 +1430,8 @@ namespace Dynamo.ViewModels
 
                 model.ClearCurrentWorkspace();
 
-                // Clear the Run Automatic checkbox by default
-                DynamicRunEnabled = false;
+                // Update the ViewModel property to reflect change in WorkspaceModel
+                RaisePropertyChanged("DynamicRunEnabled");
                 return true;
             }
 
