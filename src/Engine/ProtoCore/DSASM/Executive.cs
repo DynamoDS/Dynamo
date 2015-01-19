@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ProtoCore.Exceptions;
 using ProtoCore.Utils;
-using ProtoCore.RuntimeData;
+using ProtoCore.Runtime;
 using System.Diagnostics;
 
 namespace ProtoCore.DSASM
@@ -727,7 +727,7 @@ namespace ProtoCore.DSASM
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name, exe.RuntimeCore);
+            CallSite callsite = exe.RuntimeData.GetCallSite(core.ExecutingGraphnode, classIndex, fNode.name, exe, core.RunningBlock, core.Options, core.RuntimeStatus);
             Validity.Assert(null != callsite);
 
             List<StackValue> registers = new List<StackValue>();
@@ -767,12 +767,12 @@ namespace ProtoCore.DSASM
                     if (counter.times == 0)
                     {
                         counter.times++;
-                        exe.RuntimeCore.calledInFunction = true;
+                        exe.RuntimeData.calledInFunction = true;
                     }
 
                     else if (counter.times >= 1)
                     {
-                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && exe.RuntimeCore.calledInFunction)
+                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && exe.RuntimeData.calledInFunction)
                         {
                             counter.times++;
                         }
@@ -784,16 +784,16 @@ namespace ProtoCore.DSASM
                         core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
                     }
 
-                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, exe.RuntimeCore, runtimeContext);
+                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, exe.RuntimeData, runtimeContext);
                 }
                 else
                 {
                     FindRecursivePoints();
-                    string message = String.Format(StringConstants.kMethodStackOverflow, exe.RuntimeCore.recursivePoint[0].name);
+                    string message = String.Format(StringConstants.kMethodStackOverflow, exe.RuntimeData.recursivePoint[0].name);
                     core.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
 
-                    exe.RuntimeCore.recursivePoint = new List<FunctionCounter>();
-                    exe.RuntimeCore.funcCounterTable = new List<FunctionCounter>();
+                    exe.RuntimeData.recursivePoint = new List<FunctionCounter>();
+                    exe.RuntimeData.funcCounterTable = new List<FunctionCounter>();
                     sv = StackValue.Null;
                 }
             }
@@ -892,7 +892,7 @@ namespace ProtoCore.DSASM
                 }
                 else
 #endif
-                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, exe.RuntimeCore, runtimeContext);
+                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, exe.RuntimeData, runtimeContext);
 
                 if (sv.IsExplicitCall)
                 {
@@ -937,7 +937,7 @@ namespace ProtoCore.DSASM
 
                 if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_')
                 {
-                    exe.RuntimeCore.calledInFunction = false;
+                    exe.RuntimeData.calledInFunction = false;
                 }
             }
             return sv;
@@ -998,10 +998,11 @@ namespace ProtoCore.DSASM
                                             registers,
                                             new List<bool>());
 
-            var callsite = core.GetCallSite(core.ExecutingGraphnode,
+            var callsite = exe.RuntimeData.GetCallSite(core.ExecutingGraphnode,
                                             classIndex,
                                             procNode.name,
-                                            exe.RuntimeCore);
+                                            exe, core.RunningBlock, core.Options, core.RuntimeStatus);
+
             Validity.Assert(null != callsite);
 
             bool setDebugProperty = core.Options.IDEDebugMode &&
@@ -1030,7 +1031,7 @@ namespace ProtoCore.DSASM
                                                  repGuides,
                                                  stackFrame,
                                                  core,
-                                                 exe.RuntimeCore,
+                                                 exe.RuntimeData,
                                                  new Runtime.Context());
 
             isExplicitCall = sv.IsExplicitCall;
@@ -1048,20 +1049,20 @@ namespace ProtoCore.DSASM
 
         private void FindRecursivePoints()
         {
-            foreach (FunctionCounter c in exe.RuntimeCore.funcCounterTable)
+            foreach (FunctionCounter c in exe.RuntimeData.funcCounterTable)
             {
                 if (c.times == Constants.kRecursionTheshold || c.times == Constants.kRecursionTheshold - 1)
                 {
-                    exe.RuntimeCore.recursivePoint.Add(c);
+                    exe.RuntimeData.recursivePoint.Add(c);
                 }
-                exe.RuntimeCore.recursivePoint.Add(c);
+                exe.RuntimeData.recursivePoint.Add(c);
             }
         }
 
 
         private FunctionCounter FindCounter(int funcIndex, int classScope, string name)
         {
-            foreach (FunctionCounter c in exe.RuntimeCore.funcCounterTable)
+            foreach (FunctionCounter c in exe.RuntimeData.funcCounterTable)
             {
                 if (c.classScope == classScope && c.functionIndex == funcIndex)
                 {
@@ -1069,7 +1070,7 @@ namespace ProtoCore.DSASM
                 }
             }
             FunctionCounter newC = new FunctionCounter(funcIndex, classScope, 0, name, 1);
-            exe.RuntimeCore.funcCounterTable.Add(newC);
+            exe.RuntimeData.funcCounterTable.Add(newC);
             return newC;
         }
 
@@ -2956,7 +2957,7 @@ namespace ProtoCore.DSASM
                     SymbolNode symbol = GetSymbolNode(blockId, (int)op2.opdata, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(symbol);
                     rmem.SetSymbolValue(symbol, opVal);
-                    exe.RuntimeCore.UpdatedSymbols.Add(symbol);
+                    exe.RuntimeData.UpdatedSymbols.Add(symbol);
 
                     if (IsDebugRun())
                     {
@@ -2974,7 +2975,7 @@ namespace ProtoCore.DSASM
                     var staticMember = GetSymbolNode( blockId, Constants.kGlobalScope, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(staticMember);
                     rmem.SetSymbolValue(staticMember, opVal);
-                    exe.RuntimeCore.UpdatedSymbols.Add(staticMember);
+                    exe.RuntimeData.UpdatedSymbols.Add(staticMember);
 
                     if (IsDebugRun())
                     {
@@ -5184,12 +5185,12 @@ namespace ProtoCore.DSASM
                 StackValue newSV;
                 if (opdata1.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata2, core, exe.RuntimeCore, rmem);
+                    newSV = StringUtils.ConvertToString(opdata2, core, exe.RuntimeData, rmem);
                     opdata2 = StringUtils.ConcatString(newSV, opdata1, core);
                 }
                 else if (opdata2.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata1, core, exe.RuntimeCore, rmem);
+                    newSV = StringUtils.ConvertToString(opdata1, core, exe.RuntimeData, rmem);
                     opdata2 = StringUtils.ConcatString(opdata2, newSV, core);
                 }
             }

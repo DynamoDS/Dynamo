@@ -15,7 +15,7 @@ using System.Text;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
-using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
+using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 
 namespace Dynamo.DSEngine
 {

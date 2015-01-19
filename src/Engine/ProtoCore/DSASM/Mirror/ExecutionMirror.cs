@@ -30,7 +30,7 @@ namespace ProtoCore.DSASM.Mirror
     public class ExecutionMirror
     {
         private readonly ProtoCore.Core core;
-        private readonly RuntimeCore runtimeCore;
+        private readonly RuntimeData runtimeCore;
         public Executive MirrorTarget { get; private set; }
         private OutputFormatParameters formatParams;
         private Dictionary<string, List<string>> propertyFilter;
@@ -44,7 +44,7 @@ namespace ProtoCore.DSASM.Mirror
             Validity.Assert(exec != null, "Can't mirror a null executive");
 
             core = coreObj;
-            runtimeCore = core.DSExecutable.RuntimeCore;
+            runtimeCore = core.DSExecutable.RuntimeData;
             MirrorTarget = exec;
 
             LoadPropertyFilters();

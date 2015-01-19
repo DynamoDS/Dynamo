@@ -252,7 +252,7 @@ namespace ProtoTestFx.TD
                         Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                     }
                 }
-                ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore();
+                ProtoCore.RuntimeData runtimeCore = new ProtoCore.RuntimeData();
                 testMirror = runner.Execute(sourceCode, testCore);
                 
                 if (dumpDS )
@@ -619,12 +619,12 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.Runtime.WarningID id)
         {
             VerifyRuntimeWarning(testCore, id);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.RuntimeData.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.Runtime.WarningID id)
         {
             Assert.IsTrue(core.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }

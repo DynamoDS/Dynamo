@@ -43,7 +43,7 @@ namespace ProtoCore.DSASM
         /// The RuntimeCore will eventually be integrated completely into executable,
         /// this means moving RuntimeCore properties to Executable and deprecating the RuntimeCore object
         /// </summary>
-        public RuntimeCore RuntimeCore { get; set; }
+        public RuntimeData RuntimeData { get; set; }
 
         public bool isSingleAssocBlock { get; set; }
         public ProtoCore.DSASM.ClassTable classTable { get; set; }
@@ -68,7 +68,7 @@ namespace ProtoCore.DSASM
             classTable = null;
             instrStreamList = null;
             iStreamCanvas = null;
-            RuntimeCore = null;
+            RuntimeData = null;
         }
     }
 

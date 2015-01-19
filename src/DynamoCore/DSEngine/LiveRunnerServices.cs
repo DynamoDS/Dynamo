@@ -78,7 +78,7 @@ namespace Dynamo.DSEngine
         /// Return runtime warnings for this run.
         /// </summary>
         /// <returns></returns>
-        public IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
+        public IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
         {
             return liveRunner.GetRuntimeWarnings();
         }

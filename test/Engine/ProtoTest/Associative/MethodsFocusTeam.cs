@@ -1511,7 +1511,7 @@ namespace ProtoTest.Associative
             @"                class A                {                    fa = 1;                }                a:M = A.A();//            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
         }
 
         [Test]
@@ -1521,7 +1521,7 @@ namespace ProtoTest.Associative
             @"                class A                {                    fa = 1;                }                class M {};                a:M = A.A();            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
         }
 
         [Test]
@@ -1531,7 +1531,7 @@ namespace ProtoTest.Associative
             @"                class A                {                    fa = 1;                }                class M extends A{};                a:M = A.A();            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
         }
 
         [Test]

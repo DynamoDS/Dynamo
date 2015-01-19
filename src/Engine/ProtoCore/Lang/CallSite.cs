@@ -915,7 +915,7 @@ namespace ProtoCore
 
                 possibleFuncs.AppendLine("Error code: {DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}");
 
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
+                core.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
             }
 
             return feps[0];
@@ -1093,7 +1093,7 @@ namespace ProtoCore
 
                 if (candidateFunctions.Count == 0)
                 {
-                    core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAmbiguousMethodDispatch,
+                    core.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch,
                                                   StringConstants.kAmbigousMethodDispatch);
                     return null;
                 }
@@ -1117,7 +1117,7 @@ namespace ProtoCore
         //Inbound methods
 
         public StackValue JILDispatchViaNewInterpreter(ProtoCore.Runtime.Context context, List<StackValue> arguments, List<List<ProtoCore.ReplicationGuide>> replicationGuides,
-                                                       StackFrame stackFrame, Core core, RuntimeCore runtimeCore)
+                                                       StackFrame stackFrame, Core core, RuntimeData runtimeCore)
         {
 #if DEBUG
 
@@ -1130,7 +1130,7 @@ namespace ProtoCore
         }
 
         public StackValue JILDispatch(List<StackValue> arguments, List<List<ProtoCore.ReplicationGuide>> replicationGuides,
-                                      StackFrame stackFrame, Core core, RuntimeCore runtimeCore, Runtime.Context context)
+                                      StackFrame stackFrame, Core core, RuntimeData runtimeCore, Runtime.Context context)
         {
 #if DEBUG
 
@@ -1146,7 +1146,7 @@ namespace ProtoCore
 
         //Dispatch
         private StackValue DispatchNew(ProtoCore.Runtime.Context context, List<StackValue> arguments,
-                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, Core core, RuntimeCore runtimeCore)
+                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, Core core, RuntimeData runtimeCore)
         {
 
             // Update the CallsiteExecutionState with 
@@ -1244,7 +1244,7 @@ namespace ProtoCore
         private StackValue Execute(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                    List<StackValue> formalParameters,
                                    List<ReplicationInstruction> replicationInstructions, DSASM.StackFrame stackFrame,
-                                   Core core, RuntimeCore runtimeCore, FunctionGroup funcGroup)
+                                   Core core, RuntimeData runtimeCore, FunctionGroup funcGroup)
         {
             StackValue ret;
 
@@ -1343,7 +1343,7 @@ namespace ProtoCore
         private StackValue ExecWithRISlowPath(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
                                               List<StackValue> formalParameters,
                                               List<ReplicationInstruction> replicationInstructions,
-                                              StackFrame stackFrame, Core core, RuntimeCore runtimeCore, FunctionGroup funcGroup, 
+                                              StackFrame stackFrame, Core core, RuntimeData runtimeCore, FunctionGroup funcGroup, 
             SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             if (core.Options.ExecutionMode == ExecutionMode.Parallel)
@@ -1674,7 +1674,7 @@ namespace ProtoCore
         /// Dispatch without replication
         /// </summary>
         private StackValue ExecWithZeroRI(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
-                                          List<StackValue> formalParameters, StackFrame stackFrame, Core core, RuntimeCore runtimeCore,
+                                          List<StackValue> formalParameters, StackFrame stackFrame, Core core, RuntimeData runtimeCore,
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             if(core.CancellationPending)
@@ -1687,7 +1687,7 @@ namespace ProtoCore
 
             if (functionEndPoint == null)
             {
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure,
+                core.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure,
                                               "Function dispatch could not be completed {2EB39E1B-557C-4819-94D8-CF7C9F933E8A}");
                 return StackValue.Null;
             }
@@ -1890,7 +1890,7 @@ namespace ProtoCore
             {
                 //@TODO(Luke): log no-type coercion possible warning
 
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible,
+                core.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible,
                                               ProtoCore.StringConstants.kConvertNonConvertibleTypes);
 
                 return StackValue.Null;

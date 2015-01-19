@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ProtoCore.DSASM;
-using ProtoCore.RuntimeData;
+using ProtoCore.Runtime;
 using ProtoCore.Utils;
 
 namespace ProtoCore.Lang
@@ -34,14 +34,14 @@ namespace ProtoCore.Lang
                 procNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
             }
 
-            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.RuntimeCore.FunctionTable, core.Options.ExecutionMode);
+            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.RuntimeData.FunctionTable, core.Options.ExecutionMode);
         }
 
         public StackValue Evaluate(List<StackValue> args, StackFrame stackFrame)
         {
             // Build the stackframe
             var core = interpreter.runtime.Core;
-            var runtimeCore = interpreter.runtime.exe.RuntimeCore;
+            var runtimeCore = interpreter.runtime.exe.RuntimeData;
 
             int classScopeCaller = stackFrame.ClassScope;
             int returnAddr = stackFrame.ReturnPC;

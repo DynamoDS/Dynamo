@@ -44,7 +44,7 @@ namespace ProtoCore.Lang
             return true;
         }
 
-        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core, RuntimeCore runtimeCore)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core, RuntimeData runtimeCore)
         {   //  ensure there is no data race, function resolution and execution happens in parallel
             //  but for FFI we want it to be serial cause the code we are calling into may not cope
             //  with parallelism.
@@ -99,7 +99,7 @@ namespace ProtoCore.Lang
                     // But since we dont even need to to reach there if we dont have a valid this pointer, then just return null
                     if (formalParameters[thisPtrIndex].IsNull)
                     {
-                        core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kDereferencingNonPointer, ProtoCore.StringConstants.kDeferencingNonPointer);
+                        core.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDereferencingNonPointer, ProtoCore.StringConstants.kDeferencingNonPointer);
                         return StackValue.Null;
                     }
 
