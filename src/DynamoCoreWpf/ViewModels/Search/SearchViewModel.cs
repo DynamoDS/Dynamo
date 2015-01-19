@@ -261,14 +261,13 @@ namespace Dynamo.ViewModels
             foreach (var item in tree)
             {
                 var classes = item.SubCategories.Where(cat => cat.SubCategories.Count == 0).ToList();
-
-                if (classes.Count == 0)
-                    continue;
-
                 foreach (var item2 in classes)
                     item.SubCategories.Remove(item2);
 
                 InsertClassesIntoTree(item.SubCategories);
+
+                if (classes.Count == 0)
+                    continue;
 
                 var container = new ClassesNodeCategoryViewModel(item);
                 container.SubCategories.AddRange(classes);
@@ -384,8 +383,9 @@ namespace Dynamo.ViewModels
                     // and attach to it parrent.
                     if (targetClass != null)
                     {
-                        targetClass.SubCategories.Remove(target);
-                        targetClass.Parent.SubCategories.Add(target);
+                        if (targetClass.SubCategories.Remove(target))
+                            targetClass.Parent.SubCategories.Add(target);
+                        // Delete empty classes container.
                         if (targetClass.SubCategories.Count == 0)
                             targetClass.Parent.SubCategories.RemoveAt(0);
 
@@ -405,6 +405,8 @@ namespace Dynamo.ViewModels
 
                     target.SubCategories.Add(newTarget);
 
+                    // Proceed to insert the new entry under 'newTarget' category with the remaining 
+                    // name stack. In the first iteration this would have been 'MyNamespace.MyClass'.
                     InsertEntryIntoNewCategory(newTarget, entry, nameStack);
                     return;
                 }
@@ -419,12 +421,13 @@ namespace Dynamo.ViewModels
         }
 
         private static void InsertEntryIntoNewCategory(
-            NodeCategoryViewModel target, NodeSearchElementViewModel entry,
+            NodeCategoryViewModel category,
+            NodeSearchElementViewModel entry,
             IEnumerable<string> categoryNames)
         {
             if (!categoryNames.Any())
             {
-                target.Entries.Add(entry);
+                category.Entries.Add(entry);
                 return;
             }
 
@@ -435,7 +438,7 @@ namespace Dynamo.ViewModels
             //      NodeCategoryViewModel("MyAssembly.MyNamespace")
             //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
             // 
-            var path = target.FullCategoryName;
+            var path = category.FullCategoryName;
             var newTargets = categoryNames.Select(name =>
             {
                 path = MakeFullyQualifiedName(path, name);
@@ -460,17 +463,25 @@ namespace Dynamo.ViewModels
             //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
             // 
             int indexToInsertClass = newTargets.Count - 1;
-            var classParent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : target;
+            var classParent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : category;
             var newClass = new ClassesNodeCategoryViewModel(classParent);
             newTargets.Insert(indexToInsertClass, newClass);
 
+            // Here, all the entries in 'newTargets' are added under 'MyAssembly' recursively,
+            // resulting in the following hierarchical structure:
+            // 
+            //      NodeCategoryViewModel("MyAssembly")
+            //          NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //              ClassesNodeCategoryViewModel("Classes")
+            //                  NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
             foreach (var newTarget in newTargets)
             {
-                target.SubCategories.Add(newTarget);
-                target = newTarget;
+                category.SubCategories.Add(newTarget);
+                category = newTarget;
             }
 
-            target.Entries.Add(entry);
+            category.Entries.Add(entry);
         }
 
         // Form a fully qualified name based on nested level of a "NodeCategoryViewModel" object.
