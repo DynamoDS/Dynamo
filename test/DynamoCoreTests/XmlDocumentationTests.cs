@@ -52,8 +52,7 @@ namespace Dynamo.Tests
                 "Translate",
                 parms,
                 "Autodesk.DesignScript.Geometry.Geometry",
-                FunctionType.InstanceMethod,
-                false);
+                FunctionType.InstanceMethod);
 
             parms.ForEach(x => x.Function = funcDesc);
 
