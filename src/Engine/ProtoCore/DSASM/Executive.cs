@@ -771,12 +771,12 @@ namespace ProtoCore.DSASM
                     if (counter.times == 0)
                     {
                         counter.times++;
-                        core.calledInFunction = true;
+                        runtimeCore.calledInFunction = true;
                     }
 
                     else if (counter.times >= 1)
                     {
-                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && core.calledInFunction)
+                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && runtimeCore.calledInFunction)
                         {
                             counter.times++;
                         }
@@ -793,11 +793,11 @@ namespace ProtoCore.DSASM
                 else
                 {
                     FindRecursivePoints();
-                    string message = String.Format(StringConstants.kMethodStackOverflow, core.recursivePoint[0].name);
+                    string message = String.Format(StringConstants.kMethodStackOverflow, runtimeCore.recursivePoint[0].name);
                     core.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
 
-                    core.recursivePoint = new List<FunctionCounter>();
-                    core.funcCounterTable = new List<FunctionCounter>();
+                    runtimeCore.recursivePoint = new List<FunctionCounter>();
+                    runtimeCore.funcCounterTable = new List<FunctionCounter>();
                     sv = StackValue.Null;
                 }
             }
@@ -941,7 +941,7 @@ namespace ProtoCore.DSASM
 
                 if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_')
                 {
-                    core.calledInFunction = false;
+                    runtimeCore.calledInFunction = false;
                 }
             }
             return sv;
@@ -1051,59 +1051,28 @@ namespace ProtoCore.DSASM
 
         private void FindRecursivePoints()
         {
-            foreach (FunctionCounter c in core.funcCounterTable)
+            foreach (FunctionCounter c in runtimeCore.funcCounterTable)
             {
-
                 if (c.times == Constants.kRecursionTheshold || c.times == Constants.kRecursionTheshold - 1)
                 {
-                    core.recursivePoint.Add(c);
+                    runtimeCore.recursivePoint.Add(c);
                 }
-                //else if (c.sharedCounter == Constants.kRepetationTheshold || (c.sharedCounter == Constants.kRepetationTheshold - 1 || c.sharedCounter == Constants.kRepetationTheshold + 1)
-                //{
-                core.recursivePoint.Add(c);
-                //}
+                runtimeCore.recursivePoint.Add(c);
             }
-
         }
 
 
         private FunctionCounter FindCounter(int funcIndex, int classScope, string name)
         {
-            foreach (FunctionCounter c in core.funcCounterTable)
+            foreach (FunctionCounter c in runtimeCore.funcCounterTable)
             {
-
                 if (c.classScope == classScope && c.functionIndex == funcIndex)
                 {
-                    // Comment it out. Looks this foreach loop is dead code. 
-                    // - Yu Ke
-                    /*
-                    foreach (FunctionCounter c2 in core.funcCounterTable)
-                    {
-                        if (c.name.Equals(c2.name) && c2.name.ToCharArray()[0] != '%' && c2.name.ToCharArray()[0] != '_')
-                        {
-
-                            //c.sharedCounter++;
-                            if (c != c2)
-                            {
-                                //  c2.sharedCounter++;
-                            }
-                        }
-                    }
-                    */
-
                     return c;
                 }
-
             }
             FunctionCounter newC = new FunctionCounter(funcIndex, classScope, 0, name, 1);
-            foreach (FunctionCounter c in core.funcCounterTable)
-            {
-                if (c.name.Equals(newC.name))
-                {
-                    //c.sharedCounter++;
-                }
-            }
-            core.funcCounterTable.Add(newC);
+            runtimeCore.funcCounterTable.Add(newC);
             return newC;
         }
 

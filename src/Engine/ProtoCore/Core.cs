@@ -930,12 +930,6 @@ namespace ProtoCore
 
     public class Core
     {
-        public int ID { get; private set; }
-        //recurtion
-        public List<FunctionCounter> recursivePoint { get; set; }
-        public List<FunctionCounter> funcCounterTable { get; set; }
-        public bool calledInFunction;
-        
         // This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries in Graph UI
         public bool IsParsingPreloadedAssembly { get; set; }
         
@@ -986,10 +980,6 @@ namespace ProtoCore
             return ts;
         }
 
-        public FunctionTable FunctionTable { get; set; }
-
-        public Script Script { get; set; }
-        public LangVerify Langverify = new LangVerify();
         public Dictionary<Language, Executive> Executives { get; private set; }
 
         public Executive CurrentExecutive { get; private set; }
@@ -1356,10 +1346,6 @@ namespace ProtoCore
             watchSymbolList = new List<SymbolNode>();
             watchFramePointer = Constants.kInvalidIndex;
 
-            //recurtion
-            recursivePoint = new List<FunctionCounter>();
-            funcCounterTable = new List<FunctionCounter>();
-            calledInFunction = false;
 
             GlobOffset = 0;
             GlobHeapOffset = 0;
