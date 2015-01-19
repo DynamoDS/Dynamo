@@ -14,8 +14,7 @@ namespace TestUINodes
     [IsVisibleInDynamoLibrary(false)]
     public class NodeWithFailingASTOutput: NodeModel
     {
-        public NodeWithFailingASTOutput(WorkspaceModel workspaceModel)
-            : base(workspaceModel)
+        public NodeWithFailingASTOutput()
         {
             InPortData.Add(new PortData("input", "dummy input"));
             OutPortData.Add(new PortData("result", "dummy result"));

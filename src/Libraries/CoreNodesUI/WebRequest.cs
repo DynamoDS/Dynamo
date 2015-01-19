@@ -13,16 +13,12 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel
     {
-        public override bool ForceReExecuteOfNode
+        protected override ExecutionHints GetExecutionHintsCore()
         {
-            get
-            {
-                return true;
-            }
+            return ExecutionHints.ForceExecute;
         }
 
-        public WebRequest(WorkspaceModel workspace)
-            : base(workspace)
+        public WebRequest()
         {
             InPortData.Add(new PortData("url", "The url for the web request."));
             OutPortData.Add(new PortData("result", "The result of the web request."));
@@ -31,7 +27,7 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            RequiresRecalc = true;
+            OnNodeModified();
 
             var functionCall = AstFactory.BuildFunctionCall(new Func<string, string>(Web.WebRequestByUrl), inputAstNodes);
 

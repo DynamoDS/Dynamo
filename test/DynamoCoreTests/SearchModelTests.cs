@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -12,12 +9,12 @@ namespace Dynamo.Tests
     [TestFixture]
     internal class SearchModelTests
     {
-        private static SearchModel search;
+        private static NodeSearchModel search;
 
         [SetUp]
         public void Init()
         {
-           search = new SearchModel();
+            search = new NodeSearchModel();
         }
 
         #region Refactoring
@@ -26,22 +23,24 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanRefactorCustomNodeName()
         {
-            var nodeName = "TheNoodle";
-            var catName = "TheCat";
-            var descr = "TheCat";
-            var path = @"C:\turtle\graphics.dyn";
+            const string nodeName = "TheNoodle";
+            const string catName = "TheCat";
+            const string descr = "TheCat";
+            const string path = @"C:\turtle\graphics.dyn";
             var guid1 = Guid.NewGuid();
             var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var dummySearch1 = new CustomNodeSearchElement(null, dummyInfo1);
 
-            search.Add(dummyInfo1);
+            search.Add(dummySearch1);
 
-            Assert.AreEqual(1, search.SearchDictionary.NumElements);
+            Assert.AreEqual(1, search.NumElements);
 
-            var newNodeName = "TheTurtle";
+            const string newNodeName = "TheTurtle";
             var newInfo = new CustomNodeInfo(guid1, newNodeName, catName, descr, path);
-            search.Refactor(newInfo);
+            dummySearch1.SyncWithCustomNodeInfo(newInfo);
+            search.Update(dummySearch1);
 
-            Assert.AreEqual(1, search.SearchDictionary.NumElements);
+            Assert.AreEqual(1, search.NumElements);
 
             // search for new name
             var results = search.Search(newNodeName).ToList();
@@ -49,9 +48,8 @@ namespace Dynamo.Tests
             // results are correct
             Assert.AreEqual(1, results.Count());
             var res1 = results[0];
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
-            var node1 = res1 as CustomNodeSearchElement;
-            Assert.AreEqual(node1.Guid, guid1);
+            Assert.IsInstanceOf<CustomNodeSearchElement>(res1);
+            Assert.AreEqual(guid1, ((CustomNodeSearchElement)res1).ID);
 
             // search for old name
             var results1 = search.Search(nodeName);
@@ -64,16 +62,17 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanRefactorCustomNodeDescription()
         {
-            var nodeName = "TheNoodle";
-            var catName = "TheCat";
-            var descr = "Cool description, man";
-            var path = @"C:\turtle\graphics.dyn";
+            const string nodeName = "TheNoodle";
+            const string catName = "TheCat";
+            const string descr = "TheCat";
+            const string path = @"C:\turtle\graphics.dyn";
             var guid1 = Guid.NewGuid();
             var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var dummySearch1 = new CustomNodeSearchElement(null, dummyInfo1);
 
-            search.Add(dummyInfo1);
+            search.Add(dummySearch1);
 
-            Assert.AreEqual(1, search.SearchDictionary.NumElements);
+            Assert.AreEqual(1, search.NumElements);
 
             // search for name
             var results = search.Search(nodeName).ToList();
@@ -81,18 +80,17 @@ namespace Dynamo.Tests
             // results are correct
             Assert.AreEqual(1, results.Count());
             var res1 = results[0];
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
-            var node1 = res1 as CustomNodeSearchElement;
-            Assert.AreEqual(node1.Guid, guid1);
-            Assert.AreEqual(node1.Description, descr);
+            Assert.IsInstanceOf<CustomNodeSearchElement>(res1);
+            Assert.AreEqual(guid1, ((CustomNodeSearchElement)res1).ID);
 
             // refactor description
             const string newDescription = "Tickle me elmo";
             var newInfo = new CustomNodeInfo(guid1, nodeName, catName, newDescription, path);
-            search.Refactor(newInfo);
+            dummySearch1.SyncWithCustomNodeInfo(newInfo);
+            search.Update(dummySearch1);
 
             // num elements is unchanged
-            Assert.AreEqual(1, search.SearchDictionary.NumElements);
+            Assert.AreEqual(1, search.NumElements);
 
             // search for name
             var results1 = search.Search(nodeName).ToList();
@@ -100,38 +98,37 @@ namespace Dynamo.Tests
             // description is updated
             Assert.AreEqual(1,results1.Count());
             var res2 = results1[0];
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
-            var node2 = res2 as CustomNodeSearchElement;
-            Assert.AreEqual( guid1, node2.Guid );
-            Assert.AreEqual( newDescription, node2.Description);
-
+            Assert.IsInstanceOf<CustomNodeSearchElement>(res2);
+            Assert.AreEqual(guid1, ((CustomNodeSearchElement)res2).ID);
+            Assert.AreEqual(newDescription, res2.Description);
         }
 
         [Test]
         [Category("UnitTests")]
         public void CanRefactorCustomNodeWhilePreservingDuplicates()
         {
-            var nodeName = "TheNoodle";
-            var catName = "TheCat";
-            var descr = "TheCat";
-            var path = @"C:\turtle\graphics.dyn";
+            const string nodeName = "TheNoodle";
+            const string catName = "TheCat";
+            const string descr = "TheCat";
+            const string path = @"C:\turtle\graphics.dyn";
             var guid1 = Guid.NewGuid();
             var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
-            var guid2 = Guid.NewGuid();
-            var dummyInfo2 = new CustomNodeInfo(guid2, nodeName, catName, descr, path);
+            var dummySearch1 = new CustomNodeSearchElement(null, dummyInfo1);
+            var dummySearch2 = new CustomNodeSearchElement(null, dummyInfo1);
 
-            search.Add(dummyInfo1);
-            search.Add(dummyInfo2);
+            search.Add(dummySearch1);
+            search.Add(dummySearch2);
 
-            Assert.AreEqual(2, search.SearchDictionary.NumElements);
+            Assert.AreEqual(2, search.NumElements);
 
             // refactor one of the nodes with newNodeName
-            var newNodeName = "TheTurtle";
+            const string newNodeName = "TheTurtle";
             var newInfo = new CustomNodeInfo(guid1, newNodeName, catName, descr, path);
-            search.Refactor(newInfo);
+            dummySearch1.SyncWithCustomNodeInfo(newInfo);
+            search.Update(dummySearch1);
 
             // num elements is unchanged
-            Assert.AreEqual(2, search.SearchDictionary.NumElements);
+            Assert.AreEqual(2, search.NumElements);
 
             // search for new name
             var results = search.Search(newNodeName).ToList();
@@ -139,9 +136,8 @@ namespace Dynamo.Tests
             // results are correct - only one result
             Assert.AreEqual(1, results.Count());
             var res1 = results[0];
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
-            var node1 = res1 as CustomNodeSearchElement;
-            Assert.AreEqual(node1.Guid, guid1);
+            Assert.IsInstanceOf<CustomNodeSearchElement>(res1);
+            Assert.AreSame(dummySearch1, res1);
 
             // search for old name
             results = search.Search(nodeName).ToList();
@@ -149,93 +145,13 @@ namespace Dynamo.Tests
             // results are correct - the first nodes are returned
             Assert.AreEqual(1, results.Count());
             var res2 = results[0];
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
-            var node2 = res2 as CustomNodeSearchElement;
-            Assert.AreEqual(node2.Guid, guid2);
-        }
-
-        #endregion
-
-        #region Obtaining Stored Categories
-
-        [Test]
-        [Category("UnitTests")]
-        public void GetCategoryByNameWithValidInput()
-        {
-            const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
-            var nestedCat = search.GetCategoryByName("Category.Child");
-            Assert.NotNull(nestedCat);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void GetCategoryByNameWithInvalidInput()
-        {
-            const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
-            var nestedCat = search.GetCategoryByName("Toonces.The.Cat");
-            Assert.IsNull(nestedCat);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void ContainsCategoryWithValidInput()
-        {
-            const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsTrue(search.ContainsCategory(catName));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void ContainsCategoryWithInvalidInput()
-        {
-            const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsFalse(search.ContainsCategory("Toonces.The.Cat"));
-        }
-
-
-        [Test]
-        [Category("UnitTests")]
-        public void TryGetSubCategoryWithValidInput()
-        {
-            const string catName = "Category";
-            var cat = search.AddCategory(catName);
-            cat.Items.Add(new BrowserInternalElement("Child",cat));
-            Assert.IsNotNull(search.TryGetSubCategory(cat, "Child"));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TryGetSubCategoryWithInvalidInput()
-        {
-            const string catName = "Category";
-            var cat = search.AddCategory(catName);
-            cat.Items.Add(new BrowserInternalElement("Child", cat));
-            Assert.IsNull(search.TryGetSubCategory(cat, "Purple"));
+            Assert.IsInstanceOf<CustomNodeSearchElement>(res2);
+            Assert.AreSame(dummySearch2, res2);
         }
 
         #endregion
 
         #region Search
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanSearchForPartOfTextAndGetResult()
-        {
-            const string catName = "Category.Child";
-            search.AddCategory(catName);
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
-            var nestedCat = search.GetCategoryByName("Category.Child");
-            Assert.NotNull(nestedCat);
-        }
 
         [Test]
         [Category("UnitTests")]
@@ -245,57 +161,15 @@ namespace Dynamo.Tests
             const string nodeName = "what is this";
             for (var i = 0; i < 100; i++)
             {
-                search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
+                search.Add(
+                    new CustomNodeSearchElement(
+                        null,
+                        new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", "")));
             }
-            search.MaxNumSearchResults = 100;
             var results = search.Search(nodeName).ToList();
-            Assert.AreEqual(100, results.Count());
             Assert.AreEqual(nodeName, results[0].Name);
         }
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanAddMultiplyNestedCategory()
-        {
-            const string catName = "Category.Child.Thing.That";
-            search.AddCategory(catName);
-            Assert.True(search.ContainsCategory(catName));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanAddAndRemoveMultiplyNestedCategory()
-        {
-            const string catName = "Category.Child.Thing.That";
-            search.AddCategory(catName);
-            Assert.True(search.ContainsCategory(catName));
-            search.RemoveCategory(catName);
-            Assert.False(search.ContainsCategory(catName));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanRemoveRootAndRestOfChildrenOfNestedCategory()
-        {
-            const string catName = "Category.Child.Thing.That";
-            search.AddCategory(catName);
-            Assert.True(search.ContainsCategory(catName));
-            search.RemoveCategory("Category");
-            Assert.False(search.ContainsCategory(catName));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanAddMultiplyNestedCategoryMultipleTimes()
-        {
-            const string catName = "Category.Child.Thing.That";
-            search.AddCategory(catName);
-            search.AddCategory(catName);
-            search.AddCategory(catName);
-            search.AddCategory(catName);
-            Assert.True(search.ContainsCategory(catName));
-        }
-
+        
         [Test]
         [Category("UnitTests")]
         public void CanDuplicateAddedNodesInBrowser()
@@ -304,12 +178,32 @@ namespace Dynamo.Tests
             const string nodeName = "what is this";
             for (var i = 0; i < 100; i++)
             {
-                search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
+                search.Add(
+                    new CustomNodeSearchElement(
+                        null,
+                        new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", "")));
             }
 
-            var nestedCat = search.GetCategoryByName(catName);
-            Assert.AreEqual(100, nestedCat.Items.Count());
-            Assert.AreEqual(nodeName, nestedCat.Items[0].Name);
+            var categorized = SearchCategory.CategorizeSearchEntries(search.SearchEntries, x => x.Categories);
+            Assert.AreEqual(1, categorized.SubCategories.Count());
+            
+            categorized = categorized.SubCategories.First();
+            Assert.AreEqual("Category", categorized.Name);
+            Assert.AreEqual(1, categorized.SubCategories.Count());
+            
+            categorized = categorized.SubCategories.First();
+            Assert.AreEqual("Child", categorized.Name);
+            Assert.AreEqual(1, categorized.SubCategories.Count());
+            
+            categorized = categorized.SubCategories.First();
+            Assert.AreEqual("Thing", categorized.Name);
+            Assert.AreEqual(1, categorized.SubCategories.Count());
+            
+            categorized = categorized.SubCategories.First();
+            Assert.AreEqual("That", categorized.Name);
+            Assert.AreEqual(0, categorized.SubCategories.Count());
+            Assert.AreEqual(100, categorized.Entries.Count());
+            Assert.AreEqual(nodeName, categorized.Entries.First().Name);
         }
 
         [Test]
@@ -318,7 +212,10 @@ namespace Dynamo.Tests
         {
             const string catName = "Category.Child.Thing.That";
             const string nodeName = "what is this";
-            search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
+            search.Add(
+                new CustomNodeSearchElement(
+                    null,
+                    new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", "")));
 
             var results = search.Search("frog");
             Assert.AreEqual(0, results.Count());
@@ -330,7 +227,10 @@ namespace Dynamo.Tests
         {
             const string catName = "Category.Child.Thing.That";
             const string nodeName = "what is this";
-            search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
+            search.Add(
+                new CustomNodeSearchElement(
+                    null,
+                    new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", "")));
 
             var results = search.Search("hi");
             Assert.AreEqual(1, results.Count());
@@ -343,11 +243,17 @@ namespace Dynamo.Tests
             const string catName = "Category.Child.Thing.That";
             const string nodeName1 = "what is this";
             const string nodeName2 = "where is this";
-            search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName1, catName, "des", ""));
-            search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName2, catName, "des", ""));
+            search.Add(
+                new CustomNodeSearchElement(
+                    null,
+                    new CustomNodeInfo(Guid.NewGuid(), nodeName1, catName, "des", "")));
+            search.Add(
+                new CustomNodeSearchElement(
+                    null,
+                    new CustomNodeInfo(Guid.NewGuid(), nodeName2, catName, "des", "")));
 
             var results = search.Search("wh").ToList();
-            Assert.AreEqual(2, results.Count());
+            Assert.AreEqual(2, results.Count);
             Assert.AreEqual(nodeName1, results[0].Name);
             Assert.AreEqual(nodeName2, results[1].Name);
         }
@@ -357,10 +263,18 @@ namespace Dynamo.Tests
         public void SearchingForACategoryReturnsAllItsChildren()
         {
             const string catName = "Category.Child";
-            search.AddCategory(catName);
-            search.Add(new CustomNodeInfo(Guid.NewGuid(), "what", catName, "des", ""));
-            search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
-            search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
+            search.Add(
+                new CustomNodeSearchElement(
+                    null,
+                    new CustomNodeInfo(Guid.NewGuid(), "what", catName, "des", "")));
+            search.Add(
+                new CustomNodeSearchElement(
+                    null,
+                    new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", "")));
+            search.Add(
+                new CustomNodeSearchElement(
+                    null,
+                    new CustomNodeInfo(Guid.NewGuid(), "who", catName, "des", "")));
             var results = search.Search("Category.Child");
             Assert.AreEqual(3, results.Count());
         }
@@ -373,30 +287,30 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanSplitCategoryNameWithValidInput()
         {
-            var split = SearchModel.SplitCategoryName("this is a root category");
-            Assert.AreEqual(1, split.Count());
+            var split = NodeSearchElement.SplitCategoryName("this is a root category").ToList();
+            Assert.AreEqual(1, split.Count);
             Assert.AreEqual("this is a root category", split[0] );
 
-            split = SearchModel.SplitCategoryName("this is a root category.and");
-            Assert.AreEqual(2, split.Count());
+            split = NodeSearchElement.SplitCategoryName("this is a root category.and").ToList();
+            Assert.AreEqual(2, split.Count);
             Assert.AreEqual("this is a root category", split[0] );
             Assert.AreEqual("and", split[1]);
 
-            split = SearchModel.SplitCategoryName("this is a root category.and.this is a sub");
-            Assert.AreEqual(3, split.Count());
+            split = NodeSearchElement.SplitCategoryName("this is a root category.and.this is a sub").ToList();
+            Assert.AreEqual(3, split.Count);
             Assert.AreEqual("this is a root category", split[0]);
             Assert.AreEqual("and", split[1]);
             Assert.AreEqual("this is a sub", split[2]);
 
-            split = SearchModel.SplitCategoryName("this is a root category.and.this is a sub. with noodles");
-            Assert.AreEqual(4, split.Count());
+            split = NodeSearchElement.SplitCategoryName("this is a root category.and.this is a sub. with noodles").ToList();
+            Assert.AreEqual(4, split.Count);
             Assert.AreEqual("this is a root category", split[0]);
             Assert.AreEqual("and", split[1]);
             Assert.AreEqual("this is a sub", split[2]);
             Assert.AreEqual(" with noodles", split[3]);
 
-            split = SearchModel.SplitCategoryName("this is a root category.");
-            Assert.AreEqual(1,split.Count());
+            split = NodeSearchElement.SplitCategoryName("this is a root category.").ToList();
+            Assert.AreEqual(1,split.Count);
             Assert.AreEqual("this is a root category", split[0] );
         }
 
@@ -404,19 +318,19 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanSplitCategoryNameWithInvalidInput()
         {
-            var split = SearchModel.SplitCategoryName("");
-            Assert.AreEqual(0, split.Count());
+            var split = NodeSearchElement.SplitCategoryName("").ToList();
+            Assert.AreEqual(0, split.Count);
 
-            split = SearchModel.SplitCategoryName("this is a root category.");
-            Assert.AreEqual(1, split.Count());
+            split = NodeSearchElement.SplitCategoryName("this is a root category.").ToList();
+            Assert.AreEqual(1, split.Count);
             Assert.AreEqual("this is a root category", split[0]);
 
-            split = SearchModel.SplitCategoryName(".this is a root category.");
-            Assert.AreEqual(1, split.Count());
+            split = NodeSearchElement.SplitCategoryName(".this is a root category.").ToList();
+            Assert.AreEqual(1, split.Count);
             Assert.AreEqual("this is a root category", split[0]);
 
-            split = SearchModel.SplitCategoryName("...");
-            Assert.AreEqual(0, split.Count());
+            split = NodeSearchElement.SplitCategoryName("...").ToList();
+            Assert.AreEqual(0, split.Count);
         }
 
         #endregion
@@ -426,116 +340,74 @@ namespace Dynamo.Tests
         /// <summary>
         /// Helper method for custom node adding and removing
         /// </summary>
-        public static void AssertAddAndRemoveCustomNode(SearchModel searchModel, string nodeName, string catName, string descr = "Bla",
-                                                 string path = "Bla")
+        public static void AssertAddAndRemoveCustomNode(
+            NodeSearchModel searchModel, string nodeName, string catName, string descr = "Bla",
+            string path = "Bla")
         {
             var dummyInfo = new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, descr, path);
-
-            searchModel.Add(dummyInfo);
+            var dummySearch = new CustomNodeSearchElement(null, dummyInfo);
+            searchModel.Add(dummySearch);
 
             var res = searchModel.Search(nodeName).ToList();
             Assert.AreNotEqual(0, res.Count());
             Assert.AreEqual(res[0].Name, nodeName);
-            Assert.IsTrue(searchModel.ContainsCategory(catName));
 
-            searchModel.RemoveNodeAndEmptyParentCategory(nodeName);
+            searchModel.Remove(dummySearch);
             res = searchModel.Search(nodeName).ToList();
-
             Assert.AreEqual(0, res.Count());
-            Assert.IsFalse(searchModel.ContainsCategory(catName));
         }
-
-        [Test]
-        [Category("UnitTests")]
-        public void CannotAddCustomNodesWithSameGuids()
-        {
-            var nodeName = "TheNoodle";
-            var catName = "TheCat";
-            var descr = "TheCat";
-            var path = @"C:\turtle\graphics.dyn";
-            var guid1 = Guid.NewGuid();
-            var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
-            var dummyInfo2 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
-
-            search.Add(dummyInfo1);
-            search.Add(dummyInfo2);
-
-            Assert.AreEqual(1, search.SearchDictionary.NumElements);
-
-            var results = search.Search(nodeName).ToList();
-
-            Assert.AreEqual(1, results.Count());
-
-            var res1 = results[0];
-
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
-
-            var node1 = res1 as CustomNodeSearchElement;
-
-            Assert.AreEqual(node1.Guid, guid1);
-
-        }
-
+        
         [Test]
         [Category("UnitTests")]
         public void CanRemoveNodeAndCategoryByFunctionId()
         {
-            var nodeName = "TheNoodle";
-            var catName = "TheCat";
-            var descr = "TheCat";
-            var path = @"C:\turtle\graphics.dyn";
+            const string nodeName = "TheNoodle";
+            const string catName = "TheCat";
+            const string descr = "TheCat";
+            const string path = @"C:\turtle\graphics.dyn";
             var guid1 = Guid.NewGuid();
             var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var dummySearch1 = new CustomNodeSearchElement(null, dummyInfo1);
 
             // add custom node
-            search.Add(dummyInfo1);
-
+            search.Add(dummySearch1);
             // confirm it's in the dictionary
-            Assert.AreEqual(1, search.SearchDictionary.NumElements);
+            Assert.AreEqual(1, search.NumElements);
 
             // remove custom node
-            search.RemoveNodeAndEmptyParentCategory(guid1);
-
+            search.Remove(dummySearch1);
             // it's gone
-            Assert.AreEqual(0, search.SearchDictionary.NumElements);
+            Assert.AreEqual(0, search.NumElements);
+
             var results = search.Search(nodeName);
             Assert.AreEqual(0, results.Count());
-
         }
 
         [Test]
         [Category("UnitTests")]
         public void CanAddDuplicateCustomNodeWithDifferentGuidsAndGetBothInResults()
         {
-            var nodeName = "TheNoodle";
-            var catName = "TheCat";
-            var descr = "TheCat";
-            var path = @"C:\turtle\graphics.dyn";
+            const string nodeName = "TheNoodle";
+            const string catName = "TheCat";
+            const string descr = "TheCat";
+            const string path = @"C:\turtle\graphics.dyn";
             var guid1 = Guid.NewGuid();
             var guid2 = Guid.NewGuid();
             var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var dummySearch1 = new CustomNodeSearchElement(null, dummyInfo1);
             var dummyInfo2 = new CustomNodeInfo(guid2, nodeName, catName, descr, path);
+            var dummySearch2 = new CustomNodeSearchElement(null, dummyInfo2);
 
-            search.Add(dummyInfo1);
-            search.Add(dummyInfo2);
-
-            Assert.AreEqual(2, search.SearchDictionary.NumElements);
+            search.Add(dummySearch1);
+            search.Add(dummySearch2);
+            Assert.AreEqual(2, search.NumElements);
 
             var results = search.Search(nodeName).ToList();
-
             Assert.AreEqual(2, results.Count());
 
-            var res1 = results[0];
-            var res2 = results[1];
-
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
-
-            var node1 = res1 as CustomNodeSearchElement;
-            var node2 = res2 as CustomNodeSearchElement;
-
-            Assert.AreEqual(node1.Guid, guid1);
-            Assert.AreEqual(node2.Guid, guid2);
+            var resultIds = results.Cast<CustomNodeSearchElement>().Select(x => x.ID).ToList();
+            Assert.IsTrue(resultIds.Contains(guid1));
+            Assert.IsTrue(resultIds.Contains(guid2));
 
         }
 
@@ -543,8 +415,8 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanAddCustomNodeWithSinglyNestedCategoryValidInput()
         {
-            var nodeName = "TheNode";
-            var catName = "TheCat";
+            const string nodeName = "TheNode";
+            const string catName = "TheCat";
             AssertAddAndRemoveCustomNode(search, nodeName, catName);
         }
 
@@ -552,120 +424,19 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanAddCustomNodeWithDoublyNestedCategoryValidInput()
         {
-            var nodeName = "TheNode";
-            var catName = "TheCat.TheInnerCat";
+            const string nodeName = "TheNode";
+            const string catName = "TheCat.TheInnerCat";
             AssertAddAndRemoveCustomNode(search, nodeName, catName);
         }
         #endregion
-
-        #region Add Categories
-
-        [Test]
-        [Category("UnitTests")]
-        public void AddingARootCategoryMultipleTimesOnlyCreatesOneCategory()
-        {
-            const string catName = "Category";
-
-            for (var i = 0; i < 10; i++)
-            {
-                search.TryAddRootCategory(catName);
-            }
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == catName));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void AddingANestedCategoryMultipleTimesDoeNotDuplicateParentCategories()
-        {
-            const string catName = "Category.Child";
-
-            for (var i = 0; i < 10; i++)
-            {
-                search.AddCategory(catName);
-            }
-            Assert.IsTrue(search.ContainsCategory(catName));
-            Assert.AreEqual(1, search.BrowserRootCategories.Count(x => x.Name == "Category"));
-            var nestedCat = (BrowserInternalElement)search.GetCategoryByName("Category.Child");
-            Assert.NotNull(nestedCat);
-            Assert.AreEqual(1, nestedCat.Parent.Items.Count());
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanAddCategory()
-        {
-            var root = search.TryAddRootCategory("Peter");
-            var leafCat = new BrowserInternalElement("Boyer", root);
-            root.Items.Add(leafCat);
-
-            Assert.Contains( leafCat, root.Items );
-            Assert.Contains(root, search.BrowserRootCategories);
-            
-        }
-
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanAddCategoryWithDelimiters()
-        {
-            search.AddCategory("Peter.Boyer");
-            Assert.IsTrue(search.ContainsCategory("Peter.Boyer"));
-        }
-
-        #endregion
-
-        #region Remove Categories
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanRemoveRootCategoryWithInternalElements()
-        {
-            var root = (BrowserRootElement)search.TryAddRootCategory("Peter");
-            var leafCat = new BrowserInternalElement("Boyer", root);
-            root.Items.Add(leafCat);
-
-            Assert.Contains( leafCat, root.Items );
-            Assert.Contains(root, search.BrowserRootCategories);
-
-            search.RemoveCategory("Peter");
-            Assert.False(search.BrowserRootCategories.Contains(root));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanRemoveCategoryWithDelimiters()
-        {
-            search.AddCategory("Peter.Boyer");
-
-            Assert.IsTrue(search.ContainsCategory("Peter.Boyer"));
-
-            search.RemoveCategory("Peter.Boyer");
-            Assert.IsNull(search.GetCategoryByName("Peter.Boyer"));
-
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void CanRunRemoveCategoryIfCategoryDoesntExist()
-        {
-            var search = new SearchModel();
-            search.AddCategory("Peter.Boyer");
-
-            search.RemoveCategory("Peter.Rabbit");
-            Assert.IsNull(search.GetCategoryByName("Peter.Rabbit"));
-
-        }
-
-        #endregion
-
+        
         #region Remove Nodes
 
         [Test]
         [Category("UnitTests")]
         public void CanTryToRemoveElementFromSearchWithNonexistentName()
         {
-            search.RemoveNodeAndEmptyParentCategory("NonExistentName");
+            search.Remove(new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "", "", "", "")));
 
             var results = search.Search("NonExistentName");
             Assert.AreEqual(0, results.Count());
@@ -675,47 +446,48 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanRemoveSingleCustomNodeByIdWhereThereAreDuplicatesWithDifferentIds()
         {
-            var nodeName = "TheNoodle";
-            var catName = "TheCat";
-            var descr = "TheCat";
-            var path = @"C:\turtle\graphics.dyn";
+            const string nodeName = "TheNoodle";
+            const string catName = "TheCat";
+            const string descr = "TheCat";
+            const string path = @"C:\turtle\graphics.dyn";
             var guid1 = Guid.NewGuid();
             var guid2 = Guid.NewGuid();
             var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var dummySearch1 = new CustomNodeSearchElement(null, dummyInfo1);
             var dummyInfo2 = new CustomNodeInfo(guid2, nodeName, catName, descr, path);
+            var dummySearch2 = new CustomNodeSearchElement(null, dummyInfo2);
 
-            search.Add(dummyInfo1);
-            search.Add(dummyInfo2);
+            search.Add(dummySearch1);
+            search.Add(dummySearch2);
+            Assert.AreEqual(2, search.NumElements);
 
-            Assert.AreEqual(2, search.SearchDictionary.NumElements);
-
-            search.RemoveNodeAndEmptyParentCategory(guid2);
-
-            Assert.AreEqual(1, search.SearchDictionary.NumElements);
+            search.Remove(dummySearch2);
+            Assert.AreEqual(1, search.NumElements);
 
             var results = search.Search(nodeName).ToList();
-
             Assert.AreEqual(1, results.Count());
 
             var res1 = results[0];
-            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
-            var node1 = res1 as CustomNodeSearchElement;
-            Assert.AreEqual(node1.Guid, guid1);
+            Assert.IsInstanceOf<CustomNodeSearchElement>(res1);
+            var node1 = (CustomNodeSearchElement)res1;
+            Assert.AreEqual(node1.ID, guid1);
         }
 
         [Test]
         [Category("UnitTests")]
         public void CanRemoveElementCustomNodeByNameWithNestedCategory()
         {
-
-            search.Add(new CustomNodeInfo(Guid.NewGuid(), "Peter", "Turnip.Greens", "des", ""));
+            var element = new CustomNodeSearchElement(
+                null,
+                new CustomNodeInfo(Guid.NewGuid(), "Peter", "Turnip.Greens", "des", ""));
+            search.Add(element);
 
             var results = search.Search("Peter");
             Assert.AreEqual(1, results.Count());
 
-            search.RemoveNodeAndEmptyParentCategory("Peter");
-            results = search.Search("Peter");
+            search.Remove(element);
 
+            results = search.Search("Peter");
             Assert.AreEqual(0, results.Count());
         }
 
@@ -723,14 +495,17 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanRemoveElementCustomNodeByNameWithSingleCategory()
         {
-            search.Add(new CustomNodeInfo(Guid.NewGuid(), "Peter", "Greens", "des", ""));
+            var element = new CustomNodeSearchElement(
+                   null,
+                   new CustomNodeInfo(Guid.NewGuid(), "Peter", "Greens", "des", ""));
+            search.Add(element);
 
             var results = search.Search("Peter");
             Assert.AreEqual(1, results.Count());
 
-            search.RemoveNodeAndEmptyParentCategory("Peter");
-            results = search.Search("Peter");
+            search.Remove(element);
 
+            results = search.Search("Peter");
             Assert.AreEqual(0, results.Count());
         }
 

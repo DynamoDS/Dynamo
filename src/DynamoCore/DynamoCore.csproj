@@ -47,7 +47,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,7 +58,7 @@ limitations under the License.
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
+    <DefineConstants>TRACE;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
@@ -75,6 +75,9 @@ limitations under the License.
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
@@ -94,9 +97,12 @@ limitations under the License.
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Web" />
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net40\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -104,12 +110,28 @@ limitations under the License.
     </Compile>
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
-    <Compile Include="Core\DynamoRunner.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\PulseMaker.cs" />
+    <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="Search\Interfaces\ISearchCategory.cs" />
+    <Compile Include="Search\Interfaces\ISearchEntry.cs" />
+    <Compile Include="Search\NodeSearchModel.cs" />
+    <Compile Include="Search\SearchElements\CodeBlockNodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\NodeModelSearchElement.cs" />
+    <Compile Include="Search\SearchElements\NodeModelSearchElementBase.cs" />
+    <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
+    <Compile Include="Utilities\OrderedSet.cs" />
+    <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
-    <Compile Include="Search\BrowserRootElement.cs" />
+    <Compile Include="Nodes\DummyNode.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Search\Legacy\BrowserRootElement.cs" />
+    <Compile Include="Interfaces\ICustomNodeSource.cs" />
+    <Compile Include="Search\SearchLibrary.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
+    <Compile Include="Utilities\Disposable.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
@@ -156,8 +178,7 @@ limitations under the License.
     <Compile Include="Nodes\FunctionCallBase.cs" />
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
-    <Compile Include="Search\BrowserItem.cs" />
-    <Compile Include="Search\SearchModel.cs" />
+    <Compile Include="Search\Legacy\BrowserItem.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
@@ -173,8 +194,6 @@ limitations under the License.
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
-    <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
     <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Services\Heartbeat.cs" />
@@ -193,6 +212,7 @@ limitations under the License.
     <Compile Include="Utilities\LinkedListOfList.cs" />
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\MigrationReport.cs" />
+    <Compile Include="Utilities\Option.cs" />
     <Compile Include="Utilities\Point2D.cs" />
     <Compile Include="Utilities\Rect2D.cs" />
     <Compile Include="Utilities\Thickness.cs" />
@@ -200,7 +220,7 @@ limitations under the License.
     <Compile Include="Utilities\TypeExtensions.cs" />
     <Compile Include="Utilities\VersionUtilities.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
-    <Compile Include="Search\BrowserInternalElement.cs" />
+    <Compile Include="Search\Legacy\BrowserInternalElement.cs" />
     <Compile Include="PackageManager\PackageDownloadHandle.cs" />
     <Compile Include="PackageManager\PackageLoader.cs" />
     <Compile Include="Utilities\Extensions.cs" />
@@ -208,18 +228,17 @@ limitations under the License.
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\DynamoLoader.cs" />
-    <Compile Include="Core\NodeCollapser.cs" />
     <Compile Include="Utilities\Guid.cs" />
-    <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
-    <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="PackageManager\PackageManagerSearchElement.cs" />
-    <Compile Include="Search\SearchElements\SearchElementBase.cs" />
-    <Compile Include="Nodes\BaseTypes.cs" />
+    <Compile Include="Search\Legacy\SearchElements\SearchElementBase.cs" />
+    <Compile Include="Nodes\NodeCategories.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
-    <Compile Include="Nodes\Files.cs" />
     <Compile Include="Nodes\Custom Nodes\Function.cs" />
     <Compile Include="Models\NodeModel.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
+    <Compile Include="Models\NodeLoaders\CodeBlockNodeLoader.cs" />
+    <Compile Include="Models\NodeLoaders\CustomNodeLoader.cs" />
+    <Compile Include="Models\NodeLoaders\ZeroTouchNodeLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -240,7 +259,6 @@ limitations under the License.
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -284,6 +302,7 @@ limitations under the License.
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
@@ -301,8 +320,8 @@ copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
 xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
-xcopy  /Y "$(SolutionDir)..\extern\LibG_221\*" "$(OutputPath)libg_221\"
-xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"</PostBuildEvent>
+xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

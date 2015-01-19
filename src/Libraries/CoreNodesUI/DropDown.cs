@@ -6,15 +6,49 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.Models;
-using Dynamo.Nodes;
 
 namespace DSCoreNodesUI
 {
+    /// <summary>
+    /// A class used to store a name and associated item for a drop down menu
+    /// </summary>
+    public class DynamoDropDownItem : IComparable
+    {
+        public string Name { get; set; }
+        public object Item { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public DynamoDropDownItem(string name, object item)
+        {
+            Name = name;
+            Item = item;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var a = obj as DynamoDropDownItem;
+            if (a == null)
+                return 1;
+
+            return Name.CompareTo(a);
+        }
+
+    }
+
     /// <summary>
     /// Base class for all nodes allowing selection using a drop-down
     /// </summary>
     public abstract class DSDropDownBase : NodeModel
     {
+        protected DSDropDownBase()
+        {
+            ShouldDisplayPreviewCore = false;
+        }
+
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items
         {
@@ -44,20 +78,22 @@ namespace DSCoreNodesUI
             }
         }
 
-        protected DSDropDownBase(WorkspaceModel workspaceModel, string outputName) : base(workspaceModel)
+        protected DSDropDownBase(string outputName)
         {
             OutPortData.Add(new PortData(outputName, string.Format("The selected {0}", outputName)));
             RegisterAllPorts();
             PopulateItems();
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.SerializeCore(nodeElement, context);
             nodeElement.SetAttribute("index", SaveSelectedIndex(SelectedIndex, Items));            
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             // Drop downs previsouly saved their selected index as an int.
             // Between versions of host applications where the number or order of items
             // in a list would vary, this made loading of drop downs un-reliable.
@@ -129,13 +165,5 @@ namespace DSCoreNodesUI
         }
 
         public abstract void PopulateItems();
-
-        protected override bool ShouldDisplayPreviewCore
-        {
-            get
-            {
-                return false; // Previews are not shown for this node type.
-            }
-        }
     }
 }

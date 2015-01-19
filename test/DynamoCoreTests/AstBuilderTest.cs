@@ -45,8 +45,8 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            AstBuilder builder = new AstBuilder(model, null);
-            var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false);
+            AstBuilder builder = new AstBuilder(null);
+            var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false, false);
             var codeGen = new ProtoCore.CodeGenDS(astNodes);
             string code = codeGen.GenerateCode();
             Console.WriteLine(code);
