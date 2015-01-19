@@ -205,12 +205,6 @@ namespace ProtoCore.DSASM
 
     public class Heap
     {
-        public enum GCStrategies
-        {
-            kReferenceCounting,
-            kMarkAndSweep
-        }
-
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
         private bool isGarbageCollecting = false;
@@ -219,17 +213,6 @@ namespace ProtoCore.DSASM
         {
         }
 
-        public GCStrategies GCStrategy
-        {
-            get
-            {
-#if GC_MARK_AND_SWEEP
-                return Heap.GCStrategies.kMarkAndSweep;
-#else
-                return Heap.GCStrategies.kReferenceCounting;
-#endif
-            }
-        }
         public StackValue AllocateString(string str)
         {
             var chs = str.Select(c => StackValue.BuildChar(c)).ToArray();
@@ -285,6 +268,18 @@ namespace ProtoCore.DSASM
             int index = (int)pointer.opdata;
             var heapElement = heapElements[index];
             return heapElement;
+        }
+
+        public bool TryGetHeapElement(StackValue pointer, out HeapElement heapElement)
+        {
+            heapElement = null;
+            int index = (int)pointer.opdata;
+
+            if (index >= 0 && index < heapElements.Count)
+            {
+                heapElement = heapElements[index];
+            }
+            return heapElement != null;
         }
 
         public void Free()
