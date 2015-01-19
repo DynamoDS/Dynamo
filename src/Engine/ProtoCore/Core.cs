@@ -2095,9 +2095,19 @@ namespace ProtoCore
             }
         }
 
+        private RuntimeCore GenerateRuntimeCore()
+        {
+            RuntimeCore rtcore = new RuntimeCore();
+            rtcore.FunctionTable = FunctionTable;
+
+            return rtcore;
+        }
+
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
+
+            DSExecutable.RuntimeCore = GenerateRuntimeCore();
 
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;

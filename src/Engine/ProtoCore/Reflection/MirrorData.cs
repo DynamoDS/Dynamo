@@ -65,7 +65,7 @@ namespace ProtoCore
                 List<IGraphicItem> graphicItems = new List<IGraphicItem>();
                 foreach (var sv in values)
                 {
-                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.core, this.runtimeCore);
+                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.core);
                     if (items != null && (items.Count > 0))
                         graphicItems.AddRange(items);
                 }
@@ -179,9 +179,9 @@ namespace ProtoCore
                     case AddressType.Char:
                         return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(sv.opdata);
                     case AddressType.String:
-                        return StringUtils.GetStringValue(sv, core, runtimeCore);
+                        return StringUtils.GetStringValue(sv, core);
                     case AddressType.Pointer:
-                        return dataProvider.GetCLRObject(sv, core, runtimeCore);
+                        return dataProvider.GetCLRObject(sv, core);
                     default:
                         break;
                 }

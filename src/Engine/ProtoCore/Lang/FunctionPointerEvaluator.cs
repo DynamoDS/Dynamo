@@ -34,14 +34,14 @@ namespace ProtoCore.Lang
                 procNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
             }
 
-            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.runtimeCore.FunctionTable, core.Options.ExecutionMode);
+            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.RuntimeCore.FunctionTable, core.Options.ExecutionMode);
         }
 
         public StackValue Evaluate(List<StackValue> args, StackFrame stackFrame)
         {
             // Build the stackframe
             var core = interpreter.runtime.Core;
-            var runtimeCore = interpreter.runtime.runtimeCore;
+            var runtimeCore = interpreter.runtime.exe.RuntimeCore;
 
             int classScopeCaller = stackFrame.ClassScope;
             int returnAddr = stackFrame.ReturnPC;

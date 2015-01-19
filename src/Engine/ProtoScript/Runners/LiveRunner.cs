@@ -1290,7 +1290,7 @@ namespace ProtoScript.Runners
             //  Exelist, Globals symbols
 
             ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
-            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore, runtimeCore);
+            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
             Executable exe = exec.exe;
 
             // Only display symbols defined in the default top-most langauge block;

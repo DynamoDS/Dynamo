@@ -80,7 +80,7 @@ namespace ProtoCore
             {
                 Validity.Assert(this.core != null);
                 TargetExecutive = core.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core, runtimeCore);
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core);
                 this.mirrorData = mirrorData;
             }
 
@@ -88,7 +88,7 @@ namespace ProtoCore
                 : base(core, runtimeCore)
             {
                 TargetExecutive = core.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core, runtimeCore);
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core);
 
                 Validity.Assert(this.core != null);
 

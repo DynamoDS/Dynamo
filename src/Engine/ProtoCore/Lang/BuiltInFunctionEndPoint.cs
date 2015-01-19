@@ -32,7 +32,7 @@ namespace ProtoCore.Lang
         public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core, RuntimeCore runtimeCore)
         {
 
-            ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core, runtimeCore);
+            ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core);
             StackValue ret;
 
             switch (buildInMethodId)
@@ -412,7 +412,7 @@ namespace ProtoCore.Lang
                     ret = StringUtils.ConvertToString(formalParameters[0], core, runtimeCore, core.Rmem);
                     break;
                 case BuiltInMethods.MethodID.kImportData:
-                    ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], core, runtimeCore, interpreter, c);
+                    ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], core, interpreter, c);
                     break;
                 case BuiltInMethods.MethodID.kBreak:
                     {
@@ -486,7 +486,7 @@ namespace ProtoCore.Lang
                     break;
                 case BuiltInMethods.MethodID.kNodeAstFailed:
                     var nodeFullName = formalParameters[0];
-                    var fullName = StringUtils.GetStringValue(nodeFullName, core, runtimeCore);
+                    var fullName = StringUtils.GetStringValue(nodeFullName, core);
                     ret = StackValue.Null;
                     break;
                 default:
@@ -499,7 +499,7 @@ namespace ProtoCore.Lang
         private StackValue DotMethod(StackValue lhs, StackFrame stackFrame, DSASM.Executive runtime, Context context)
         {
             var core = runtime.Core;
-            var runtimeCore = runtime.runtimeCore;
+            var runtimeCore = runtime.exe.RuntimeCore;
             var rmem = runtime.rmem;
 
             bool isValidThisPointer = true;
@@ -673,9 +673,9 @@ namespace ProtoCore.Lang
 
     internal class ContextDataBuiltIns
     {
-        internal static StackValue ImportData(StackValue svAppName, StackValue svConnectionParameters, Core core, RuntimeCore runtimeCore, Interpreter interpreter, ProtoCore.Runtime.Context c)
+        internal static StackValue ImportData(StackValue svAppName, StackValue svConnectionParameters, Core core, Interpreter interpreter, ProtoCore.Runtime.Context c)
         {
-            string appname = StringUtils.GetStringValue(svAppName, core, runtimeCore);
+            string appname = StringUtils.GetStringValue(svAppName, core);
 
             IContextDataProvider provider = ContextDataManager.GetInstance(core).GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
@@ -695,7 +695,7 @@ namespace ProtoCore.Lang
                 int nParameters = svArray.Length / 2;
                 for (int i = 0; i < nParameters; ++i)
                 {
-                    string paramName = StringUtils.GetStringValue(svArray[2*i], core, runtimeCore);
+                    string paramName = StringUtils.GetStringValue(svArray[2*i], core);
                     Object paramData = marshaler.UnMarshal(svArray[2*i+1], c, interpreter, typeof(Object));
                     parameters.Add(paramName, paramData);
                 }
@@ -898,7 +898,7 @@ namespace ProtoCore.Lang
         internal static StackValue Print(StackValue msg, ProtoCore.DSASM.Interpreter runtime)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.Core, runtime.runtime.runtimeCore);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.Core);
             string result = mirror.GetStringValue(msg, runtime.runtime.Core.Heap, 0, true);
             //For Console output
             Console.WriteLine(result);

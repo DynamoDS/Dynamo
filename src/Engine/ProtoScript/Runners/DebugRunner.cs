@@ -235,7 +235,7 @@ namespace ProtoScript.Runners
             }
             finally
             {
-                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core, runtimeCore);
+                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
                 vms = new VMState(execMirror, core);
                 vms.isEnded = isEnded;
                 ProtoCore.CodeModel.CodePoint start = new ProtoCore.CodeModel.CodePoint();
@@ -555,7 +555,7 @@ namespace ProtoScript.Runners
             }
             core.Bounce(runtimeCore, resumeBlockID, programCounterToExecuteFrom, context, breakpoints, core.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);
 
-            return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core, runtimeCore);
+            return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
 
         }
         /// <summary>

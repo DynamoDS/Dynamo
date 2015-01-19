@@ -39,12 +39,12 @@ namespace ProtoCore.DSASM.Mirror
         /// Create a mirror for a given executive
         /// </summary>
         /// <param name="exec"></param>
-        public ExecutionMirror(ProtoCore.DSASM.Executive exec, ProtoCore.Core coreObj, RuntimeCore rtCore)
+        public ExecutionMirror(ProtoCore.DSASM.Executive exec, ProtoCore.Core coreObj)
         {
             Validity.Assert(exec != null, "Can't mirror a null executive");
 
             core = coreObj;
-            runtimeCore = rtCore;
+            runtimeCore = core.DSExecutable.RuntimeCore;
             MirrorTarget = exec;
 
             LoadPropertyFilters();

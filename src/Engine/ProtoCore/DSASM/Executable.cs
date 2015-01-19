@@ -38,6 +38,13 @@ namespace ProtoCore.DSASM
             kInstrStreamGlobalScope = 0 // Offset into the instruction stream where global scope instructions are stored
         }
 
+        /// <summary>
+        /// RuntimeCore is set in the executable to isolate data passed to the runtime VM
+        /// The RuntimeCore will eventually be integrated completely into executable,
+        /// this means moving RuntimeCore properties to Executable and deprecating the RuntimeCore object
+        /// </summary>
+        public RuntimeCore RuntimeCore { get; set; }
+
         public bool isSingleAssocBlock { get; set; }
         public ProtoCore.DSASM.ClassTable classTable { get; set; }
         public ProtoCore.DSASM.ProcedureTable[] procedureTable { get; set; }
@@ -61,6 +68,7 @@ namespace ProtoCore.DSASM
             classTable = null;
             instrStreamList = null;
             iStreamCanvas = null;
+            RuntimeCore = null;
         }
     }
 

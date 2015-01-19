@@ -15,9 +15,9 @@ namespace ProtoTestFx
 {
     public class InjectionExecutiveProvider : IExecutiveProvider
     {
-        public ProtoCore.DSASM.Executive CreateExecutive(Core core, ProtoCore.RuntimeCore runtimeCore, bool isFep)
+        public ProtoCore.DSASM.Executive CreateExecutive(Core core, bool isFep)
         {
-            return new InjectionExecutive(core, runtimeCore, isFep);
+            return new InjectionExecutive(core, isFep);
         }
     }
 
@@ -39,7 +39,7 @@ namespace ProtoTestFx
     public class InjectionExecutive : ProtoCore.DSASM.Executive
     {
 
-        public InjectionExecutive(Core core, RuntimeCore runtimeCore, bool isFep = false) : base(core, runtimeCore, isFep) { }
+        public InjectionExecutive(Core core, bool isFep = false) : base(core, isFep) { }
 
         public static int callrLineNo { get; private set; }
         public static bool IsPopToPropertyArray { get; set; }
@@ -56,7 +56,7 @@ namespace ProtoTestFx
         internal void Print(StackValue sv, int lineNo, string symbolName, int ci = Constants.kInvalidIndex)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core, runtimeCore);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core);
             string result = mirror.GetStringValue(sv, Core.Heap, 0, true);
 
             TextOutputStream tStream = Core.BuildStatus.MessageHandler as TextOutputStream;

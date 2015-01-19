@@ -184,7 +184,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core, runtimeCore);
+                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
             }
 
             return null;
@@ -217,7 +217,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core, runtimeCore);
+                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
             }
 
             return null;
@@ -246,7 +246,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core, runtimeCore);
+                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
             }
 
             return null;
@@ -283,7 +283,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core, runtimeCore);
+                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
             }
 
             return null;
@@ -311,7 +311,7 @@ namespace ProtoScript.Runners
             Execute(strSource, core, runtimeCore);
 
             if (isTest && !core.Options.CompileToLib)
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core, runtimeCore);
+                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
             else
                 return null;
         }

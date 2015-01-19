@@ -199,7 +199,7 @@ namespace ProtoScript.Runners
             Core.Options.GenerateSSA = ssastate;
             Core.Options.ExecuteSSA = ssastateExec;
 
-            return new ExecutionMirror(Core.CurrentExecutive.CurrentDSASMExec, Core, runtimeCore);
+            return new ExecutionMirror(Core.CurrentExecutive.CurrentDSASMExec, Core);
         }
     }
 }

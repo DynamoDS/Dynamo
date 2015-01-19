@@ -218,9 +218,9 @@ namespace ProtoTestFx
                 {
 
                     ExecutionMirror runExecMirror = new ExecutionMirror(c1.CurrentExecutive.CurrentDSASMExec,
-                                                                        c1, null);
+                                                                        c1);
                     ExecutionMirror debugExecMirror =
-                        new ExecutionMirror(c2.CurrentExecutive.CurrentDSASMExec, c2, null);
+                        new ExecutionMirror(c2.CurrentExecutive.CurrentDSASMExec, c2);
 
                     bool lookupOk = false;
                     StackValue runValue = StackValue.Null;

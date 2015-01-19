@@ -78,7 +78,7 @@ namespace Dynamo.Interfaces
 
                 if (stackValue.IsFunctionPointer)
                 {
-                    stringValue = StringUtils.GetStringValue(stackValue, core, runtimeCore);
+                    stringValue = StringUtils.GetStringValue(stackValue, core);
                 }
                 else
                 {

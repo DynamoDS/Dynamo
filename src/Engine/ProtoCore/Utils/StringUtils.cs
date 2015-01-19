@@ -41,9 +41,9 @@ namespace ProtoCore.Utils
                 return -1;
         }
 
-        public static string GetStringValue(StackValue sv, Core core, RuntimeCore runtimeCore)
+        public static string GetStringValue(StackValue sv, Core core)
         {
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(core, runtimeCore), core, runtimeCore);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(core), core);
             return mirror.GetStringValue(sv, core.Heap, 0, true);
         }
 
@@ -51,7 +51,7 @@ namespace ProtoCore.Utils
         {
             StackValue returnSV;
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(core, runtimeCore), core, runtimeCore);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(core), core);
             returnSV = ProtoCore.DSASM.StackValue.BuildString(mirror.GetStringValue(sv, core.Heap,0, true),core.Heap);
             return returnSV;
         }
