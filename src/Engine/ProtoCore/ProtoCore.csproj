@@ -103,7 +103,7 @@
     <Compile Include="CodeFile.cs" />
     <Compile Include="CodeGenDS.cs" />
     <Compile Include="CodePoint.cs" />
-    <Compile Include="CompileCore.cs" />
+    <Compile Include="CompileData.cs" />
     <Compile Include="CompilerOptions.cs" />
     <Compile Include="CompilerUtils.cs" />
     <Compile Include="Core.cs" />
@@ -142,7 +142,7 @@
     <Compile Include="Reflection\MirrorData.cs" />
     <Compile Include="Reflection\Reflection.cs" />
     <Compile Include="RuntimeContext.cs" />
-    <Compile Include="RuntimeCore.cs" />
+    <Compile Include="RuntimeData.cs" />
     <Compile Include="RuntimeMemory.cs" />
     <Compile Include="RuntimeStatus.cs" />
     <Compile Include="DSDefinitions.cs" />

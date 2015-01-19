@@ -27,9 +27,9 @@ namespace ProtoCore
     /// It is instantiated prior to compiling a body of code.
     /// The primary purpose of CompileCore is to store compile-time information that is consumed within the code generators
     /// </summary>
-    public class CompileCore
+    public class CompileData
     {
-        public CompileCore()
+        public CompileData()
         {
         }
     }
