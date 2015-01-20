@@ -222,7 +222,7 @@ namespace DSCore
         /// <param name="list">List to be split.</param>
         /// <returns name="first">First item in the list.</returns>
         /// <returns name="rest">Rest of the list.</returns>
-        /// <search>first,rest</search>
+        /// <search>first,rest,list split</search>
         [MultiReturn(new[] { /*NXLT*/"first", /*NXLT*/"rest" })]
         public static IDictionary Deconstruct(IList list)
         {
@@ -239,7 +239,7 @@ namespace DSCore
         /// <param name="item">Item to be added.</param>
         /// <param name="list">List to add on to.</param>
         /// <returns name="list">New list.</returns>
-        /// <search>insert,add,item,front</search>
+        /// <search>insert,add,item,front,start,begin</search>
         public static IList AddItemToFront([ArbitraryDimensionArrayImport] object item, IList list)
         {
             var newList = new ArrayList { item };
@@ -269,7 +269,7 @@ namespace DSCore
         ///     Amount of items to take. If negative, items are taken from the end of the list.
         /// </param>
         /// <returns name="list">List of extracted items.</returns>
-        /// <search>get,sub,sublist</search>
+        /// <search>get,sub,sublist,extract</search>
         public static IList TakeItems(IList list, int amount)
         {
             IEnumerable<object> genList = list.Cast<object>();
@@ -284,7 +284,7 @@ namespace DSCore
         ///     Amount of items to remove. If negative, items are removed from the end of the list.
         /// </param>
         /// <returns name="list">List of remaining items.</returns>
-        /// <search>drop,remove</search>
+        /// <search>drop,remove,shorten</search>
         public static IList DropItems(IList list, int amount)
         {
             IEnumerable<object> genList = list.Cast<object>();
@@ -299,7 +299,7 @@ namespace DSCore
         ///     Amount to shift indices by. If negative, indices will be shifted to the left.
         /// </param>
         /// <returns name="list">Shifted list.</returns>
-        /// <search>shift</search>
+        /// <search>shift,slide,offset</search>
         public static IList ShiftIndices(IList list, int amount)
         {
             if (amount == 0)
@@ -319,7 +319,7 @@ namespace DSCore
         /// <param name="list">List to fetch an item from.</param>
         /// <param name="index">Index of the item to be fetched.</param>
         /// <returns name="item">Item in the list at the given index.</returns>
-        /// <search>get,item,index,fetch</search>
+        /// <search>get,item,index,fetch,at,getfrom,get from,extract</search>
         public static object GetItemAtIndex(IList list, int index)
         {
             return list[index];
@@ -336,7 +336,7 @@ namespace DSCore
         ///     Amount the indices of the items are separate by in the original list.
         /// </param>
         /// <returns name="items">Items in the slice of the given list.</returns>
-        /// <search>list,sub,sublist</search>
+        /// <search>list,sub,sublist,subrange,get sublist</search>
         public static IList Slice(IList list, int? start = null, int? end = null, int step = 1)
         {
             if (step == 0)
@@ -381,7 +381,7 @@ namespace DSCore
         /// <param name="list">List to remove an item or items from.</param>
         /// <param name="indices">Index or indices of the item(s) to be removed.</param>
         /// <returns name="list">List with items removed.</returns>
-        /// <search>index,indices,cull</search>
+        /// <search>index,indices,cull,remove,item</search>
         public static IList RemoveItemAtIndex(IList list, int[] indices)
         {
             return list.Cast<object>().Where((_, i) => !indices.Contains(i)).ToList();
@@ -427,7 +427,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to check for items.</param>
         /// <returns name="bool">Whether the list is empty.</returns>
-        /// <search>test,is,empty</search>
+        /// <search>test,is,empty,null,count</search>
         public static bool IsEmpty(IList list)
         {
             return list.Count == 0;
@@ -438,7 +438,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to get the item count of.</param>
         /// <returns name="count">List length.</returns>
-        /// <search>listlength,list length,count</search>
+        /// <search>listlength,list length,count,size,sizeof</search>
         public static int Count(IList list)
         {
             return list.Count;
@@ -449,7 +449,7 @@ namespace DSCore
         /// </summary>
         /// <param name="lists">Lists to join into one.</param>
         /// <returns name="list">Joined list.</returns>
-        /// <search>join lists</search>
+        /// <search>join lists,merge,concatenate</search>
         public static IList Join(params IList[] lists)
         {
             var result = new ArrayList();
@@ -463,7 +463,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to get the first item from.</param>
         /// <returns name="item">First item in the list.</returns>
-        /// <search>get,fetch,first,item</search>
+        /// <search>get,fetch,first,item,start</search>
         public static object FirstItem(IList list)
         {
             return list[0];
@@ -474,7 +474,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to get the rest of.</param>
         /// <returns name="rest">Rest of the list.</returns>
-        /// <search>get,fetch,rest</search>
+        /// <search>get,fetch,rest,end,rest of list</search>
         public static IList RestOfItems(IList list)
         {
             return list.Cast<object>().Skip(1).ToList();
@@ -486,7 +486,7 @@ namespace DSCore
         /// <param name="list">List to chop up.</param>
         /// <param name="subLength">Length of each new sub-list.</param>
         /// <returns name="lists">List of lists.</returns>
-        /// <search>sublists,build sublists</search>
+        /// <search>sublists,build sublists,slices,partitions,cut</search>
         public static IList Chop(IList list, int subLength)
         {
             if (list.Count < subLength)
@@ -521,7 +521,7 @@ namespace DSCore
         /// <param name="list">A flat list</param>
         /// <param name="subLength">Length of each new sub-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
-        /// <search>diagonal,right,matrix</search>
+        /// <search>diagonal,right,matrix,get diagonals,diagonal sublists, </search>
         public static IList DiagonalRight([ArbitraryDimensionArrayImport] IList list, int subLength)
         {
             object[] flatList;
@@ -580,7 +580,7 @@ namespace DSCore
         /// <param name="list">A flat list.</param>
         /// <param name="rowLength">Length of each new sib-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
-        /// <search>diagonal,left,matrix</search>
+        /// <search>diagonal,left,matrix,get diagonals,diagonal sublists</search>
         public static IList DiagonalLeft(IList list, int rowLength)
         {
             object[] flatList;
@@ -664,7 +664,7 @@ namespace DSCore
         /// <param name="item">The item to repeat.</param>
         /// <param name="amount">The number of times to repeat.</param>
         /// <returns name="list">List of repeated items.</returns>
-        /// <search>repeat,repeated,duplicate</search>
+        /// <search>repeat,repeated,duplicate,list of item,fill list,copies</search>
         public static IList OfRepeatedItem([ArbitraryDimensionArrayImport] object item, int amount)
         {
             return Enumerable.Repeat(item, amount).ToList();
@@ -676,7 +676,7 @@ namespace DSCore
         /// <param name="list">List to repeat.</param>
         /// <param name="amount">Number of times to repeat.</param>
         /// <returns name="list">List of repeated lists.</returns>
-        /// <search>repeat,repeated,duplicate</search>
+        /// <search>repeat,repeated,duplicate,repeated list,concat list</search>
         public static IList Cycle(IList list, int amount)
         {
             var result = new ArrayList();
@@ -701,7 +701,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to get the last item of.</param>
         /// <returns name="last">Last item in the list.</returns>
-        /// <search>get,fetch,last,item</search>
+        /// <search>get,fetch,last,item,end of list</search>
         public static object LastItem(IList list)
         {
             if (list.Count == 0)
@@ -715,7 +715,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to shuffle.</param>
         /// <returns name="list">Randomized list.</returns>
-        /// <search>random,randomize,shuffle,jitter</search>
+        /// <search>random,randomize,shuffle,jitter,randomness</search>
         public static IList Shuffle(IList list)
         {
             var rng = new Random();
