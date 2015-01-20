@@ -8,9 +8,6 @@ using ProtoTestFx.TD;
 using ProtoScript.Runners;
 namespace ProtoTest.DSASM
 {
-
-#if GC_MARK_AND_SWEEP
-
     [TestFixture]
     public class HeapMarkAndSweepTests
     {
@@ -57,11 +54,11 @@ namespace ProtoTest.DSASM
 
             heap.GCMarkAndSweep(new List<StackValue>(), testExecutive);
 
-            var arrayHeapElement = heap.GetHeapElement(array);
-            Assert.IsNull(arrayHeapElement);
+            HeapElement arrayHeapElement;
+            Assert.IsFalse(heap.TryGetHeapElement(array, out arrayHeapElement));
 
-            var strHeapElement = heap.GetHeapElement(str);
-            Assert.IsNull(strHeapElement);
+            HeapElement strHeapElement;
+            Assert.IsFalse(heap.TryGetHeapElement(str, out strHeapElement));
         }
 
         /// <summary>
@@ -100,8 +97,8 @@ namespace ProtoTest.DSASM
 
             heap.GCMarkAndSweep(new List<StackValue>() { array1}, testExecutive);
 
-            var arrayHeapElement = heap.GetHeapElement(array1);
-            Assert.IsNotNull(arrayHeapElement);
+            HeapElement arrayHeapElement;
+            Assert.IsTrue(heap.TryGetHeapElement(array1, out arrayHeapElement));
 
             heap.Free();
         }
@@ -141,8 +138,8 @@ namespace ProtoTest.DSASM
             // non pointer gc root won't retain memory
             heap.GCMarkAndSweep(allTypes, testExecutive);
 
-            var arrayHeapElement = heap.GetHeapElement(array);
-            Assert.IsNull(arrayHeapElement);
+            HeapElement arrayHeapElement;
+            Assert.IsFalse(heap.TryGetHeapElement(array, out arrayHeapElement));
 
             heap.Free();
         }
@@ -161,14 +158,14 @@ namespace ProtoTest.DSASM
 
             heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
 
-            var array1HeapElement = heap.GetHeapElement(array1);
-            Assert.IsNull(array1HeapElement);
+            HeapElement array1HeapElement;
+            Assert.IsFalse(heap.TryGetHeapElement(array1, out array1HeapElement));
 
-            var array2HeapElement = heap.GetHeapElement(array2);
-            Assert.IsNull(array2HeapElement);
+            HeapElement array2HeapElement;
+            Assert.IsFalse(heap.TryGetHeapElement(array2, out array2HeapElement));
 
-            var array3HeapElement = heap.GetHeapElement(array3);
-            Assert.IsNull(array3HeapElement);
+            HeapElement array3HeapElement;
+            Assert.IsFalse(heap.TryGetHeapElement(array3, out array3HeapElement));
         }
 
         /// <summary>
@@ -188,11 +185,11 @@ namespace ProtoTest.DSASM
 
             heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
 
-            var valHeapElement = heap.GetHeapElement(val);
-            Assert.IsNull(valHeapElement);
+            HeapElement valHeapElement;
+            Assert.IsFalse(heap.TryGetHeapElement(val, out valHeapElement));
 
-            var arrayHeapElement = heap.GetHeapElement(array);
-            Assert.IsNull(arrayHeapElement);
+            HeapElement arrayHeapElement;
+            Assert.IsFalse(heap.TryGetHeapElement(array, out arrayHeapElement));
         }
 
         /// <summary>
@@ -208,8 +205,9 @@ namespace ProtoTest.DSASM
             arrayHeapElement.Stack[0] = array;
 
             heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
-            var releasedHeapElement = heap.GetHeapElement(array);
-            Assert.IsNull(releasedHeapElement);
+
+            HeapElement releasedHeapElement;
+            Assert.IsFalse(heap.TryGetHeapElement(array, out releasedHeapElement));
         }
 
         /// <summary>
@@ -227,13 +225,11 @@ namespace ProtoTest.DSASM
 
             heap.GCMarkAndSweep(new List<StackValue>() { }, testExecutive);
 
-            var array1Hpe = heap.GetHeapElement(array1);
-            Assert.IsNull(array1Hpe);
+            HeapElement array1Hpe;
+            Assert.IsFalse(heap.TryGetHeapElement(array1, out array1Hpe));
 
-            var array2Hpe = heap.GetHeapElement(array2);
-            Assert.IsNull(array2Hpe);
+            HeapElement array2Hpe;
+            Assert.IsFalse(heap.TryGetHeapElement(array2, out array2Hpe));
         }
     }
-
-#endif
 }

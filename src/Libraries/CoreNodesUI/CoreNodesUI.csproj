@@ -59,12 +59,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\BaseTypes.cs" />
+    <Compile Include="Input\SliderBase.cs" />
+    <Compile Include="Input\SliderViewModel.cs" />
     <Compile Include="UI\DirectoryNodeViewCustomization.cs" />
     <Compile Include="Input\Double.cs" />
     <Compile Include="Input\DoubleSlider.cs" />
     <Compile Include="UI\DoubleInputCustomization.cs" />
     <Compile Include="UI\DoubleSliderNodeViewCustomization.cs" />
     <Compile Include="Input\File.cs" />
+    <Compile Include="UI\DynamoSlider.xaml.cs">
+      <DependentUpon>DynamoSlider.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\FilenameNodeViewCustomization.cs" />
     <Compile Include="UI\FileSystemBrowserNodeViewCustomization.cs" />
     <Compile Include="Input\Integer.cs" />
@@ -148,6 +153,10 @@
     <Page Include="UI\DoubleSliderSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\DynamoSlider.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\ElementSelectionControl.xaml">
       <Generator>MSBuild:Compile</Generator>
