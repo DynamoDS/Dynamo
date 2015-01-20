@@ -997,7 +997,8 @@ namespace Dynamo.Models
 
             public override string ToString()
             {
-                throw new NotImplementedException();
+                // This method will be removed if no one is referencing it.
+                throw new NotImplementedException("UpdateModelValueCommand.ToString");
             }
 
             #endregion
