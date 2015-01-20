@@ -1,6 +1,8 @@
-﻿namespace DSCoreNodesUI.Input
+﻿using System;
+
+namespace DSCoreNodesUI.Input
 {
-    public abstract class SliderBase<T> : BasicInteractive<T>
+    public abstract class SliderBase<T> : BasicInteractive<T> where T:IComparable<T>
     {
         private T max;
         private T min;
@@ -12,6 +14,17 @@
             set
             {
                 max = value;
+
+                if (max.CompareTo(min) < 0)
+                {
+                    Min = max;
+                    Value = Min;
+                }
+                if (max.CompareTo(Value) < 0)
+                {
+                    Value = max;
+                }
+
                 RaisePropertyChanged("Max");
             }
         }
@@ -22,6 +35,17 @@
             set
             {
                 min = value;
+
+                if (min.CompareTo(Max) > 0)
+                {
+                    Max = min;
+                    Value = Max;
+                }
+                if (min.CompareTo(Value) > 0)
+                {
+                    Value = min;
+                }
+
                 RaisePropertyChanged("Min");
             }
         }
@@ -32,6 +56,18 @@
             set
             {
                 step = value;
+
+                if (Value.CompareTo(Max) > 0 ||
+                    Value.CompareTo(Max) == 0)
+                {
+                    this.Max = Value;
+                }
+                if (Value.CompareTo(Min) < 0 ||
+                    Value.CompareTo(Min) == 0)
+                {
+                    this.Min = Value;
+                }
+
                 RaisePropertyChanged("Step");
             }
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Web.Configuration;
 using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
@@ -64,40 +65,14 @@ namespace DSCoreNodesUI.Input
                 case "Min":
                 case "MinText":
                     Min = SliderViewModel<double>.ConvertStringToDouble(value);
-                    if (Min > Max)
-                    {
-                        Max = Min;
-                        Value = Max;
-                    }
-                    if (Min > Value)
-                    {
-                        Value = Min;
-                    }
                     return true; // UpdateValueCore handled.
                 case "Max":
                 case "MaxText":
                     Max = SliderViewModel<double>.ConvertStringToDouble(value);
-                    if (Max < Min)
-                    {
-                        Min = Max;
-                        Value = Min;
-                    }
-                    if (Max < Value)
-                    {
-                        Value = Max;
-                    }
                     return true; // UpdateValueCore handled.
                 case "Value":
                 case "ValueText":
                     Value = SliderViewModel<double>.ConvertStringToDouble(value);
-                    if (Value >= Max)
-                    {
-                        this.Max = Value;
-                    }
-                    if (Value <= Min)
-                    {
-                        this.Min = Value;
-                    }
                     return true; // UpdateValueCore handled.
                 case "Step":
                 case "StepText":
@@ -135,12 +110,18 @@ namespace DSCoreNodesUI.Input
 
                 foreach (XmlAttribute attr in subNode.Attributes)
                 {
-                    if (attr.Name.Equals("min"))
-                        Min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                    else if (attr.Name.Equals("max"))
-                        Max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                    else if (attr.Name.Equals("step"))
-                        Step = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                    switch (attr.Name)
+                    {
+                        case "min":
+                            Min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            break;
+                        case "max":
+                            Max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            break;
+                        case "step":
+                            Step = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            break;
+                    }
                 }
 
                 break;

@@ -40,40 +40,14 @@ namespace DSCoreNodesUI.Input
                 case "Min":
                 case "MinText":
                     Min = SliderViewModel<int>.ConvertStringToInt(value);
-                    if (Min > Max)
-                    {
-                        Max = Min;
-                        Value = Max;
-                    }
-                    if (Min > Value)
-                    {
-                        Value = Min;
-                    }
                     return true; // UpdateValueCore handled.
                 case "Max":
                 case "MaxText":
                     Max = SliderViewModel<int>.ConvertStringToInt(value);
-                    if (Max < Min)
-                    {
-                        Min = Max;
-                        Value = Min;
-                    }
-                    if (Max < Value)
-                    {
-                        Value = Max;
-                    }
                     return true; // UpdateValueCore handled.
                 case "Value":
                 case "ValueText":
                     Value = SliderViewModel<int>.ConvertStringToInt(value);
-                    if (Value >= Max)
-                    {
-                        this.Max = Value;
-                    }
-                    if (Value <= Min)
-                    {
-                        this.Min = Value;
-                    }
                     return true; // UpdateValueCore handled.
                 case "Step":
                 case "StepText":
@@ -136,12 +110,18 @@ namespace DSCoreNodesUI.Input
 
                 foreach (XmlAttribute attr in subNode.Attributes)
                 {
-                    if (attr.Name.Equals("min"))
-                        Min = Convert.ToInt16(attr.Value, CultureInfo.InvariantCulture);
-                    else if (attr.Name.Equals("max"))
-                        Max = Convert.ToInt16(attr.Value, CultureInfo.InvariantCulture);
-                    else if (attr.Name.Equals("step"))
-                        Step = Convert.ToInt16(attr.Value, CultureInfo.InvariantCulture);
+                    switch (attr.Name)
+                    {
+                        case "min":
+                            Min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                            break;
+                        case "max":
+                            Max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                            break;
+                        case "step":
+                            Step = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                            break;
+                    }
                 }
 
                 break;
