@@ -649,7 +649,7 @@ namespace DynamoCoreUITests
         }
 
         protected void RunCommandsFromFile(string commandFileName,
-            bool autoRun = false, CommandCallback commandCallback = null, List<string> preloadLibraries = null)
+            bool autoRun = false, CommandCallback commandCallback = null)
         {
             string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
@@ -676,18 +676,6 @@ namespace DynamoCoreUITests
                 });
 
             this.ViewModel.DynamicRunEnabled = autoRun;
-
-            if (preloadLibraries != null)
-            {
-                foreach (var library in preloadLibraries)
-                {
-                    var libraryServices = ViewModel.Model.EngineController.LibraryServices;
-                    if (!libraryServices.IsLibraryLoaded(library))
-                    {
-                        libraryServices.ImportLibrary(library);
-                    }
-                }
-            }
 
             // Load all custom nodes if there is any specified for this test.
             if (this.customNodesToBeLoaded != null)
@@ -1070,9 +1058,11 @@ namespace DynamoCoreUITests
             Assert.AreEqual("CBN", cbn.NickName);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void ReExecuteASTTest()
         {
+            DynamoUtilities.DynamoPathManager.Instance.AddPreloadLibrary("FFITarget.dll");
+
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -1088,8 +1078,7 @@ namespace DynamoCoreUITests
                     AssertPreviewValue("cdaf568a-e830-4eb0-bce0-983a7a0903e1", 1);
 
                 }
-            },
-            new List<string> {"FFITarget.dll"});
+            });
         }
         
         [Test, RequiresSTA]
