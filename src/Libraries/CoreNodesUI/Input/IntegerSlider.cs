@@ -8,10 +8,11 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using DSCoreNodesUI.Input;
 
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodesUI.Input
+namespace Dynamo.Nodes
 {
     [NodeName("Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
