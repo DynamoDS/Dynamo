@@ -32,7 +32,7 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, double x, double y, Guid customNodeId,
-            NodeFactory factory)
+            NodeFactory factory, string fileName="")
             : this(
                 name,
                 category,
@@ -42,11 +42,12 @@ namespace Dynamo.Models
                 Enumerable.Empty<NoteModel>(),
                 x,
                 y,
-                customNodeId) { }
+                customNodeId, fileName) { }
 
         public CustomNodeWorkspaceModel(
-            string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, double x, double y, Guid customNodeId) 
-            : base(name, e, n, x, y, factory)
+            string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
+            double x, double y, Guid customNodeId, string fileName="") 
+            : base(name, e, n, x, y, factory, fileName)
         {
             CustomNodeId = customNodeId;
             HasUnsavedChanges = false;
@@ -150,9 +151,9 @@ namespace Dynamo.Models
         }
         private string description;
 
-        public override void OnAstUpdated()
+        public override void OnNodesModified()
         {
-            base.OnAstUpdated();
+            base.OnNodesModified();
             HasUnsavedChanges = true;
             OnDefinitionUpdated();
         }
