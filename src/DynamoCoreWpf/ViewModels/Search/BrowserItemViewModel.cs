@@ -362,8 +362,8 @@ namespace Dynamo.Wpf.ViewModels
         {
             var endState = !IsExpanded;
 
-            //foreach (var ele in this.Siblings)
-            //    ele.IsExpanded = false;
+            foreach (var ele in SubCategories.Where(cat => cat.IsExpanded == true))
+                ele.IsExpanded = false;
 
             //Walk down the tree expanding anything nested one layer deep
             //this can be removed when we have the hierachy implemented properly
