@@ -298,6 +298,10 @@
     <value>Applies a function over all elements of a list, generating a new list from the results.</value>
     <comment>Description for List.Map</comment>
   </data>
+  <data name="ListMapSearchTags" xml:space="preserve">
+    <value>function,applied,over list, do to each</value>
+    <comment>search tags for List.Map</comment>
+  </data>
   <data name="ListReduceDescription" xml:space="preserve">
     <value>Reduces a list into a new value by combining each element with an accumulated result.</value>
     <comment>Description for List.Reduce</comment>

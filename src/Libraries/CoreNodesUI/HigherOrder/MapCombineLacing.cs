@@ -11,6 +11,7 @@ namespace DSCore
     [NodeName(/*NXLT*/"List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription(/*NXLT*/"ListMapDescription", typeof(Resources))]
+    [NodeSearchTags(/*NXLT*/"ListMapSearchTags",typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Map : NodeModel
     {
