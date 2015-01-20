@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoTestFx.TD;
 
@@ -21,7 +22,8 @@ namespace ProtoTest.GraphCompiler
                             c = 1 + 2 * 3;";
 
             ParseParam parseParam = new ParseParam(Guid.NewGuid(), code);
-            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam, null));
+            ElementResolver elementResolver = new ElementResolver();
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam, ref elementResolver));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Count() > 0);
 
             var parsedNode = parseParam.ParsedNodes.ElementAt(0);

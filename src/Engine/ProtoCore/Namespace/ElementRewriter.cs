@@ -15,9 +15,6 @@ namespace ProtoCore.Namespace
 
         private ElementRewriter(ElementResolver elementResolver)
         {
-            if(elementResolver == null)
-                elementResolver = new ElementResolver();
-
             this.elementResolver = elementResolver;
         }
 
@@ -30,7 +27,7 @@ namespace ProtoCore.Namespace
         /// <param name="classTable"></param>
         /// <param name="codeBlockNode"> parent AST node </param>
         public static void ReplaceClassNamesWithResolvedNames(ClassTable classTable,
-            ElementResolver elementResolver, ref CodeBlockNode codeBlockNode)
+            ref ElementResolver elementResolver, ref CodeBlockNode codeBlockNode)
         {
             var elementRewriter = new ElementRewriter(elementResolver);
 
@@ -124,6 +121,7 @@ namespace ProtoCore.Namespace
                 {
                     AssociativeNode exprNode = exprList.list[n];
                     DfsTraverse(ref exprNode, ref classIdentifiers, ref resolvedNames);
+                    exprList.list[n] = exprNode;
                 }
             }
             else if (astNode is InlineConditionalNode)
@@ -132,9 +130,14 @@ namespace ProtoCore.Namespace
                 AssociativeNode condition = inlineNode.ConditionExpression;
                 AssociativeNode trueBody = inlineNode.TrueExpression;
                 AssociativeNode falseBody = inlineNode.FalseExpression;
+
                 DfsTraverse(ref condition, ref classIdentifiers, ref resolvedNames);
                 DfsTraverse(ref trueBody, ref classIdentifiers, ref resolvedNames);
                 DfsTraverse(ref falseBody, ref classIdentifiers, ref resolvedNames);
+
+                inlineNode.ConditionExpression = condition;
+                inlineNode.FalseExpression = falseBody;
+                inlineNode.TrueExpression = trueBody;
             }
             else if (astNode is IdentifierListNode)
             {

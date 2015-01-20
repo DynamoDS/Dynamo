@@ -43,7 +43,7 @@ namespace Dynamo.Nodes
             internal set { shouldFocus = value; }
         }
 
-        protected ElementResolver elementResolver;
+        protected ElementResolver elementResolver = new ElementResolver();
 
         private struct Formatting
         {
@@ -363,9 +363,6 @@ namespace Dynamo.Nodes
 
         private void SerializeElementResolver(XmlElement nodeElement)
         {
-            if (elementResolver == null)
-                return;
-
             var xmlDoc = nodeElement.OwnerDocument;
             Debug.Assert(xmlDoc != null);
 
@@ -439,7 +436,7 @@ namespace Dynamo.Nodes
             try
             {
                 var parseParam = new ParseParam(GUID, code);
-                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, elementResolver))
+                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, ref elementResolver))
                 {
                     if (parseParam.ParsedNodes != null)
                     {

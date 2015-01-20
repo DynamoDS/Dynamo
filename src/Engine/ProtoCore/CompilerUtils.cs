@@ -257,7 +257,7 @@ namespace ProtoCore.Utils
         /// <param name="parseParams"> container for compilation related parameters </param>
         /// <param name="elementResolver"> classname resolver </param>
         /// <returns> true if code compilation succeeds, false otherwise </returns>
-        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, ElementResolver elementResolver)
+        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, ref ElementResolver elementResolver)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
@@ -276,10 +276,10 @@ namespace ProtoCore.Utils
 
             // Compile the code to get the resultant unboundidentifiers  
             // and any errors or warnings that were caught by the compiler and cache them in parseParams
-            return CompileCodeBlockAST(core, parseParams, elementResolver);
+            return CompileCodeBlockAST(core, parseParams, ref elementResolver);
         }
 
-        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, ElementResolver elementResolver)
+        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, ref ElementResolver elementResolver)
         {
             Dictionary<int, List<VariableLine>> unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
             IEnumerable<BuildData.WarningEntry> warnings = null;
@@ -310,7 +310,7 @@ namespace ProtoCore.Utils
                 // partial classnames with their fully qualified names in ASTs
                 // before passing them for pre-compilation. If partial class is not found in map, 
                 // update Resolution map in elementResolver with fully resolved name from compiler.
-                ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, elementResolver, ref codeblock);
+                ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, ref elementResolver, ref codeblock);
 
                 buildStatus = PreCompile(string.Empty, core, codeblock, out blockId);
 
