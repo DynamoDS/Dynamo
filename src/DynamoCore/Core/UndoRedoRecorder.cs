@@ -552,7 +552,7 @@ namespace Dynamo.Core
                     if (recorder.redoStack.Count > 0)
                     {
                         throw new InvalidOperationException(
-                            /*NXLT*/"Redo stack should be empty after recording!");
+                            "Redo stack should be empty after recording!");
                     }
                 }
             }

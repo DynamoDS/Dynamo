@@ -939,10 +939,10 @@ namespace Dynamo.Models
             internal static UpdateModelValueCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                string name = helper.ReadString(/*NXLT*/"Name");
-                string value = helper.ReadString(/*NXLT*/"Value");
+                string name = helper.ReadString("Name");
+                string value = helper.ReadString("Value");
 
-                Guid modelGuid = helper.ReadGuid(/*NXLT*/"ModelGuid", Guid.Empty);
+                Guid modelGuid = helper.ReadGuid("ModelGuid", Guid.Empty);
                 if (modelGuid != Guid.Empty)
                 {
                     // An old type of 'UpdateModelValueCommand' works for only one 
@@ -956,7 +956,7 @@ namespace Dynamo.Models
                     // as a 'ModelGuid' child element under the main element.
                     // 
                     var modelGuids = (from XmlNode xmlNode in element.ChildNodes
-                                      where xmlNode.Name.Equals(/*NXLT*/"ModelGuid")
+                                      where xmlNode.Name.Equals("ModelGuid")
                                       select Guid.Parse(xmlNode.InnerText)).ToList();
 
                     return new UpdateModelValueCommand(modelGuids, name, value);
@@ -989,7 +989,7 @@ namespace Dynamo.Models
                 var document = element.OwnerDocument;
                 foreach (var modelGuid in modelGuids)
                 {
-                    var childNode = document.CreateElement(/*NXLT*/"ModelGuid");
+                    var childNode = document.CreateElement("ModelGuid");
                     childNode.InnerText = modelGuid.ToString();
                     element.AppendChild(childNode);
                 }
