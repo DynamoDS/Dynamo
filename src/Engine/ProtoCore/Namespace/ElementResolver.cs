@@ -56,7 +56,8 @@ namespace ProtoCore.Namespace
         public void AddToResolutionMap(string partialName, string resolvedName, string assemblyName)
         {
             var kvp = new KeyValuePair<string, string>(resolvedName, assemblyName);
-            resolutionMap.Add(partialName, kvp);
+            if(!resolutionMap.ContainsKey(partialName))
+                resolutionMap.Add(partialName, kvp);
         }
 
         

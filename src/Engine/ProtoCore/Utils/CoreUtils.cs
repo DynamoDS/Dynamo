@@ -777,7 +777,7 @@ namespace ProtoCore.Utils
                 }
                 if (leftNode is IdentifierNode)
                 {
-                    IdentifierNode identNode = leftNode as IdentifierNode;
+                    var identNode = leftNode as IdentifierNode;
                     classNames = classTable.GetAllMatchingClasses(identNode.Name);
                     break;
                 }
@@ -789,40 +789,23 @@ namespace ProtoCore.Utils
             return classNames;
         }
 
-
-        /// <summary>
-        /// Given a partial class name, get fully resolved name from class table
-        /// </summary>
-        /// <param name="classTable"> class table in Core </param>
-        /// <param name="partialName"> partial class name </param>
-        /// <returns> fully resolved name </returns>
-        public static string GetResolvedClassName(ClassTable classTable, string partialName)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Given a partial class name, get assembly to which the class belongs
         /// </summary>
         /// <param name="classTable"> class table in Core </param>
-        /// <param name="partialName"> partial class name </param>
+        /// <param name="className"> class name </param>
         /// <returns> assembly to which the class belongs </returns>
-        public static string GetAssemblyFromClassName(ClassTable classTable, string partialName)
+        public static string GetAssemblyFromClassName(ClassTable classTable, string className)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            var ci = classTable.IndexOf(className);
+
+            if (ci == ProtoCore.DSASM.Constants.kInvalidIndex) 
+                return string.Empty;
+            
+            var classNode = classTable.ClassNodes[ci];
+            return classNode.ExternLib;
         }
-
-
-        /// <summary>
-        /// Find all partial class (Identifier/Identifier lists) by performing a DFS traversal on input AST node
-        /// </summary>
-        /// <param name="astNode"> input AST node </param>
-        /// <returns> list of Class identifiers </returns>
-        public static IEnumerable<string> GetClassIdentifiers(AST.Node astNode)
-        {
-            throw new NotImplementedException();
-        }
-
 
         /// <summary>
         /// Parses designscript code and outputs ProtoAST

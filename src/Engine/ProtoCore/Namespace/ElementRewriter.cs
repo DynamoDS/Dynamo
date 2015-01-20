@@ -47,45 +47,62 @@ namespace ProtoCore.Namespace
             // Get partial class identifier/identifier lists
             var classIdentifiers = GetClassIdentifiers(astNode);
 
+            var resolvedNames = new Queue<string>();
             foreach (var identifier in classIdentifiers)
             {
                 var partialName = CoreUtils.GetIdentifierStringUntilFirstParenthesis(identifier);
                 var resolvedName = elementResolver.LookupResolvedName(partialName);
-                if (!string.IsNullOrEmpty(resolvedName))
-                {
-                    RewriteAstWithResolvedName(ref astNode, resolvedName);
-                }
-                else
+                if (string.IsNullOrEmpty(resolvedName))
                 {
                     // If namespace resolution map does not contain entry for partial name, 
                     // back up on compiler to resolve the namespace from partial name
-
-                    //var identNode = new IdentifierNode(partialName.Split('.').Last());
-                    //var matchingClasses = CoreUtils.GetResolvedClassName(classTable,
-                    //    RewriteIdentifierListNode(identNode, partialName));
                     var matchingClasses = CoreUtils.GetResolvedClassName(classTable, identifier);
 
                     if (matchingClasses.Length == 1)
                     {
                         resolvedName = matchingClasses[0];
-                        string assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, partialName);
+                        var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
 
                         elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
-                        RewriteAstWithResolvedName(ref astNode, resolvedName);
                     }
                 }
+                resolvedNames.Enqueue(resolvedName);
             }
+            
+            RewriteAstWithResolvedName(ref astNode, ref resolvedNames);
         }
 
-        private static void DfsTraverse(ref AssociativeNode astNode, ref List<IdentifierListNode> classIdentifiers, string resolvedName)
+        private static IEnumerable<IdentifierListNode> GetClassIdentifiers(AssociativeNode astNode)
+        {
+            var classIdentifiers = new List<IdentifierListNode>();
+            var resolvedNames = new Queue<string>();
+            DfsTraverse(ref astNode, ref classIdentifiers, ref resolvedNames);
+            return classIdentifiers;
+        }
+
+        /// <summary>
+        /// Replace partial identifier with fully resolved identifier list in original AST
+        /// This is the same AST that is also passed to the VM for execution
+        /// </summary>
+        /// <param name="astNode"></param>
+        /// <param name="resolvedNames"> fully qualified class identifier list </param>
+        private static void RewriteAstWithResolvedName(ref AssociativeNode astNode, ref Queue<string> resolvedNames)
+        {
+            List<IdentifierListNode> classIdentifiers = null;
+            DfsTraverse(ref astNode, ref classIdentifiers, ref resolvedNames);
+        }
+
+        #region private utility methods
+
+        private static void DfsTraverse(ref AssociativeNode astNode, ref List<IdentifierListNode> classIdentifiers, ref Queue<string> resolvedNames)
         {
             if (astNode is BinaryExpressionNode)
             {
                 var bnode = astNode as BinaryExpressionNode;
                 AssociativeNode leftNode = bnode.LeftNode;
                 AssociativeNode rightNode = bnode.RightNode;
-                DfsTraverse(ref leftNode, ref classIdentifiers, resolvedName);
-                DfsTraverse(ref rightNode, ref classIdentifiers, resolvedName);
+                DfsTraverse(ref leftNode, ref classIdentifiers, ref resolvedNames);
+                DfsTraverse(ref rightNode, ref classIdentifiers, ref resolvedNames);
 
                 bnode.LeftNode = leftNode;
                 bnode.RightNode = rightNode;
@@ -96,7 +113,8 @@ namespace ProtoCore.Namespace
                 for (int n = 0; n < fCall.FormalArguments.Count; ++n)
                 {
                     AssociativeNode argNode = fCall.FormalArguments[n];
-                    DfsTraverse(ref argNode, ref classIdentifiers, resolvedName);
+                    DfsTraverse(ref argNode, ref classIdentifiers, ref resolvedNames);
+                    fCall.FormalArguments[n] = argNode;
                 }
             }
             else if (astNode is ExprListNode)
@@ -105,7 +123,7 @@ namespace ProtoCore.Namespace
                 for (int n = 0; n < exprList.list.Count; ++n)
                 {
                     AssociativeNode exprNode = exprList.list[n];
-                    DfsTraverse(ref exprNode, ref classIdentifiers, resolvedName);
+                    DfsTraverse(ref exprNode, ref classIdentifiers, ref resolvedNames);
                 }
             }
             else if (astNode is InlineConditionalNode)
@@ -114,63 +132,35 @@ namespace ProtoCore.Namespace
                 AssociativeNode condition = inlineNode.ConditionExpression;
                 AssociativeNode trueBody = inlineNode.TrueExpression;
                 AssociativeNode falseBody = inlineNode.FalseExpression;
-                DfsTraverse(ref condition, ref classIdentifiers, resolvedName);
-                DfsTraverse(ref trueBody, ref classIdentifiers, resolvedName);
-                DfsTraverse(ref falseBody, ref classIdentifiers, resolvedName);
+                DfsTraverse(ref condition, ref classIdentifiers, ref resolvedNames);
+                DfsTraverse(ref trueBody, ref classIdentifiers, ref resolvedNames);
+                DfsTraverse(ref falseBody, ref classIdentifiers, ref resolvedNames);
             }
             else if (astNode is IdentifierListNode)
             {
                 var identListNode = astNode as IdentifierListNode;
-                var leftNode = identListNode.LeftNode;
                 var rightNode = identListNode.RightNode;
 
                 if (rightNode is FunctionCallNode)
                 {
-                    if (string.IsNullOrEmpty(resolvedName))
-                    {
-                        classIdentifiers.Add(leftNode as IdentifierListNode);
-                    }
-                    else
-                    {
-                        astNode = RewriteIdentifierListNode(identListNode.RightNode, resolvedName);
-                    }
-                    DfsTraverse(ref rightNode, ref classIdentifiers, resolvedName);
+                    DfsTraverse(ref rightNode, ref classIdentifiers, ref resolvedNames);
                 }
-                if (string.IsNullOrEmpty(resolvedName))
+                if (!resolvedNames.Any())
                 {
                     classIdentifiers.Add(identListNode);
-                }   
+                }
                 else
                 {
-                    astNode = RewriteIdentifierListNode(identListNode.RightNode, resolvedName);
+                    astNode = RewriteIdentifierListNode(rightNode, ref resolvedNames);
                 }
             }
-            
+
         }
 
-        private static IEnumerable<IdentifierListNode> GetClassIdentifiers(AssociativeNode astNode)
+        private static IdentifierListNode RewriteIdentifierListNode(AssociativeNode rightNode, ref Queue<string> resolvedNames)
         {
-            var classIdentifiers = new List<IdentifierListNode>();
-            DfsTraverse(ref astNode, ref classIdentifiers, resolvedName:string.Empty);
-            return classIdentifiers;
-        }
+            var resolvedName = resolvedNames.Dequeue();
 
-        /// <summary>
-        /// Replace partial identifier with fully resolved identifier list in original AST
-        /// This is the same AST that is also passed to the VM for execution
-        /// </summary>
-        /// <param name="astNode"></param>
-        /// <param name="partialName"> partial class name identifier </param>
-        /// <param name="resolvedName"> fully qualified class identifier list </param>
-        private static void RewriteAstWithResolvedName(ref AssociativeNode astNode, string resolvedName)
-        {
-            List<IdentifierListNode> classIdentifiers = null;
-            DfsTraverse(ref astNode, ref classIdentifiers, resolvedName);
-        }
-
-
-        private static IdentifierListNode RewriteIdentifierListNode(AssociativeNode rightNode, string resolvedName)
-        {
             string[] strIdentList = resolvedName.Split('.');
             Validity.Assert(strIdentList.Length >= 2);
 
@@ -180,7 +170,7 @@ namespace ProtoCore.Namespace
                 RightNode = new IdentifierNode(strIdentList[1]),
                 Optr = Operator.dot
             };
-            for (int n = 2; n < strIdentList.Length; ++n)
+            for (var n = 2; n < strIdentList.Length; ++n)
             {
                 var subIdentList = new IdentifierListNode
                 {
@@ -201,5 +191,7 @@ namespace ProtoCore.Namespace
 
             return lastIdentList;
         }
+
+        #endregion
     }
 }
