@@ -71,5 +71,18 @@ namespace DSCoreNodesUI.Input
                 RaisePropertyChanged("Step");
             }
         }
+
+        protected SliderBase()
+        {
+            base.PropertyChanged += SliderBase_PropertyChanged;
+        }
+
+        void SliderBase_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "Value") return;
+
+            if (Value.CompareTo(Min) < 0) Min = Value;
+            if (Value.CompareTo(Max) > 0) Max = Value;
+        }
     }
 }
