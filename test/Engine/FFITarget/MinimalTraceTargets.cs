@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
+using DynamoServices;
+
 namespace FFITarget
 {
     public class MinimalTracedClass
@@ -13,14 +15,14 @@ namespace FFITarget
 
         public MinimalTracedClass()
         {
-            var retVal = DSNodeServices.TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
+            var retVal = TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
 
             if (retVal != null)
             {
                 wasTraced = true;
             }
 
-            DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new DummyDataHolder());
+            TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new DummyDataHolder());
         }
 
         public bool WasCreatedWithTrace()
@@ -55,7 +57,7 @@ namespace FFITarget
         /// <param name="x"></param>
         public IncrementerTracedClass(int x)
         {
-            var retVal = DSNodeServices.TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
+            var retVal = TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
 
             if (retVal != null)
             {
@@ -69,7 +71,7 @@ namespace FFITarget
             {
                 nextID++;
                 ID = nextID;
-                DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
+                TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
             }
         }
 
@@ -84,7 +86,7 @@ namespace FFITarget
             if (failWithException)
                 throw new ArgumentException("Failure requested");
 
-            var retVal = DSNodeServices.TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
+            var retVal = TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
 
             if (retVal != null)
             {
@@ -98,7 +100,7 @@ namespace FFITarget
             {
                 nextID++;
                 ID = nextID;
-                DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
+                TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
             }
         }
 

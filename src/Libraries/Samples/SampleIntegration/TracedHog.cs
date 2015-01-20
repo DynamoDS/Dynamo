@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-using DSNodeServices;
+using DynamoServices;
 
 class TracedHogManager
 {
@@ -70,7 +70,7 @@ public class HogID : ISerializable
 }
 
 
-[DSNodeServices.RegisterForTrace]
+[RegisterForTrace]
 public class TracedHog : IDisposable
 {
     //TODO(lukechurch): This really should have been moved into the attribute already
@@ -107,7 +107,7 @@ public class TracedHog : IDisposable
     {
         TracedHog tHog;
 
-        HogID hid = DSNodeServices.TraceUtils.GetTraceData(REVIT_TRACE_ID) as HogID;
+        HogID hid = TraceUtils.GetTraceData(REVIT_TRACE_ID) as HogID;
 
         if (hid == null)
         {
@@ -120,7 +120,7 @@ public class TracedHog : IDisposable
         }
 
         // Set the trace data on the return to be this hog.
-        DSNodeServices.TraceUtils.SetTraceData(REVIT_TRACE_ID, new HogID { IntID = tHog.ID });
+        TraceUtils.SetTraceData(REVIT_TRACE_ID, new HogID { IntID = tHog.ID });
         return tHog;
     }
 

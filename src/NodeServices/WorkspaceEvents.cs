@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DSNodeServices
+namespace DynamoServices
 {
     public delegate void WorkspaceOpenedEventHandler(WorkspaceOpenedEventArgs args);
     public delegate void WorkspaceClosedEventHandler(WorkspaceClosedEventArgs args);
