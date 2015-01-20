@@ -20,7 +20,7 @@ namespace DSCore
         ///     An Empty List.
         /// </summary>
         /// <returns name="list">Empty list.</returns>
-        /// <search>empty list, emptylist</search>
+        /// <search>empty list, emptylist,[]</search>
         public static IList Empty
         {
             get { return new ArrayList(); }
@@ -31,7 +31,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to filter duplicates out of.</param>
         /// <returns name="list">Filtered list.</returns>
-        /// <search>removes,duplicates,remove duplicates</search>
+        /// <search>removes,duplicates,remove duplicates,cull duplicates,distinct</search>
         public static IList UniqueItems(IList list)
         {
             return list.Cast<object>().Distinct(DistinctComparer.Instance).ToList();
@@ -43,7 +43,7 @@ namespace DSCore
         /// <param name="list">List to search in.</param>
         /// <param name="item">Item to look for.</param>
         /// <returns name="bool">Whether list contains the given item.</returns>
-        /// <search>item,search</search>
+        /// <search>item,search,in</search>
         public static bool ContainsItem(IList list, object item)
         {
             return list.Contains(item);
@@ -87,7 +87,7 @@ namespace DSCore
         ///     If true (default): All ranges are kept, out of bounds indices are ommitted.
         ///     If false: Any ranges with out of bounds indices are ommitted.</param>
         /// <returns name="lists">Sublists of the given list.</returns>
-        /// <search>sublists,build sublists</search>
+        /// <search>sublists,build sublists,subset,</search>
         public static IList Sublists(IList list, IList ranges, int offset)
         {
             var result = new ArrayList();
@@ -125,7 +125,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to be sorted.</param>
         /// <returns name="list">Sorted list.</returns>
-        /// <search>sort,order</search>
+        /// <search>sort,order,sorted</search>
         public static IList Sort(IEnumerable<object> list)
         {
             return list.OrderBy(x => x, new ObjectComparer()).ToList();
@@ -171,7 +171,7 @@ namespace DSCore
         /// <param name="mask">List of booleans representing a mask.</param>
         /// <returns name="in">Items whose mask index is true.</returns>
         /// <returns name="out">Items whose mask index is false.</returns>
-        /// <search>filter,in,out,mask,dispatch</search>
+        /// <search>filter,in,out,mask,dispatch,bool filter,boolfilter,bool filter</search>
         [MultiReturn(new[] { /*NXLT*/"in", /*NXLT*/"out" })]
         public static Dictionary<string, object> FilterByBoolMask(IList list, IList mask)
         {
