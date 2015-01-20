@@ -2728,7 +2728,10 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitIdentifierListNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.Compiler.Associative.SubCompilePass subPass = ProtoCore.Compiler.Associative.SubCompilePass.kNone, ProtoCore.AST.Node bnode = null)
+        protected void EmitIdentifierListNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, 
+            ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
+            ProtoCore.Compiler.Associative.SubCompilePass subPass = ProtoCore.Compiler.Associative.SubCompilePass.kNone, 
+            ProtoCore.AST.Node bnode = null)
         {
             if (subPass == ProtoCore.Compiler.Associative.SubCompilePass.kUnboundIdentifier)
             {

@@ -760,9 +760,9 @@ namespace ProtoCore.Utils
         /// <param name="classTable"></param>
         /// <param name="identList"></param>
         /// <returns></returns>
-        public static string[] GetResolvedClassName(ProtoCore.DSASM.ClassTable classTable, ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
+        public static string[] GetResolvedClassName(ClassTable classTable, IdentifierListNode identList)
         {
-            string[] classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
+            string[] classNames = classTable.GetAllMatchingClasses(GetIdentifierStringUntilFirstParenthesis(identList));
 
             // Failed to find the first time
             // Attempt to remove identifiers in the identifierlist until we find a class or not
@@ -773,7 +773,7 @@ namespace ProtoCore.Utils
                 if (leftNode is IdentifierListNode)
                 {
                     identList = leftNode as IdentifierListNode;
-                    classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
+                    classNames = classTable.GetAllMatchingClasses(GetIdentifierStringUntilFirstParenthesis(identList));
                 }
                 if (leftNode is IdentifierNode)
                 {
