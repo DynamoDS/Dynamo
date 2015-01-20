@@ -1,9 +1,9 @@
-﻿using System.Globalization;
-using Dynamo.Nodes;
-using Dynamo.Wpf;
-
 using Dynamo.Controls;
-using Dynamo.Wpf;
+using Dynamo.Nodes;
+
+﻿using DSCoreNodesUI.Input;
+
+using Dynamo.Wpf.Controls;
 
 namespace Dynamo.Wpf.Nodes
 {
@@ -11,13 +11,12 @@ namespace Dynamo.Wpf.Nodes
     {
         public void CustomizeView(IntegerSlider model, NodeView nodeView)
         {
-            DoubleSliderNodeViewCustomization.BuildSliderUI(
-                nodeView, 
-                model, 
-                model.Value, 
-                model.Value.ToString(CultureInfo.InvariantCulture),
-                new IntegerSliderSettingsControl() { DataContext = model }, 
-                new IntegerDisplay());
+            var slider = new DynamoSlider(model, nodeView)
+            {
+                DataContext = new SliderViewModel<int>(model)
+            };
+
+            nodeView.inputGrid.Children.Add(slider);
         }
 
         public void Dispose() { }

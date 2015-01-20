@@ -88,6 +88,7 @@
     <Compile Include="PackageManagerUITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordedTests.cs" />
+    <Compile Include="SliderTests.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
     <Compile Include="VisualizationManagerUITests.cs" />
@@ -118,6 +119,11 @@
     <ProjectReference Include="..\..\src\Engine\ProtoImperative\ProtoImperative.csproj">
       <Project>{0d3d43dc-bd7e-46f0-93f7-1c6a6cc79948}</Project>
       <Name>ProtoImperative</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj">
+      <Project>{f5932f7d-8e34-4787-80b8-e7f9d996edff}</Project>
+      <Name>CoreNodeModelsWpf</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">

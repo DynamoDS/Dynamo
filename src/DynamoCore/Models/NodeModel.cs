@@ -94,24 +94,6 @@ namespace Dynamo.Models
         /// </summary>
         public event Action Disposed;
 
-        public event EventHandler BlockingStarted;
-        public virtual void OnBlockingStarted(EventArgs e)
-        {
-            if (BlockingStarted != null)
-            {
-                BlockingStarted(this, e);
-            }
-        }
-
-        public event EventHandler BlockingEnded;
-        public virtual void OnBlockingEnded(EventArgs e)
-        {
-            if (BlockingEnded != null)
-            {
-                BlockingEnded(this, e);
-            }
-        }
-
         /// <summary>
         ///     Called by nodes for behavior that they want to dispatch on the UI thread
         ///     Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
