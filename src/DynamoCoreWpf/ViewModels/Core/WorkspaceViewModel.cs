@@ -290,12 +290,15 @@ namespace Dynamo.ViewModels
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
             var viewModel = new ConnectorViewModel(this, c);
-            _connectors.Add(viewModel);
+            if (_connectors.All(x => x.ConnectorModel != c))
+                _connectors.Add(viewModel);
         }
 
         void Connectors_ConnectorDeleted(ConnectorModel c)
         {
-            _connectors.Remove(_connectors.First(x => x.ConnectorModel == c));
+            var connector = _connectors.FirstOrDefault(x => x.ConnectorModel == c);
+            if (connector != null)
+                _connectors.Remove(connector);
         }
 
         void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -372,7 +375,7 @@ namespace Dynamo.ViewModels
                     this.portViewModel = portViewModel;
                     break;
                 case PortEventType.MouseLeave:
-                     IsSnapping = false;
+                    IsSnapping = this.CheckActiveConnectorCompatibility(portViewModel, false);
                     this.portViewModel = portViewModel;
                     break;
                 case PortEventType.MouseLeftButtonDown:

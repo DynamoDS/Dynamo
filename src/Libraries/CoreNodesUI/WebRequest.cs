@@ -13,12 +13,9 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel
     {
-        public override bool ForceReExecuteOfNode
+        protected override ExecutionHints GetExecutionHintsCore()
         {
-            get
-            {
-                return true;
-            }
+            return ExecutionHints.ForceExecute;
         }
 
         public WebRequest()
@@ -30,7 +27,7 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            OnAstUpdated();
+            OnNodeModified();
 
             var functionCall = AstFactory.BuildFunctionCall(new Func<string, string>(Web.WebRequestByUrl), inputAstNodes);
 

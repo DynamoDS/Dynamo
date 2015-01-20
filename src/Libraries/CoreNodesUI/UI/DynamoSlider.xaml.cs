@@ -40,7 +40,7 @@ namespace Dynamo.UI.Controls
 
         private void Slider_OnDragCompleted(object sender, DragCompletedEventArgs e)
         {
-            nodeModel.OnAstUpdated();
+            nodeModel.MarkNodeAsModified(true);
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)

@@ -40,7 +40,8 @@ namespace DSCoreNodesUI
                         {
                             ProcessFormula();
                             RaisePropertyChanged("FormulaString");
-                            OnAstUpdated();
+
+                            OnNodeModified();
                         }
 
                         if (oldState != State)

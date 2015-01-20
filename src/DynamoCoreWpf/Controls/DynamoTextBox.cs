@@ -266,7 +266,6 @@ namespace Dynamo.Nodes
 
         #endregion
     }
-
 }
 
 namespace Dynamo.UI.Controls
