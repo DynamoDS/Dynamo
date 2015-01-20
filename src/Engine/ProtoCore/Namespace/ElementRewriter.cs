@@ -1,4 +1,5 @@
-﻿using ProtoCore.AST.AssociativeAST;
+﻿using ProtoCore.AST;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System;
@@ -25,16 +26,18 @@ namespace ProtoCore.Namespace
         /// update ResolutionMap with fully resolved name from compiler.
         /// </summary>
         /// <param name="classTable"></param>
-        /// <param name="codeBlockNode"> parent AST node </param>
+        /// <param name="astNodes"> parent AST node </param>
         public static void ReplaceClassNamesWithResolvedNames(ClassTable classTable,
-            ref ElementResolver elementResolver, ref CodeBlockNode codeBlockNode)
+            ref ElementResolver elementResolver, ref IEnumerable<Node> astNodes)
         {
             var elementRewriter = new ElementRewriter(elementResolver);
 
-            var body = codeBlockNode.Body;
-            for (int i = 0; i < body.Count; ++i)
+            for (int i = 0; i < astNodes.Count(); ++i)
             {
-                var astNode = body[i];
+                var astNode = astNodes.ElementAt(i) as AssociativeNode;
+                if(astNode == null)
+                    continue;
+
                 elementRewriter.LookupResolvedNameAndRewriteAst(classTable, ref astNode);
             }
         }
@@ -61,6 +64,12 @@ namespace ProtoCore.Namespace
                         var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
 
                         elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
+                    }
+                    else
+                    {
+                        // Namespace conflict, class name could not be resolved.
+                        // This will be reported subsequently in the pre-compilation stage
+                        return;
                     }
                 }
                 resolvedNames.Enqueue(resolvedName);
