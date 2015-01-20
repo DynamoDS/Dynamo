@@ -121,6 +121,9 @@ namespace DSCoreNodesUI.Input
                         case "step":
                             Step = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
                             break;
+                        default:
+                            Log(string.Format("{0} attribute could not be deserialized for {1}", attr.Name, GetType()));
+                            break;
                     }
                 }
 
