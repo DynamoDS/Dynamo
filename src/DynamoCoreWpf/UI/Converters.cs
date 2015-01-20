@@ -1898,8 +1898,8 @@ namespace Dynamo.Controls
     }
 
     // Depending on the number of points in FullCategoryName margin will be done.
-    // E.g. Geometry.Tesselation -> Margin="10,0,0,0"
-    // E.g. RootCategory.Namespace1.Namespace2 -> Margin="20,0,0,0"
+    // E.g. Geometry -> Margin="5,0,0,0"
+    // E.g. RootCategory.Namespace1.Namespace2 -> Margin="45,0,20,0"
     public class FullCategoryNameToMarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2039,5 +2039,5 @@ namespace Dynamo.Controls
         {
             throw new NotImplementedException();
         }
-    }        
+    }
 }
