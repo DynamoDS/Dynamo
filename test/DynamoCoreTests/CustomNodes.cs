@@ -22,7 +22,6 @@ namespace Dynamo.Tests
     internal class CustomNodes : DSEvaluationViewModelUnitTest
     {
         [Test]
-        [Category("Failure")]
         public void CanCollapseNodesAndGetSameResult()
         {
             var model = ViewModel.Model;

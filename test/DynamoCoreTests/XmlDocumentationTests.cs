@@ -53,8 +53,7 @@ namespace Dynamo.Tests
                 "Translate",
                 parms,
                 TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
-                FunctionType.InstanceMethod,
-                false);
+                FunctionType.InstanceMethod);
 
             parms.ForEach(x => x.Function = funcDesc);
 

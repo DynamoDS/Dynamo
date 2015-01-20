@@ -484,13 +484,12 @@ namespace Dynamo.DSEngine
             };
 
             var functions =
-                ops.Select(op => new FunctionDescriptor(op, args, FunctionType.GenericFunction, false))
+                ops.Select(op => new FunctionDescriptor(op, args, FunctionType.GenericFunction))
                     .Concat(
                         new FunctionDescriptor(
                             Op.GetUnaryOpFunction(UnaryOperator.Not),
                             GetUnaryFuncArgs(),
-                            FunctionType.GenericFunction,
-                            false).AsSingleton());
+                            FunctionType.GenericFunction).AsSingleton());
 
             AddBuiltinFunctions(functions);
         }
@@ -618,7 +617,6 @@ namespace Dynamo.DSEngine
                 arguments,
                 proc.returntype,
                 type,
-                false,
                 isVisible,
                 returnKeys,
                 proc.isVarArg,
