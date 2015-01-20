@@ -295,7 +295,7 @@ namespace Dynamo.ViewModels
         private void RemoveEntry(NodeSearchElement entry)
         {
             var treeStack = new Stack<NodeCategoryViewModel>();
-            var nameStack = new Stack<string>(entry.Categories);
+            var nameStack = new Stack<string>(entry.Categories.Reverse());
             var target = libraryRoot;
             while (nameStack.Any())
             {

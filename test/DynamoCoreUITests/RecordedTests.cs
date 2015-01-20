@@ -8,6 +8,8 @@ using System.Xml;
 
 using SystemTestServices;
 
+using DSCoreNodesUI.Input;
+
 using DSIronPythonNode;
 using Dynamo;
 using Dynamo.Controls;
@@ -397,7 +399,8 @@ namespace DynamoCoreUITests
                 }
             });
         }
-        [Test]
+
+        [Test, RequiresSTA, Category("Failure")]
         public void Defect_MAGN_1143_CN()
         {
             // modify the name of the input node
@@ -1057,9 +1060,11 @@ namespace DynamoCoreUITests
             Assert.AreEqual("CBN", cbn.NickName);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void ReExecuteASTTest()
         {
+            DynamoUtilities.DynamoPathManager.Instance.AddPreloadLibrary("FFITarget.dll");
+
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -3091,7 +3096,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("RegressionTests")]
+        [Category("RegressionTests"), Category("Failure")]
         public void RunAutomatically_On_5068()
         {
             // If Run Automatically On, third file onwards it executes to null

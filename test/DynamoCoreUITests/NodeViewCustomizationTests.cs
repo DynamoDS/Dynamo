@@ -13,6 +13,8 @@ using DSIronPythonNode;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.UI.Controls;
+
 using DynamoCoreUITests.Utility;
 using NUnit.Framework;
 using Dynamo.Utilities;
@@ -134,7 +136,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewWithGuid("8820644a-ba01-4118-8f04-26ebf58c11cc"); // NodeViewOf<DoubleSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
-            Assert.AreEqual(1.0, element.Value, 1e-6);
+            Assert.AreEqual(1.0, element.slider.Value, 1e-6);
         }
 
         [Test]
@@ -145,7 +147,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewWithGuid("d0fa1feb-ec0e-4cee-a86a-34077f5a870a"); // NodeViewOf<IntegerSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
-            Assert.AreEqual(41, element.Value, 1e-6);
+            Assert.AreEqual(41, element.slider.Value, 1e-6);
         }
 
         [Test]
