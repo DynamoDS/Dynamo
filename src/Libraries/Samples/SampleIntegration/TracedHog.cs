@@ -95,10 +95,10 @@ public class TracedHog : IDisposable
 
         TracedHogManager.RegisterHogForID(id, this);
 
-        WorkspaceEvents.WorkspaceOpened += WorkspaceEvents_WorkspaceOpened;
+        WorkspaceEvents.WorkspaceAdded += WorkspaceEventsWorkspaceAdded;
     }
 
-    void WorkspaceEvents_WorkspaceOpened(WorkspaceOpenedEventArgs args)
+    void WorkspaceEventsWorkspaceAdded(WorkspacesModificationEventArgs args)
     {
         // What does a hog do when a workspace is opened?
     }
@@ -132,6 +132,6 @@ public class TracedHog : IDisposable
     public void Dispose()
     {
         // Unhook the workspace event handler.
-        WorkspaceEvents.WorkspaceOpened -= WorkspaceEvents_WorkspaceOpened;
+        WorkspaceEvents.WorkspaceAdded -= WorkspaceEventsWorkspaceAdded;
     }
 }

@@ -2,45 +2,43 @@
 
 namespace DynamoServices
 {
-    public delegate void WorkspaceOpenedEventHandler(WorkspaceOpenedEventArgs args);
-    public delegate void WorkspaceClosedEventHandler(WorkspaceClosedEventArgs args);
+    public delegate void WorkspaceAddedEventHandler(WorkspacesModificationEventArgs args);
+    public delegate void WorkspaceRemovedEventHandler(WorkspacesModificationEventArgs args);
 
     public static class WorkspaceEvents
     {
-        public static event WorkspaceOpenedEventHandler WorkspaceOpened;
-        public static void OnWorkspaceOpened(string name)
+        /// <summary>
+        /// An event that is triggered when a workspace is added
+        /// to the DynamoModel's Workspaces collection.
+        /// </summary>
+        public static event WorkspaceAddedEventHandler WorkspaceAdded;
+        public static void OnWorkspaceAdded(Guid id, string name)
         {
-            if (WorkspaceOpened != null)
-                WorkspaceOpened(new WorkspaceOpenedEventArgs(name));
+            if (WorkspaceAdded != null)
+                WorkspaceAdded(new WorkspacesModificationEventArgs(id,name));
         }
 
-        public static event WorkspaceClosedEventHandler WorkspaceClosed;
-        public static void OnWorkspaceClosed(string name, bool isShutdown)
+        /// <summary>
+        /// An event that is triggered when a workspace is removed
+        /// from the DynamoModel's Workspaces collection.
+        /// </summary>
+        public static event WorkspaceRemovedEventHandler WorkspaceRemoved;
+        public static void OnWorkspaceRemoved(Guid id, string name)
         {
-            if (WorkspaceClosed != null)
-                WorkspaceClosed(new WorkspaceClosedEventArgs(name, isShutdown));
-        }
-    }
-
-    public class WorkspaceOpenedEventArgs : EventArgs
-    {
-        public string Name { get; internal set; }
-
-        public WorkspaceOpenedEventArgs(string name)
-        {
-            Name = name;
+            if (WorkspaceRemoved != null)
+                WorkspaceRemoved(new WorkspacesModificationEventArgs(id, name));
         }
     }
 
-    public class WorkspaceClosedEventArgs : EventArgs
+    public class WorkspacesModificationEventArgs : EventArgs
     {
+        public Guid Id { get; internal set; }
         public string Name { get; internal set; }
-        public bool IsShutDown { get; internal set; }
 
-        public WorkspaceClosedEventArgs(string name, bool isShutdown)
+        public WorkspacesModificationEventArgs(Guid id, string name)
         {
+            Id = id;
             Name = name;
-            IsShutDown = isShutdown;
         }
     }
 }
