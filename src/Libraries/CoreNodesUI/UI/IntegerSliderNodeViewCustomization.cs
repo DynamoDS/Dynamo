@@ -3,13 +3,13 @@
 using Dynamo.Controls;
 using Dynamo.Wpf;
 
-namespace Dynamo.Nodes
+namespace DSCoreNodesUI.UI
 {
     public class IntegerSliderNodeViewCustomization : INodeViewCustomization<IntegerSlider>
     {
         public void CustomizeView(IntegerSlider model, NodeView nodeView)
         {
-            var slider = new UI.Controls.DynamoSlider(model, nodeView)
+            var slider = new Dynamo.UI.Controls.DynamoSlider(model, nodeView)
             {
                 DataContext = new SliderViewModel<int>(model)
             };

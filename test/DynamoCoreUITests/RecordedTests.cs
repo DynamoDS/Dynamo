@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Input;
 using System.Xml;
 
 using SystemTestServices;
-
-using DSCoreNodesUI.Input;
 
 using DSIronPythonNode;
 using Dynamo;
@@ -22,6 +18,7 @@ using NUnit.Framework;
 using Dynamo.UI;
 using DynamoUtilities;
 using System.Reflection;
+using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DynamoCoreUITests
 {

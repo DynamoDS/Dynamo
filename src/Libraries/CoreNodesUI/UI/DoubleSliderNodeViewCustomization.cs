@@ -3,13 +3,13 @@ using DSCoreNodesUI.Input;
 using Dynamo.Controls;
 using Dynamo.Wpf;
 
-namespace Dynamo.Nodes
+namespace DSCoreNodesUI.UI
 {
     public class DoubleSliderNodeViewCustomization : INodeViewCustomization<DoubleSlider>
     {
         public void CustomizeView(DoubleSlider model, NodeView nodeView)
         {
-            var slider = new UI.Controls.DynamoSlider(model, nodeView)
+            var slider = new Dynamo.UI.Controls.DynamoSlider(model, nodeView)
             {
                 DataContext = new SliderViewModel<double>(model)
             };

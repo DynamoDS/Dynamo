@@ -16,10 +16,9 @@ using System.Linq;
 
 using DSCoreNodesUI.Input;
 
-using Dynamo.Core;
-using Dynamo.Nodes;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
+using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 
 namespace DSCoreNodesTests
 {
