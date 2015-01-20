@@ -23,11 +23,7 @@ namespace VMDataBridge
             {
                 lock (mutex)
                 {
-                    if (instance == null)
-                    {
-                        instance = new DataBridge();
-                    }
-                    return instance;
+                    return instance ?? (instance = new DataBridge());   
                 }
             }
         }

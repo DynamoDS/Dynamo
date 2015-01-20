@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Autodesk, Inc.")]
 [assembly: AssemblyProduct("DynamoCoreWpf")]
-[assembly: AssemblyCopyright("Copyright © Autodesk, Inc. 2015")]
+[assembly: AssemblyCopyright("Copyright © Autodesk, Inc. 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -36,4 +36,4 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
-[assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
+[assembly: InternalsVisibleTo("DSCoreNodesUI")]
