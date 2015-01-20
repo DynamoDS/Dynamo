@@ -240,7 +240,7 @@ namespace Dynamo.ViewModels
                 entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
                     element => element.Categories,
                     (name, subs, es) =>
-                        new NodeCategoryViewModel(name, es.Select(MakeNodeSearchElementVM), subs)
+                        new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs)
                         {
                             IsExpanded = expanded
                         },

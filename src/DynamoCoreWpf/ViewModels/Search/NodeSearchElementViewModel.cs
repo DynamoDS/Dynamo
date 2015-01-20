@@ -114,19 +114,13 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                var name = GetResourceName(ResourceType.SmallIcon, false);
+                var name = GetResourceName(ResourceType.SmallIcon);
                 BitmapSource icon = GetIcon(name + Configurations.SmallIconPostfix);
 
+                // If there is no icon, use default.
                 if (icon == null)
-                {
-                    // Get dis-ambiguous resource name and try again.
-                    name = GetResourceName(ResourceType.SmallIcon, true);
-                    icon = GetIcon(name + Configurations.SmallIconPostfix);
+                    icon = LoadDefaultIcon(ResourceType.SmallIcon);
 
-                    // If there is no icon, use default.
-                    if (icon == null)
-                        icon = LoadDefaultIcon(ResourceType.SmallIcon);
-                }
                 return icon;
             }
         }
@@ -138,32 +132,26 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                var name = GetResourceName(ResourceType.LargeIcon, false);
+                var name = GetResourceName(ResourceType.LargeIcon);
                 BitmapSource icon = GetIcon(name + Configurations.LargeIconPostfix);
 
+                // If there is no icon, use default.
                 if (icon == null)
-                {
-                    // Get dis-ambiguous resource name and try again.
-                    name = GetResourceName(ResourceType.LargeIcon, true);
-                    icon = GetIcon(name + Configurations.LargeIconPostfix);
+                    icon = LoadDefaultIcon(ResourceType.LargeIcon);
 
-                    // If there is no icon, use default.
-                    if (icon == null)
-                        icon = LoadDefaultIcon(ResourceType.LargeIcon);
-                }
                 return icon;
             }
         }
 
         public ICommand ClickedCommand { get; private set; }
 
-        protected virtual string GetResourceName(
-            ResourceType resourceType, bool disambiguate = false)
+        private string GetResourceName(ResourceType resourceType)
         {
             switch (resourceType)
             {
-                case ResourceType.SmallIcon: return Model.IconName;
-                case ResourceType.LargeIcon: return Model.IconName;
+                case ResourceType.SmallIcon:
+                case ResourceType.LargeIcon:
+                    return Model.IconName;
             }
 
             throw new InvalidOperationException("Unhandled resourceType");
