@@ -73,6 +73,8 @@ namespace DynamoWebServer.Messages
                     break;
                 case "String":
                 case "Code Block":
+                case "Input":
+                case "Output":
                     Value = data;
                     break;
                 default:

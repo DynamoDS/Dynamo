@@ -12,6 +12,7 @@ namespace DynamoWebServer
         bool Setup(IRootConfig rootConfig, IServerConfig serverConfig);
         bool Start();
         WebSocketSession GetAppSessionById(string sessionId);
+        int GetSessionCount();
 
         event Action<WebSocketSession> NewSessionConnected;
         event Action<WebSocketSession, string> NewMessageReceived;
