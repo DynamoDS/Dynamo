@@ -8,6 +8,8 @@ using System.Xml;
 
 using SystemTestServices;
 
+using DSCoreNodesUI.Input;
+
 using DSIronPythonNode;
 using Dynamo;
 using Dynamo.Controls;
