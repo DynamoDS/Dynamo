@@ -268,18 +268,6 @@ namespace Dynamo.Models
             }
         }
 
-        public bool HasNodeThatPeriodicallyUpdates
-        {
-            get
-            {
-                var workspace = currentWorkspace as HomeWorkspaceModel;
-                if (workspace == null)
-                    return false;
-
-                return workspace.HasNodeThatPeriodicallyUpdates;
-            }
-        }
-
         /// <summary>
         ///     Specifies how connectors are displayed in Dynamo.
         /// </summary>

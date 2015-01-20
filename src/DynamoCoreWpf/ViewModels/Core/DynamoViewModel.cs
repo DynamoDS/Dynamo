@@ -312,7 +312,14 @@ namespace Dynamo.ViewModels
 
         public bool HasNodeThatPeriodicallyUpdates
         {
-            get { return model.HasNodeThatPeriodicallyUpdates; }
+            get
+            {
+                var workspace = model.CurrentWorkspace as HomeWorkspaceModel;
+                if (workspace == null)
+                    return false;
+
+                return workspace.HasNodeThatPeriodicallyUpdates;
+            }
         }
 
         public bool IsMouseDown { get; set; }
