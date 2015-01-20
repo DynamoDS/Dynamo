@@ -116,6 +116,12 @@ namespace Dynamo.Models
             EngineController.NodeDeleted(node);
         }
 
+        protected override void ResetWorkspaceCore()
+        {
+            // Reset Run Automatic option to false on resetting the workspace
+            DynamicRunEnabled = false;
+        }
+
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
