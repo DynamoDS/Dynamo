@@ -56,7 +56,7 @@ namespace Dynamo.PackageManager
         private void ScanAllPackageDirectories(IPreferences preferences)
         { 
             foreach (var dir in
-                Directory.EnumerateDirectories(RootPackagesDirectory, /*NXLT*/"*", SearchOption.TopDirectoryOnly))
+                Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
             {
                 var pkg = ScanPackageDirectory(dir);
                 if (preferences.PackageDirectoriesToUninstall.Contains(dir)) 
@@ -68,7 +68,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                var headerPath = Path.Combine(directory, /*NXLT*/"pkg.json");
+                var headerPath = Path.Combine(directory, "pkg.json");
 
                 Package discoveredPkg;
 
@@ -194,13 +194,13 @@ namespace Dynamo.PackageManager
                 {
                     Directory.Delete(pkgNameDirTup, true);
                     pkgDirsRemoved.Add(pkgNameDirTup);
-                    Log(String.Format(/*NXLT*/"Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
+                    Log(String.Format("Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
                 }
                 catch
                 {
                     Log(
                         String.Format(
-                        /*NXLT*/"Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
+                        "Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
                             pkgNameDirTup),
                         WarningLevel.Moderate);
                 }

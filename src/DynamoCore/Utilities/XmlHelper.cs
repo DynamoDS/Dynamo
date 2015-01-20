@@ -146,7 +146,7 @@ namespace Dynamo.Utilities
             XmlAttribute attrib = internalElement.Attributes[attribName];
             if (null == attrib)
             {
-                string fmt = /*NXLT*/"Mandatory attribute '{0}' does not exist";
+                string fmt = "Mandatory attribute '{0}' does not exist";
                 throw new InvalidOperationException(string.Format(fmt, attribName));
             }
 

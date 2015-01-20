@@ -90,10 +90,10 @@ namespace Dynamo.Utilities
             // and concatenate with all dlls in the current directory
             var allDynamoAssemblyPaths =
                 DynamoPathManager.Instance.Nodes.SelectMany(
-                    path => Directory.GetFiles(path, /*NXLT*/"*.dll", SearchOption.TopDirectoryOnly));
+                    path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly));
 
             // add the core assembly to get things like code block nodes and watches.
-            //allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, /*NXLT*/"DynamoCore.dll"));
+            //allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, "DynamoCore.dll"));
 
             ResolveEventHandler resolver = 
                 (sender, args) =>
@@ -190,7 +190,7 @@ namespace Dynamo.Utilities
             List<TypeLoadData> migrationTypes)
         {
             if (assembly == null)
-                throw new ArgumentNullException(/*NXLT*/"assembly");
+                throw new ArgumentNullException("assembly");
 
             Type[] loadedTypes = null;
 
@@ -200,17 +200,17 @@ namespace Dynamo.Utilities
             }
             catch (ReflectionTypeLoadException e)
             {
-                Log(/*NXLT*/"Could not load types.");
+                Log(Properties.Resources.CouldNotLoadTypes);
                 Log(e);
                 foreach (var ex in e.LoaderExceptions)
                 {
-                    Log(/*NXLT*/"Dll Load Exception:");
+                    Log(Properties.Resources.DllLoadException);
                     Log(ex.ToString());
                 }
             }
             catch (Exception e)
             {
-                Log(/*NXLT*/"Could not load types.");
+                Log(Properties.Resources.CouldNotLoadTypes);
                 Log(e);
             }
 
@@ -240,8 +240,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception e)
                 {
-                    Log(/*NXLT*/"Failed to load type from " + assembly.FullName);
-                    Log(/*NXLT*/"The type was " + t.FullName);
+                    Log(String.Format(Properties.Resources.FailedToLoadType, assembly.FullName, t.FullName));                  
                     Log(e);
                 }
             }

@@ -14,102 +14,102 @@ namespace Dynamo.Nodes
     /// </summary>
     public static class BuiltinNodeCategories
     {
-        public const string CORE = /*NXLT*/"Core";
-        public const string CORE_INPUT = /*NXLT*/"Core.Input";
-        public const string CORE_STRINGS = /*NXLT*/"Core.Strings";
-        public const string CORE_LISTS_CREATE = /*NXLT*/"Core.List.Create";
-        public const string CORE_LISTS_ACTION = /*NXLT*/"Core.List.Actions";
-        public const string CORE_LISTS_QUERY = /*NXLT*/"Core.List.Query";
-        public const string CORE_VIEW = /*NXLT*/"Core.View";
-        public const string CORE_ANNOTATE = /*NXLT*/"Core.Annotate";
-        public const string CORE_EVALUATE = /*NXLT*/"Core.Evaluate";
-        public const string CORE_TIME = /*NXLT*/"Core.Time";
-        public const string CORE_SCRIPTING = /*NXLT*/"Core.Scripting";
-        public const string CORE_FUNCTIONS = /*NXLT*/"Core.Functions";
-        public const string CORE_IO = /*NXLT*/"Core.File";
+        public const string CORE = "Core";
+        public const string CORE_INPUT = "Core.Input";
+        public const string CORE_STRINGS = "Core.Strings";
+        public const string CORE_LISTS_CREATE = "Core.List.Create";
+        public const string CORE_LISTS_ACTION = "Core.List.Actions";
+        public const string CORE_LISTS_QUERY = "Core.List.Query";
+        public const string CORE_VIEW = "Core.View";
+        public const string CORE_ANNOTATE = "Core.Annotate";
+        public const string CORE_EVALUATE = "Core.Evaluate";
+        public const string CORE_TIME = "Core.Time";
+        public const string CORE_SCRIPTING = "Core.Scripting";
+        public const string CORE_FUNCTIONS = "Core.Functions";
+        public const string CORE_IO = "Core.File";
 
-        public const string LOGIC = /*NXLT*/"Core.Logic";
-        public const string LOGIC_MATH_ARITHMETIC = /*NXLT*/"Logic.Math.Arithmetic";
-        public const string LOGIC_MATH_ROUNDING = /*NXLT*/"Logic.Math.Rounding";
-        public const string LOGIC_MATH_CONSTANTS = /*NXLT*/"Logic.Math.Constants";
-        public const string LOGIC_MATH_TRIGONOMETRY = /*NXLT*/"Logic.Math.Trigonometry";
-        public const string LOGIC_MATH_RANDOM = /*NXLT*/"Logic.Math.Random";
-        public const string LOGIC_MATH_OPTIMIZE = /*NXLT*/"Logic.Math.Optimize";
-        public const string LOGIC_EFFECT = /*NXLT*/"Logic.Effect";
-        public const string LOGIC_COMPARISON = /*NXLT*/"Logic.Comparison";
-        public const string LOGIC_LOOP = /*NXLT*/"Logic.Loop";
+        public const string LOGIC = "Core.Logic";
+        public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
+        public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
+        public const string LOGIC_MATH_CONSTANTS = "Logic.Math.Constants";
+        public const string LOGIC_MATH_TRIGONOMETRY = "Logic.Math.Trigonometry";
+        public const string LOGIC_MATH_RANDOM = "Logic.Math.Random";
+        public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
+        public const string LOGIC_EFFECT = "Logic.Effect";
+        public const string LOGIC_COMPARISON = "Logic.Comparison";
+        public const string LOGIC_LOOP = "Logic.Loop";
 
 
-        public const string GEOMETRY = /*NXLT*/"Geometry";
+        public const string GEOMETRY = "Geometry";
 
-        public const string GEOMETRY_CURVE_CREATE = /*NXLT*/"Geometry.Curve.Create";
-        public const string GEOMETRY_CURVE_DIVIDE = /*NXLT*/"Geometry.Curve.Divide";
-        public const string GEOMETRY_CURVE_PRIMITIVES = /*NXLT*/"Geometry.Curve.Primitives";
-        public const string GEOMETRY_CURVE_QUERY = /*NXLT*/"Geometry.Curve.Query";
-        public const string GEOMETRY_CURVE_FIT = /*NXLT*/"Geometry.Curve.Fit";
+        public const string GEOMETRY_CURVE_CREATE = "Geometry.Curve.Create";
+        public const string GEOMETRY_CURVE_DIVIDE = "Geometry.Curve.Divide";
+        public const string GEOMETRY_CURVE_PRIMITIVES = "Geometry.Curve.Primitives";
+        public const string GEOMETRY_CURVE_QUERY = "Geometry.Curve.Query";
+        public const string GEOMETRY_CURVE_FIT = "Geometry.Curve.Fit";
 
-        public const string GEOMETRY_POINT_CREATE = /*NXLT*/"Geometry.Point.Create";
-        public const string GEOMETRY_POINT_MODIFY = /*NXLT*/"Geometry.Point.Modify";
-        public const string GEOMETRY_POINT_QUERY = /*NXLT*/"Geometry.Point.Query";
-        public const string GEOMETRY_POINT_GRID = /*NXLT*/"Geometry.Point.Grid";
-        public const string GEOMETRY_POINT_TESSELATE = /*NXLT*/"Geometry.Point.Tesselate";
+        public const string GEOMETRY_POINT_CREATE = "Geometry.Point.Create";
+        public const string GEOMETRY_POINT_MODIFY = "Geometry.Point.Modify";
+        public const string GEOMETRY_POINT_QUERY = "Geometry.Point.Query";
+        public const string GEOMETRY_POINT_GRID = "Geometry.Point.Grid";
+        public const string GEOMETRY_POINT_TESSELATE = "Geometry.Point.Tesselate";
 
-        public const string GEOMETRY_SOLID_BOOLEAN = /*NXLT*/"Geometry.Solid.Boolean";
-        public const string GEOMETRY_SOLID_CREATE = /*NXLT*/"Geometry.Solid.Create";
-        public const string GEOMETRY_SOLID_MODIFY = /*NXLT*/"Geometry.Solid.Modify";
-        public const string GEOMETRY_SOLID_PRIMITIVES = /*NXLT*/"Geometry.Solid.Primitives";
-        public const string GEOMETRY_SOLID_QUERY = /*NXLT*/"Geometry.Solid.Extract";
-        public const string GEOMETRY_SOLID_REPAIR = /*NXLT*/"Geometry.Solid.Repair";
+        public const string GEOMETRY_SOLID_BOOLEAN = "Geometry.Solid.Boolean";
+        public const string GEOMETRY_SOLID_CREATE = "Geometry.Solid.Create";
+        public const string GEOMETRY_SOLID_MODIFY = "Geometry.Solid.Modify";
+        public const string GEOMETRY_SOLID_PRIMITIVES = "Geometry.Solid.Primitives";
+        public const string GEOMETRY_SOLID_QUERY = "Geometry.Solid.Extract";
+        public const string GEOMETRY_SOLID_REPAIR = "Geometry.Solid.Repair";
 
-        public const string GEOMETRY_SURFACE_CREATE = /*NXLT*/"Geometry.Surface.Create";
-        public const string GEOMETRY_SURFACE_QUERY = /*NXLT*/"Geometry.Surface.Query";
-        public const string GEOMETRY_SURFACE_UV = /*NXLT*/"Geometry.Surface.UV";
-        public const string GEOMETRY_SURFACE_DIVIDE = /*NXLT*/"Geometry.Surface.Divide";
+        public const string GEOMETRY_SURFACE_CREATE = "Geometry.Surface.Create";
+        public const string GEOMETRY_SURFACE_QUERY = "Geometry.Surface.Query";
+        public const string GEOMETRY_SURFACE_UV = "Geometry.Surface.UV";
+        public const string GEOMETRY_SURFACE_DIVIDE = "Geometry.Surface.Divide";
 
-        public const string GEOMETRY_TRANSFORM_APPLY = /*NXLT*/"Geometry.Transform.Apply";
-        public const string GEOMETRY_TRANSFORM_MODIFY = /*NXLT*/"Geometry.Transform.Modify";
-        public const string GEOMETRY_TRANSFORM_CREATE = /*NXLT*/"Geometry.Transform.Create";
+        public const string GEOMETRY_TRANSFORM_APPLY = "Geometry.Transform.Apply";
+        public const string GEOMETRY_TRANSFORM_MODIFY = "Geometry.Transform.Modify";
+        public const string GEOMETRY_TRANSFORM_CREATE = "Geometry.Transform.Create";
 
-        public const string GEOMETRY_INTERSECT = /*NXLT*/"Geometry.Intersect";
+        public const string GEOMETRY_INTERSECT = "Geometry.Intersect";
 
-        public const string GEOMETRY_EXPERIMENTAL_PRIMITIVES = /*NXLT*/"Geometry.Experimental.Primitives";
-        public const string GEOMETRY_EXPERIMENTAL_SURFACE = /*NXLT*/"Geometry.Experimental.Surface";
-        public const string GEOMETRY_EXPERIMENTAL_CURVE = /*NXLT*/"Geometry.Experimental.Curve";
-        public const string GEOMETRY_EXPERIMENTAL_SOLID = /*NXLT*/"Geometry.Experimental.Solid";
-        public const string GEOMETRY_EXPERIMENTAL_MODIFY = /*NXLT*/"Geometry.Experimental.Modify";
-        public const string GEOMETRY_EXPERIMENTAL_VIEW = /*NXLT*/"Geometry.Experimental.View";
+        public const string GEOMETRY_EXPERIMENTAL_PRIMITIVES = "Geometry.Experimental.Primitives";
+        public const string GEOMETRY_EXPERIMENTAL_SURFACE = "Geometry.Experimental.Surface";
+        public const string GEOMETRY_EXPERIMENTAL_CURVE = "Geometry.Experimental.Curve";
+        public const string GEOMETRY_EXPERIMENTAL_SOLID = "Geometry.Experimental.Solid";
+        public const string GEOMETRY_EXPERIMENTAL_MODIFY = "Geometry.Experimental.Modify";
+        public const string GEOMETRY_EXPERIMENTAL_VIEW = "Geometry.Experimental.View";
 
-        public const string REVIT = /*NXLT*/"Revit";
-        public const string REVIT_DOCUMENT = /*NXLT*/"Revit.Document";
-        public const string REVIT_DATUMS = /*NXLT*/"Revit.Datums";
-        public const string REVIT_FAMILIES = /*NXLT*/"Revit.Families";
-        public const string REVIT_SELECTION = /*NXLT*/"Revit.Selection";
-        public const string REVIT_VIEW = /*NXLT*/"Revit.View";
-        public const string REVIT_REFERENCE = /*NXLT*/"Revit.Reference";
-        public const string REVIT_PARAMETERS = /*NXLT*/"Revit.Parameters";
-        public const string REVIT_BAKE = /*NXLT*/"Revit.Bake";
-        public const string REVIT_API = /*NXLT*/"Revit.API";
+        public const string REVIT = "Revit";
+        public const string REVIT_DOCUMENT = "Revit.Document";
+        public const string REVIT_DATUMS = "Revit.Datums";
+        public const string REVIT_FAMILIES = "Revit.Families";
+        public const string REVIT_SELECTION = "Revit.Selection";
+        public const string REVIT_VIEW = "Revit.View";
+        public const string REVIT_REFERENCE = "Revit.Reference";
+        public const string REVIT_PARAMETERS = "Revit.Parameters";
+        public const string REVIT_BAKE = "Revit.Bake";
+        public const string REVIT_API = "Revit.API";
 
-        public const string ANALYZE = /*NXLT*/"Analyze";
-        public const string ANALYZE_MEASURE = /*NXLT*/"Analyze.Measure";
-        public const string ANALYZE_DISPLAY = /*NXLT*/"Analyze.Display";
-        public const string ANALYZE_COLOR = /*NXLT*/"Analyze.Color";
-        public const string ANALYZE_STRUCTURE = /*NXLT*/"Analyze.Structure";
-        public const string ANALYZE_CLIMATE = /*NXLT*/"Analyze.Climate";
-        public const string ANALYZE_ACOUSTIC = /*NXLT*/"Analyze.Acoustic";
-        public const string ANALYZE_SOLAR = /*NXLT*/"Analyze.Solar";
+        public const string ANALYZE = "Analyze";
+        public const string ANALYZE_MEASURE = "Analyze.Measure";
+        public const string ANALYZE_DISPLAY = "Analyze.Display";
+        public const string ANALYZE_COLOR = "Analyze.Color";
+        public const string ANALYZE_STRUCTURE = "Analyze.Structure";
+        public const string ANALYZE_CLIMATE = "Analyze.Climate";
+        public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
+        public const string ANALYZE_SOLAR = "Analyze.Solar";
 
-        public const string IO = /*NXLT*/"Input/Output";
-        public const string IO_FILE = /*NXLT*/"Input/Output.File";
-        public const string IO_NETWORK = /*NXLT*/"Input/Output.Network";
-        public const string IO_HARDWARE = /*NXLT*/"Input/Output.Hardware";
+        public const string IO = "Input/Output";
+        public const string IO_FILE = "Input/Output.File";
+        public const string IO_NETWORK = "Input/Output.Network";
+        public const string IO_HARDWARE = "Input/Output.Hardware";
     }
 
     public static class Utilities
     {
         public static string Ellipsis(string value, int desiredLength)
         {
-            return desiredLength > value.Length ? value : value.Remove(desiredLength - 1) + /*NXLT*/"...";
+            return desiredLength > value.Length ? value : value.Remove(desiredLength - 1) + "...";
         }
 
         /// <summary>
@@ -127,11 +127,11 @@ namespace Dynamo.Nodes
         public static string PreprocessTypeName(string fullyQualifiedName)
         {
             if (string.IsNullOrEmpty(fullyQualifiedName))
-                throw new ArgumentNullException(/*NXLT*/"fullyQualifiedName");
+                throw new ArgumentNullException("fullyQualifiedName");
 
             // older files will have nodes in the Dynamo.Elements namespace
-            const string oldPrefix = /*NXLT*/"Dynamo.Elements.";
-            const string newPrefix = /*NXLT*/"Dynamo.Nodes.";
+            const string oldPrefix = "Dynamo.Elements.";
+            const string newPrefix = "Dynamo.Nodes.";
             string className;
 
             // Attempt to extract the class name out of the fully qualified 
@@ -152,13 +152,13 @@ namespace Dynamo.Nodes
             }
 
             // Remove prefix of 'dyn' from older files.
-            if (className.StartsWith(/*NXLT*/"dyn"))
+            if (className.StartsWith("dyn"))
                 className = className.Remove(0, 3);
 
             // Older files will have nodes that use "XYZ" and "UV" 
             // instead of "Xyz" and "Uv". Update these names.
-            className = className.Replace(/*NXLT*/"XYZ", /*NXLT*/"Xyz");
-            className = className.Replace(/*NXLT*/"UV", /*NXLT*/"Uv");
+            className = className.Replace("XYZ", "Xyz");
+            className = className.Replace("UV", "Uv");
             return newPrefix + className; // Always new prefix from now on.
         }
 
@@ -175,11 +175,11 @@ namespace Dynamo.Nodes
         internal static void SetDocumentXmlPath(XmlDocument document, string targetFilePath)
         {
             if (document == null)
-                throw new ArgumentNullException(/*NXLT*/"document");
+                throw new ArgumentNullException("document");
 
             if (document.DocumentElement == null)
             {
-                const string message = /*NXLT*/"'XmlDocument.DocumentElement' cannot be null";
+                const string message = "'XmlDocument.DocumentElement' cannot be null";
                 throw new ArgumentException(message);
             }
 
@@ -204,11 +204,11 @@ namespace Dynamo.Nodes
         internal static string GetDocumentXmlPath(XmlDocument document)
         {
             if (document == null)
-                throw new ArgumentNullException(/*NXLT*/"document");
+                throw new ArgumentNullException("document");
 
             if (document.DocumentElement == null)
             {
-                const string message = /*NXLT*/"'XmlDocument.DocumentElement' cannot be null";
+                const string message = "'XmlDocument.DocumentElement' cannot be null";
                 throw new ArgumentException(message);
             }
 
@@ -226,7 +226,7 @@ namespace Dynamo.Nodes
             if (attrib == null)
             {
                 throw new InvalidOperationException(
-                    string.Format(/*NXLT*/"'{0}' attribute not found in XmlDocument",
+                    string.Format("'{0}' attribute not found in XmlDocument",
                     Configurations.FilePathAttribName));
             }
 
@@ -250,21 +250,21 @@ namespace Dynamo.Nodes
             #region Parameter Validations
 
             if (document == null)
-                throw new ArgumentNullException(/*NXLT*/"document");
+                throw new ArgumentNullException("document");
 
             if (document.DocumentElement == null)
             {
-                const string message = /*NXLT*/"Document does not have a root element";
-                throw new ArgumentException(message, /*NXLT*/"document");
+                const string message = "Document does not have a root element";
+                throw new ArgumentException(message, "document");
             }
 
             if (nodeTraceDataList == null)
-                throw new ArgumentNullException(/*NXLT*/"nodeTraceDataList");
+                throw new ArgumentNullException("nodeTraceDataList");
 
             if (!nodeTraceDataList.Any())
             {
-                const string message = /*NXLT*/"Trade data list must be non-empty";
-                throw new ArgumentException(message, /*NXLT*/"nodeTraceDataList");
+                const string message = "Trade data list must be non-empty";
+                throw new ArgumentException(message, "nodeTraceDataList");
             }
 
             #endregion
@@ -315,12 +315,12 @@ namespace Dynamo.Nodes
             LoadTraceDataFromXmlDocument(XmlDocument document)
         {
             if (document == null)
-                throw new ArgumentNullException(/*NXLT*/"document");
+                throw new ArgumentNullException("document");
 
             if (document.DocumentElement == null)
             {
-                const string message = /*NXLT*/"Document does not have a root element";
-                throw new ArgumentException(message, /*NXLT*/"document");
+                const string message = "Document does not have a root element";
+                throw new ArgumentException(message, "document");
             }
 
             var childNodes = document.DocumentElement.ChildNodes.Cast<XmlElement>();
@@ -359,7 +359,7 @@ namespace Dynamo.Nodes
         internal static string MakeRelativePath(string basePath, string subjectPath)
         {
             if (string.IsNullOrEmpty(basePath))
-                throw new ArgumentNullException(/*NXLT*/"basePath");
+                throw new ArgumentNullException("basePath");
 
             if (string.IsNullOrEmpty(subjectPath))
                 return string.Empty;
@@ -377,7 +377,7 @@ namespace Dynamo.Nodes
             var relativePath = relativeUri.OriginalString.Replace('/', '\\');
             if (!HasPathInformation(relativePath))
             {
-                relativePath = /*NXLT*/".\\" + relativePath;
+                relativePath = ".\\" + relativePath;
             }
             return relativePath;
         }
@@ -395,9 +395,9 @@ namespace Dynamo.Nodes
         internal static string MakeAbsolutePath(string basePath, string relativePath)
         {
             if (string.IsNullOrEmpty(basePath))
-                throw new ArgumentNullException(/*NXLT*/"basePath");
+                throw new ArgumentNullException("basePath");
             if (string.IsNullOrEmpty(relativePath))
-                throw new ArgumentNullException(/*NXLT*/"relativePath");
+                throw new ArgumentNullException("relativePath");
 
             // Determine if we have any directory information in the 
             // subjectPath. For example, we won't want to form an absolute 

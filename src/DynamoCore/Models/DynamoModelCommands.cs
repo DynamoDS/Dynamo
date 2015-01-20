@@ -93,7 +93,7 @@ namespace Dynamo.Models
                     // We're out of ideas, log an error.
                     else
                     {
-                        Logger.LogError(/*NXLT*/"Could not create instance of node with name: " + name);
+                        Logger.LogError("Could not create instance of node with name: " + name);
                         return;
                     }
                 }
@@ -283,7 +283,7 @@ namespace Dynamo.Models
                 command.Name, command.Value);
         }
 
-        [Obsolete(/*NXLT*/"Node to Code not enabled, API subject to change.")]
+        [Obsolete("Node to Code not enabled, API subject to change.")]
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
             CurrentWorkspace.ConvertNodesToCodeInternal(

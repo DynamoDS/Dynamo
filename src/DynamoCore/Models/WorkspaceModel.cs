@@ -33,7 +33,7 @@ namespace Dynamo.Models
         private double y;
         private double zoom = 1.0;
         private DateTime lastSaved;
-        private string author = /*NXLT*/"None provided";
+        private string author = "None provided";
         private bool hasUnsavedChanges;
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
@@ -113,7 +113,7 @@ namespace Dynamo.Models
         {
             if (CurrentOffsetChanged != null)
             {
-                Debug.WriteLine(/*NXLT*/"Setting current offset to {0}", e.Point);
+                Debug.WriteLine("Setting current offset to {0}", e.Point);
                 CurrentOffsetChanged(this, e);
             }
         }
@@ -201,7 +201,7 @@ namespace Dynamo.Models
             set
             {
                 lastSaved = value;
-                RaisePropertyChanged(/*NXLT*/"LastSaved");
+                RaisePropertyChanged("LastSaved");
             }
         }
 
@@ -214,7 +214,7 @@ namespace Dynamo.Models
             set
             {
                 author = value;
-                RaisePropertyChanged(/*NXLT*/"Author");
+                RaisePropertyChanged("Author");
             }
         }
 
@@ -227,7 +227,7 @@ namespace Dynamo.Models
             set
             {
                 hasUnsavedChanges = value;
-                RaisePropertyChanged(/*NXLT*/"HasUnsavedChanges");
+                RaisePropertyChanged("HasUnsavedChanges");
             }
         }
 
@@ -262,7 +262,7 @@ namespace Dynamo.Models
             set
             {
                 fileName = value;
-                RaisePropertyChanged(/*NXLT*/"FileName");
+                RaisePropertyChanged("FileName");
             }
         }
 
@@ -275,7 +275,7 @@ namespace Dynamo.Models
             set
             {
                 name = value;
-                RaisePropertyChanged(/*NXLT*/"Name");
+                RaisePropertyChanged("Name");
             }
         }
 
@@ -288,7 +288,7 @@ namespace Dynamo.Models
             set
             {
                 x = value;
-                RaisePropertyChanged(/*NXLT*/"X");
+                RaisePropertyChanged("X");
             }
         }
 
@@ -301,7 +301,7 @@ namespace Dynamo.Models
             set
             {
                 y = value;
-                RaisePropertyChanged(/*NXLT*/"Y");
+                RaisePropertyChanged("Y");
             }
         }
 
@@ -311,7 +311,7 @@ namespace Dynamo.Models
             set
             {
                 zoom = value;
-                RaisePropertyChanged(/*NXLT*/"Zoom");
+                RaisePropertyChanged("Zoom");
             }
         }
 
@@ -324,7 +324,7 @@ namespace Dynamo.Models
             set
             {
                 height = value;
-                RaisePropertyChanged(/*NXLT*/"Height");
+                RaisePropertyChanged("Height");
             }
         }
 
@@ -337,7 +337,7 @@ namespace Dynamo.Models
             set
             {
                 width = value;
-                RaisePropertyChanged(/*NXLT*/"Width");
+                RaisePropertyChanged("Width");
             }
         }
 
@@ -484,7 +484,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log(Properties.Resources.SavingInProgress + /*NXLT*/" " + newPath + /*NXLT*/"...");
+            Log(Properties.Resources.SavingInProgress + " " + newPath + "...");
             try
             {
                 if (SaveInternal(newPath, core))
@@ -495,7 +495,7 @@ namespace Dynamo.Models
                 //Log(ex);
                 Log(ex.Message);
                 Log(ex.StackTrace);
-                Debug.WriteLine(ex.Message + /*NXLT*/" : " + ex.StackTrace);
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
 
@@ -633,7 +633,7 @@ namespace Dynamo.Models
 
         public void ReportPosition()
         {
-            RaisePropertyChanged(/*NXLT*/"Position");
+            RaisePropertyChanged("Position");
         }
 
         #endregion
@@ -644,8 +644,8 @@ namespace Dynamo.Models
         {
             // Create the xml document to write to.
             var document = new XmlDocument();
-            document.CreateXmlDeclaration(/*NXLT*/"1.0", null, null);
-            document.AppendChild(document.CreateElement(/*NXLT*/"Workspace"));
+            document.CreateXmlDeclaration("1.0", null, null);
+            document.AppendChild(document.CreateElement("Workspace"));
 
             Utils.SetDocumentXmlPath(document, targetFilePath);
 
@@ -673,13 +673,13 @@ namespace Dynamo.Models
             try
             {
                 var root = xmlDoc.DocumentElement;
-                root.SetAttribute(/*NXLT*/"Version", WorkspaceVersion.ToString());
-                root.SetAttribute(/*NXLT*/"X", X.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute(/*NXLT*/"Y", Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute(/*NXLT*/"zoom", Zoom.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute(/*NXLT*/"Name", Name);
+                root.SetAttribute("Version", WorkspaceVersion.ToString());
+                root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Name", Name);
 
-                var elementList = xmlDoc.CreateElement(/*NXLT*/"Elements");
+                var elementList = xmlDoc.CreateElement("Elements");
                 //write the root element
                 root.AppendChild(elementList);
 
@@ -687,7 +687,7 @@ namespace Dynamo.Models
                     elementList.AppendChild(dynEl);
 
                 //write only the output connectors
-                var connectorList = xmlDoc.CreateElement(/*NXLT*/"Connectors");
+                var connectorList = xmlDoc.CreateElement("Connectors");
                 //write the root element
                 root.AppendChild(connectorList);
 
@@ -701,34 +701,34 @@ namespace Dynamo.Models
                         {
                             var connector = xmlDoc.CreateElement(c.GetType().ToString());
                             connectorList.AppendChild(connector);
-                            connector.SetAttribute(/*NXLT*/"start", c.Start.Owner.GUID.ToString());
-                            connector.SetAttribute(/*NXLT*/"start_index", c.Start.Index.ToString());
-                            connector.SetAttribute(/*NXLT*/"end", c.End.Owner.GUID.ToString());
-                            connector.SetAttribute(/*NXLT*/"end_index", c.End.Index.ToString());
+                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
+                            connector.SetAttribute("start_index", c.Start.Index.ToString());
+                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
+                            connector.SetAttribute("end_index", c.End.Index.ToString());
 
                             if (c.End.PortType == PortType.Input)
-                                connector.SetAttribute(/*NXLT*/"portType", /*NXLT*/"0");
+                                connector.SetAttribute("portType", "0");
                         }
                     }
                 }
 
                 //save the notes
-                var noteList = xmlDoc.CreateElement(/*NXLT*/"Notes"); //write the root element
+                var noteList = xmlDoc.CreateElement("Notes"); //write the root element
                 root.AppendChild(noteList);
                 foreach (var n in Notes)
                 {
                     var note = xmlDoc.CreateElement(n.GetType().ToString());
                     noteList.AppendChild(note);
-                    note.SetAttribute(/*NXLT*/"text", n.Text);
-                    note.SetAttribute(/*NXLT*/"x", n.X.ToString(CultureInfo.InvariantCulture));
-                    note.SetAttribute(/*NXLT*/"y", n.Y.ToString(CultureInfo.InvariantCulture));
+                    note.SetAttribute("text", n.Text);
+                    note.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
+                    note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
                 }
 
                 return true;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message + /*NXLT*/" : " + ex.StackTrace);
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
         }
@@ -739,7 +739,7 @@ namespace Dynamo.Models
         {
             if (document.DocumentElement == null)
             {
-                const string message = /*NXLT*/"Workspace should have been saved before this";
+                const string message = "Workspace should have been saved before this";
                 throw new InvalidOperationException(message);
             }
 
@@ -779,10 +779,10 @@ namespace Dynamo.Models
                 {
                     string type = model.GetType().FullName;
                     string message = string.Format(
-                        /*NXLT*/"ModelBase.HandleModelEvent call not handled.\n\n" +
-                        /*NXLT*/"Model type: {0}\n" +
-                        /*NXLT*/"Model GUID: {1}\n" +
-                        /*NXLT*/"Event name: {2}",
+                        "ModelBase.HandleModelEvent call not handled.\n\n" +
+                        "Model type: {0}\n" +
+                        "Model GUID: {1}\n" +
+                        "Event name: {2}",
                         type, modelGuid, eventName);
 
                     // All 'HandleModelEvent' calls must be handled by one of 
@@ -805,11 +805,11 @@ namespace Dynamo.Models
                 {
                     string type = model.GetType().FullName;
                     string message = string.Format(
-                        /*NXLT*/"ModelBase.UpdateValue call not handled.\n\n" +
-                        /*NXLT*/"Model type: {0}\n" +
-                        /*NXLT*/"Model GUID: {1}\n" +
-                        /*NXLT*/"Property name: {2}\n" +
-                        /*NXLT*/"Property value: {3}",
+                        "ModelBase.UpdateValue call not handled.\n\n" +
+                        "Model type: {0}\n" +
+                        "Model GUID: {1}\n" +
+                        "Property name: {2}\n" +
+                        "Property value: {3}",
                         type, modelGuid, propertyName, value);
 
                     // All 'UpdateValue' calls must be handled by one of the 
@@ -822,7 +822,7 @@ namespace Dynamo.Models
             }
         }
 
-        [Obsolete(/*NXLT*/"Node to Code not enabled, API subject to change.")]
+        [Obsolete("Node to Code not enabled, API subject to change.")]
         internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController, bool verboseLogging)
         {
             IEnumerable<NodeModel> selectedNodes =
@@ -1110,7 +1110,7 @@ namespace Dynamo.Models
             {
                 // If it gets here we obviously need to handle it.
                 throw new InvalidOperationException(string.Format(
-                    /*NXLT*/"Unhandled type: {0}", model.GetType()));
+                    "Unhandled type: {0}", model.GetType()));
             }
         }
 
@@ -1123,7 +1123,7 @@ namespace Dynamo.Models
         public void CreateModel(XmlElement modelData)
         {
             var helper = new XmlElementHelper(modelData);
-            string typeName = helper.ReadString(/*NXLT*/"type", String.Empty);
+            string typeName = helper.ReadString("type", String.Empty);
             if (string.IsNullOrEmpty(typeName))
             {
                 // If there wasn't a "type" attribute, then we fall-back onto 
@@ -1132,9 +1132,9 @@ namespace Dynamo.Models
                 typeName = modelData.Name;
                 if (string.IsNullOrEmpty(typeName))
                 {
-                    string guid = helper.ReadString(/*NXLT*/"guid");
+                    string guid = helper.ReadString("guid");
                     throw new InvalidOperationException(
-                        string.Format(/*NXLT*/"No type information: {0}", guid));
+                        string.Format("No type information: {0}", guid));
                 }
             }
 
@@ -1150,12 +1150,12 @@ namespace Dynamo.Models
             }
             */
 
-            if (typeName.StartsWith(/*NXLT*/"Dynamo.Models.ConnectorModel"))
+            if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
                 NodeGraph.LoadConnectorFromXml(modelData,
                     Nodes.ToDictionary(node => node.GUID));
             }
-            else if (typeName.StartsWith(/*NXLT*/"Dynamo.Models.NoteModel"))
+            else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
                 var noteModel = NodeGraph.LoadNoteFromXml(modelData);
                 Notes.Add(noteModel);
@@ -1180,14 +1180,14 @@ namespace Dynamo.Models
             //     return Nodes.First((x) => (x.GUID == modelGuid));
 
             var helper = new XmlElementHelper(modelData);
-            Guid modelGuid = helper.ReadGuid(/*NXLT*/"guid");
+            Guid modelGuid = helper.ReadGuid("guid");
 
             ModelBase foundModel = GetModelInternal(modelGuid);
             if (null != foundModel)
                 return foundModel;
 
             throw new ArgumentException(
-                string.Format(/*NXLT*/"Unhandled model type: {0}", helper.ReadString(/*NXLT*/"type", modelData.Name)));
+                string.Format("Unhandled model type: {0}", helper.ReadString("type", modelData.Name)));
         }
 
         internal ModelBase GetModelInternal(Guid modelGuid)
@@ -1207,7 +1207,7 @@ namespace Dynamo.Models
         /// This determines if it should be redrawn(if it is external) or if it should be 
         /// deleted (if it is internal)
         /// </summary>
-        [Obsolete(/*NXLT*/"Node to Code not enabled, API subject to change.")]
+        [Obsolete("Node to Code not enabled, API subject to change.")]
         private static bool IsInternalNodeToCodeConnection(ConnectorModel connector)
         {
             return DynamoSelection.Instance.Selection.Contains(connector.Start.Owner) && DynamoSelection.Instance.Selection.Contains(connector.End.Owner);
@@ -1219,7 +1219,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="externalOutputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
-        [Obsolete(/*NXLT*/"Node to Code not enabled, API subject to change.")]
+        [Obsolete("Node to Code not enabled, API subject to change.")]
         private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel codeBlockNode)
         {
             foreach (var kvp in externalOutputConnections)
@@ -1255,7 +1255,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
-        [Obsolete(/*NXLT*/"Node to Code not enabled, API subject to change.")]
+        [Obsolete("Node to Code not enabled, API subject to change.")]
         private void ReConnectInputConnections(
             Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel codeBlockNode)
         {
@@ -1291,11 +1291,11 @@ namespace Dynamo.Models
         {
             // Create the xml document to write to.
             var document = new XmlDocument();
-            document.CreateXmlDeclaration(/*NXLT*/"1.0", null, null);
-            document.AppendChild(document.CreateElement(/*NXLT*/"Workspace"));
+            document.CreateXmlDeclaration("1.0", null, null);
+            document.AppendChild(document.CreateElement("Workspace"));
 
             //This is only used for computing relative offsets, it's not actually created
-            string virtualFileName = String.Join(Path.GetTempPath(), /*NXLT*/"DynamoTemp.dyn");
+            string virtualFileName = String.Join(Path.GetTempPath(), "DynamoTemp.dyn");
             Utils.SetDocumentXmlPath(document, virtualFileName);
 
             if (!PopulateXmlDocument(document))

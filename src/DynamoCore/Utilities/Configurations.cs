@@ -7,8 +7,8 @@ namespace Dynamo.UI
         #region Dynamo Universal Constants
 
         // Add 0.5 to place the point in the middle of a pixel to sharpen it
-        public static readonly string BackupFolderName = /*NXLT*/"backup";
-        public static readonly string FilePathAttribName = /*NXLT*/"TargetXmlFilePath";
+        public static readonly string BackupFolderName = "backup";
+        public static readonly string FilePathAttribName = "TargetXmlFilePath";
         public static readonly double DoubleSliderTextBoxWidth = 55.0;
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
         public static readonly double MaxWatchNodeWidth = 280.0;
@@ -18,16 +18,16 @@ namespace Dynamo.UI
 
         #region Usage Reporting Error Message
 
-        public static string DynamoSiteLink = /*NXLT*/"http://dynamobim.org/";
-        public static string DynamoWikiLink = /*NXLT*/"https://github.com/DynamoDS/Dynamo/wiki";
-        public static string DynamoBimForum = /*NXLT*/"http://dynamobim.org/forums/forum/dyn/";
-        public static string DynamoTeamEmail = /*NXLT*/"mailto:team@dynamobim.org";
-        public static string DynamoWrittenTutorials = /*NXLT*/"http://dynamobim.org/learn/#124";
-        public static string DynamoVideoTutorials = /*NXLT*/"http://dynamobim.org/learn/#161";
-        public static string DynamoMoreSamples = /*NXLT*/"http://dynamobim.org/learn/#159";
-        public static string DynamoDownloadLink = /*NXLT*/"http://dynamobim.org/download/";
-        public static string GitHubDynamoLink = /*NXLT*/"https://github.com/DynamoDS/Dynamo";
-        public static string GitHubBugReportingLink = /*NXLT*/"https://github.com/DynamoDS/Dynamo/issues";
+        public static string DynamoSiteLink = "http://dynamobim.org/";
+        public static string DynamoWikiLink = "https://github.com/DynamoDS/Dynamo/wiki";
+        public static string DynamoBimForum = "http://dynamobim.org/forums/forum/dyn/";
+        public static string DynamoTeamEmail = "mailto:team@dynamobim.org";
+        public static string DynamoWrittenTutorials = "http://dynamobim.org/learn/#124";
+        public static string DynamoVideoTutorials = "http://dynamobim.org/learn/#161";
+        public static string DynamoMoreSamples = "http://dynamobim.org/learn/#159";
+        public static string DynamoDownloadLink = "http://dynamobim.org/download/";
+        public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
+        public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
         #endregion
 
         #region Canvas Configurations
@@ -155,16 +155,16 @@ namespace Dynamo.UI
         public static readonly double CodeBlockPortHeightInPixels = 17.563333333333336;
         public static readonly int CBNMaxPortNameLength = 24;
         public static readonly string HighlightingFile =
-            /*NXLT*/"DesignScript.Resources.SyntaxHighlighting.xshd";
+            "DesignScript.Resources.SyntaxHighlighting.xshd";
 
         #endregion
 
         #region Externally Visible Strings
 
-        public static readonly string SessionTraceDataXmlTag = /*NXLT*/"SessionTraceData";
-        public static readonly string NodeTraceDataXmlTag = /*NXLT*/"NodeTraceData";
-        public static readonly string CallsiteTraceDataXmlTag = /*NXLT*/"CallsiteTraceData";
-        public static readonly string NodeIdAttribName = /*NXLT*/"NodeId";
+        public static readonly string SessionTraceDataXmlTag = "SessionTraceData";
+        public static readonly string NodeTraceDataXmlTag = "NodeTraceData";
+        public static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
+        public static readonly string NodeIdAttribName = "NodeId";
 
         #endregion
 
@@ -183,7 +183,7 @@ namespace Dynamo.UI
 
     public class ResourceNames
     {
-        public static readonly string FontResourceUri = /*NXLT*/"./UI/Fonts/#Open Sans";
-        public static readonly string ResourceBaseUri = /*NXLT*/"pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
+        public static readonly string FontResourceUri = "./UI/Fonts/#Open Sans";
+        public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
     }
 }

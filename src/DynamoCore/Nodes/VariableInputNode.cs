@@ -181,7 +181,7 @@ namespace Dynamo.Nodes
         /// <param name="amount"></param>
         public static void SerializeInputCount(XmlElement nodeElement, int amount)
         {
-            nodeElement.SetAttribute(/*NXLT*/"inputcount", amount.ToString());
+            nodeElement.SetAttribute("inputcount", amount.ToString());
         }
         
         #region Serialization/Deserialization Methods
@@ -195,7 +195,7 @@ namespace Dynamo.Nodes
         public void DeserializeCore(XmlElement element, SaveContext context)
         {
             //base.DeserializeCore(element, context); //Base implementation must be called
-            int amt = Convert.ToInt32(element.Attributes[/*NXLT*/"inputcount"].Value);
+            int amt = Convert.ToInt32(element.Attributes["inputcount"].Value);
             SetNumInputs(amt);
             model.RegisterAllPorts();
         }
@@ -215,7 +215,7 @@ namespace Dynamo.Nodes
                 if (connectors.Count != 1)
                 {
                     throw new InvalidOperationException(
-                        /*NXLT*/"There should be only one connection to an input port");
+                        "There should be only one connection to an input port");
                 }
                 var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>
                 {
@@ -230,14 +230,14 @@ namespace Dynamo.Nodes
 
         public bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
-            if (eventName == /*NXLT*/"AddInPort")
+            if (eventName == "AddInPort")
             {
                 AddInputToModel();
                 model.RegisterAllPorts();
                 return true; // Handled here.
             }
 
-            if (eventName == /*NXLT*/"RemoveInPort")
+            if (eventName == "RemoveInPort")
             {
                 // When an in-port is removed, it is possible that a connector 
                 // is almost removed along with it. Both node modification and 

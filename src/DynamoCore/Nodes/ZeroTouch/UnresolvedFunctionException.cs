@@ -5,7 +5,7 @@ namespace Dynamo.Nodes
     public class UnresolvedFunctionException : Exception
     {
         public UnresolvedFunctionException(string functionName)
-            : base(/*NXLT*/"Cannot find function: " + functionName)
+            : base("Cannot find function: " + functionName)
         {
             FunctionName = functionName;
         }

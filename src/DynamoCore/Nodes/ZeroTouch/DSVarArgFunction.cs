@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
     ///     DesignScript var-arg function node. All functions from DesignScript share the
     ///     same function node but internally have different procedure.
     /// </summary>
-    [NodeName(/*NXLT*/"Function Node w/ VarArgs"), NodeDescription(/*NXLT*/"FunctionNodeDescription", typeof(Properties.Resources)),
+    [NodeName("Function Node w/ VarArgs"), NodeDescription("FunctionNodeDescription", typeof(Properties.Resources)),
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSVarArgFunction : DSFunctionBase
     {
@@ -82,7 +82,7 @@ namespace Dynamo.Nodes
             protected override string GetInputTooltip(int index)
             {
                 var type = nodeController.Definition.Parameters.Last().Type;
-                return (string.IsNullOrEmpty(type) ? /*NXLT*/"var" : type);
+                return (string.IsNullOrEmpty(type) ? "var" : type);
             }
         }
         #endregion
@@ -105,7 +105,7 @@ namespace Dynamo.Nodes
             if (parameters.Any())
             {
                 var arg = parameters.Last();
-                var argName = arg.Name.Remove(arg.Name.Length - 1) + /*NXLT*/"0";
+                var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
                 model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
             }
         }
@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
             if (!model.IsPartiallyApplied)
             {
                 var paramCount = Definition.Parameters.Count();
-                var packId = /*NXLT*/"__var_arg_pack_" + model.GUID;
+                var packId = "__var_arg_pack_" + model.GUID;
                 resultAst.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(packId),

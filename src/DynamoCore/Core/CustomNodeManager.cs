@@ -122,9 +122,9 @@ namespace Dynamo.Utilities
                 
                 // Couldn't find the workspace at all, prepare for a late initialization.
                 Log(
-                    Properties.Resources.UnableToCreateCustomNodeID + id + /*NXLT*/"\"",
+                    Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
-                info = new CustomNodeInfo(id, nickname ?? /*NXLT*/"", /*NXLT*/"", /*NXLT*/"", /*NXLT*/"");
+                info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
                 def = null;
             }
 
@@ -293,7 +293,7 @@ namespace Dynamo.Utilities
             if (!Directory.Exists(dir))
                 yield break;
 
-            foreach (var file in Directory.EnumerateFiles(dir, /*NXLT*/"*.dyf"))
+            foreach (var file in Directory.EnumerateFiles(dir, "*.dyf"))
             {
                 CustomNodeInfo info;
                 if (TryGetInfoFromPath(file, isTestMode, out info))

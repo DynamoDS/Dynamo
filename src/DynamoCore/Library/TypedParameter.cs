@@ -24,7 +24,7 @@ namespace Dynamo.Library
             Name = name;
 
             if (null == type)
-                throw new ArgumentNullException(/*NXLT*/"type", /*NXLT*/@"Type cannot be null.");
+                throw new ArgumentNullException("type", @"Type cannot be null.");
             Type = type;
             DefaultValue = defaultValue;
             Function = function;
@@ -45,8 +45,8 @@ namespace Dynamo.Library
             get
             {
                 return !String.IsNullOrEmpty(Summary)
-                    ? Summary + /*NXLT*/" (" + (string.IsNullOrEmpty(Type) ? /*NXLT*/"var" : DisplayTypeName) + /*NXLT*/")"
-                    : (string.IsNullOrEmpty(Type) ? /*NXLT*/"var" : DisplayTypeName);
+                    ? Summary + " (" + (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName) + ")"
+                    : (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName);
             }
         }
 
@@ -60,7 +60,7 @@ namespace Dynamo.Library
             string str = Name;
 
             if (!String.IsNullOrEmpty(Type))
-                str = Name + /*NXLT*/": " + Type.Split('.').Last();
+                str = Name + ": " + Type.Split('.').Last();
 
             if (DefaultValue != null)
             {
@@ -69,7 +69,7 @@ namespace Dynamo.Library
                 {
                     strDefaultValue = strDefaultValue.ToLower();
                 }
-                str = str + /*NXLT*/" = " + strDefaultValue;
+                str = str + " = " + strDefaultValue;
             }
 
             return str;

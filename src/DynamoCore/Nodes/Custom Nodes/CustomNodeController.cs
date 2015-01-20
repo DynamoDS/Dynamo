@@ -23,7 +23,7 @@ namespace Dynamo.Nodes
             if (Definition.DisplayParameters == null) return;
 
             foreach (string arg in Definition.DisplayParameters)
-                model.InPortData.Add(new PortData(arg, /*NXLT*/"parameter"));
+                model.InPortData.Add(new PortData(arg, "parameter"));
         }
 
         protected override void InitializeOutputs(NodeModel model)
@@ -111,11 +111,11 @@ namespace Dynamo.Nodes
         public override void SerializeCore(XmlElement nodeElement, SaveContext saveContext)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(/*NXLT*/"ID");
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement("ID");
 
-            outEl.SetAttribute(/*NXLT*/"value", Definition.FunctionId.ToString());
+            outEl.SetAttribute("value", Definition.FunctionId.ToString());
             nodeElement.AppendChild(outEl);
-            nodeElement.SetAttribute(/*NXLT*/"nickname", NickName);
+            nodeElement.SetAttribute("nickname", NickName);
         }
 
         /// <summary>

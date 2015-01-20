@@ -44,10 +44,10 @@ namespace Dynamo.Utilities
             if (!type.IsSubclassOf(typeof(T)))
             {
                 var msg = string.Format(
-                    /*NXLT*/@"Cannot make constructor returning a ""{0}"" given type ""{1}""",
+                    @"Cannot make constructor returning a ""{0}"" given type ""{1}""",
                     typeof(T).FullName,
                     type.FullName);
-                throw new ArgumentException(msg, /*NXLT*/"type");
+                throw new ArgumentException(msg, "type");
             }
             return Expression.Lambda<Func<T>>(Expression.New(type)).Compile();
         }
@@ -153,9 +153,9 @@ namespace Dynamo.Utilities
                 // Get a set of Expressions representing the parameters which will be passed to the Func:
                 var lamdaParameterExpressions = new[]
                 {
-                    Expression.Parameter(typeof(TArg1), /*NXLT*/"param1"),
-                    Expression.Parameter(typeof(TArg2), /*NXLT*/"param2"),
-                    Expression.Parameter(typeof(TArg3), /*NXLT*/"param3")
+                    Expression.Parameter(typeof(TArg1), "param1"),
+                    Expression.Parameter(typeof(TArg2), "param2"),
+                    Expression.Parameter(typeof(TArg3), "param3")
                 };
 
                 // Get a set of Expressions representing the parameters which will be passed to the constructor:

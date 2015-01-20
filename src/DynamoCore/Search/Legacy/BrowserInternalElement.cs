@@ -49,7 +49,7 @@ namespace Dynamo.Search
 
         public BrowserInternalElement()
         {
-            this._name = /*NXLT*/"Default";
+            this._name = "Default";
             this.Parent = null;
             this.OldParent = null;
         }

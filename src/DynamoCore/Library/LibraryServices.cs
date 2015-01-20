@@ -111,7 +111,7 @@ namespace Dynamo.DSEngine
             if (splitted.Length < 2)
                 return null;
 
-            return splitted[splitted.Length - 2] + /*NXLT*/"." + splitted[splitted.Length - 1];
+            return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
         }
 
         public string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
@@ -128,7 +128,7 @@ namespace Dynamo.DSEngine
 
             string newName = priorNameHints[qualifiedFunction];
 
-            return newName + /*NXLT*/"@" + splitted[1];
+            return newName + "@" + splitted[1];
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace Dynamo.DSEngine
         public FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             if (string.IsNullOrEmpty(managledName))
-                throw new ArgumentException(/*NXLT*/"Invalid arguments");
+                throw new ArgumentException("Invalid arguments");
 
             string qualifiedName = managledName.Split(new[] { '@' })[0];
             FunctionGroup functionGroup;
@@ -250,8 +250,8 @@ namespace Dynamo.DSEngine
             if (null == library)
                 throw new ArgumentNullException();
 
-            if (!library.EndsWith(/*NXLT*/".dll", StringComparison.InvariantCultureIgnoreCase)
-                && !library.EndsWith(/*NXLT*/".ds", StringComparison.InvariantCultureIgnoreCase))
+            if (!library.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase)
+                && !library.EndsWith(".ds", StringComparison.InvariantCultureIgnoreCase))
             {
                 string errorMessage = Properties.Resources.InvalidLibraryFormat;
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
@@ -293,7 +293,7 @@ namespace Dynamo.DSEngine
                     foreach (ErrorEntry error in LibraryManagementCore.BuildStatus.Errors)
                     {
                         Log(error.Message, WarningLevel.Moderate);
-                        errorMessage += error.Message + /*NXLT*/"\n";
+                        errorMessage += error.Message + "\n";
                     }
 
                     OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
@@ -330,7 +330,7 @@ namespace Dynamo.DSEngine
                 return;
 
             string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),
-                Path.GetFileNameWithoutExtension(fullLibraryName) + /*NXLT*/".Migrations.xml");
+                Path.GetFileNameWithoutExtension(fullLibraryName) + ".Migrations.xml");
 
             if (!File.Exists(migrationsXMLFile))
                 return;
@@ -343,14 +343,14 @@ namespace Dynamo.DSEngine
                 {
                     while (reader.Read())
                     {
-                        reader.ReadToFollowing(/*NXLT*/"priorNameHint");
+                        reader.ReadToFollowing("priorNameHint");
 
                         if (!reader.Read())
                             break;
 
-                        reader.ReadToFollowing(/*NXLT*/"oldName");
+                        reader.ReadToFollowing("oldName");
                         string oldName = reader.ReadElementContentAsString();
-                        reader.ReadToFollowing(/*NXLT*/"newName");
+                        reader.ReadToFollowing("newName");
                         string newName = reader.ReadElementContentAsString();
 
                         foundPriorNameHints[oldName] = newName;
@@ -429,7 +429,7 @@ namespace Dynamo.DSEngine
                                                 .procList
                                                 .Where(p =>
                     !p.name.StartsWith(Constants.kInternalNamePrefix) &&
-                    !p.name.Equals(/*NXLT*/"Break"));
+                    !p.name.Equals("Break"));
 
             IEnumerable<FunctionDescriptor> functions = from method in builtins
                                                         let arguments =
@@ -457,13 +457,13 @@ namespace Dynamo.DSEngine
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            yield return new TypedParameter(null, /*NXLT*/"x", string.Empty);
-            yield return new TypedParameter(null, /*NXLT*/"y", string.Empty);
+            yield return new TypedParameter(null, "x", string.Empty);
+            yield return new TypedParameter(null, "y", string.Empty);
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
         {
-            return new List<TypedParameter> { new TypedParameter(null, /*NXLT*/"x", string.Empty), };
+            return new List<TypedParameter> { new TypedParameter(null, "x", string.Empty), };
         }
 
         /// <summary>
@@ -657,11 +657,11 @@ namespace Dynamo.DSEngine
 
         public static class Categories
         {
-            public const string BuiltIns = /*NXLT*/"Builtin Functions";
-            public const string Operators = /*NXLT*/"Operators";
-            public const string Constructors = /*NXLT*/"Create";
-            public const string MemberFunctions = /*NXLT*/"Actions";
-            public const string Properties = /*NXLT*/"Query";
+            public const string BuiltIns = "Builtin Functions";
+            public const string Operators = "Operators";
+            public const string Constructors = "Create";
+            public const string MemberFunctions = "Actions";
+            public const string Properties = "Query";
         }
 
         public class LibraryLoadFailedEventArgs : EventArgs

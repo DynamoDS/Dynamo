@@ -12,8 +12,8 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     DesignScript Custom Node instance.
     /// </summary>
-    [NodeName(/*NXLT*/"Custom Node")]
-    [NodeDescription(/*NXLT*/"Instance of a Custom Node")]
+    [NodeName("Custom Node")]
+    [NodeDescription("Instance of a Custom Node")]
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
@@ -47,28 +47,28 @@ namespace Dynamo.Nodes
 
             var xmlDoc = element.OwnerDocument;
 
-            var outEl = xmlDoc.CreateElement(/*NXLT*/"Name");
-            outEl.SetAttribute(/*NXLT*/"value", NickName);
+            var outEl = xmlDoc.CreateElement("Name");
+            outEl.SetAttribute("value", NickName);
             element.AppendChild(outEl);
 
-            outEl = xmlDoc.CreateElement(/*NXLT*/"Description");
-            outEl.SetAttribute(/*NXLT*/"value", Description);
+            outEl = xmlDoc.CreateElement("Description");
+            outEl.SetAttribute("value", Description);
             element.AppendChild(outEl);
 
-            outEl = xmlDoc.CreateElement(/*NXLT*/"Inputs");
+            outEl = xmlDoc.CreateElement("Inputs");
             foreach (string input in InPortData.Select(x => x.NickName))
             {
-                XmlElement inputEl = xmlDoc.CreateElement(/*NXLT*/"Input");
-                inputEl.SetAttribute(/*NXLT*/"value", input);
+                XmlElement inputEl = xmlDoc.CreateElement("Input");
+                inputEl.SetAttribute("value", input);
                 outEl.AppendChild(inputEl);
             }
             element.AppendChild(outEl);
 
-            outEl = xmlDoc.CreateElement(/*NXLT*/"Outputs");
+            outEl = xmlDoc.CreateElement("Outputs");
             foreach (string output in OutPortData.Select(x => x.NickName))
             {
-                XmlElement outputEl = xmlDoc.CreateElement(/*NXLT*/"Output");
-                outputEl.SetAttribute(/*NXLT*/"value", output);
+                XmlElement outputEl = xmlDoc.CreateElement("Output");
+                outputEl.SetAttribute("value", output);
                 outEl.AppendChild(outputEl);
             }
             element.AppendChild(outEl);
@@ -80,13 +80,13 @@ namespace Dynamo.Nodes
 
             List<XmlNode> childNodes = nodeElement.ChildNodes.Cast<XmlNode>().ToList();
 
-            XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals(/*NXLT*/"Name"));
+            XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
             if (nameNode != null && nameNode.Attributes != null)
-                NickName = nameNode.Attributes[/*NXLT*/"value"].Value;
+                NickName = nameNode.Attributes["value"].Value;
 
-            XmlNode descNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals(/*NXLT*/"Description"));
+            XmlNode descNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Description"));
             if (descNode != null && descNode.Attributes != null)
-                Description = descNode.Attributes[/*NXLT*/"value"].Value;
+                Description = descNode.Attributes["value"].Value;
 
             if (!Controller.IsInSyncWithNode(this))
             {
@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
             {
                 foreach (XmlNode subNode in childNodes)
                 {
-                    if (subNode.Name.Equals(/*NXLT*/"Outputs"))
+                    if (subNode.Name.Equals("Outputs"))
                     {
                         var data =
                             subNode.ChildNodes.Cast<XmlNode>()
@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
                                 OutPortData.Add(dataAndIdx.data);
                         }
                     }
-                    else if (subNode.Name.Equals(/*NXLT*/"Inputs"))
+                    else if (subNode.Name.Equals("Inputs"))
                     {
                         var data =
                             subNode.ChildNodes.Cast<XmlNode>()
@@ -140,7 +140,7 @@ namespace Dynamo.Nodes
 
                     #region Legacy output support
 
-                    else if (subNode.Name.Equals(/*NXLT*/"Output"))
+                    else if (subNode.Name.Equals("Output"))
                     {
                         var data = new PortData(subNode.Attributes[0].Value, Properties.Resources.ToolTipFunctionOutput);
 
@@ -171,10 +171,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName(/*NXLT*/"Input")]
+    [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(/*NXLT*/"A function parameter, use with custom nodes")]
-    [NodeSearchTags(/*NXLT*/"variable", /*NXLT*/"argument", /*NXLT*/"parameter")]
+    [NodeDescription("A function parameter, use with custom nodes")]
+    [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
@@ -198,7 +198,7 @@ namespace Dynamo.Nodes
             {
                 inputSymbol = value;
                 OnAstUpdated();
-                RaisePropertyChanged(/*NXLT*/"InputSymbol");
+                RaisePropertyChanged("InputSymbol");
             }
         }
 
@@ -206,15 +206,15 @@ namespace Dynamo.Nodes
         {
             return
                 AstFactory.BuildIdentifier(
-                    InputSymbol == null ? AstIdentifierBase : InputSymbol + /*NXLT*/"__" + AstIdentifierBase);
+                    InputSymbol == null ? AstIdentifierBase : InputSymbol + "__" + AstIdentifierBase);
         }
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.SerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(/*NXLT*/"Symbol");
-            outEl.SetAttribute(/*NXLT*/"value", InputSymbol);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
+            outEl.SetAttribute("value", InputSymbol);
             nodeElement.AppendChild(outEl);
         }
 
@@ -223,7 +223,7 @@ namespace Dynamo.Nodes
             base.DeserializeCore(nodeElement, context);
             foreach (var subNode in
                 nodeElement.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name == /*NXLT*/"Symbol"))
+                    .Where(subNode => subNode.Name == "Symbol"))
             {
                 InputSymbol = subNode.Attributes[0].Value;
             }
@@ -233,7 +233,7 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name == /*NXLT*/"InputSymbol")
+            if (name == "InputSymbol")
             {
                 InputSymbol = value;
                 return true; // UpdateValueCore handled.
@@ -243,9 +243,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName(/*NXLT*/"Output")]
+    [NodeName("Output")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(/*NXLT*/"A function output, use with custom nodes")]
+    [NodeDescription("A function output, use with custom nodes")]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
@@ -269,14 +269,14 @@ namespace Dynamo.Nodes
             {
                 symbol = value;
                 OnAstUpdated();
-                RaisePropertyChanged(/*NXLT*/"Symbol");
+                RaisePropertyChanged("Symbol");
             }
         }
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
-                throw new ArgumentOutOfRangeException(/*NXLT*/"outputIndex", /*NXLT*/@"Index must correspond to an OutPortData index.");
+                throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
             return AstIdentifierForPreview;
         }
@@ -296,8 +296,8 @@ namespace Dynamo.Nodes
         {
             base.SerializeCore(nodeElement, context);
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(/*NXLT*/"Symbol");
-            outEl.SetAttribute(/*NXLT*/"value", Symbol);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement("Symbol");
+            outEl.SetAttribute("value", Symbol);
             nodeElement.AppendChild(outEl);
         }
 
@@ -306,7 +306,7 @@ namespace Dynamo.Nodes
             base.DeserializeCore(nodeElement, context);
             foreach (var subNode in 
                 nodeElement.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name == /*NXLT*/"Symbol"))
+                    .Where(subNode => subNode.Name == "Symbol"))
             {
                 Symbol = subNode.Attributes[0].Value;
             }
@@ -316,7 +316,7 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name == /*NXLT*/"Symbol")
+            if (name == "Symbol")
             {
                 Symbol = value;
                 return true; // UpdateValueCore handled.

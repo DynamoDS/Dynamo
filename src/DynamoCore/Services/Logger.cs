@@ -24,7 +24,7 @@ namespace Dynamo.Services
         private static DynamoModel dynamoModel;
 
         //Analytics components
-        private const string ANALYTICS_PROPERTY = /*NXLT*/"UA-52186525-1";
+        private const string ANALYTICS_PROPERTY = "UA-52186525-1";
         private static MeasurementAnalyticsClient client;
 
         private static bool started = false;
@@ -43,10 +43,10 @@ namespace Dynamo.Services
             string appVersion = dynamoModel.AppVersion;
 
             var mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
-                /*NXLT*/"Dynamo", appVersion);
+                "Dynamo", appVersion);
 
             sessionID = Guid.NewGuid().ToString();
-            loggerImpl = new Log(/*NXLT*/"Dynamo", userID, sessionID);
+            loggerImpl = new Log("Dynamo", userID, sessionID);
 
             
             AutoMeasurement.Start(mc);
@@ -103,9 +103,9 @@ namespace Dynamo.Services
         public static String GetUserID()
         {
             // The name of the key must include a valid root.
-            const string userRoot = /*NXLT*/"HKEY_CURRENT_USER";
-            const string subkey = /*NXLT*/"Software\\DynamoUXG";
-            const string keyName = userRoot + /*NXLT*/"\\" + subkey;
+            const string userRoot = "HKEY_CURRENT_USER";
+            const string subkey = "Software\\DynamoUXG";
+            const string keyName = userRoot + "\\" + subkey;
 
             // An int value can be stored without specifying the
             // registry data type, but long values will be stored
@@ -113,17 +113,17 @@ namespace Dynamo.Services
             // the int is stored in the default name/value
             // pair.
 
-            var tryGetValue = Registry.GetValue(keyName, /*NXLT*/"InstrumentationGUID", null) as string;
+            var tryGetValue = Registry.GetValue(keyName, "InstrumentationGUID", null) as string;
 
             if (tryGetValue != null)
             {
-                Debug.WriteLine(/*NXLT*/"User id found: " + tryGetValue);
+                Debug.WriteLine("User id found: " + tryGetValue);
                 return tryGetValue;
             }
             
             String newGUID = Guid.NewGuid().ToString();
-            Registry.SetValue(keyName, /*NXLT*/"InstrumentationGUID", newGUID);
-            Debug.WriteLine(/*NXLT*/"New User id: " + newGUID);
+            Registry.SetValue(keyName, "InstrumentationGUID", newGUID);
+            Debug.WriteLine("New User id: " + newGUID);
             return newGUID;
         }
 
@@ -182,7 +182,7 @@ namespace Dynamo.Services
                 return;
 
             //Log PII containing version
-            loggerImpl.Error(/*NXLT*/"StackTrace", e.ToString());
+            loggerImpl.Error("StackTrace", e.ToString());
         }
 
         public static void FORCE_LogInfo(string tag, string data)

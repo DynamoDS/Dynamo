@@ -67,13 +67,13 @@ namespace Dynamo.Core.Threading
         internal bool Initialize(UpdateRenderPackageParams initParams)
         {
             if (initParams == null)
-                throw new ArgumentNullException(/*NXLT*/"initParams");
+                throw new ArgumentNullException("initParams");
             if (initParams.Node == null)
-                throw new ArgumentNullException(/*NXLT*/"initParams.Node");
+                throw new ArgumentNullException("initParams.Node");
             if (initParams.EngineController == null)
-                throw new ArgumentNullException(/*NXLT*/"initParams.EngineController");
+                throw new ArgumentNullException("initParams.EngineController");
             if (initParams.DrawableIds == null)
-                throw new ArgumentNullException(/*NXLT*/"initParams.DrawableIds");
+                throw new ArgumentNullException("initParams.DrawableIds");
 
             var nodeModel = initParams.Node;
             if (!nodeModel.IsUpdated)
@@ -111,7 +111,7 @@ namespace Dynamo.Core.Threading
             if (nodeGuid == Guid.Empty)
             {
                 throw new InvalidOperationException(
-                    /*NXLT*/"UpdateRenderPackageAsyncTask.Initialize not called");
+                    "UpdateRenderPackageAsyncTask.Initialize not called");
             }
 
             var data = from varName in drawableIds
@@ -137,7 +137,7 @@ namespace Dynamo.Core.Threading
                 {
                     var package = new RenderPackage(isNodeSelected, displayLabels)
                     {
-                        Tag = labelMap.Count > count ? labelMap[count] : /*NXLT*/"?",
+                        Tag = labelMap.Count > count ? labelMap[count] : "?",
                     };
 
                     try
@@ -148,7 +148,7 @@ namespace Dynamo.Core.Threading
                     catch (Exception e)
                     {
                         System.Diagnostics.Debug.WriteLine(
-                            /*NXLT*/"PushGraphicItemIntoPackage: " + e);
+                            "PushGraphicItemIntoPackage: " + e);
                     }
 
                     package.ItemsCount++;
@@ -197,7 +197,7 @@ namespace Dynamo.Core.Threading
                 var elements = data.GetElements();
                 foreach (var element in elements)
                 {
-                    var newTag = string.Format(/*NXLT*/"{0}:{1}", tag, index++);
+                    var newTag = string.Format("{0}:{1}", tag, index++);
                     AddToLabelMap(element, map, newTag);
                 }
             }
@@ -217,7 +217,7 @@ namespace Dynamo.Core.Threading
             int count = 0;
             foreach (var obj in list)
             {
-                var newTag = string.Format(/*NXLT*/"{0}:{1}", tag, count++);
+                var newTag = string.Format("{0}:{1}", tag, count++);
 
                 if (obj is IEnumerable)
                 {

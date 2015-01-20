@@ -49,7 +49,7 @@ namespace Dynamo.Selection
             set
             {
                 selection = value;
-                RaisePropertyChanged(/*NXLT*/"Selection");
+                RaisePropertyChanged("Selection");
             }
         }
 
@@ -132,8 +132,8 @@ namespace Dynamo.Selection
                 Items.Add(item);
             }
 
-            this.OnPropertyChanged(new PropertyChangedEventArgs(/*NXLT*/"Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs(/*NXLT*/"Item[]"));
+            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
             this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 

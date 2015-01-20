@@ -78,7 +78,7 @@ namespace Dynamo.Annotations
   /// <example><code>
   /// public void Foo(string param) {
   ///   if (param == null)
-  ///     throw new ArgumentNullException(/*NXLT*/"par"); // Warning: Cannot resolve symbol
+  ///     throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
   /// }
   /// </code></example>
   [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]

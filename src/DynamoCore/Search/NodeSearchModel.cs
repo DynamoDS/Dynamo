@@ -30,7 +30,7 @@ namespace Dynamo.Search
         /// <returns></returns>
         public XmlDocument ComposeXmlForLibrary()
         {
-            var document = XmlHelper.CreateDocument(/*NXLT*/"LibraryTree");
+            var document = XmlHelper.CreateDocument("LibraryTree");
 
             var root = SearchCategory.CategorizeSearchEntries(
                 SearchEntries,
@@ -48,16 +48,16 @@ namespace Dynamo.Search
         private static void AddEntryToXml(XmlNode parent, NodeSearchElement entry)
         {
             var element = XmlHelper.AddNode(parent, entry.GetType().ToString());
-            XmlHelper.AddNode(element, /*NXLT*/"FullCategoryName", entry.FullCategoryName);
-            XmlHelper.AddNode(element, /*NXLT*/"Name", entry.Name);
-            XmlHelper.AddNode(element,/*NXLT*/ "Description", entry.Description);
+            XmlHelper.AddNode(element, "FullCategoryName", entry.FullCategoryName);
+            XmlHelper.AddNode(element, "Name", entry.Name);
+            XmlHelper.AddNode(element, "Description", entry.Description);
         }
 
         private static void AddCategoryToXml(
             XmlNode parent, ISearchCategory<NodeSearchElement> category)
         {
-            var element = XmlHelper.AddNode(parent, /*NXLT*/"Category");
-            XmlHelper.AddAttribute(element, /*NXLT*/"Name", category.Name);
+            var element = XmlHelper.AddNode(parent, "Category");
+            XmlHelper.AddAttribute(element, "Name", category.Name);
 
             foreach (var subCategory in category.SubCategories)
                 AddCategoryToXml(element, subCategory);

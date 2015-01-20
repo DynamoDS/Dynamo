@@ -45,7 +45,7 @@ namespace Dynamo.Models
             set
             {
                 x = value;
-                RaisePropertyChanged(/*NXLT*/"X");
+                RaisePropertyChanged("X");
             }
         }
 
@@ -58,7 +58,7 @@ namespace Dynamo.Models
             set
             {
                 y = value;
-                RaisePropertyChanged(/*NXLT*/"Y");
+                RaisePropertyChanged("Y");
             }
         }
 
@@ -81,7 +81,7 @@ namespace Dynamo.Models
             set
             {
                 height = value;
-                //RaisePropertyChanged(/*NXLT*/"Height");
+                //RaisePropertyChanged("Height");
             }
         }
 
@@ -95,7 +95,7 @@ namespace Dynamo.Models
 
             {
                 width = value;
-                //RaisePropertyChanged(/*NXLT*/"Width");
+                //RaisePropertyChanged("Width");
             }
         }
 
@@ -117,7 +117,7 @@ namespace Dynamo.Models
             set
             {
                 isSelected = value;
-                RaisePropertyChanged(/*NXLT*/"IsSelected");
+                RaisePropertyChanged("IsSelected");
 
             }
         }
@@ -128,14 +128,14 @@ namespace Dynamo.Models
             {
                 if (guid == null)
                 {
-                    throw new Exception(/*NXLT*/"GUID on model must never be null");
+                    throw new Exception("GUID on model must never be null");
                 }
                 return guid;
             }
             set
             {
                 guid = value;
-                RaisePropertyChanged(/*NXLT*/"GUID");
+                RaisePropertyChanged("GUID");
             }
         }
 
@@ -156,7 +156,7 @@ namespace Dynamo.Models
 
         public void ReportPosition()
         {
-            RaisePropertyChanged(/*NXLT*/"Position");
+            RaisePropertyChanged("Position");
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace Dynamo.Models
         {
             width = w;
             height = h;
-            RaisePropertyChanged(/*NXLT*/"Position");
+            RaisePropertyChanged("Position");
         }
 
         #region Command Framework Supporting Methods

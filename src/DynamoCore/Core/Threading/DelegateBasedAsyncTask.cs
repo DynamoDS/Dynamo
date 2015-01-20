@@ -26,7 +26,7 @@ namespace Dynamo.Core.Threading
         internal void Initialize(Action action)
         {
             if (action == null)
-                throw new ArgumentNullException(/*NXLT*/"action");
+                throw new ArgumentNullException("action");
 
             actionToPerform = action;
         }

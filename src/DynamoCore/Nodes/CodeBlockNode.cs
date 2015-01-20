@@ -22,9 +22,9 @@ using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
-    [NodeName(/*NXLT*/"Code Block")]
+    [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(/*NXLT*/"CodeBlockDescription",typeof(Resources))]
+    [NodeDescription("CodeBlockDescription",typeof(Resources))]
     [IsDesignScriptCompatible]
     public class CodeBlockNodeModel : NodeModel
     {
@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
                     LoadAndCreateConnectors(inportConnections, outportConnections, recorder);
                 }
 
-                RaisePropertyChanged(/*NXLT*/"Code");
+                RaisePropertyChanged("Code");
                 ForceReExecuteOfNode = true;
                 OnAstUpdated();
                 ReportPosition();
@@ -235,7 +235,7 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name != /*NXLT*/"Code") 
+            if (name != "Code") 
                 return base.UpdateValueCore(name, value, recorder);
 
             //Remove the UpdateValue's recording
@@ -263,16 +263,16 @@ namespace Dynamo.Nodes
         {
             base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
-            helper.SetAttribute(/*NXLT*/"CodeText", code);
-            helper.SetAttribute(/*NXLT*/"ShouldFocus", shouldFocus);
+            helper.SetAttribute("CodeText", code);
+            helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.DeserializeCore(nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
-            shouldFocus = helper.ReadBoolean(/*NXLT*/"ShouldFocus");
-            code = helper.ReadString(/*NXLT*/"CodeText");
+            shouldFocus = helper.ReadBoolean("ShouldFocus");
+            code = helper.ReadString("CodeText");
             ProcessCodeDirect();
         }
 
@@ -361,7 +361,7 @@ namespace Dynamo.Nodes
             string warningMessage = string.Empty;
 
             ProcessCode(ref errorMessage, ref warningMessage);
-            RaisePropertyChanged(/*NXLT*/"Code");
+            RaisePropertyChanged("Code");
             ForceReExecuteOfNode = true;
             OnAstUpdated();
             
@@ -404,7 +404,7 @@ namespace Dynamo.Nodes
 
                 if (parseParam.Errors != null && parseParam.Errors.Any())
                 {
-                    errorMessage = string.Join(/*NXLT*/"\n", parseParam.Errors.Select(m => m.Message));
+                    errorMessage = string.Join("\n", parseParam.Errors.Select(m => m.Message));
                     ProcessError();
                     CreateInputOutputPorts();
                     return;
@@ -425,7 +425,7 @@ namespace Dynamo.Nodes
 
                     if (warnings.Any())
                     {
-                        warningMessage = string.Join(/*NXLT*/"\n", warnings.Select(m => m.Message));
+                        warningMessage = string.Join("\n", warnings.Select(m => m.Message));
                     }
                 }
 
@@ -842,8 +842,8 @@ namespace Dynamo.Nodes
 
         private string LocalizeIdentifier(string identifierName)
         {
-            var guid = GUID.ToString().Replace(/*NXLT*/"-", string.Empty);
-            return string.Format(/*NXLT*/"{0}_{1}", identifierName, guid);
+            var guid = GUID.ToString().Replace("-", string.Empty);
+            return string.Format("{0}_{1}", identifierName, guid);
         }
 
         #endregion
@@ -996,7 +996,7 @@ namespace Dynamo.Nodes
                 var currentNode = astNode as BinaryExpressionNode;
                 if (currentNode.Optr != Operator.assign)
                     throw new ArgumentException();
-                if (!(currentNode.LeftNode.Name.StartsWith(/*NXLT*/"temp") && currentNode.LeftNode.Name.Length > 10))
+                if (!(currentNode.LeftNode.Name.StartsWith("temp") && currentNode.LeftNode.Name.Length > 10))
                     return StatementType.Expression;
                 if (currentNode.RightNode is IdentifierNode)
                     return StatementType.AssignmentVar;
@@ -1019,7 +1019,7 @@ namespace Dynamo.Nodes
             else if (leftNode is FunctionCallNode)
                 return null;
             else
-                throw new ArgumentException(/*NXLT*/"Left node type incorrect");
+                throw new ArgumentException("Left node type incorrect");
         }
         #endregion
 
@@ -1069,7 +1069,7 @@ namespace Dynamo.Nodes
                 // Handle function definitions in CBN
             }
             else
-                throw new ArgumentException(/*NXLT*/"Must be func def or assignment");
+                throw new ArgumentException("Must be func def or assignment");
 
             Variable.SetCorrectColumn(referencedVariables, CurrentType, StartLine);
         }

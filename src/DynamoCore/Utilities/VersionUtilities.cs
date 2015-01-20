@@ -13,9 +13,9 @@ namespace Dynamo.Utilities
         {
             var splitVersion = versionString.Split('.');
             if (splitVersion.Length < numberOfFields)
-                throw new FormatException(/*NXLT*/"You specified too many fields for the given string.");
+                throw new FormatException("You specified too many fields for the given string.");
 
-            var rejoinedVersion = string.Join(/*NXLT*/".", splitVersion.Take(numberOfFields));
+            var rejoinedVersion = string.Join(".", splitVersion.Take(numberOfFields));
 
             return Version.Parse(rejoinedVersion);
         }

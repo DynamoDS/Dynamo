@@ -19,7 +19,7 @@ namespace Dynamo.Models
             {
                 if (Equals(value, runEnabled)) return;
                 runEnabled = value;
-                RaisePropertyChanged(/*NXLT*/"RunEnabled");
+                RaisePropertyChanged("RunEnabled");
             }
         }
 
@@ -42,7 +42,7 @@ namespace Dynamo.Models
             EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, double x, double y, bool verboseLogging,
             bool isTestMode)
-            : base(/*NXLT*/"Home", e, n, x, y, factory)
+            : base("Home", e, n, x, y, factory)
         {
             RunEnabled = true;
             PreloadedTraceData = traceData;
@@ -90,7 +90,7 @@ namespace Dynamo.Models
             {
                 if (value != null && (preloadedTraceData != null))
                 {
-                    const string message = /*NXLT*/"PreloadedTraceData cannot be set twice";
+                    const string message = "PreloadedTraceData cannot be set twice";
                     throw new InvalidOperationException(message);
                 }
 
@@ -197,7 +197,7 @@ namespace Dynamo.Models
             // Runtime warnings take precedence over build warnings.
             foreach (var warning in updateTask.RuntimeWarnings)
             {
-                var message = string.Join(/*NXLT*/"\n", warning.Value.Select(w => w.Message));
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
                 messages.Add(warning.Key, message);
             }
 
@@ -208,7 +208,7 @@ namespace Dynamo.Models
                 if (messages.ContainsKey(warning.Key))
                     continue;
 
-                var message = string.Join(/*NXLT*/"\n", warning.Value.Select(w => w.Message));
+                var message = string.Join("\n", warning.Value.Select(w => w.Message));
                 messages.Add(warning.Key, message);
             }
 

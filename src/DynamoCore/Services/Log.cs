@@ -16,8 +16,8 @@ namespace net.riversofdata.dhlogger
 {
     public class Log : IDisposable
     {
-        private const string URL = /*NXLT*/"https://dynamoinstr.appspot.com/rpc";
-        //private const string URL = /*NXLT*/"http://192.168.1.68:8080/rpc";
+        private const string URL = "https://dynamoinstr.appspot.com/rpc";
+        //private const string URL = "http://192.168.1.68:8080/rpc";
         
         private const int MAX_DATA_LENGTH = 500000;
         private const int MAX_NAME_LENGTH = 256;
@@ -46,10 +46,10 @@ namespace net.riversofdata.dhlogger
             {
                 if (!ValidateTextContent(value))
                     throw new ArgumentException(
-                        /*NXLT*/"App name must only be letters, numbers or -");
+                        "App name must only be letters, numbers or -");
 
                 if (!ValidateLength(value))
-                    throw new ArgumentException(/*NXLT*/"App Name must be 256 chars or less");
+                    throw new ArgumentException("App Name must be 256 chars or less");
 
 
                 appName = value;
@@ -72,10 +72,10 @@ namespace net.riversofdata.dhlogger
 
                 if (!ValidateTextContent(value))
                     throw new ArgumentException(
-                        /*NXLT*/"User ID name must only be letters, numbers or -");
+                        "User ID name must only be letters, numbers or -");
 
                 if (!ValidateLength(value))
-                    throw new ArgumentException(/*NXLT*/"UserID must be 256 chars or less");
+                    throw new ArgumentException("UserID must be 256 chars or less");
 
 
                 userID = value;
@@ -95,10 +95,10 @@ namespace net.riversofdata.dhlogger
             {
                 if (!ValidateTextContent(value))
                     throw new ArgumentException(
-                        /*NXLT*/"Session ID name must only be letters, numbers or -");
+                        "Session ID name must only be letters, numbers or -");
 
                 if (!ValidateLength(value))
-                    throw new ArgumentException(/*NXLT*/"Session ID must be 256 chars or less");
+                    throw new ArgumentException("Session ID must be 256 chars or less");
 
 
                 sessionID = value;
@@ -197,7 +197,7 @@ namespace net.riversofdata.dhlogger
         public void Debug(string tag, string text)
         {
             ValidateInput(tag, text);
-            PrepAndPushItem(tag, /*NXLT*/"Debug", text);
+            PrepAndPushItem(tag, "Debug", text);
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace net.riversofdata.dhlogger
         public void Error(string tag, string text)
         {
             ValidateInput(tag, text);
-            PrepAndPushItem(tag, /*NXLT*/"Error", text);
+            PrepAndPushItem(tag, "Error", text);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace net.riversofdata.dhlogger
         public void Info(string tag, string text)
         {
             ValidateInput(tag, text);
-            PrepAndPushItem(tag, /*NXLT*/"Info", text);
+            PrepAndPushItem(tag, "Info", text);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace net.riversofdata.dhlogger
         public void Verbose(string tag, string text)
         {
             ValidateInput(tag, text);
-            PrepAndPushItem(tag, /*NXLT*/"Verbose", text);
+            PrepAndPushItem(tag, "Verbose", text);
         }
 
         #endregion
@@ -264,7 +264,7 @@ namespace net.riversofdata.dhlogger
                 for (int i = 0; i < splitText.Count; i++)
                 {
                     PrepAndPushItem(
-                        tag + /*NXLT*/"-" + g.ToString() + /*NXLT*/"-" + i.ToString(),
+                        tag + "-" + g.ToString() + "-" + i.ToString(),
                         priority,
                         splitText[i]);
                 }
@@ -280,19 +280,19 @@ namespace net.riversofdata.dhlogger
             //Destroy the original representations to ensure runtime errors if used later in this method
             text = null;
 
-            string dateTime = DateTime.Now.ToUniversalTime().ToString(/*NXLT*/"yyyy-MM-dd HH:mm:ss");
+            string dateTime = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
             string microTime = sw.ElapsedMilliseconds.ToString();
 
             var item = new Dictionary<string, string>
             {
-                { /*NXLT*/"Tag", tag },
-                { /*NXLT*/"Priority", priority },
-                { /*NXLT*/"AppIdent", AppName },
-                { /*NXLT*/"UserID", UserID },
-                { /*NXLT*/"SessionID", SessionID },
-                { /*NXLT*/"DateTime", dateTime },
-                { /*NXLT*/"MicroTime", microTime },
-                { /*NXLT*/"Data", safeStr }
+                { "Tag", tag },
+                { "Priority", priority },
+                { "AppIdent", AppName },
+                { "UserID", UserID },
+                { "SessionID", SessionID },
+                { "DateTime", dateTime },
+                { "MicroTime", microTime },
+                { "Data", safeStr }
             };
 
             PushItem(item);
@@ -374,36 +374,36 @@ namespace net.riversofdata.dhlogger
             {
 
                 StringBuilder sb = new StringBuilder();
-                sb.Append(/*NXLT*/"[\"BasicStore\", {");
+                sb.Append("[\"BasicStore\", {");
 
                 bool first = true;
 
                 foreach (string key in item.Keys)
                 {
                     if (!first)
-                        sb.Append(/*NXLT*/",");
+                        sb.Append(",");
                     else
                         first = false;
 
-                    sb.Append(/*NXLT*/"\"");
+                    sb.Append("\"");
                     sb.Append(key);
-                    sb.Append(/*NXLT*/"\" : \"");
+                    sb.Append("\" : \"");
                     sb.Append(item[key]);
-                    sb.Append(/*NXLT*/"\"");
+                    sb.Append("\"");
 
                 }
 
-                sb.Append(/*NXLT*/"}]");
+                sb.Append("}]");
 
                 if (this.EnableDiagnosticsOutput)
                     System.Diagnostics.Debug.WriteLine(sb.ToString());
 
                 WebRequest request = WebRequest.Create(URL);
 
-                request.Method = /*NXLT*/"POST";
+                request.Method = "POST";
                 byte[] byteArray = Encoding.UTF8.GetBytes(sb.ToString());
 
-                request.ContentType = /*NXLT*/"application/x-www-form-urlencoded";
+                request.ContentType = "application/x-www-form-urlencoded";
                 request.ContentLength = byteArray.Length;
                 Stream dataStream = request.GetRequestStream();
                 dataStream.Write(byteArray, 0, byteArray.Length);
@@ -482,18 +482,18 @@ namespace net.riversofdata.dhlogger
         private void ValidateInput(string tag, string text)
         {
             if (tag == null)
-                throw new ArgumentNullException(/*NXLT*/"Tag must not be null");
+                throw new ArgumentNullException("Tag must not be null");
 
             if (text == null)
-                throw new ArgumentNullException(/*NXLT*/"Text must not be null");
+                throw new ArgumentNullException("Text must not be null");
 
             if (!ValidateLength(tag))
-                throw new ArgumentException(/*NXLT*/"Tag must be 256 chars or less");
+                throw new ArgumentException("Tag must be 256 chars or less");
 
 
             if (!ValidateTextContent(tag))
                 throw new ArgumentException(
-                    /*NXLT*/"Tag must only be letters, numbers or '-', '.'");
+                    "Tag must only be letters, numbers or '-', '.'");
 
         }
 

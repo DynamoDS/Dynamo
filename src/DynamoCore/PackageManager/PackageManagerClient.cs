@@ -53,10 +53,10 @@ namespace Dynamo.PackageManager
         private readonly CustomNodeManager customNodeManager;
 
         [Obsolete]
-        internal readonly static string PackageContainsBinariesConstant = /*NXLT*/"|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
+        internal readonly static string PackageContainsBinariesConstant = "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
 
         [Obsolete]
-        internal readonly static string PackageContainsPythonScriptsConstant = /*NXLT*/"|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
+        internal readonly static string PackageContainsPythonScriptsConstant = "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
 
         public bool HasAuthenticator
@@ -116,14 +116,14 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        private static readonly string serverUrl = /*NXLT*/"https://www.dynamopackages.com/";
+        private static readonly string serverUrl = "https://www.dynamopackages.com/";
         
         public PackageManagerClient(string rootPkgDir,  CustomNodeManager customNodeManager)
         {
             this.rootPkgDir = rootPkgDir;
             this.customNodeManager = customNodeManager;
 
-            Client = new Client(null, /*NXLT*/"http://www.dynamopackages.com");
+            Client = new Client(null, "http://www.dynamopackages.com");
         }
 
         //public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
@@ -202,7 +202,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                var nv = Greg.Requests.HeaderCollectionDownload.ByEngine(/*NXLT*/"dynamo");
+                var nv = Greg.Requests.HeaderCollectionDownload.ByEngine("dynamo");
                 var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
                 return pkgResponse.content;
             }
@@ -237,7 +237,7 @@ namespace Dynamo.PackageManager
             if (pkgResponse == null)
             {
                 throw new AuthenticationException(
-                    /*NXLT*/"It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
+                    "It looks like you're not logged into Autodesk 360.  Log in to submit a package.");
             }
 
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(l));
@@ -266,7 +266,7 @@ namespace Dynamo.PackageManager
                     }
                     if (ret == null)
                     {
-                        packageUploadHandle.Error(/*NXLT*/"Failed to submit.  Try again later.");
+                        packageUploadHandle.Error("Failed to submit.  Try again later.");
                         return;
                     }
 
@@ -281,7 +281,7 @@ namespace Dynamo.PackageManager
                 }
                 catch (Exception e)
                 {
-                    packageUploadHandle.Error(e.GetType() + /*NXLT*/": " + e.Message);
+                    packageUploadHandle.Error(e.GetType() + ": " + e.Message);
                 }
             });
 
@@ -343,13 +343,13 @@ namespace Dynamo.PackageManager
 
             try
             {
-                var nv = new Greg.Requests.Deprecate(name, /*NXLT*/"dynamo");
+                var nv = new Greg.Requests.Deprecate(name, "dynamo");
                 var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }
             catch
             {
-                return new PackageManagerResult(/*NXLT*/"Failed to send.", false);
+                return new PackageManagerResult("Failed to send.", false);
             }
         }
 
@@ -359,13 +359,13 @@ namespace Dynamo.PackageManager
 
             try
             {
-                var nv = new Greg.Requests.Undeprecate(name, /*NXLT*/"dynamo");
+                var nv = new Greg.Requests.Undeprecate(name, "dynamo");
                 var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }
             catch
             {
-                return new PackageManagerResult(/*NXLT*/"Failed to send.", false);
+                return new PackageManagerResult("Failed to send.", false);
             }
         }
 

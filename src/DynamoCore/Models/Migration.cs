@@ -235,9 +235,9 @@ namespace Dynamo.Models
                 migrationReport = new MigrationReport();
             }
 
-            XmlNodeList elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Elements");
+            XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
             if (elNodes.Count == 0)
-                elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynElements");
+                elNodes = xmlDoc.GetElementsByTagName("dynElements");
 
             // A new list to store migrated nodes.
             var migratedNodes = new List<XmlElement>();
@@ -245,7 +245,7 @@ namespace Dynamo.Models
             XmlNode elNodesList = elNodes[0];
             foreach (XmlElement elNode in elNodesList.ChildNodes)
             {
-                string typeName = elNode.Attributes[/*NXLT*/"type"].Value;
+                string typeName = elNode.Attributes["type"].Value;
                 typeName = Nodes.Utilities.PreprocessTypeName(typeName);
 
                 Type type;
@@ -330,9 +330,9 @@ namespace Dynamo.Models
             backupPath = string.Empty;
 
             if (string.IsNullOrEmpty(originalPath))
-                throw new ArgumentException(/*NXLT*/"Argument cannot be empty", /*NXLT*/"originalPath");
+                throw new ArgumentException("Argument cannot be empty", "originalPath");
             if (!File.Exists(originalPath))
-                throw new FileNotFoundException(/*NXLT*/"File not found", originalPath);
+                throw new FileNotFoundException("File not found", originalPath);
 
             try
             {
@@ -375,11 +375,11 @@ namespace Dynamo.Models
         /// 
         internal static string GetUniqueFileName(string folder, string fileNameWithExtension)
         {
-            string[] fileNames = Directory.GetFiles(folder, fileNameWithExtension + /*NXLT*/".*.backup");
+            string[] fileNames = Directory.GetFiles(folder, fileNameWithExtension + ".*.backup");
             int indexToUse = GetUniqueIndex(fileNames);
 
             // The file name will be in the form of "fileName.NNN.backup".
-            string fileName = fileNameWithExtension + string.Format(/*NXLT*/".{0}.backup", indexToUse);
+            string fileName = fileNameWithExtension + string.Format(".{0}.backup", indexToUse);
             return Path.Combine(folder, fileName);
         }
 
@@ -402,12 +402,12 @@ namespace Dynamo.Models
         internal static string GetBackupFolder(string baseFolder, bool create)
         {
             if (string.IsNullOrEmpty(baseFolder))
-                throw new ArgumentNullException(/*NXLT*/"rootFolder");
+                throw new ArgumentNullException("rootFolder");
 
             if (Directory.Exists(baseFolder) == false)
             {
-                var message = string.Format(/*NXLT*/"Folder {0} does not exist", baseFolder);
-                throw new ArgumentException(message, /*NXLT*/"rootFolder");
+                var message = string.Format("Folder {0} does not exist", baseFolder);
+                throw new ArgumentException(message, "rootFolder");
             }
 
             var backupFolderName = Configurations.BackupFolderName;
@@ -456,12 +456,12 @@ namespace Dynamo.Models
         internal static int ExtractFileIndex(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
-                throw new ArgumentNullException(/*NXLT*/"fileName");
+                throw new ArgumentNullException("fileName");
 
-            if (Path.GetExtension(fileName) != /*NXLT*/".backup")
+            if (Path.GetExtension(fileName) != ".backup")
             {
-                var msg = /*NXLT*/"File name must be in 'fileName.NNN.backup' form.";
-                throw new ArgumentException(msg, /*NXLT*/"fileName");
+                var msg = "File name must be in 'fileName.NNN.backup' form.";
+                throw new ArgumentException(msg, "fileName");
             }
 
             // Get rid of ".backup" extension.
@@ -469,8 +469,8 @@ namespace Dynamo.Models
             int dotIndex = fileNameWithoutExtension.LastIndexOf('.');
             if (dotIndex == -1)
             {
-                var msg = /*NXLT*/"File name must be in 'fileName.NNN.backup' form.";
-                throw new ArgumentException(msg, /*NXLT*/"fileName");
+                var msg = "File name must be in 'fileName.NNN.backup' form.";
+                throw new ArgumentException(msg, "fileName");
             }
 
             // Extract 'NNN' and convert it into the corresponding integer value.
@@ -569,23 +569,23 @@ namespace Dynamo.Models
         public static XmlElement CreateFunctionNode(XmlDocument document, XmlElement oldNode,
             int nodeIndex, string assembly, string nickname, string signature)
         {
-            XmlElement element = document.CreateElement(/*NXLT*/"Dynamo.Nodes.DSFunction");
-            element.SetAttribute(/*NXLT*/"type", /*NXLT*/"Dynamo.Nodes.DSFunction");
-            element.SetAttribute(/*NXLT*/"assembly", assembly);
-            element.SetAttribute(/*NXLT*/"nickname", nickname);
-            element.SetAttribute(/*NXLT*/"function", signature);
+            XmlElement element = document.CreateElement("Dynamo.Nodes.DSFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            element.SetAttribute("assembly", assembly);
+            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("function", signature);
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
-            element.SetAttribute(/*NXLT*/"isVisible", /*NXLT*/"true");
-            element.SetAttribute(/*NXLT*/"isUpstreamVisible", /*NXLT*/"true");
-            element.SetAttribute(/*NXLT*/"lacing", /*NXLT*/"Disabled");
-            element.SetAttribute(/*NXLT*/"guid", Guid.NewGuid().ToString());
+            element.SetAttribute("isVisible", "true");
+            element.SetAttribute("isUpstreamVisible", "true");
+            element.SetAttribute("lacing", "Disabled");
+            element.SetAttribute("guid", Guid.NewGuid().ToString());
 
-            element.SetAttribute(/*NXLT*/"x",
-                (Convert.ToDouble(oldNode.GetAttribute(/*NXLT*/"x"))
+            element.SetAttribute("x",
+                (Convert.ToDouble(oldNode.GetAttribute("x"))
                 + NEW_NODE_OFFSET_X).ToString());
-            element.SetAttribute(/*NXLT*/"y",
-                (Convert.ToDouble(oldNode.GetAttribute(/*NXLT*/"y"))
+            element.SetAttribute("y",
+                (Convert.ToDouble(oldNode.GetAttribute("y"))
                 + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
@@ -594,24 +594,24 @@ namespace Dynamo.Models
         public static XmlElement CreateVarArgFunctionNode(XmlDocument document, XmlElement oldNode,
             int nodeIndex, string assembly, string nickname, string signature, string inputcount)
         {
-            XmlElement element = document.CreateElement(/*NXLT*/"Dynamo.Nodes.DSVarArgFunction");
-            element.SetAttribute(/*NXLT*/"type", /*NXLT*/"Dynamo.Nodes.DSVarArgFunction");
-            element.SetAttribute(/*NXLT*/"assembly", assembly);
-            element.SetAttribute(/*NXLT*/"nickname", nickname);
-            element.SetAttribute(/*NXLT*/"function", signature);
-            element.SetAttribute(/*NXLT*/"inputcount", inputcount);
+            XmlElement element = document.CreateElement("Dynamo.Nodes.DSVarArgFunction");
+            element.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
+            element.SetAttribute("assembly", assembly);
+            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("function", signature);
+            element.SetAttribute("inputcount", inputcount);
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
-            element.SetAttribute(/*NXLT*/"isVisible", /*NXLT*/"true");
-            element.SetAttribute(/*NXLT*/"isUpstreamVisible", /*NXLT*/"true");
-            element.SetAttribute(/*NXLT*/"lacing", /*NXLT*/"Disabled");
-            element.SetAttribute(/*NXLT*/"guid", Guid.NewGuid().ToString());
+            element.SetAttribute("isVisible", "true");
+            element.SetAttribute("isUpstreamVisible", "true");
+            element.SetAttribute("lacing", "Disabled");
+            element.SetAttribute("guid", Guid.NewGuid().ToString());
 
-            element.SetAttribute(/*NXLT*/"x",
-                (Convert.ToDouble(oldNode.GetAttribute(/*NXLT*/"x"))
+            element.SetAttribute("x",
+                (Convert.ToDouble(oldNode.GetAttribute("x"))
                 + NEW_NODE_OFFSET_X).ToString());
-            element.SetAttribute(/*NXLT*/"y",
-                (Convert.ToDouble(oldNode.GetAttribute(/*NXLT*/"y"))
+            element.SetAttribute("y",
+                (Convert.ToDouble(oldNode.GetAttribute("y"))
                 + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
@@ -620,24 +620,24 @@ namespace Dynamo.Models
         public static XmlElement CreateCodeBlockNodeModelNode(XmlDocument document, XmlElement oldNode,
             int nodeIndex, string codeTest)
         {
-            XmlElement element = document.CreateElement(/*NXLT*/"Dynamo.Nodes.CodeBlockNodeModel");
-            element.SetAttribute(/*NXLT*/"type", /*NXLT*/"Dynamo.Nodes.CodeBlockNodeModel");
+            XmlElement element = document.CreateElement("Dynamo.Nodes.CodeBlockNodeModel");
+            element.SetAttribute("type", "Dynamo.Nodes.CodeBlockNodeModel");
 
-            element.SetAttribute(/*NXLT*/"nickname", /*NXLT*/"Code Block");
-            element.SetAttribute(/*NXLT*/"CodeText", codeTest);
-            element.SetAttribute(/*NXLT*/"ShouldFocus", /*NXLT*/"false");
+            element.SetAttribute("nickname", "Code Block");
+            element.SetAttribute("CodeText", codeTest);
+            element.SetAttribute("ShouldFocus", "false");
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
-            element.SetAttribute(/*NXLT*/"isVisible", /*NXLT*/"true");
-            element.SetAttribute(/*NXLT*/"isUpstreamVisible", /*NXLT*/"true");
-            element.SetAttribute(/*NXLT*/"lacing", /*NXLT*/"Disabled");
-            element.SetAttribute(/*NXLT*/"guid", Guid.NewGuid().ToString());
+            element.SetAttribute("isVisible", "true");
+            element.SetAttribute("isUpstreamVisible", "true");
+            element.SetAttribute("lacing", "Disabled");
+            element.SetAttribute("guid", Guid.NewGuid().ToString());
 
-            element.SetAttribute(/*NXLT*/"x",
-                (Convert.ToDouble(oldNode.GetAttribute(/*NXLT*/"x"))
+            element.SetAttribute("x",
+                (Convert.ToDouble(oldNode.GetAttribute("x"))
                 + NEW_NODE_OFFSET_X).ToString());
-            element.SetAttribute(/*NXLT*/"y",
-                (Convert.ToDouble(oldNode.GetAttribute(/*NXLT*/"y"))
+            element.SetAttribute("y",
+                (Convert.ToDouble(oldNode.GetAttribute("y"))
                 + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
@@ -647,20 +647,20 @@ namespace Dynamo.Models
             int nodeIndex, string name, string nickname)
         {
             XmlElement element = document.CreateElement(name);
-            element.SetAttribute(/*NXLT*/"type", name);
-            element.SetAttribute(/*NXLT*/"nickname", nickname);
+            element.SetAttribute("type", name);
+            element.SetAttribute("nickname", nickname);
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
-            element.SetAttribute(/*NXLT*/"isVisible", /*NXLT*/"true");
-            element.SetAttribute(/*NXLT*/"isUpstreamVisible", /*NXLT*/"true");
-            element.SetAttribute(/*NXLT*/"lacing", /*NXLT*/"Disabled");
-            element.SetAttribute(/*NXLT*/"guid", Guid.NewGuid().ToString());
+            element.SetAttribute("isVisible", "true");
+            element.SetAttribute("isUpstreamVisible", "true");
+            element.SetAttribute("lacing", "Disabled");
+            element.SetAttribute("guid", Guid.NewGuid().ToString());
 
-            element.SetAttribute(/*NXLT*/"x",
-                (Convert.ToDouble(oldNode.GetAttribute(/*NXLT*/"x"))
+            element.SetAttribute("x",
+                (Convert.ToDouble(oldNode.GetAttribute("x"))
                 + NEW_NODE_OFFSET_X).ToString());
-            element.SetAttribute(/*NXLT*/"y",
-                (Convert.ToDouble(oldNode.GetAttribute(/*NXLT*/"y"))
+            element.SetAttribute("y",
+                (Convert.ToDouble(oldNode.GetAttribute("y"))
                 + nodeIndex * NEW_NODE_OFFSET_Y).ToString());
 
             return element;
@@ -686,12 +686,12 @@ namespace Dynamo.Models
             XmlElement srcElement, string[] attribNames)
         {
             if (srcElement == null)
-                throw new ArgumentNullException(/*NXLT*/"srcElement");
+                throw new ArgumentNullException("srcElement");
             if (attribNames == null || (attribNames.Length <= 0))
-                throw new ArgumentException(/*NXLT*/"Argument cannot be empty", /*NXLT*/"attribNames");
+                throw new ArgumentException("Argument cannot be empty", "attribNames");
 
             XmlDocument document = srcElement.OwnerDocument;
-            XmlElement dstElement = document.CreateElement(/*NXLT*/"Dynamo.Nodes.DSFunction");
+            XmlElement dstElement = document.CreateElement("Dynamo.Nodes.DSFunction");
 
             foreach (string attribName in attribNames)
             {
@@ -699,7 +699,7 @@ namespace Dynamo.Models
                 dstElement.SetAttribute(attribName, value);
             }
 
-            dstElement.SetAttribute(/*NXLT*/"type", /*NXLT*/"Dynamo.Nodes.DSFunction");
+            dstElement.SetAttribute("type", "Dynamo.Nodes.DSFunction");
             return dstElement;
         }
 
@@ -718,37 +718,37 @@ namespace Dynamo.Models
             string id, string name, string description, List<string> inputs, List<string> outputs)
         {
             if (srcElement == null)
-                throw new ArgumentNullException(/*NXLT*/"srcElement");
+                throw new ArgumentNullException("srcElement");
 
-            XmlElement funcEl = document.CreateElement(/*NXLT*/"Dynamo.Nodes.Function");
+            XmlElement funcEl = document.CreateElement("Dynamo.Nodes.Function");
 
             foreach (XmlAttribute attribute in srcElement.Attributes)
                 funcEl.SetAttribute(attribute.Name, attribute.Value);
 
-            funcEl.SetAttribute(/*NXLT*/"type", /*NXLT*/"Dynamo.Nodes.Function");
+            funcEl.SetAttribute("type", "Dynamo.Nodes.Function");
 
-            var idEl = document.CreateElement(/*NXLT*/"ID");
-            idEl.SetAttribute(/*NXLT*/"value", id);
+            var idEl = document.CreateElement("ID");
+            idEl.SetAttribute("value", id);
 
-            var nameEl = document.CreateElement(/*NXLT*/"Name");
-            nameEl.SetAttribute(/*NXLT*/"value", name);
+            var nameEl = document.CreateElement("Name");
+            nameEl.SetAttribute("value", name);
 
-            var descripEl = document.CreateElement(/*NXLT*/"Description");
-            descripEl.SetAttribute(/*NXLT*/"value", description);
+            var descripEl = document.CreateElement("Description");
+            descripEl.SetAttribute("value", description);
 
-            var inputsEl = document.CreateElement(/*NXLT*/"Inputs");
+            var inputsEl = document.CreateElement("Inputs");
             foreach (var input in inputs)
             {
-                var inputEl = document.CreateElement(/*NXLT*/"Input");
-                inputEl.SetAttribute(/*NXLT*/"value", input);
+                var inputEl = document.CreateElement("Input");
+                inputEl.SetAttribute("value", input);
                 inputsEl.AppendChild(inputEl);
             }
 
-            var outputsEl = document.CreateElement(/*NXLT*/"Outputs");
+            var outputsEl = document.CreateElement("Outputs");
             foreach (var output in outputs)
             {
-                var outputEl = document.CreateElement(/*NXLT*/"Output");
-                outputEl.SetAttribute(/*NXLT*/"value", output);
+                var outputEl = document.CreateElement("Output");
+                outputEl.SetAttribute("value", output);
                 outputsEl.AppendChild(outputEl);
             }
 
@@ -774,34 +774,34 @@ namespace Dynamo.Models
         public static XmlElement CreateFunctionNodeFrom(XmlElement srcElement)
         {
             if (srcElement == null)
-                throw new ArgumentNullException(/*NXLT*/"srcElement");
+                throw new ArgumentNullException("srcElement");
 
             XmlDocument document = srcElement.OwnerDocument;
-            XmlElement dstElement = document.CreateElement(/*NXLT*/"Dynamo.Nodes.DSFunction");
+            XmlElement dstElement = document.CreateElement("Dynamo.Nodes.DSFunction");
 
             foreach (XmlAttribute attribute in srcElement.Attributes)
                 dstElement.SetAttribute(attribute.Name, attribute.Value);
 
-            dstElement.SetAttribute(/*NXLT*/"type", /*NXLT*/"Dynamo.Nodes.DSFunction");
+            dstElement.SetAttribute("type", "Dynamo.Nodes.DSFunction");
             return dstElement;
         }
 
         public static XmlElement CreateVarArgFunctionNodeFrom(XmlElement srcElement)
         {
             if (srcElement == null)
-                throw new ArgumentNullException(/*NXLT*/"srcElement");
+                throw new ArgumentNullException("srcElement");
 
             int childNumber = srcElement.ChildNodes.Count;
             string childNumberString = childNumber.ToString();
 
             XmlDocument document = srcElement.OwnerDocument;
-            XmlElement dstElement = document.CreateElement(/*NXLT*/"Dynamo.Nodes.DSVarArgFunction");
+            XmlElement dstElement = document.CreateElement("Dynamo.Nodes.DSVarArgFunction");
 
             foreach (XmlAttribute attribute in srcElement.Attributes)
                 dstElement.SetAttribute(attribute.Name, attribute.Value);
 
-            dstElement.SetAttribute(/*NXLT*/"type", /*NXLT*/"Dynamo.Nodes.DSVarArgFunction");
-            dstElement.SetAttribute(/*NXLT*/"inputcount", childNumberString);
+            dstElement.SetAttribute("type", "Dynamo.Nodes.DSVarArgFunction");
+            dstElement.SetAttribute("inputcount", childNumberString);
             return dstElement;
         }
 
@@ -819,19 +819,19 @@ namespace Dynamo.Models
         public static XmlElement CreateCodeBlockNodeFrom(XmlElement srcElement)
         {
             if (srcElement == null)
-                throw new ArgumentNullException(/*NXLT*/"srcElement");
+                throw new ArgumentNullException("srcElement");
 
             XmlDocument document = srcElement.OwnerDocument;
-            XmlElement dstElement = document.CreateElement(/*NXLT*/"Dynamo.Nodes.CodeBlockNodeModel");
+            XmlElement dstElement = document.CreateElement("Dynamo.Nodes.CodeBlockNodeModel");
 
             foreach (XmlAttribute attribute in srcElement.Attributes)
                 dstElement.SetAttribute(attribute.Name, attribute.Value);
 
-            dstElement.SetAttribute(/*NXLT*/"CodeText", string.Empty);
-            dstElement.SetAttribute(/*NXLT*/"ShouldFocus", /*NXLT*/"false");
-            dstElement.SetAttribute(/*NXLT*/"nickname", /*NXLT*/"Code Block");
-            dstElement.SetAttribute(/*NXLT*/"lacing", /*NXLT*/"Disabled");
-            dstElement.SetAttribute(/*NXLT*/"type", /*NXLT*/"Dynamo.Nodes.CodeBlockNodeModel");
+            dstElement.SetAttribute("CodeText", string.Empty);
+            dstElement.SetAttribute("ShouldFocus", "false");
+            dstElement.SetAttribute("nickname", "Code Block");
+            dstElement.SetAttribute("lacing", "Disabled");
+            dstElement.SetAttribute("type", "Dynamo.Nodes.CodeBlockNodeModel");
             return dstElement;
         }
 
@@ -854,8 +854,8 @@ namespace Dynamo.Models
             foreach (XmlAttribute attribute in element.Attributes)
                 cloned.SetAttribute(attribute.Name, attribute.Value);
 
-            cloned.SetAttribute(/*NXLT*/"type", type);
-            cloned.SetAttribute(/*NXLT*/"nickname", nickname);
+            cloned.SetAttribute("type", type);
+            cloned.SetAttribute("nickname", nickname);
             return cloned;
         }
 
@@ -880,34 +880,34 @@ namespace Dynamo.Models
             XmlElement element, int inportCount, int outportCount)
         {
             if (element == null)
-                throw new ArgumentNullException(/*NXLT*/"element");
+                throw new ArgumentNullException("element");
 
             if (inportCount < 0)
             {
-                const string message = /*NXLT*/"Argument value must be equal or larger than zero";
-                throw new ArgumentException(message, /*NXLT*/"inportCount");
+                const string message = "Argument value must be equal or larger than zero";
+                throw new ArgumentException(message, "inportCount");
             }
 
             if (outportCount < 0)
             {
-                const string message = /*NXLT*/"Argument value must be equal or larger than zero";
-                throw new ArgumentException(message, /*NXLT*/"outportCount");
+                const string message = "Argument value must be equal or larger than zero";
+                throw new ArgumentException(message, "outportCount");
             }
 
-            const string dummyNodeName = /*NXLT*/"DSCoreNodesUI.DummyNode";
+            const string dummyNodeName = "DSCoreNodesUI.DummyNode";
             XmlDocument document = element.OwnerDocument;
             XmlElement dummy = document.CreateElement(dummyNodeName);
 
             foreach (XmlAttribute attribute in element.Attributes)
                 dummy.SetAttribute(attribute.Name, attribute.Value);
 
-            dummy.SetAttribute(/*NXLT*/"type", dummyNodeName);
-            dummy.SetAttribute(/*NXLT*/"legacyNodeName", element.GetAttribute(/*NXLT*/"type"));
-            dummy.SetAttribute(/*NXLT*/"inputCount", inportCount.ToString());
-            dummy.SetAttribute(/*NXLT*/"outputCount", outportCount.ToString());
-            dummy.SetAttribute(/*NXLT*/"nodeNature", /*NXLT*/"Deprecated");
+            dummy.SetAttribute("type", dummyNodeName);
+            dummy.SetAttribute("legacyNodeName", element.GetAttribute("type"));
+            dummy.SetAttribute("inputCount", inportCount.ToString());
+            dummy.SetAttribute("outputCount", outportCount.ToString());
+            dummy.SetAttribute("nodeNature", "Deprecated");
 
-            XmlElement originalNode = document.CreateElement(/*NXLT*/"OriginalNodeContent");
+            XmlElement originalNode = document.CreateElement("OriginalNodeContent");
 
             //clone a copy of the original node
             XmlElement nodeContent = (XmlElement)element.Clone();
@@ -939,21 +939,21 @@ namespace Dynamo.Models
             XmlElement element, int inportCount, int outportCount)
         {
             var dummy = CreateDummyNode(element, inportCount, outportCount);
-            dummy.SetAttribute(/*NXLT*/"nodeNature", /*NXLT*/"Unresolved");
+            dummy.SetAttribute("nodeNature", "Unresolved");
             return dummy;
         }
 
         public static void SetFunctionSignature(XmlElement element,
             string assemblyName, string methodName, string signature)
         {
-            element.SetAttribute(/*NXLT*/"assembly", assemblyName);
-            element.SetAttribute(/*NXLT*/"nickname", methodName);
-            element.SetAttribute(/*NXLT*/"function", signature);
+            element.SetAttribute("assembly", assemblyName);
+            element.SetAttribute("nickname", methodName);
+            element.SetAttribute("function", signature);
         }
 
         public static string GetGuidFromXmlElement(XmlElement element)
         {
-            return element.Attributes[/*NXLT*/"guid"].Value;
+            return element.Attributes["guid"].Value;
         }
     }
 
@@ -990,9 +990,9 @@ namespace Dynamo.Models
         {
             Document = document;
 
-            XmlNodeList cNodes = document.GetElementsByTagName(/*NXLT*/"Connectors");
+            XmlNodeList cNodes = document.GetElementsByTagName("Connectors");
             if (cNodes.Count == 0)
-                cNodes = document.GetElementsByTagName(/*NXLT*/"dynConnectors");
+                cNodes = document.GetElementsByTagName("dynConnectors");
 
             connectorRoot = cNodes[0]; // All the connectors in document.
         }
@@ -1057,16 +1057,16 @@ namespace Dynamo.Models
 
                 if (portId.PortType == PortType.Input)
                 {
-                    if (portId.OwningNode != attribs[/*NXLT*/"end"].Value)
+                    if (portId.OwningNode != attribs["end"].Value)
                         continue;
-                    if (portId.PortIndex != Convert.ToInt16(attribs[/*NXLT*/"end_index"].Value))
+                    if (portId.PortIndex != Convert.ToInt16(attribs["end_index"].Value))
                         continue;
                 }
                 else
                 {
-                    if (portId.OwningNode != attribs[/*NXLT*/"start"].Value)
+                    if (portId.OwningNode != attribs["start"].Value)
                         continue;
-                    if (portId.PortIndex != Convert.ToInt16(attribs[/*NXLT*/"start_index"].Value))
+                    if (portId.PortIndex != Convert.ToInt16(attribs["start_index"].Value))
                         continue;
                 }
 
@@ -1088,16 +1088,16 @@ namespace Dynamo.Models
 
                 if (portId.PortType == PortType.Input)
                 {
-                    if (portId.OwningNode != attribs[/*NXLT*/"end"].Value)
+                    if (portId.OwningNode != attribs["end"].Value)
                         continue;
-                    if (portId.PortIndex != Convert.ToInt16(attribs[/*NXLT*/"end_index"].Value))
+                    if (portId.PortIndex != Convert.ToInt16(attribs["end_index"].Value))
                         continue;
                 }
                 else
                 {
-                    if (portId.OwningNode != attribs[/*NXLT*/"start"].Value)
+                    if (portId.OwningNode != attribs["start"].Value)
                         continue;
-                    if (portId.PortIndex != Convert.ToInt16(attribs[/*NXLT*/"start_index"].Value))
+                    if (portId.PortIndex != Convert.ToInt16(attribs["start_index"].Value))
                         continue;
                 }
 
@@ -1126,16 +1126,16 @@ namespace Dynamo.Models
 
                 if (portId.PortType == PortType.Input)
                 {
-                    if (portId.OwningNode != attribs[/*NXLT*/"end"].Value)
+                    if (portId.OwningNode != attribs["end"].Value)
                         continue;
-                    if (portId.PortIndex != Convert.ToInt16(attribs[/*NXLT*/"end_index"].Value))
+                    if (portId.PortIndex != Convert.ToInt16(attribs["end_index"].Value))
                         continue;
                 }
                 else
                 {
-                    if (portId.OwningNode != attribs[/*NXLT*/"start"].Value)
+                    if (portId.OwningNode != attribs["start"].Value)
                         continue;
-                    if (portId.PortIndex != Convert.ToInt16(attribs[/*NXLT*/"start_index"].Value))
+                    if (portId.PortIndex != Convert.ToInt16(attribs["start_index"].Value))
                         continue;
                 }
 
@@ -1170,13 +1170,13 @@ namespace Dynamo.Models
             XmlAttributeCollection attribs = connector.Attributes;
             if (port.PortType == PortType.Input) // We're updating end point.
             {
-                attribs[/*NXLT*/"end"].Value = port.OwningNode;
-                attribs[/*NXLT*/"end_index"].Value = port.PortIndex.ToString();
+                attribs["end"].Value = port.OwningNode;
+                attribs["end_index"].Value = port.PortIndex.ToString();
             }
             else // Updating the start point.
             {
-                attribs[/*NXLT*/"start"].Value = port.OwningNode;
-                attribs[/*NXLT*/"start_index"].Value = port.PortIndex.ToString();
+                attribs["start"].Value = port.OwningNode;
+                attribs["start_index"].Value = port.PortIndex.ToString();
             }
         }
 
@@ -1184,13 +1184,13 @@ namespace Dynamo.Models
             int startIndex, XmlElement endNode, int endIndex)
         {
             XmlElement connector = Document.CreateElement(
-                /*NXLT*/"Dynamo.Models.ConnectorModel");
+                "Dynamo.Models.ConnectorModel");
 
-            connector.SetAttribute(/*NXLT*/"start", MigrationManager.GetGuidFromXmlElement(startNode));
-            connector.SetAttribute(/*NXLT*/"start_index", startIndex.ToString());
-            connector.SetAttribute(/*NXLT*/"end", MigrationManager.GetGuidFromXmlElement(endNode));
-            connector.SetAttribute(/*NXLT*/"end_index", endIndex.ToString());
-            connector.SetAttribute(/*NXLT*/"portType", /*NXLT*/"0"); // Always zero, probably legacy issue.
+            connector.SetAttribute("start", MigrationManager.GetGuidFromXmlElement(startNode));
+            connector.SetAttribute("start_index", startIndex.ToString());
+            connector.SetAttribute("end", MigrationManager.GetGuidFromXmlElement(endNode));
+            connector.SetAttribute("end_index", endIndex.ToString());
+            connector.SetAttribute("portType", "0"); // Always zero, probably legacy issue.
 
             // Add new connector to document.
             connectorRoot.AppendChild(connector);
@@ -1200,13 +1200,13 @@ namespace Dynamo.Models
             int startIndex, string endNodeId, int endIndex)
         {
             XmlElement connector = Document.CreateElement(
-                /*NXLT*/"Dynamo.Models.ConnectorModel");
+                "Dynamo.Models.ConnectorModel");
 
-            connector.SetAttribute(/*NXLT*/"start", startNodeId);
-            connector.SetAttribute(/*NXLT*/"start_index", startIndex.ToString());
-            connector.SetAttribute(/*NXLT*/"end", endNodeId);
-            connector.SetAttribute(/*NXLT*/"end_index", endIndex.ToString());
-            connector.SetAttribute(/*NXLT*/"portType", /*NXLT*/"0"); // Always zero, probably legacy issue.
+            connector.SetAttribute("start", startNodeId);
+            connector.SetAttribute("start_index", startIndex.ToString());
+            connector.SetAttribute("end", endNodeId);
+            connector.SetAttribute("end_index", endIndex.ToString());
+            connector.SetAttribute("portType", "0"); // Always zero, probably legacy issue.
 
             // Add new connector to document.
             connectorRoot.AppendChild(connector);

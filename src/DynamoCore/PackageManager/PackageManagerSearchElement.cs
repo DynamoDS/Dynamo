@@ -19,12 +19,12 @@ namespace Dynamo.PackageManager
 
         #region Properties
 
-        public string Maintainers { get { return String.Join(/*NXLT*/", ", this.Header.maintainers.Select(x => x.username)); } }
+        public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x => x.username)); } }
         private int _votes;
         public int Votes
         {
             get { return _votes; }
-            set { _votes = value; RaisePropertyChanged(/*NXLT*/"Votes"); }
+            set { _votes = value; RaisePropertyChanged("Votes"); }
         }
         public bool IsDeprecated { get { return this.Header.deprecated; } }
         public int Downloads { get { return this.Header.downloads; } }
@@ -43,7 +43,7 @@ namespace Dynamo.PackageManager
         /// Type property </summary>
         /// <value>
         /// A string describing the type of object </value>
-        public override string Type { get { return /*NXLT*/"Community Node"; } }
+        public override string Type { get { return "Community Node"; } }
 
         /// <summary>
         /// Name property </summary>
@@ -100,7 +100,7 @@ namespace Dynamo.PackageManager
 
             if (header.keywords != null && header.keywords.Count > 0)
             {
-                this.Keywords = String.Join(/*NXLT*/" ", header.keywords);
+                this.Keywords = String.Join(" ", header.keywords);
             } 
             else
             {

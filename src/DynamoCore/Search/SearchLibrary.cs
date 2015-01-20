@@ -96,7 +96,7 @@ namespace Dynamo.Search
             return entries.GroupByRecursive<TEntry, string, SearchCategoryImpl<TEntry>>(
                 categorySelector,
                 SearchCategoryImpl<TEntry>.Create,
-                /*NXLT*/"Root");
+                "Root");
         }
 
 
@@ -110,7 +110,7 @@ namespace Dynamo.Search
         {
             yield return category.Name;
             foreach (var name in category.SubCategories.SelectMany(GetAllCategoryNames))
-                yield return string.Format(/*NXLT*/"{0}.{1}", category.Name, name);
+                yield return string.Format("{0}.{1}", category.Name, name);
         }
     }
 }

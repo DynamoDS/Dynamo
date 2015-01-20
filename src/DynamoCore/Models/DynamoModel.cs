@@ -202,7 +202,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return Process.GetCurrentProcess().ProcessName + /*NXLT*/"-"
+                return Process.GetCurrentProcess().ProcessName + "-"
                     + UpdateManager.UpdateManager.Instance.ProductVersion;
             }
         }
@@ -239,7 +239,7 @@ namespace Dynamo.Models
                 var old = currentWorkspace;
                 currentWorkspace = value;
                 OnWorkspaceHidden(old);
-                OnPropertyChanged(/*NXLT*/"CurrentWorkspace");
+                OnPropertyChanged("CurrentWorkspace");
             }
         }
 
@@ -295,7 +295,7 @@ namespace Dynamo.Models
         {
             if (ShutdownRequested)
             {
-                const string message = /*NXLT*/"'DynamoModel.ShutDown' called twice";
+                const string message = "'DynamoModel.ShutDown' called twice";
                 throw new InvalidOperationException(message);
             }
 
@@ -453,7 +453,7 @@ namespace Dynamo.Models
             UpdateManager.UpdateManager.CheckForProductUpdate();
 
             Logger.Log(
-                string.Format(/*NXLT*/"Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
+                string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
             PackageManagerClient = new PackageManagerClient(
                 PackageLoader.RootPackagesDirectory,
@@ -501,7 +501,7 @@ namespace Dynamo.Models
                         var executionTimeSpan = new TimeSpan(end - start);
 
                         InstrumentationLogger.LogAnonymousTimedEvent(
-                            /*NXLT*/"Perf",
+                            "Perf",
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
@@ -686,16 +686,16 @@ namespace Dynamo.Models
         {
             switch (e.PropertyName)
             {
-                case /*NXLT*/"LengthUnit":
+                case "LengthUnit":
                     BaseUnit.LengthUnit = PreferenceSettings.LengthUnit;
                     break;
-                case /*NXLT*/"AreaUnit":
+                case "AreaUnit":
                     BaseUnit.AreaUnit = PreferenceSettings.AreaUnit;
                     break;
-                case /*NXLT*/"VolumeUnit":
+                case "VolumeUnit":
                     BaseUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
                     break;
-                case /*NXLT*/"NumberFormat":
+                case "NumberFormat":
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
@@ -758,9 +758,9 @@ namespace Dynamo.Models
         /// </summary>
         public void ForceRun()
         {
-            Logger.Log(/*NXLT*/"Beginning engine reset");
+            Logger.Log("Beginning engine reset");
             ResetEngine(true);
-            Logger.Log(/*NXLT*/"Reset complete");
+            Logger.Log("Reset complete");
             
             ((HomeWorkspaceModel)CurrentWorkspace).Run();
         }
@@ -792,7 +792,7 @@ namespace Dynamo.Models
                     }
                 }
             }
-            Logger.LogError(/*NXLT*/"Could not open workspace at: " + xmlPath);
+            Logger.LogError("Could not open workspace at: " + xmlPath);
         }
 
         private bool OpenFile(WorkspaceHeader workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
@@ -876,7 +876,7 @@ namespace Dynamo.Models
         internal void DumpLibraryToXml(object parameter)
         {
             string directory = DynamoPathManager.Instance.Logs;
-            string fileName = String.Format(/*NXLT*/"LibrarySnapshot_{0}.xml", DateTime.Now.ToString(/*NXLT*/"yyyyMMddHmmss"));
+            string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(directory, fileName);
 
             SearchModel.DumpLibraryToXml(fullFileName);
@@ -1014,7 +1014,7 @@ namespace Dynamo.Models
                     var symbol = (node is Symbol
                         ? (node as Symbol).InputSymbol
                         : (node as Output).Symbol);
-                    var code = (string.IsNullOrEmpty(symbol) ? /*NXLT*/"x" : symbol) + /*NXLT*/";";
+                    var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
                     newNode = new CodeBlockNodeModel(code, node.X, node.Y + 100, LibraryServices);
                 }
                 else
@@ -1143,12 +1143,12 @@ namespace Dynamo.Models
                             (from function in functions
                              where function.IsVisibleInLibrary
                              let displayString = function.UserFriendlyName
-                             where !displayString.Contains(/*NXLT*/"GetType")
+                             where !displayString.Contains("GetType")
                              select string.IsNullOrEmpty(function.Namespace)
                                 ? ""
-                                : function.Namespace + /*NXLT*/"." + function.Signature + /*NXLT*/"\n"));
+                                : function.Namespace + "." + function.Signature + "\n"));
             
-            var sb = string.Join(/*NXLT*/"\n", descriptions);
+            var sb = string.Join("\n", descriptions);
 
             Logger.Log(sb, LogLevel.File);
         }
@@ -1181,7 +1181,7 @@ namespace Dynamo.Models
 
         private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor)
         {
-            if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains(/*NXLT*/"GetType"))
+            if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
             {
                 SearchModel.Add(new ZeroTouchSearchElement(functionDescriptor));
             }
@@ -1223,12 +1223,12 @@ namespace Dynamo.Models
         /// <param name="currVersion">Current version of the Dynamo.</param>
         private void DisplayObsoleteFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : /*NXLT*/"Unknown");
-            var currVer = ((currVersion != null) ? currVersion.ToString() : /*NXLT*/"Unknown");
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
+            var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
 
             InstrumentationLogger.LogPiiInfo(
-                /*NXLT*/"ObsoleteFileMessage",
-                fullFilePath + /*NXLT*/" :: fileVersion:" + fileVer + /*NXLT*/" :: currVersion:" + currVer);
+                "ObsoleteFileMessage",
+                fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
             string summary = Properties.Resources.FileCannotBeOpened;
             var description =
@@ -1238,7 +1238,7 @@ namespace Dynamo.Models
                     fileVersion,
                     currVersion);
 
-            const string imageUri = /*NXLT*/"/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 Properties.Resources.ObsoleteFileTitle,
@@ -1259,7 +1259,7 @@ namespace Dynamo.Models
         private TaskDialogEventArgs DisplayEngineFailureMessage(Exception exception)
         {
             StabilityTracking.GetInstance().NotifyCrash();
-            InstrumentationLogger.LogAnonymousEvent(/*NXLT*/"EngineFailure", /*NXLT*/"Stability");
+            InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
 
             if (exception != null)
             {
@@ -1272,7 +1272,7 @@ namespace Dynamo.Models
                 ? exception.Message
                 : @Properties.Resources.ExceptionIsNotHeapCorruptionDescription;
 
-            const string imageUri = /*NXLT*/"/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 Properties.Resources.UnhandledExceptionTitle,
@@ -1302,13 +1302,13 @@ namespace Dynamo.Models
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Properties.Resources.UnknownVersion);
             var currVer = ((currVersion != null) ? currVersion.ToString() : Properties.Resources.UnknownVersion);
 
-            InstrumentationLogger.LogPiiInfo(/*NXLT*/"FutureFileMessage", fullFilePath +
-                /*NXLT*/" :: fileVersion:" + fileVer + /*NXLT*/" :: currVersion:" + currVer);
+            InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
+                " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
             string summary = Properties.Resources.FutureFileSummary;
             var description = string.Format(Properties.Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 
-            const string imageUri = /*NXLT*/"/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
                 Properties.Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };

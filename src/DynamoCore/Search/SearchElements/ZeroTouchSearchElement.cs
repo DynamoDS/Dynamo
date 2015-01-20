@@ -17,7 +17,7 @@ namespace Dynamo.Search.SearchElements
 
             var displayName = functionDescriptor.UserFriendlyName;
             if (functionDescriptor.IsOverloaded)
-                displayName += /*NXLT*/"(" + string.Join(/*NXLT*/", ", functionDescriptor.Parameters) + /*NXLT*/")";
+                displayName += "(" + string.Join(", ", functionDescriptor.Parameters) + ")";
 
             Name = displayName;
             FullCategoryName = functionDescriptor.Category;

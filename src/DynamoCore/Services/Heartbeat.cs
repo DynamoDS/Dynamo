@@ -44,7 +44,7 @@ namespace Dynamo.Services
             else
                 StabilityCookie.WriteCleanShutdown();
 
-            System.Diagnostics.Debug.WriteLine(/*NXLT*/"Heartbeat Destory Internal called");
+            System.Diagnostics.Debug.WriteLine("Heartbeat Destory Internal called");
 
             shutdownEvent.Set(); // Signal the shutdown event... 
 
@@ -100,8 +100,8 @@ namespace Dynamo.Services
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
 
-                    InstrumentationLogger.LogPiiInfo(/*NXLT*/"Node-usage", usage);
-                    InstrumentationLogger.LogPiiInfo(/*NXLT*/"Nodes-with-errors", errors);
+                    InstrumentationLogger.LogPiiInfo("Node-usage", usage);
+                    InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
 
                     DynamoModel.OnRequestDispatcherInvoke(
                         () =>
@@ -109,13 +109,13 @@ namespace Dynamo.Services
                             string workspace =
                                 dynamoModel.CurrentWorkspace
                                     .GetStringRepOfWorkspace();
-                            InstrumentationLogger.LogPiiInfo(/*NXLT*/"Workspace", workspace);
+                            InstrumentationLogger.LogPiiInfo("Workspace", workspace);
                         });
 
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine(/*NXLT*/"Exception in Heartbeat " + e);
+                    Debug.WriteLine("Exception in Heartbeat " + e);
                 }
 
                 // The following call will return "true" if the event is 
@@ -158,9 +158,9 @@ namespace Dynamo.Services
             foreach (String key in frequencies.Keys)
             {
                 sb.Append(key);
-                sb.Append(/*NXLT*/":");
+                sb.Append(":");
                 sb.Append(frequencies[key]);
-                sb.Append(/*NXLT*/",");
+                sb.Append(",");
             }
 
             String ret = sb.ToString();

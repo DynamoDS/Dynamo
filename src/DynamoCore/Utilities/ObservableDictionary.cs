@@ -12,10 +12,10 @@ namespace Dynamo.Utilities
     public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged, INotifyPropertyChanged
     {
 
-        private const string CountString = /*NXLT*/"Count";
-        private const string IndexerName = /*NXLT*/"Item[]";
-        private const string KeysName = /*NXLT*/"Keys";
-        private const string ValuesName = /*NXLT*/"Values";
+        private const string CountString = "Count";
+        private const string IndexerName = "Item[]";
+        private const string KeysName = "Keys";
+        private const string ValuesName = "Values";
 
         private IDictionary<TKey, TValue> _Dictionary;
         protected IDictionary<TKey, TValue> Dictionary
@@ -69,7 +69,7 @@ namespace Dynamo.Utilities
 
         public bool Remove(TKey key)
         {
-            if (key == null) throw new ArgumentNullException(/*NXLT*/"key");
+            if (key == null) throw new ArgumentNullException("key");
 
             TValue value;
             Dictionary.TryGetValue(key, out value);
@@ -180,14 +180,14 @@ namespace Dynamo.Utilities
 
         public void AddRange(IDictionary<TKey, TValue> items)
         {
-            if (items == null) throw new ArgumentNullException(/*NXLT*/"items");
+            if (items == null) throw new ArgumentNullException("items");
 
             if (items.Count > 0)
             {
                 if (Dictionary.Count > 0)
                 {
                     if (items.Keys.Any((k) => Dictionary.ContainsKey(k)))
-                        throw new ArgumentException(/*NXLT*/"An item with the same key has already been added.");
+                        throw new ArgumentException("An item with the same key has already been added.");
                     else
                         foreach (var item in items) Dictionary.Add(item);
                 }
@@ -200,12 +200,12 @@ namespace Dynamo.Utilities
 
         private void Insert(TKey key, TValue value, bool add)
         {
-            if (key == null) throw new ArgumentNullException(/*NXLT*/"key");
+            if (key == null) throw new ArgumentNullException("key");
 
             TValue item;
             if (Dictionary.TryGetValue(key, out item))
             {
-                if (add) throw new ArgumentException(/*NXLT*/"An item with the same key has already been added.");
+                if (add) throw new ArgumentException("An item with the same key has already been added.");
                 if (Equals(item, value)) return;
                 Dictionary[key] = value;
 

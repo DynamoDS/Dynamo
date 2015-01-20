@@ -250,7 +250,7 @@ namespace Dynamo.DSEngine
                 if (graphSyncDataQueue.Count > 0)
                 {
                     throw new InvalidOperationException(
-                        /*NXLT*/"'graphSyncDataQueue' is not empty");
+                        "'graphSyncDataQueue' is not empty");
                 }
 
                 astBuilder.CompileCustomNodeDefinition(
@@ -411,7 +411,7 @@ namespace Dynamo.DSEngine
                             if (fatalException == null)
                                 fatalException = e;
 
-                            Log(/*NXLT*/"Update graph failed: " + e.Message);
+                            Log("Update graph failed: " + e.Message);
                         }
                     }
                 }
@@ -446,7 +446,7 @@ namespace Dynamo.DSEngine
                 var node = nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
-                    string warningMessage = string.Join(/*NXLT*/"\n", item.Value.Select(w => w.Message));
+                    string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
                     node.Warning(warningMessage);
                 }
             }
@@ -462,7 +462,7 @@ namespace Dynamo.DSEngine
                 var node = nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node != null)
                 {
-                    string warningMessage = string.Join(/*NXLT*/"\n", item.Value.Select(w => w.Message));
+                    string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
                     node.Warning(warningMessage);
                 }
             }
@@ -511,7 +511,7 @@ namespace Dynamo.DSEngine
 
         #region Node2Code
 
-        [Obsolete(/*NXLT*/"Node2Code disabled, API subject to change.")]
+        [Obsolete("Node2Code disabled, API subject to change.")]
         public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string, string> variableNames, bool verboseLogging)
         {
             variableNames = new Dictionary<string, string>();

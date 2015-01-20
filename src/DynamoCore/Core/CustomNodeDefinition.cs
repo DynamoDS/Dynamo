@@ -17,11 +17,11 @@ namespace Dynamo
     {
         public CustomNodeDefinition(
             Guid functionId,
-            string displayName =/*NXLT*/"",
+            string displayName ="",
             IList<NodeModel> nodeModels=null)
         {
             if (functionId == Guid.Empty)
-                throw new ArgumentException(/*NXLT*/@"FunctionId invalid.", /*NXLT*/"functionId");
+                throw new ArgumentException(@"FunctionId invalid.", "functionId");
 
             nodeModels = nodeModels ?? new List<NodeModel>();
 
@@ -58,7 +58,7 @@ namespace Dynamo
                             //If the node is a recursive instance...
                             topNode is Function && (topNode as Function).Definition.FunctionId == functionId
                                 // infinity output
-                                ? new[] { new { portIndex = 0, node = topNode, name = /*NXLT*/"∞" } }
+                                ? new[] { new { portIndex = 0, node = topNode, name = "∞" } }
                                 // otherwise, grab all ports with connected outputs and package necessary info
                                 : topNode.OutPortData
                                     .Select(
@@ -93,7 +93,7 @@ namespace Dynamo
                 if (nameDict.TryGetValue(name, out amt))
                 {
                     nameDict[name] = amt - 1;
-                    returnKeys.Add(name == /*NXLT*/"" ? amt + /*NXLT*/">" : name + amt);
+                    returnKeys.Add(name == "" ? amt + ">" : name + amt);
                 }
                 else
                     returnKeys.Add(name);
@@ -109,7 +109,7 @@ namespace Dynamo
             var inputNodes = nodeModels.OfType<Symbol>().ToList();
             var parameters =
                 inputNodes.Select(
-                    x => new TypedParameter(x.GetAstIdentifierForOutputIndex(0).Value, /*NXLT*/"var[]..[]"));
+                    x => new TypedParameter(x.GetAstIdentifierForOutputIndex(0).Value, "var[]..[]"));
             var displayParameters = inputNodes.Select(x => x.InputSymbol);
 
             #endregion
@@ -134,7 +134,7 @@ namespace Dynamo
         public string FunctionName
         {
             get { return AstBuilder.StringConstants.FunctionPrefix +
-                         FunctionId.ToString().Replace(/*NXLT*/"-", string.Empty);
+                         FunctionId.ToString().Replace("-", string.Empty);
             }
         }
 
@@ -207,7 +207,7 @@ namespace Dynamo
         public CustomNodeInfo(Guid functionId, string name, string category, string description, string path)
         {
             if (functionId == Guid.Empty)
-                throw new ArgumentException(/*NXLT*/@"FunctionId invalid.", /*NXLT*/"functionId");
+                throw new ArgumentException(@"FunctionId invalid.", "functionId");
             
             FunctionId = functionId;
             Name = name;

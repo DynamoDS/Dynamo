@@ -31,7 +31,7 @@ namespace Dynamo.Search.SearchElements
             {
                 if (value.Equals(isVisibleInSearch)) return;
                 isVisibleInSearch = value;
-                OnPropertyChanged(/*NXLT*/"IsVisibleInSearch");
+                OnPropertyChanged("IsVisibleInSearch");
             }
         }
 
@@ -70,8 +70,8 @@ namespace Dynamo.Search.SearchElements
             {
                 if (value == fullCategoryName) return;
                 fullCategoryName = value;
-                OnPropertyChanged(/*NXLT*/"FullCategoryName");
-                OnPropertyChanged(/*NXLT*/"Categories");
+                OnPropertyChanged("FullCategoryName");
+                OnPropertyChanged("Categories");
             }
         }
 
@@ -80,7 +80,7 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         string ISearchEntry.Name 
         {
-            get { return FullCategoryName + /*NXLT*/"." + Name; }
+            get { return FullCategoryName + "." + Name; }
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Dynamo.Search.SearchElements
             {
                 if (value == name) return;
                 name = value;
-                OnPropertyChanged(/*NXLT*/"Name");
+                OnPropertyChanged("Name");
             }
         }
 
@@ -120,7 +120,7 @@ namespace Dynamo.Search.SearchElements
             {
                 if (value == description) return;
                 description = value;
-                OnPropertyChanged(/*NXLT*/"Description");
+                OnPropertyChanged("Description");
 
             }
         }

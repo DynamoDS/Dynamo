@@ -184,7 +184,7 @@ namespace Dynamo.Interfaces
 
             public void Log(string tag, string message)
             {
-                Log(string.Format(/*NXLT*/"{0}:{1}", tag, message));
+                Log(string.Format("{0}:{1}", tag, message));
             }
 
             public void LogError(string error)

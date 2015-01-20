@@ -20,9 +20,9 @@ namespace Dynamo.Core
 
         private static IEnumerable<NodeModel> LoadNodesFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {
-            XmlNodeList elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Elements");
+            XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
             if (elNodes.Count == 0)
-                elNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynElements");
+                elNodes = xmlDoc.GetElementsByTagName("dynElements");
             XmlNode elNodesList = elNodes[0];
             return from XmlElement elNode in elNodesList.ChildNodes
                    select LoadNodeFromXml(elNode, SaveContext.File, nodeFactory);
@@ -51,11 +51,11 @@ namespace Dynamo.Core
         {
             var helper = new XmlElementHelper(connEl);
 
-            var guid = helper.ReadGuid(/*NXLT*/"guid", Guid.NewGuid());
-            var guidStart = helper.ReadGuid(/*NXLT*/"start");
-            var guidEnd = helper.ReadGuid(/*NXLT*/"end");
-            int startIndex = helper.ReadInteger(/*NXLT*/"start_index");
-            int endIndex = helper.ReadInteger(/*NXLT*/"end_index");
+            var guid = helper.ReadGuid("guid", Guid.NewGuid());
+            var guidStart = helper.ReadGuid("start");
+            var guidEnd = helper.ReadGuid("end");
+            int startIndex = helper.ReadInteger("start_index");
+            int endIndex = helper.ReadInteger("end_index");
 
             //find the elements to connect
             NodeModel start;
@@ -73,9 +73,9 @@ namespace Dynamo.Core
 
         private static IEnumerable<ConnectorModel> LoadConnectorsFromXml(XmlDocument xmlDoc, IDictionary<Guid, NodeModel> nodes)
         {
-            XmlNodeList cNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Connectors");
+            XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
             if (cNodes.Count == 0)
-                cNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynConnectors");
+                cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
             XmlNode cNodesList = cNodes[0];
 
             foreach (XmlElement connector in cNodesList.ChildNodes)
@@ -99,9 +99,9 @@ namespace Dynamo.Core
 
         private static IEnumerable<NoteModel> LoadNotesFromXml(XmlDocument xmlDoc)
         {
-            XmlNodeList nNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"Notes");
+            XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
             if (nNodes.Count == 0)
-                nNodes = xmlDoc.GetElementsByTagName(/*NXLT*/"dynNotes");
+                nNodes = xmlDoc.GetElementsByTagName("dynNotes");
             XmlNode nNodesList = nNodes[0];
 
             return nNodesList != null

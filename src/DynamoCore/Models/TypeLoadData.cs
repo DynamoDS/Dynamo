@@ -39,9 +39,9 @@ namespace Dynamo.Models
             Type = typeIn;
 
             ObsoleteMessage = string.Join(
-                /*NXLT*/"\n",
+                "\n",
                 Type.GetCustomAttributes<ObsoleteAttribute>(true)
-                    .Select(x => string.IsNullOrEmpty(x.Message) ? /*NXLT*/"Obsolete" : x.Message));
+                    .Select(x => string.IsNullOrEmpty(x.Message) ? "Obsolete" : x.Message));
 
             IsDeprecated = Type.GetCustomAttributes<NodeDeprecatedAttribute>(true).Any();
             IsMetaNode = Type.GetCustomAttributes<IsMetaNodeAttribute>(false).Any();

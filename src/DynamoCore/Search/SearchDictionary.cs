@@ -227,9 +227,9 @@ namespace Dynamo.Search
         private static string SanitizeQuery(string query)
         {
             return query.Trim()
-                .Replace(/*NXLT*/"\\", /*NXLT*/"\\\\")
-                .Replace(/*NXLT*/".", /*NXLT*/"\\.")
-                .Replace(/*NXLT*/"*", /*NXLT*/"\\*");
+                .Replace("\\", "\\\\")
+                .Replace(".", "\\.")
+                .Replace("*", "\\*");
         }
 
         private static string[] SplitOnWhiteSpace(string s)
@@ -239,14 +239,14 @@ namespace Dynamo.Search
 
         private static Regex MakePattern(string[] subPatterns)
         {
-            var pattern = /*NXLT*/"(.*)" + string.Join(/*NXLT*/"(.*)", subPatterns) + /*NXLT*/"(.*)";
+            var pattern = "(.*)" + string.Join("(.*)", subPatterns) + "(.*)";
             return new Regex(pattern);
         }
 
         private static bool ContainsSpecialCharacters(string element)
         {
-            return element.Contains(/*NXLT*/"*") || element.Contains(/*NXLT*/".") || element.Contains(/*NXLT*/" ")
-                || element.Contains(/*NXLT*/"\\");
+            return element.Contains("*") || element.Contains(".") || element.Contains(" ")
+                || element.Contains("\\");
         }
         #endregion
         

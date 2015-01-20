@@ -30,7 +30,7 @@ namespace Dynamo.Core
         /// <param name="propertyNames">The properties that have a new value.</param>
         protected void RaisePropertyChanged(params string[] propertyNames)
         {
-            if (propertyNames == null) throw new ArgumentNullException(/*NXLT*/"propertyNames");
+            if (propertyNames == null) throw new ArgumentNullException("propertyNames");
 
             foreach (var name in propertyNames)
             {

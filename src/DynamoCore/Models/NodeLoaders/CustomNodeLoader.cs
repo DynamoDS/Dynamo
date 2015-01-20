@@ -25,14 +25,14 @@ namespace Dynamo.Models.NodeLoaders
         {
             XmlNode idNode =
                 nodeElement.ChildNodes.Cast<XmlNode>()
-                    .LastOrDefault(subNode => subNode.Name.Equals(/*NXLT*/"ID"));
+                    .LastOrDefault(subNode => subNode.Name.Equals("ID"));
 
             if (idNode == null || idNode.Attributes == null) 
                 return null;
 
             string id = idNode.Attributes[0].Value;
 
-            string nickname = nodeElement.Attributes[/*NXLT*/"nickname"].Value;
+            string nickname = nodeElement.Attributes["nickname"].Value;
 
             Guid funcId;
             if (!Guid.TryParse(id, out funcId))

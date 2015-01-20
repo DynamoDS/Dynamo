@@ -25,8 +25,8 @@ namespace Dynamo.Utilities
         /// 
         public static string NormalizeLineBreaks(string text)
         {
-            text = text.Replace(/*NXLT*/"\r\n", /*NXLT*/"\n");
-            return text.Replace(/*NXLT*/"\r", /*NXLT*/"\n");
+            text = text.Replace("\r\n", "\n");
+            return text.Replace("\r", "\n");
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Dynamo.Utilities
             IEnumerable<string> unboundIdents)
         {
             if (unboundIdents == null)
-                throw new ArgumentNullException(/*NXLT*/"unboundIdents");
+                throw new ArgumentNullException("unboundIdents");
 
             int maxLength = Configurations.CBNMaxPortNameLength;
             List<PortData> inputPorts = new List<PortData>();
@@ -53,7 +53,7 @@ namespace Dynamo.Utilities
             {
                 string portName = name;
                 if (portName.Length > maxLength)
-                    portName = portName.Remove(maxLength - 3) + /*NXLT*/"...";
+                    portName = portName.Remove(maxLength - 3) + "...";
 
                 inputPorts.Add(new PortData(portName, name)
                 {
@@ -81,7 +81,7 @@ namespace Dynamo.Utilities
             IEnumerable<Statement> statements, bool onlyTopLevel)
         {
             if (statements == null)
-                throw new ArgumentNullException(/*NXLT*/"statements");
+                throw new ArgumentNullException("statements");
 
             var definedVariables = new List<List<string>>();
             foreach (var statement in statements)
@@ -111,14 +111,14 @@ namespace Dynamo.Utilities
             IEnumerable<IEnumerable<string>> statementVariables, int index)
         {
             if (statementVariables == null)
-                throw new ArgumentNullException(/*NXLT*/"statementVariables");
+                throw new ArgumentNullException("statementVariables");
 
             int statementCount = statementVariables.Count();
             if (statementCount <= 0)
                 return false;
 
             if (index < 0 || (index >= statementCount))
-                throw new IndexOutOfRangeException(/*NXLT*/"index");
+                throw new IndexOutOfRangeException("index");
 
             if (!statementVariables.ElementAt(index).Any())
                 return false;
@@ -192,7 +192,7 @@ namespace Dynamo.Utilities
                     // the resulting statement list.
                     // 
                     var trimmed = line.TrimEnd(charsToTrim);
-                    statements.Add(trimmed + /*NXLT*/"\n");
+                    statements.Add(trimmed + "\n");
                 }
                 else
                 {
@@ -208,7 +208,7 @@ namespace Dynamo.Utilities
                     {
                         var trimmed = part.TrimEnd(charsToTrim);
                         if (!string.IsNullOrEmpty(trimmed))
-                            statements.Add(trimmed + /*NXLT*/";\n");
+                            statements.Add(trimmed + ";\n");
                     }
                 }
             }
@@ -226,8 +226,8 @@ namespace Dynamo.Utilities
             if (!string.IsNullOrEmpty(inputCode) && 
                 !CodeCompletionParser.IsInsideCommentOrString(inputCode, inputCode.Length))
             {
-                if (inputCode.EndsWith(/*NXLT*/";") == false)
-                    inputCode = inputCode + /*NXLT*/";";
+                if (inputCode.EndsWith(";") == false)
+                    inputCode = inputCode + ";";
             }
 
             return inputCode;
@@ -248,13 +248,13 @@ namespace Dynamo.Utilities
 
         // This should match with production for identifier in language parser
         // See Start.atg file: ident = (letter | '_' | '@'){letter | digit | '_' | '@'}.
-        private static string variableNamePattern = /*NXLT*/@"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
+        private static string variableNamePattern = @"[a-zA-Z_@]([a-zA-Z_@0-9]*)";
 
-        private static string spacesOrNonePattern = /*NXLT*/@"(\s*)";
-        private static string colonPattern = /*NXLT*/":";
+        private static string spacesOrNonePattern = @"(\s*)";
+        private static string colonPattern = ":";
 
         // This pattern matches with identifier lists such as Autodesk.DesignScript.Geometry.Point
-        private static string identifierListPattern = string.Format(/*NXLT*/"{0}([.]({0})+)*", variableNamePattern);
+        private static string identifierListPattern = string.Format("{0}([.]({0})+)*", variableNamePattern);
 
         // Maintains a stack of symbols in a nested expression being typed
         // where the symbols are nested based on brackets, braces or parentheses
@@ -395,7 +395,7 @@ namespace Dynamo.Utilities
             for (int i = 0; i < varDeclarations.Count; i++)
             {
                 var match = varDeclarations[i].Value;
-                match = Regex.Replace(match, /*NXLT*/@"\s", "");
+                match = Regex.Replace(match, @"\s", "");
                 var groups = match.Split(':');
 
                 // Overwrite variable type for a redefinition
@@ -454,12 +454,12 @@ namespace Dynamo.Utilities
                         else
                             functionPrefix = strPrefix.Substring(0, strPrefix.Length - functionName.Length - 1);
 
-                        expressionStack.Push(strPrefix + /*NXLT*/@"(");
+                        expressionStack.Push(strPrefix + @"(");
                     }
                     else
                     {
                         // simple expression
-                        expressionStack.Push(/*NXLT*/@"(");
+                        expressionStack.Push(@"(");
                     }
                     strPrefix = string.Empty;
                     break;
@@ -542,7 +542,7 @@ namespace Dynamo.Utilities
                         if (isInString || isInChar)
                             i++;
                         break;
-                    case /*NXLT*/'"':
+                    case '"':
                         if (isInSingleComment || isInMultiLineComment || isInChar)
                             break;
                         isInString = !isInString;

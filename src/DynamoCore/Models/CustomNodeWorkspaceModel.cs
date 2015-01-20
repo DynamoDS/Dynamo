@@ -23,7 +23,7 @@ namespace Dynamo.Models
                 OnFunctionIdChanged(oldId);
                 OnDefinitionUpdated();
                 OnInfoChanged();
-                RaisePropertyChanged(/*NXLT*/"CustomNodeId");
+                RaisePropertyChanged("CustomNodeId");
             }
         }
         private Guid customNodeId;
@@ -58,10 +58,10 @@ namespace Dynamo.Models
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == /*NXLT*/"Name")
+            if (args.PropertyName == "Name")
                 OnInfoChanged();
 
-            if (args.PropertyName == /*NXLT*/"Category" || args.PropertyName == /*NXLT*/"Description")
+            if (args.PropertyName == "Category" || args.PropertyName == "Description")
             {
                 HasUnsavedChanges = true;
                 OnInfoChanged();
@@ -131,7 +131,7 @@ namespace Dynamo.Models
             set
             {
                 category = value;
-                RaisePropertyChanged(/*NXLT*/"Category");
+                RaisePropertyChanged("Category");
             }
         }
         private string category;
@@ -145,7 +145,7 @@ namespace Dynamo.Models
             set
             {
                 description = value;
-                RaisePropertyChanged(/*NXLT*/"Description");
+                RaisePropertyChanged("Description");
             }
         }
         private string description;
@@ -209,9 +209,9 @@ namespace Dynamo.Models
                 return false;
             
             var guid = CustomNodeDefinition != null ? CustomNodeDefinition.FunctionId : Guid.NewGuid();
-            root.SetAttribute(/*NXLT*/"ID", guid.ToString());
-            root.SetAttribute(/*NXLT*/"Description", Description);
-            root.SetAttribute(/*NXLT*/"Category", Category);
+            root.SetAttribute("ID", guid.ToString());
+            root.SetAttribute("Description", Description);
+            root.SetAttribute("Category", Category);
             
             return true;
         }
