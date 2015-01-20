@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.IO;
+
+using DSCoreNodesUI.Input;
+
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;

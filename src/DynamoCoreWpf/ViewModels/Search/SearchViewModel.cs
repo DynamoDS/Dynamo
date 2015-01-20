@@ -222,8 +222,8 @@ namespace Dynamo.ViewModels
             libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
+            DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
-            DefineCategoriesFullCategoryName(LibraryRootCategories, "");
 
             ChangeCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
@@ -256,32 +256,33 @@ namespace Dynamo.ViewModels
             return result.OrderBy(cat => cat.Name);
         }
 
-        private void InsertClassesIntoTree(ObservableCollection<NodeCategoryViewModel> tree)
+        private static void InsertClassesIntoTree(ObservableCollection<NodeCategoryViewModel> tree)
         {
             foreach (var item in tree)
             {
                 var classes = item.SubCategories.Where(cat => cat.SubCategories.Count == 0).ToList();
-
                 foreach (var item2 in classes)
                     item.SubCategories.Remove(item2);
 
                 InsertClassesIntoTree(item.SubCategories);
 
-                var container = new ClassesNodeCategoryViewModel();
+                if (classes.Count == 0)
+                    continue;
+
+                var container = new ClassesNodeCategoryViewModel(item);
                 container.SubCategories.AddRange(classes);
 
                 item.SubCategories.Insert(0, container);
             }
         }
 
-        private void DefineCategoriesFullCategoryName(ObservableCollection<NodeCategoryViewModel> tree, string path)
+        private static void DefineFullCategoryNames(ObservableCollection<NodeCategoryViewModel> tree, string path)
         {
             foreach (var item in tree)
             {
-                item.FullCategoryName = string.IsNullOrEmpty(path) ? item.Name :
-                    path + Configurations.CategoryDelimiter + item.Name;
+                item.FullCategoryName = MakeFullyQualifiedName(path, item.Name);
 
-                DefineCategoriesFullCategoryName(item.SubCategories, item.FullCategoryName);
+                DefineFullCategoryNames(item.SubCategories, item.FullCategoryName);
             }
         }
 
@@ -295,7 +296,7 @@ namespace Dynamo.ViewModels
         private void RemoveEntry(NodeSearchElement entry)
         {
             var treeStack = new Stack<NodeCategoryViewModel>();
-            var nameStack = new Stack<string>(entry.Categories);
+            var nameStack = new Stack<string>(entry.Categories.Reverse());
             var target = libraryRoot;
             while (nameStack.Any())
             {
@@ -323,43 +324,172 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Insert a new search element under the category.
+        /// </summary>
+        /// <param name="entry">This could represent a function of a given 
+        /// class. For example, 'MyAssembly.MyNamespace.MyClass.Foo'.</param>
+        /// <param name="categoryNames">A list of entries that make up the fully qualified
+        /// class name that contains function 'Foo', e.g. 'MyAssembly.MyNamespace.MyClass'.
+        /// </param>
         private void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
         {
             var nameStack = new Stack<string>(categoryNames.Reverse());
             var target = libraryRoot;
-            bool isRoot = true;
+            string fullyQualifiedCategoryName = "";
+            ClassesNodeCategoryViewModel targetClass = null;
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
+                fullyQualifiedCategoryName = MakeFullyQualifiedName(fullyQualifiedCategoryName, next);
+
                 var categories = target.SubCategories;
-                var newTarget = categories.FirstOrDefault(c => c.Name == next);
-                if (newTarget == default(NodeCategoryViewModel))
+                NodeCategoryViewModel targetClassSuccessor = null;
+                var newTarget = categories.FirstOrDefault(c =>
                 {
-                    newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
+                    // Each path has one class. We should find and save it.                    
+                    if (c is ClassesNodeCategoryViewModel)
+                    {
+                        targetClass = c as ClassesNodeCategoryViewModel;
+                        // As soon as ClassesNodeCategoryViewModel is found we should search 
+                        // through all it classes and save result.
+                        targetClassSuccessor = c.SubCategories.FirstOrDefault(c2 => c2.Name == next);
+                        return targetClassSuccessor != null;
+                    }
+
+                    return c.Name == next;
+                });
+                if (newTarget == null)
+                {
+                    // For the first iteration, this would be 'MyAssembly', and the second iteration 'MyNamespace'.
+                    var targetIsRoot = target == libraryRoot;
+                    newTarget = targetIsRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
+                    newTarget.FullCategoryName = fullyQualifiedCategoryName;
+                    // Situation when we to add only one new category and item as it child.
+                    // New category should be added to existing ClassesNodeCategoryViewModel.
+                    // Make notice: ClassesNodeCategoryViewModel is always first item in 
+                    // all subcategories.
+                    if (nameStack.Count == 0 && target.SubCategories.Count > 0 &&
+                        target.SubCategories[0] is ClassesNodeCategoryViewModel)
+                    {
+                        target.SubCategories[0].SubCategories.Add(newTarget);
+                        newTarget.Entries.Add(entry);
+                        return;
+                    }
+
+                    // We are here when target is the class. New category should be added
+                    // as child of it. So class will turn into usual category.
+                    // Here we are take class, remove it from ClassesNodeCategoryViewModel
+                    // and attach to it parrent.
+                    if (targetClass != null)
+                    {
+                        if (targetClass.SubCategories.Remove(target))
+                            targetClass.Parent.SubCategories.Add(target);
+                        // Delete empty classes container.
+                        if (targetClass.SubCategories.Count == 0)
+                            targetClass.Parent.SubCategories.RemoveAt(0);
+
+                        targetClass.Dispose();
+
+                        // Situation when we need to add only one new category and item.
+                        // Before adding of it we need create new ClassesNodeCategoryViewModel
+                        // as soon as new category will be a class.
+                        if (nameStack.Count == 0)
+                        {
+                            targetClass = new ClassesNodeCategoryViewModel(target);
+
+                            target.SubCategories.Add(targetClass);
+                            target = targetClass;
+                        }
+                    }
+
                     target.SubCategories.Add(newTarget);
-                    PlaceInNewCategory(entry, newTarget, nameStack);
+
+                    // Proceed to insert the new entry under 'newTarget' category with the remaining 
+                    // name stack. In the first iteration this would have been 'MyNamespace.MyClass'.
+                    InsertEntryIntoNewCategory(newTarget, entry, nameStack);
                     return;
                 }
-                target = newTarget;
-                isRoot = false;
+                // If we meet ClassesNodecategoryViewModel during the search of newTarget,
+                // next newTarget is specified in targetClassSuccessor.
+                if (targetClassSuccessor != null)
+                    target = targetClassSuccessor;
+                else
+                    target = newTarget;
             }
             target.Entries.Add(entry);
         }
 
-        private static void PlaceInNewCategory(
-            NodeSearchElementViewModel entry, NodeCategoryViewModel target,
+        private static void InsertEntryIntoNewCategory(
+            NodeCategoryViewModel category,
+            NodeSearchElementViewModel entry,
             IEnumerable<string> categoryNames)
         {
-            var newTargets =
-                categoryNames.Select(name => new NodeCategoryViewModel(name));
-
-            foreach (var newTarget in newTargets)
+            if (!categoryNames.Any())
             {
-                target.SubCategories.Add(newTarget);
-                target = newTarget;
+                category.Entries.Add(entry);
+                return;
             }
 
-            target.Entries.Add(entry);
+            // With the example of 'MyAssembly.MyNamespace.MyClass.Foo', 'path' would have been 
+            // set to 'MyAssembly' here. The Select statement below would store two entries into
+            // 'newTargets' variable:
+            // 
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
+            var path = category.FullCategoryName;
+            var newTargets = categoryNames.Select(name =>
+            {
+                path = MakeFullyQualifiedName(path, name);
+
+                var cat = new NodeCategoryViewModel(name);
+                cat.FullCategoryName = path;
+                return cat;
+            }).ToList();
+
+            // The last entry 'NodeCategoryViewModel' represents a class. For our example the 
+            // entries in 'newTargets' are:
+            // 
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
+            // Since all class entries are contained under a 'ClassesNodeCategoryViewModel', 
+            // we need to create a new 'ClassesNodeCategoryViewModel' instance, and insert it 
+            // right before the class entry itself to get the following list:
+            // 
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //      ClassesNodeCategoryViewModel("Classes")
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
+            int indexToInsertClass = newTargets.Count - 1;
+            var classParent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : category;
+            var newClass = new ClassesNodeCategoryViewModel(classParent);
+            newTargets.Insert(indexToInsertClass, newClass);
+
+            // Here, all the entries in 'newTargets' are added under 'MyAssembly' recursively,
+            // resulting in the following hierarchical structure:
+            // 
+            //      NodeCategoryViewModel("MyAssembly")
+            //          NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //              ClassesNodeCategoryViewModel("Classes")
+            //                  NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
+            foreach (var newTarget in newTargets)
+            {
+                category.SubCategories.Add(newTarget);
+                category = newTarget;
+            }
+
+            category.Entries.Add(entry);
+        }
+
+        // Form a fully qualified name based on nested level of a "NodeCategoryViewModel" object.
+        // For example, `Core.File.Directory` is the fully qualified name for "Directory".
+        private static string MakeFullyQualifiedName(string path, string addition)
+        {
+            return string.IsNullOrEmpty(path) ? addition :
+                path + Configurations.CategoryDelimiter + addition;
         }
 
         #endregion

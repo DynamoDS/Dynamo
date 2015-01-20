@@ -416,17 +416,6 @@ namespace ProtoCore
                 //walk over the structure converting each othe elements
 
                 var hpe = core.Heap.GetHeapElement(sv);
-#if GC_REFERENCE_COUNTING
-                var isTemporary = hpe.Active && hpe.Refcount == 0;
-#else
-                var isTemporary = false;
-#endif
-
-                if (targetType.UID == (int)PrimitiveType.kTypeVar && targetType.rank == DSASM.Constants.kArbitraryRank && isTemporary)
-                {
-                    return sv;
-                }
-
                 //Validity.Assert(targetType.rank != -1, "Arbitrary rank array conversion not yet implemented {2EAF557F-62DE-48F0-9BFA-F750BBCDF2CB}");
 
                 //Decrease level of reductions by one
@@ -466,7 +455,6 @@ namespace ProtoCore
 
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, core);
-                    GCUtils.GCRetain(coercedValue, core);
                     StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }
@@ -481,7 +469,6 @@ namespace ProtoCore
 
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, core);
-                    GCUtils.GCRetain(coercedValue, core);
                     StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }

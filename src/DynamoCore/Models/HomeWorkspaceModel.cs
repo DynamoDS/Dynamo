@@ -116,23 +116,26 @@ namespace Dynamo.Models
             EngineController.NodeDeleted(node);
         }
 
+        protected override void ResetWorkspaceCore()
+        {
+            // Reset Run Automatic option to false on resetting the workspace
+            DynamicRunEnabled = false;
+        }
+
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
             foreach (var node in Nodes)
             {
-                // Mark all nodes as dirty so that AST for the whole graph will be
-                // regenerated.
-                node.ForceReExecuteOfNode = true;
+                node.MarkNodeAsModified();
             }
-
-            OnAstUpdated();
+            OnNodesModified();
         }
 
-        public override void OnAstUpdated()
+        public override void OnNodesModified()
         {
-            base.OnAstUpdated();
+            base.OnNodesModified();
 
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
@@ -176,9 +179,13 @@ namespace Dynamo.Models
             
             if (markNodesAsDirty)
             {
+                // Mark all nodes as dirty so that AST for the whole graph will be
+                // regenerated.
                 foreach (var node in Nodes)
-                    node.ForceReExecuteOfNode = true;
-                OnAstUpdated();
+                {
+                    node.MarkNodeAsModified();
+                }
+                OnNodesModified();
             }
 
             if (DynamicRunEnabled)
@@ -228,8 +235,10 @@ namespace Dynamo.Models
             foreach (var modifiedNode in updateTask.ModifiedNodes)
                 modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
 
-            foreach (var n in Nodes)
-                n.ForceReExecuteOfNode = false;
+            foreach (var node in Nodes)
+            {
+                node.ClearDirtyFlag();
+            }
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.
