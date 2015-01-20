@@ -295,23 +295,33 @@ namespace Dynamo.ViewModels
 
         private void RemoveEntry(NodeSearchElement entry)
         {
-            var categoriesList = entry.Categories.ToList();
-            // Path with one category (it is RootNodeCategoryViewModel) 
-            // doesn't contain classes container.
-            if (categoriesList.Count > 1)
-                categoriesList.Insert(categoriesList.Count - 1, Configurations.ClassesDefaultName);
-            categoriesList.Reverse();
-
             var treeStack = new Stack<NodeCategoryViewModel>();
-            var nameStack = new Stack<string>(categoriesList);
+            var nameStack = new Stack<string>(entry.Categories.Reverse());
             var target = libraryRoot;
+            bool isCheckedForClassesCategory = false;
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
                 var categories = target.SubCategories;
                 var newTarget = categories.FirstOrDefault(c => c.Name == next);
-                if (newTarget == default(NodeCategoryViewModel))
+                if (newTarget == null)
                 {
+                    // Latest item in categories list can be a class.
+                    // All classes are situated in classes container.
+                    // So nameStack should be populated with ClassesDefaultName
+                    // and class name. And checked again.
+                    // For example: "MyAssembly.MyNamespace.ClassCandidate" not found.
+                    // Should be checked for "MyAssembly.MyNamespace.Classes.ClassCandidate"
+                    //
+                    if (!isCheckedForClassesCategory && nameStack.Count == 0)
+                    {
+                        nameStack.Push(next);
+                        nameStack.Push(Configurations.ClassesDefaultName);
+
+                        isCheckedForClassesCategory = true;
+                        continue;
+                    }
+
                     return;
                 }
                 treeStack.Push(target);
@@ -327,7 +337,7 @@ namespace Dynamo.ViewModels
             {
                 var parent = treeStack.Pop();
                 parent.SubCategories.Remove(target);
-                // Remove ClassInformationViewmodel which is used for displaying StandardPanel.
+                // Remove ClassInformationViewModel which is used for displaying StandardPanel.
                 if (parent.Items.Count == 1 && parent.Items[0] is ClassInformationViewModel)
                     parent.Items.RemoveAt(0);
                 target = parent;
