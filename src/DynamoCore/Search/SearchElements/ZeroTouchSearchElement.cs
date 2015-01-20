@@ -48,7 +48,7 @@ namespace Dynamo.Search.SearchElements
             string name = Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.QualifiedName);
 
             if (string.IsNullOrEmpty(name))
-                name = Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.UserFriendlyName);
+                name = Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.FunctionName);
 
             // Usual case.
             if (!functionDescriptor.IsOverloaded)
@@ -64,7 +64,7 @@ namespace Dynamo.Search.SearchElements
                 // Some nodes contain names with invalid symbols like %, <, >, etc. In this 
                 // case the value of "FunctionDescriptor.Name" property should be used. For 
                 // an example, "DynamoUnits.SUnit.%" to be renamed as "DynamoUnits.SUnit.mod".
-                string shortName = Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.UserFriendlyName);
+                string shortName = Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.FunctionName);
                 return Nodes.Utilities.TypedParametersToString(functionDescriptor, name + shortName);
             }
         }
