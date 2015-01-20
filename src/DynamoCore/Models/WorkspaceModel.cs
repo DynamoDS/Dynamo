@@ -39,6 +39,7 @@ namespace Dynamo.Models
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
         private readonly UndoRedoRecorder undoRecorder;
+        private Guid guid;
 
         #endregion
 
@@ -392,6 +393,14 @@ namespace Dynamo.Models
         public UndoRedoRecorder UndoRecorder
         {
             get { return undoRecorder; }
+        }
+
+        /// <summary>
+        /// A unique identifier for the workspace.
+        /// </summary>
+        public Guid Guid
+        {
+            get { return guid; }
         }
 
         #endregion
