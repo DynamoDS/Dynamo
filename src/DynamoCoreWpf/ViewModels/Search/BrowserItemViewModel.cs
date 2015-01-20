@@ -226,11 +226,6 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        protected enum ResourceType
-        {
-            SmallIcon, LargeIcon
-        }
-
         ///<summary>
         /// Small icon for class and method buttons.
         ///</summary>
@@ -238,19 +233,12 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                var name = GetResourceName(ResourceType.SmallIcon, false);
-                BitmapSource icon = GetIcon(name + Configurations.SmallIconPostfix);
+                BitmapSource icon = GetIcon(Name + Configurations.SmallIconPostfix);
 
+                // If there is no icon, use default.
                 if (icon == null)
-                {
-                    // Get dis-ambiguous resource name and try again.
-                    name = GetResourceName(ResourceType.SmallIcon, true);
-                    icon = GetIcon(name + Configurations.SmallIconPostfix);
+                    icon = LoadDefaultIcon();
 
-                    // If there is no icon, use default.
-                    if (icon == null)
-                        icon = LoadDefaultIcon(ResourceType.SmallIcon);
-                }
                 return icon;
             }
         }
@@ -468,21 +456,8 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        protected virtual string GetResourceName(
-            ResourceType resourceType, bool disambiguate = false)
+        private BitmapSource GetIcon(string fullNameOfIcon)
         {
-            if (resourceType == ResourceType.SmallIcon)
-                return Name;
-
-            throw new InvalidOperationException("Unhandled resourceType");
-        }
-
-        protected BitmapSource GetIcon(string fullNameOfIcon)
-        {
-            // TODO(Vladimir): provide correct assembly. Task for it MAGN-5770.
-            if (string.IsNullOrEmpty(Assembly))
-                return null;
-
             var cust = LibraryCustomizationServices.GetForAssembly(Assembly);
             BitmapSource icon = null;
             if (cust != null)
@@ -490,11 +465,8 @@ namespace Dynamo.Wpf.ViewModels
             return icon;
         }
 
-        protected virtual BitmapSource LoadDefaultIcon(ResourceType resourceType)
+        private BitmapSource LoadDefaultIcon()
         {
-            if (resourceType == ResourceType.LargeIcon)
-                return null;
-
             var cust = LibraryCustomizationServices.GetForAssembly(Configurations.DefaultAssembly);
             return cust.LoadIconInternal(Configurations.DefaultIcon);
         }
