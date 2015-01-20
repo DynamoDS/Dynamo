@@ -521,18 +521,6 @@ namespace ProtoTestFx.TD
                 else
                 {
                     ProtoCore.DSASM.HeapElement he = testMirror.MirrorTarget.rmem.Heap.GetHeapElement(sv);
-
-                    if (he.Refcount != referencCount)
-                    {
-                        Assert.Fail(String.Format("\t{0}'s reference count is {1}, which is not equal to expected {2}", dsVariable, he.Refcount, referencCount));
-                    }
-                    else if (referencCount > 0)
-                    {
-                        if (!he.Active)
-                        {
-                            Assert.Fail(String.Format("\t{0}'s reference count == {1}, but somehow it is makred as inactive.", dsVariable, referencCount));
-                        }
-                    }
                 }
             }
             catch (NotImplementedException)

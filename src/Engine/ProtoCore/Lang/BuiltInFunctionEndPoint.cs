@@ -285,7 +285,6 @@ namespace ProtoCore.Lang
                             // Comment Jun: Perhaps we can allow coercion?
                             Type booleanType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0);
                             svCondition = TypeSystem.Coerce(svCondition, booleanType, core);
-                            GCUtils.GCRetain(svCondition, core);
                         }
 
                         StackValue svTrue = formalParameters[1];
@@ -432,10 +431,6 @@ namespace ProtoCore.Lang
                         }
                         else
                         {
-                            foreach (var key in result)
-                            {
-                                GCUtils.GCRetain(key, core); 
-                            }
                             ret = core.Heap.AllocateArray(result, null);
                         }
                         break;
@@ -450,10 +445,6 @@ namespace ProtoCore.Lang
                         else
                         {
                             var result = ArrayUtils.GetValues(array, core);
-                            foreach (var key in result)
-                            {
-                                GCUtils.GCRetain(key, core);
-                            }
                             ret = core.Heap.AllocateArray(result, null);
                         }
                         break;
@@ -502,21 +493,7 @@ namespace ProtoCore.Lang
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
             }
 
-            GCUtils.GCRetain(ret, core);
-
-            // Dot operator is a special case and its arguments are not meant to be gc'd
-            // The debugger will always get to here as it applies for only those built-ins that are also external
-            // and therefore that the debugger does not break out of - pratapa
-            if (ProtoCore.Lang.BuiltInMethods.MethodID.kDot != buildInMethodId)
-            {
-                foreach (StackValue param in formalParameters)
-                {
-                    interpreter.runtime.GCRelease(param);
-                }
-            }
-
             return ret;
-
         }
 
         private StackValue DotMethod(StackValue lhs, StackFrame stackFrame, DSASM.Executive runtime, Context context)
@@ -689,8 +666,6 @@ namespace ProtoCore.Lang
                 core.DebugProps.RestoreCallrForNoBreak(core, procNode);
             }
 
-            runtime.GCRelease(lhs);
-            runtime.DecRefCounter(ret);
             return ret;
         }
     }
@@ -1248,7 +1223,6 @@ namespace ProtoCore.Lang
             var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
             var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.Core);
             var values = svArray1.Concat(svArray2).ToList();
-            values.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
             return runtime.runtime.rmem.Heap.AllocateArray(values);
         }
 
@@ -1256,7 +1230,6 @@ namespace ProtoCore.Lang
         {
             if (!sv.IsArray)
             {
-                GCUtils.GCRetain(sv, runtime.runtime.Core);
                 list.Add(sv);
                 return;
             }
@@ -1292,7 +1265,6 @@ namespace ProtoCore.Lang
             if (svList.Count >= 0)
             {
                 var heap = runtime.runtime.rmem.Heap;
-                svList.ForEach(sv => heap.IncRefCount(sv)); 
                 return heap.AllocateArray(svList);
             }
             //That means an empty array
@@ -1334,7 +1306,6 @@ namespace ProtoCore.Lang
             if (svList.Count >= 0)
             {
                 var heap = runtime.runtime.rmem.Heap;
-                svList.ForEach(sv => heap.IncRefCount(sv));
                 return heap.AllocateArray(svList);
             }
             //That means an empty array
@@ -1579,7 +1550,6 @@ namespace ProtoCore.Lang
                 if (indexCount != indexToBeRemoved)
                     svList.Add(svArray[indexCount]);
             }
-            svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
             return runtime.runtime.rmem.Heap.AllocateArray(svList);
         }
         //RemoveDuplicate
@@ -1611,7 +1581,6 @@ namespace ProtoCore.Lang
                     svList.Insert(0, outOp);
                 }
             }
-            svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
             return runtime.runtime.rmem.Heap.AllocateArray(svList);
         }
 
@@ -1652,7 +1621,6 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
                 return runtime.runtime.rmem.Heap.AllocateArray(svList);
             }
             //That means an empty array
@@ -1687,7 +1655,6 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
                 return runtime.runtime.rmem.Heap.AllocateArray(svList);
             }
             //That means an empty array
@@ -1704,7 +1671,6 @@ namespace ProtoCore.Lang
             }
 
             var reverseArray = ArrayUtils.GetValues(sv, runtime.runtime.Core).Reverse().ToList();
-            reverseArray.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
             return runtime.runtime.rmem.Heap.AllocateArray(reverseArray);
         }
         //Contains & ArrayContainsArray ::: sv1 contains sv2
@@ -1848,7 +1814,6 @@ namespace ProtoCore.Lang
             var svList = ArrayUtils.GetValues(sv, runtime.runtime.Core).ToList();
             svList.Sort(new StackValueComparerForDouble(ascending));
 
-            svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
             return runtime.runtime.rmem.Heap.AllocateArray(svList);
         }
 
@@ -1888,7 +1853,6 @@ namespace ProtoCore.Lang
             {
                 StackValue tsv = DSASM.StackValue.BuildInt(svList[n].Value);
                 sortedIndices[n] = tsv;
-                runtime.runtime.rmem.Heap.IncRefCount(tsv);
             }
             
             return runtime.runtime.rmem.Heap.AllocateArray(sortedIndices);
@@ -1936,7 +1900,6 @@ namespace ProtoCore.Lang
             }
             if (svList.Count >= 0)
             {
-                svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
                 return runtime.runtime.rmem.Heap.AllocateArray(svList);
             }
             //That means an empty array
@@ -1997,7 +1960,6 @@ namespace ProtoCore.Lang
                 svList.AddRange(elements.ToList().GetRange(idxToBeInsert, length - idxToBeInsert));
             }
 
-            svList.ForEach(x => runtime.runtime.rmem.Heap.IncRefCount(x));
             return runtime.runtime.rmem.Heap.AllocateArray(svList);
         }
         //IsUniformDepth
@@ -2108,7 +2070,6 @@ namespace ProtoCore.Lang
                     //(expectedRank - count - 1) is got from ((expectedRank-overallRank)+(overallRank - count - 1))
                 }
 
-                GCUtils.GCRetain(item, runtime.runtime.Core);
                 svList.Add(item);
             }
             //Convert list to Operand
@@ -2123,7 +2084,6 @@ namespace ProtoCore.Lang
         {
             for (; countBraces > 0; countBraces--)
             {
-                GCUtils.GCRetain(sv, runtime.runtime.Core);
                 sv = runtime.runtime.Core.Heap.AllocateArray(new StackValue[] { sv }, null);
             }
             return sv;
@@ -2197,12 +2157,10 @@ namespace ProtoCore.Lang
                     svList2.Add(element);
                 }
 
-                svList2.ForEach(x => heap.IncRefCount(x));
                 StackValue finalCol = heap.AllocateArray(svList2);
                 svList1.Add(finalCol);
             }
 
-            svList1.ForEach(x => heap.IncRefCount(x));
             return heap.AllocateArray(svList1);
         }
 
@@ -2241,7 +2199,6 @@ namespace ProtoCore.Lang
             }
 
             var heap = runtime.runtime.rmem.Heap;
-            svList.ForEach(sv => heap.IncRefCount(sv));
             return heap.AllocateArray(svList);
         }
 

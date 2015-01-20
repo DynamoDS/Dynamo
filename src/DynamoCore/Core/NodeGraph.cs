@@ -46,9 +46,8 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="connEl">XmlElement for a ConnectorModel.</param>
         /// <param name="nodes">Dictionary to be used for looking up a NodeModel by it's Guid.</param>
-        /// <param name="connector"></param>
-        /// <returns></returns>
-        public static bool LoadConnectorFromXml(XmlElement connEl, IDictionary<Guid, NodeModel> nodes, out ConnectorModel connector)
+        /// <returns>Returns the new instance of ConnectorModel loaded from XmlElement.</returns>
+        public static ConnectorModel LoadConnectorFromXml(XmlElement connEl, IDictionary<Guid, NodeModel> nodes)
         {
             var helper = new XmlElementHelper(connEl);
 
@@ -65,12 +64,11 @@ namespace Dynamo.Core
                 NodeModel end;
                 if (nodes.TryGetValue(guidEnd, out end))
                 {
-                    connector = ConnectorModel.Make(start, end, startIndex, endIndex, guid);
-                    return connector != null;
+                    return ConnectorModel.Make(start, end, startIndex, endIndex, guid);
                 }
             }
-            connector = null;
-            return false;
+
+            return null;
         }
 
         private static IEnumerable<ConnectorModel> LoadConnectorsFromXml(XmlDocument xmlDoc, IDictionary<Guid, NodeModel> nodes)
@@ -82,9 +80,8 @@ namespace Dynamo.Core
 
             foreach (XmlElement connector in cNodesList.ChildNodes)
             {
-                ConnectorModel c;
-                if (LoadConnectorFromXml(connector, nodes, out c))
-                    yield return c;
+                var c = LoadConnectorFromXml(connector, nodes);
+                yield return c;
             }
         }
 
@@ -95,16 +92,9 @@ namespace Dynamo.Core
         /// <returns></returns>
         public static NoteModel LoadNoteFromXml(XmlNode note)
         {
-            XmlAttribute textAttrib = note.Attributes[0];
-            XmlAttribute xAttrib = note.Attributes[1];
-            XmlAttribute yAttrib = note.Attributes[2];
-
-            string text = textAttrib.Value;
-            double x = Double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
-            double y = Double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
-
-            // TODO(Ben): Shouldn't we be reading in the Guid from file instead of generating a new one here?
-            return new NoteModel(x, y, text, Guid.NewGuid());
+            var instance = new NoteModel(0, 0, string.Empty, Guid.NewGuid());
+            instance.Deserialize(note as XmlElement, SaveContext.File);
+            return instance;
         }
 
         private static IEnumerable<NoteModel> LoadNotesFromXml(XmlDocument xmlDoc)

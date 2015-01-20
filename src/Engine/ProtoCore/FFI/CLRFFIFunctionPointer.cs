@@ -475,7 +475,6 @@ namespace ProtoFFI
                     StackValue oldValue = core.Heap.GetHeapElement(thisObject).GetValue(idx, core);
                     if (!StackUtils.Equals(oldValue, propValue))
                     {
-                        GCUtils.GCRetain(propValue, core);
                         core.Heap.GetHeapElement(thisObject).SetValue(idx, propValue);
                     }
                 }
