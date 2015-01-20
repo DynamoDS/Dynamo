@@ -56,6 +56,11 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.FullName; }
         }
 
+        public string Assembly
+        {
+            get { return Model.Assembly; }
+        }
+
         public bool Visibility
         {
             get { return Model.IsVisibleInSearch; }

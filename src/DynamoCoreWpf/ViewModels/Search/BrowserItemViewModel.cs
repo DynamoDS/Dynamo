@@ -106,6 +106,7 @@ namespace Dynamo.Wpf.ViewModels
 
         private string name;
         private string fullCategoryName;
+        private string assembly;
         private ObservableCollection<ISearchEntryViewModel> items;
         private ObservableCollection<NodeSearchElementViewModel> entries;
         private ObservableCollection<NodeCategoryViewModel> subCategories;
@@ -132,6 +133,22 @@ namespace Dynamo.Wpf.ViewModels
                 if (value == fullCategoryName) return;
                 fullCategoryName = value;
                 RaisePropertyChanged("FullCategoryName");
+            }
+        }
+
+        public string Assembly
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(assembly))
+                    return Configurations.DefaultAssembly;
+
+                return assembly;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(assembly)) return;
+                assembly = value;
             }
         }
 
@@ -455,7 +472,7 @@ namespace Dynamo.Wpf.ViewModels
             ResourceType resourceType, bool disambiguate = false)
         {
             if (resourceType == ResourceType.SmallIcon)
-                return FullCategoryName;
+                return Name;
 
             throw new InvalidOperationException("Unhandled resourceType");
         }
@@ -463,10 +480,10 @@ namespace Dynamo.Wpf.ViewModels
         protected BitmapSource GetIcon(string fullNameOfIcon)
         {
             // TODO(Vladimir): provide correct assembly. Task for it MAGN-5770.
-            if (string.IsNullOrEmpty(""/*Model.Assembly*/))
+            if (string.IsNullOrEmpty(Assembly))
                 return null;
 
-            var cust = LibraryCustomizationServices.GetForAssembly(""/*Model.Assembly*/);
+            var cust = LibraryCustomizationServices.GetForAssembly(Assembly);
             BitmapSource icon = null;
             if (cust != null)
                 icon = cust.LoadIconInternal(fullNameOfIcon);

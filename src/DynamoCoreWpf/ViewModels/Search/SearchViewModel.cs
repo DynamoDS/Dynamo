@@ -281,6 +281,8 @@ namespace Dynamo.ViewModels
             foreach (var item in tree)
             {
                 item.FullCategoryName = MakeFullyQualifiedName(path, item.Name);
+                if (!item.SubCategories.Any())
+                    item.Assembly = (item.Items[0] as NodeSearchElementViewModel).Assembly;
 
                 DefineFullCategoryNames(item.SubCategories, item.FullCategoryName);
             }
