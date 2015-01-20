@@ -121,9 +121,14 @@
       <Name>ProtoImperative</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
+    <ProjectReference Include="..\..\src\Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj">
+      <Project>{f5932f7d-8e34-4787-80b8-e7f9d996edff}</Project>
+      <Name>CoreNodeModelsWpf</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>CoreNodesUI</Name>
+      <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
