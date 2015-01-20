@@ -16,6 +16,8 @@ namespace Dynamo.Search.SearchElements
             FullCategoryName = typeLoadData.Category;
             Description = typeLoadData.Description;
             Assembly = typeLoadData.Assembly.Location;
+
+            //iconName = typeLoadData.
         }
     }
 }

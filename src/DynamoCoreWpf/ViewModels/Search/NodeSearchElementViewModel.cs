@@ -162,8 +162,8 @@ namespace Dynamo.Wpf.ViewModels
         {
             switch (resourceType)
             {
-                case ResourceType.SmallIcon: return FullName;
-                case ResourceType.LargeIcon: return FullName;
+                case ResourceType.SmallIcon: return Model.IconName;
+                case ResourceType.LargeIcon: return Model.IconName;
             }
 
             throw new InvalidOperationException("Unhandled resourceType");
