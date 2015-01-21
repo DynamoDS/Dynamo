@@ -333,7 +333,7 @@ namespace Dynamo.ViewModels
             if (firstRes == null)
                 return; //No results
 
-            var topResultCategory = new RootNodeCategoryViewModel("Top Result");
+            var topResultCategory = new RootNodeCategoryViewModel(Wpf.Properties.Resources.SearchViewTopResult);
             SearchRootCategories.Add(topResultCategory);
 
             var copy = MakeNodeSearchElementVM(firstRes);

@@ -319,7 +319,7 @@ namespace Dynamo.Controls
             dynamoViewModel.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
-            dynamoViewModel.Model.Logger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
+            dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed));
             InitializeShortcutBar();
             InitializeStartPage();
@@ -576,7 +576,7 @@ namespace Dynamo.Controls
                 }
                 catch
                 {
-                    dynamoViewModel.Model.Logger.Log("Failed to save the Workspace an image.");
+                    dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToSaveAsImage);
                 }
             }
         }
@@ -851,7 +851,7 @@ namespace Dynamo.Controls
                 {
                     var showInFolder = new MenuItem
                     {
-                        Header = "Show In Folder",
+                        Header = Wpf.Properties.Resources.DynamoViewHelpMenuShowInFolder,
                         Tag = dirPaths[0]
                     };
                     showInFolder.Click += OnShowInFolder;

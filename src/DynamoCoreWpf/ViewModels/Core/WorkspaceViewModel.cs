@@ -868,7 +868,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                DynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
 
             try
@@ -887,7 +887,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                DynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
         }
 

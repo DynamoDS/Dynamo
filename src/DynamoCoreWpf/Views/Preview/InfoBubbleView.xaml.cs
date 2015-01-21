@@ -431,11 +431,11 @@ namespace Dynamo.Controls
                 string content = ViewModel.Content;
                 if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Warning)
                 {
-                    content = "Warning: " + content;
+                    content = Wpf.Properties.Resources.InfoBubbleWarning + content;
                 }
                 else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error)
                 {
-                    content = "Error: " + content;
+                    content = Wpf.Properties.Resources.InfoBubbleError + content;
                 }
                 TextBox textBox = GetNewTextBox(content);
                 ContentContainer.Children.Add(textBox);
