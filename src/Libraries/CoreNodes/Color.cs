@@ -117,15 +117,15 @@ namespace DSCore
         /// </summary>
         /// <returns name="val">Saturation value for the color.</returns>
         /// <search>alpha,red,green,blue</search>
-        [MultiReturn(/*NXLT*/"a", /*NXLT*/"r", /*NXLT*/"g", /*NXLT*/"b")]
+        [MultiReturn("a", "r", "g", "b")]
         public static Dictionary<string, byte> Components(Color c)
         {
             return new Dictionary<string, byte>
             {
-                {/*NXLT*/"a", c.color.A}, 
-                {/*NXLT*/"r", c.color.R},
-                {/*NXLT*/"g", c.color.G},
-                {/*NXLT*/"b", c.color.B}, 
+                {"a", c.color.A}, 
+                {"r", c.color.R},
+                {"g", c.color.G},
+                {"b", c.color.B}, 
             };
         }
 
@@ -149,7 +149,7 @@ namespace DSCore
 
         public override string ToString()
         {
-            return string.Format(/*NXLT*/"Color: Red={0}, Green={1}, Blue={2}, Alpha={3}", Red, Green, Blue, Alpha);
+            return string.Format("Color: Red={0}, Green={1}, Blue={2}, Alpha={3}", Red, Green, Blue, Alpha);
         }
 
         [IsVisibleInDynamoLibrary(false)]

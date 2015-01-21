@@ -119,7 +119,7 @@ namespace ProtoImperative
                 ProtoCore.DSASM.CodeBlockType.kLanguage,
                 ProtoCore.Language.kImperative,
                 core.CodeBlockIndex,
-                new ProtoCore.DSASM.SymbolTable(/*NXLT*/"imperative lang block", core.RuntimeTableIndex),
+                new ProtoCore.DSASM.SymbolTable("imperative lang block", core.RuntimeTableIndex),
                 new ProtoCore.DSASM.ProcedureTable(core.RuntimeTableIndex), 
                 false, 
                 core);
@@ -1202,7 +1202,7 @@ namespace ProtoImperative
 
                 if (ProtoCore.Language.kInvalid == langblock.codeblock.language)
                 {
-                    throw new ProtoCore.Exceptions.CompileErrorsOccured(/*NXLT*/"Invalid language block");
+                    throw new ProtoCore.Exceptions.CompileErrorsOccured("Invalid language block");
                 }
 
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
@@ -1263,7 +1263,7 @@ namespace ProtoImperative
                 core.ExceptionHandlingManager.Register(blockId, globalProcIndex, globalClassIndex);
 #endif
 
-                EmitInstrConsole(/*NXLT*/"bounce " + blockId + ", " + entry.ToString());
+                EmitInstrConsole("bounce " + blockId + ", " + entry.ToString());
                 EmitBounceIntrinsic(blockId, entry);
 
                 // The callee language block will have stored its result into the RX register. 
@@ -1342,7 +1342,7 @@ namespace ProtoImperative
                         int symbolIndex = AllocateArg(paramNode.Value, localProcedure.procId, argType);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolIndex)
                         {
-                            throw new BuildHaltException(/*NXLT*/"26384684");
+                            throw new BuildHaltException("26384684");
                         }
 
                         localProcedure.argTypeList.Add(argType);
@@ -2019,7 +2019,7 @@ namespace ProtoImperative
 
             if (ProtoCore.DSASM.Constants.kInvalidIndex == symindex)
             {
-                throw new BuildHaltException(/*NXLT*/"0CB5BD17");
+                throw new BuildHaltException("0CB5BD17");
             }
         }
 
@@ -2498,7 +2498,7 @@ namespace ProtoImperative
                         EmitBinaryExpressionNode(bin, ref inferedType);
                     }
                     else
-                        throw new BuildHaltException(/*NXLT*/"Invalid use of prefix operation (15BB9C10).");
+                        throw new BuildHaltException("Invalid use of prefix operation (15BB9C10).");
                 }
 
                 DfsTraverse(u.Expression, ref inferedType, false, null, ProtoCore.Compiler.Associative.SubCompilePass.kNone, parentNode);
@@ -2600,8 +2600,8 @@ namespace ProtoImperative
 
                 switch (forNode.expression.GetType().ToString())
                 {
-                    case /*NXLT*/"ProtoCore.AST.ImperativeAST.IdentifierNode":
-                    case /*NXLT*/"ProtoCore.AST.ImperativeAST.ExprListNode":
+                    case "ProtoCore.AST.ImperativeAST.IdentifierNode":
+                    case "ProtoCore.AST.ImperativeAST.ExprListNode":
                         newOptions |= DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint;
                         core.DebugProps.breakOptions = newOptions;
                         break;
@@ -2868,7 +2868,7 @@ namespace ProtoImperative
             if (range.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(range.ArrayDimensions);
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + /*NXLT*/"[dim]");
+                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
                 EmitPushArrayIndex(dimensions);
             }
         }
@@ -3255,7 +3255,7 @@ namespace ProtoImperative
 
         private void EmitPushDep(int block, int depth, int classScope)
         {
-            EmitInstrConsole(ProtoCore.DSASM.kw.pushdep, block.ToString() + /*NXLT*/"[block]", depth.ToString() + /*NXLT*/"[depth]", classScope.ToString() + /*NXLT*/"[classScope]");
+            EmitInstrConsole(ProtoCore.DSASM.kw.pushdep, block.ToString() + "[block]", depth.ToString() + "[depth]", classScope.ToString() + "[classScope]");
 
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.PUSHDEP;
@@ -3273,7 +3273,7 @@ namespace ProtoImperative
 
         private void EmitSetExpressionUID(int exprId)
         {
-            EmitInstrConsole(ProtoCore.DSASM.kw.setexpuid, exprId.ToString() + /*NXLT*/"[exprId]");
+            EmitInstrConsole(ProtoCore.DSASM.kw.setexpuid, exprId.ToString() + "[exprId]");
 
             Instruction instr = new Instruction();
             instr.opCode = OpCode.SETEXPUID;
@@ -3316,30 +3316,30 @@ namespace ProtoImperative
         {
             StringBuilder functionSig = new StringBuilder(isConstructor ? "\nconstructor " : "\ndef ");
             functionSig.Append(functionName);
-            functionSig.Append(/*NXLT*/":");
+            functionSig.Append(":");
             functionSig.Append(core.TypeSystem.GetType(returnType.UID));
             if (returnType.rank < 0)
             {
-                functionSig.Append(/*NXLT*/"[]..[]");
+                functionSig.Append("[]..[]");
             }
             else
             {
                 for (int k = 0; k < returnType.rank; ++k)
                 {
-                    functionSig.Append(/*NXLT*/"[]");
+                    functionSig.Append("[]");
                 }
             }
-            functionSig.Append(/*NXLT*/"(");
+            functionSig.Append("(");
 
             for (int i = 0; i < signature.Arguments.Count; ++i)
             {
                 var arg = signature.Arguments[i];
                 functionSig.Append(arg.NameNode.Name);
-                functionSig.Append(/*NXLT*/":");
+                functionSig.Append(":");
 
                 if (arg.ArgumentType.UID < 0)
                 {
-                    functionSig.Append(/*NXLT*/"invalid");
+                    functionSig.Append("invalid");
                 }
                 else if (arg.ArgumentType.UID == 0 && !String.IsNullOrEmpty(arg.ArgumentType.Name))
                 {
@@ -3352,22 +3352,22 @@ namespace ProtoImperative
 
                 if (arg.ArgumentType.rank < 0)
                 {
-                    functionSig.Append(/*NXLT*/"[]..[]");
+                    functionSig.Append("[]..[]");
                 }
                 else
                 {
                     for (int k = 0; k < arg.ArgumentType.rank; ++k)
                     {
-                        functionSig.Append(/*NXLT*/"[]");
+                        functionSig.Append("[]");
                     }
                 }
 
                 if (i < signature.Arguments.Count - 1)
                 {
-                    functionSig.Append(/*NXLT*/", ");
+                    functionSig.Append(", ");
                 }
             }
-            functionSig.Append(/*NXLT*/")\n");
+            functionSig.Append(")\n");
             return functionSig.ToString();
         }
 

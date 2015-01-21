@@ -38,7 +38,7 @@ namespace ProtoFFI
 
         public Assembly LoadAssembly(string name)
         {
-            System.Diagnostics.Debug.Write(/*NXLT*/"Trying to load assembly: " + name);
+            System.Diagnostics.Debug.Write("Trying to load assembly: " + name);
             if (System.IO.File.Exists(name))
             {
                 return Assembly.LoadFrom(name);
@@ -56,7 +56,7 @@ namespace ProtoFFI
                     an.Version = mExecutingAssemblyName.Version;
                     an.CultureInfo = mExecutingAssemblyName.CultureInfo;
                     an.ProcessorArchitecture = mExecutingAssemblyName.ProcessorArchitecture;
-                    System.Diagnostics.Debug.Write(/*NXLT*/"Assembly: " + assemblyName + "," + an.Version.ToString() + " is in GAC.");
+                    System.Diagnostics.Debug.Write("Assembly: " + assemblyName + "," + an.Version.ToString() + " is in GAC.");
                     return Assembly.Load(an);
                 }
             }

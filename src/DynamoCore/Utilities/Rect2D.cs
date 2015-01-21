@@ -33,7 +33,7 @@ namespace Dynamo.Utilities
 		public Rect2D (double x, double y, double width, double height)
 		{
 			if (width < 0 || height < 0)
-                throw new ArgumentException(/*NXLT*/"width and height must be non-negative.");
+                throw new ArgumentException("width and height must be non-negative.");
 			this.x = x;
 			this.y = y;
 			this.width = width;
@@ -201,7 +201,7 @@ namespace Dynamo.Utilities
 			}
 			set {
 				if (IsEmpty)
-                    throw new InvalidOperationException(/*NXLT*/"Cannot modify this property on the Empty Rect.");
+                    throw new InvalidOperationException("Cannot modify this property on the Empty Rect.");
 
 				x = value.X;
 				y = value.Y;
@@ -212,7 +212,7 @@ namespace Dynamo.Utilities
 			get { return x; }
 			set {
 				if (IsEmpty)
-                    throw new InvalidOperationException(/*NXLT*/"Cannot modify this property on the Empty Rect.");
+                    throw new InvalidOperationException("Cannot modify this property on the Empty Rect.");
 
 				x = value;
 			}
@@ -222,7 +222,7 @@ namespace Dynamo.Utilities
 			get { return y; }
 			set {
 				if (IsEmpty)
-                    throw new InvalidOperationException(/*NXLT*/"Cannot modify this property on the Empty Rect.");
+                    throw new InvalidOperationException("Cannot modify this property on the Empty Rect.");
 
 				y = value;
 			}
@@ -232,10 +232,10 @@ namespace Dynamo.Utilities
 			get { return width; }
 			set {
 				if (IsEmpty)
-                    throw new InvalidOperationException(/*NXLT*/"Cannot modify this property on the Empty Rect.");
+                    throw new InvalidOperationException("Cannot modify this property on the Empty Rect.");
 
 				if (value < 0)
-                    throw new ArgumentException(/*NXLT*/"width must be non-negative.");
+                    throw new ArgumentException("width must be non-negative.");
 
 				width = value;
 			}
@@ -245,10 +245,10 @@ namespace Dynamo.Utilities
 			get { return height; }
 			set {
 				if (IsEmpty)
-                    throw new InvalidOperationException(/*NXLT*/"Cannot modify this property on the Empty Rect.");
+                    throw new InvalidOperationException("Cannot modify this property on the Empty Rect.");
 
 				if (value < 0)
-                    throw new ArgumentException(/*NXLT*/"height must be non-negative.");
+                    throw new ArgumentException("height must be non-negative.");
 
 				height = value;
 			}

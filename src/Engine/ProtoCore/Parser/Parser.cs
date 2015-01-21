@@ -1536,9 +1536,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Associative_Statement(out node);
 			if (null != node) nodelist.Add(node); 
 		}
-        if (la.val == /*NXLT*/"if")
+        if (la.val == "if")
            SynErr(String.Format(Resources.useInlineConditional, la.val));
-        if ((la.val == /*NXLT*/"for") || (la.val == /*NXLT*/"while"))
+        if ((la.val == "for") || (la.val == "while"))
             SynErr(String.Format(Resources.validForImperativeBlockOnly, la.val)); 
 		
 	}
@@ -1731,7 +1731,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	void Associative_BaseConstructorCall(out ProtoCore.AST.AssociativeAST.AssociativeNode bnode) {
 		ProtoCore.AST.AssociativeAST.FunctionCallNode f = new ProtoCore.AST.AssociativeAST.FunctionCallNode(); 
 		List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = null;
-        if (la.val != /*NXLT*/"base")
+        if (la.val != "base")
 		{
 		   SynErr(Resources.baseIsExpectedToCallBaseConstructor);  
 		}
@@ -3208,13 +3208,13 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 				string key = t.val; 
 				Expect(50);
 				Expect(4);
-                if (/*NXLT*/"fingerprint" == key)
+                if ("fingerprint" == key)
 				{
 				   langblock.codeblock.fingerprint = t.val; 
 				   langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(0,1); 
 				    langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(langblock.codeblock.fingerprint.Length-1,1); 
 				 }
-                else if (/*NXLT*/"version" == key)
+                else if ("version" == key)
 				{
 				   langblock.codeblock.version = t.val; 
 				   langblock.codeblock.version = langblock.codeblock.version.Remove(0,1); 
@@ -3658,7 +3658,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		{
 		   errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
 		}
-        int ltype = (0 == String.Compare(t.val, /*NXLT*/"return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
+        int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
 		if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
 		{
             SynErr(String.Format(Resources.invalidReturnStatement, la.val)); 
@@ -4510,141 +4510,141 @@ public class Errors {
 	public virtual void SynErr (int line, int col, int n) {
 		string s;
 		switch (n) {
-			case 0: s = /*NXLT*/"EOF expected"; break;
-			case 1: s = /*NXLT*/"ident expected"; break;
-			case 2: s = /*NXLT*/"number expected"; break;
-			case 3: s = /*NXLT*/"float expected"; break;
-			case 4: s = /*NXLT*/"textstring expected"; break;
-			case 5: s = /*NXLT*/"char expected"; break;
-			case 6: s = /*NXLT*/"period expected"; break;
-			case 7: s = /*NXLT*/"postfixed_replicationguide expected"; break;
-			case 8: s = /*NXLT*/"openbracket expected"; break;
-			case 9: s = /*NXLT*/"closebracket expected"; break;
-			case 10: s = /*NXLT*/"openparen expected"; break;
-			case 11: s = /*NXLT*/"closeparen expected"; break;
-			case 12: s = /*NXLT*/"not expected"; break;
-			case 13: s = /*NXLT*/"neg expected"; break;
-			case 14: s = /*NXLT*/"pipe expected"; break;
-			case 15: s = /*NXLT*/"lessthan expected"; break;
-			case 16: s = /*NXLT*/"greaterthan expected"; break;
-			case 17: s = /*NXLT*/"lessequal expected"; break;
-			case 18: s = /*NXLT*/"greaterequal expected"; break;
-			case 19: s = /*NXLT*/"equal expected"; break;
-			case 20: s = /*NXLT*/"notequal expected"; break;
-			case 21: s = /*NXLT*/"endline expected"; break;
-			case 22: s = /*NXLT*/"rangeop expected"; break;
-			case 23: s = /*NXLT*/"kw_native expected"; break;
-			case 24: s = /*NXLT*/"kw_class expected"; break;
-			case 25: s = /*NXLT*/"kw_constructor expected"; break;
-			case 26: s = /*NXLT*/"kw_def expected"; break;
-			case 27: s = /*NXLT*/"kw_external expected"; break;
-			case 28: s = /*NXLT*/"kw_extend expected"; break;
-			case 29: s = /*NXLT*/"kw_heap expected"; break;
-			case 30: s = /*NXLT*/"kw_if expected"; break;
-			case 31: s = /*NXLT*/"kw_elseif expected"; break;
-			case 32: s = /*NXLT*/"kw_else expected"; break;
-			case 33: s = /*NXLT*/"kw_while expected"; break;
-			case 34: s = /*NXLT*/"kw_for expected"; break;
-			case 35: s = /*NXLT*/"kw_import expected"; break;
-			case 36: s = /*NXLT*/"kw_prefix expected"; break;
-			case 37: s = /*NXLT*/"kw_from expected"; break;
-			case 38: s = /*NXLT*/"kw_break expected"; break;
-			case 39: s = /*NXLT*/"kw_continue expected"; break;
-			case 40: s = /*NXLT*/"kw_static expected"; break;
-			case 41: s = /*NXLT*/"kw_local expected"; break;
-			case 42: s = /*NXLT*/"literal_true expected"; break;
-			case 43: s = /*NXLT*/"literal_false expected"; break;
-			case 44: s = /*NXLT*/"literal_null expected"; break;
-			case 45: s = /*NXLT*/"replicationguide_postfix expected"; break;
-			case 46: s = /*NXLT*/"\"throw\" expected"; break;
-			case 47: s = /*NXLT*/"\"{\" expected"; break;
-			case 48: s = /*NXLT*/"\"}\" expected"; break;
-			case 49: s = /*NXLT*/"\",\" expected"; break;
-			case 50: s = /*NXLT*/"\"=\" expected"; break;
-			case 51: s = /*NXLT*/"\":\" expected"; break;
-			case 52: s = /*NXLT*/"\"public\" expected"; break;
-			case 53: s = /*NXLT*/"\"private\" expected"; break;
-			case 54: s = /*NXLT*/"\"protected\" expected"; break;
-			case 55: s = /*NXLT*/"\"=>\" expected"; break;
-			case 56: s = /*NXLT*/"\"?\" expected"; break;
-			case 57: s = /*NXLT*/"\"try\" expected"; break;
-			case 58: s = /*NXLT*/"\"catch\" expected"; break;
-			case 59: s = /*NXLT*/"\"+\" expected"; break;
-			case 60: s = /*NXLT*/"\"*\" expected"; break;
-			case 61: s = /*NXLT*/"\"/\" expected"; break;
-			case 62: s = /*NXLT*/"\"%\" expected"; break;
-			case 63: s = /*NXLT*/"\"&\" expected"; break;
-			case 64: s = /*NXLT*/"\"^\" expected"; break;
-			case 65: s = /*NXLT*/"\"&&\" expected"; break;
-			case 66: s = /*NXLT*/"\"||\" expected"; break;
-			case 67: s = /*NXLT*/"\"~\" expected"; break;
-			case 68: s = /*NXLT*/"\"++\" expected"; break;
-			case 69: s = /*NXLT*/"\"--\" expected"; break;
-			case 70: s = /*NXLT*/"\"#\" expected"; break;
-			case 71: s = /*NXLT*/"\"in\" expected"; break;
-			case 72: s = /*NXLT*/"??? expected"; break;
-			case 73: s = /*NXLT*/"invalid Hydrogen"; break;
-			case 74: s = /*NXLT*/"this symbol not expected in Import_Statement"; break;
-			case 75: s = /*NXLT*/"invalid Import_Statement"; break;
-			case 76: s = /*NXLT*/"this symbol not expected in Associative_Statement"; break;
-			case 77: s = /*NXLT*/"invalid Associative_Statement"; break;
-			case 78: s = /*NXLT*/"invalid Associative_functiondecl"; break;
-			case 79: s = /*NXLT*/"invalid Associative_classdecl"; break;
-			case 80: s = /*NXLT*/"invalid Associative_classdecl"; break;
-			case 81: s = /*NXLT*/"this symbol not expected in Associative_NonAssignmentStatement"; break;
-			case 82: s = /*NXLT*/"this symbol not expected in Associative_FunctionCallStatement"; break;
-			case 83: s = /*NXLT*/"this symbol not expected in Associative_FunctionalStatement"; break;
-			case 84: s = /*NXLT*/"this symbol not expected in Associative_FunctionalStatement"; break;
-			case 85: s = /*NXLT*/"this symbol not expected in Associative_FunctionalStatement"; break;
-			case 86: s = /*NXLT*/"invalid Associative_FunctionalStatement"; break;
-			case 87: s = /*NXLT*/"invalid Associative_FunctionalStatement"; break;
-			case 88: s = /*NXLT*/"invalid Associative_LanguageBlock"; break;
-			case 89: s = /*NXLT*/"invalid Associative_LanguageBlock"; break;
-			case 90: s = /*NXLT*/"invalid Associative_LanguageBlock"; break;
-			case 91: s = /*NXLT*/"invalid Associative_LanguageBlock"; break;
-			case 92: s = /*NXLT*/"invalid Associative_AccessSpecifier"; break;
-			case 93: s = /*NXLT*/"invalid Associative_BinaryOps"; break;
-			case 94: s = /*NXLT*/"invalid Associative_AddOp"; break;
-			case 95: s = /*NXLT*/"invalid Associative_MulOp"; break;
-			case 96: s = /*NXLT*/"invalid Associative_ComparisonOp"; break;
-			case 97: s = /*NXLT*/"invalid Associative_LogicalOp"; break;
-			case 98: s = /*NXLT*/"invalid Associative_DecoratedIdentifier"; break;
-			case 99: s = /*NXLT*/"invalid Associative_UnaryExpression"; break;
-			case 100: s = /*NXLT*/"invalid Associative_unaryop"; break;
-			case 101: s = /*NXLT*/"invalid Associative_Factor"; break;
-			case 102: s = /*NXLT*/"invalid Associative_negop"; break;
-			case 103: s = /*NXLT*/"invalid Associative_BitOp"; break;
-			case 104: s = /*NXLT*/"invalid Associative_PostFixOp"; break;
-			case 105: s = /*NXLT*/"invalid Associative_Number"; break;
-			case 106: s = /*NXLT*/"invalid Associative_NameReference"; break;
-			case 107: s = /*NXLT*/"invalid Associative_NameReference"; break;
-			case 108: s = /*NXLT*/"invalid Associative_NameReference"; break;
-			case 109: s = /*NXLT*/"invalid Imperative_stmt"; break;
-			case 110: s = /*NXLT*/"invalid Imperative_functiondecl"; break;
-			case 111: s = /*NXLT*/"invalid Imperative_languageblock"; break;
-			case 112: s = /*NXLT*/"invalid Imperative_languageblock"; break;
-			case 113: s = /*NXLT*/"invalid Imperative_languageblock"; break;
-			case 114: s = /*NXLT*/"invalid Imperative_languageblock"; break;
-			case 115: s = /*NXLT*/"invalid Imperative_ifstmt"; break;
-			case 116: s = /*NXLT*/"invalid Imperative_ifstmt"; break;
-			case 117: s = /*NXLT*/"invalid Imperative_ifstmt"; break;
-			case 118: s = /*NXLT*/"invalid Imperative_forloop"; break;
-			case 119: s = /*NXLT*/"invalid Imperative_assignstmt"; break;
-			case 120: s = /*NXLT*/"invalid Imperative_assignstmt"; break;
-			case 121: s = /*NXLT*/"invalid Imperative_decoratedIdentifier"; break;
-			case 122: s = /*NXLT*/"invalid Imperative_NameReference"; break;
-			case 123: s = /*NXLT*/"invalid Imperative_unaryexpr"; break;
-			case 124: s = /*NXLT*/"invalid Imperative_unaryop"; break;
-			case 125: s = /*NXLT*/"invalid Imperative_factor"; break;
-			case 126: s = /*NXLT*/"invalid Imperative_logicalop"; break;
-			case 127: s = /*NXLT*/"invalid Imperative_relop"; break;
-			case 128: s = /*NXLT*/"invalid Imperative_addop"; break;
-			case 129: s = /*NXLT*/"invalid Imperative_mulop"; break;
-			case 130: s = /*NXLT*/"invalid Imperative_bitop"; break;
-			case 131: s = /*NXLT*/"invalid Imperative_num"; break;
-			case 132: s = /*NXLT*/"invalid Imperative_PostFixOp"; break;
+			case 0: s = "EOF expected"; break;
+			case 1: s = "ident expected"; break;
+			case 2: s = "number expected"; break;
+			case 3: s = "float expected"; break;
+			case 4: s = "textstring expected"; break;
+			case 5: s = "char expected"; break;
+			case 6: s = "period expected"; break;
+			case 7: s = "postfixed_replicationguide expected"; break;
+			case 8: s = "openbracket expected"; break;
+			case 9: s = "closebracket expected"; break;
+			case 10: s = "openparen expected"; break;
+			case 11: s = "closeparen expected"; break;
+			case 12: s = "not expected"; break;
+			case 13: s = "neg expected"; break;
+			case 14: s = "pipe expected"; break;
+			case 15: s = "lessthan expected"; break;
+			case 16: s = "greaterthan expected"; break;
+			case 17: s = "lessequal expected"; break;
+			case 18: s = "greaterequal expected"; break;
+			case 19: s = "equal expected"; break;
+			case 20: s = "notequal expected"; break;
+			case 21: s = "endline expected"; break;
+			case 22: s = "rangeop expected"; break;
+			case 23: s = "kw_native expected"; break;
+			case 24: s = "kw_class expected"; break;
+			case 25: s = "kw_constructor expected"; break;
+			case 26: s = "kw_def expected"; break;
+			case 27: s = "kw_external expected"; break;
+			case 28: s = "kw_extend expected"; break;
+			case 29: s = "kw_heap expected"; break;
+			case 30: s = "kw_if expected"; break;
+			case 31: s = "kw_elseif expected"; break;
+			case 32: s = "kw_else expected"; break;
+			case 33: s = "kw_while expected"; break;
+			case 34: s = "kw_for expected"; break;
+			case 35: s = "kw_import expected"; break;
+			case 36: s = "kw_prefix expected"; break;
+			case 37: s = "kw_from expected"; break;
+			case 38: s = "kw_break expected"; break;
+			case 39: s = "kw_continue expected"; break;
+			case 40: s = "kw_static expected"; break;
+			case 41: s = "kw_local expected"; break;
+			case 42: s = "literal_true expected"; break;
+			case 43: s = "literal_false expected"; break;
+			case 44: s = "literal_null expected"; break;
+			case 45: s = "replicationguide_postfix expected"; break;
+			case 46: s = "\"throw\" expected"; break;
+			case 47: s = "\"{\" expected"; break;
+			case 48: s = "\"}\" expected"; break;
+			case 49: s = "\",\" expected"; break;
+			case 50: s = "\"=\" expected"; break;
+			case 51: s = "\":\" expected"; break;
+			case 52: s = "\"public\" expected"; break;
+			case 53: s = "\"private\" expected"; break;
+			case 54: s = "\"protected\" expected"; break;
+			case 55: s = "\"=>\" expected"; break;
+			case 56: s = "\"?\" expected"; break;
+			case 57: s = "\"try\" expected"; break;
+			case 58: s = "\"catch\" expected"; break;
+			case 59: s = "\"+\" expected"; break;
+			case 60: s = "\"*\" expected"; break;
+			case 61: s = "\"/\" expected"; break;
+			case 62: s = "\"%\" expected"; break;
+			case 63: s = "\"&\" expected"; break;
+			case 64: s = "\"^\" expected"; break;
+			case 65: s = "\"&&\" expected"; break;
+			case 66: s = "\"||\" expected"; break;
+			case 67: s = "\"~\" expected"; break;
+			case 68: s = "\"++\" expected"; break;
+			case 69: s = "\"--\" expected"; break;
+			case 70: s = "\"#\" expected"; break;
+			case 71: s = "\"in\" expected"; break;
+			case 72: s = "??? expected"; break;
+			case 73: s = "invalid Hydrogen"; break;
+			case 74: s = "this symbol not expected in Import_Statement"; break;
+			case 75: s = "invalid Import_Statement"; break;
+			case 76: s = "this symbol not expected in Associative_Statement"; break;
+			case 77: s = "invalid Associative_Statement"; break;
+			case 78: s = "invalid Associative_functiondecl"; break;
+			case 79: s = "invalid Associative_classdecl"; break;
+			case 80: s = "invalid Associative_classdecl"; break;
+			case 81: s = "this symbol not expected in Associative_NonAssignmentStatement"; break;
+			case 82: s = "this symbol not expected in Associative_FunctionCallStatement"; break;
+			case 83: s = "this symbol not expected in Associative_FunctionalStatement"; break;
+			case 84: s = "this symbol not expected in Associative_FunctionalStatement"; break;
+			case 85: s = "this symbol not expected in Associative_FunctionalStatement"; break;
+			case 86: s = "invalid Associative_FunctionalStatement"; break;
+			case 87: s = "invalid Associative_FunctionalStatement"; break;
+			case 88: s = "invalid Associative_LanguageBlock"; break;
+			case 89: s = "invalid Associative_LanguageBlock"; break;
+			case 90: s = "invalid Associative_LanguageBlock"; break;
+			case 91: s = "invalid Associative_LanguageBlock"; break;
+			case 92: s = "invalid Associative_AccessSpecifier"; break;
+			case 93: s = "invalid Associative_BinaryOps"; break;
+			case 94: s = "invalid Associative_AddOp"; break;
+			case 95: s = "invalid Associative_MulOp"; break;
+			case 96: s = "invalid Associative_ComparisonOp"; break;
+			case 97: s = "invalid Associative_LogicalOp"; break;
+			case 98: s = "invalid Associative_DecoratedIdentifier"; break;
+			case 99: s = "invalid Associative_UnaryExpression"; break;
+			case 100: s = "invalid Associative_unaryop"; break;
+			case 101: s = "invalid Associative_Factor"; break;
+			case 102: s = "invalid Associative_negop"; break;
+			case 103: s = "invalid Associative_BitOp"; break;
+			case 104: s = "invalid Associative_PostFixOp"; break;
+			case 105: s = "invalid Associative_Number"; break;
+			case 106: s = "invalid Associative_NameReference"; break;
+			case 107: s = "invalid Associative_NameReference"; break;
+			case 108: s = "invalid Associative_NameReference"; break;
+			case 109: s = "invalid Imperative_stmt"; break;
+			case 110: s = "invalid Imperative_functiondecl"; break;
+			case 111: s = "invalid Imperative_languageblock"; break;
+			case 112: s = "invalid Imperative_languageblock"; break;
+			case 113: s = "invalid Imperative_languageblock"; break;
+			case 114: s = "invalid Imperative_languageblock"; break;
+			case 115: s = "invalid Imperative_ifstmt"; break;
+			case 116: s = "invalid Imperative_ifstmt"; break;
+			case 117: s = "invalid Imperative_ifstmt"; break;
+			case 118: s = "invalid Imperative_forloop"; break;
+			case 119: s = "invalid Imperative_assignstmt"; break;
+			case 120: s = "invalid Imperative_assignstmt"; break;
+			case 121: s = "invalid Imperative_decoratedIdentifier"; break;
+			case 122: s = "invalid Imperative_NameReference"; break;
+			case 123: s = "invalid Imperative_unaryexpr"; break;
+			case 124: s = "invalid Imperative_unaryop"; break;
+			case 125: s = "invalid Imperative_factor"; break;
+			case 126: s = "invalid Imperative_logicalop"; break;
+			case 127: s = "invalid Imperative_relop"; break;
+			case 128: s = "invalid Imperative_addop"; break;
+			case 129: s = "invalid Imperative_mulop"; break;
+			case 130: s = "invalid Imperative_bitop"; break;
+			case 131: s = "invalid Imperative_num"; break;
+			case 132: s = "invalid Imperative_PostFixOp"; break;
 
-			default: s = /*NXLT*/"error " + n; break;
+			default: s = "error " + n; break;
 		}
 		// errorStream.WriteLine(errMsgFormat, line, col, s);
 		core.BuildStatus.LogSyntaxError(s, core.CurrentDSFileName, line, col);

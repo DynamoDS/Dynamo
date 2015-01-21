@@ -1736,7 +1736,7 @@ namespace Dynamo.Models
         public NodeSearchTagsAttribute(string tagsID, Type resourceType)
         {
             if (resourceType == null)
-                throw new ArgumentNullException(/*NXLT*/"resourceType");
+                throw new ArgumentNullException("resourceType");
 
             var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static);
             if (prop != null && prop.PropertyType == typeof(String))
@@ -1788,7 +1788,7 @@ namespace Dynamo.Models
         public NodeDescriptionAttribute(string descriptionResourceID, Type resourceType)
         {
             if (resourceType == null)
-                throw new ArgumentNullException(/*NXLT*/"resourceType");
+                throw new ArgumentNullException("resourceType");
 
             var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static);
             if (prop != null && prop.PropertyType == typeof(String))

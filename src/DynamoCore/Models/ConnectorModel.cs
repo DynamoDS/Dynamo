@@ -129,12 +129,12 @@ namespace Dynamo.Models
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
-            helper.SetAttribute(/*NXLT*/"guid", GUID);
-            helper.SetAttribute(/*NXLT*/"start", Start.Owner.GUID);
-            helper.SetAttribute(/*NXLT*/"start_index", Start.Index);
-            helper.SetAttribute(/*NXLT*/"end", End.Owner.GUID);
-            helper.SetAttribute(/*NXLT*/"end_index", End.Index);
-            //helper.SetAttribute(/*NXLT*/"portType", ((int) End.PortType));
+            helper.SetAttribute("guid", GUID);
+            helper.SetAttribute("start", Start.Owner.GUID);
+            helper.SetAttribute("start_index", Start.Index);
+            helper.SetAttribute("end", End.Owner.GUID);
+            helper.SetAttribute("end_index", End.Index);
+            //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -144,12 +144,12 @@ namespace Dynamo.Models
             //var helper = new XmlElementHelper(element);
 
             //// Restore some information from the node attributes.
-            //GUID = helper.ReadGuid(/*NXLT*/"guid", GUID);
-            //Guid startNodeId = helper.ReadGuid(/*NXLT*/"start");
-            //int startIndex = helper.ReadInteger(/*NXLT*/"start_index");
-            //Guid endNodeId = helper.ReadGuid(/*NXLT*/"end");
-            //int endIndex = helper.ReadInteger(/*NXLT*/"end_index");
-            //var portType = ((PortType)helper.ReadInteger(/*NXLT*/"portType"));
+            //GUID = helper.ReadGuid("guid", GUID);
+            //Guid startNodeId = helper.ReadGuid("start");
+            //int startIndex = helper.ReadInteger("start_index");
+            //Guid endNodeId = helper.ReadGuid("end");
+            //int endIndex = helper.ReadInteger("end_index");
+            //var portType = ((PortType)helper.ReadInteger("portType"));
             //// Get to the start and end nodes that this connector connects to.
             //var startNode = workspaceModel.GetModelInternal(startNodeId) as NodeModel;
             //var endNode = workspaceModel.GetModelInternal(endNodeId) as NodeModel;
@@ -183,7 +183,7 @@ namespace Dynamo.Models
 
         public InvalidPortException()
         {
-            message = /*NXLT*/"Connection port is not valid.";
+            message = "Connection port is not valid.";
         }
     }
 }

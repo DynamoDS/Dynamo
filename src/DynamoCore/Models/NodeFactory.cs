@@ -146,7 +146,7 @@ namespace Dynamo.Models
             {
                 Log(
                     new InvalidOperationException(
-                        string.Format(/*NXLT*/"There already exists an AlsoKnownAs mapping for {0}.", aka)));
+                        string.Format("There already exists an AlsoKnownAs mapping for {0}.", aka)));
                 return;
             }
             alsoKnownAsMappings[aka] = realType;
@@ -191,7 +191,7 @@ namespace Dynamo.Models
             if (GetNodeSourceFromTypeHelper(type, out data))
                 return true; // Found among built-in types, return it.
 
-            Log(string.Format(/*NXLT*/"Could not load node of type: {0}", type.FullName));
+            Log(string.Format("Could not load node of type: {0}", type.FullName));
 
             return false;
         }
@@ -231,7 +231,7 @@ namespace Dynamo.Models
             if (GetNodeFactoryFromTypeHelper(type, out data))
                 return true; // Found among built-in types, return it.
 
-            Log(string.Format(/*NXLT*/"Could not load node of type: {0}", type.FullName));
+            Log(string.Format("Could not load node of type: {0}", type.FullName));
             return false;
         }
 

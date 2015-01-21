@@ -101,19 +101,19 @@ namespace ProtoCore.AST.AssociativeAST
 
             string strLang = CoreUtils.GetLanguageString(codeblock.language);
 
-            buf.Append(/*NXLT*/"[");
+            buf.Append("[");
             buf.Append(strLang);
-            buf.Append(/*NXLT*/"]");
+            buf.Append("]");
 
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"{");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("{");
+            buf.Append("\n");
 
             buf.Append(CodeBlockNode);
 
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"}");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("}");
+            buf.Append("\n");
 
             return buf.ToString();
         }
@@ -180,9 +180,9 @@ namespace ProtoCore.AST.AssociativeAST
             var buf = new StringBuilder();
 
             buf.Append(Array);
-            buf.Append(/*NXLT*/"[");
+            buf.Append("[");
             buf.Append(ArrayDimensions.Expr);
-            buf.Append(/*NXLT*/"]");
+            buf.Append("]");
 
             if (ArrayDimensions.Type != null)
                 buf.Append(ArrayDimensions.Type);
@@ -240,7 +240,7 @@ namespace ProtoCore.AST.AssociativeAST
                 buf.Append(RepGuide);
                 if (IsLongest)
                 {
-                    buf.Append(/*NXLT*/"L");
+                    buf.Append("L");
                 }
             }
             return buf.ToString();
@@ -322,7 +322,7 @@ namespace ProtoCore.AST.AssociativeAST
             if (ArrayDimensions != null)
                 buf.Append(ArrayDimensions.ToString());
 
-            ReplicationGuides.ForEach(x => buf.Append(/*NXLT*/"<" + x.ToString() + ">"));
+            ReplicationGuides.ForEach(x => buf.Append("<" + x.ToString() + ">"));
 
             return buf.ToString();
         }
@@ -742,7 +742,7 @@ namespace ProtoCore.AST.AssociativeAST
             var buf = new StringBuilder();
 
             buf.Append(Keyword.Return);
-            buf.Append(/*NXLT*/" = ");
+            buf.Append(" = ");
             buf.Append(null == ReturnExpr ? Keyword.Null : ReturnExpr.ToString());
             buf.Append(Constants.termline);
 
@@ -804,7 +804,7 @@ namespace ProtoCore.AST.AssociativeAST
             if (CoreUtils.IsInternalMethod(functionName))
             {
                 if (!string.IsNullOrEmpty(postfix))
-                    buf.Append(/*NXLT*/"(");
+                    buf.Append("(");
 
                 string nameWithoutPrefix = functionName.Substring(Constants.kInternalNamePrefix.Length);
                 Operator op;
@@ -814,24 +814,24 @@ namespace ProtoCore.AST.AssociativeAST
                 {
                     bool needsParens = !FormalArguments[0].IsLiteral;
                     if (needsParens)
-                        buf.Append(/*NXLT*/"(");
+                        buf.Append("(");
 
                     buf.Append(FormalArguments[0]);
 
                     if (needsParens)
-                        buf.Append(/*NXLT*/")");
+                        buf.Append(")");
 
 
-                    buf.Append(/*NXLT*/" " + Op.GetOpSymbol(op) + " ");
+                    buf.Append(" " + Op.GetOpSymbol(op) + " ");
 
                     needsParens = !FormalArguments[1].IsLiteral;
                     if (needsParens)
-                        buf.Append(/*NXLT*/"(");
+                        buf.Append("(");
 
                     buf.Append(FormalArguments[1]);
 
                     if (needsParens)
-                        buf.Append(/*NXLT*/")");
+                        buf.Append(")");
                 }
                 else if (Enum.TryParse(nameWithoutPrefix, out uop))
                 {
@@ -844,12 +844,12 @@ namespace ProtoCore.AST.AssociativeAST
                 }
 
                 if (!string.IsNullOrEmpty(postfix))
-                    buf.Append(/*NXLT*/")");
+                    buf.Append(")");
             }
             else
             {
                 buf.Append(functionName);
-                buf.Append(/*NXLT*/"(");
+                buf.Append("(");
 
                 if (FormalArguments != null)
                 {
@@ -858,11 +858,11 @@ namespace ProtoCore.AST.AssociativeAST
                         buf.Append(FormalArguments[n]);
                         if (n < FormalArguments.Count - 1)
                         {
-                            buf.Append(/*NXLT*/", ");
+                            buf.Append(", ");
                         }
                     }
                 }
-                buf.Append(/*NXLT*/")");
+                buf.Append(")");
             }
 
             buf.Append(postfix);
@@ -940,7 +940,7 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
             buf.Append(DotCall.FormalArguments[0]);
-            buf.Append(/*NXLT*/".");
+            buf.Append(".");
             buf.Append(FunctionCall);
             return buf.ToString();
         }
@@ -993,7 +993,7 @@ namespace ProtoCore.AST.AssociativeAST
                 buf.Append(NameNode);
                 string argType = ArgumentType.ToString();
                 if (!string.IsNullOrEmpty(argType) && !argType.Equals("null"))
-                    buf.Append(/*NXLT*/" : " + argType);
+                    buf.Append(" : " + argType);
             }
             else
                 buf.Append(NameNode);
@@ -1059,7 +1059,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 buf.Append(Arguments[i]);
                 if (i < Arguments.Count - 1)
-                    buf.Append(/*NXLT*/", ");
+                    buf.Append(", ");
             }
             return buf.ToString();
         }
@@ -1179,13 +1179,13 @@ namespace ProtoCore.AST.AssociativeAST
             if (null != superClass)
             {
                 if (superClass.Count > 0)
-                    buf.Append(/*NXLT*/" " + Keyword.Extend + " ");
+                    buf.Append(" " + Keyword.Extend + " ");
 
                 for (int i = 0; i < superClass.Count; ++i)
                 {
                     buf.Append(superClass[i]);
                     if (i < superClass.Count - 1)
-                        buf.Append(/*NXLT*/", ");
+                        buf.Append(", ");
                 }
             }
             buf.AppendLine();
@@ -1327,13 +1327,13 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(Keyword.Constructor + " ");
             buf.Append(Name);
 
-            buf.Append(/*NXLT*/"(");
+            buf.Append("(");
             if (Signature != null)
                 buf.Append(Signature);
-            buf.Append(/*NXLT*/")");
+            buf.Append(")");
 
             if (baseConstr != null)
-                buf.Append(/*NXLT*/" : " + baseConstr);
+                buf.Append(" : " + baseConstr);
 
             if (FunctionBody != null)
             {
@@ -1479,12 +1479,12 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(Name);
 
             if (ReturnType.UID != Constants.kInvalidIndex)
-                buf.Append(/*NXLT*/": " + ReturnType);
+                buf.Append(": " + ReturnType);
 
-            buf.Append(/*NXLT*/"(");
+            buf.Append("(");
             if (Signature != null)
                 buf.Append(Signature);
-            buf.Append(/*NXLT*/")");
+            buf.Append(")");
 
             if (FunctionBody != null)
             {
@@ -1585,13 +1585,13 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
 
-            buf.Append(/*NXLT*/"(");
+            buf.Append("(");
             buf.Append(ConditionExpression == null ? Keyword.Null : ConditionExpression.ToString());
-            buf.Append(/*NXLT*/" ? ");
+            buf.Append(" ? ");
             buf.Append(TrueExpression == null ? Keyword.Null : TrueExpression.ToString());
-            buf.Append(/*NXLT*/" : ");
+            buf.Append(" : ");
             buf.Append(FalseExpression == null ? Keyword.Null : FalseExpression.ToString());
-            buf.Append(/*NXLT*/")");
+            buf.Append(")");
 
             return buf.ToString();
         }
@@ -1707,19 +1707,19 @@ namespace ProtoCore.AST.AssociativeAST
 
             bool needBracket = LeftNode is BinaryExpressionNode || LeftNode is InlineConditionalNode || LeftNode is RangeExprNode;
             if (needBracket)
-                buf.Append(/*NXLT*/"(");
+                buf.Append("(");
             buf.Append(LeftNode);
             if (needBracket)
-                buf.Append(/*NXLT*/")");
+                buf.Append(")");
 
-            buf.Append(/*NXLT*/" " + CoreUtils.GetOperatorString(Optr) + " ");
+            buf.Append(" " + CoreUtils.GetOperatorString(Optr) + " ");
 
             needBracket = RightNode is BinaryExpressionNode || RightNode is InlineConditionalNode || RightNode is RangeExprNode;
             if (needBracket)
-                buf.Append(/*NXLT*/"(");
+                buf.Append("(");
             buf.Append(RightNode);
             if (needBracket)
-                buf.Append(/*NXLT*/")");
+                buf.Append(")");
 
             if (Operator.assign == Optr)
                 buf.Append(Constants.termline);
@@ -1880,10 +1880,10 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
 
-            buf.Append(/*NXLT*/"{");
+            buf.Append("{");
             if (ElementNodes != null) 
                 ElementNodes.ForEach(e => buf.AppendLine(e.ToString() + ";"));
-            buf.Append(/*NXLT*/"}");
+            buf.Append("}");
 
             return buf.ToString();
         }
@@ -1949,31 +1949,31 @@ namespace ProtoCore.AST.AssociativeAST
 
             string postfix = base.ToString();
             if (!string.IsNullOrEmpty(postfix))
-                buf.Append(/*NXLT*/"(");
+                buf.Append("(");
 
             buf.Append(FromNode);
-            buf.Append(/*NXLT*/"..");
+            buf.Append("..");
             if (HasRangeAmountOperator)
-                buf.Append(/*NXLT*/"#");
+                buf.Append("#");
             buf.Append(ToNode);
 
             if (StepNode != null)
             {
-                buf.Append(/*NXLT*/"..");
+                buf.Append("..");
                 switch (stepoperator)
                 {
                     case RangeStepOperator.approxsize:
-                        buf.Append(/*NXLT*/"~");
+                        buf.Append("~");
                         break;
                     case RangeStepOperator.num:
-                        buf.Append(/*NXLT*/"#");
+                        buf.Append("#");
                         break;
                 }
                 buf.Append(StepNode);
             }
 
             if (!string.IsNullOrEmpty(postfix))
-                buf.Append(/*NXLT*/")");
+                buf.Append(")");
 
             buf.Append(postfix);
 
@@ -2013,17 +2013,17 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
 
-            buf.Append(/*NXLT*/"{");
+            buf.Append("{");
             if (list != null)
             {
                 for (int i = 0; i < list.Count; ++i)
                 {
                     buf.Append(list[i]);
                     if (i < list.Count - 1)
-                        buf.Append(/*NXLT*/", ");
+                        buf.Append(", ");
                 }
             }
-            buf.Append(/*NXLT*/"}");
+            buf.Append("}");
             buf.Append(base.ToString());
 
             return buf.ToString();
@@ -2470,7 +2470,7 @@ namespace ProtoCore.AST.AssociativeAST
         public static StringNode BuildStringNode(string str)
         {
             if (str == null)
-                throw new ArgumentNullException(/*NXLT*/"str");
+                throw new ArgumentNullException("str");
 
             return new StringNode { value = str };
         }
@@ -2494,19 +2494,19 @@ namespace ProtoCore.AST.AssociativeAST
             string type = value.GetType().Name;
             switch (type)
             {
-                case /*NXLT*/"Int16":
-                case /*NXLT*/"Int32":
-                case /*NXLT*/"Int64":
-                case /*NXLT*/"UInt16":
-                case /*NXLT*/"UInt32":
-                case /*NXLT*/"UInt64":
+                case "Int16":
+                case "Int32":
+                case "Int64":
+                case "UInt16":
+                case "UInt32":
+                case "UInt64":
                     return BuildIntNode(Convert.ToInt32(value));
-                case /*NXLT*/"Single":
-                case /*NXLT*/"Double":
+                case "Single":
+                case "Double":
                     return BuildDoubleNode(Convert.ToDouble(value));
-                case /*NXLT*/"String":
+                case "String":
                     return BuildStringNode(value.ToString());
-                case /*NXLT*/"Boolean":
+                case "Boolean":
                     return BuildBooleanNode(Convert.ToBoolean(value));
                 default:
                     Validity.Assert(false, "Invalide Input type to make AST node");
@@ -2519,13 +2519,13 @@ namespace ProtoCore.AST.AssociativeAST
             AssociativeNode condition, AssociativeNode trueExpr, AssociativeNode falseExpr)
         {
             if (condition == null)
-                throw new ArgumentNullException(/*NXLT*/"condition");
+                throw new ArgumentNullException("condition");
 
             if (trueExpr == null)
-                throw new ArgumentNullException(/*NXLT*/"trueExpr");
+                throw new ArgumentNullException("trueExpr");
 
             if (falseExpr == null)
-                throw new ArgumentNullException(/*NXLT*/"falseExpr");
+                throw new ArgumentNullException("falseExpr");
 
             var cond = new InlineConditionalNode
             {
@@ -2752,10 +2752,10 @@ namespace ProtoCore.AST.AssociativeAST
             string className, string functionName, List<AssociativeNode> arguments, Core core = null)
         {
             if (string.IsNullOrEmpty(className))
-                throw new ArgumentException(/*NXLT*/"className");
+                throw new ArgumentException("className");
 
             if (string.IsNullOrEmpty(functionName))
-                throw new ArgumentException(/*NXLT*/"functionName");
+                throw new ArgumentException("functionName");
 
             return new IdentifierListNode
             {
@@ -2769,10 +2769,10 @@ namespace ProtoCore.AST.AssociativeAST
             string functionName, List<AssociativeNode> arguments, Core core = null)
         {
             if (string.IsNullOrEmpty(functionName))
-                throw new ArgumentException(/*NXLT*/"functionName");
+                throw new ArgumentException("functionName");
 
             if (arguments == null)
-                throw new ArgumentNullException(/*NXLT*/"arguments");
+                throw new ArgumentNullException("arguments");
 
             var funcCall = new FunctionCallNode
             {
@@ -2785,7 +2785,7 @@ namespace ProtoCore.AST.AssociativeAST
         public static IdentifierNode BuildIdentifier(string name)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException(/*NXLT*/"name");
+                throw new ArgumentException("name");
 
             return new IdentifierNode(name);
         }
@@ -2793,10 +2793,10 @@ namespace ProtoCore.AST.AssociativeAST
         public static IdentifierNode BuildIdentifier(string name, AssociativeNode arrayIndex)
         {
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentException(/*NXLT*/"name");
+                throw new ArgumentException("name");
 
             if (arrayIndex == null)
-                throw new ArgumentNullException(/*NXLT*/"arrayIndex");
+                throw new ArgumentNullException("arrayIndex");
 
             return new IdentifierNode(name)
             {
@@ -2807,7 +2807,7 @@ namespace ProtoCore.AST.AssociativeAST
         public static ExprListNode BuildExprList(List<AssociativeNode> nodes)
         {
             if (nodes == null)
-                throw new ArgumentNullException(/*NXLT*/"nodes");
+                throw new ArgumentNullException("nodes");
 
             return new ExprListNode { list = nodes };
         }
@@ -2815,7 +2815,7 @@ namespace ProtoCore.AST.AssociativeAST
         public static ExprListNode BuildExprList(List<string> exprs)
         {
             if (exprs == null)
-                throw new ArgumentNullException(/*NXLT*/"exprs");
+                throw new ArgumentNullException("exprs");
 
             var nodes = exprs.Select(BuildIdentifier).Cast<AssociativeNode>().ToList();
             return BuildExprList(nodes);
@@ -2826,13 +2826,13 @@ namespace ProtoCore.AST.AssociativeAST
                                                                  Operator op)
         {
             if (lhs == null)
-                throw new ArgumentNullException(/*NXLT*/"lhs");
+                throw new ArgumentNullException("lhs");
 
             if (rhs == null)
-                throw new ArgumentNullException(/*NXLT*/"rhs");
+                throw new ArgumentNullException("rhs");
 
             if (op == null)
-                throw new ArgumentNullException(/*NXLT*/"op");
+                throw new ArgumentNullException("op");
 
             return new BinaryExpressionNode(lhs, rhs, op);
         }
@@ -2841,10 +2841,10 @@ namespace ProtoCore.AST.AssociativeAST
                                                            AssociativeNode rhs)
         {
             if (lhs == null)
-                throw new ArgumentNullException(/*NXLT*/"lhs");
+                throw new ArgumentNullException("lhs");
 
             if (rhs == null)
-                throw new ArgumentNullException(/*NXLT*/"rhs");
+                throw new ArgumentNullException("rhs");
 
             return new BinaryExpressionNode(lhs, rhs, Operator.assign);
         }
@@ -2852,7 +2852,7 @@ namespace ProtoCore.AST.AssociativeAST
         public static VarDeclNode BuildParamNode(string paramName)
         {
             if (string.IsNullOrEmpty(paramName))
-                throw new ArgumentException(/*NXLT*/"paramName");
+                throw new ArgumentException("paramName");
 
             return BuildParamNode(
                 paramName,
@@ -2862,7 +2862,7 @@ namespace ProtoCore.AST.AssociativeAST
         public static VarDeclNode BuildParamNode(string paramName, Type type)
         {
             if (string.IsNullOrEmpty(paramName))
-                throw new ArgumentException(/*NXLT*/"paramName");
+                throw new ArgumentException("paramName");
 
             return new VarDeclNode
             {
@@ -2874,7 +2874,7 @@ namespace ProtoCore.AST.AssociativeAST
         public static BinaryExpressionNode BuildReturnStatement(AssociativeNode rhs)
         {
             if (rhs == null)
-                throw new ArgumentNullException(/*NXLT*/"rhs");
+                throw new ArgumentNullException("rhs");
 
             var retNode = BuildIdentifier(Keyword.Return);
             return BuildAssignment(retNode, rhs);
@@ -2887,13 +2887,13 @@ namespace ProtoCore.AST.AssociativeAST
             List<AssociativeNode> inputs)
         {
             if (string.IsNullOrEmpty(functionName))
-                throw new ArgumentException(/*NXLT*/"functionname");
+                throw new ArgumentException("functionname");
 
             if (connectedIndices == null)
-                throw new ArgumentNullException(/*NXLT*/"connectedIndices");
+                throw new ArgumentNullException("connectedIndices");
 
             if (inputs == null)
-                throw new ArgumentNullException(/*NXLT*/"inputs");
+                throw new ArgumentNullException("inputs");
 
             return BuildFunctionObject(BuildIdentifier(functionName), numParams, connectedIndices, inputs);
         }
@@ -2905,13 +2905,13 @@ namespace ProtoCore.AST.AssociativeAST
             List<AssociativeNode> inputs)
         {
             if (functionNode == null)
-                throw new ArgumentNullException(/*NXLT*/"functionNode");
+                throw new ArgumentNullException("functionNode");
 
             if (connectedIndices == null)
-                throw new ArgumentNullException(/*NXLT*/"connectedIndices");
+                throw new ArgumentNullException("connectedIndices");
 
             if (inputs == null)
-                throw new ArgumentNullException(/*NXLT*/"input");
+                throw new ArgumentNullException("input");
 
             var paramNumNode = new IntNode(numParams);
             var positionNode = BuildExprList(connectedIndices.Select(BuildIntNode).Cast<AssociativeNode>().ToList());
@@ -2925,7 +2925,7 @@ namespace ProtoCore.AST.AssociativeAST
                 AstFactory.BuildBooleanNode(true)
             };
 
-            return BuildFunctionCall(/*NXLT*/"_SingleFunctionObject", inputParams);
+            return BuildFunctionCall("_SingleFunctionObject", inputParams);
         }
 
         /// <summary>
@@ -2940,10 +2940,10 @@ namespace ProtoCore.AST.AssociativeAST
                                                           bool isLongest)
         {
             if (node == null)
-                throw new ArgumentNullException(/*NXLT*/"node");
+                throw new ArgumentNullException("node");
 
             if (guides == null)
-                throw new ArgumentNullException(/*NXLT*/"guides");
+                throw new ArgumentNullException("guides");
 
             ArrayNameNode repNode = null;
 
@@ -3413,7 +3413,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         private static ImperativeNode ToImperativeNode(this AssociativeNode aNode)
         {
-            throw new ArgumentException(/*NXLT*/"No Imperative version of " + aNode.GetType().FullName);
+            throw new ArgumentException("No Imperative version of " + aNode.GetType().FullName);
         }
 
         public static ImperativeNode ToImperativeAST(this AssociativeNode aNode)

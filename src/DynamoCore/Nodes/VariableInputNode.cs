@@ -215,7 +215,7 @@ namespace Dynamo.Nodes
                 if (connectors.Count != 1)
                 {
                     throw new InvalidOperationException(
-                        /*NXLT*/"There should be only one connection to an input port");
+                        "There should be only one connection to an input port");
                 }
                 var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>
                 {
@@ -230,14 +230,14 @@ namespace Dynamo.Nodes
 
         public bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
-            if (eventName == /*NXLT*/"AddInPort")
+            if (eventName == "AddInPort")
             {
                 AddInputToModel();
                 model.RegisterAllPorts();
                 return true; // Handled here.
             }
 
-            if (eventName == /*NXLT*/"RemoveInPort")
+            if (eventName == "RemoveInPort")
             {
                 RemoveInputFromModel();
                 model.RegisterAllPorts();

@@ -7,18 +7,18 @@ using System.Collections.Generic;
 
 namespace DSCoreNodesUI
 {
-    [NodeName(/*NXLT*/"Number Range")]
+    [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription(/*NXLT*/"NumberRangeDescription", typeof(Properties.Resources))]
+    [NodeDescription("NumberRangeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberRange : NodeModel
     {
         public NumberRange()
         {
-            InPortData.Add(new PortData(/*NXLT*/"start", Resources.NumberRangePortDataStartToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"end", Resources.NumberRangePortDataEndToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"step", Resources.NumberRangePortDataStepToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"seq", Resources.NumberRangePortDataSeqToolTip));
+            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
+            InPortData.Add(new PortData("end", Resources.NumberRangePortDataEndToolTip));
+            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
+            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
 
             RegisterAllPorts();
 
@@ -43,18 +43,18 @@ namespace DSCoreNodesUI
         }
     }
 
-    [NodeName(/*NXLT*/"Number Sequence")]
+    [NodeName("Number Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription(/*NXLT*/"NumberSequenceDescription", typeof(Properties.Resources))]
+    [NodeDescription("NumberSequenceDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberSeq : NodeModel
     {
         public NumberSeq()
         {
-            InPortData.Add(new PortData(/*NXLT*/"start", Resources.NumberRangePortDataStartToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"amount", Resources.NumberRangePortDataAmountToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"step", Resources.NumberRangePortDataStepToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"seq", Resources.NumberRangePortDataSeqToolTip));
+            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
+            InPortData.Add(new PortData("amount", Resources.NumberRangePortDataAmountToolTip));
+            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
+            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
 
             RegisterAllPorts();
 

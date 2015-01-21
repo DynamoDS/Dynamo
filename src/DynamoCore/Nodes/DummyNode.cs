@@ -8,8 +8,8 @@ using Dynamo.Models;
 
 namespace DSCoreNodesUI
 {
-    [NodeName(/*NXLT*/"Legacy Node")]
-    [NodeDescription(/*NXLT*/"This is an obsolete node")]
+    [NodeName("Legacy Node")]
+    [NodeDescription("This is an obsolete node")]
     [IsMetaNode]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
@@ -23,7 +23,7 @@ namespace DSCoreNodesUI
 
         public DummyNode()
         {
-            LegacyNodeName = /*NXLT*/"DSCoreNodesUI.DummyNode";
+            LegacyNodeName = "DSCoreNodesUI.DummyNode";
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
             Description = GetDescription(); 
@@ -48,9 +48,9 @@ namespace DSCoreNodesUI
 
         private void LoadNode(XmlNode nodeElement)
         {
-            var inputCount = nodeElement.Attributes[/*NXLT*/"inputCount"];
-            var outputCount = nodeElement.Attributes[/*NXLT*/"outputCount"];
-            var legacyName = nodeElement.Attributes[/*NXLT*/"legacyNodeName"];
+            var inputCount = nodeElement.Attributes["inputCount"];
+            var outputCount = nodeElement.Attributes["outputCount"];
+            var legacyName = nodeElement.Attributes["legacyNodeName"];
 
             InputCount = Int32.Parse(inputCount.Value);
             OutputCount = Int32.Parse(outputCount.Value);
@@ -63,11 +63,11 @@ namespace DSCoreNodesUI
                         OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
             }
 
-            var legacyAsm = nodeElement.Attributes[/*NXLT*/"legacyAssembly"];
+            var legacyAsm = nodeElement.Attributes["legacyAssembly"];
             if (legacyAsm != null)
                 LegacyAssembly = legacyAsm.Value;
 
-            var nodeNature = nodeElement.Attributes[/*NXLT*/"nodeNature"];
+            var nodeNature = nodeElement.Attributes["nodeNature"];
             if (nodeNature != null)
             {
                 var nature = Enum.Parse(typeof(Nature), nodeNature.Value);
@@ -102,11 +102,11 @@ namespace DSCoreNodesUI
             {
                 //Dump all the information into memory
 
-                nodeElement.SetAttribute(/*NXLT*/"inputCount", InputCount.ToString());
-                nodeElement.SetAttribute(/*NXLT*/"outputCount", OutputCount.ToString());
-                nodeElement.SetAttribute(/*NXLT*/"legacyNodeName", LegacyNodeName);
-                nodeElement.SetAttribute(/*NXLT*/"legacyAssembly", LegacyAssembly);
-                nodeElement.SetAttribute(/*NXLT*/"nodeNature", NodeNature.ToString());
+                nodeElement.SetAttribute("inputCount", InputCount.ToString());
+                nodeElement.SetAttribute("outputCount", OutputCount.ToString());
+                nodeElement.SetAttribute("legacyNodeName", LegacyNodeName);
+                nodeElement.SetAttribute("legacyAssembly", LegacyAssembly);
+                nodeElement.SetAttribute("nodeNature", NodeNature.ToString());
 
                 if (OriginalNodeContent != null)
                 {
@@ -139,9 +139,9 @@ namespace DSCoreNodesUI
                         originalNode.SetAttribute(attribute.Name, attribute.Value);
 
                     //overwrite the guid/x/y value of the original node.
-                    originalNode.SetAttribute(/*NXLT*/"guid", nodeElement.GetAttribute("guid"));
-                    originalNode.SetAttribute(/*NXLT*/"x", nodeElement.GetAttribute("x"));
-                    originalNode.SetAttribute(/*NXLT*/"y", nodeElement.GetAttribute("y"));
+                    originalNode.SetAttribute("guid", nodeElement.GetAttribute("guid"));
+                    originalNode.SetAttribute("x", nodeElement.GetAttribute("x"));
+                    originalNode.SetAttribute("y", nodeElement.GetAttribute("y"));
 
                     for (int i = 0; i < OriginalNodeContent.ChildNodes.Count; i++)
                     {
@@ -154,11 +154,11 @@ namespace DSCoreNodesUI
                 }
                 else
                 {
-                    nodeElement.SetAttribute(/*NXLT*/"inputCount", InputCount.ToString());
-                    nodeElement.SetAttribute(/*NXLT*/"outputCount", OutputCount.ToString());
-                    nodeElement.SetAttribute(/*NXLT*/"legacyNodeName", LegacyNodeName);
-                    nodeElement.SetAttribute(/*NXLT*/"legacyAssembly", LegacyAssembly);
-                    nodeElement.SetAttribute(/*NXLT*/"nodeNature", NodeNature.ToString());
+                    nodeElement.SetAttribute("inputCount", InputCount.ToString());
+                    nodeElement.SetAttribute("outputCount", OutputCount.ToString());
+                    nodeElement.SetAttribute("legacyNodeName", LegacyNodeName);
+                    nodeElement.SetAttribute("legacyAssembly", LegacyAssembly);
+                    nodeElement.SetAttribute("nodeNature", NodeNature.ToString());
                 }
             }
         }
@@ -209,7 +209,7 @@ namespace DSCoreNodesUI
                 }
             }
 
-            const string message = /*NXLT*/"Unhandled 'DummyNode.NodeNature' value: {0}";
+            const string message = "Unhandled 'DummyNode.NodeNature' value: {0}";
             throw new InvalidOperationException(string.Format(message, NodeNature));
         }
         

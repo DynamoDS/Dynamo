@@ -23,7 +23,7 @@ namespace Dynamo.Search.SearchElements
             {
                 if (value == path) return;
                 path = value;
-                OnPropertyChanged(/*NXLT*/"Path");
+                OnPropertyChanged("Path");
 
             }
         }

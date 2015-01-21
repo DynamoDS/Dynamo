@@ -60,7 +60,7 @@ namespace Dynamo
                 lock (this.guardMutex)
                 {
                     _warningLevel = value;
-                    RaisePropertyChanged(/*NXLT*/"WarningLevel");
+                    RaisePropertyChanged("WarningLevel");
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace Dynamo
                 {
 
                     _warning = value;
-                    RaisePropertyChanged(/*NXLT*/"Warning");
+                    RaisePropertyChanged("Warning");
                 }
             }
         }
@@ -137,7 +137,7 @@ namespace Dynamo
                 //Don't overwhelm the logging system
 
                 if (debugSettings.VerboseLogging)
-                    InstrumentationLogger.LogPiiInfo(/*NXLT*/"LogMessage-" + level.ToString(), message);
+                    InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
 
 
                 switch (level)
@@ -151,7 +151,7 @@ namespace Dynamo
                                 ConsoleWriter.AppendLine(string.Format("{0}", message));
                                 FileWriter.WriteLine(string.Format("{0} : {1}", DateTime.Now, message));
                                 FileWriter.Flush();
-                                RaisePropertyChanged(/*NXLT*/"ConsoleWriter");
+                                RaisePropertyChanged("ConsoleWriter");
                             }
                             catch
                             {
@@ -179,7 +179,7 @@ namespace Dynamo
 
                 if (reportModification)
                 {
-                    RaisePropertyChanged(/*NXLT*/"LogText");
+                    RaisePropertyChanged("LogText");
                 }
             }
         }
@@ -255,7 +255,7 @@ namespace Dynamo
             lock (this.guardMutex)
             {
                 ConsoleWriter.Clear();
-                RaisePropertyChanged(/*NXLT*/"LogText");
+                RaisePropertyChanged("LogText");
             }
         }
 
@@ -266,13 +266,13 @@ namespace Dynamo
         {
             lock (this.guardMutex)
             {
-                _logPath = Path.Combine(logDirectory, string.Format(/*NXLT*/"dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
+                _logPath = Path.Combine(logDirectory, string.Format("dynamoLog_{0}.txt", Guid.NewGuid().ToString()));
 
                 FileWriter = new StreamWriter(_logPath);
-                FileWriter.WriteLine(/*NXLT*/"Dynamo log started " + DateTime.Now.ToString());
+                FileWriter.WriteLine("Dynamo log started " + DateTime.Now.ToString());
 
                 ConsoleWriter = new StringBuilder();
-                ConsoleWriter.AppendLine(/*NXLT*/"Dynamo log started " + DateTime.Now.ToString());
+                ConsoleWriter.AppendLine("Dynamo log started " + DateTime.Now.ToString());
             }
 
         }
@@ -294,7 +294,7 @@ namespace Dynamo
                 try
                 {
                     FileWriter.Flush();
-                    Log(/*NXLT*/"Goodbye", LogLevel.Console, false);
+                    Log("Goodbye", LogLevel.Console, false);
                     FileWriter.Close();
                 }
                 catch

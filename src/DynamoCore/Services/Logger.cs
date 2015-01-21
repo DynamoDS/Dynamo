@@ -24,7 +24,7 @@ namespace Dynamo.Services
         private static DynamoModel dynamoModel;
 
         //Analytics components
-        private const string ANALYTICS_PROPERTY = /*NXLT*/"UA-52186525-1";
+        private const string ANALYTICS_PROPERTY = "UA-52186525-1";
         private static MeasurementAnalyticsClient client;
 
         private static bool started = false;
@@ -46,7 +46,7 @@ namespace Dynamo.Services
                 "Dynamo", appVersion);
 
             sessionID = Guid.NewGuid().ToString();
-            loggerImpl = new Log(/*NXLT*/"Dynamo", userID, sessionID);
+            loggerImpl = new Log("Dynamo", userID, sessionID);
 
             
             AutoMeasurement.Start(mc);
@@ -113,17 +113,17 @@ namespace Dynamo.Services
             // the int is stored in the default name/value
             // pair.
 
-            var tryGetValue = Registry.GetValue(keyName, /*NXLT*/"InstrumentationGUID", null) as string;
+            var tryGetValue = Registry.GetValue(keyName, "InstrumentationGUID", null) as string;
 
             if (tryGetValue != null)
             {
-                Debug.WriteLine(/*NXLT*/"User id found: " + tryGetValue);
+                Debug.WriteLine("User id found: " + tryGetValue);
                 return tryGetValue;
             }
             
             String newGUID = Guid.NewGuid().ToString();
             Registry.SetValue(keyName, "InstrumentationGUID", newGUID);
-            Debug.WriteLine(/*NXLT*/"New User id: " + newGUID);
+            Debug.WriteLine("New User id: " + newGUID);
             return newGUID;
         }
 

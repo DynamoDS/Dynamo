@@ -10,19 +10,19 @@ using ProtoCore.DSASM;
 
 namespace DSCoreNodesUI.Logic
 {
-    [NodeName(/*NXLT*/"If")]
+    [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription(/*NXLT*/"IfDescription", typeof(Properties.Resources))]
+    [NodeDescription("IfDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class If : NodeModel
     {
         public If()
         {
-            InPortData.Add(new PortData(/*NXLT*/"test", Resources.PortDataTestBlockToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"true", Resources.PortDataTrueBlockToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"false", Resources.PortDataFalseBlockToolTip));
+            InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));
+            InPortData.Add(new PortData("true", Resources.PortDataTrueBlockToolTip));
+            InPortData.Add(new PortData("false", Resources.PortDataFalseBlockToolTip));
 
-            OutPortData.Add(new PortData(/*NXLT*/"result", Resources.PortDataResultToolTip));
+            OutPortData.Add(new PortData("result", Resources.PortDataResultToolTip));
 
             RegisterAllPorts();
 
@@ -53,7 +53,7 @@ namespace DSCoreNodesUI.Logic
                     AstFactory.BuildBooleanNode(true)
                 };
 
-                rhs = AstFactory.BuildFunctionCall(/*NXLT*/"_SingleFunctionObject", inputParams);
+                rhs = AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
             }
             else
             {

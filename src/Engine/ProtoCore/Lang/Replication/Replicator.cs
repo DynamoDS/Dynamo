@@ -113,7 +113,7 @@ namespace ProtoCore.Lang.Replication
                             //If we've previous seen a shortest node with this guide
                             if (i > 0 && indexLace[guideCounter] == ZipAlgorithm.Shortest)
                             {
-                                throw new ReplicationCaseNotCurrentlySupported(/*NXLT*/"Cannot support Longest and shortest zipped collections");
+                                throw new ReplicationCaseNotCurrentlySupported("Cannot support Longest and shortest zipped collections");
                             }
 
                             //Overwrite the default behaviour
@@ -125,7 +125,7 @@ namespace ProtoCore.Lang.Replication
                             //then we've created a violation foo(a<1>, b1<1L>) is not allowed
                             if (indexLace[guideCounter] == ZipAlgorithm.Longest)
                             {
-                                throw new ReplicationCaseNotCurrentlySupported(/*NXLT*/"Cannot support Longest and shortest zipped collections");
+                                throw new ReplicationCaseNotCurrentlySupported("Cannot support Longest and shortest zipped collections");
                             }
                             else
                             {
@@ -191,7 +191,7 @@ namespace ProtoCore.Lang.Replication
                     if (guidesOnParam[i] != sorted[i])
                     {
                         throw new ReplicationCaseNotCurrentlySupported(
-                            /*NXLT*/"Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead, err code: {3C5360D1}");
+                            "Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead, err code: {3C5360D1}");
                     }
                 }
             }
@@ -525,7 +525,7 @@ namespace ProtoCore.Lang.Replication
                         }
                         else
                         {
-                            System.Console.WriteLine(/*NXLT*/"WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
+                            System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
                             reducedSV = target;
                         }
 
@@ -587,7 +587,7 @@ namespace ProtoCore.Lang.Replication
                     }
                     else
                     {
-                        System.Console.WriteLine(/*NXLT*/"WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
+                        System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
                         reducedSV = target;
                     }
                 }
@@ -646,7 +646,7 @@ namespace ProtoCore.Lang.Replication
                         }
                         else
                         {
-                            System.Console.WriteLine(/*NXLT*/"WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
+                            System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
                             reducedSV = target;
                         }
 
@@ -684,7 +684,7 @@ namespace ProtoCore.Lang.Replication
                     }
                     else
                     {
-                        System.Console.WriteLine(/*NXLT*/"WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
+                        System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
                         reducedSV = target;
                     }
 
@@ -720,7 +720,7 @@ namespace ProtoCore.Lang.Replication
             }
             else
             {
-                if (count == 0) throw new CompilerInternalException(/*NXLT*/"Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D}");
+                if (count == 0) throw new CompilerInternalException("Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D}");
 
                 for (int currVal = 0; currVal <= maxAlloc; currVal++)
                 {
@@ -771,7 +771,7 @@ namespace ProtoCore.Lang.Replication
 
             if (providedControl.Count > maxDepth)
             {
-                throw new ReplicationCaseNotCurrentlySupported(/*NXLT*/"Replication requested exceeds the available dimensions of the array. This case is not yet supported {1EC8AF3C-48D6-4582-999E-ADBCBF9155D1}");
+                throw new ReplicationCaseNotCurrentlySupported("Replication requested exceeds the available dimensions of the array. This case is not yet supported {1EC8AF3C-48D6-4582-999E-ADBCBF9155D1}");
             }
             else
             {
@@ -854,7 +854,7 @@ namespace ProtoCore.Lang.Replication
             }
 
             //if (providedControl.Count > 0)
-            //    throw new NotImplementedException(/*NXLT*/"begone.");
+            //    throw new NotImplementedException("begone.");
 
 
             List<List<ReplicationInstruction>> ret = new List<List<ReplicationInstruction>>();
@@ -926,7 +926,7 @@ namespace ProtoCore.Lang.Replication
         private static int RecursiveProtectGetMaxReductionDepth(StackValue sv, Core core, int depthCount)
         {
             Validity.Assert(depthCount < 1000,
-                /*NXLT*/"StackOverflow protection trap. This is almost certainly a VM cycle-in-array bug. {0B530165-2E38-431D-88D9-56B0636364CD}");
+                "StackOverflow protection trap. This is almost certainly a VM cycle-in-array bug. {0B530165-2E38-431D-88D9-56B0636364CD}");
 
             //PERF(Luke): Could be non-recursive
             if (!sv.IsArray)

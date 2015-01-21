@@ -279,14 +279,14 @@ namespace ProtoScript.Runners
         private ProtoCore.CodeModel.CodePoint InstructionToBeginCodePoint(Instruction instr)
         {
             if (instr.debug == null)
-                throw new InvalidOperationException(/*NXLT*/"This instuction has no source representation");
+                throw new InvalidOperationException("This instuction has no source representation");
 
             return instr.debug.Location.StartInclusive;
         }
         private ProtoCore.CodeModel.CodePoint InstructionToEndCodePoint(Instruction instr)
         {
             if (instr.debug == null)
-                throw new InvalidOperationException(/*NXLT*/"This instuction has no source representation");
+                throw new InvalidOperationException("This instuction has no source representation");
 
             return instr.debug.Location.EndExclusive;
         }

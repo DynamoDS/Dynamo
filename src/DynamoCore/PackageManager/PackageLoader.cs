@@ -194,13 +194,13 @@ namespace Dynamo.PackageManager
                 {
                     Directory.Delete(pkgNameDirTup, true);
                     pkgDirsRemoved.Add(pkgNameDirTup);
-                    Log(String.Format(/*NXLT*/"Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
+                    Log(String.Format("Successfully uninstalled package from \"{0}\"", pkgNameDirTup));
                 }
                 catch
                 {
                     Log(
                         String.Format(
-                        /*NXLT*/"Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
+                        "Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
                             pkgNameDirTup),
                         WarningLevel.Moderate);
                 }

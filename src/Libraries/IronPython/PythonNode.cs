@@ -50,7 +50,7 @@ namespace DSIronPythonNode
         private void EditScriptContent()
         {
             var editWindow = new ScriptEditorWindow(dynamoViewModel);
-            editWindow.Initialize(model.GUID, /*NXLT*/"ScriptContent", model.Script);
+            editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
             bool? acceptChanged = editWindow.ShowDialog();
             if (acceptChanged.HasValue && acceptChanged.Value)
             {
@@ -64,13 +64,13 @@ namespace DSIronPythonNode
     {
         protected PythonNodeBase()
         {
-            OutPortData.Add(new PortData(/*NXLT*/"OUT", Properties.Resources.PythonNodePortDataOutputToolTip));
+            OutPortData.Add(new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
         protected override string GetInputName(int index)
         {
-            return string.Format(/*NXLT*/"IN[{0}]", index);
+            return string.Format("IN[{0}]", index);
         }
 
         protected override string GetInputTooltip(int index)
@@ -106,9 +106,9 @@ namespace DSIronPythonNode
         }
     }
 
-    [NodeName(/*NXLT*/"Python Script")]
+    [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription(/*NXLT*/"PythonScriptDescription", typeof(Properties.Resources))]
+    [NodeDescription("PythonScriptDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
@@ -136,7 +136,7 @@ namespace DSIronPythonNode
                 if (script != value)
                 {
                     script = value;
-                    RaisePropertyChanged(/*NXLT*/"Script");
+                    RaisePropertyChanged("Script");
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace DSIronPythonNode
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name == /*NXLT*/"ScriptContent")
+            if (name == "ScriptContent")
             {
                 script = value;
                 return true;
@@ -181,7 +181,7 @@ namespace DSIronPythonNode
             base.DeserializeCore(nodeElement, context);
 
             var scriptNode =
-                nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == /*NXLT*/"Script");
+                nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "Script");
 
             if (scriptNode != null)
             {
@@ -192,16 +192,16 @@ namespace DSIronPythonNode
         #endregion
     }
 
-    [NodeName(/*NXLT*/"Python Script From String")]
+    [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription(/*NXLT*/"PythonScriptFromStringDescription", typeof(Properties.Resources))]
+    [NodeDescription("PythonScriptFromStringDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase
     {
         public PythonStringNode()
         {
-            InPortData.Add(new PortData(/*NXLT*/"script", Properties.Resources.PythonStringPortDataScriptToolTip));
+            InPortData.Add(new PortData("script", Properties.Resources.PythonStringPortDataScriptToolTip));
             AddInput();
             RegisterAllPorts();
         }

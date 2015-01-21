@@ -120,7 +120,7 @@ namespace Dynamo.Search.SearchElements
             {
                 if (value == description) return;
                 description = value;
-                OnPropertyChanged(/*NXLT*/"Description");
+                OnPropertyChanged("Description");
 
             }
         }

@@ -58,7 +58,7 @@ namespace DSCoreNodesUI
             set
             {
                 items = value;
-                RaisePropertyChanged(/*NXLT*/"Items");
+                RaisePropertyChanged("Items");
             }
         }
 
@@ -76,7 +76,7 @@ namespace DSCoreNodesUI
                 }
                 else
                     selectedIndex = value;
-                RaisePropertyChanged(/*NXLT*/"SelectedIndex");
+                RaisePropertyChanged("SelectedIndex");
             }
         }
 
@@ -144,7 +144,7 @@ namespace DSCoreNodesUI
             else
             {
                 var item = items[index];
-                result = string.Format(/*NXLT*/"{0}:{1}", index, XmlEscape(item.Name));
+                result = string.Format("{0}:{1}", index, XmlEscape(item.Name));
             }
 
             return result;
@@ -153,7 +153,7 @@ namespace DSCoreNodesUI
         private static string XmlEscape(string unescaped)
         {
             var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement(/*NXLT*/"root");
+            XmlNode node = doc.CreateElement("root");
             node.InnerText = unescaped;
             return node.InnerXml;
         }
@@ -161,7 +161,7 @@ namespace DSCoreNodesUI
         private static string XmlUnescape(string escaped)
         {
             var doc = new XmlDocument();
-            XmlNode node = doc.CreateElement(/*NXLT*/"root");
+            XmlNode node = doc.CreateElement("root");
             node.InnerXml = escaped;
             return node.InnerText;
         }

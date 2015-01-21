@@ -14,7 +14,7 @@
             set
             {
                 verboseLogging = value;
-                RaisePropertyChanged(/*NXLT*/"VerboseLogging");
+                RaisePropertyChanged("VerboseLogging");
             }
         }
 
@@ -24,7 +24,7 @@
             set
             {
                 showDebugASTs = value;
-                RaisePropertyChanged(/*NXLT*/"ShowDebugASTs");
+                RaisePropertyChanged("ShowDebugASTs");
             }
         }
     }

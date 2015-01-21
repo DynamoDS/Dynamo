@@ -231,7 +231,7 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name != /*NXLT*/"Code") 
+            if (name != "Code") 
                 return base.UpdateValueCore(name, value, recorder);
 
             value = CodeBlockUtils.FormatUserText(value);
@@ -264,8 +264,8 @@ namespace Dynamo.Nodes
         {
             base.DeserializeCore(nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
-            shouldFocus = helper.ReadBoolean(/*NXLT*/"ShouldFocus");
-            code = helper.ReadString(/*NXLT*/"CodeText");
+            shouldFocus = helper.ReadBoolean("ShouldFocus");
+            code = helper.ReadString("CodeText");
             ProcessCodeDirect();
         }
 
@@ -354,7 +354,7 @@ namespace Dynamo.Nodes
             string warningMessage = string.Empty;
 
             ProcessCode(ref errorMessage, ref warningMessage);
-            RaisePropertyChanged(/*NXLT*/"Code");
+            RaisePropertyChanged("Code");
             ForceReExecuteOfNode = true;
             OnAstUpdated();
             
@@ -1004,7 +1004,7 @@ namespace Dynamo.Nodes
             else if (leftNode is FunctionCallNode)
                 return null;
             else
-                throw new ArgumentException(/*NXLT*/"Left node type incorrect");
+                throw new ArgumentException("Left node type incorrect");
         }
         #endregion
 
@@ -1054,7 +1054,7 @@ namespace Dynamo.Nodes
                 // Handle function definitions in CBN
             }
             else
-                throw new ArgumentException(/*NXLT*/"Must be func def or assignment");
+                throw new ArgumentException("Must be func def or assignment");
 
             Variable.SetCorrectColumn(referencedVariables, CurrentType, StartLine);
         }

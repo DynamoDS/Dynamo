@@ -165,7 +165,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kCount
                 },
@@ -175,7 +175,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kSomeNulls,
                     MethodAttributes = new MethodAttributes(true),
@@ -186,7 +186,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kRank
                 },
@@ -196,7 +196,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                    new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kFlatten
                 },
@@ -206,8 +206,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kConcat,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
@@ -218,8 +218,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
+                        new KeyValuePair<string, ProtoCore.Type>("array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
                     },
                     ID = BuiltInMethods.MethodID.kIntersection
                 },
@@ -229,8 +229,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
+                        new KeyValuePair<string, ProtoCore.Type>("array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
                     },
                     ID = BuiltInMethods.MethodID.kUnion
                 },
@@ -240,8 +240,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1), 
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
+                        new KeyValuePair<string, ProtoCore.Type>("array1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
                     },
                     ID = BuiltInMethods.MethodID.kDifference
                 },
@@ -251,7 +251,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kCountTrue
                 },
@@ -261,7 +261,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kCountFalse
                 },
@@ -271,7 +271,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kAllFalse,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
@@ -282,7 +282,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kAllTrue,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
@@ -293,7 +293,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kIsHomogeneous,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
@@ -304,7 +304,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kSum,
                     MethodAttributes = new MethodAttributes(true),
@@ -315,7 +315,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kSum,
                     MethodAttributes = new MethodAttributes(true),
@@ -326,7 +326,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kAverage,
                     MethodAttributes = new MethodAttributes(true),
@@ -337,7 +337,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kAverage,
                     MethodAttributes = new MethodAttributes(true),
@@ -348,7 +348,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kSomeTrue,
                     MethodAttributes = new MethodAttributes(true),
@@ -359,7 +359,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"milliseconds", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("milliseconds", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kSleep,
                     MethodAttributes = new MethodAttributes(true),
@@ -370,7 +370,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kSomeFalse,
                     MethodAttributes = new MethodAttributes(true),
@@ -381,8 +381,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
                     },
                     ID = BuiltInMethods.MethodID.kRemove,
                     MethodAttributes = new MethodAttributes(true),
@@ -393,7 +393,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kRemoveDuplicates,
                     MethodAttributes = new MethodAttributes(true),
@@ -404,7 +404,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kRemoveNulls,
                     MethodAttributes = new MethodAttributes(true),
@@ -415,8 +415,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"type", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("type", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
                     },
                     ID = BuiltInMethods.MethodID.kRemoveIfNot,
                     //MAGN-3382  MethodAttributes = new MethodAttributes(true), 
@@ -427,7 +427,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kReverse,
                     MethodAttributes = new MethodAttributes(true),
@@ -438,8 +438,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kEquals
                 },
@@ -449,8 +449,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kEquals
                 },
@@ -460,8 +460,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kContains
                 },
@@ -471,8 +471,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
                     },
                     ID = BuiltInMethods.MethodID.kContains
                 },
@@ -482,8 +482,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
                     },
                     ID = BuiltInMethods.MethodID.kIndexOf,
                     MethodAttributes = new MethodAttributes(true),
@@ -494,8 +494,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kIndexOf
                 },
@@ -505,9 +505,9 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
                     },
                     ID = BuiltInMethods.MethodID.kInsert
                 },
@@ -517,9 +517,9 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
                     },
                     ID = BuiltInMethods.MethodID.kInsert
                 },
@@ -530,7 +530,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1)),
                     },
                     ID = BuiltInMethods.MethodID.kSort,
                     MethodAttributes = new MethodAttributes(true),
@@ -541,8 +541,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kSortWithMode,
                     MethodAttributes = new MethodAttributes(true),
@@ -553,7 +553,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
                     },
                     ID = BuiltInMethods.MethodID.kSort,
                     MethodAttributes = new MethodAttributes(true),
@@ -564,8 +564,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kSortWithMode,
                     MethodAttributes = new MethodAttributes(true),
@@ -576,8 +576,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"comparerFunction", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("comparerFunction", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
                     },
                     ID = BuiltInMethods.MethodID.kSortPointer,
                     MethodAttributes = new MethodAttributes(true),
@@ -588,7 +588,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValue,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),  
@@ -599,8 +599,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValueWithMode,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true), 
@@ -611,8 +611,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"indice", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("indice", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
                     },
                     ID = BuiltInMethods.MethodID.kReorder
                 },
@@ -622,7 +622,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kIsUniformDepth,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
@@ -633,7 +633,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kIsRectangular,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
@@ -644,7 +644,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kNormalizeDepth,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
@@ -655,8 +655,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"rank", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("rank", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kNormalizeDepthWithRank,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
@@ -667,9 +667,9 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
                         },
                     ID = BuiltInMethods.MethodID.kMap
                 },
@@ -679,11 +679,11 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"targetRangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"targetRangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("targetRangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("targetRangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kMapTo
                 },
@@ -693,7 +693,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"Array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("Array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kTranspose,
                     MethodAttributes = new MethodAttributes(true)
@@ -704,12 +704,12 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeArray, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"start", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"end", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"step", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"op", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"nostep", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"hasAmountOp", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("start", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("end", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("step", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("op", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("nostep", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("hasAmountOp", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0))
                     },
                     ID = BuiltInMethods.MethodID.kRangeExpression
                 },
@@ -719,7 +719,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kLoadCSV
                 },
@@ -729,8 +729,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"transpose", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("transpose", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kLoadCSVWithMode
                 },
@@ -740,7 +740,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),                    
+                        new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),                    
                     },
                     ID = BuiltInMethods.MethodID.kPrint,
                     MethodAttributes = new MethodAttributes(true),
@@ -751,7 +751,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),                    
+                        new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),                    
                     },
                     ID = BuiltInMethods.MethodID.kPrintIndexable,
                     MethodAttributes = new MethodAttributes(true),
@@ -770,7 +770,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"lhsPtr", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("lhsPtr", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kDot
                 },
@@ -780,9 +780,9 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"condition", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"dyn1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("condition", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kInlineConditional
                 },
@@ -792,7 +792,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kGetType
                 },
@@ -802,7 +802,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kGetType
                 },
@@ -813,7 +813,7 @@ namespace ProtoCore.Lang
 
                     Parameters = new [] 
                     {
-                        new KeyValuePair<string, Type>(/*NXLT*/"object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                        new KeyValuePair<string, Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
                     }.ToList(),
                     ID = BuiltInMethods.MethodID.kToString,
                     MethodAttributes = new MethodAttributes(true, "This node is obsolete, please use \"String from Object\""),
@@ -824,7 +824,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kToStringFromObject,
                 },
@@ -835,7 +835,7 @@ namespace ProtoCore.Lang
 
                     Parameters = new [] 
                     {
-                        new KeyValuePair<string, Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
                     }.ToList(),
                     ID = BuiltInMethods.MethodID.kToStringFromArray
                 },
@@ -853,8 +853,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"appname", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>(/*NXLT*/"connectionParameters", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("appname", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("connectionParameters", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kImportData,
                     MethodAttributes = new MethodAttributes(true),
@@ -865,7 +865,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, Type>> 
                     {
-                        new KeyValuePair<string, Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = MethodID.kGetKeys,
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
@@ -876,7 +876,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, Type>> 
                     {
-                        new KeyValuePair<string, Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = MethodID.kGetValues,
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
@@ -887,8 +887,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, Type>> 
                     {
-                        new KeyValuePair<string, Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, Type>(/*NXLT*/"key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
                     },
                     ID = MethodID.kRemoveKey,
                     //MethodAttributes = new MethodAttributes(true), MAGN-3382
@@ -899,8 +899,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
                     Parameters = new List<KeyValuePair<string, Type>> 
                     {
-                        new KeyValuePair<string, Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, Type>(/*NXLT*/"key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
                     },
                     ID = MethodID.kContainsKey,
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
@@ -911,9 +911,9 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, Type>>
                     {
-                        new KeyValuePair<string, Type>(/*NXLT*/"functionPointer", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0)),
-                        new KeyValuePair<string, Type>(/*NXLT*/"params", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, Type>(/*NXLT*/"unpackParams", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0))
+                        new KeyValuePair<string, Type>("functionPointer", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0)),
+                        new KeyValuePair<string, Type>("params", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, Type>("unpackParams", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0))
                     },
                     ID = MethodID.kEvaluate,
                     MethodAttributes = new MethodAttributes(true),
@@ -924,8 +924,8 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string,Type>>
                     {
-                        new KeyValuePair<string, Type>(/*NXLT*/"array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
-                        new KeyValuePair<string, Type>(/*NXLT*/"key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar))
+                        new KeyValuePair<string, Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar))
                     },
                     ID = MethodID.kTryGetValueFromNestedDictionaries,
                     MethodAttributes = new MethodAttributes(true),
@@ -936,7 +936,7 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
                     Parameters = new []
                     {
-                        new KeyValuePair<string, Type>(/*NXLT*/"nodeType", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
+                        new KeyValuePair<string, Type>("nodeType", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
                     }.ToList(),
                     ID = MethodID.kNodeAstFailed,
                     MethodAttributes = new MethodAttributes(true),

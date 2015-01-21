@@ -18,7 +18,7 @@ namespace Dynamo.PackageManager
         }
 
         private string _errorString = "";
-        public string ErrorString { get { return _errorString; } set { _errorString = value; RaisePropertyChanged(/*NXLT*/"ErrorString"); } }
+        public string ErrorString { get { return _errorString; } set { _errorString = value; RaisePropertyChanged("ErrorString"); } }
 
         private State _downloadState = State.Uninitialized;
 
@@ -28,7 +28,7 @@ namespace Dynamo.PackageManager
             set
             {
                 _downloadState = value;
-                RaisePropertyChanged(/*NXLT*/"DownloadState");
+                RaisePropertyChanged("DownloadState");
             }
         }
 
@@ -36,10 +36,10 @@ namespace Dynamo.PackageManager
         public string Name { get { return Header.name; } }
 
         private string _downloadPath;
-        public string DownloadPath { get { return _downloadPath; } set { _downloadPath = value; RaisePropertyChanged(/*NXLT*/"DownloadPath"); } }
+        public string DownloadPath { get { return _downloadPath; } set { _downloadPath = value; RaisePropertyChanged("DownloadPath"); } }
 
         private string _versionName;
-        public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged(/*NXLT*/"VersionName"); } }
+        public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
         public PackageDownloadHandle(Greg.Responses.PackageHeader header, PackageVersion version)
         {

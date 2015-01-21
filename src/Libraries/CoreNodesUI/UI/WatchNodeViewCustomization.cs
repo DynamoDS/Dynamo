@@ -98,7 +98,7 @@ namespace Dynamo.Wpf
 
         void Root_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == /*NXLT*/"ShowRawData")
+            if (e.PropertyName == "ShowRawData")
             {
                 ResetWatch();
             }
@@ -108,10 +108,10 @@ namespace Dynamo.Wpf
         {
             //if the units settings have been modified in the UI, watch has
             //to immediately update to show unit objects in the correct format
-            if (e.PropertyName == /*NXLT*/"LengthUnit" ||
-                e.PropertyName == /*NXLT*/"AreaUnit" ||
-                e.PropertyName == /*NXLT*/"VolumeUnit" ||
-                e.PropertyName == /*NXLT*/"NumberFormat")
+            if (e.PropertyName == "LengthUnit" ||
+                e.PropertyName == "AreaUnit" ||
+                e.PropertyName == "VolumeUnit" ||
+                e.PropertyName == "NumberFormat")
             {
                 ResetWatch();
             }

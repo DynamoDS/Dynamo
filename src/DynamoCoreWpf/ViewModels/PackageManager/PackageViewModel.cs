@@ -96,9 +96,9 @@ namespace Dynamo.ViewModels
 
         private void LoadedAssembliesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RaisePropertyChanged(/*NXLT*/"HasAdditionalAssemblies");
-            RaisePropertyChanged(/*NXLT*/"HasAssemblies");
-            RaisePropertyChanged(/*NXLT*/"HasNodeLibraries");
+            RaisePropertyChanged("HasAdditionalAssemblies");
+            RaisePropertyChanged("HasAssemblies");
+            RaisePropertyChanged("HasNodeLibraries");
         }
 
         private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

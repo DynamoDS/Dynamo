@@ -116,10 +116,10 @@ namespace ProtoCore
                 primitiveTypeNames[PrimitiveType.kTypeNull] = DSDefinitions.Keyword.Null;
                 primitiveTypeNames[PrimitiveType.kTypeVoid] = DSDefinitions.Keyword.Void;
                 primitiveTypeNames[PrimitiveType.kTypeArray] = DSDefinitions.Keyword.Array;
-                primitiveTypeNames[PrimitiveType.kTypeHostEntityID] = /*NXLT*/"hostentityid";
-                primitiveTypeNames[PrimitiveType.kTypePointer] = /*NXLT*/"pointer_reserved";
+                primitiveTypeNames[PrimitiveType.kTypeHostEntityID] = "hostentityid";
+                primitiveTypeNames[PrimitiveType.kTypePointer] = "pointer_reserved";
                 primitiveTypeNames[PrimitiveType.kTypeFunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
-                primitiveTypeNames[PrimitiveType.kTypeReturn] = /*NXLT*/"return_reserved";
+                primitiveTypeNames[PrimitiveType.kTypeReturn] = "return_reserved";
             }
             return primitiveTypeNames[type];
         }
@@ -252,12 +252,12 @@ namespace ProtoCore
 
             //
             //
-            cnode = new ClassNode { name = /*NXLT*/"hostentityid", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = "hostentityid", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeHostEntityID;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeHostEntityID);
             //
             //
-            cnode = new ClassNode { name = /*NXLT*/"pointer_reserved", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = "pointer_reserved", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
             // if convert operator to method call, without the following statement, 
             // a = b.c + d.e will fail, b.c and d.e are resolved as pointer and _add method requires two integer
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
@@ -272,7 +272,7 @@ namespace ProtoCore
 
             //
             //
-            cnode = new ClassNode { name = /*NXLT*/"return_reserved", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = "return_reserved", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeReturn;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeReturn);
         }
@@ -586,10 +586,10 @@ namespace ProtoCore
                     if (sv.IsNull)
                         return StackValue.Null;
                     else
-                        throw new NotImplementedException(/*NXLT*/"Requested coercion not implemented");
+                        throw new NotImplementedException("Requested coercion not implemented");
             }
 
-            throw new NotImplementedException(/*NXLT*/"Requested coercion not implemented");
+            throw new NotImplementedException("Requested coercion not implemented");
         }
     }
 }
