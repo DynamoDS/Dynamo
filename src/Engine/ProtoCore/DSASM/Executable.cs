@@ -39,9 +39,9 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// RuntimeCore is set in the executable to isolate data passed to the runtime VM
-        /// The RuntimeCore will eventually be integrated completely into executable,
-        /// this means moving RuntimeCore properties to Executable and deprecating the RuntimeCore object
+        /// RuntimeData is set in the executable to isolate data passed to the runtime VM
+        /// The RuntimeData will eventually be integrated completely into executable,
+        /// this means moving RuntimeData properties to Executable and deprecating the RuntimeData object
         /// </summary>
         public RuntimeData RuntimeData { get; set; }
 

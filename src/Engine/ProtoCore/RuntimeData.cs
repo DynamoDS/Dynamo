@@ -27,9 +27,9 @@ namespace ProtoCore
     /// It is instantiated prior to execution and is populated with information gathered from the CompileCore
     /// 
     /// The runtime VM is designed to run independently from the front-end (UI, compiler) 
-    /// and the only 2 properties it needs are the RuntimeCore and the DSExecutable.
+    /// and the only 2 properties it needs are the RuntimeData and the DSExecutable.
     /// 
-    /// The RuntimeCore will also contain properties that are populated at runtime and consumed at runtime.
+    /// The RuntimeData will also contain properties that are populated at runtime and consumed at runtime.
     /// </summary>
     public class RuntimeData
     {

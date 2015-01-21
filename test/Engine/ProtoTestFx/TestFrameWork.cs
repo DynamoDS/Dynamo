@@ -252,7 +252,6 @@ namespace ProtoTestFx.TD
                         Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                     }
                 }
-                ProtoCore.RuntimeData runtimeCore = new ProtoCore.RuntimeData();
                 testMirror = runner.Execute(sourceCode, testCore);
                 
                 if (dumpDS )

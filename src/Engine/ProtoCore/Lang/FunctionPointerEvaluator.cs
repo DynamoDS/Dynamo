@@ -41,7 +41,6 @@ namespace ProtoCore.Lang
         {
             // Build the stackframe
             var core = interpreter.runtime.Core;
-            var runtimeCore = interpreter.runtime.exe.RuntimeData;
 
             int classScopeCaller = stackFrame.ClassScope;
             int returnAddr = stackFrame.ReturnPC;
@@ -141,8 +140,7 @@ namespace ProtoCore.Lang
                                         args, 
                                         repGuides, 
                                         newStackFrame, 
-                                        core,
-                                        runtimeCore);
+                                        core);
 
             if (isInDebugMode)
             {

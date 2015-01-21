@@ -784,7 +784,7 @@ namespace ProtoCore.DSASM
                         core.DebugProps.SetUpCallrForDebug(core, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
                     }
 
-                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, exe.RuntimeData, runtimeContext);
+                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
                 }
                 else
                 {
@@ -892,7 +892,7 @@ namespace ProtoCore.DSASM
                 }
                 else
 #endif
-                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, exe.RuntimeData, runtimeContext);
+                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
 
                 if (sv.IsExplicitCall)
                 {
@@ -1031,7 +1031,6 @@ namespace ProtoCore.DSASM
                                                  repGuides,
                                                  stackFrame,
                                                  core,
-                                                 exe.RuntimeData,
                                                  new Runtime.Context());
 
             isExplicitCall = sv.IsExplicitCall;

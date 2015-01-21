@@ -498,8 +498,8 @@ namespace ProtoCore.Lang
         private StackValue DotMethod(StackValue lhs, StackFrame stackFrame, DSASM.Executive runtime, Context context)
         {
             var core = runtime.Core;
-            var runtimeData = runtime.exe.RuntimeData;
             var rmem = runtime.rmem;
+            var runtimeData = runtime.exe.RuntimeData;
 
             bool isValidThisPointer = true;
             StackValue thisObject = lhs;
@@ -657,7 +657,7 @@ namespace ProtoCore.Lang
                                                    thisObject);
             }
 
-            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, core, runtimeData);
+            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, core);
 
             // Restore debug properties after returning from a CALL/CALLR
             if (core.Options.IDEDebugMode && 

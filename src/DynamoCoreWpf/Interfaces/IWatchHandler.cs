@@ -57,7 +57,7 @@ namespace Dynamo.Interfaces
             this.preferences = preferences;
         }
 
-        private WatchViewModel ProcessThing(object value, ProtoCore.Core core, ProtoCore.RuntimeData runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(object value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             WatchViewModel node;
 
