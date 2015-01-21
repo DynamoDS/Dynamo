@@ -492,14 +492,14 @@ namespace Dynamo.Controls
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var state = (ConnectorState)value;
+            var state = (PreviewState)value;
             switch (state)
             {
-                case ConnectorState.ExecutionPreview:
+                case PreviewState.ExecutionPreview:
                     return ExecutionPreviewBrush;
-                case ConnectorState.None:
+                case PreviewState.None:
                     return NoneBrush;
-                case ConnectorState.Selection:
+                case PreviewState.Selection:
                     return SelectionBrush;
                 default:
                     return NoneBrush;
@@ -520,14 +520,14 @@ namespace Dynamo.Controls
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var state = (ConnectorState)value;
+            var state = (PreviewState)value;
             switch (state)
             {
-                case ConnectorState.ExecutionPreview:
+                case PreviewState.ExecutionPreview:
                     return ExecutionPreview;
-                case ConnectorState.None:
+                case PreviewState.None:
                     return None;
-                case ConnectorState.Selection:
+                case PreviewState.Selection:
                     return Selection;
                 default:
                     return None;

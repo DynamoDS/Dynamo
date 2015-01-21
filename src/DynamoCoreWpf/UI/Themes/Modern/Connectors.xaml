@@ -33,16 +33,16 @@
         <Grid>
             <Grid.Resources>
                     <SolidColorBrush x:Key="BConnectorSelection"
-                                 Color="{Binding ConnectorState, Converter={StaticResource ConnectionStateToColorConverter}}">
+                                 Color="{Binding PreviewState, Converter={StaticResource ConnectionStateToColorConverter}}">
                 </SolidColorBrush>
             </Grid.Resources>
 
             <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="1">
                 
-                <Ellipse Name="endDot" Width="8" Height="8" Margin="-5"  Fill="{Binding ConnectorState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                <Ellipse Name="endDot" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                  Canvas.Top="{Binding CurvePoint3.Y}" Canvas.Left="{Binding CurvePoint3.X}" Canvas.ZIndex="1"/>
 
-                <Ellipse Name="startDot" Width="8" Height="8" Margin="-5"  Fill="{Binding ConnectorState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
+                <Ellipse Name="startDot" Width="8" Height="8" Margin="-5"  Fill="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}" IsHitTestVisible="False"
                  Canvas.Top="{Binding CurvePoint0.Y}" Canvas.Left="{Binding CurvePoint0.X}" Canvas.ZIndex="1"/>
 
             </Canvas>

@@ -346,7 +346,7 @@
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
                    Fill="Transparent"
-                   Stroke="#4192d9"
+                   Stroke="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
                    StrokeThickness="2"
                    IsHitTestVisible="False"
                    Canvas.ZIndex="41"
