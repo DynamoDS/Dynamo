@@ -16,7 +16,7 @@ namespace net.riversofdata.dhlogger
 {
     public class Log : IDisposable
     {
-        private const string URL = /*NXLT*/"https://dynamoinstr.appspot.com/rpc";
+        private const string URL = "https://dynamoinstr.appspot.com/rpc";
         //private const string URL = "http://192.168.1.68:8080/rpc";
         
         private const int MAX_DATA_LENGTH = 500000;
@@ -46,10 +46,10 @@ namespace net.riversofdata.dhlogger
             {
                 if (!ValidateTextContent(value))
                     throw new ArgumentException(
-                        /*NXLT*/"App name must only be letters, numbers or -");
+                        "App name must only be letters, numbers or -");
 
                 if (!ValidateLength(value))
-                    throw new ArgumentException(/*NXLT*/"App Name must be 256 chars or less");
+                    throw new ArgumentException("App Name must be 256 chars or less");
 
 
                 appName = value;
@@ -72,10 +72,10 @@ namespace net.riversofdata.dhlogger
 
                 if (!ValidateTextContent(value))
                     throw new ArgumentException(
-                        /*NXLT*/"User ID name must only be letters, numbers or -");
+                        "User ID name must only be letters, numbers or -");
 
                 if (!ValidateLength(value))
-                    throw new ArgumentException(/*NXLT*/"UserID must be 256 chars or less");
+                    throw new ArgumentException("UserID must be 256 chars or less");
 
 
                 userID = value;
@@ -95,10 +95,10 @@ namespace net.riversofdata.dhlogger
             {
                 if (!ValidateTextContent(value))
                     throw new ArgumentException(
-                        /*NXLT*/"Session ID name must only be letters, numbers or -");
+                        "Session ID name must only be letters, numbers or -");
 
                 if (!ValidateLength(value))
-                    throw new ArgumentException(/*NXLT*/"Session ID must be 256 chars or less");
+                    throw new ArgumentException("Session ID must be 256 chars or less");
 
 
                 sessionID = value;
@@ -280,7 +280,7 @@ namespace net.riversofdata.dhlogger
             //Destroy the original representations to ensure runtime errors if used later in this method
             text = null;
 
-            string dateTime = DateTime.Now.ToUniversalTime().ToString(/*NXLT*/"yyyy-MM-dd HH:mm:ss");
+            string dateTime = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
             string microTime = sw.ElapsedMilliseconds.ToString();
 
             var item = new Dictionary<string, string>
@@ -482,18 +482,18 @@ namespace net.riversofdata.dhlogger
         private void ValidateInput(string tag, string text)
         {
             if (tag == null)
-                throw new ArgumentNullException(/*NXLT*/"Tag must not be null");
+                throw new ArgumentNullException("Tag must not be null");
 
             if (text == null)
-                throw new ArgumentNullException(/*NXLT*/"Text must not be null");
+                throw new ArgumentNullException("Text must not be null");
 
             if (!ValidateLength(tag))
-                throw new ArgumentException(/*NXLT*/"Tag must be 256 chars or less");
+                throw new ArgumentException("Tag must be 256 chars or less");
 
 
             if (!ValidateTextContent(tag))
                 throw new ArgumentException(
-                    /*NXLT*/"Tag must only be letters, numbers or '-', '.'");
+                    "Tag must only be letters, numbers or '-', '.'");
 
         }
 

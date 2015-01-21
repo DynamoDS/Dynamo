@@ -133,7 +133,7 @@ namespace ProtoCore.DSASM
             bool debugRun = (0 != (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER));
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage(/*NXLT*/"Start JIL Execution - " + CoreUtils.GetLanguageString(language));
+                logVMMessage("Start JIL Execution - " + CoreUtils.GetLanguageString(language));
             }
         }
 
@@ -148,7 +148,7 @@ namespace ProtoCore.DSASM
             bool debugRun = (0 != (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER));
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage(/*NXLT*/"Start JIL Execution - " + CoreUtils.GetLanguageString(language));
+                logVMMessage("Start JIL Execution - " + CoreUtils.GetLanguageString(language));
             }
         }
 
@@ -241,7 +241,7 @@ namespace ProtoCore.DSASM
             RestoreExecutive(executingBlock);
 
 
-            logVMMessage(/*NXLT*/"End JIL Execution - " + CoreUtils.GetLanguageString(currentLang));
+            logVMMessage("End JIL Execution - " + CoreUtils.GetLanguageString(currentLang));
         }
 
 
@@ -1138,7 +1138,7 @@ namespace ProtoCore.DSASM
             if (0 != (debugFlags & (int)DebugFlags.ENABLE_LOG))
             {
                 if (exe.EventSink != null && exe.EventSink.PrintMessage != null)
-                    exe.EventSink.PrintMessage.Invoke(/*NXLT*/"VMLog: " + msg + "\n");
+                    exe.EventSink.PrintMessage.Invoke("VMLog: " + msg + "\n");
                 if (core.Options.WebRunner && (null != core.ExecutionLog))
                     core.ExecutionLog.WriteLine(msg);
             }
@@ -1149,7 +1149,7 @@ namespace ProtoCore.DSASM
             if (!enableLogging)
                 return;
 
-            const string watchPrompt = /*NXLT*/"watch: ";
+            const string watchPrompt = "watch: ";
             if (0 != (debugFlags & (int)DebugFlags.ENABLE_LOG))
             {
                 SymbolNode symbol = exe.runtimeSymbols[blockId].symbolList[index];
@@ -1493,7 +1493,7 @@ namespace ProtoCore.DSASM
             {
                 foreach (AssociativeGraph.GraphNode node in nodeIterations)
                 {
-                    Console.WriteLine(/*NXLT*/"nodes " + node.updateNodeRefList[0].nodeList[0].symbol.name);
+                    Console.WriteLine("nodes " + node.updateNodeRefList[0].nodeList[0].symbol.name);
                 }
             }
 
@@ -2632,7 +2632,7 @@ namespace ProtoCore.DSASM
                 {
                     Validity.Assert(breakpoints.Contains(runningInstructions[currentPC]));
                     core.ReasonForExecutionSuspend = ReasonForExecutionSuspend.Breakpoint;
-                    logVMMessage(/*NXLT*/"Breakpoint at: " + runningInstructions[currentPC]);
+                    logVMMessage("Breakpoint at: " + runningInstructions[currentPC]);
 
                     Validity.Assert(core.DebugProps.DebugStackFrame.Count > 0);
                     {
@@ -2693,7 +2693,7 @@ namespace ProtoCore.DSASM
             bool debugRun = (0 != (debugFlags & (int)DebugFlags.SPAWN_DEBUGGER));
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage(/*NXLT*/"Start JIL Execution - " + CoreUtils.GetLanguageString(language));
+                logVMMessage("Start JIL Execution - " + CoreUtils.GetLanguageString(language));
             }
 
             core.DebugProps.isResume = false;
@@ -2815,7 +2815,7 @@ namespace ProtoCore.DSASM
 
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage(/*NXLT*/"End JIL Execution - " + CoreUtils.GetLanguageString(language));
+                logVMMessage("End JIL Execution - " + CoreUtils.GetLanguageString(language));
             }
         }
 
@@ -2829,7 +2829,7 @@ namespace ProtoCore.DSASM
             bool debugRun = IsDebugRun();
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage(/*NXLT*/"Start JIL Execution - " + engine);
+                logVMMessage("Start JIL Execution - " + engine);
             }
 
             while (!terminate)
@@ -2865,13 +2865,13 @@ namespace ProtoCore.DSASM
 
                 if (!fepRun || fepRun && debugRun)
                 {
-                    logVMMessage(/*NXLT*/"End JIL Execution - " + engine);
+                    logVMMessage("End JIL Execution - " + engine);
                 }
             }
 #else
             if (!fepRun || fepRun && debugRun)
             {
-                logVMMessage(/*NXLT*/"End JIL Execution - " + engine);
+                logVMMessage("End JIL Execution - " + engine);
             }
 #endif
         }
@@ -7787,11 +7787,11 @@ namespace ProtoCore.DSASM
                         return;
                     }
                 default: //Unknown OpCode
-                    throw new NotImplementedException(/*NXLT*/"Unknown Op code, NIE Marker: {D6028708-CD47-4D0B-97FC-E681BD65DB5C}");
+                    throw new NotImplementedException("Unknown Op code, NIE Marker: {D6028708-CD47-4D0B-97FC-E681BD65DB5C}");
             }
         }
 
-        [Conditional(/*NXLT*/"GC_MARK_AND_SWEEP")]
+        [Conditional("GC_MARK_AND_SWEEP")]
         private void GC()
         {
             var currentFramePointer = rmem.FramePointer;

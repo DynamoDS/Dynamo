@@ -58,7 +58,7 @@ namespace Dynamo.Models
             set
             {
                 name = value;
-                RaisePropertyChanged(/*NXLT*/"PortName");
+                RaisePropertyChanged("PortName");
             }
 
         }
@@ -75,7 +75,7 @@ namespace Dynamo.Models
             set
             {
                 owner = value;
-                RaisePropertyChanged(/*NXLT*/"Owner");
+                RaisePropertyChanged("Owner");
             }
         }
 
@@ -91,7 +91,7 @@ namespace Dynamo.Models
             set
             {
                 isConnected = value;
-                RaisePropertyChanged(/*NXLT*/"IsConnected");
+                RaisePropertyChanged("IsConnected");
             }
         }
 
@@ -158,7 +158,7 @@ namespace Dynamo.Models
             set
             {
                 usingDefaultValue = value; 
-                RaisePropertyChanged(/*NXLT*/"UsingDefaultValue");
+                RaisePropertyChanged("UsingDefaultValue");
             }
         }
 
@@ -171,7 +171,7 @@ namespace Dynamo.Models
             set
             {
                 defaultValueEnabled = value;
-                RaisePropertyChanged(/*NXLT*/"DefaultValueEnabled");
+                RaisePropertyChanged("DefaultValueEnabled");
             }
         }
 
@@ -184,7 +184,7 @@ namespace Dynamo.Models
             set
             {
                 marginThickness = value;
-                RaisePropertyChanged(/*NXLT*/"MarginThickness");
+                RaisePropertyChanged("MarginThickness");
             }
         }
 

@@ -50,7 +50,7 @@ namespace Dynamo.ViewModels
         {
             if (automationSettings != null)
             {
-                var msg = string.Format(/*NXLT*/"PausePlaybackCommand '{0}' inserted",
+                var msg = string.Format("PausePlaybackCommand '{0}' inserted",
                     automationSettings.InsertPausePlaybackCommand());
                 model.Logger.Log(msg);
             }
@@ -125,7 +125,7 @@ namespace Dynamo.ViewModels
 
                 case "SwitchTabCommand":
                     if (command.IsInPlaybackMode)
-                        RaisePropertyChanged(/*NXLT*/"CurrentWorkspaceIndex");
+                        RaisePropertyChanged("CurrentWorkspaceIndex");
                     break;
 
                 case "RunCancelCommand":

@@ -64,7 +64,7 @@ namespace DSIronPython
 
             OnEvaluationEnd(true, engine, scope, code, bindingValues);
 
-            var result = scope.ContainsVariable(/*NXLT*/"OUT") ? scope.GetVariable(/*NXLT*/"OUT") : null;
+            var result = scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
 
             return OutputMarshaler.Marshal(result);
         }

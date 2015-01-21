@@ -48,20 +48,20 @@ namespace DSOffice
             Application excel = null;
 
             // get excel, throw exception if it is not
-            var officeType = Type.GetTypeFromProgID(/*NXLT*/"Excel.Application");
+            var officeType = Type.GetTypeFromProgID("Excel.Application");
             if (officeType == null)
                 throw new Exception("Excel is not installed.");
 
             try
             {
-                excel = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject(/*NXLT*/"Excel.Application");
+                excel = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject("Excel.Application");
             }
             catch (COMException e)
             {
                 // 0x800401E3 - the excel process simply was not running, we continue if we
                 // encounter this exception
 
-                if (!e.ToString().Contains(/*NXLT*/"0x800401E3"))
+                if (!e.ToString().Contains("0x800401E3"))
                 {
                     throw new Exception("Error setting up communication with Excel.  Try closing any open Excel instances.");
                 }
@@ -103,7 +103,7 @@ namespace DSOffice
         {
             get
             {
-                return Process.GetProcessesByName(/*NXLT*/"EXCEL").Length != 0;
+                return Process.GetProcessesByName("EXCEL").Length != 0;
             }
         }
 
@@ -279,7 +279,7 @@ namespace DSOffice
             return ws.Data;
         }
 
-        [Obsolete(/*NXLT*/"Use Excel.ReadFromFile node instead.")]
+        [Obsolete("Use Excel.ReadFromFile node instead.")]
         public static object[][] Read(string filePath, string sheetName)
         {
             return ReadFromFile(new FileInfo(filePath), sheetName);

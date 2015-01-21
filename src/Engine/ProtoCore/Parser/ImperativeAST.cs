@@ -71,22 +71,22 @@ namespace ProtoCore.AST.ImperativeAST
 
             string strLang = ProtoCore.Utils.CoreUtils.GetLanguageString(codeblock.language);
 
-            buf.Append(/*NXLT*/"[");
+            buf.Append("[");
             buf.Append(strLang);
-            buf.Append(/*NXLT*/"]");
+            buf.Append("]");
 
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"{");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("{");
+            buf.Append("\n");
 
             if (CodeBlockNode != null)
             {
                 buf.Append(CodeBlockNode.ToString());
             }
 
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"}");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("}");
+            buf.Append("\n");
 
             return buf.ToString();
         }
@@ -406,9 +406,9 @@ namespace ProtoCore.AST.ImperativeAST
 
             if (null != Expr)
             {
-                buf.Append(/*NXLT*/"[");
+                buf.Append("[");
                 buf.Append(Expr.ToString());
-                buf.Append(/*NXLT*/"]");
+                buf.Append("]");
             }
 
             if (null != Type)
@@ -468,7 +468,7 @@ namespace ProtoCore.AST.ImperativeAST
             if (CoreUtils.IsInternalMethod(functionName))
             {
                 if (!string.IsNullOrEmpty(postfix))
-                    buf.Append(/*NXLT*/"(");
+                    buf.Append("(");
 
                 string nameWithoutPrefix = functionName.Substring(DSASM.Constants.kInternalNamePrefix.Length);
                 Operator op;
@@ -477,7 +477,7 @@ namespace ProtoCore.AST.ImperativeAST
                 if (Enum.TryParse<Operator>(nameWithoutPrefix, out op))
                 {
                     buf.Append(FormalArguments[0].ToString());
-                    buf.Append(/*NXLT*/" " + Op.GetOpSymbol(op) + " ");
+                    buf.Append(" " + Op.GetOpSymbol(op) + " ");
                     buf.Append(FormalArguments[1].ToString());
                 }
                 else if (Enum.TryParse<UnaryOperator>(nameWithoutPrefix, out uop))
@@ -491,12 +491,12 @@ namespace ProtoCore.AST.ImperativeAST
                 }
 
                 if (!string.IsNullOrEmpty(postfix))
-                    buf.Append(/*NXLT*/")");
+                    buf.Append(")");
             }
             else
             {
                 buf.Append(functionName);
-                buf.Append(/*NXLT*/"(");
+                buf.Append("(");
 
                 if (FormalArguments != null)
                 {
@@ -505,11 +505,11 @@ namespace ProtoCore.AST.ImperativeAST
                         buf.Append(FormalArguments[n]);
                         if (n < FormalArguments.Count - 1)
                         {
-                            buf.Append(/*NXLT*/", ");
+                            buf.Append(", ");
                         }
                     }
                 }
-                buf.Append(/*NXLT*/")");
+                buf.Append(")");
             }
 
             buf.Append(postfix);
@@ -553,7 +553,7 @@ namespace ProtoCore.AST.ImperativeAST
                 buf.Append(NameNode.ToString());
                 string argType = ArgumentType.ToString();
                 if (!string.IsNullOrEmpty(argType))
-                    buf.Append(/*NXLT*/" : " + argType);
+                    buf.Append(" : " + argType);
             }
             else
                 buf.Append(NameNode.ToString());
@@ -603,7 +603,7 @@ namespace ProtoCore.AST.ImperativeAST
             {
                 buf.Append(Arguments[i].ToString());
                 if (i < Arguments.Count - 1)
-                    buf.Append(/*NXLT*/", ");
+                    buf.Append(", ");
             }
             return buf.ToString();
         }
@@ -640,17 +640,17 @@ namespace ProtoCore.AST.ImperativeAST
         {
             StringBuilder buf = new StringBuilder();
 
-            buf.Append(/*NXLT*/"{");
+            buf.Append("{");
             if (list != null)
             {
                 for (int i = 0; i < list.Count; ++i)
                 {
                     buf.Append(list[i].ToString());
                     if (i < list.Count - 1)
-                        buf.Append(/*NXLT*/", ");
+                        buf.Append(", ");
                 }
             }
-            buf.Append(/*NXLT*/"}");
+            buf.Append("}");
             buf.Append(base.ToString());
 
             return buf.ToString();
@@ -762,13 +762,13 @@ namespace ProtoCore.AST.ImperativeAST
         {
             StringBuilder buf = new StringBuilder();
 
-            buf.Append(/*NXLT*/"(");
+            buf.Append("(");
             buf.Append(ConditionExpression == null ? DSDefinitions.Keyword.Null : ConditionExpression.ToString());
-            buf.Append(/*NXLT*/" ? ");
+            buf.Append(" ? ");
             buf.Append(TrueExpression == null ? DSDefinitions.Keyword.Null : TrueExpression.ToString());
-            buf.Append(/*NXLT*/" : ");
+            buf.Append(" : ");
             buf.Append(FalseExpression == null ? DSDefinitions.Keyword.Null : FalseExpression.ToString());
-            buf.Append(/*NXLT*/")");
+            buf.Append(")");
 
             return buf.ToString();
         }
@@ -819,19 +819,19 @@ namespace ProtoCore.AST.ImperativeAST
 
             bool needBracket = LeftNode is BinaryExpressionNode || LeftNode is InlineConditionalNode || LeftNode is RangeExprNode;
             if (needBracket)
-                buf.Append(/*NXLT*/"(");
+                buf.Append("(");
             buf.Append(LeftNode.ToString());
             if (needBracket)
-                buf.Append(/*NXLT*/")");
+                buf.Append(")");
 
-            buf.Append(/*NXLT*/" " + CoreUtils.GetOperatorString(Optr) + " ");
+            buf.Append(" " + CoreUtils.GetOperatorString(Optr) + " ");
 
             needBracket = RightNode is BinaryExpressionNode || RightNode is InlineConditionalNode || RightNode is RangeExprNode;
             if (needBracket)
-                buf.Append(/*NXLT*/"(");
+                buf.Append("(");
             buf.Append(RightNode.ToString());
             if (needBracket)
-                buf.Append(/*NXLT*/")");
+                buf.Append(")");
 
             if (DSASM.Operator.assign == Optr)
                 buf.Append(DSASM.Constants.termline);
@@ -886,21 +886,21 @@ namespace ProtoCore.AST.ImperativeAST
 
             // elseif statement
             buf.Append(ProtoCore.DSDefinitions.Keyword.Elseif);
-            buf.Append(/*NXLT*/"(");
+            buf.Append("(");
             buf.Append(Expr);
-            buf.Append(/*NXLT*/")");
+            buf.Append(")");
 
             // elseif body
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"{");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("{");
+            buf.Append("\n");
             foreach (ImperativeNode node in Body)
             {
                 buf.Append(node.ToString());
             }
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"}");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("}");
+            buf.Append("\n");
             return buf.ToString();
         }
     }
@@ -992,21 +992,21 @@ namespace ProtoCore.AST.ImperativeAST
 
             // If statement
             buf.Append(ProtoCore.DSDefinitions.Keyword.If);
-            buf.Append(/*NXLT*/"(");
+            buf.Append("(");
             buf.Append(IfExprNode);  
-            buf.Append(/*NXLT*/")");
+            buf.Append(")");
             
             // If body
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"{");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("{");
+            buf.Append("\n");
             foreach (ImperativeNode node in IfBody)
             {
                 buf.Append(node.ToString());
             }
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"}");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("}");
+            buf.Append("\n");
 
             // Else if
             foreach (ImperativeNode node in ElseIfList)
@@ -1020,16 +1020,16 @@ namespace ProtoCore.AST.ImperativeAST
                 buf.Append(ProtoCore.DSDefinitions.Keyword.Else);
 
                 // else body
-                buf.Append(/*NXLT*/"\n");
-                buf.Append(/*NXLT*/"{");
-                buf.Append(/*NXLT*/"\n");
+                buf.Append("\n");
+                buf.Append("{");
+                buf.Append("\n");
                 foreach (ImperativeNode node in ElseBody)
                 {
                     buf.Append(node.ToString());
                 }
-                buf.Append(/*NXLT*/"\n");
-                buf.Append(/*NXLT*/"}");
-                buf.Append(/*NXLT*/"\n");
+                buf.Append("\n");
+                buf.Append("}");
+                buf.Append("\n");
             }
 
             return buf.ToString();
@@ -1074,21 +1074,21 @@ namespace ProtoCore.AST.ImperativeAST
 
             // If statement
             buf.Append(ProtoCore.DSDefinitions.Keyword.While);
-            buf.Append(/*NXLT*/"(");
+            buf.Append("(");
             buf.Append(Expr);
-            buf.Append(/*NXLT*/")");
+            buf.Append(")");
 
             // If body
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"{");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("{");
+            buf.Append("\n");
             foreach (ImperativeNode node in Body)
             {
                 buf.Append(node.ToString());
             }
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"}");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("}");
+            buf.Append("\n");
 
             return buf.ToString();
         }
@@ -1168,30 +1168,30 @@ namespace ProtoCore.AST.ImperativeAST
 
             string postfix = base.ToString();
             if (!string.IsNullOrEmpty(postfix))
-                buf.Append(/*NXLT*/"(");
+                buf.Append("(");
 
             buf.Append(FromNode.ToString());
-            buf.Append(/*NXLT*/"..");
+            buf.Append("..");
             if (HasRangeAmountOperator)
-                buf.Append(/*NXLT*/"#");
+                buf.Append("#");
             buf.Append(ToNode.ToString());
 
             if (StepNode != null)
             {
-                buf.Append(/*NXLT*/"..");
+                buf.Append("..");
                 if (DSASM.RangeStepOperator.approxsize == stepoperator)
                 {
-                    buf.Append(/*NXLT*/"~");
+                    buf.Append("~");
                 }
                 else if (DSASM.RangeStepOperator.num == stepoperator)
                 {
-                    buf.Append(/*NXLT*/"#");
+                    buf.Append("#");
                 }
                 buf.Append(StepNode.ToString());
             }
 
             if (!string.IsNullOrEmpty(postfix))
-                buf.Append(/*NXLT*/")");
+                buf.Append(")");
 
             buf.Append(postfix);
 
@@ -1252,25 +1252,25 @@ namespace ProtoCore.AST.ImperativeAST
 
             // If statement
             buf.Append(ProtoCore.DSDefinitions.Keyword.For);
-            buf.Append(/*NXLT*/"(");
+            buf.Append("(");
             buf.Append(loopVar);
-            buf.Append(/*NXLT*/" ");
+            buf.Append(" ");
             buf.Append(ProtoCore.DSDefinitions.Keyword.In);
-            buf.Append(/*NXLT*/" ");
+            buf.Append(" ");
             buf.Append(expression);
-            buf.Append(/*NXLT*/")");
+            buf.Append(")");
 
             // If body
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"{");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("{");
+            buf.Append("\n");
             foreach (ImperativeNode node in body)
             {
                 buf.Append(node.ToString());
             }
-            buf.Append(/*NXLT*/"\n");
-            buf.Append(/*NXLT*/"}");
-            buf.Append(/*NXLT*/"\n");
+            buf.Append("\n");
+            buf.Append("}");
+            buf.Append("\n");
 
 
             return buf.ToString();
@@ -1333,7 +1333,7 @@ namespace ProtoCore.AST.ImperativeAST
         {
             StringBuilder buf = new StringBuilder();
             buf.Append(ProtoCore.DSDefinitions.Keyword.Break);
-            buf.Append(/*NXLT*/";");
+            buf.Append(";");
             return buf.ToString();
         }
 
@@ -1349,7 +1349,7 @@ namespace ProtoCore.AST.ImperativeAST
         {
             StringBuilder buf = new StringBuilder();
             buf.Append(ProtoCore.DSDefinitions.Keyword.Continue);
-            buf.Append(/*NXLT*/";");
+            buf.Append(";");
             return buf.ToString();
         }
 

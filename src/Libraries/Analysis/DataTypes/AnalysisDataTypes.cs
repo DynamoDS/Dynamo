@@ -53,12 +53,12 @@ namespace Analysis.DataTypes
         {
             if (surface == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"surface");
+                throw new ArgumentNullException("surface");
             }
 
             if (points == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"points");
+                throw new ArgumentNullException("points");
             }
 
             if (!points.Any())
@@ -83,12 +83,12 @@ namespace Analysis.DataTypes
         {
             if (surface == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"surface");
+                throw new ArgumentNullException("surface");
             }
 
             if (points == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"points");
+                throw new ArgumentNullException("points");
             }
 
             if (!points.Any())
@@ -98,12 +98,12 @@ namespace Analysis.DataTypes
 
             if (resultNames == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"resultNames");
+                throw new ArgumentNullException("resultNames");
             }
 
             if (resultValues == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"resultValues");
+                throw new ArgumentNullException("resultValues");
             }
 
             if (resultNames.Count != resultValues.Count)
@@ -175,7 +175,7 @@ namespace Analysis.DataTypes
         {
             if (points == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"points");
+                throw new ArgumentNullException("points");
             }
 
             var results = new Dictionary<string, IList<Vector>>();
@@ -194,17 +194,17 @@ namespace Analysis.DataTypes
 
             if (points == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"points");
+                throw new ArgumentNullException("points");
             }
 
             if (resultNames == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"resultNames");
+                throw new ArgumentNullException("resultNames");
             }
 
             if (resultValues == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"resultValues");
+                throw new ArgumentNullException("resultValues");
             }
 
             if (resultNames.Count != resultValues.Count)
@@ -262,7 +262,7 @@ namespace Analysis.DataTypes
         {
             if (points == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"points");
+                throw new ArgumentNullException("points");
             }
 
             var results = new Dictionary<string, IList<double>>();
@@ -278,17 +278,17 @@ namespace Analysis.DataTypes
         {
             if (points == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"points");
+                throw new ArgumentNullException("points");
             }
 
             if (resultNames == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"resultNames");
+                throw new ArgumentNullException("resultNames");
             }
 
             if (resultValues == null)
             {
-                throw new ArgumentNullException(/*NXLT*/"resultValues");
+                throw new ArgumentNullException("resultValues");
             }
 
             if (resultNames.Count != resultValues.Count)

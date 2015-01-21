@@ -14,7 +14,7 @@ namespace Dynamo.Models
             set
             {
                 text = value;
-                RaisePropertyChanged(/*NXLT*/"Text");
+                RaisePropertyChanged("Text");
             }
         }
 
@@ -30,7 +30,7 @@ namespace Dynamo.Models
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name != /*NXLT*/"Text") 
+            if (name != "Text") 
                 return base.UpdateValueCore(name, value, recorder);
             
             Text = value;
@@ -44,19 +44,19 @@ namespace Dynamo.Models
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             var helper = new XmlElementHelper(element);
-            helper.SetAttribute(/*NXLT*/"guid", GUID);
-            helper.SetAttribute(/*NXLT*/"text", Text);
-            helper.SetAttribute(/*NXLT*/"x", X);
-            helper.SetAttribute(/*NXLT*/"y", Y);
+            helper.SetAttribute("guid", GUID);
+            helper.SetAttribute("text", Text);
+            helper.SetAttribute("x", X);
+            helper.SetAttribute("y", Y);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var helper = new XmlElementHelper(nodeElement);
-            GUID = helper.ReadGuid(/*NXLT*/"guid", GUID);
-            Text = helper.ReadString(/*NXLT*/"text", /*NXLT*/"New Note");
-            X = helper.ReadDouble(/*NXLT*/"x", 0.0);
-            Y = helper.ReadDouble(/*NXLT*/"y", 0.0);
+            GUID = helper.ReadGuid("guid", GUID);
+            Text = helper.ReadString("text", "New Note");
+            X = helper.ReadDouble("x", 0.0);
+            Y = helper.ReadDouble("y", 0.0);
         }
 
         #endregion

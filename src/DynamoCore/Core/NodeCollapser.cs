@@ -91,7 +91,7 @@ namespace Dynamo.Utilities
 
                 #region Detect 1-node holes (higher-order function extraction)
 
-                dynamoModel.Logger.LogWarning(/*NXLT*/"Could not repair 1-node holes", WarningLevel.Mild);
+                dynamoModel.Logger.LogWarning("Could not repair 1-node holes", WarningLevel.Mild);
 
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
                 //var curriedNodeArgs =

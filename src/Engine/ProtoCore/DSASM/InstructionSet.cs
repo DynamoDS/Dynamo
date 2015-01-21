@@ -127,7 +127,7 @@ namespace ProtoCore.DSASM
         public int type;
     }
 
-    [System.Diagnostics.DebuggerDisplay(/*NXLT*/"{optype}, opdata = {opdata}, metaData = {metaData.type}")]
+    [System.Diagnostics.DebuggerDisplay("{optype}, opdata = {opdata}, metaData = {metaData.type}")]
     public struct StackValue
     {
         public Int64 opdata;

@@ -22,7 +22,7 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DynamoTestPath = null;
-        const string DYNAMO_SETTINGS_FILE = /*NXLT*/"DynamoSettings.xml";
+        const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
         private LengthUnit lengthUnit;
         private AreaUnit areaUnit;
         private VolumeUnit volumeUnit;
@@ -48,7 +48,7 @@ namespace Dynamo
             set
             {
                 numberFormat = value;
-                RaisePropertyChanged(/*NXLT*/"NumberFormat");
+                RaisePropertyChanged("NumberFormat");
             }
         }
 
@@ -58,7 +58,7 @@ namespace Dynamo
             set
             {
                 lengthUnit = value;
-                RaisePropertyChanged(/*NXLT*/"LengthUnit");
+                RaisePropertyChanged("LengthUnit");
             }
         }
 
@@ -78,7 +78,7 @@ namespace Dynamo
             set
             {
                 areaUnit = value;
-                RaisePropertyChanged(/*NXLT*/"AreaUnit");
+                RaisePropertyChanged("AreaUnit");
             }
         }
 
@@ -88,7 +88,7 @@ namespace Dynamo
             set
             {
                 volumeUnit = value;
-                RaisePropertyChanged(/*NXLT*/"VolumeUnit");
+                RaisePropertyChanged("VolumeUnit");
             }
         }
 
@@ -122,7 +122,7 @@ namespace Dynamo
             AreaUnit = DynamoUnits.AreaUnit.SquareMeter;
             VolumeUnit = VolumeUnit.CubicMeter;
             PackageDirectoriesToUninstall = new List<string>();
-            NumberFormat = /*NXLT*/"f3";
+            NumberFormat = "f3";
             LastUpdateDownloadPath = "";
         }
 

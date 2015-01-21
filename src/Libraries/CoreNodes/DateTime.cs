@@ -141,24 +141,24 @@ namespace DSCore
         /// </summary>
         /// <param name="dateTime">A DateTime.</param>
         [MultiReturn(
-            /*NXLT*/"year",
-            /*NXLT*/"month",
-            /*NXLT*/"day",
-            /*NXLT*/"hour",
-            /*NXLT*/"minute",
-            /*NXLT*/"second",
-            /*NXLT*/"millisecond")]
+            "year",
+            "month",
+            "day",
+            "hour",
+            "minute",
+            "second",
+            "millisecond")]
         public static Dictionary<string, int> Components(System.DateTime dateTime)
         {
             return new Dictionary<string, int>
             {
-                { /*NXLT*/"year", dateTime.Year },
-                { /*NXLT*/"month", dateTime.Month },
-                { /*NXLT*/"day", dateTime.Day },
-                { /*NXLT*/"hour", dateTime.Hour },
-                { /*NXLT*/"minute", dateTime.Minute },
-                { /*NXLT*/"second", dateTime.Second },
-                { /*NXLT*/"millisecond", dateTime.Millisecond },
+                { "year", dateTime.Year },
+                { "month", dateTime.Month },
+                { "day", dateTime.Day },
+                { "hour", dateTime.Hour },
+                { "minute", dateTime.Minute },
+                { "second", dateTime.Second },
+                { "millisecond", dateTime.Millisecond },
             };
         }
 
@@ -321,16 +321,16 @@ namespace DSCore
         ///     Extracts the individual components of a TimeSpan.
         /// </summary>
         /// <param name="timeSpan">A TimeSpan.</param>
-        [MultiReturn(/*NXLT*/"days", "hours", "minutes", "seconds", "milliseconds")]
+        [MultiReturn("days", "hours", "minutes", "seconds", "milliseconds")]
         public static Dictionary<string, int> Components(System.TimeSpan timeSpan)
         {
             return new Dictionary<string, int>
             {
-                { /*NXLT*/"days", timeSpan.Days },
-                { /*NXLT*/"hours", timeSpan.Hours },
-                { /*NXLT*/"minutes", timeSpan.Minutes },
-                { /*NXLT*/"seconds", timeSpan.Seconds },
-                { /*NXLT*/"milliseconds", timeSpan.Milliseconds }
+                { "days", timeSpan.Days },
+                { "hours", timeSpan.Hours },
+                { "minutes", timeSpan.Minutes },
+                { "seconds", timeSpan.Seconds },
+                { "milliseconds", timeSpan.Milliseconds }
             };
         }
 

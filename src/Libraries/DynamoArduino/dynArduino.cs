@@ -64,9 +64,9 @@ namespace Dynamo.Nodes
         public void Dispose() { }
     }
 
-    [NodeName(/*NXLT*/"Arduino")]
+    [NodeName("Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription(/*NXLT*/"ArduinoDescription",typeof(Properties.Resources))]
+    [NodeDescription("ArduinoDescription",typeof(Properties.Resources))]
     [IsVisibleInDynamoLibrary(false)]
     public class Arduino : NodeModel
     {
@@ -74,8 +74,8 @@ namespace Dynamo.Nodes
 
         public Arduino()
         {
-            InPortData.Add(new PortData(/*NXLT*/"exec", Resources.ArduinoPortDataExecToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"arduino", Resources.ArduinoPortDataOutputToolTip));
+            InPortData.Add(new PortData("exec", Resources.ArduinoPortDataExecToolTip));
+            OutPortData.Add(new PortData("arduino", Resources.ArduinoPortDataOutputToolTip));
 
             RegisterAllPorts();
 
@@ -84,7 +84,7 @@ namespace Dynamo.Nodes
                 if (Port.IsOpen)
                     Port.Close();
             }
-            Port = new SerialPort { BaudRate = 9600, NewLine = /*NXLT*/"\r\n", DtrEnable = true };
+            Port = new SerialPort { BaudRate = 9600, NewLine = "\r\n", DtrEnable = true };
         }
 
         public override void Dispose()
@@ -146,18 +146,18 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName(/*NXLT*/"Read Arduino")]
+    [NodeName("Read Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription(/*NXLT*/"ReadArduinoDescription", typeof(Properties.Resources))]
+    [NodeDescription("ReadArduinoDescription", typeof(Properties.Resources))]
     public class ArduinoRead : NodeModel
     {
         SerialPort port;
 
         public ArduinoRead()
         {
-            InPortData.Add(new PortData(/*NXLT*/"arduino", Resources.PortDataArduinoToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"delimiter", Resources.ArduionReadPortDataDelimiterToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"output", Resources.ArduinoReadPortDataOutputToolTip));
+            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
+            InPortData.Add(new PortData("delimiter", Resources.ArduionReadPortDataDelimiterToolTip));
+            OutPortData.Add(new PortData("output", Resources.ArduinoReadPortDataOutputToolTip));
 
             RegisterAllPorts();
         }
@@ -199,18 +199,18 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName(/*NXLT*/"Write Arduino")]
+    [NodeName("Write Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription(/*NXLT*/"WriteArduinoDescription",typeof(Properties.Resources))]
+    [NodeDescription("WriteArduinoDescription",typeof(Properties.Resources))]
     public class ArduinoWrite : NodeModel
     {
         SerialPort port;
 
         public ArduinoWrite()
         {
-            InPortData.Add(new PortData(/*NXLT*/"arduino", Resources.PortDataArduinoToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"text", Resources.ArduionWritePortDataTextToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"success?", Resources.ArduinoWritePortDataOutputToolTip));
+            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
+            InPortData.Add(new PortData("text", Resources.ArduionWritePortDataTextToolTip));
+            OutPortData.Add(new PortData("success?", Resources.ArduinoWritePortDataOutputToolTip));
 
             RegisterAllPorts();
         }
@@ -218,7 +218,7 @@ namespace Dynamo.Nodes
         private void WriteDataToArduino(string dataLine)
         {
 
-            dataLine = dataLine + /*NXLT*/"\r\n"; //termination
+            dataLine = dataLine + "\r\n"; //termination
             port.WriteLine(dataLine);
 
         }

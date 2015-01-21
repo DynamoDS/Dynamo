@@ -90,10 +90,10 @@ namespace Dynamo.Utilities
             // and concatenate with all dlls in the current directory
             var allDynamoAssemblyPaths =
                 DynamoPathManager.Instance.Nodes.SelectMany(
-                    path => Directory.GetFiles(path, /*NXLT*/"*.dll", SearchOption.TopDirectoryOnly));
+                    path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly));
 
             // add the core assembly to get things like code block nodes and watches.
-            //allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, /*NXLT*/"DynamoCore.dll"));
+            //allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, "DynamoCore.dll"));
 
             ResolveEventHandler resolver = 
                 (sender, args) =>
@@ -200,17 +200,17 @@ namespace Dynamo.Utilities
             }
             catch (ReflectionTypeLoadException e)
             {
-                Log(/*NXLT*/"Could not load types.");
+                Log("Could not load types.");
                 Log(e);
                 foreach (var ex in e.LoaderExceptions)
                 {
-                    Log(/*NXLT*/"Dll Load Exception:");
+                    Log("Dll Load Exception:");
                     Log(ex.ToString());
                 }
             }
             catch (Exception e)
             {
-                Log(/*NXLT*/"Could not load types.");
+                Log("Could not load types.");
                 Log(e);
             }
 
@@ -240,8 +240,8 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception e)
                 {
-                    Log(/*NXLT*/"Failed to load type from " + assembly.FullName);
-                    Log(/*NXLT*/"The type was " + t.FullName);
+                    Log("Failed to load type from " + assembly.FullName);
+                    Log("The type was " + t.FullName);
                     Log(e);
                 }
             }

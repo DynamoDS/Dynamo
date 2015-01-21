@@ -65,8 +65,8 @@ namespace Dynamo.Core
             Deletion
         }
 
-        private const string UserActionAttrib = /*NXLT*/"UserAction";
-        private const string ActionGroup = /*NXLT*/"ActionGroup";
+        private const string UserActionAttrib = "UserAction";
+        private const string ActionGroup = "ActionGroup";
 
         private readonly IUndoRedoRecorderClient undoClient;
         private readonly XmlDocument document = new XmlDocument();
@@ -81,7 +81,7 @@ namespace Dynamo.Core
         public UndoRedoRecorder(IUndoRedoRecorderClient undoClient)
         {
             if (null == undoClient)
-                throw new ArgumentNullException(/*NXLT*/"undoClient");
+                throw new ArgumentNullException("undoClient");
 
             // A single instance of UndoRedoRecorder serves a single undo client
             // object, which implements IUndoRedoRecorderClient interface. See 
@@ -120,7 +120,7 @@ namespace Dynamo.Core
         private void EndActionGroup()
         {
             if (null == currentActionGroup)
-                throw new InvalidOperationException(/*NXLT*/"No open group to end");
+                throw new InvalidOperationException("No open group to end");
 
             // If there wasn't anything recorded between BeginActionGroup and 
             // the corresponding EndActionGroup method, then the action group 
@@ -235,7 +235,7 @@ namespace Dynamo.Core
             if (redoStack.Count > 0)
             {
                 throw new InvalidOperationException(
-                    /*NXLT*/"UndoStack cannot be popped with non-empty RedoStack");
+                    "UndoStack cannot be popped with non-empty RedoStack");
             }
 
             return PopActionGroupFromUndoStack();
@@ -262,7 +262,7 @@ namespace Dynamo.Core
         {
             if (null != currentActionGroup)
             {
-                const string message = /*NXLT*/"An existing open undo group detected";
+                const string message = "An existing open undo group detected";
                 throw new InvalidOperationException(message);
             }
         }
@@ -282,9 +282,9 @@ namespace Dynamo.Core
         private bool IsRecordedInActionGroup(XmlElement group, ModelBase model)
         {
             if (null == group)
-                throw new ArgumentNullException(/*NXLT*/"group");
+                throw new ArgumentNullException("group");
             if (null == model)
-                throw new ArgumentNullException(/*NXLT*/"model");
+                throw new ArgumentNullException("model");
 
             Guid guid = model.GUID;
             foreach (XmlNode childNode in group.ChildNodes)
@@ -293,7 +293,7 @@ namespace Dynamo.Core
                 // those sample models do not support this so in such cases identity 
                 // check will not be performed.
                 // 
-                XmlAttribute guidAttribute = childNode.Attributes[/*NXLT*/"guid"];
+                XmlAttribute guidAttribute = childNode.Attributes["guid"];
                 if (null != guidAttribute && (guid == Guid.Parse(guidAttribute.Value)))
                     return true; // This model was found to be recorded.
             }
@@ -312,8 +312,8 @@ namespace Dynamo.Core
         {
             if (CanUndo == false)
             {
-                throw new InvalidOperationException(/*NXLT*/"Invalid call to " +
-                    /*NXLT*/"'PopActionGroupFromUndoStack' when the undo stack is empty");
+                throw new InvalidOperationException("Invalid call to " +
+                    "'PopActionGroupFromUndoStack' when the undo stack is empty");
             }
 
             return undoStack.Pop();
@@ -323,8 +323,8 @@ namespace Dynamo.Core
         {
             if (CanRedo == false)
             {
-                throw new InvalidOperationException(/*NXLT*/"Invalid call to " +
-                    /*NXLT*/"'PopActionGroupFromRedoStack' when the undo stack is empty");
+                throw new InvalidOperationException("Invalid call to " +
+                    "'PopActionGroupFromRedoStack' when the undo stack is empty");
             }
 
             return redoStack.Pop();

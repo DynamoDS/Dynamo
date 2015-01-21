@@ -7,17 +7,17 @@ namespace Dynamo.Nodes
 {
     public class Ellipse : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"Ellipse.ByOriginRadii",
-                /*NXLT*/"Ellipse.ByOriginRadii@Point,double,double");
+            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Ellipse.ByOriginRadii",
+                "Ellipse.ByOriginRadii@Point,double,double");
         }
     }
 
     public class EllipticalArc : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -25,35 +25,35 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
-                /*NXLT*/"EllipseArc.ByPlaneRadiiStartAngleSweepAngle",
-                /*NXLT*/"EllipseArc.ByPlaneRadiiStartAngleSweepAngle@Plane,double,double,double,double");
+            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+                "EllipseArc.ByPlaneRadiiStartAngleSweepAngle",
+                "EllipseArc.ByPlaneRadiiStartAngleSweepAngle@Plane,double,double,double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement zAxis = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
-                /*NXLT*/"Vector.ZAxis",
-                /*NXLT*/"Vector.ZAxis");
+                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                "Vector.ZAxis",
+                "Vector.ZAxis");
             migrationData.AppendNode(zAxis);
 
             XmlElement planeNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "", /*NXLT*/"Plane.ByOriginNormal",
-                /*NXLT*/"Plane.ByOriginNormal@Point,Vector");
+                data.Document, oldNode, 1, "", "Plane.ByOriginNormal",
+                "Plane.ByOriginNormal@Point,Vector");
             planeNode.SetAttribute("isVisible", "false");
             migrationData.AppendNode(planeNode);
             string planeNodeId = MigrationManager.GetGuidFromXmlElement(planeNode);
 
             XmlElement converterNode0 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2,/*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"Math.RadiansToDegrees", /*NXLT*/"Math.RadiansToDegrees@double");
+                data.Document, oldNode, 2,"DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode0);
             string converterNode0Id = MigrationManager.GetGuidFromXmlElement(converterNode0);
 
             XmlElement converterNode1 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 3,/*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"Math.RadiansToDegrees", /*NXLT*/"Math.RadiansToDegrees@double");
+                data.Document, oldNode, 3,"DSCoreNodes.dll",
+                "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode1);
             string converterNode1Id = MigrationManager.GetGuidFromXmlElement(converterNode1);
 

@@ -31,7 +31,7 @@
 
         public override string ToString()
         {
-            return string.Format(/*NXLT*/"{0}.{1}.{2}.{3}",
+            return string.Format("{0}.{1}.{2}.{3}",
                 this.FileMajor.ToString(),
                 this.FileMinor.ToString(),
                 this.FileBuild.ToString(),

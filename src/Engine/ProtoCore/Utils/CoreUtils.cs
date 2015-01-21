@@ -112,14 +112,14 @@ namespace ProtoCore.Utils
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.Compiler.AccessSpecifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, /*NXLT*/"%param"),
+            NameNode = BuildAssocIdentifier(core, "%param"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)operand), UID = (int)operand }
         });
         funcDefNode.Signature = args;
 
         ProtoCore.AST.AssociativeAST.CodeBlockNode body = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
         ProtoCore.AST.AssociativeAST.IdentifierNode _return = BuildAssocIdentifier(core, ProtoCore.DSDefinitions.Keyword.Return, ProtoCore.PrimitiveType.kTypeReturn);
-        ProtoCore.AST.AssociativeAST.IdentifierNode param = BuildAssocIdentifier(core, /*NXLT*/"%param");
+        ProtoCore.AST.AssociativeAST.IdentifierNode param = BuildAssocIdentifier(core, "%param");
         body.Body.Add(new ProtoCore.AST.AssociativeAST.BinaryExpressionNode() { LeftNode = _return, Optr = ProtoCore.DSASM.Operator.assign, RightNode = new ProtoCore.AST.AssociativeAST.UnaryExpressionNode() { Expression = param, Operator = op } });
         funcDefNode.FunctionBody = body;
         (root as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(funcDefNode);
@@ -136,30 +136,30 @@ namespace ProtoCore.Utils
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.Compiler.AccessSpecifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, /*NXLT*/"%condition"),
+            NameNode = BuildAssocIdentifier(core, "%condition"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)condition), UID = (int)condition }
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.Compiler.AccessSpecifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, /*NXLT*/"%trueExp"),
+            NameNode = BuildAssocIdentifier(core, "%trueExp"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
             access = ProtoCore.Compiler.AccessSpecifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, /*NXLT*/"%falseExp"),
+            NameNode = BuildAssocIdentifier(core, "%falseExp"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
         });
         funcDefNode.Signature = args;
 
         ProtoCore.AST.AssociativeAST.CodeBlockNode body = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
         ProtoCore.AST.AssociativeAST.IdentifierNode _return = BuildAssocIdentifier(core, ProtoCore.DSDefinitions.Keyword.Return, ProtoCore.PrimitiveType.kTypeReturn);
-        ProtoCore.AST.AssociativeAST.IdentifierNode con = BuildAssocIdentifier(core, /*NXLT*/"%condition");
-        ProtoCore.AST.AssociativeAST.IdentifierNode t = BuildAssocIdentifier(core, /*NXLT*/"%trueExp");
-        ProtoCore.AST.AssociativeAST.IdentifierNode f = BuildAssocIdentifier(core, /*NXLT*/"%falseExp");
+        ProtoCore.AST.AssociativeAST.IdentifierNode con = BuildAssocIdentifier(core, "%condition");
+        ProtoCore.AST.AssociativeAST.IdentifierNode t = BuildAssocIdentifier(core, "%trueExp");
+        ProtoCore.AST.AssociativeAST.IdentifierNode f = BuildAssocIdentifier(core, "%falseExp");
 
         body.Body.Add(new ProtoCore.AST.AssociativeAST.BinaryExpressionNode() { LeftNode = _return, Optr = Operator.assign, RightNode = new ProtoCore.AST.AssociativeAST.InlineConditionalNode() { ConditionExpression = con, TrueExpression = t, FalseExpression = f } });
         funcDefNode.FunctionBody = body;

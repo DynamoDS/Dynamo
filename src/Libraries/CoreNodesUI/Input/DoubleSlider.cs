@@ -10,7 +10,7 @@ using Dynamo.Models;
 
 namespace Dynamo.Nodes
 {
-    [NodeName(/*NXLT*/"Double Slider")]
+    [NodeName("Double Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("DoubleSliderDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
@@ -34,7 +34,7 @@ namespace Dynamo.Nodes
                 _max = value;
                 if (_max < Value)
                     Value = _max;
-                RaisePropertyChanged(/*NXLT*/"Max");
+                RaisePropertyChanged("Max");
             }
         }
 
@@ -47,7 +47,7 @@ namespace Dynamo.Nodes
                 _min = value;
                 if (_min > Value)
                     Value = _min;
-                RaisePropertyChanged(/*NXLT*/"Min");
+                RaisePropertyChanged("Min");
             }
         }
 
@@ -58,8 +58,8 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context); // Base implementation must be called.
 
             XmlElement outEl = element.OwnerDocument.CreateElement("Range");
-            outEl.SetAttribute(/*NXLT*/"min", Min.ToString(CultureInfo.InvariantCulture));
-            outEl.SetAttribute(/*NXLT*/"max", Max.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
             element.AppendChild(outEl);
         }
 
@@ -69,7 +69,7 @@ namespace Dynamo.Nodes
 
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
-                if (!subNode.Name.Equals(/*NXLT*/"Range"))
+                if (!subNode.Name.Equals("Range"))
                     continue;
 
                 double min = Min;
@@ -79,11 +79,11 @@ namespace Dynamo.Nodes
                 {
                     foreach (XmlAttribute attr in subNode.Attributes)
                     {
-                        if (attr.Name.Equals(/*NXLT*/"min"))
+                        if (attr.Name.Equals("min"))
                             min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals(/*NXLT*/"max"))
+                        else if (attr.Name.Equals("max"))
                             max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals(/*NXLT*/"value"))
+                        else if (attr.Name.Equals("value"))
                             Value = Convert.ToDouble(subNode.InnerText, CultureInfo.InvariantCulture);
                     }
                 }
@@ -100,13 +100,13 @@ namespace Dynamo.Nodes
             var converter = new DoubleDisplay();
             switch (name)
             {
-                case /*NXLT*/"Min":
+                case "Min":
                     Min = ((double)converter.ConvertBack(value, typeof(double), null, null));
                     return true; // UpdateValueCore handled.
-                case /*NXLT*/"Max":
+                case "Max":
                     Max = ((double)converter.ConvertBack(value, typeof(double), null, null));
                     return true; // UpdateValueCore handled.
-                case /*NXLT*/"Value":
+                case "Value":
                     Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
                     if (Value >= Max)
                     {
