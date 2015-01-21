@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
     [NodeName(/*NXLT*/"Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription(/*NXLT*/"WatchDescription", typeof(Resources))]
-    [NodeSearchTags(/*NXLT*/"WatchSearchTags", typeof(Resources))]
+    [NodeSearchTags("WatchSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Watch : NodeModel
     {

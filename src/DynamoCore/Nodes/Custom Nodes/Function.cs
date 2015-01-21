@@ -174,7 +174,7 @@ namespace Dynamo.Nodes
     [NodeName(/*NXLT*/"Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription(/*NXLT*/"A function parameter, use with custom nodes")]
-    [NodeSearchTags(/*NXLT*/"variable", /*NXLT*/"argument", /*NXLT*/"parameter")]
+    [NodeSearchTags("SymbolSearchTags",typeof(Properties.Resources))]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]

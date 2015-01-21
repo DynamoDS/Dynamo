@@ -384,4 +384,7 @@ Sorry about that.</value>
   <data name="WorkbenchNotOpen" xml:space="preserve">
     <value>Workbench could not be opened.</value>
   </data>
+  <data name="SymbolSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+  </data>
 </root>

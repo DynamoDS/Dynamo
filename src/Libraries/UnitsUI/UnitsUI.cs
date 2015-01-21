@@ -199,7 +199,7 @@ namespace UnitsUI
     [NodeName(/*NXLT*/"Length From String")]
     [NodeCategory(/*NXLT*/"Units.Length.Create")]
     [NodeDescription(/*NXLT*/"LengthFromStringDescription",typeof(Properties.Resources))]
-    [NodeSearchTags(/*NXLT*/"LengthFromStringSearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags("LengthFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
@@ -248,7 +248,7 @@ namespace UnitsUI
     [NodeName(/*NXLT*/"Area From String")]
     [NodeCategory(/*NXLT*/"Units.Area.Create")]
     [NodeDescription(/*NXLT*/"AreaFromStringDescription",typeof(Properties.Resources))]
-    [NodeSearchTags(/*NXLT*/"AreaFromStringSearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags("AreaFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
     {
@@ -279,7 +279,7 @@ namespace UnitsUI
     [NodeName(/*NXLT*/"Volume From String")]
     [NodeCategory(/*NXLT*/"Units.Volume.Create")]
     [NodeDescription(/*NXLT*/"VolumeFromStringDescription",typeof(Properties.Resources))]
-    [NodeSearchTags(/*NXLT*/"VolumeFromStringSearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags("VolumeFromStringSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
     {
@@ -301,7 +301,7 @@ namespace UnitsUI
     [NodeName(/*NXLT*/"Unit Types")]
     [NodeCategory(/*NXLT*/"Units")]
     [NodeDescription(/*NXLT*/"UnitTypesDescription", typeof(Properties.Resources))]
-    [NodeSearchTags(/*NXLT*/"UnitTypesSearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags("UnitTypesSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
