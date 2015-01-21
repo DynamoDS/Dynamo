@@ -114,7 +114,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("Elements", "The selected elements."));
             RegisterAllPorts();
 
-            SelectCommand = new DelegateCommand(Select, CanBeginSelect);
+            SelectCommand = new DelegateCommand(InteractivelySelect, CanBeginSelect);
             Prefix = prefix;
 
             State = ElementState.Warning; 
@@ -176,7 +176,7 @@ namespace Dynamo.Nodes
         /// Callback when selection button is clicked. 
         /// Calls the selection action, and stores the ElementId(s) of the selected objects.
         /// </summary>
-        protected virtual void Select(object parameter)
+        protected virtual void InteractivelySelect()
         {
             try
             {
