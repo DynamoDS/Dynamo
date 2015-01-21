@@ -295,9 +295,38 @@ namespace Dynamo.ViewModels
 
         private void RemoveEntry(NodeSearchElement entry)
         {
-            var treeStack = new Stack<NodeCategoryViewModel>();
-            var nameStack = new Stack<string>(entry.Categories.Reverse());
-            var target = libraryRoot;
+            var branch = GetTreeBranchToNode(libraryRoot, entry);
+            if (branch == null)
+                return;
+            var treeStack = new Stack<NodeCategoryViewModel>(branch.Reverse());
+
+            var target = treeStack.Pop();
+            var location = target.Entries.Select((e, i) => new { e.Model, i })
+                .FirstOrDefault(x => entry == x.Model);
+            if (location == null)
+                return;
+            target.Entries.RemoveAt(location.i);
+
+            while (!target.Items.Any() && treeStack.Any())
+            {
+                var parent = treeStack.Pop();
+                parent.SubCategories.Remove(target);
+
+                // Check to see if all items under "parent" are removed, leaving behind only one 
+                // entry that is "ClassInformationViewModel" (a class used to show StandardPanel).
+                // If that is the case, remove the "ClassInformationViewModel" at the same time.
+                if (parent.Items.Count == 1 && parent.Items[0] is ClassInformationViewModel)
+                    parent.Items.RemoveAt(0);
+                target = parent;
+            }
+        }
+
+        private static IEnumerable<NodeCategoryViewModel> GetTreeBranchToNode(
+            NodeCategoryViewModel rootNode, NodeSearchElement leafNode)
+        {
+            var nodesOnBranch = new Stack<NodeCategoryViewModel>();
+            var nameStack = new Stack<string>(leafNode.Categories.Reverse());
+            var target = rootNode;
             bool isCheckedForClassesCategory = false;
             while (nameStack.Any())
             {
@@ -320,29 +349,14 @@ namespace Dynamo.ViewModels
                         continue;
                     }
 
-                    return;
+                    return null;
                 }
-                treeStack.Push(target);
+                nodesOnBranch.Push(target);
                 target = newTarget;
             }
-            var location = target.Entries.Select((e, i) => new { e.Model, i })
-                .FirstOrDefault(x => entry == x.Model);
-            if (location == null)
-                return;
-            target.Entries.RemoveAt(location.i);
 
-            while (!target.Items.Any() && treeStack.Any())
-            {
-                var parent = treeStack.Pop();
-                parent.SubCategories.Remove(target);
-
-                // Check to see if all items under "parent" are removed, leaving behind only one 
-                // entry that is "ClassInformationViewModel" (a class used to show StandardPanel).
-                // If that is the case, remove the "ClassInformationViewModel" at the same time.
-                if (parent.Items.Count == 1 && parent.Items[0] is ClassInformationViewModel)
-                    parent.Items.RemoveAt(0);
-                target = parent;
-            }
+            nodesOnBranch.Push(target);
+            return nodesOnBranch;
         }
 
         /// <summary>
