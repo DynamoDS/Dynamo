@@ -117,7 +117,6 @@ limitations under the License.
     <Compile Include="Search\NodeSearchModel.cs" />
     <Compile Include="Search\SearchElements\CodeBlockNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeModelSearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeModelSearchElementBase.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />

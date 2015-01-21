@@ -238,12 +238,6 @@ namespace Dynamo.Search
         }
 
         // Not used anywhere.
-        public void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ((SearchViewModel)DataContext).Execute();
-        }
-
-        // Not used anywhere.
         public void ListBoxItem_Click(object sender, RoutedEventArgs e)
         {
             ((ListBoxItem)sender).IsSelected = true;
