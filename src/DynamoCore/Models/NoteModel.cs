@@ -3,6 +3,8 @@ using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.Utilities;
+using ProtoCore.Namespace;
+
 namespace Dynamo.Models
 {
     public class NoteModel : ModelBase
@@ -28,10 +30,13 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.Value;
+
             if (name != "Text") 
-                return base.UpdateValueCore(name, value, recorder);
+                return base.UpdateValueCore(updateValueParams);
             
             Text = value;
             return true;

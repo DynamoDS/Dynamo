@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
+using ProtoCore.Namespace;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
@@ -1275,8 +1276,11 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.Value;
+
             if (name == "NickName")
             {
                 NickName = value;
@@ -1292,7 +1296,7 @@ namespace Dynamo.Models
                 return true;
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         #endregion

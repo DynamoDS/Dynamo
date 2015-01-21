@@ -4,8 +4,9 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Models;
-
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoCore;
 using ProtoCore.DSASM;
@@ -342,15 +343,18 @@ namespace Dynamo.Nodes
             return false;
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.Value;
+
             if (name == "InputSymbol")
             {
                 InputSymbol = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
     }
 
@@ -425,15 +429,18 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.Value;
+
             if (name == "Symbol")
             {
                 Symbol = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Windows.Forms.VisualStyles;
 using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
@@ -9,8 +10,9 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using DSCoreNodesUI.Input;
-
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Nodes
 {
@@ -56,9 +58,10 @@ namespace Dynamo.Nodes
             return Value.ToString(CultureInfo.InvariantCulture);
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
-            WorkspaceModel.RecordModelForModification(this, recorder);
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.Value;
 
             switch (name)
             {
@@ -80,7 +83,7 @@ namespace Dynamo.Nodes
                     return true;
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         #region Serialization/Deserialization Methods

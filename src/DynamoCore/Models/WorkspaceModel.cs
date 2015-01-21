@@ -13,6 +13,7 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST;
+using ProtoCore.Namespace;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
 using NodeModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.NodeModificationUndoHelper;
@@ -394,13 +395,15 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
+        public ElementResolver ElementResolver { get; private set; }
+
         #endregion
 
         #region constructors
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, string fileName="")
+            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
             Name = name;
 
@@ -416,6 +419,7 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
+            ElementResolver = elementResolver;
 
             foreach (var node in nodes)
                 RegisterNode(node);
@@ -819,18 +823,20 @@ namespace Dynamo.Models
 
             var handled = false;
             var nodeModel = retrievedModel as NodeModel;
+            
+            var updateValueParams = new UpdateValueParams(value, propertyName, ElementResolver);
             if (nodeModel != null)
             {
                 using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
                 {
-                    handled = nodeModel.UpdateValue(propertyName, value, undoRecorder);
+                    handled = nodeModel.UpdateValue(updateValueParams);
                 }
             }
             else
             {
                 // Perform generic undo recording for models other than node.
                 RecordModelForModification(retrievedModel, UndoRecorder);
-                handled = retrievedModel.UpdateValue(propertyName, value, undoRecorder);
+                handled = retrievedModel.UpdateValue(updateValueParams);
             }
 
             if (!handled) // Method call was not handled by any derived class.

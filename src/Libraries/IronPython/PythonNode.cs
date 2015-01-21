@@ -10,11 +10,13 @@ using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 
 using ProtoCore.AST.AssociativeAST;
 using Autodesk.DesignScript.Runtime;
+using ProtoCore.Namespace;
 
 namespace DSIronPythonNode
 {
@@ -153,15 +155,18 @@ namespace DSIronPythonNode
             };
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.Value;
+
             if (name == "ScriptContent")
             {
                 script = value;
                 return true;
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         #region SerializeCore/DeserializeCore

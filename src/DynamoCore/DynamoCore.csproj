@@ -216,6 +216,7 @@ limitations under the License.
     <Compile Include="Utilities\Thickness.cs" />
     <Compile Include="Utilities\ThreadSafeList.cs" />
     <Compile Include="Utilities\TypeExtensions.cs" />
+    <Compile Include="Utilities\UpdateValueParams.cs" />
     <Compile Include="Utilities\VersionUtilities.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="Search\Legacy\BrowserInternalElement.cs" />

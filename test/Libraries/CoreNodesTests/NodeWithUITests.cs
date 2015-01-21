@@ -18,6 +18,7 @@ using DSCoreNodesUI.Input;
 
 using Dynamo.Core;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 
@@ -44,13 +45,15 @@ namespace DSCoreNodesTests
         public void SliderMaxValue()
         {
             var sliderNode = new DoubleSlider() { Value = 500 };
-            sliderNode.UpdateValue("Value", "1000", null);
+            var updateValueParams = new UpdateValueParams("1000", "Value");
+            sliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
                  1000,
                  sliderNode.Max);
 
-            sliderNode.UpdateValue("Value", "-1", null);
+            updateValueParams = new UpdateValueParams("-1", "Value");
+            sliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
                  -1,
@@ -62,13 +65,15 @@ namespace DSCoreNodesTests
         public void IntegerSliderMaxValue()
         {
             var integerSliderNode = new IntegerSlider() { Value = 500 };
-            integerSliderNode.UpdateValue("Value", "1000", null);
+            var updateValueParams = new UpdateValueParams("1000", "Value");
+            integerSliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
                  1000,
                  integerSliderNode.Max);
 
-            integerSliderNode.UpdateValue("Value", "-1", null);
+            updateValueParams = new UpdateValueParams("-1", "Value");
+            integerSliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
                  -1,
