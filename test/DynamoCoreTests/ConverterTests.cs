@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -7,7 +6,6 @@ using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;
