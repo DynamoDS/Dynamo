@@ -119,7 +119,11 @@ namespace Dynamo.Models
         protected override void ResetWorkspaceCore()
         {
             // Reset Run Automatic option to false on resetting the workspace
+#if DEBUG
+            DynamicRunEnabled = true;
+#else
             DynamicRunEnabled = false;
+#endif
         }
 
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
