@@ -1941,7 +1941,7 @@ namespace Dynamo.Controls
     }
 
     // Converter is used in LibraryView.xaml. Do not show LibraryTreeView TreviewItem ItemsHost
-    // for only one item, item should be of type BrowserInternalElementForClasses.
+    // for only one item, item should be of type ClassesNodeCategoryViewModel.
     public class LibraryTreeItemsHostVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

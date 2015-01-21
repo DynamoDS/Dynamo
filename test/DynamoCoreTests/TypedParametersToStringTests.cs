@@ -9,7 +9,6 @@ using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
 using Utils = Dynamo.Nodes.Utilities;
 
-
 namespace Dynamo
 {
     class TypedParametersToStringTests
