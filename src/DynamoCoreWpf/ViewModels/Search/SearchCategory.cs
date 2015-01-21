@@ -39,7 +39,7 @@ namespace Dynamo.Search
         {
             string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
                 memberNode.Group);
-            string shortenedCategory = SearchModel.ShortenCategoryName(categoryWithGroup);
+            string shortenedCategory = Nodes.Utilities.ShortenCategoryName(categoryWithGroup);
 
             var group = memberGroups.FirstOrDefault(mg => mg.FullyQualifiedName == shortenedCategory);
             if (group == null)
