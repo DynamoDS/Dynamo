@@ -882,7 +882,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Definition.FunctionId.ToString());
             Assert.AreEqual("GraphFunction", graphNode.NickName);
             Assert.AreEqual(4, graphNode.InPortData.Count);
-            Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
+            Assert.AreEqual("y", graphNode.InPortData[3].NickName);
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
@@ -901,7 +901,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(534.75, graphNode.X);
             Assert.AreEqual(4, graphNode.InPortData.Count);
             Assert.AreEqual("GraphFunction", graphNode.NickName);
-            Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
+            Assert.AreEqual("y", graphNode.InPortData[3].NickName);
         }
 
         [Test]
