@@ -143,19 +143,15 @@ namespace Analysis
             DebugTime(sw, "Ellapsed for tessellation.");
 
             int colorCount = 0;
+            int uvCount = 0;
 
             for (int i = 0; i < package.TriangleVertices.Count; i += 3)
             {
-                var vx = package.TriangleVertices[i];
-                var vy = package.TriangleVertices[i + 1];
-                var vz = package.TriangleVertices[i + 2];
+                var uvu = package.TriangleUVs[uvCount];
+                var uvv = package.TriangleUVs[uvCount + 1];
 
-                // Get the triangle vertex
-                var v = Point.ByCoordinates(vx, vy, vz);
-                var uv = Surface.UVParameterAtPoint(v);
-
-                var uu = (int)(uv.U*(COLOR_MAP_WIDTH-1));
-                var vv = (int)(uv.V*(COLOR_MAP_HEIGHT-1));
+                var uu = (int)(uvu * (COLOR_MAP_WIDTH - 1));
+                var vv = (int)(uvv * (COLOR_MAP_HEIGHT - 1));
                 var color = colorMap[uu,vv];
 
                 package.TriangleVertexColors[colorCount] = color.Red;
@@ -164,6 +160,7 @@ namespace Analysis
                 package.TriangleVertexColors[colorCount + 3] = color.Alpha;
 
                 colorCount += 4;
+                uvCount += 2;
             }
 
             DebugTime(sw, "Ellapsed for setting colors on mesh.");
