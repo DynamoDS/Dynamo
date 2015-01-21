@@ -52,7 +52,7 @@ namespace Dynamo.Services
             private set
             {
                 dynamoModel.PreferenceSettings.IsUsageReportingApproved = value;
-                RaisePropertyChanged(/*NXLT*/"IsUsageReportingApproved");
+                RaisePropertyChanged("IsUsageReportingApproved");
 
                 // Call PreferenceSettings to save
                 try
@@ -100,7 +100,7 @@ namespace Dynamo.Services
             private set
             {
                 dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved = value;
-                RaisePropertyChanged(/*NXLT*/"IsAnalyticsReportingApproved");
+                RaisePropertyChanged("IsAnalyticsReportingApproved");
 
                 // Call PreferenceSettings to save
                 try
@@ -127,7 +127,7 @@ namespace Dynamo.Services
             private set
             {
                 dynamoModel.PreferenceSettings.IsFirstRun = value;
-                RaisePropertyChanged(/*NXLT*/"FirstRun");
+                RaisePropertyChanged("FirstRun");
             }
         }
 

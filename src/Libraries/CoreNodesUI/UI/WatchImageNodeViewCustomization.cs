@@ -28,7 +28,7 @@ namespace Dynamo.Wpf
                 MaxWidth = 400,
                 MaxHeight = 400,
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                Name = /*NXLT*/"image1",
+                Name = "image1",
                 VerticalAlignment = System.Windows.VerticalAlignment.Center
             };
 
@@ -42,7 +42,7 @@ namespace Dynamo.Wpf
 
         private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName != /*NXLT*/"IsUpdated") return;
+            if (args.PropertyName != "IsUpdated") return;
             var im = GetImageFromMirror();
             nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { im });
         }

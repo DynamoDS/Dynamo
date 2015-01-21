@@ -68,7 +68,7 @@ namespace ProtoScript.Runners
             Core.Options.GenerateSSA = false;
             Core.Options.ExecuteSSA = false;
 
-            code = string.Format(/*NXLT*/"{0} = {1};", Constants.kWatchResultVar, code);
+            code = string.Format("{0} = {1};", Constants.kWatchResultVar, code);
 
             // TODO Jun: Move this initaliztion of the exe into a unified function
             //Core.ExprInterpreterExe = new Executable();

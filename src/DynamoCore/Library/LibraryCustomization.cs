@@ -45,7 +45,7 @@ namespace Dynamo.DSEngine
             var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
             var dir = Path.GetDirectoryName(qualifiedPath);
 
-            fn = fn + /*NXLT*/"_DynamoCustomization.xml";
+            fn = fn + "_DynamoCustomization.xml";
 
             customizationPath = Path.Combine(dir, fn);
 
@@ -65,7 +65,7 @@ namespace Dynamo.DSEngine
         public string GetNamespaceCategory(string namespaceName)
         {
             return XmlDocument.XPathEvaluate(
-                String.Format(/*NXLT*/"string(/doc/namespaces/namespace[@name='{0}']/category)", namespaceName)
+                String.Format("string(/doc/namespaces/namespace[@name='{0}']/category)", namespaceName)
                 ).ToString().Trim();
 
             //var nodes = (IEnumerable<Object>)XmlDocument.XPathEvaluate(

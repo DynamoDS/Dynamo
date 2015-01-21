@@ -6,13 +6,13 @@ namespace ProtoCore.Exceptions
     {
         public CompileErrorsOccured()
         { }
-        public CompileErrorsOccured(string message) : base(/*NXLT*/"Compile exception. " + message) { }
+        public CompileErrorsOccured(string message) : base("Compile exception. " + message) { }
     }
 
     public class RuntimeException : Exception
     {
-        public RuntimeException() : base(/*NXLT*/"Runtime exception occured") { }
+        public RuntimeException() : base("Runtime exception occured") { }
 
-        public RuntimeException(string message) : base(/*NXLT*/"Runtime exception occured. " + message) { }
+        public RuntimeException(string message) : base("Runtime exception occured. " + message) { }
     }
 }

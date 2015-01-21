@@ -17,16 +17,16 @@ namespace DSCoreNodesUI
         }
     }
 
-    [NodeName(/*NXLT*/"List.Create")]
-    [NodeDescription(/*NXLT*/"ListCreateDescription", typeof(Properties.Resources))]
+    [NodeName("List.Create")]
+    [NodeDescription("ListCreateDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
     public class CreateList : VariableInputNode
     {
         public CreateList()
         {
-            InPortData.Add(new PortData(/*NXLT*/"index0", Resources.CreateListPortDataIndex0ToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"list", Resources.CreateListPortDataResultToolTip));
+            InPortData.Add(new PortData("index0", Resources.CreateListPortDataIndex0ToolTip));
+            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
 
             RegisterAllPorts();
 
@@ -63,8 +63,8 @@ namespace DSCoreNodesUI
                 var arguments = AstFactory.BuildExprList(inputAstNodes);
                 var functionNode = new IdentifierListNode
                 {
-                    LeftNode = new IdentifierNode(/*NXLT*/"DSCore.List"),
-                    RightNode = new IdentifierNode(/*NXLT*/"__Create")
+                    LeftNode = new IdentifierNode("DSCore.List"),
+                    RightNode = new IdentifierNode("__Create")
                 };
                 var inputParams = new List<AssociativeNode>
                 {
@@ -79,7 +79,7 @@ namespace DSCoreNodesUI
                 {
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
-                        AstFactory.BuildFunctionCall(/*NXLT*/"_SingleFunctionObject", inputParams))
+                        AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams))
                 };
             }
 

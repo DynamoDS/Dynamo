@@ -58,7 +58,7 @@ namespace Dynamo.DSEngine
             var assemblyPath = Path.GetFullPath(assemblyLocation);
 
             var baseDir = Path.GetDirectoryName(assemblyPath);
-            var xmlFileName = Path.GetFileNameWithoutExtension(assemblyPath) + /*NXLT*/".xml";
+            var xmlFileName = Path.GetFileNameWithoutExtension(assemblyPath) + ".xml";
 
             var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
             var localizedResPath = Path.Combine(baseDir, language);
@@ -67,7 +67,7 @@ namespace Dynamo.DSEngine
             if (File.Exists(documentationPath))
                 return true;
 
-            localizedResPath = Path.Combine(baseDir, /*NXLT*/"en-US");
+            localizedResPath = Path.Combine(baseDir, "en-US");
             documentationPath = Path.Combine(localizedResPath, xmlFileName);
             if (File.Exists(documentationPath))
                 return true;

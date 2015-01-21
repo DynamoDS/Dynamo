@@ -31,14 +31,14 @@ namespace Dynamo.UI.Controls
 
         private struct Element
         {
-            public const string PhaseInWidthAnimator = /*NXLT*/"phaseInWidthAnimator";
-            public const string PhaseInHeightAnimator = /*NXLT*/"phaseInHeightAnimator";
-            public const string ExpandWidthAnimator = /*NXLT*/"expandWidthAnimator";
-            public const string ExpandHeightAnimator = /*NXLT*/"expandHeightAnimator";
-            public const string CondenseWidthAnimator = /*NXLT*/"condenseWidthAnimator";
-            public const string CondenseHeightAnimator = /*NXLT*/"condenseHeightAnimator";
-            public const string GridWidthAnimator = /*NXLT*/"gridWidthAnimator";
-            public const string GridHeightAnimator = /*NXLT*/"gridHeightAnimator";
+            public const string PhaseInWidthAnimator = "phaseInWidthAnimator";
+            public const string PhaseInHeightAnimator = "phaseInHeightAnimator";
+            public const string ExpandWidthAnimator = "expandWidthAnimator";
+            public const string ExpandHeightAnimator = "expandHeightAnimator";
+            public const string CondenseWidthAnimator = "condenseWidthAnimator";
+            public const string CondenseHeightAnimator = "condenseHeightAnimator";
+            public const string GridWidthAnimator = "gridWidthAnimator";
+            public const string GridHeightAnimator = "gridHeightAnimator";
         }
 
         private readonly NodeViewModel nodeViewModel;

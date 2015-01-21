@@ -39,9 +39,9 @@ namespace Dynamo.Core.Threading
             : base(initParams.Scheduler)
         {
             if (initParams.EngineController == null)
-                throw new ArgumentNullException(/*NXLT*/"initParams.EngineController");
+                throw new ArgumentNullException("initParams.EngineController");
             if (string.IsNullOrEmpty(initParams.VariableName))
-                throw new ArgumentNullException(/*NXLT*/"initParams.VariableName");
+                throw new ArgumentNullException("initParams.VariableName");
 
             variableName = initParams.VariableName;
             engineController = initParams.EngineController;

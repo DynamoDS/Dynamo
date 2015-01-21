@@ -157,7 +157,7 @@ namespace Dynamo.UI.Controls
 
         private HighlightingRule CreateClassHighlightRule()
         {
-            Color color = (Color)ColorConverter.ConvertFromString(/*NXLT*/"#2E998F");
+            Color color = (Color)ColorConverter.ConvertFromString("#2E998F");
             var classHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
@@ -177,7 +177,7 @@ namespace Dynamo.UI.Controls
 
         private HighlightingRule CreateMethodHighlightRule()
         {
-            Color color = (Color)ColorConverter.ConvertFromString(/*NXLT*/"#417693");
+            Color color = (Color)ColorConverter.ConvertFromString("#417693");
             var methodHighlightRule = new HighlightingRule
             {
                 Color = new HighlightingColor()
@@ -223,7 +223,7 @@ namespace Dynamo.UI.Controls
             }
             catch (System.Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToAutocomple);
                 this.dynamoViewModel.Model.Logger.Log(ex.Message);
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
@@ -293,7 +293,7 @@ namespace Dynamo.UI.Controls
             }
             catch (System.Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToAutocomple);
                 this.dynamoViewModel.Model.Logger.Log(ex.Message);
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
@@ -437,7 +437,7 @@ namespace Dynamo.UI.Controls
             {
                 nodeViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(nodeModel.GUID,
-                        /*NXLT*/"Code", InnerTextEditor.Text));
+                        "Code", InnerTextEditor.Text));
             }
 
             if (createdForNewCodeBlock)
@@ -464,7 +464,7 @@ namespace Dynamo.UI.Controls
             if (!string.IsNullOrEmpty(InnerTextEditor.Text))
             {
                 throw new InvalidOperationException(
-                    /*NXLT*/"This method is meant only for empty text box");
+                    "This method is meant only for empty text box");
             }
 
             if (createdForNewCodeBlock)

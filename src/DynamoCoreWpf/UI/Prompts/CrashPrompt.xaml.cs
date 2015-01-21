@@ -77,7 +77,7 @@ namespace Dynamo.Nodes.Prompts
 
             txtBox.Inlines.Clear();
 
-            string formattedText = string.Format(/*NXLT*/"<Span xml:space=\"preserve\" xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{0}</Span>", text);
+            string formattedText = string.Format("<Span xml:space=\"preserve\" xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{0}</Span>", text);
 
             using (var xmlReader = XmlReader.Create(new StringReader(formattedText)))
             {

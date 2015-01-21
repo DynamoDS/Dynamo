@@ -52,7 +52,7 @@ namespace DSCoreNodesUI
     /// </summary>
     public abstract class AllChildrenOfType<T> : DSDropDownBase
     {
-        protected AllChildrenOfType() : base(/*NXLT*/"Types")
+        protected AllChildrenOfType() : base("Types")
         {
             RegisterAllPorts();
         }

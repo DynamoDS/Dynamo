@@ -5,41 +5,41 @@ namespace Dynamo.Nodes
 {
     public class FileReader : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"File.ReadText", /*NXLT*/"File.ReadText@string");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll",
+                "File.ReadText", "File.ReadText@string");
         }
     }
 
     public class FileWriter : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"File.WriteText", /*NXLT*/"File.WriteText@string,string");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll",
+                "File.WriteText", "File.WriteText@string,string");
         }
     }
 
     public class ListToCsv : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"File.ExportToCSV", /*NXLT*/"File.ExportToCSV@string,double[][]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll",
+                "File.ExportToCSV", "File.ExportToCSV@string,double[][]");
         }
     }
 
     public class ImageFileWriter : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"File.WriteImage", /*NXLT*/"File.WriteImage@string,string,var");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll",
+                "File.WriteImage", "File.WriteImage@string,string,var");
         }
     }
 
@@ -61,11 +61,11 @@ namespace Dynamo.Nodes
 
     public class ImageFileReader : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"File.ReadImage", /*NXLT*/"File.ReadImage@string,int,int");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll",
+                "File.ReadImage", "File.ReadImage@string,int,int");
         }
     }
 }

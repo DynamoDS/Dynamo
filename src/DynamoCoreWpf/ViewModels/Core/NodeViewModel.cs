@@ -56,7 +56,7 @@ namespace Dynamo.ViewModels
             set
             {
                 isFullyConnected = value;
-                RaisePropertyChanged(/*NXLT*/"IsFullyConnected");
+                RaisePropertyChanged("IsFullyConnected");
             }
         }
 
@@ -66,7 +66,7 @@ namespace Dynamo.ViewModels
             set
             {
                 nodeLogic.ArgumentLacing = value;
-                RaisePropertyChanged(/*NXLT*/"ArgumentLacing");
+                RaisePropertyChanged("ArgumentLacing");
             }
         }
 
@@ -88,7 +88,7 @@ namespace Dynamo.ViewModels
             set
             {
                 inPorts = value;
-                RaisePropertyChanged(/*NXLT*/"InPorts");
+                RaisePropertyChanged("InPorts");
             }
         }
 
@@ -98,7 +98,7 @@ namespace Dynamo.ViewModels
             set
             {
                 outPorts = value;
-                RaisePropertyChanged(/*NXLT*/"OutPorts");
+                RaisePropertyChanged("OutPorts");
             }
         }
 
@@ -137,7 +137,7 @@ namespace Dynamo.ViewModels
             set
             {
                 nodeLogic.X = value;
-                RaisePropertyChanged(/*NXLT*/"Left");
+                RaisePropertyChanged("Left");
             }
         }
 
@@ -150,14 +150,14 @@ namespace Dynamo.ViewModels
             set
             {
                 nodeLogic.Y = value;
-                RaisePropertyChanged(/*NXLT*/"Top");
+                RaisePropertyChanged("Top");
             }
         }
 
         public double ZIndex
          {
             get { return zIndex; }
-            set { zIndex = value; RaisePropertyChanged(/*NXLT*/"ZIndex"); }
+            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
          }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace Dynamo.ViewModels
             set
             {
                 nodeLogic.IsVisible = value;
-                RaisePropertyChanged(/*NXLT*/"IsVisible");
+                RaisePropertyChanged("IsVisible");
             }
         }
 
@@ -191,7 +191,7 @@ namespace Dynamo.ViewModels
             set
             {
                 nodeLogic.IsUpstreamVisible = value;
-                RaisePropertyChanged(/*NXLT*/"IsUpstreamVisible");
+                RaisePropertyChanged("IsUpstreamVisible");
             }
         }
 
@@ -219,7 +219,7 @@ namespace Dynamo.ViewModels
             set
             {
                 nodeLogic.DisplayLabels = value;
-                RaisePropertyChanged(/*NXLT*/"IsDisplayingLabels");
+                RaisePropertyChanged("IsDisplayingLabels");
             }
         }
 
@@ -240,7 +240,7 @@ namespace Dynamo.ViewModels
             set
             {
                 astText = value;
-                RaisePropertyChanged(/*NXLT*/"ASTText");
+                RaisePropertyChanged("ASTText");
             }
         }
 
@@ -328,7 +328,7 @@ namespace Dynamo.ViewModels
         {
             if (e.PropertyName == "ShowDebugASTs")
             {
-                RaisePropertyChanged(/*NXLT*/"ShowDebugASTs");
+                RaisePropertyChanged("ShowDebugASTs");
             }
         }
 
@@ -399,7 +399,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "CurrentWorkspace":
-                    RaisePropertyChanged(/*NXLT*/"NodeVisibility");
+                    RaisePropertyChanged("NodeVisibility");
                     break;
 
             }
@@ -415,54 +415,54 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "NickName":
-                    RaisePropertyChanged(/*NXLT*/"NickName");
+                    RaisePropertyChanged("NickName");
                     break;
                 case "X":
-                    RaisePropertyChanged(/*NXLT*/"Left");
+                    RaisePropertyChanged("Left");
                     UpdateErrorBubblePosition();
                     break;
                 case "Y":
-                    RaisePropertyChanged(/*NXLT*/"Top");
+                    RaisePropertyChanged("Top");
                     UpdateErrorBubblePosition();
                     break;
                 case "InteractionEnabled":
-                    RaisePropertyChanged(/*NXLT*/"IsInteractionEnabled");
+                    RaisePropertyChanged("IsInteractionEnabled");
                     break;
                 case "IsSelected":
-                    RaisePropertyChanged(/*NXLT*/"IsSelected");
+                    RaisePropertyChanged("IsSelected");
                     break;
                 case "State":
-                    RaisePropertyChanged(/*NXLT*/"State");
+                    RaisePropertyChanged("State");
                     break;
                 case "ArgumentLacing":
-                    RaisePropertyChanged(/*NXLT*/"ArgumentLacing");
+                    RaisePropertyChanged("ArgumentLacing");
                     break;
                 case "ToolTipText":
                     UpdateBubbleContent();
                     // TODO Update preview bubble visibility to false
                     break;
                 case "IsVisible":
-                    RaisePropertyChanged(/*NXLT*/"IsVisible");
+                    RaisePropertyChanged("IsVisible");
                     break;
                 case "IsUpstreamVisible":
-                    RaisePropertyChanged(/*NXLT*/"IsUpstreamVisible");
+                    RaisePropertyChanged("IsUpstreamVisible");
                     break;
                 case "Width":
-                    RaisePropertyChanged(/*NXLT*/"Width");
+                    RaisePropertyChanged("Width");
                     UpdateErrorBubblePosition();
                     break;
                 case "Height":
-                    RaisePropertyChanged(/*NXLT*/"Height");
+                    RaisePropertyChanged("Height");
                     UpdateErrorBubblePosition();
                     break;
                 case "DisplayLabels":
-                    RaisePropertyChanged(/*NXLT*/"IsDisplayingLables");
+                    RaisePropertyChanged("IsDisplayingLables");
                     break;
                 case "Position":
                     UpdateErrorBubblePosition();
                     break;
                 case "ForceReExecuteOfNode":
-                    RaisePropertyChanged(/*NXLT*/"WillForceReExecuteOfNode");
+                    RaisePropertyChanged("WillForceReExecuteOfNode");
                     break;
             }
         }
@@ -721,7 +721,7 @@ namespace Dynamo.ViewModels
 
             nodeLogic.IsVisible = !nodeLogic.IsVisible;
 
-            RaisePropertyChanged(/*NXLT*/"IsVisible");
+            RaisePropertyChanged("IsVisible");
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
@@ -734,7 +734,7 @@ namespace Dynamo.ViewModels
 
             nodeLogic.IsUpstreamVisible = !nodeLogic.IsUpstreamVisible;
 
-            RaisePropertyChanged(/*NXLT*/"IsUpstreamVisible");
+            RaisePropertyChanged("IsUpstreamVisible");
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }

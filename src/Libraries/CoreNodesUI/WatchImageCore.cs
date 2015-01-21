@@ -13,10 +13,10 @@ using Image = System.Windows.Controls.Image;
 namespace Dynamo.Nodes
 {
 
-    [NodeName(/*NXLT*/"Watch Image")]
-    [NodeDescription(/*NXLT*/"WatchImageDescription", typeof(Resources))]
+    [NodeName("Watch Image")]
+    [NodeDescription("WatchImageDescription", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeSearchTags(/*NXLT*/"WatchImageSearchTags", typeof(Resources))]
+    [NodeSearchTags("WatchImageSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class WatchImageCore : NodeModel
     {
@@ -24,8 +24,8 @@ namespace Dynamo.Nodes
 
         public WatchImageCore()
         {
-            InPortData.Add(new PortData(/*NXLT*/"image", Resources.PortDataImageToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"image", Resources.PortDataImageToolTip));
+            InPortData.Add(new PortData("image", Resources.PortDataImageToolTip));
+            OutPortData.Add(new PortData("image", Resources.PortDataImageToolTip));
 
             RegisterAllPorts(); 
             

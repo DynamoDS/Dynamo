@@ -159,19 +159,19 @@ namespace Dynamo.UI.Controls
 
             #region Reference List
 
-            references.Add(new StartPageListItem(Resources.StartPageAdvancedTutorials, /*NXLT*/"icon-reference.png")
+            references.Add(new StartPageListItem(Resources.StartPageAdvancedTutorials, "icon-reference.png")
             {
                 ContextData = Configurations.DynamoAdvancedTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            references.Add(new StartPageListItem(Resources.StartPageVideoTutorials, /*NXLT*/"icon-video.png")
+            references.Add(new StartPageListItem(Resources.StartPageVideoTutorials, "icon-video.png")
             {
                 ContextData = Configurations.DynamoVideoTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            references.Add(new StartPageListItem(Resources.StartPageMoreSamples, /*NXLT*/"icons-more-samples.png")
+            references.Add(new StartPageListItem(Resources.StartPageMoreSamples, "icons-more-samples.png")
             {
                 ContextData = Configurations.DynamoMoreSamples,
                 ClickAction = StartPageListItem.Action.ExternalUrl
@@ -357,7 +357,7 @@ namespace Dynamo.UI.Controls
 
                 default:
                     throw new ArgumentException(
-                        string.Format(/*NXLT*/"Invalid command: {0}", item.ContextData));
+                        string.Format("Invalid command: {0}", item.ContextData));
             }
         }
 
@@ -386,9 +386,9 @@ namespace Dynamo.UI.Controls
 
     struct ButtonNames
     {
-        public const string NewWorkspace = /*NXLT*/"NewWorkspace";
-        public const string NewCustomNodeWorkspace = /*NXLT*/"NewCustomNodeWorkspace";
-        public const string OpenWorkspace = /*NXLT*/"OpenWorkspace";
+        public const string NewWorkspace = "NewWorkspace";
+        public const string NewCustomNodeWorkspace = "NewCustomNodeWorkspace";
+        public const string OpenWorkspace = "OpenWorkspace";
     }
 
     public partial class StartPageView : UserControl

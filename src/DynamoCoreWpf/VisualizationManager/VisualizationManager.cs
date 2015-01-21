@@ -80,7 +80,7 @@ namespace Dynamo
             set
             {
                 alternateDrawingContextAvailable = value;
-                RaisePropertyChanged(/*NXLT*/"AlternateDrawingContextAvailable");
+                RaisePropertyChanged("AlternateDrawingContextAvailable");
             }
         }
 
@@ -114,7 +114,7 @@ namespace Dynamo
                         OnRenderComplete(this, new RenderCompletionEventArgs(-1));
                     }
                 }
-                RaisePropertyChanged(/*NXLT*/"DrawToAlternateContext");
+                RaisePropertyChanged("DrawToAlternateContext");
             }
         }
 
@@ -350,7 +350,7 @@ namespace Dynamo
                 }
 
                 watch.Stop();
-                Debug.WriteLine(String.Format(/*NXLT*/"RENDER: {0} ellapsed for aggregating geometry for background preview.", watch.Elapsed));
+                Debug.WriteLine(String.Format("RENDER: {0} ellapsed for aggregating geometry for background preview.", watch.Elapsed));
 
                 if (packages.Any())
                 {
@@ -673,7 +673,7 @@ namespace Dynamo
             rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
             rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
 
-            Debug.WriteLine(string.Format(/*NXLT*/"Render aggregation complete for {0}", task.NodeId));
+            Debug.WriteLine(string.Format("Render aggregation complete for {0}", task.NodeId));
 
             var e = new VisualizationEventArgs(rps, task.NodeId, -1);
             OnResultsReadyToVisualize(this, e);

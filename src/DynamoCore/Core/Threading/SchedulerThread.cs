@@ -14,7 +14,7 @@ namespace Dynamo.Core.Threading
             internalThread = new Thread(ThreadProc)
             {
                 IsBackground = true,
-                Name = /*NXLT*/"DynamoSchedulerThread"
+                Name = "DynamoSchedulerThread"
             };
 
             internalThread.Start();

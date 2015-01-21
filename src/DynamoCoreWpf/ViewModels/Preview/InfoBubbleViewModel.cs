@@ -56,13 +56,13 @@ namespace Dynamo.ViewModels
         public double ZIndex
         {
             get { return zIndex; }
-            set { zIndex = value; RaisePropertyChanged(/*NXLT*/"ZIndex"); }
+            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
         private Style infoBubbleStyle;
         public Style InfoBubbleStyle
         {
             get { return infoBubbleStyle; }
-            set { infoBubbleStyle = value; RaisePropertyChanged(/*NXLT*/"InfoBubbleStyle"); }
+            set { infoBubbleStyle = value; RaisePropertyChanged("InfoBubbleStyle"); }
         }
         public string FullContent;
 
@@ -70,33 +70,33 @@ namespace Dynamo.ViewModels
         public Direction ConnectingDirection
         {
             get { return connectingDirection; }
-            set { connectingDirection = value; RaisePropertyChanged(/*NXLT*/"ConnectingDirection"); }
+            set { connectingDirection = value; RaisePropertyChanged("ConnectingDirection"); }
         }
 
         private string content;
         public string Content
         {
             get { return content; }
-            set { content = value; RaisePropertyChanged(/*NXLT*/"Content"); }
+            set { content = value; RaisePropertyChanged("Content"); }
         }
 
         public Point targetTopLeft;
         public Point TargetTopLeft
         {
             get { return targetTopLeft; }
-            set { targetTopLeft = value; RaisePropertyChanged(/*NXLT*/"TargetTopLeft"); }
+            set { targetTopLeft = value; RaisePropertyChanged("TargetTopLeft"); }
         }
         public Point targetBotRight;
         public Point TargetBotRight
         {
             get { return targetBotRight; }
-            set { targetBotRight = value; RaisePropertyChanged(/*NXLT*/"TargetBotRight"); }
+            set { targetBotRight = value; RaisePropertyChanged("TargetBotRight"); }
         }
         private Direction limitedDirection;
         public Direction LimitedDirection
         {
             get { return limitedDirection; }
-            set { limitedDirection = value; RaisePropertyChanged(/*NXLT*/"LimitedDirection"); }
+            set { limitedDirection = value; RaisePropertyChanged("LimitedDirection"); }
         }
 
         public double Left
@@ -114,7 +114,7 @@ namespace Dynamo.ViewModels
         public State InfoBubbleState
         {
             get { return infoBubbleState; }
-            set { infoBubbleState = value; RaisePropertyChanged(/*NXLT*/"InfoBubbleState"); }
+            set { infoBubbleState = value; RaisePropertyChanged("InfoBubbleState"); }
         }
 
         #endregion

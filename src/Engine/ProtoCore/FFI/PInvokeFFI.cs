@@ -124,11 +124,11 @@ namespace ProtoFFI
             }
             else if (opType == AddressType.ArrayPointer)
             {
-                throw new ArgumentException(/*NXLT*/"FFI does not support nested arrays");
+                throw new ArgumentException("FFI does not support nested arrays");
             }
             else
             {
-                throw new ArgumentException(string.Format(/*NXLT*/"Argument of type {0} is not supported for FFI Marshalling", opType.ToString()));
+                throw new ArgumentException(string.Format("Argument of type {0} is not supported for FFI Marshalling", opType.ToString()));
             }
 
             foreach (var op in hs.VisibleItems)
@@ -208,7 +208,7 @@ namespace ProtoFFI
         {
             if (t.IsIndexable && t.rank > 1)
             {
-                throw new ArgumentException(/*NXLT*/"FFI does not support nested arrays");
+                throw new ArgumentException("FFI does not support nested arrays");
             }
 
             if (t.IsIndexable && (t.Name == "int" || t.Name == "double") )
@@ -233,7 +233,7 @@ namespace ProtoFFI
             }
             else
             {
-                throw new ArgumentException(string.Format(/*NXLT*/"FFI: unknown type {0} to marshall", t.Name));
+                throw new ArgumentException(string.Format("FFI: unknown type {0} to marshall", t.Name));
             }
         }
 
@@ -253,7 +253,7 @@ namespace ProtoFFI
 
                 _Array arr = (_Array)Marshal.PtrToStructure(arrPtr, typeof(_Array));
 
-                if (mReturnType.Name == /*NXLT*/"double")
+                if (mReturnType.Name == "double")
                 {
                     double[] elements = new double[arr.numElems];
                     Marshal.Copy(arr.elements, elements, 0, arr.numElems);
@@ -264,7 +264,7 @@ namespace ProtoFFI
 
                     returnValue = ConvertCSArrayToDSArray(elements, dsi);
                 }
-                else if (mReturnType.Name == /*NXLT*/"int")
+                else if (mReturnType.Name == "int")
                 {
                     int[] elements = new int[arr.numElems];
                     Marshal.Copy(arr.elements, elements, 0, arr.numElems);
@@ -272,7 +272,7 @@ namespace ProtoFFI
                 }
                 else
                 {
-                    throw new ArgumentException(string.Format(/*NXLT*/"FFI: unknown type {0} to marshall", mReturnType.Name));
+                    throw new ArgumentException(string.Format("FFI: unknown type {0} to marshall", mReturnType.Name));
                 }
             }
 
@@ -309,7 +309,7 @@ namespace ProtoFFI
 
                 if (o.IsInteger)
                 {
-                    if (mArgTypes[i].Name == /*NXLT*/"double")
+                    if (mArgTypes[i].Name == "double")
                     {
                         //  if the function expects a double and we have passed an int
                         //  in an int then promote it to be a double!

@@ -115,7 +115,7 @@ namespace ProtoCore.DSASM
         }
     }
 
-    [System.Diagnostics.DebuggerDisplay(/*NXLT*/"{name}, fi = {functionIndex}, ci = {classScope}, block = {runtimeTableIndex}")]
+    [System.Diagnostics.DebuggerDisplay("{name}, fi = {functionIndex}, ci = {classScope}, block = {runtimeTableIndex}")]
     public class SymbolNode
     {
         public string           name;

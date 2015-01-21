@@ -25,7 +25,7 @@ namespace DSCoreNodesUI
                         ForceReExecuteOfNode = true;
                         OnAstUpdated();
                     }
-                    RaisePropertyChanged(/*NXLT*/"Value");
+                    RaisePropertyChanged("Value");
                 }
             }
         }

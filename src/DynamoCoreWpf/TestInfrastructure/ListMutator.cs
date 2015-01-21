@@ -23,9 +23,9 @@ namespace Dynamo.TestInfrastructure
         {
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
-            string pathToNodesDll = assemblyDir + /*NXLT*/"\\nodes\\DSCoreNodesUI.dll";
+            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(pathToNodesDll);
-            Type type = assembly.GetType(/*NXLT*/"DSCoreNodesUI.CreateList");
+            Type type = assembly.GetType("DSCoreNodesUI.CreateList");
 
             return type;
         }

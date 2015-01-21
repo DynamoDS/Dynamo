@@ -21,9 +21,9 @@ namespace Dynamo.TestInfrastructure
         {
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
-            string pathToNodesDll = assemblyDir + /*NXLT*/"\\nodes\\DSCoreNodesUI.dll";
+            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(pathToNodesDll);
-            Type type = assembly.GetType(/*NXLT*/"Dynamo.Nodes.DoubleSlider");
+            Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
 
             return type;
         }
@@ -119,9 +119,9 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate(NodeModel node)
         {
-            string assemblyPass = Environment.CurrentDirectory + /*NXLT*/"\\nodes\\DSCoreNodesUI.dll";
+            string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(assemblyPass);
-            Type type = assembly.GetType(/*NXLT*/"Dynamo.Nodes.DoubleSlider");
+            Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
             
             PropertyInfo propInfo = type.GetProperty("Min");
             dynamic propertyMin = propInfo.GetValue(node, null);

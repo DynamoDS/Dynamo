@@ -7,7 +7,7 @@ namespace Dynamo.Nodes
 {
     class SpatialFieldManager : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
 
     class AnalysisResultsDisplayStyleColor : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
 
     class SpatialFieldFace : MigrationNode 
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -46,21 +46,21 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, /*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"FaceAnalysisDisplay.ByViewFacePointsAndValues",
-                /*NXLT*/"FaceAnalysisDisplay.ByViewFacePointsAndValues@var,FaceReference,double[][],double[]");
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
+                "FaceAnalysisDisplay.ByViewFacePointsAndValues",
+                "FaceAnalysisDisplay.ByViewFacePointsAndValues@var,FaceReference,double[][],double[]");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
             XmlElement documentNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, /*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"Document.Current", /*NXLT*/"Document.Current");
+                data.Document, oldNode, 0, "RevitNodes.dll",
+                "Document.Current", "Document.Current");
             migratedData.AppendNode(documentNode);
 
             XmlElement activeViewNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, /*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"Document.ActiveView", /*NXLT*/"Document.ActiveView");
+                data.Document, oldNode, 1, "RevitNodes.dll",
+                "Document.ActiveView", "Document.ActiveView");
             migratedData.AppendNode(activeViewNode);
 
             //create and reconnect the connecters
@@ -93,7 +93,7 @@ namespace Dynamo.Nodes
 
     class SpatialFieldPoints : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -102,18 +102,18 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode, /*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"PointAnalysisDisplay.ByViewPointsAndValues",
-                /*NXLT*/"PointAnalysisDisplay.ByViewPointsAndValues@var,Point[],double[]");
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
+                "PointAnalysisDisplay.ByViewPointsAndValues",
+                "PointAnalysisDisplay.ByViewPointsAndValues@var,Point[],double[]");
 
             XmlElement documentNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, /*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"Document.Current", /*NXLT*/"Document.Current");
+                data.Document, oldNode, 0, "RevitNodes.dll",
+                "Document.Current", "Document.Current");
             migratedData.AppendNode(documentNode);
 
             XmlElement activeViewNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"Document.ActiveView", /*NXLT*/"Document.ActiveView");
+                data.Document, oldNode, 1,"RevitNodes.dll",
+                "Document.ActiveView", "Document.ActiveView");
             migratedData.AppendNode(activeViewNode);
 
             migratedData.AppendNode(dsRevitNode);
@@ -144,7 +144,7 @@ namespace Dynamo.Nodes
 
     class SpatialFieldVectors : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -153,21 +153,21 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"VectorAnalysisDisplay.ByViewPointsAndVectorValues",
-                /*NXLT*/"VectorAnalysisDisplay.ByViewPointsAndVectorValues@var,Point[],Vector[]");
+            MigrationManager.SetFunctionSignature(dsRevitNode,"RevitNodes.dll",
+                "VectorAnalysisDisplay.ByViewPointsAndVectorValues",
+                "VectorAnalysisDisplay.ByViewPointsAndVectorValues@var,Point[],Vector[]");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
             XmlElement documentNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"Document.Current", /*NXLT*/"Document.Current");
+                data.Document, oldNode, 0,"RevitNodes.dll",
+                "Document.Current", "Document.Current");
             migratedData.AppendNode(documentNode);
 
             XmlElement activeViewNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"Document.ActiveView", /*NXLT*/"Document.ActiveView");
+                data.Document, oldNode, 1,"RevitNodes.dll",
+                "Document.ActiveView", "Document.ActiveView");
             migratedData.AppendNode(activeViewNode);
 
             //create and reconnect the connecters
@@ -195,7 +195,7 @@ namespace Dynamo.Nodes
 
     class SpatialFieldCurve : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);

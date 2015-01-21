@@ -118,7 +118,7 @@ namespace Dynamo.ViewModels
         public Cursor CurrentCursor
         {
             get { return currentCursor; }
-            set { currentCursor = value; RaisePropertyChanged(/*NXLT*/"CurrentCursor"); }
+            set { currentCursor = value; RaisePropertyChanged("CurrentCursor"); }
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Dynamo.ViewModels
         public bool IsCursorForced
         {
             get { return isCursorForced; }
-            set { isCursorForced = value; RaisePropertyChanged(/*NXLT*/"IsCursorForced"); }
+            set { isCursorForced = value; RaisePropertyChanged("IsCursorForced"); }
         }
 
         private CompositeCollection _workspaceElements = new CompositeCollection();
@@ -186,7 +186,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _watches = value;
-                RaisePropertyChanged(/*NXLT*/"Watch3DViewModels");
+                RaisePropertyChanged("Watch3DViewModels");
             }
         }
 
@@ -225,7 +225,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _canFindNodesFromElements = value;
-                RaisePropertyChanged(/*NXLT*/"CanFindNodesFromElements");
+                RaisePropertyChanged("CanFindNodesFromElements");
             }
         }
 
@@ -283,7 +283,7 @@ namespace Dynamo.ViewModels
         {
             if (e.PropertyName == "ShouldBeHitTestVisible")
             {
-                RaisePropertyChanged(/*NXLT*/"ShouldBeHitTestVisible");
+                RaisePropertyChanged("ShouldBeHitTestVisible");
             }
         }
 
@@ -406,7 +406,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "Name":
-                    RaisePropertyChanged(/*NXLT*/"Name");
+                    RaisePropertyChanged("Name");
                     break;
                 case "X":
                     break;
@@ -414,17 +414,17 @@ namespace Dynamo.ViewModels
                     break;
                 case "Zoom":
                     this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
-                    RaisePropertyChanged(/*NXLT*/"Zoom");
+                    RaisePropertyChanged("Zoom");
                     break;
                 case "IsCurrentSpace":
-                    RaisePropertyChanged(/*NXLT*/"IsCurrentSpace");
-                    RaisePropertyChanged(/*NXLT*/"IsHomeSpace");
+                    RaisePropertyChanged("IsCurrentSpace");
+                    RaisePropertyChanged("IsHomeSpace");
                     break;
                 case "HasUnsavedChanges":
-                    RaisePropertyChanged(/*NXLT*/"HasUnsavedChanges");
+                    RaisePropertyChanged("HasUnsavedChanges");
                     break;
                 case "FileName":
-                    RaisePropertyChanged(/*NXLT*/"FileName");
+                    RaisePropertyChanged("FileName");
                     break;
             }
         }
@@ -868,7 +868,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                DynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
 
             try
@@ -887,7 +887,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                DynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
         }
 
@@ -972,7 +972,7 @@ namespace Dynamo.ViewModels
 
         internal void Loaded()
         {
-            RaisePropertyChanged(/*NXLT*/"IsHomeSpace");
+            RaisePropertyChanged("IsHomeSpace");
 
             // New workspace or swapped workspace to follow it offset and zoom
             this.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(Model.X, Model.Y)));

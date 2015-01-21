@@ -54,7 +54,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// 
 
-        private const string EXIT_ATTRIB_NAME = /*NXLT*/"ExitAfterPlayback";
+        private const string EXIT_ATTRIB_NAME = "ExitAfterPlayback";
 
         /// <summary>
         /// This attribute specifies the amount of time in milliseconds that 
@@ -64,7 +64,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// 
 
-        private const string PAUSE_ATTRIB_NAME = /*NXLT*/"PauseAfterPlaybackInMs";
+        private const string PAUSE_ATTRIB_NAME = "PauseAfterPlaybackInMs";
 
         /// <summary>
         /// This attribute specifies the interval between two consecutive 
@@ -73,7 +73,7 @@ namespace Dynamo.ViewModels
         /// value for command interval is 20 milliseconds.
         /// </summary>
 
-        private const string INTERVAL_ATTRIB_NAME = /*NXLT*/"CommandIntervalInMs";
+        private const string INTERVAL_ATTRIB_NAME = "CommandIntervalInMs";
 
 
         private Window mainWindow;

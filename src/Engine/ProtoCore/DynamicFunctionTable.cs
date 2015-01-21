@@ -34,7 +34,7 @@ namespace ProtoCore.DSASM
         {
             if (index < 0 || index >= functions.Count)
             {
-                throw new ArgumentOutOfRangeException(/*NXLT*/"index", /*NXLT*/"Index is out of range.");
+                throw new ArgumentOutOfRangeException("index", "Index is out of range.");
             }
 
             return functions[index];

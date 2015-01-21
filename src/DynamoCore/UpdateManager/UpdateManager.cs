@@ -186,7 +186,7 @@ namespace Dynamo.UpdateManager
                 Error = string.Empty;
                 Data = string.Empty;
 
-                manager.OnLog(new LogEventArgs(/*NXLT*/"The update request could not be completed.", LogLevel.File));
+                manager.OnLog(new LogEventArgs("The update request could not be completed.", LogLevel.File));
                 manager.OnLog(new LogEventArgs(ex, LogLevel.File));
             }
 
@@ -203,7 +203,7 @@ namespace Dynamo.UpdateManager
     {
         private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
         private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
-        private const string DEFAULT_CONFIG_FILE_S = /*NXLT*/"UpdateManagerConfig.xml";
+        private const string DEFAULT_CONFIG_FILE_S = "UpdateManagerConfig.xml";
 
         /// <summary>
         /// Defines download location for new installer
@@ -334,8 +334,8 @@ namespace Dynamo.UpdateManager
         private bool versionCheckInProgress;
         private BinaryVersion productVersion;
         private IAppVersionInfo updateInfo;
-        private const string InstallNameBase = /*NXLT*/"DynamoInstall";
-        private const string OldDailyInstallNameBase = /*NXLT*/"DynamoDailyInstall";
+        private const string InstallNameBase = "DynamoInstall";
+        private const string OldDailyInstallNameBase = "DynamoDailyInstall";
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
         private IAppVersionInfo downloadedUpdateInfo;
@@ -400,7 +400,7 @@ namespace Dynamo.UpdateManager
             private set
             {
                 updateFileLocation = value;
-                RaisePropertyChanged(/*NXLT*/"UpdateFileLocation");
+                RaisePropertyChanged("UpdateFileLocation");
             }
         }
 
@@ -415,7 +415,7 @@ namespace Dynamo.UpdateManager
                 }
 
                 updateInfo = value;
-                RaisePropertyChanged(/*NXLT*/"UpdateInfo");
+                RaisePropertyChanged("UpdateInfo");
             }
         }
 
@@ -429,7 +429,7 @@ namespace Dynamo.UpdateManager
             set
             {
                 downloadedUpdateInfo = value;
-                RaisePropertyChanged(/*NXLT*/"DownloadedUpdateInfo");
+                RaisePropertyChanged("DownloadedUpdateInfo");
             }
         }
 
@@ -448,7 +448,7 @@ namespace Dynamo.UpdateManager
                     CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath), this));
                 }
                 Configuration.CheckNewerDailyBuild = value;
-                RaisePropertyChanged(/*NXLT*/"CheckNewerDailyBuilds");
+                RaisePropertyChanged("CheckNewerDailyBuilds");
             }
         }
 
@@ -467,7 +467,7 @@ namespace Dynamo.UpdateManager
                     CheckForProductUpdate(new UpdateRequest(new Uri(Configuration.DownloadSourcePath), this));
                 }
                 Configuration.ForceUpdate = value;
-                RaisePropertyChanged(/*NXLT*/"ForceUpdate");
+                RaisePropertyChanged("ForceUpdate");
             }
         }
 
@@ -504,7 +504,7 @@ namespace Dynamo.UpdateManager
         {
             switch (e.PropertyName)
             {
-                case /*NXLT*/"UpdateInfo":
+                case "UpdateInfo":
                     if (updateInfo != null)
                     {
                         //When the UpdateInfo property changes, this will be reflected in the UI
@@ -529,7 +529,7 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public void CheckForProductUpdate(IAsynchronousRequest request)
         {
-            OnLog(new LogEventArgs(/*NXLT*/"RequestUpdateVersionInfo", LogLevel.File));
+            OnLog(new LogEventArgs("RequestUpdateVersionInfo", LogLevel.File));
             OnLog(new LogEventArgs(Properties.Resources.RequestingVersionUpdate, LogLevel.Console));
 
             if (versionCheckInProgress)
@@ -646,7 +646,7 @@ namespace Dynamo.UpdateManager
 
         public void QuitAndInstallUpdate()
         {
-            OnLog(new LogEventArgs(/*NXLT*/"UpdateManager.QuitAndInstallUpdate-Invoked", LogLevel.File));
+            OnLog(new LogEventArgs("UpdateManager.QuitAndInstallUpdate-Invoked", LogLevel.File));
 
             if (ShutdownRequested != null)
                 ShutdownRequested(this);
@@ -657,7 +657,7 @@ namespace Dynamo.UpdateManager
             if (!string.IsNullOrEmpty(UpdateFileLocation))
             {
                 var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var updater = Path.Combine(currDir, /*NXLT*/"InstallUpdate.exe");
+                var updater = Path.Combine(currDir, "InstallUpdate.exe");
                 if (File.Exists(updater))
                 {
                     Process.Start(updater, UpdateFileLocation);

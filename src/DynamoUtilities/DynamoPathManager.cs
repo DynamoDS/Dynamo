@@ -124,19 +124,19 @@ namespace DynamoUtilities
 
             AppData = GetDynamoAppDataFolder(MainExecPath);
 
-            Logs = Path.Combine(AppData, /*NXLT*/"Logs");
+            Logs = Path.Combine(AppData, "Logs");
             if (!Directory.Exists(Logs))
             {
                 Directory.CreateDirectory(Logs);
             }
 
-            UserDefinitions = Path.Combine(AppData, /*NXLT*/"definitions");
+            UserDefinitions = Path.Combine(AppData, "definitions");
             if (!Directory.Exists(UserDefinitions))
             {
                 Directory.CreateDirectory(UserDefinitions);
             }
 
-            Packages = Path.Combine(AppData, /*NXLT*/"packages");
+            Packages = Path.Combine(AppData, "packages");
             if (!Directory.Exists(Packages))
             {
                 Directory.CreateDirectory(Packages);
@@ -144,20 +144,20 @@ namespace DynamoUtilities
 
             var commonData = GetDynamoCommonDataFolder(MainExecPath);
 
-            CommonDefinitions = Path.Combine(commonData, /*NXLT*/"definitions");
+            CommonDefinitions = Path.Combine(commonData, "definitions");
             if (!Directory.Exists(CommonDefinitions))
             {
                 Directory.CreateDirectory(CommonDefinitions);
             }
 
             var UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
-            CommonSamples = Path.Combine(commonData, /*NXLT*/"samples", UICulture);
+            CommonSamples = Path.Combine(commonData, "samples", UICulture);
             if (!Directory.Exists(CommonSamples))
             {
                 Directory.CreateDirectory(CommonSamples);
             }
 
-            Ui = Path.Combine(MainExecPath, /*NXLT*/"UI");
+            Ui = Path.Combine(MainExecPath, "UI");
 
             if (Nodes == null)
             {
@@ -165,7 +165,7 @@ namespace DynamoUtilities
             }
 
             // Only register the core nodes directory
-            Nodes.Add(Path.Combine(MainExecPath, /*NXLT*/"nodes"));
+            Nodes.Add(Path.Combine(MainExecPath, "nodes"));
 
 #if DEBUG
             var sb = new StringBuilder();
@@ -180,16 +180,16 @@ namespace DynamoUtilities
 #endif
             var coreLibs = new List<string>
             {
-                /*NXLT*/"VMDataBridge.dll",
-                /*NXLT*/"ProtoGeometry.dll",
-                /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"DSOffice.dll",
-                /*NXLT*/"DSIronPython.dll",
-                /*NXLT*/"FunctionObject.ds",
-                /*NXLT*/"Optimize.ds",
-                /*NXLT*/"DynamoUnits.dll",
-                /*NXLT*/"Tessellation.dll",
-                /*NXLT*/"Analysis.dll"
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSIronPython.dll",
+                "FunctionObject.ds",
+                "Optimize.ds",
+                "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll"
             };
 
             foreach (var lib in coreLibs)
@@ -200,7 +200,7 @@ namespace DynamoUtilities
 
         private static string GetDynamoAppDataFolder(string basePath)
         {
-            var dynCore = Path.Combine(basePath, /*NXLT*/"DynamoCore.dll");
+            var dynCore = Path.Combine(basePath, "DynamoCore.dll");
 
             if (!File.Exists(dynCore))
             {
@@ -208,7 +208,7 @@ namespace DynamoUtilities
             }
 
             var fvi = FileVersionInfo.GetVersionInfo(dynCore);
-            var dynVersion = String.Format(/*NXLT*/"{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
+            var dynVersion = String.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
             var appData = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "Dynamo",
@@ -218,9 +218,9 @@ namespace DynamoUtilities
 
         private static string GetDynamoCommonDataFolder(string basePath)
         {
-            var dynCore = Path.Combine(basePath, /*NXLT*/"DynamoCore.dll");
+            var dynCore = Path.Combine(basePath, "DynamoCore.dll");
             var fvi = FileVersionInfo.GetVersionInfo(dynCore);
-            var dynVersion = String.Format(/*NXLT*/"{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
+            var dynVersion = String.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
             var progData = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 "Dynamo",
@@ -286,12 +286,12 @@ namespace DynamoUtilities
 
         public void SetLibGPath(string version)
         {
-            LibG = Path.Combine(MainExecPath, string.Format(/*NXLT*/"libg_{0}", version));
+            LibG = Path.Combine(MainExecPath, string.Format("libg_{0}", version));
             var splits = LibG.Split('\\');
-            GeometryFactory = splits.Last() + /*NXLT*/"\\" + /*NXLT*/"LibG.ProtoInterface.dll";
+            GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
             AsmPreloader = Path.Combine(
                 MainExecPath,
-                splits.Last() + /*NXLT*/"\\" + /*NXLT*/"LibG.AsmPreloader.Managed.dll");
+                splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll");
 
             if (!AdditionalResolutionPaths.Contains(LibG))
             {
@@ -310,7 +310,7 @@ namespace DynamoUtilities
         {
             host = null;
 
-            string baseSearchDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), /*NXLT*/"Autodesk");
+            string baseSearchDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Autodesk");
 
             DirectoryInfo root;
 
@@ -342,9 +342,9 @@ namespace DynamoUtilities
                 var dirInfo in
                     from dirInfo in
                         subDirs.Where(
-                            dirInfo => dirInfo.Name.Contains(/*NXLT*/"Revit") || dirInfo.Name.Contains(/*NXLT*/"Vasari"))
-                    let files = dirInfo.GetFiles(/*NXLT*/"*.*")
-                    where files.Any(fi => fi.Name.ToUpper() == string.Format(/*NXLT*/"ASMAHL{0}A.DLL", version))
+                            dirInfo => dirInfo.Name.Contains("Revit") || dirInfo.Name.Contains("Vasari"))
+                    let files = dirInfo.GetFiles("*.*")
+                    where files.Any(fi => fi.Name.ToUpper() == string.Format("ASMAHL{0}A.DLL", version))
                     select dirInfo)
             {
                 host = dirInfo.FullName;
@@ -374,7 +374,7 @@ namespace DynamoUtilities
 
             var libG = Assembly.LoadFrom(Instance.AsmPreloader);
 
-            Type preloadType = libG.GetType(/*NXLT*/"Autodesk.LibG.AsmPreloader");
+            Type preloadType = libG.GetType("Autodesk.LibG.AsmPreloader");
 
             MethodInfo preloadMethod = preloadType.GetMethod(
                 "PreloadAsmLibraries",
@@ -398,8 +398,8 @@ namespace DynamoUtilities
         /// </summary>
         public static bool PreloadAsmLibraries(DynamoPathManager pathManager)
         {
-            if (PreloadAsmVersion(/*NXLT*/"219", pathManager)) return true;
-            if (PreloadAsmVersion(/*NXLT*/"220", pathManager)) return true;
+            if (PreloadAsmVersion("219", pathManager)) return true;
+            if (PreloadAsmVersion("220", pathManager)) return true;
             
             return false;
         }

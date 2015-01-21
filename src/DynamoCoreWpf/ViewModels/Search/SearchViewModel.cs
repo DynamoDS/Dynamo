@@ -48,7 +48,7 @@ namespace Dynamo.ViewModels
         public bool BrowserVisibility
         {
             get { return browserVisibility; }
-            set { browserVisibility = value; RaisePropertyChanged(/*NXLT*/"BrowserVisibility"); }
+            set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
         /// <summary>
@@ -64,8 +64,8 @@ namespace Dynamo.ViewModels
             set
             {
                 searchText = value;
-                RaisePropertyChanged(/*NXLT*/"SearchText");
-                RaisePropertyChanged(/*NXLT*/"BrowserRootCategories");
+                RaisePropertyChanged("SearchText");
+                RaisePropertyChanged("BrowserRootCategories");
             }
         }
 
@@ -88,7 +88,7 @@ namespace Dynamo.ViewModels
                     selectedIndex = value;
                     if (visibleSearchResults.Count > selectedIndex)
                         visibleSearchResults[selectedIndex].IsSelected = true;
-                    RaisePropertyChanged(/*NXLT*/"SelectedIndex");
+                    RaisePropertyChanged("SelectedIndex");
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace Dynamo.ViewModels
             set
             {
                 visible = value;
-                RaisePropertyChanged(/*NXLT*/"Visible");
+                RaisePropertyChanged("Visible");
             }
         }
 
@@ -134,7 +134,7 @@ namespace Dynamo.ViewModels
         public bool SearchScrollBarVisibility
         {
             get { return searchScrollBarVisibility; }
-            set { searchScrollBarVisibility = value; RaisePropertyChanged(/*NXLT*/"SearchScrollBarVisibility"); }
+            set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
 
         public ObservableCollection<NodeCategoryViewModel> SearchRootCategories { get; private set; }
@@ -333,7 +333,7 @@ namespace Dynamo.ViewModels
             if (firstRes == null)
                 return; //No results
 
-            var topResultCategory = new RootNodeCategoryViewModel("Top Result");
+            var topResultCategory = new RootNodeCategoryViewModel(Wpf.Properties.Resources.SearchViewTopResult);
             SearchRootCategories.Add(topResultCategory);
 
             var copy = MakeNodeSearchElementVM(firstRes);

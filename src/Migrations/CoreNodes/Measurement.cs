@@ -7,14 +7,14 @@ namespace Dynamo.Nodes
 {
     public class LengthInput : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
 
             var oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CloneAndChangeName(
-                oldNode, /*NXLT*/"UnitsUI.LengthFromString", "Length From String");
+                oldNode, "UnitsUI.LengthFromString", "Length From String");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -26,14 +26,14 @@ namespace Dynamo.Nodes
 
     public class AreaInput : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
 
             var oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CloneAndChangeName(
-                oldNode, /*NXLT*/"UnitsUI.AreaFromString", "Area From String");
+                oldNode, "UnitsUI.AreaFromString", "Area From String");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -45,14 +45,14 @@ namespace Dynamo.Nodes
 
     public class VolumeInput : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
 
             var oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CloneAndChangeName(
-                oldNode, /*NXLT*/"UnitsUI.VolumeFromString", "Volume From String");
+                oldNode, "UnitsUI.VolumeFromString", "Volume From String");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)
@@ -64,33 +64,33 @@ namespace Dynamo.Nodes
 
     public class LengthFromNumber : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DynamoUnits.dll", "Length",
-                /*NXLT*/"Length.FromDouble@double");
+            return MigrateToDsFunction(data, "DynamoUnits.dll", "Length",
+                "Length.FromDouble@double");
         }
     }
 
     public class AreaFromNumber : MigrationNode
     {
 
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DynamoUnits.dll", "Area",
-                /*NXLT*/"Area.FromDouble@double");
+            return MigrateToDsFunction(data, "DynamoUnits.dll", "Area",
+                "Area.FromDouble@double");
         }
     }
 
     public class VolumeFromNumber : MigrationNode
     {
 
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DynamoUnits.dll", "Volume",
-                /*NXLT*/"Volume.FromDouble@double");
+            return MigrateToDsFunction(data, "DynamoUnits.dll", "Volume",
+                "Volume.FromDouble@double");
         }
     }
 }

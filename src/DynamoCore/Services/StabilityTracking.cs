@@ -44,7 +44,7 @@ namespace Dynamo.Services
         public void NotifyCrash()
         {
             InstrumentationLogger.LogAnonymousTimedEvent(
-                /*NXLT*/"Stability", /*NXLT*/"TimeBetweenFailure", timeSinceLastCrash.Elapsed);
+                "Stability", "TimeBetweenFailure", timeSinceLastCrash.Elapsed);
             timeSinceLastCrash.Restart();
         }
     }
@@ -115,34 +115,34 @@ namespace Dynamo.Services
             }
 
             if (cleanShutdownValue == null || uptimeValue == null)
-                InstrumentationLogger.LogAnonymousEvent(/*NXLT*/"FirstTimeStartup", /*NXLT*/"Stability");
+                InstrumentationLogger.LogAnonymousEvent("FirstTimeStartup", "Stability");
             else
             {
                 switch (cleanShutdownValue)
                 {
                     case CLEAN_SHUTDOWN_VALUE:
-                        InstrumentationLogger.LogAnonymousEvent(/*NXLT*/"Clean shutdown", /*NXLT*/"Stability");
+                        InstrumentationLogger.LogAnonymousEvent("Clean shutdown", "Stability");
                         if (isUptimeSpanValid)
-                            InstrumentationLogger.LogAnonymousTimedEvent(/*NXLT*/"Stability", /*NXLT*/"Clean Uptime", uptimeSpan);
+                            InstrumentationLogger.LogAnonymousTimedEvent("Stability", "Clean Uptime", uptimeSpan);
                         break;
 
                     case CRASHING_SHUTDOWN_VALUE:
-                        InstrumentationLogger.LogAnonymousEvent(/*NXLT*/"Crashing shutdown", /*NXLT*/"Stability");
+                        InstrumentationLogger.LogAnonymousEvent("Crashing shutdown", "Stability");
                         if (isUptimeSpanValid)
-                            InstrumentationLogger.LogAnonymousTimedEvent(/*NXLT*/"Stability", /*NXLT*/"Dirty Uptime", uptimeSpan);
+                            InstrumentationLogger.LogAnonymousTimedEvent("Stability", "Dirty Uptime", uptimeSpan);
                         break;
 
                     case ASSUMING_CRASHING_SHUTDOWN_VALUE:
                         //This is the case where we don't know what happened, so we're defaulting
-                        InstrumentationLogger.LogAnonymousEvent(/*NXLT*/"Assumed crashing shutdown", /*NXLT*/"Stability");
+                        InstrumentationLogger.LogAnonymousEvent("Assumed crashing shutdown", "Stability");
                         if (isUptimeSpanValid)
-                            InstrumentationLogger.LogAnonymousTimedEvent(/*NXLT*/"Stability", /*NXLT*/"Assumed Dirty Uptime", uptimeSpan);
+                            InstrumentationLogger.LogAnonymousTimedEvent("Stability", "Assumed Dirty Uptime", uptimeSpan);
                         break;
 
                     default:
                         //Something went wrong, fail out with 'unknown' data.
-                        InstrumentationLogger.LogAnonymousEvent(/*NXLT*/"Unknown shutdown", "Stability");
-                        Debug.WriteLine(/*NXLT*/"Unknown shutdown key value: " + cleanShutdownValue);
+                        InstrumentationLogger.LogAnonymousEvent("Unknown shutdown", "Stability");
+                        Debug.WriteLine("Unknown shutdown key value: " + cleanShutdownValue);
                         break;
                 }
             }

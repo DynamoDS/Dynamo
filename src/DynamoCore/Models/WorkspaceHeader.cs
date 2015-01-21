@@ -25,12 +25,12 @@ namespace Dynamo.Models
                 string description = "";
                 string version = "";
 
-                var topNode = xmlDoc.GetElementsByTagName(/*NXLT*/"Workspace");
+                var topNode = xmlDoc.GetElementsByTagName("Workspace");
 
                 // legacy support
                 if (topNode.Count == 0)
                 {
-                    topNode = xmlDoc.GetElementsByTagName(/*NXLT*/"dynWorkspace");
+                    topNode = xmlDoc.GetElementsByTagName("dynWorkspace");
                 }
 
                 // load the header
@@ -38,13 +38,13 @@ namespace Dynamo.Models
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
-                        if (att.Name.Equals(/*NXLT*/"X"))
+                        if (att.Name.Equals("X"))
                             cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals(/*NXLT*/"Y"))
+                        else if (att.Name.Equals("Y"))
                             cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals(/*NXLT*/"zoom"))
+                        else if (att.Name.Equals("zoom"))
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals(/*NXLT*/"Name"))
+                        else if (att.Name.Equals("Name"))
                             funName = att.Value;
                         else if (att.Name.Equals("ID"))
                             id = att.Value;
@@ -60,7 +60,7 @@ namespace Dynamo.Models
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
                 // files remain compatible
-                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != /*NXLT*/"Home")
+                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName) && funName != "Home")
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }

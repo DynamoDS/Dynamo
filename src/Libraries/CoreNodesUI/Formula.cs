@@ -14,8 +14,8 @@ using Expression = NCalc.Expression;
 
 namespace DSCoreNodesUI
 {
-    [NodeName(/*NXLT*/"Formula")]
-    [NodeDescription(/*NXLT*/"Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/")]
+    [NodeName("Formula")]
+    [NodeDescription("Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     //[NodeDeprecated]
@@ -39,12 +39,12 @@ namespace DSCoreNodesUI
                         ElementState oldState = State;
                         {
                             ProcessFormula();
-                            RaisePropertyChanged(/*NXLT*/"FormulaString");
+                            RaisePropertyChanged("FormulaString");
                             OnAstUpdated();
                         }
 
                         if (oldState != State)
-                            RaisePropertyChanged(/*NXLT*/"State");
+                            RaisePropertyChanged("State");
                     }
                 }
             }
@@ -59,7 +59,7 @@ namespace DSCoreNodesUI
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name == /*NXLT*/"FormulaString")
+            if (name == "FormulaString")
             {
                 FormulaString = value;
                 return true; // UpdateValueCore handled.
@@ -73,7 +73,7 @@ namespace DSCoreNodesUI
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context); //Base implementation must be called
-            var formStringNode = element.OwnerDocument.CreateElement(/*NXLT*/"FormulaText");
+            var formStringNode = element.OwnerDocument.CreateElement("FormulaText");
             formStringNode.InnerText = FormulaString;
             element.AppendChild(formStringNode);
         }
@@ -84,7 +84,7 @@ namespace DSCoreNodesUI
 
             if (nodeElement.Attributes != null)
             {
-                var formulaAttr = nodeElement.Attributes[/*NXLT*/"formula"];
+                var formulaAttr = nodeElement.Attributes["formula"];
                 if (formulaAttr != null)
                 {
                     FormulaString = formulaAttr.Value;
@@ -92,7 +92,7 @@ namespace DSCoreNodesUI
                 }
             }
 
-            var formStringNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(childNode => childNode.Name == /*NXLT*/"FormulaText");
+            var formStringNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(childNode => childNode.Name == "FormulaText");
             FormulaString = formStringNode != null
                 ? formStringNode.InnerText
                 : nodeElement.InnerText;
@@ -120,8 +120,8 @@ namespace DSCoreNodesUI
             {
                 e = new Expression(
                     FormulaString.ToLower()
-                        .Replace(/*NXLT*/" and ", /*NXLT*/"+").Replace(/*NXLT*/"&&", /*NXLT*/"+")
-                        .Replace(/*NXLT*/" or ", /*NXLT*/"+").Replace(/*NXLT*/"||", /*NXLT*/"+"), 
+                        .Replace(" and ", "+").Replace("&&", "+")
+                        .Replace(" or ", "+").Replace("||", "+"), 
                     EvaluateOptions.IgnoreCase);
             }
             catch (Exception ex)
@@ -170,7 +170,7 @@ namespace DSCoreNodesUI
 
             foreach (var p in parameters)
             {
-                InPortData.Add(new PortData(p, /*NXLT*/"variable"));
+                InPortData.Add(new PortData(p, "variable"));
             }
 
             RegisterInputPorts();
@@ -192,7 +192,7 @@ namespace DSCoreNodesUI
 
             var functionDef = new FunctionDefinitionNode
             {
-                Name = /*NXLT*/"__formula_" + GUID.ToString().Replace("-", string.Empty),
+                Name = "__formula_" + GUID.ToString().Replace("-", string.Empty),
                 Signature =
                     new ArgumentSignatureNode
                     {

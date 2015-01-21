@@ -55,21 +55,21 @@ namespace Dynamo.DSEngine
             if (xml == null) return String.Empty;
 
             return GetMemberElement(parameter.Function,
-                String.Format(/*NXLT*/"param[@name='{0}']", parameter.Name), xml).CleanUpDocString();
+                String.Format("param[@name='{0}']", parameter.Name), xml).CleanUpDocString();
         }
 
         public static string GetSummary(this FunctionDescriptor member, XDocument xml)
         {
             if (xml == null) return String.Empty;
 
-            return GetMemberElement(member, /*NXLT*/"summary", xml).CleanUpDocString();
+            return GetMemberElement(member, "summary", xml).CleanUpDocString();
         }
 
         public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XDocument xml)
         {
             if (xml == null) return new List<string>();
 
-            return GetMemberElement(member, /*NXLT*/"search", xml)
+            return GetMemberElement(member, "search", xml)
                 .CleanUpDocString()
                 .Split(',')
                 .Select(x => x.Trim())
@@ -107,7 +107,7 @@ namespace Dynamo.DSEngine
 
             // match clr member name
             var match = xml.XPathEvaluate(
-                String.Format(/*NXLT*/"string(/doc/members/member[@name='{0}']/{1})", clrMemberName, suffix));
+                String.Format("string(/doc/members/member[@name='{0}']/{1})", clrMemberName, suffix));
 
             if (match is String && !string.IsNullOrEmpty((string)match))
             {
@@ -120,7 +120,7 @@ namespace Dynamo.DSEngine
             // match with fallback
             match = xml.XPathEvaluate(
                 String.Format(
-                /*NXLT*/"string(/doc/members/member[contains(@name,'{0}')]/{1})", methodName, suffix));
+                "string(/doc/members/member[contains(@name,'{0}')]/{1})", methodName, suffix));
 
             if (match is String && !string.IsNullOrEmpty((string)match))
             {
@@ -134,20 +134,20 @@ namespace Dynamo.DSEngine
         {
             switch (s)
             {
-                case /*NXLT*/"[]":
-                    return /*NXLT*/"System.Collections.IList";
-                case /*NXLT*/"var[]..[]":
-                    return /*NXLT*/"System.Collections.IList";
-                case /*NXLT*/"var":
-                    return /*NXLT*/"System.Object";
-                case /*NXLT*/"double":
-                    return /*NXLT*/"System.Double";
-                case /*NXLT*/"int":
-                    return /*NXLT*/"System.Int32";
-                case /*NXLT*/"bool":
-                    return /*NXLT*/"System.Boolean";
-                case /*NXLT*/"string":
-                    return /*NXLT*/"System.String";
+                case "[]":
+                    return "System.Collections.IList";
+                case "var[]..[]":
+                    return "System.Collections.IList";
+                case "var":
+                    return "System.Object";
+                case "double":
+                    return "System.Double";
+                case "int":
+                    return "System.Int32";
+                case "bool":
+                    return "System.Boolean";
+                case "string":
+                    return "System.String";
                 default:
                     return s;
             }
@@ -163,7 +163,7 @@ namespace Dynamo.DSEngine
             {
                 case FunctionType.Constructor:
                     // XML documentation uses slightly different constructor names
-                    memberName = memberName.Replace(/*NXLT*/".ctor", /*NXLT*/"#ctor");
+                    memberName = memberName.Replace(".ctor", "#ctor");
                     goto case FunctionType.InstanceMethod;
 
                 case FunctionType.InstanceMethod: 
@@ -191,7 +191,7 @@ namespace Dynamo.DSEngine
                     break;
 
                 default:
-                    throw new ArgumentException(/*NXLT*/"Unknown member type", "member");
+                    throw new ArgumentException("Unknown member type", "member");
             }
 
             // elements are of the form "M:Namespace.Class.Method"

@@ -8,16 +8,16 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI.HigherOrder
 {
-    [NodeName(/*NXLT*/"Function.Apply")]
+    [NodeName("Function.Apply")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription(/*NXLT*/"FunctionApplyDescription", typeof(Properties.Resources))]
+    [NodeDescription("FunctionApplyDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ApplyFunction : VariableInputNode
     {
         public ApplyFunction() : base()
         {
-            InPortData.Add(new PortData(/*NXLT*/"func", Resources.ApplyPortDataFuncToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"func(args)", Resources.ApplyPortDataFuncArgToolTip));
+            InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
+            OutPortData.Add(new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip));
             AddInput();
             RegisterAllPorts();
         }
@@ -25,9 +25,9 @@ namespace DSCoreNodesUI.HigherOrder
         protected override string GetInputName(int index)
         {
             if (index == 0)
-                return /*NXLT*/"func";
+                return "func";
 
-            return /*NXLT*/"arg" + index;
+            return "arg" + index;
         }
 
         protected override string GetInputTooltip(int index)
@@ -52,7 +52,7 @@ namespace DSCoreNodesUI.HigherOrder
                     GetAstIdentifierForOutputIndex(0),
                     new FunctionCallNode
                     {
-                        Function = AstFactory.BuildIdentifier(/*NXLT*/"__ApplyList"),
+                        Function = AstFactory.BuildIdentifier("__ApplyList"),
                         FormalArguments =
                             new List<AssociativeNode>
                             {
@@ -64,24 +64,24 @@ namespace DSCoreNodesUI.HigherOrder
         }
     }
 
-    [NodeName(/*NXLT*/"Function.Compose")]
+    [NodeName("Function.Compose")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription(/*NXLT*/"FunctionComposeDescription", typeof(Properties.Resources))]
+    [NodeDescription("FunctionComposeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ComposeFunctions : VariableInputNode
     {
         public ComposeFunctions()
         {
-            InPortData.Add(new PortData(/*NXLT*/"func0", Resources.ComposePortDataFunc0ToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"func1", Resources.ComposePortDataFunc1ToolTip));
+            InPortData.Add(new PortData("func0", Resources.ComposePortDataFunc0ToolTip));
+            InPortData.Add(new PortData("func1", Resources.ComposePortDataFunc1ToolTip));
 
-            OutPortData.Add(new PortData(/*NXLT*/"func", Resources.ComposePortDataResultToolTip));
+            OutPortData.Add(new PortData("func", Resources.ComposePortDataResultToolTip));
             RegisterAllPorts();
         }
 
         protected override string GetInputName(int index)
         {
-            return /*NXLT*/"func" + index;
+            return "func" + index;
         }
 
         protected override string GetInputTooltip(int index)
@@ -102,7 +102,7 @@ namespace DSCoreNodesUI.HigherOrder
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        /*NXLT*/"__Compose",
+                        "__Compose",
                         new List<AssociativeNode>
                         {
                             AstFactory.BuildExprList(Enumerable.Reverse(inputAstNodes).ToList())
