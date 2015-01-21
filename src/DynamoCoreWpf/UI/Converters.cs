@@ -484,6 +484,62 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ConnectionStateToBrushConverter : IValueConverter
+    {
+        public SolidColorBrush ExecutionPreviewBrush { get; set; }
+        public SolidColorBrush NoneBrush { get; set; }
+        public SolidColorBrush SelectionBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (ConnectorState)value;
+            switch (state)
+            {
+                case ConnectorState.ExecutionPreview:
+                    return ExecutionPreviewBrush;
+                case ConnectorState.None:
+                    return NoneBrush;
+                case ConnectorState.Selection:
+                    return SelectionBrush;
+                default:
+                    return NoneBrush;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToColorConverter : IValueConverter
+    {
+        public Color ExecutionPreview { get; set; }
+        public Color None { get; set; }
+        public Color Selection { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (ConnectorState)value;
+            switch (state)
+            {
+                case ConnectorState.ExecutionPreview:
+                    return ExecutionPreview;
+                case ConnectorState.None:
+                    return None;
+                case ConnectorState.Selection:
+                    return Selection;
+                default:
+                    return None;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class BooleanToSelectionColorConverter : IValueConverter
     {
         public Color True { get; set; }

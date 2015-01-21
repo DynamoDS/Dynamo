@@ -361,7 +361,7 @@
         </Rectangle>
 
         <!--DO NOT ERASE. THIS IS FOR DEBUGGING-->
-        <Rectangle Name="ForceReexecBorder"
+        <!--<Rectangle Name="ForceReexecBorder"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
@@ -380,7 +380,7 @@
                          Converter="{StaticResource BooleanToVisibilityConverter}">
                 </Binding>
             </Rectangle.Visibility>
-        </Rectangle>
+        </Rectangle>-->
 
         <Canvas Name="expansionBay"
                 Grid.Row="4"

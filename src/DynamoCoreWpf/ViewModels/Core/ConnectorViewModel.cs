@@ -2,10 +2,15 @@
 
 using Dynamo.Models;
 using Dynamo.Utilities;
+
+using GraphLayout;
+
 using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
+    public enum ConnectorState{Selection, ExecutionPreview, None}
+
     public partial class ConnectorViewModel:ViewModelBase
     {
 
@@ -209,6 +214,24 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public ConnectorState ConnectorState
+        {
+            get
+            {
+                if (_model.Start.Owner.ShowExecutionPreview)
+                {
+                    return ConnectorState.ExecutionPreview;
+                }
+
+                if (_model.Start.Owner.IsSelected ||
+                    _model.End.Owner.IsSelected)
+                {
+                    return ConnectorState.Selection;
+                }
+
+                return ConnectorState.None;
+            }
+        }
 #endregion
 
         /// <summary>
@@ -254,6 +277,7 @@ namespace Dynamo.ViewModels
                 case "IsSelected":
                     RaisePropertyChanged("IsStartSelected");
                     RaisePropertyChanged("IsStartOrEndSelected");
+                    RaisePropertyChanged("ConnectorState");
                     break;
                 case "Position":
                     RaisePropertyChanged("CurvePoint0");
@@ -262,6 +286,9 @@ namespace Dynamo.ViewModels
                 case "Width":
                     RaisePropertyChanged("CurvePoint0");
                     Redraw();
+                    break;
+                case "ShowExecutionPreview":
+                    RaisePropertyChanged("ConnectorState");
                     break;
             }
         }
@@ -278,6 +305,7 @@ namespace Dynamo.ViewModels
                 case "IsSelected":
                     RaisePropertyChanged("IsEndSelected");
                     RaisePropertyChanged("IsStartOrEndSelected");
+                    RaisePropertyChanged("ConnectorState");
                     break;
                 case "Position":
                     RaisePropertyChanged("CurvePoint0");
@@ -286,6 +314,9 @@ namespace Dynamo.ViewModels
                 case "Width":
                     RaisePropertyChanged("CurvePoint0");
                     Redraw();
+                    break;
+                case "ShowExecutionPreview":
+                    RaisePropertyChanged("ConnectorState");
                     break;
             }
         }

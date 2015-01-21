@@ -18,18 +18,34 @@
     </controls:WorkspaceBackgroundBrushConverter>
     
     <controls:MarginConverter x:Key="MarginConverter" />
+    
     <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter" 
                                       TrueBrush="#4192D9" 
                                       FalseBrush="Black">
     </controls:BooleanToBrushConverter>
+    
     <controls:BooleanToBrushConverter x:Key="PortConnectedBooleanToBrushConverter"
                                       TrueBrush="Black"
                                       FalseBrush="White">
     </controls:BooleanToBrushConverter>
+    
     <controls:BooleanToSelectionColorConverter x:Key="BooleanToSelectionColorConverter" 
                                 True="#4192D9" 
                                 False="#444">
     </controls:BooleanToSelectionColorConverter>
+
+    <controls:ConnectionStateToColorConverter x:Key="ConnectionStateToColorConverter"
+                                              ExecutionPreview="#F2930C"
+                                              Selection="#4192D9"
+                                              None="#444">
+        
+    </controls:ConnectionStateToColorConverter>
+
+    <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
+                                              ExecutionPreviewBrush="#F2930C"
+                                              SelectionBrush="#4192D9"
+                                              NoneBrush="#444">
+    </controls:ConnectionStateToBrushConverter>
 
     <controls:StateToColorConverter x:Key="StateToColorConverter"
         HeaderBackgroundInactive="{StaticResource headerBackgroundInactive}"
