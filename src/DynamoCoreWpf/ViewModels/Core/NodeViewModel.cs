@@ -106,7 +106,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return nodeLogic.IsSelected || nodeLogic.ShowExecutionPreview;
+                return nodeLogic.IsSelected;
             }
         }
 
@@ -497,7 +497,6 @@ namespace Dynamo.ViewModels
                 case "ShowExecutionPreview":
                     RaisePropertyChanged("ShowExecutionPreview");
                     RaisePropertyChanged("PreviewState");
-                    RaisePropertyChanged("IsSelected");
                     break;
             }
         }

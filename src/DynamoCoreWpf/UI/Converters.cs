@@ -540,6 +540,30 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ConnectionStateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return Visibility.Visible;
+                case PreviewState.None:
+                    return Visibility.Collapsed;
+                case PreviewState.Selection:
+                    return Visibility.Visible;
+                default:
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class BooleanToSelectionColorConverter : IValueConverter
     {
         public Color True { get; set; }

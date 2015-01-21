@@ -352,10 +352,10 @@
                    Canvas.ZIndex="41"
                    Margin="-1">
             <Rectangle.Visibility>
-                <Binding Path="IsSelected"
+                <Binding Path="PreviewState"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
-                         Converter="{StaticResource BooleanToVisibilityConverter}">
+                         Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}">
                 </Binding>
             </Rectangle.Visibility>
         </Rectangle>

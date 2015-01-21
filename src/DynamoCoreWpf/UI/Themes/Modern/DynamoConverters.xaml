@@ -47,6 +47,8 @@
                                               NoneBrush="#444">
     </controls:ConnectionStateToBrushConverter>
 
+    <controls:ConnectionStateToVisibilityCollapsedConverter x:Key="ConnectionStateToVisibilityCollapsedConverter"/>
+                                                            
     <controls:StateToColorConverter x:Key="StateToColorConverter"
         HeaderBackgroundInactive="{StaticResource headerBackgroundInactive}"
         HeaderForegroundInactive="{StaticResource headerForegroundInactive}"
