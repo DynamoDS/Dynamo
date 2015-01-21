@@ -1279,7 +1279,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failure")]
         public void TV1467167()
         {
             String code =

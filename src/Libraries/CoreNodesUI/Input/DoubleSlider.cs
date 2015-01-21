@@ -1,54 +1,86 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
 
-using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.Nodes;
+using DSCoreNodesUI.Input;
+
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Double Slider")]
+    [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces double values.")]
+    [NodeDescription("A slider that produces numeric values.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    public class DoubleSlider : DSCoreNodesUI.Double
+    [NodeSearchTags(new[] { "double", "number", "float", "integer", "slider" })]
+    public class DoubleSlider : SliderBase<double>
     {
         public DoubleSlider()
         {
-            Value = 0;
             Min = 0;
             Max = 100;
+            Step = 0.01;
+            Value = 0;
             ShouldDisplayPreviewCore = false;
         }
 
-        private double _max;
-        public double Max
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            get { return _max; }
-            set
+            var rhs = AstFactory.BuildDoubleNode(Value);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+
+            return new[] { assignment };
+        }
+
+        protected override double DeserializeValue(string val)
+        {
+            try
             {
-                _max = value;
-                if (_max < Value)
-                    Value = _max;
-                RaisePropertyChanged("Max");
+                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return 0;
             }
         }
 
-        private double _min;
-        public double Min
+        protected override string SerializeValue()
         {
-            get { return _min; }
-            set
+            return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        {
+            WorkspaceModel.RecordModelForModification(this, recorder);
+
+            switch (name)
             {
-                _min = value;
-                if (_min > Value)
-                    Value = _min;
-                RaisePropertyChanged("Min");
+                case "Min":
+                case "MinText":
+                    Min = SliderViewModel<double>.ConvertStringToDouble(value);
+                    return true; // UpdateValueCore handled.
+                case "Max":
+                case "MaxText":
+                    Max = SliderViewModel<double>.ConvertStringToDouble(value);
+                    return true; // UpdateValueCore handled.
+                case "Value":
+                case "ValueText":
+                    Value = SliderViewModel<double>.ConvertStringToDouble(value);
+                    return true; // UpdateValueCore handled.
+                case "Step":
+                case "StepText":
+                    Step = SliderViewModel<double>.ConvertStringToDouble(value);
+                    return true;
             }
+
+            return base.UpdateValueCore(name, value, recorder);
         }
 
         #region Serialization/Deserialization Methods
@@ -57,69 +89,48 @@ namespace Dynamo.Nodes
         {
             base.SerializeCore(element, context); // Base implementation must be called.
 
-            XmlElement outEl = element.OwnerDocument.CreateElement("Range");
-            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
-            element.AppendChild(outEl);
+            var xmlDocument = element.OwnerDocument;
+            XmlElement subNode = xmlDocument.CreateElement("Range");
+            subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
+            subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            subNode.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
+            element.AppendChild(subNode);
         }
 
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context); //Base implementation must be called.
+            base.DeserializeCore(element, context); //Base implementation must be called.
 
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            foreach (XmlNode subNode in element.ChildNodes)
             {
                 if (!subNode.Name.Equals("Range"))
                     continue;
+                if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
+                    continue;
 
-                double min = Min;
-                double max = Max;
-
-                if (subNode.Attributes != null)
+                foreach (XmlAttribute attr in subNode.Attributes)
                 {
-                    foreach (XmlAttribute attr in subNode.Attributes)
+                    switch (attr.Name)
                     {
-                        if (attr.Name.Equals("min"))
-                            min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("max"))
-                            max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        else if (attr.Name.Equals("value"))
-                            Value = Convert.ToDouble(subNode.InnerText, CultureInfo.InvariantCulture);
+                        case "min":
+                            Min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            break;
+                        case "max":
+                            Max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            break;
+                        case "step":
+                            Step = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
+                            break;
+                        default:
+                            Log(string.Format("{0} attribute could not be deserialized for {1}", attr.Name, GetType()));
+                            break;
                     }
                 }
 
-                Min = min;
-                Max = max;
+                break;
             }
         }
 
         #endregion
-
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
-        {
-            var converter = new DoubleDisplay();
-            switch (name)
-            {
-                case "Min":
-                    Min = ((double)converter.ConvertBack(value, typeof(double), null, null));
-                    return true; // UpdateValueCore handled.
-                case "Max":
-                    Max = ((double)converter.ConvertBack(value, typeof(double), null, null));
-                    return true; // UpdateValueCore handled.
-                case "Value":
-                    Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
-                    if (Value >= Max)
-                    {
-                        this.Max = Value;
-                    }
-                    if (Value <= Min)
-                    {
-                        this.Min = Value;
-                    }
-                    return true; // UpdateValueCore handled.
-            }
-
-            return base.UpdateValueCore(name, value, recorder);
-        }
     }
 }
