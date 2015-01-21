@@ -97,6 +97,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Custom Node, Library, or XML file to Package....
+        /// </summary>
+        public static string AddCustomFileToPackageDialogTitle {
+            get {
+                return ResourceManager.GetString("AddCustomFileToPackageDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add File to Package....
         /// </summary>
         public static string AddFileToPackageDialogTitle {
@@ -228,6 +237,33 @@ namespace Dynamo.Wpf.Properties {
         public static string ContinueButton {
             get {
                 return ResourceManager.GetString("ContinueButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current offset X: {0}, Y: {1}.
+        /// </summary>
+        public static string ConverterMessageCurrentOffset {
+            get {
+                return ResourceManager.GetString("ConverterMessageCurrentOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transform origin X: {0}, Y: {1}.
+        /// </summary>
+        public static string ConverterMessageTransformOrigin {
+            get {
+                return ResourceManager.GetString("ConverterMessageTransformOrigin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom : {0}.
+        /// </summary>
+        public static string ConverterMessageZoom {
+            get {
+                return ResourceManager.GetString("ConverterMessageZoom", resourceCulture);
             }
         }
         
@@ -918,6 +954,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show In Folder.
+        /// </summary>
+        public static string DynamoViewSamplesMenuShowInFolder {
+            get {
+                return ResourceManager.GetString("DynamoViewSamplesMenuShowInFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Settings.
         /// </summary>
         public static string DynamoViewSettingMenu {
@@ -1485,6 +1530,114 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All Files (*.*)|*.*.
+        /// </summary>
+        public static string FileDialogAllFiles {
+            get {
+                return ResourceManager.GetString("FileDialogAllFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assembly Library Files (*.dll)|*.dll.
+        /// </summary>
+        public static string FileDialogAssemblyFiles {
+            get {
+                return ResourceManager.GetString("FileDialogAssemblyFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml.
+        /// </summary>
+        public static string FileDialogCustomNodeDLLXML {
+            get {
+                return ResourceManager.GetString("FileDialogCustomNodeDLLXML", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capture.png.
+        /// </summary>
+        public static string FileDialogDefaultPNGName {
+            get {
+                return ResourceManager.GetString("FileDialogDefaultPNGName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to model.stl.
+        /// </summary>
+        public static string FileDialogDefaultSTLModelName {
+            get {
+                return ResourceManager.GetString("FileDialogDefaultSTLModelName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DesignScript Files (*.ds)|*.ds.
+        /// </summary>
+        public static string FileDialogDesignScriptFiles {
+            get {
+                return ResourceManager.GetString("FileDialogDesignScriptFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Custom Node (*.dyf)|*.dyf.
+        /// </summary>
+        public static string FileDialogDynamoCustomNode {
+            get {
+                return ResourceManager.GetString("FileDialogDynamoCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf.
+        /// </summary>
+        public static string FileDialogDynamoDefinitions {
+            get {
+                return ResourceManager.GetString("FileDialogDynamoDefinitions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Workspace (*.dyn)|*.dyn.
+        /// </summary>
+        public static string FileDialogDynamoWorkspace {
+            get {
+                return ResourceManager.GetString("FileDialogDynamoWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Library Files (*.dll, *.ds)|*.dll;*.ds.
+        /// </summary>
+        public static string FileDialogLibraryFiles {
+            get {
+                return ResourceManager.GetString("FileDialogLibraryFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PNG Image|*.png.
+        /// </summary>
+        public static string FileDialogPNGFiles {
+            get {
+                return ResourceManager.GetString("FileDialogPNGFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to STL Models|*.stl.
+        /// </summary>
+        public static string FileDialogSTLModels {
+            get {
+                return ResourceManager.GetString("FileDialogSTLModels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No file selected..
         /// </summary>
         public static string FilePathConverterNoFileSelected {
@@ -1553,6 +1706,24 @@ namespace Dynamo.Wpf.Properties {
         public static string InCanvasNodeButtonToolTip {
             get {
                 return ResourceManager.GetString("InCanvasNodeButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error: .
+        /// </summary>
+        public static string InfoBubbleError {
+            get {
+                return ResourceManager.GetString("InfoBubbleError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning: .
+        /// </summary>
+        public static string InfoBubbleWarning {
+            get {
+                return ResourceManager.GetString("InfoBubbleWarning", resourceCulture);
             }
         }
         
@@ -1963,11 +2134,65 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to apply NodeViewCustomization for {0}.
+        /// </summary>
+        public static string MessageFailedToApplyCustomization {
+            get {
+                return ResourceManager.GetString("MessageFailedToApplyCustomization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;AttachmentToRowColumnConverter&apos; expects a &apos;ConverterParameter&apos; value to be either &apos;Row&apos; or &apos;Column&apos;.
+        /// </summary>
+        public static string MessageFailedToAttachToRowColumn {
+            get {
+                return ResourceManager.GetString("MessageFailedToAttachToRowColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to perform code block autocomplete with exception:.
+        /// </summary>
+        public static string MessageFailedToAutocomple {
+            get {
+                return ResourceManager.GetString("MessageFailedToAutocomple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems..
         /// </summary>
         public static string MessageFailedToDownloadPackage {
             get {
                 return ResourceManager.GetString("MessageFailedToDownloadPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No node could be found with that Id..
+        /// </summary>
+        public static string MessageFailedToFindNodeById {
+            get {
+                return ResourceManager.GetString("MessageFailedToFindNodeById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error opening file: .
+        /// </summary>
+        public static string MessageFailedToOpenFile {
+            get {
+                return ResourceManager.GetString("MessageFailedToOpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the Workspace as image..
+        /// </summary>
+        public static string MessageFailedToSaveAsImage {
+            get {
+                return ResourceManager.GetString("MessageFailedToSaveAsImage", resourceCulture);
             }
         }
         
@@ -2008,11 +2233,38 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} elapsed for loading Dynamo main window..
+        /// </summary>
+        public static string MessageLoadingTime {
+            get {
+                return ResourceManager.GetString("MessageLoadingTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamo and its host application must restart before uninstall takes effect..
         /// </summary>
         public static string MessageNeedToRestart {
             get {
                 return ResourceManager.GetString("MessageNeedToRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is a null function definition for this node..
+        /// </summary>
+        public static string MessageNodeWithNullFunction {
+            get {
+                return ResourceManager.GetString("MessageNodeWithNullFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No description provided.
+        /// </summary>
+        public static string MessageNoNodeDescription {
+            get {
+                return ResourceManager.GetString("MessageNoNodeDescription", resourceCulture);
             }
         }
         
@@ -2104,6 +2356,24 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageUnintallToContinue2 {
             get {
                 return ResourceManager.GetString("MessageUnintallToContinue2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following workspaces have not been saved:.
+        /// </summary>
+        public static string MessageUnsavedChanges0 {
+            get {
+                return ResourceManager.GetString("MessageUnsavedChanges0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to . Please save them and try again..
+        /// </summary>
+        public static string MessageUnsavedChanges1 {
+            get {
+                return ResourceManager.GetString("MessageUnsavedChanges1", resourceCulture);
             }
         }
         
@@ -2927,6 +3197,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Top Result.
+        /// </summary>
+        public static string SearchViewTopResult {
+            get {
+                return ResourceManager.GetString("SearchViewTopResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Selection Error.
         /// </summary>
         public static string SelectionErrorMessageBoxTitle {
@@ -3103,6 +3382,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageVisitDynamoBim {
             get {
                 return ResourceManager.GetString("StartPageVisitDynamoBim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string TooltipCurrentIndex {
+            get {
+                return ResourceManager.GetString("TooltipCurrentIndex", resourceCulture);
             }
         }
         

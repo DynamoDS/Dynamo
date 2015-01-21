@@ -639,8 +639,9 @@ namespace Dynamo.PackageManager
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select(ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
-                throw new Exception("The following workspaces have not been saved: " +
-                                    String.Join(", ", unsavedWorkspaceNames) + ". Please save them and try again.");
+                throw new Exception(Wpf.Properties.Resources.MessageUnsavedChanges0 +
+                                    String.Join(", ", unsavedWorkspaceNames) +
+                                    Wpf.Properties.Resources.MessageUnsavedChanges1);
             }
 
             // omit files currently already under package control
@@ -764,7 +765,7 @@ namespace Dynamo.PackageManager
                             x.Name,
                             !String.IsNullOrEmpty(x.Description)
                                 ? x.Description
-                                : "No description provided"));
+                                : Wpf.Properties.Resources.MessageNoNodeDescription));
         }
 
         private string _errorString = "";
@@ -788,8 +789,8 @@ namespace Dynamo.PackageManager
             {
                 fDialog = new OpenFileDialog()
                 {
-                    Filter = "Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml",
-                    Title = "Add Custom Node, Library, or XML file to Package..."
+                    Filter = Resources.FileDialogCustomNodeDLLXML,
+                    Title = Resources.AddCustomFileToPackageDialogTitle
                 };
             }
 
