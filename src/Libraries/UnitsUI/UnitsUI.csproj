@@ -73,9 +73,9 @@
       <Name>ProtoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\CoreNodesUI\CoreNodesUI.csproj">
+    <ProjectReference Include="..\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>CoreNodesUI</Name>
+      <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">

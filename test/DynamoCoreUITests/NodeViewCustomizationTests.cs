@@ -3,44 +3,27 @@ using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
+using Dynamo.Wpf.Controls;
 using DynamoCoreUITests.Utility;
 using NUnit.Framework;
+<<<<<<< HEAD
 using Dynamo.Utilities;
+=======
+>>>>>>> origin/master
 
 namespace DynamoCoreUITests
 {
     public class NodeViewCustomizationTests : DynamoTestUIBase
     {
         // adapted from: http://stackoverflow.com/questions/9336165/correct-method-for-using-the-wpf-dispatcher-in-unit-tests
-        private static class DispatcherUtil
-        {
-            /// <summary>
-            /// Force the Dispatcher to empty it's queue
-            /// </summary>
-            [SecurityPermissionAttribute(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-            public static void DoEvents()
-            {
-                DispatcherFrame frame = new DispatcherFrame();
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
-                    new DispatcherOperationCallback(ExitFrame), frame);
-                Dispatcher.PushFrame(frame);
-            }
-
-            /// <summary>
-            /// Helper method for DispatcherUtil
-            /// </summary>
-            /// <param name="frame"></param>
-            /// <returns></returns>
-            private static object ExitFrame(object frame)
-            {
-                ((DispatcherFrame)frame).Continue = false;
-                return null;
-            }
-        }
 
         public NodeView NodeViewOf<T>() where T : NodeModel
         {
@@ -127,7 +110,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewWithGuid("8820644a-ba01-4118-8f04-26ebf58c11cc"); // NodeViewOf<DoubleSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
-            Assert.AreEqual(1.0, element.Value, 1e-6);
+            Assert.AreEqual(1.0, element.slider.Value, 1e-6);
         }
 
         [Test]
@@ -138,7 +121,7 @@ namespace DynamoCoreUITests
             var nodeView = NodeViewWithGuid("d0fa1feb-ec0e-4cee-a86a-34077f5a870a"); // NodeViewOf<IntegerSlider>();
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
-            Assert.AreEqual(41, element.Value, 1e-6);
+            Assert.AreEqual(41, element.slider.Value, 1e-6);
         }
 
         [Test]
@@ -157,7 +140,8 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewWithGuid("4e50a79d-783f-4c54-9961-c0a9ee3214e1"); // NodeViewOf<DSCore.File.Directory>();
+            var nodeView = NodeViewWithGuid("4e50a79d-783f-4c54-9961-c0a9ee3214e1");
+                // NodeViewOf<DSCore.File.Directory>();
 
             var eles = nodeView.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(1, eles.Count());
@@ -175,7 +159,7 @@ namespace DynamoCoreUITests
         }
 
 
-        [Test]  
+        [Test]
         public void VolumeFromStringHasTextBoxWithCorrectValue()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -258,7 +242,8 @@ namespace DynamoCoreUITests
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
 
-            var nodeView = NodeViewWithGuid("cf3ed4fb-f0a2-4dfe-89c1-11e8bbcfe80d"); // NodeViewOf<Dynamo.Nodes.WatchImageCore>();
+            var nodeView = NodeViewWithGuid("cf3ed4fb-f0a2-4dfe-89c1-11e8bbcfe80d");
+                // NodeViewOf<Dynamo.Nodes.WatchImageCore>();
 
             var imgs = nodeView.ChildrenOfType<Image>();
 
@@ -275,7 +260,8 @@ namespace DynamoCoreUITests
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
 
-            var nodeView = NodeViewWithGuid("6edc4c28-15ef-4d60-af6d-6ed829871973"); // NodeViewOf<Dynamo.Nodes.Watch3D>();
+            var nodeView = NodeViewWithGuid("6edc4c28-15ef-4d60-af6d-6ed829871973");
+                // NodeViewOf<Dynamo.Nodes.Watch3D>();
 
             var watch3ds = nodeView.ChildrenOfType<Watch3DView>();
 
@@ -283,8 +269,12 @@ namespace DynamoCoreUITests
 
             var watch3DView = watch3ds.First();
 
+<<<<<<< HEAD
             Assert.AreEqual(1, watch3DView.Points.Positions.Count);
             
+=======
+            Assert.AreEqual(1, watch3DView.Points.Count);
+>>>>>>> origin/master
         }
 
         [Test]
@@ -292,9 +282,36 @@ namespace DynamoCoreUITests
         {
             Open(@"UI\CoreUINodes.dyn");
 
-            var nodeView = NodeViewWithGuid("b97925f7-86d8-44fc-8e57-5768593d6b4e"); // NodeViewOf<Dynamo.Nodes.Function>();
+            var nodeView = NodeViewWithGuid("b97925f7-86d8-44fc-8e57-5768593d6b4e");
+                // NodeViewOf<Dynamo.Nodes.Function>();
 
-            Assert.True( nodeView.customNodeBorder0.Visibility == Visibility.Visible);
+            Assert.True(nodeView.customNodeBorder0.Visibility == Visibility.Visible);
+        }
+
+        private static class DispatcherUtil
+        {
+            /// <summary>
+            ///     Force the Dispatcher to empty it's queue
+            /// </summary>
+            [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+            public static void DoEvents()
+            {
+                var frame = new DispatcherFrame();
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
+                    new DispatcherOperationCallback(ExitFrame), frame);
+                Dispatcher.PushFrame(frame);
+            }
+
+            /// <summary>
+            ///     Helper method for DispatcherUtil
+            /// </summary>
+            /// <param name="frame"></param>
+            /// <returns></returns>
+            private static object ExitFrame(object frame)
+            {
+                ((DispatcherFrame) frame).Continue = false;
+                return null;
+            }
         }
     }
 }
