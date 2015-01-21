@@ -4,6 +4,8 @@ using System.Diagnostics;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using System.Linq;
+using System.Text;
 
 namespace ProtoCore
 {
@@ -31,6 +33,22 @@ namespace ProtoCore
             rank = DSASM.Constants.kArbitraryRank;
         }
 
+        private string RankString
+        {
+            get
+            {
+                if (IsIndexable)
+                {
+                    return rank == Constants.kArbitraryRank ?
+                        "[]..[]" : new StringBuilder().Insert(0, "[]", rank).ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+        }
+
         public override string ToString()
         {
             string typename = Name;
@@ -41,19 +59,23 @@ namespace ProtoCore
                     typename = DSDefinitions.Keyword.Var;
             }
 
-            string rankText = string.Empty;
-            if (IsIndexable)
-            {
-                if (rank == DSASM.Constants.kArbitraryRank)
-                    rankText = "[]..[]";
-                else
-                {
-                    for (int i = 0; i < rank; i++)
-                        rankText += "[]";
-                }
-            }
+            return typename + RankString;
+        }
 
-            return typename + rankText;
+        /// <summary>
+        /// To its string representation, but using unqualified class class name.
+        /// </summary>
+        /// <returns></returns>
+        public string ToShortString()
+        {
+            if (!string.IsNullOrEmpty(Name) && Name.Contains("."))
+            {
+                return Name.Split('.').Last() + RankString; 
+            }
+            else
+            {
+                return ToString();
+            }
         }
 
         public bool Equals(Type type)
@@ -416,17 +438,6 @@ namespace ProtoCore
                 //walk over the structure converting each othe elements
 
                 var hpe = core.Heap.GetHeapElement(sv);
-#if GC_REFERENCE_COUNTING
-                var isTemporary = hpe.Active && hpe.Refcount == 0;
-#else
-                var isTemporary = false;
-#endif
-
-                if (targetType.UID == (int)PrimitiveType.kTypeVar && targetType.rank == DSASM.Constants.kArbitraryRank && isTemporary)
-                {
-                    return sv;
-                }
-
                 //Validity.Assert(targetType.rank != -1, "Arbitrary rank array conversion not yet implemented {2EAF557F-62DE-48F0-9BFA-F750BBCDF2CB}");
 
                 //Decrease level of reductions by one

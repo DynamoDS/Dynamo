@@ -1605,12 +1605,10 @@ namespace ProtoCore.DSASM
                 //
 
                 // Handle deactivated graphnodes
-#if GC_MARK_AND_SWEEP
                 foreach (var symbol in gnode.symbolListWithinExpression)
                 {
                     rmem.SetSymbolValue(symbol, StackValue.Null);
                 }
-#endif
                 gnode.isActive = false;
             }
             return reachableGraphNodes.Count;
@@ -7518,7 +7516,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        [Conditional("GC_MARK_AND_SWEEP")]
         private void GC()
         {
             var currentFramePointer = rmem.FramePointer;

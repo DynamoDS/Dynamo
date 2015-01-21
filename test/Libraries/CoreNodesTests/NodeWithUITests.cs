@@ -13,6 +13,9 @@
 // 
 using System.Collections.Generic;
 using System.Linq;
+
+using DSCoreNodesUI.Input;
+
 using Dynamo.Core;
 using Dynamo.Nodes;
 using NUnit.Framework;
