@@ -489,7 +489,7 @@ namespace Dynamo.Utilities
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                functionId);
+                functionId, workspaceInfo.FileName);
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -598,7 +598,7 @@ namespace Dynamo.Utilities
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
-            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory);
+            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, string.Empty);
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
@@ -872,6 +872,33 @@ namespace Dynamo.Utilities
                             X = 0
                         };
 
+                        // Try to figure out the type of input of custom node 
+                        // from the type of input of selected node. There are
+                        // two kinds of nodes whose input type are available:
+                        // function node and custom node. 
+                        List<Library.TypedParameter> parameters = null;
+                        if (inputReceiverNode is Function) 
+                        {
+                            var func = inputReceiverNode as Function; 
+                            parameters =  func.Controller.Definition.Parameters.ToList(); 
+                        }
+                        else if (inputReceiverNode is DSFunctionBase)
+                        {
+                            var dsFunc = inputReceiverNode as DSFunctionBase;
+                            parameters = dsFunc.Controller.Definition.Parameters.ToList(); 
+                        }
+
+                        // so the input of custom node has format 
+                        //    input_var_name : type
+                        if (parameters != null && parameters.Count() > inputReceiverData)
+                        {
+                            var typeName = parameters[inputReceiverData].DisplayTypeName;
+                            if (!string.IsNullOrEmpty(typeName))
+                            {
+                                node.InputSymbol += " : " + typeName;
+                            }
+                        }
+
                         node.SetNickNameFromAttribute();
                         node.Y = inputIndex*(50 + node.Height);
 
@@ -995,7 +1022,7 @@ namespace Dynamo.Utilities
                     Enumerable.Empty<NoteModel>(),
                     0,
                     0,
-                    newId);
+                    newId, string.Empty);
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 

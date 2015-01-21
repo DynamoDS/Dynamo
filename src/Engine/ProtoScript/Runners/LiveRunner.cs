@@ -1661,10 +1661,6 @@ namespace ProtoScript.Runners
             changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
-
-#if DEBUG // Debug preproc the function here as we dont want it to perform additional calls on release
-            runnerCore.Heap.Verify();
-#endif
         }
 
         private void SynchronizeInternal(string code)

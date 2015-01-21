@@ -158,9 +158,9 @@ namespace Dynamo.UI.Controls
 
             #region Reference List
 
-            references.Add(new StartPageListItem("Written Tutorials", "icon-reference.png")
+            references.Add(new StartPageListItem("Advanced Tutorials", "icon-reference.png")
             {
-                ContextData = Configurations.DynamoWrittenTutorials,
+                ContextData = Configurations.DynamoAdvancedTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 

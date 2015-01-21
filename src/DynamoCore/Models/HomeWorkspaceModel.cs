@@ -30,7 +30,8 @@ namespace Dynamo.Models
 
         public readonly bool VerboseLogging;
 
-        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, NodeFactory factory, bool verboseLogging, bool isTestMode)
+        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
+            NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
                 engine,
                 scheduler,
@@ -39,12 +40,13 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 0,
-                0, verboseLogging, isTestMode) { }
+                0, verboseLogging, isTestMode, fileName) { }
 
         public HomeWorkspaceModel(
             EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
-            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, double x, double y, bool verboseLogging,
-            bool isTestMode) : base("Home", e, n, x, y, factory)
+            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
+            double x, double y, bool verboseLogging,
+            bool isTestMode, string fileName="") : base("Home", e, n, x, y, factory, fileName)
         {
             RunEnabled = true;
             PreloadedTraceData = traceData;
@@ -117,23 +119,30 @@ namespace Dynamo.Models
             EngineController.NodeDeleted(node);
         }
 
+        protected override void ResetWorkspaceCore()
+        {
+            // Reset Run Automatic option to false on resetting the workspace
+#if DEBUG
+            DynamicRunEnabled = true;
+#else
+            DynamicRunEnabled = false;
+#endif
+        }
+
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
             foreach (var node in Nodes)
             {
-                // Mark all nodes as dirty so that AST for the whole graph will be
-                // regenerated.
-                node.ForceReExecuteOfNode = true;
+                node.MarkNodeAsModified();
             }
-
-            OnAstUpdated();
+            OnNodesModified();
         }
 
-        public override void OnAstUpdated()
+        public override void OnNodesModified()
         {
-            base.OnAstUpdated();
+            base.OnNodesModified();
 
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
@@ -186,9 +195,13 @@ namespace Dynamo.Models
             
             if (markNodesAsDirty)
             {
+                // Mark all nodes as dirty so that AST for the whole graph will be
+                // regenerated.
                 foreach (var node in Nodes)
-                    node.ForceReExecuteOfNode = true;
-                OnAstUpdated();
+                {
+                    node.MarkNodeAsModified();
+                }
+                OnNodesModified();
             }
 
             if (DynamicRunEnabled)
@@ -245,8 +258,10 @@ namespace Dynamo.Models
                 }
             }
 
-            foreach (var n in Nodes)
-                n.ForceReExecuteOfNode = false;
+            foreach (var node in Nodes)
+            {
+                node.ClearDirtyFlag();
+            }
 
             // Notify listeners (optional) of completion.
             RunEnabled = true; // Re-enable 'Run' button.

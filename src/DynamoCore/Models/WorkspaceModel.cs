@@ -401,7 +401,7 @@ namespace Dynamo.Models
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory)
+            double x, double y, NodeFactory factory, string fileName="")
         {
             Name = name;
 
@@ -409,7 +409,7 @@ namespace Dynamo.Models
             notes = new ObservableCollection<NoteModel>(n);
             X = x;
             Y = y;
-
+            FileName = fileName;
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
@@ -553,7 +553,8 @@ namespace Dynamo.Models
 
         private void RegisterNode(NodeModel node)
         {
-            node.AstUpdated += OnAstUpdated;
+            node.NodeModified += OnNodesModified;
+            node.ConnectorAdded += OnConnectorAdded;
             node.ConnectorAdded += OnConnectorAdded;           
             SetShowExecutionPreview(node);
         }
@@ -561,9 +562,9 @@ namespace Dynamo.Models
         /// <summary>
         ///     Indicates that this workspace's DesignScript AST has been updated.
         /// </summary>
-        public virtual void OnAstUpdated()
+        public virtual void OnNodesModified()
         {
-
+            
         }
 
         public virtual void SetShowExecutionPreview(NodeModel node)
@@ -580,14 +581,14 @@ namespace Dynamo.Models
             if (nodes.Remove(model))
             {
                 DisposeNode(model);
-                OnAstUpdated();
+                OnNodesModified();
             }
         }
 
         protected void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
-            model.AstUpdated -= OnAstUpdated;           
+            model.NodeModified -= OnNodesModified;
             OnNodeRemoved(model);
         }
 
@@ -953,7 +954,7 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
-            OnAstUpdated();
+            OnNodesModified();
         }
 
         #endregion
