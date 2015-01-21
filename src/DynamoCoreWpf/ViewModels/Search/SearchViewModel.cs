@@ -306,12 +306,10 @@ namespace Dynamo.ViewModels
                 var newTarget = categories.FirstOrDefault(c => c.Name == next);
                 if (newTarget == null)
                 {
-                    // Latest item in categories list can be a class.
-                    // All classes are situated in classes container.
-                    // So nameStack should be populated with ClassesDefaultName
-                    // and class name. And checked again.
-                    // For example: "MyAssembly.MyNamespace.ClassCandidate" not found.
-                    // Should be checked for "MyAssembly.MyNamespace.Classes.ClassCandidate"
+                    // The last entry in categories list can be a class name. When the desired class 
+                    // cannot be located with "MyAssembly.MyNamespace.ClassCandidate" pattern, try 
+                    // searching with "MyAssembly.MyNamespace.Classes.ClassCandidate" instead. This 
+                    // is because a class always resides under a "ClassesNodeCategoryViewModel" node.
                     //
                     if (!isCheckedForClassesCategory && nameStack.Count == 0)
                     {
@@ -337,7 +335,10 @@ namespace Dynamo.ViewModels
             {
                 var parent = treeStack.Pop();
                 parent.SubCategories.Remove(target);
-                // Remove ClassInformationViewModel which is used for displaying StandardPanel.
+
+                // Check to see if all items under "parent" are removed, leaving behind only one 
+                // entry that is "ClassInformationViewModel" (a class used to show StandardPanel).
+                // If that is the case, remove the "ClassInformationViewModel" at the same time.
                 if (parent.Items.Count == 1 && parent.Items[0] is ClassInformationViewModel)
                     parent.Items.RemoveAt(0);
                 target = parent;
