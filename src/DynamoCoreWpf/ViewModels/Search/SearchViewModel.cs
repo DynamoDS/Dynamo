@@ -293,7 +293,7 @@ namespace Dynamo.ViewModels
                 category.IsExpanded = isExpanded;
         }
 
-        private void RemoveEntry(NodeSearchElement entry)
+        internal void RemoveEntry(NodeSearchElement entry)
         {
             var branch = GetTreeBranchToNode(libraryRoot, entry);
             if (!branch.Any())

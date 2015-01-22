@@ -87,6 +87,8 @@ namespace Dynamo.Tests
                            " MoreSymbols", result);
         }
 
+        #region InsertEntry tests
+
         [Test]
         [Category("UnitTests")]
         public void InsertEntry01EmptyTree()
@@ -227,14 +229,140 @@ namespace Dynamo.Tests
             Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "Member3"));
         }
 
+        #endregion
+
+        #region RemoveEntry tests
+
+        [Test]
+        [Category("UnitTests")]
+        public void RemoveEntry01NotExistentEntryEmptyTree()
+        {
+            var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
+
+            // No exception expected.
+            viewModel.RemoveEntry(element);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RemoveEntry02NotExistentEntryNonEmptyTree()
+        {
+            var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
+
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            element = CreateCustomNode("Member2", "TopCategory.SubCategory1");
+            viewModel.RemoveEntry(element);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubCategory1");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(it => it.Name == "Member1"));
+
+            element = CreateCustomNode("Member2", "TopCategory");
+            viewModel.RemoveEntry(element);
+
+            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubCategory1");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(it => it.Name == "Member1"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RemoveEntry03ClassInformationViewModelPresented()
+        {
+            var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            var theClass = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel);
+
+            theClass.Items.Add(new ClassInformationViewModel());
+
+            viewModel.RemoveEntry(element);
+
+            Assert.IsFalse(viewModel.BrowserRootCategories.Any());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RemoveEntry04TheSameClass()
+        {
+            var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            element = CreateCustomNode("Member2", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            viewModel.RemoveEntry(element);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubCategory1");
+
+            Assert.AreEqual(1, category.Items.Count);
+            Assert.IsNotNull(category.Items.FirstOrDefault(c => c.Name == "Member1"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RemoveEntry05TheSameClassesContainer()
+        {
+            var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            element = CreateCustomNode("Member2", "TopCategory.SubCategory2");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            viewModel.RemoveEntry(element);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory");
+
+            Assert.IsNull(category.SubCategories.FirstOrDefault(c => c.Name == "SubCategory2"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RemoveEntry06OldPathIsLonger()
+        {
+            var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            element = CreateCustomNode("Member2", "TopCategory.SubCategory2.SubSubCat2");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            viewModel.RemoveEntry(element);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory");
+
+            Assert.IsNull(category.SubCategories.FirstOrDefault(c => c.Name == "SubCategory2"));
+        }
+
+        #endregion
+
         #region Helpers
 
-        public static NodeSearchElementViewModel CreateCustomNodeViewModel(string name, string category,
+        private static NodeSearchElement CreateCustomNode(string name, string category,
             string description = "", string path = "")
         {
             var element = new CustomNodeSearchElement(null,
                 new CustomNodeInfo(Guid.NewGuid(), name, category, description, path));
 
+            return element;
+        }
+
+        private static NodeSearchElementViewModel CreateCustomNodeViewModel(string name, string category,
+            string description = "", string path = "")
+        {
+            var element = CreateCustomNode(name, category, description, path);
+            return new NodeSearchElementViewModel(element);
+        }
+
+        private static NodeSearchElementViewModel CreateCustomNodeViewModel(NodeSearchElement element)
+        {
             return new NodeSearchElementViewModel(element);
         }
 
