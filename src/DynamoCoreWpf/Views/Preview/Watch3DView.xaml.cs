@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 
@@ -22,6 +23,7 @@ using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
 using SharpDX;
 
+using Color = SharpDX.Color;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Point = System.Windows.Point;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
@@ -226,6 +228,7 @@ namespace Dynamo.Controls
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
+            
             MouseLeftButtonDown += view_MouseButtonIgnore;
             MouseLeftButtonUp += view_MouseButtonIgnore;
             MouseRightButtonUp += view_MouseRightButtonUp;
@@ -262,6 +265,16 @@ namespace Dynamo.Controls
             {
                 vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
                 vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+
+                var renderingTier = (RenderCapability.Tier >> 16);
+                var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
+                var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
+                var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
+
+                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Rendering Tier: {0}", renderingTier));
+                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Pixel Shader 3 Supported: {0}", pixelShader3Supported));
+                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Pixel Shader 4 Supported: {0}", pixelShader4Supported));
+                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Software Effect Rendering Supported: {0}", softwareEffectSupported));
             }
         }
 

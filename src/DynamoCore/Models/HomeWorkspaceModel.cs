@@ -4,6 +4,7 @@ using System.Linq;
 
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
@@ -37,13 +38,14 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 0,
-                0, verboseLogging, isTestMode, fileName) { }
+                0, verboseLogging, isTestMode, new ElementResolver(), fileName) { }
 
         public HomeWorkspaceModel(
             EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
             double x, double y, bool verboseLogging,
-            bool isTestMode, string fileName="") : base("Home", e, n, x, y, factory, fileName)
+            bool isTestMode, ElementResolver elementResolver, string fileName = "")
+            : base("Home", e, n, x, y, factory, elementResolver, fileName)
         {
             RunEnabled = true;
             PreloadedTraceData = traceData;

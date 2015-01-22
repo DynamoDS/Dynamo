@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms.VisualStyles;
 using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-
+using Dynamo.Utilities;
 using NCalc;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Namespace;
 using Expression = NCalc.Expression;
 
 namespace DSCoreNodesUI
@@ -57,15 +59,18 @@ namespace DSCoreNodesUI
             RegisterAllPorts();
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name == "FormulaString")
             {
                 FormulaString = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         #region Serialization/Deserialization methods

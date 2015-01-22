@@ -9,9 +9,10 @@ using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.Models;
-
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.Namespace;
 using String = DSCoreNodesUI.String;
 
 namespace Dynamo.Nodes
@@ -29,8 +30,11 @@ namespace Dynamo.Nodes
             ShouldDisplayPreviewCore = false;
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name == "Value")
             {
                 Value = HttpUtility.HtmlEncode(value);
@@ -41,7 +45,7 @@ namespace Dynamo.Nodes
             // since they are both bound to the same property, 'StringInput' 
             // should be given a chance to handle the property value change first
             // before the base class 'String'.
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         protected override string SerializeValue()
@@ -194,15 +198,18 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name == "Value")
             {
                 Value = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
 
