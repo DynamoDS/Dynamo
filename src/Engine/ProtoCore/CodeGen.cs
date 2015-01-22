@@ -192,16 +192,16 @@ namespace ProtoCore
             // Cache this function call instance count 
             // This is the count of the number of times in which this callsite appears in the program
             int callInstance = 0;
-            if (!core.RuntimeData.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
+            if (!core.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
             {
                 // The guid doesnt exist yet
-                core.RuntimeData.CallsiteGuidMap.Add(graphNode.guid, 0);
+                core.CallsiteGuidMap.Add(graphNode.guid, 0);
             }
             else
             {
                 // Increment the current count
-                core.RuntimeData.CallsiteGuidMap[graphNode.guid]++;
-                functionCallInstance = core.RuntimeData.CallsiteGuidMap[graphNode.guid];
+                core.CallsiteGuidMap[graphNode.guid]++;
+                functionCallInstance = core.CallsiteGuidMap[graphNode.guid];
             }
 
             // Build the unique ID for a callsite 
