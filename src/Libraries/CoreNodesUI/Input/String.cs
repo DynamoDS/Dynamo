@@ -15,7 +15,7 @@ namespace DSCoreNodesUI
 
         protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
         {
-            if (name == /*NXLT*/"Value")
+            if (name == "Value")
             {
                 var converter = new StringDisplay();
                 Value = converter.ConvertBack(value, typeof(string), null, null) as string;

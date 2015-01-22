@@ -46,7 +46,7 @@ namespace ProtoCore.Mirror
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Debug.WriteLine(/*NXLT*/"GetGraphicItems: " + e);
+                        System.Diagnostics.Debug.WriteLine("GetGraphicItems: " + e);
                     }
                 }
                 return items;

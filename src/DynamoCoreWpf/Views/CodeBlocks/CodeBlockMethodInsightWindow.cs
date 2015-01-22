@@ -78,7 +78,9 @@ namespace Dynamo.UI
 
             public string CurrentIndexText
             {
-                get { return (selectedIndex + 1).ToString() + " of " + this.Count.ToString(); }
+                get { return string.Format(Wpf.Properties.Resources.TooltipCurrentIndex, 
+                                            (selectedIndex + 1).ToString(), 
+                                                     this.Count.ToString()); }
             }
 
             /// <summary>

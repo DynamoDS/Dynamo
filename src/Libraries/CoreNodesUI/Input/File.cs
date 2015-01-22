@@ -27,27 +27,27 @@ namespace DSCore.File
         }
     }
 
-    [NodeName(/*NXLT*/"File Path")]
+    [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(/*NXLT*/"Allows you to select a file on the system to get its filename.")]
+    [NodeDescription("Allows you to select a file on the system to get its filename.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
     {
-        public Filename() : base(/*NXLT*/"Filename")
+        public Filename() : base("Filename")
         {
             ShouldDisplayPreviewCore = false;
         }
     }
 
-    [NodeName(/*NXLT*/"Directory Path")]
+    [NodeName("Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription(/*NXLT*/"Allows you to select a directory on the system to get its path.")]
+    [NodeDescription("Allows you to select a directory on the system to get its path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
     {
-        public Directory() : base(/*NXLT*/"Directory")
+        public Directory() : base("Directory")
         {
             ShouldDisplayPreviewCore = false;
         }
@@ -92,7 +92,7 @@ namespace DSCore.File
 
             yield return
                 AstFactory.BuildAssignment(
-                    AstFactory.BuildIdentifier(AstIdentifierBase + /*NXLT*/"_dummy"),
+                    AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
                     DataBridge.GenerateBridgeDataAst(GUID.ToString(), GetAstIdentifierForOutputIndex(0)));
         }
 
@@ -164,9 +164,9 @@ namespace DSCore.File
         }
     }
 
-    [NodeName(/*NXLT*/"File.FromPath")]
+    [NodeName("File.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription(/*NXLT*/"Creates a file object from a path.")]
+    [NodeDescription("Creates a file object from a path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
@@ -174,8 +174,8 @@ namespace DSCore.File
         public FileObject()
             : base(IO.File.FromPath)
         {
-            InPortData.Add(new PortData(/*NXLT*/"path", Resources.FileObjectPortDataPathToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"file", Resources.FileObjectPortDataResultToolTip));
+            InPortData.Add(new PortData("path", Resources.FileObjectPortDataPathToolTip));
+            OutPortData.Add(new PortData("file", Resources.FileObjectPortDataResultToolTip));
             RegisterAllPorts();
         }
 
@@ -218,9 +218,9 @@ namespace DSCore.File
         }
     }
 
-    [NodeName(/*NXLT*/"Directory.FromPath")]
+    [NodeName("Directory.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription(/*NXLT*/"Creates a directory object from a path.")]
+    [NodeDescription("Creates a directory object from a path.")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
@@ -228,8 +228,8 @@ namespace DSCore.File
         public DirectoryObject()
             : base(IO.Directory.FromPath)
         {
-            InPortData.Add(new PortData(/*NXLT*/"path", Resources.DirectoryObjectPortDataPathToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"directory", Resources.DirectoryObjectPortDataResultToolTip));
+            InPortData.Add(new PortData("path", Resources.DirectoryObjectPortDataPathToolTip));
+            OutPortData.Add(new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip));
             RegisterAllPorts();
         }
 

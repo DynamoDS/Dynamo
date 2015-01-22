@@ -13,33 +13,33 @@ namespace Dynamo.Nodes
 {
     public class Identity : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"Function.Identity", /*NXLT*/"Function.Identity@var");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Function.Identity", "Function.Identity@var");
         }
     }
 
     public class IsNull : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"Object.IsNull", /*NXLT*/"Object.IsNull@var");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Object.IsNull", "Object.IsNull@var");
         }
     }
 
     public class ComposeFunctions : MigrationNode
     { 
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement composeNode = MigrationManager.CloneAndChangeName(oldNode,
-                /*NXLT*/"DSCoreNodesUI.HigherOrder.ComposeFunctions", /*NXLT*/"Compose Function");
-            composeNode.SetAttribute(/*NXLT*/"inputcount", /*NXLT*/"2");
+                "DSCoreNodesUI.HigherOrder.ComposeFunctions", "Compose Function");
+            composeNode.SetAttribute("inputcount", "2");
             migratedData.AppendNode(composeNode);
 
             return migratedData;
@@ -48,29 +48,29 @@ namespace Dynamo.Nodes
 
     public class Reverse : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.Reverse",
-                /*NXLT*/"List.Reverse@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Reverse",
+                "List.Reverse@var[]..[]");
         }
     }
 
     public class NewList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement element = MigrationManager.CloneAndChangeName(oldNode,
-                /*NXLT*/"DSCoreNodesUI.CreateList", /*NXLT*/"Create List");
+                "DSCoreNodesUI.CreateList", "Create List");
             migrationData.AppendNode(element);
 
             int childNumber = oldNode.ChildNodes.Count;
             string childNumberString = childNumber.ToString();
-            element.SetAttribute(/*NXLT*/"inputcount", childNumberString);
+            element.SetAttribute("inputcount", childNumberString);
 
             return migrationData;
         }
@@ -78,7 +78,7 @@ namespace Dynamo.Nodes
 
     public class SortWith : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -88,7 +88,7 @@ namespace Dynamo.Nodes
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(dsListNode, "",
-                /*NXLT*/"SortByComparsion", /*NXLT*/"SortByComparsion@var[]..[],_FunctionObject");
+                "SortByComparsion", "SortByComparsion@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -112,7 +112,7 @@ namespace Dynamo.Nodes
 
     public class SortBy : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -130,8 +130,8 @@ namespace Dynamo.Nodes
             if (connector0 == null)
             {
                 // If there is no key, migrate to List.Sort
-                MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
-                    /*NXLT*/"List.Sort", /*NXLT*/"List.Sort@var[]..[]");
+                MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                    "List.Sort", "List.Sort@var[]..[]");
 
                 PortId newInPort1 = new PortId(nodeId, 1, PortType.Input);
                 data.ReconnectToPort(connector1, inPort0);
@@ -141,7 +141,7 @@ namespace Dynamo.Nodes
 
             // If there is key, migrate to FunctionObject.ds SortByKey
             MigrationManager.SetFunctionSignature(newNode, "",
-                /*NXLT*/"SortByKey", /*NXLT*/"SortByKey@var[]..[],_FunctionObject");
+                "SortByKey", "SortByKey@var[]..[],_FunctionObject");
 
             // Update connectors
             data.ReconnectToPort(connector0, inPort1);
@@ -153,16 +153,16 @@ namespace Dynamo.Nodes
 
     public class Sort : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.Sort", /*NXLT*/"List.Sort@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Sort", "List.Sort@var[]..[]");
         }
     }
 
     public class ListMin : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -180,8 +180,8 @@ namespace Dynamo.Nodes
             if (connector0 == null)
             {
                 // If there is no key, migrate to List.MinimumItem
-                MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
-                    /*NXLT*/"List.MinimumItem", /*NXLT*/"List.MinimumItem@var[]..[]");
+                MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                    "List.MinimumItem", "List.MinimumItem@var[]..[]");
 
                 PortId newInPort1 = new PortId(nodeId, 1, PortType.Input);
                 data.ReconnectToPort(connector1, inPort0);
@@ -191,7 +191,7 @@ namespace Dynamo.Nodes
 
             // If there is key, migrate to FunctionObject.ds MinimumItemByKey
             MigrationManager.SetFunctionSignature(newNode, "",
-                /*NXLT*/"MinimumItemByKey", /*NXLT*/"MinimumItemByKey@var[]..[],_FunctionObject");
+                "MinimumItemByKey", "MinimumItemByKey@var[]..[],_FunctionObject");
 
             // Update connectors
             data.ReconnectToPort(connector0, inPort1);
@@ -203,7 +203,7 @@ namespace Dynamo.Nodes
 
     public class ListMax : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -221,8 +221,8 @@ namespace Dynamo.Nodes
             if (connector0 == null)
             {
                 // If there is no key, migrate to List.MaximumItem
-                MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
-                    /*NXLT*/"List.MaximumItem", /*NXLT*/"List.MaximumItem@var[]..[]");
+                MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                    "List.MaximumItem", "List.MaximumItem@var[]..[]");
 
                 PortId newInPort1 = new PortId(nodeId, 1, PortType.Input);
                 data.ReconnectToPort(connector1, inPort0);
@@ -232,7 +232,7 @@ namespace Dynamo.Nodes
 
             // If there is key, migrate to FunctionObject.ds MaximumItemByKey
             MigrationManager.SetFunctionSignature(newNode, "",
-                /*NXLT*/"MaximumItemByKey", /*NXLT*/"MaximumItemByKey@var[]..[],_FunctionObject");
+                "MaximumItemByKey", "MaximumItemByKey@var[]..[],_FunctionObject");
 
             // Update connectors
             data.ReconnectToPort(connector0, inPort1);
@@ -245,15 +245,15 @@ namespace Dynamo.Nodes
   
     public class Fold : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, /*NXLT*/"DSCore.Reduce", /*NXLT*/"Reduce");
-            newNode.SetAttribute(/*NXLT*/"inputcount", /*NXLT*/"3");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Reduce", "Reduce");
+            newNode.SetAttribute("inputcount", "3");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             migrationData.AppendNode(newNode);
@@ -263,24 +263,24 @@ namespace Dynamo.Nodes
 
     public class FilterMask : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll",/*NXLT*/ "List.FilterByBoolMask",
-                /*NXLT*/"List.FilterByBoolMask@var[]..[],var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.FilterByBoolMask",
+                "List.FilterByBoolMask@var[]..[],var[]..[]");
         }
     }
 
     public class FilterInAndOut : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, /*NXLT*/"DSCore.Filter", /*NXLT*/"Filter");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Filter", "Filter");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
@@ -302,14 +302,14 @@ namespace Dynamo.Nodes
 
     public class Filter : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, /*NXLT*/"DSCore.Filter", /*NXLT*/"Filter");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Filter", "Filter");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
@@ -331,14 +331,14 @@ namespace Dynamo.Nodes
 
     public class FilterOut : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, /*NXLT*/"DSCore.Filter", /*NXLT*/"Filter");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Filter", "Filter");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             PortId oldOutputPort = new PortId(oldNodeId, 0, PortType.Output);
@@ -365,17 +365,17 @@ namespace Dynamo.Nodes
         }
     }
 
-    [AlsoKnownAs(/*NXLT*/"Dynamo.Nodes.dynBuildSeq", /*NXLT*/"Dynamo.Nodes.BuildSeq")]
+    [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq", "Dynamo.Nodes.BuildSeq")]
     public class NumberRange : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, /*NXLT*/"DSCoreNodesUI.NumberRange", /*NXLT*/"Number Range");
+                oldNode, "DSCoreNodesUI.NumberRange", "Number Range");
 
             migrationData.AppendNode(newNode);
             return migrationData;
@@ -384,7 +384,7 @@ namespace Dynamo.Nodes
 
     public class NumberSeq : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -400,14 +400,14 @@ namespace Dynamo.Nodes
 
     public class Combine : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, /*NXLT*/"DSCore.Combine", /*NXLT*/"List.Combine");
-            newNode.RemoveAttribute(/*NXLT*/"inputs");
-            int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute(/*NXLT*/"inputs")) + 1;
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Combine", "List.Combine");
+            newNode.RemoveAttribute("inputs");
+            int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
 
             migrationData.AppendNode(newNode);
@@ -417,12 +417,12 @@ namespace Dynamo.Nodes
 
     public class CartProd : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, /*NXLT*/"DSCore.CartesianProduct", /*NXLT*/"List.CartesianProduct");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.CartesianProduct", "List.CartesianProduct");
             newNode.RemoveAttribute("inputs");
             int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
@@ -434,12 +434,12 @@ namespace Dynamo.Nodes
 
     public class LaceShortest : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, /*NXLT*/"DSCore.LaceShortest", /*NXLT*/"List.LaceShortest");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.LaceShortest", "List.LaceShortest");
             newNode.RemoveAttribute("inputs");
             int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
@@ -451,13 +451,13 @@ namespace Dynamo.Nodes
 
     public class LaceLongest : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, /*NXLT*/"DSCore.LaceLongest", /*NXLT*/"List.Longest");
-            newNode.RemoveAttribute(/*NXLT*/"inputs");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.LaceLongest", "List.Longest");
+            newNode.RemoveAttribute("inputs");
             int numberOfInputs = Convert.ToInt32(oldNode.GetAttribute("inputs")) + 1;
             newNode.SetAttribute("inputcount", Convert.ToString(numberOfInputs));
 
@@ -468,14 +468,14 @@ namespace Dynamo.Nodes
 
     public class Map : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, /*NXLT*/"DSCore.Map", /*NXLT*/"List.Map");
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Map", "List.Map");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.Input);
@@ -497,7 +497,7 @@ namespace Dynamo.Nodes
 
     public class ForEach : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -507,7 +507,7 @@ namespace Dynamo.Nodes
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(dsListNode, "",
-                /*NXLT*/"ForEach", /*NXLT*/"__ForEach@_FunctionObject,var[]..[]");
+                "ForEach", "__ForEach@_FunctionObject,var[]..[]");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -531,7 +531,7 @@ namespace Dynamo.Nodes
 
     public class AndMap : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -541,7 +541,7 @@ namespace Dynamo.Nodes
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(dsListNode, "",
-                /*NXLT*/"TrueForAll", /*NXLT*/"TrueForAll@var[]..[],_FunctionObject");
+                "TrueForAll", "TrueForAll@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -565,7 +565,7 @@ namespace Dynamo.Nodes
 
     public class OrMap : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -575,7 +575,7 @@ namespace Dynamo.Nodes
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(dsListNode, "",
-                /*NXLT*/"TrueForAny", /*NXLT*/"TrueForAny@var[]..[],_FunctionObject");
+                "TrueForAny", "TrueForAny@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -599,27 +599,27 @@ namespace Dynamo.Nodes
 
     public class DeCons : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.Deconstruct",
-                /*NXLT*/"List.Deconstruct@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Deconstruct",
+                "List.Deconstruct@var[]..[]");
         }
     }
 
     public class List : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.AddItemToFront",
-                /*NXLT*/"List.AddItemToFront@var,var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.AddItemToFront",
+                "List.AddItemToFront@var,var[]..[]");
         }
     }
 
     public class TakeList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -628,8 +628,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsCoreNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.TakeItems", /*NXLT*/"List.TakeItems@var[]..[],int");
+            MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
+                "List.TakeItems", "List.TakeItems@var[]..[],int");
 
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
@@ -653,7 +653,7 @@ namespace Dynamo.Nodes
 
     public class DropList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -662,8 +662,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsCoreNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.DropItems", /*NXLT*/"List.DropItems@var[]..[],int");
+            MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
+                "List.DropItems", "List.DropItems@var[]..[],int");
 
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
@@ -687,7 +687,7 @@ namespace Dynamo.Nodes
 
     public class ShiftList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -696,8 +696,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsCoreNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.ShiftIndices", /*NXLT*/"List.ShiftIndices@var[]..[],int");
+            MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
+                "List.ShiftIndices", "List.ShiftIndices@var[]..[],int");
 
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
@@ -721,7 +721,7 @@ namespace Dynamo.Nodes
 
     public class GetFromList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -730,8 +730,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsCoreNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.GetItemAtIndex", /*NXLT*/"List.GetItemAtIndex@var[]..[],int");
+            MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
+                "List.GetItemAtIndex", "List.GetItemAtIndex@var[]..[],int");
 
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
@@ -755,17 +755,17 @@ namespace Dynamo.Nodes
 
     public class Shuffle : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.Shuffle",
-                /*NXLT*/"List.Shuffle@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Shuffle",
+                "List.Shuffle@var[]..[]");
         }
     }
 
     public class GroupBy : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -775,7 +775,7 @@ namespace Dynamo.Nodes
             //create the node itself
             XmlElement dsListNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(dsListNode, "",
-                /*NXLT*/"GroupByKey", /*NXLT*/"GroupByKey@var[]..[],_FunctionObject");
+                "GroupByKey", "GroupByKey@var[]..[],_FunctionObject");
 
             migratedData.AppendNode(dsListNode);
             string dsListNodeId = MigrationManager.GetGuidFromXmlElement(dsListNode);
@@ -799,7 +799,7 @@ namespace Dynamo.Nodes
 
     public class SliceList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -808,8 +808,8 @@ namespace Dynamo.Nodes
 
             // Create nodes
             XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.Slice", /*NXLT*/"List.Slice@var[]..[],int,int,int");
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "List.Slice", "List.Slice@var[]..[],int,int,int");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -853,7 +853,7 @@ namespace Dynamo.Nodes
 
     public class RemoveFromList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -862,8 +862,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsCoreNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.RemoveItemAtIndex", /*NXLT*/"List.RemoveItemAtIndex@var[]..[],int[]");
+            MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
+                "List.RemoveItemAtIndex", "List.RemoveItemAtIndex@var[]..[],int[]");
 
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
@@ -887,7 +887,7 @@ namespace Dynamo.Nodes
 
     public class RemoveEveryNth : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -896,8 +896,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsCoreNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.DropEveryNthItem", /*NXLT*/"List.DropEveryNthItem@var[]..[],int,int");
+            MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
+                "List.DropEveryNthItem", "List.DropEveryNthItem@var[]..[],int,int");
 
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
@@ -925,7 +925,7 @@ namespace Dynamo.Nodes
 
     public class TakeEveryNth : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -934,8 +934,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsCoreNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.TakeEveryNthItem", /*NXLT*/"List.TakeEveryNthItem@var[]..[],int,int");
+            MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
+                "List.TakeEveryNthItem", "List.TakeEveryNthItem@var[]..[],int,int");
 
             foreach (XmlNode child in oldNode.ChildNodes)
             {
@@ -967,36 +967,36 @@ namespace Dynamo.Nodes
 
     public class Empty : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.Empty", /*NXLT*/"List.Empty");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Empty", "List.Empty");
         }
     }
 
     public class IsEmpty : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.IsEmpty",
-                /*NXLT*/"List.IsEmpty@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.IsEmpty",
+                "List.IsEmpty@var[]..[]");
         }
     }
 
     public class Length : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.Count",
-                /*NXLT*/"List.Count@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Count",
+                "List.Count@var[]..[]");
         }
     }
 
     public class Append : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -1004,8 +1004,8 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement listJoinNode = MigrationManager.CreateVarArgFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(listJoinNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.Join", /*NXLT*/"List.Join@var[]..[]");
+            MigrationManager.SetFunctionSignature(listJoinNode, "DSCoreNodes.dll",
+                "List.Join", "List.Join@var[]..[]");
             migratedData.AppendNode(listJoinNode);
             
             listJoinNode.SetAttribute("inputcount", "2");
@@ -1016,65 +1016,65 @@ namespace Dynamo.Nodes
 
     public class First : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.FirstItem",
-                /*NXLT*/"List.FirstItem@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.FirstItem",
+                "List.FirstItem@var[]..[]");
         }
     }
 
     public class Last : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.LastItem",
-                /*NXLT*/"List.LastItem@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.LastItem",
+                "List.LastItem@var[]..[]");
         }
     }
 
     public class Rest : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.RestOfItems",
-                /*NXLT*/"List.RestOfItems@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.RestOfItems",
+                "List.RestOfItems@var[]..[]");
         }
     }
 
     public class Slice : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.Chop",
-                /*NXLT*/"List.Chop@var[]..[],int");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Chop",
+                "List.Chop@var[]..[],int");
         }
     }
 
     public class DiagonalRightList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.DiagonalRight",
-                /*NXLT*/"List.DiagonalRight@var[]..[],int");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.DiagonalRight",
+                "List.DiagonalRight@var[]..[],int");
         }
     }
 
     public class DiagonalLeftList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.DiagonalLeft", /*NXLT*/"List.DiagonalLeft@var[]..[],int");
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "List.DiagonalLeft", "List.DiagonalLeft@var[]..[],int");
             newNode.SetAttribute("lacing", "shortest");
             migrationData.AppendNode(newNode);
 
@@ -1084,16 +1084,16 @@ namespace Dynamo.Nodes
 
     public class Transpose : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.Transpose", /*NXLT*/"List.Transpose@var[]..[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Transpose", "List.Transpose@var[]..[]");
         }
     }
     
     public class Sublists : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1102,8 +1102,8 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
-                /*NXLT*/"List.Sublists", /*NXLT*/"List.Sublists@var[]..[],var[]..[],int");
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
+                "List.Sublists", "List.Sublists@var[]..[],var[]..[],int");
             newNode.SetAttribute("lacing", "shortest");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
@@ -1147,15 +1147,15 @@ namespace Dynamo.Nodes
 
     public class Repeat : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
             var element = MigrationManager.CreateFunctionNodeFrom(xmlNode);
-            element.SetAttribute("assembly", /*NXLT*/"DSCoreNodes.dll");
-            element.SetAttribute("nickname", /*NXLT*/"List.OfRepeatedItem");
-            element.SetAttribute("function", /*NXLT*/"List.OfRepeatedItem@var[]..[],int");
-            element.SetAttribute("lacing", /*NXLT*/"Shortest");
+            element.SetAttribute("assembly", "DSCoreNodes.dll");
+            element.SetAttribute("nickname", "List.OfRepeatedItem");
+            element.SetAttribute("function", "List.OfRepeatedItem@var[]..[],int");
+            element.SetAttribute("lacing", "Shortest");
 
             var migrationData = new NodeMigrationData(data.Document);
             migrationData.AppendNode(element);
@@ -1165,70 +1165,70 @@ namespace Dynamo.Nodes
 
     public class FlattenList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "", /*NXLT*/"Flatten", /*NXLT*/"Flatten@var[]..[]");
+            return MigrateToDsFunction(data, "", "Flatten", "Flatten@var[]..[]");
         }
     }
 
     public class FlattenListAmt : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", /*NXLT*/"List.Flatten", /*NXLT*/"List.Flatten@var[]..[],int");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "List.Flatten", "List.Flatten@var[]..[],int");
         }
     }
 
     public class LessThan : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Compare.LessThan", "Compare.LessThan@var,var");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Compare.LessThan", "Compare.LessThan@var,var");
         }
     }
 
     public class LessThanEquals : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Compare.LessThanOrEqual", "Compare.LessThanOrEqual@var,var");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Compare.LessThanOrEqual", "Compare.LessThanOrEqual@var,var");
         }
     }
 
     public class GreaterThan : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Compare.GreaterThan", "Compare.GreaterThan@var,var");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Compare.GreaterThan", "Compare.GreaterThan@var,var");
         }
     }
 
     public class GreaterThanEquals : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Compare.GreaterThanOrEqual", "Compare.GreaterThanOrEqual@var,var");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Compare.GreaterThanOrEqual", "Compare.GreaterThanOrEqual@var,var");
         }
     }
 
     public class Equal : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"==", "==@,");
+            return MigrateToDsFunction(data, "==", "==@,");
         }
     }
 
     public class And : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1236,7 +1236,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Logic.And", "And");
-            newNode.SetAttribute("inputcount", /*NXLT*/"2");
+            newNode.SetAttribute("inputcount", "2");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             migrationData.AppendNode(newNode);
@@ -1246,7 +1246,7 @@ namespace Dynamo.Nodes
 
     public class Or : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1254,7 +1254,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCore.Logic.Or", "Or");
-            newNode.SetAttribute("inputcount", /*NXLT*/"2");
+            newNode.SetAttribute("inputcount", "2");
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             migrationData.AppendNode(newNode);
@@ -1264,7 +1264,7 @@ namespace Dynamo.Nodes
 
     public class Xor : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "Logic.Xor", "Logic.Xor@bool,bool");
@@ -1273,7 +1273,7 @@ namespace Dynamo.Nodes
 
     public class Not : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "Not", "Not@,");
@@ -1282,7 +1282,7 @@ namespace Dynamo.Nodes
 
     public class Addition : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "+", "+@,");
@@ -1291,7 +1291,7 @@ namespace Dynamo.Nodes
 
     public class Subtraction : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "-", "-@,");
@@ -1300,7 +1300,7 @@ namespace Dynamo.Nodes
 
     public class Multiplication : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "*", "*@,");
@@ -1309,7 +1309,7 @@ namespace Dynamo.Nodes
 
     public class Division : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "/", "/@,");
@@ -1318,7 +1318,7 @@ namespace Dynamo.Nodes
 
     public class Modulo : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "%", "%@,");
@@ -1327,98 +1327,98 @@ namespace Dynamo.Nodes
 
     public class Pow : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.Pow", "Math.Pow@double,double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Pow", "Math.Pow@double,double");
         }
     }
 
     public class Round : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.Round", "Math.Round@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Round", "Math.Round@double");
         }
     }
 
     public class Floor : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.Floor", "Math.Floor@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Floor", "Math.Floor@double");
         }
     }
 
     public class Ceiling : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.Ceiling", "Math.Ceiling@double");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Ceiling", "Math.Ceiling@double");
         }
     }
 
     public class RandomSeed : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.Random", "Math.Random@int");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Random", "Math.Random@int");
         }
     }
 
     public class Random : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.Rand", "Math.Rand");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Rand", "Math.Rand");
         }
     }
 
     public class RandomList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.RandomList", "Math.RandomList@int");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.RandomList", "Math.RandomList@int");
         }
     }
 
     public class EConstant : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.E", "Math.E");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.E", "Math.E");
         }
     }
 
     public class Pi : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.PI", "Math.PI");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.PI", "Math.PI");
         }
     }
 
     [AlsoKnownAs("Dynamo.Nodes.2Pi", "Dynamo.Nodes.dyn2Pi")]
     public class PiTimes2 : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.PiTimes2", "Math.PiTimes2");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.PiTimes2", "Math.PiTimes2");
         }
     }
 
     public class Sin : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1427,14 +1427,14 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "Math.Sin", "Math.Sin@double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement converterNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, /*NXLT*/"DSCoreNodes.dll",
+                data.Document, oldNode, 0, "DSCoreNodes.dll",
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
@@ -1453,7 +1453,7 @@ namespace Dynamo.Nodes
 
     public class Cos : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1462,14 +1462,14 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "Math.Cos", "Math.Cos@double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement converterNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, /*NXLT*/"DSCoreNodes.dll",
+                data.Document, oldNode, 0, "DSCoreNodes.dll",
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
@@ -1488,7 +1488,7 @@ namespace Dynamo.Nodes
 
     public class Tan : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1497,14 +1497,14 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "Math.Tan", "Math.Tan@double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement converterNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, /*NXLT*/"DSCoreNodes.dll",
+                data.Document, oldNode, 0, "DSCoreNodes.dll",
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
@@ -1523,7 +1523,7 @@ namespace Dynamo.Nodes
 
     public class Asin : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1532,14 +1532,14 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var converterNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(converterNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(converterNode, "DSCoreNodes.dll",
                 "Math.DegreesToRadians", "Math.DegreesToRadians@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
             // Create new node
             XmlElement asinNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, /*NXLT*/"DSCoreNodes.dll",
+                data.Document, oldNode, 0, "DSCoreNodes.dll",
                 "Math.Asin", "Math.Asin@double");
             migrationData.AppendNode(asinNode);
             string asinNodeId = MigrationManager.GetGuidFromXmlElement(asinNode);
@@ -1558,7 +1558,7 @@ namespace Dynamo.Nodes
 
     public class Acos : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1567,14 +1567,14 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var converterNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(converterNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(converterNode, "DSCoreNodes.dll",
                 "Math.DegreesToRadians", "Math.DegreesToRadians@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
             // Create new node
             XmlElement acosNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, /*NXLT*/"DSCoreNodes.dll",
+                data.Document, oldNode, 0, "DSCoreNodes.dll",
                 "Math.Acos", "Math.Acos@double");
             migrationData.AppendNode(acosNode);
             string acosNodeId = MigrationManager.GetGuidFromXmlElement(acosNode);
@@ -1593,7 +1593,7 @@ namespace Dynamo.Nodes
 
     public class Atan : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1602,14 +1602,14 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var converterNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(converterNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(converterNode, "DSCoreNodes.dll",
                 "Math.DegreesToRadians", "Math.DegreesToRadians@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
 
             // Create new node
             XmlElement atanNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0, /*NXLT*/"DSCoreNodes.dll",
+                data.Document, oldNode, 0, "DSCoreNodes.dll",
                 "Math.Atan", "Math.Atan@double");
             migrationData.AppendNode(atanNode);
             string atanNodeId = MigrationManager.GetGuidFromXmlElement(atanNode);
@@ -1628,16 +1628,16 @@ namespace Dynamo.Nodes
 
     public class Average : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "Math.Average", "Math.Average@var[]");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "Math.Average", "Math.Average@var[]");
         }
     }
 
     public class Smooth : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1652,7 +1652,7 @@ namespace Dynamo.Nodes
 
     public class Begin : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1669,16 +1669,16 @@ namespace Dynamo.Nodes
 
     public class ApplyList : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"", "__ApplyList", "ApplyList@_FunctionObject,var[]..[]");
+            return MigrateToDsFunction(data, "", "__ApplyList", "ApplyList@_FunctionObject,var[]..[]");
         }
     }
 
     public class Apply1 : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -1699,7 +1699,7 @@ namespace Dynamo.Nodes
 
     public class Conditional : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1712,12 +1712,12 @@ namespace Dynamo.Nodes
     
     public class Breakpoint : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(
                 data,
-                /*NXLT*/"DSCoreNodes.dll",
+                "DSCoreNodes.dll",
                 "Object.Identity",
                 "Object.Identity@var[]..[]");
         }
@@ -1727,13 +1727,13 @@ namespace Dynamo.Nodes
 
     public class AngleInput : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "Math.DegreesToRadians", "Math.DegreesToRadians@double");
             migrationData.AppendNode(newNode);
           
@@ -1759,7 +1759,7 @@ namespace Dynamo.Nodes
 
     public class DoubleSliderInput : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1791,7 +1791,7 @@ namespace Dynamo.Nodes
 
     public class IntegerSliderInput : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1823,7 +1823,7 @@ namespace Dynamo.Nodes
 
     public partial class BoolSelector : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1851,7 +1851,7 @@ namespace Dynamo.Nodes
 
     public partial class StringDirectory : StringFilename
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1876,7 +1876,7 @@ namespace Dynamo.Nodes
 
     public partial class StringFilename : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -1901,7 +1901,7 @@ namespace Dynamo.Nodes
 
     public class ConcatStrings : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -1909,7 +1909,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             XmlElement stringNode = MigrationManager.CreateVarArgFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(stringNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(stringNode, "DSCoreNodes.dll",
                 "String.Concat", "String.Concat@string[]");
             migratedData.AppendNode(stringNode);
 
@@ -1924,50 +1924,50 @@ namespace Dynamo.Nodes
 
     public class String2Num : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "String.ToNumber", "String.ToNumber@string");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.ToNumber", "String.ToNumber@string");
         }
     }
 
     public class Num2String : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "String.FromObject", "String.FromObject@var");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.FromObject", "String.FromObject@var");
         }
     }
 
     public class StringLen : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "String.Length", "String.Length@string");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.Length", "String.Length@string");
         }
     }
 
     public class ToString : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "String.FromObject", "String.FromObject@var");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.FromObject", "String.FromObject@var");
         }
     }
 
     public class SplitString : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             var newNode = MigrationManager.CreateVarArgFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(newNode, "DSCoreNodes.dll",
                 "String.Split", "String.Split@string,string[]");
             newNode.SetAttribute("inputcount", "2");
 
@@ -1990,7 +1990,7 @@ namespace Dynamo.Nodes
 
     public class JoinStrings : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -1999,14 +1999,14 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsCoreNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsCoreNode, /*NXLT*/"DSCoreNodes.dll",
+            MigrationManager.SetFunctionSignature(dsCoreNode, "DSCoreNodes.dll",
                 "List.GetItemAtIndex", "List.GetItemAtIndex@var[]..[],int");
             migratedData.AppendNode(dsCoreNode);
             string dsCoreNodeId = MigrationManager.GetGuidFromXmlElement(dsCoreNode);
 
 
             XmlElement stringJoinNode = MigrationManager.CreateVarArgFunctionNode(
-                data.Document, oldNode, 1, /*NXLT*/"DSCoreNodes.dll",
+                data.Document, oldNode, 1, "DSCoreNodes.dll",
                 "String.Join", "String.Join@string,string[]", "2");
             migratedData.AppendNode(stringJoinNode);
             string stringJoinNodeId = MigrationManager.GetGuidFromXmlElement(stringJoinNode);
@@ -2049,19 +2049,19 @@ namespace Dynamo.Nodes
 
     public class StringCase : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "String.ChangeCase", "String.ChangeCase@string,bool");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.ChangeCase", "String.ChangeCase@string,bool");
         }
     }
 
     public class Substring : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, /*NXLT*/"DSCoreNodes.dll", "String.Substring", "String.Substring@string,int,int");
+            return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.Substring", "String.Substring@string,int,int");
         }
     }
 }

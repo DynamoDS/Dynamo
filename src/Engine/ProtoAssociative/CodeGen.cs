@@ -238,7 +238,7 @@ namespace ProtoAssociative
                 ProtoCore.DSASM.CodeBlockType.kLanguage,
                 ProtoCore.Language.kAssociative,
                 core.CodeBlockIndex,
-                new ProtoCore.DSASM.SymbolTable(/*NXLT*/"associative lang block", core.RuntimeTableIndex),
+                new ProtoCore.DSASM.SymbolTable("associative lang block", core.RuntimeTableIndex),
                 pTable,
                 false,
                 core);
@@ -2462,7 +2462,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    Validity.Assert(false, /*NXLT*/"This token is not indexable");
+                    Validity.Assert(false, "This token is not indexable");
                 }
 
                 // Right node
@@ -2687,7 +2687,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    Validity.Assert(false, /*NXLT*/"This token is not indexable");
+                    Validity.Assert(false, "This token is not indexable");
                 }
             }
             else if (node is GroupExpressionNode)
@@ -4776,7 +4776,7 @@ namespace ProtoAssociative
 
                 //Validity.Assert(ProtoCore.Language.kInvalid != langblock.codeblock.language);
                 if (ProtoCore.Language.kInvalid == langblock.codeblock.language)
-                    throw new BuildHaltException(/*NXLT*/"Invalid language block type (D1B95A65)");
+                    throw new BuildHaltException("Invalid language block type (D1B95A65)");
 
                 ProtoCore.CompileTime.Context nextContext = new ProtoCore.CompileTime.Context();
 
@@ -4854,7 +4854,7 @@ namespace ProtoAssociative
 
                 //Validity.Assert(ProtoCore.Language.kInvalid != langblock.codeblock.language);
                 if (ProtoCore.Language.kInvalid == langblock.codeblock.language)
-                    throw new BuildHaltException(/*NXLT*/"Invalid language block type (B1C57E37)");
+                    throw new BuildHaltException("Invalid language block type (B1C57E37)");
 
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 context.applySSATransform = false;
@@ -5008,7 +5008,7 @@ namespace ProtoAssociative
                     }
                     else
                     {
-                        Validity.Assert(false, /*NXLT*/"n-pass compile error, fixme Jun....");
+                        Validity.Assert(false, "n-pass compile error, fixme Jun....");
                     }
                 }
             }
@@ -5040,22 +5040,22 @@ namespace ProtoAssociative
                     {
                         switch (vardecl.ArgumentType.Name)
                         {
-                            case /*NXLT*/"double": bNode.RightNode = new DoubleNode(0); break;
-                            case /*NXLT*/"int": bNode.RightNode = new IntNode(0); break;
-                            case /*NXLT*/"bool": bNode.RightNode = new BooleanNode(false); break;
+                            case "double": bNode.RightNode = new DoubleNode(0); break;
+                            case "int": bNode.RightNode = new IntNode(0); break;
+                            case "bool": bNode.RightNode = new BooleanNode(false); break;
                             default: skipInitialization = true; break;
                         }
                     }
                     else if (vardecl.ArgumentType.rank > 0)
                     {
-                        if (!vardecl.ArgumentType.Name.Equals(/*NXLT*/"var"))
+                        if (!vardecl.ArgumentType.Name.Equals("var"))
                             bNode.RightNode = new ExprListNode();
                         else
                             skipInitialization = true;
                     }
                     else if(vardecl.ArgumentType.rank.Equals(ProtoCore.DSASM.Constants.kArbitraryRank))
                     {
-                        if (!vardecl.ArgumentType.Name.Equals(/*NXLT*/"var"))
+                        if (!vardecl.ArgumentType.Name.Equals("var"))
                             bNode.RightNode = new NullNode();
                         else
                             skipInitialization = true;
@@ -5084,7 +5084,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    Validity.Assert(false, /*NXLT*/"Check generated AST");
+                    Validity.Assert(false, "Check generated AST");
                 }
 
                 // It is possible that fail to allocate variable. In that 
@@ -5198,7 +5198,7 @@ namespace ProtoAssociative
                 globalClassIndex = core.ClassTable.Append(thisClass);
                 if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
                 {
-                    string message = string.Format(/*NXLT*/"Class redefinition '{0}' (BE1C3285).\n", classDecl.className);
+                    string message = string.Format("Class redefinition '{0}' (BE1C3285).\n", classDecl.className);
                     buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
                     throw new BuildHaltException(message);
                 }
@@ -5224,7 +5224,7 @@ namespace ProtoAssociative
                         int baseClass = core.ClassTable.GetClassId(classDecl.superClass[n]);
                         if (baseClass == globalClassIndex)
                         {
-                            string message = string.Format(/*NXLT*/"Class '{0}' cannot derive from itself (DED0A61F).\n", classDecl.className);
+                            string message = string.Format("Class '{0}' cannot derive from itself (DED0A61F).\n", classDecl.className);
                             buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
                             throw new BuildHaltException(message);
                         }
@@ -5233,7 +5233,7 @@ namespace ProtoAssociative
                         {
                             if (core.ClassTable.ClassNodes[baseClass].IsImportedClass && !thisClass.IsImportedClass)
                             {
-                                string message = string.Format(/*NXLT*/"Cannot derive from FFI class {0} (DA87AC4D).\n",
+                                string message = string.Format("Cannot derive from FFI class {0} (DA87AC4D).\n",
                                     core.ClassTable.ClassNodes[baseClass].name);
 
                                 buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
@@ -5245,7 +5245,7 @@ namespace ProtoAssociative
                         }
                         else
                         {
-                            string message = string.Format(/*NXLT*/"Unknown base class '{0}' (9E44FFB3).\n", classDecl.superClass[n]);
+                            string message = string.Format("Unknown base class '{0}' (9E44FFB3).\n", classDecl.superClass[n]);
                             buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
                             throw new BuildHaltException(message);
                         }
@@ -5538,7 +5538,7 @@ namespace ProtoAssociative
                 localProcedure.isConstructor = true;
                 localProcedure.runtimeIndex = 0;
                 localProcedure.isExternal = funcDef.IsExternLib;
-                Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex, /*NXLT*/"A constructor node must be associated with class");
+                Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex, "A constructor node must be associated with class");
                 localProcedure.localCount = 0;
                 localProcedure.classScope = globalClassIndex;
 
@@ -5569,7 +5569,7 @@ namespace ProtoAssociative
                         }
                         else
                         {
-                            Validity.Assert(false, /*NXLT*/"Check generated AST");
+                            Validity.Assert(false, "Check generated AST");
                         }
 
                         ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, gNode);
@@ -5593,7 +5593,7 @@ namespace ProtoAssociative
                         int symbolIndex = AllocateArg(arg.Key, findex, arg.Value);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolIndex)
                         {
-                            throw new BuildHaltException(/*NXLT*/"44B557F1");
+                            throw new BuildHaltException("44B557F1");
                         }
                     });
                 }
@@ -5911,7 +5911,7 @@ namespace ProtoAssociative
                         }
                         else
                         {
-                            Validity.Assert(false, /*NXLT*/"Check generated AST");
+                            Validity.Assert(false, "Check generated AST");
                         }
 
                         ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, graphNode);
@@ -5945,7 +5945,7 @@ namespace ProtoAssociative
                         int symbolIndex = AllocateArg(arg.Key, globalProcIndex, arg.Value);
                         if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolIndex)
                         {
-                            throw new BuildHaltException(/*NXLT*/"B2CB2093");
+                            throw new BuildHaltException("B2CB2093");
                         }
                     });
 
@@ -6149,7 +6149,7 @@ namespace ProtoAssociative
                         record.JILRecord = jRecord;
                         record.FunctionName = funcDef.Name;
                         record.ModuleName = funcDef.ExternLibName;
-                        record.ModuleType = /*NXLT*/"dll";
+                        record.ModuleType = "dll";
                         record.IsDNI = funcDef.IsDNI;
                         record.ReturnType = funcDef.ReturnType;
                         record.ParameterTypes = localProcedure.argTypeList;
@@ -6354,7 +6354,7 @@ namespace ProtoAssociative
                     emitReplicationGuideFlag = emitReplicationGuide;
                     emitReplicationGuide = false;
                     int dimensions = DfsEmitArrayIndexHeap(fnode.ArrayDimensions, graphNode);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + /*NXLT*/"[dim]");
+                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
                     EmitPushArrayIndex(dimensions);
                     fnode.ArrayDimensions = null;
                     emitReplicationGuide = emitReplicationGuideFlag;
@@ -6382,7 +6382,7 @@ namespace ProtoAssociative
                 if (!isRangeExpression && core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
                 {
                     int guides = EmitReplicationGuides(replicationGuides);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + /*NXLT*/"[guide]");
+                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
                     EmitPushReplicationGuide(guides);
                 }
             }
@@ -6479,7 +6479,7 @@ namespace ProtoAssociative
                 else
                 {
                     // We should never get here. Fix it!
-                    Validity.Assert(null != /*NXLT*/"Unknown node type!");
+                    Validity.Assert(null != "Unknown node type!");
                 }
 
                 DebugProperties.BreakpointOptions oldOptions = core.DebugProps.breakOptions;
@@ -6526,7 +6526,7 @@ namespace ProtoAssociative
                 ProtoCore.DSASM.CodeBlockType.kConstruct,
                 Language.kInvalid,
                 core.CodeBlockIndex++,
-                new ProtoCore.DSASM.SymbolTable(GetConstructBlockName(/*NXLT*/"if"), core.RuntimeTableIndex++),
+                new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("if"), core.RuntimeTableIndex++),
                 null,
                 false,
                 core);
@@ -6605,7 +6605,7 @@ namespace ProtoAssociative
                     ProtoCore.DSASM.CodeBlockType.kConstruct,
                     Language.kInvalid,
                     core.CodeBlockIndex++,
-                    new ProtoCore.DSASM.SymbolTable(GetConstructBlockName(/*NXLT*/"else"), core.RuntimeTableIndex++),
+                    new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("else"), core.RuntimeTableIndex++),
                     null,
                     false,
                     core);
@@ -6644,12 +6644,12 @@ namespace ProtoAssociative
             {
                 return;
             }
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, /*NXLT*/"dynamicBlock");
+            EmitInstrConsole(ProtoCore.DSASM.kw.push, "dynamicBlock");
             EmitPush(StackValue.BuildInt(block));
 
             if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
             {
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, 0 + /*NXLT*/"[guide]");
+                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, 0 + "[guide]");
                 EmitPushReplicationGuide(0);
             }
         }
@@ -6815,7 +6815,7 @@ namespace ProtoAssociative
                     EmitBinaryExpressionNode(bin, ref inferedType, false, graphNode, subPass);
                 }
                 else
-                    throw new BuildHaltException(/*NXLT*/"Invalid use of prefix operation (DCDDEEF1).");
+                    throw new BuildHaltException("Invalid use of prefix operation (DCDDEEF1).");
             }
 
             DfsTraverse(u.Expression, ref inferedType, false, graphNode, subPass);
@@ -8327,7 +8327,7 @@ namespace ProtoAssociative
                     Validity.Assert(null == symbolnode);
                     symbolnode = new ProtoCore.DSASM.SymbolNode();
                     symbolnode.name = s;
-                    symbolnode.isTemp = s.StartsWith(/*NXLT*/"%");
+                    symbolnode.isTemp = s.StartsWith("%");
                     symbolnode.functionIndex = globalProcIndex;
                     symbolnode.classScope = globalClassIndex;
 
@@ -8433,7 +8433,7 @@ namespace ProtoAssociative
                         // In a class
                         if (ProtoCore.DSASM.Constants.kInvalidIndex == globalProcIndex)
                         {
-                            string message = /*NXLT*/"A binary assignment inside a class must be inside a function (AB5E3EC1)";
+                            string message = "A binary assignment inside a class must be inside a function (AB5E3EC1)";
                             buildStatus.LogSemanticError(message, core.CurrentDSFileName, bnode.line, bnode.col);
                             throw new BuildHaltException(message);
                         }
@@ -8721,7 +8721,7 @@ namespace ProtoAssociative
             }
             else
             {
-                string message = /*NXLT*/"Illegal assignment (90787393)";
+                string message = "Illegal assignment (90787393)";
                 buildStatus.LogSemanticError(message, core.CurrentDSFileName, bnode.line, bnode.col);
                 throw new BuildHaltException(message);
             }
@@ -9168,7 +9168,7 @@ namespace ProtoAssociative
                 if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
                 {
                     int guides = EmitReplicationGuides(group.ReplicationGuides);
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + /*NXLT*/"[guide]");
+                    EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, guides + "[guide]");
                     EmitPushReplicationGuide(guides);
                 }
             }
@@ -9219,7 +9219,7 @@ namespace ProtoAssociative
 
         public String GetFunctionSignatureString(string functionName, ProtoCore.Type returnType, ArgumentSignatureNode signature, bool isConstructor = false)
         {
-            StringBuilder functionSig = new StringBuilder(isConstructor ? /*NXLT*/"\nconstructor " : /*NXLT*/"\ndef ");
+            StringBuilder functionSig = new StringBuilder(isConstructor ? "\nconstructor " : "\ndef ");
             functionSig.Append(functionName);
             functionSig.Append(":");
             functionSig.Append(String.IsNullOrEmpty(returnType.Name) ? core.TypeSystem.GetType(returnType.UID) : returnType.Name);

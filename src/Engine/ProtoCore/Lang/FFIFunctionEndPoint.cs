@@ -172,7 +172,7 @@ namespace ProtoCore.Lang
                     }
                     else
                     {
-                        throw new ArgumentException(string.Format(/*NXLT*/"FFI: incorrect return type {0} from external function {1}:{2}", activation.ReturnType.Name,
+                        throw new ArgumentException(string.Format("FFI: incorrect return type {0} from external function {1}:{2}", activation.ReturnType.Name,
                                                     activation.ModuleName, activation.FunctionName));
                     }
 

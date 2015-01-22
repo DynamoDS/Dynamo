@@ -8,10 +8,10 @@ namespace Dynamo.Nodes
 {
     public class DraftingView: MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll", /*NXLT*/"DraftingView.ByName", /*NXLT*/"DraftingView.ByName@string");
+            return MigrateToDsFunction(data,"RevitNodes.dll", "DraftingView.ByName", "DraftingView.ByName@string");
         }
     }
 
@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
 
     public class IsometricView : ViewBase
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -30,9 +30,9 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"AxonometricView.ByEyePointAndTarget",
-                /*NXLT*/"AxonometricView.ByEyePointAndTarget@Point,Point,var,string,bool");
+            MigrationManager.SetFunctionSignature(dsRevitNode,"RevitNodes.dll",
+                "AxonometricView.ByEyePointAndTarget",
+                "AxonometricView.ByEyePointAndTarget@Point,Point,var,string,bool");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -71,7 +71,7 @@ namespace Dynamo.Nodes
 
     public class PerspectiveView : ViewBase
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -80,9 +80,9 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"PerspectiveView.ByEyePointAndTarget",
-                /*NXLT*/"PerspectiveView.ByEyePointAndTarget@Point,Point,var,string,bool");
+            MigrationManager.SetFunctionSignature(dsRevitNode,"RevitNodes.dll",
+                "PerspectiveView.ByEyePointAndTarget",
+                "PerspectiveView.ByEyePointAndTarget@Point,Point,var,string,bool");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
 
     public class BoundingBoxXyz : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             var migratedData = new NodeMigrationData(data.Document);
@@ -141,37 +141,37 @@ namespace Dynamo.Nodes
 
     public class SectionView : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"SectionView.ByBoundingBox", /*NXLT*/"SectionView.ByBoundingBox@BoundingBox");
+            return MigrateToDsFunction(data,"RevitNodes.dll",
+                "SectionView.ByBoundingBox", "SectionView.ByBoundingBox@BoundingBox");
         }
     }
 
     public class ActiveRevitView : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"Document.ActiveView", /*NXLT*/"Document.ActiveView");
+            return MigrateToDsFunction(data,"RevitNodes.dll",
+                "Document.ActiveView", "Document.ActiveView");
         }
     }
 
     public class SaveImageFromRevitView : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"View.ExportAsImage", /*NXLT*/"View.ExportAsImage@string");
+            return MigrateToDsFunction(data,"RevitNodes.dll",
+                "View.ExportAsImage", "View.ExportAsImage@string");
         }
     }
 
     public class WatchImage : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -184,18 +184,18 @@ namespace Dynamo.Nodes
 
     public class ViewSheet : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,/*NXLT*/"RevitNodes.dll",
-                /*NXLT*/"Sheet.ByNameNumberTitleBlockAndViews",
-                /*NXLT*/"Sheet.ByNameNumberTitleBlockAndViews@string,string,FamilySymbol,var[]");
+            return MigrateToDsFunction(data,"RevitNodes.dll",
+                "Sheet.ByNameNumberTitleBlockAndViews",
+                "Sheet.ByNameNumberTitleBlockAndViews@string,string,FamilySymbol,var[]");
         }
     }
 
     public class OverrideColorInView : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migratedData = new NodeMigrationData(data.Document);
@@ -204,7 +204,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode,/*NXLT*/"RevitNodes.dll", /*NXLT*/"Element.OverrideColorInView", /*NXLT*/"Element.OverrideColorInView@Color");
+            MigrationManager.SetFunctionSignature(dsRevitNode,"RevitNodes.dll", "Element.OverrideColorInView", "Element.OverrideColorInView@Color");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);

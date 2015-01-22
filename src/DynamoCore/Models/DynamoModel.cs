@@ -788,6 +788,7 @@ namespace Dynamo.Models
                     {
                         AddWorkspace(ws);
                         CurrentWorkspace = ws;
+
                         return;
                     }
                 }
@@ -826,7 +827,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                DebugSettings.VerboseLogging, IsTestMode);
+                DebugSettings.VerboseLogging, IsTestMode, workspaceInfo.FileName);
 
             RegisterHomeWorkspace(newWorkspace);
             
@@ -900,7 +901,7 @@ namespace Dynamo.Models
                 Scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,
-                IsTestMode);
+                IsTestMode,string.Empty);
 
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);

@@ -703,8 +703,7 @@ namespace Dynamo.Controls
             var rowColumn = parameter as string;
             if (rowColumn == null || (!rowColumn.Equals("Row") && (!rowColumn.Equals("Column"))))
             {
-                var message = "'AttachmentToRowColumnConverter' expects a " + 
-                    "'ConverterParameter' value to be either 'Row' or 'Column'";
+                var message = Wpf.Properties.Resources.MessageFailedToAttachToRowColumn;
 
                 throw new ArgumentException(message);
             }
@@ -896,7 +895,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            return string.Format("Zoom : {0}", value.ToString());
+            return string.Format(Wpf.Properties.Resources.ConverterMessageZoom, value.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -916,7 +915,7 @@ namespace Dynamo.Controls
             System.Globalization.CultureInfo culture)
         {
             Point p = (Point)value;
-            return string.Format("Transform origin X: {0}, Y: {1}", p.X, p.Y);
+            return string.Format(Wpf.Properties.Resources.ConverterMessageTransformOrigin, p.X, p.Y);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -936,7 +935,7 @@ namespace Dynamo.Controls
             System.Globalization.CultureInfo culture)
         {
             Point p = (Point)value;
-            return string.Format("Current offset X: {0}, Y: {1}", p.X, p.Y);
+            return string.Format(Wpf.Properties.Resources.ConverterMessageCurrentOffset, p.X, p.Y);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,

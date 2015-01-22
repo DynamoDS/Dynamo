@@ -1163,10 +1163,10 @@ namespace ProtoFFI
         {
 #if DEBUG
             if (DSObjectMap.ContainsKey(dsobj))
-                throw new InvalidOperationException(/*NXLT*/"Object reference already mapped");
+                throw new InvalidOperationException("Object reference already mapped");
 
             if (CLRObjectMap.ContainsKey(obj))
-                throw new InvalidOperationException(/*NXLT*/"Object reference already mapped");
+                throw new InvalidOperationException("Object reference already mapped");
 #endif
             lock (DSObjectMap)
             {
@@ -1194,7 +1194,7 @@ namespace ProtoFFI
                 return dsObject;
             }
 
-            throw new InvalidOperationException(/*NXLT*/"Unable to locate managed object for given dsObject.");
+            throw new InvalidOperationException("Unable to locate managed object for given dsObject.");
         }
 
         /// <summary>

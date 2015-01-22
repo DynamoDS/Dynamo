@@ -59,8 +59,8 @@ namespace Dynamo.Nodes
 
                 SetSelectionNodeState();
 
-                RaisePropertyChanged(/*NXLT*/"SelectionResults");
-                RaisePropertyChanged(/*NXLT*/"Text");
+                RaisePropertyChanged("SelectionResults");
+                RaisePropertyChanged("Text");
             }
         }
 
@@ -77,7 +77,7 @@ namespace Dynamo.Nodes
             set
             {
                 canSelect = value;
-                RaisePropertyChanged(/*NXLT*/"CanSelect");
+                RaisePropertyChanged("CanSelect");
             }
         }
 
@@ -113,7 +113,7 @@ namespace Dynamo.Nodes
             this.selectionType = selectionType;
             this.selectionObjectType = selectionObjectType;
 
-            OutPortData.Add(new PortData(/*NXLT*/"Elements", Resources.SelectionPortDataResultToolTip));
+            OutPortData.Add(new PortData("Elements", Resources.SelectionPortDataResultToolTip));
             RegisterAllPorts();
 
             SelectCommand = new DelegateCommand(Select, CanBeginSelect);
@@ -131,8 +131,8 @@ namespace Dynamo.Nodes
         public override string ToString()
         {
             return SelectionResults.Any()
-                ? string.Format(/*NXLT*/"{0} : {1}", Prefix, FormatSelectionText(SelectionResults))
-                : /*NXLT*/"Nothing selected.";
+                ? string.Format("{0} : {1}", Prefix, FormatSelectionText(SelectionResults))
+                : "Nothing selected.";
         }
 
         public void ClearSelections()
@@ -229,7 +229,7 @@ namespace Dynamo.Nodes
             base.DeserializeCore(nodeElement, context);
             var savedUuids =
                 nodeElement.ChildNodes.Cast<XmlNode>()
-                    .Where(subNode => subNode.Name.Equals(/*NXLT*/"instance") && subNode.Attributes != null)
+                    .Where(subNode => subNode.Name.Equals("instance") && subNode.Attributes != null)
                     .Select(subNode => subNode.Attributes[0].Value)
                     .ToList();
 
@@ -241,7 +241,7 @@ namespace Dynamo.Nodes
             UpdateSelection(loadedSelection);
 
             OnAstUpdated();
-            RaisePropertyChanged(/*NXLT*/"SelectionResults");
+            RaisePropertyChanged("SelectionResults");
         }
 
         /// <summary>

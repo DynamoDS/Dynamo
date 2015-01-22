@@ -119,13 +119,13 @@ namespace SampleLibraryZeroTouch
         /// to be recognized as a multi-out node.
         /// </summary>
         /// <returns></returns>
-        [MultiReturn(new[] { /*NXLT*/"thing 1", /*NXLT*/"thing 2" })]
+        [MultiReturn(new[] { "thing 1", "thing 2" })]
         public static Dictionary<string, List<string>> MultiReturnExample()
         {
             return new Dictionary<string, List<string>>()
             {
-                { /*NXLT*/"thing 1", new List<string>{/*NXLT*/"apple", /*NXLT*/"banana", /*NXLT*/"cat"} },
-                { /*NXLT*/"thing 2", new List<string>{/*NXLT*/"Tywin", /*NXLT*/"Cersei", /*NXLT*/"Hodor"} }
+                { "thing 1", new List<string>{"apple", "banana", "cat"} },
+                { "thing 2", new List<string>{"Tywin", "Cersei", "Hodor"} }
             };
         }
 

@@ -753,8 +753,8 @@
     <value>Visit www.dynamobim.org</value>
     <comment>Start page | Link to DynamoBIM</comment>
   </data>
-  <data name="StartPageWrittenTutorials" xml:space="preserve">
-    <value>Written Tutorials</value>
+  <data name="StartPageAdvancedTutorials" xml:space="preserve">
+    <value>Advanced Tutorials</value>
     <comment>Start page | Link to tutorials</comment>
   </data>
   <data name="AddFileToPackageDialogTitle" xml:space="preserve">
@@ -1422,5 +1422,101 @@ Click CANCEL to cancel the update.</value>
   <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
     <value>Enable graph view navigation (Ctrl + G)</value>
     <comment>Enable graph view navigation</comment>
+  </data>
+  <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
+    <value>Add Custom Node, Library, or XML file to Package...</value>
+  </data>
+  <data name="ConverterMessageCurrentOffset" xml:space="preserve">
+    <value>Current offset X: {0}, Y: {1}</value>
+  </data>
+  <data name="ConverterMessageTransformOrigin" xml:space="preserve">
+    <value>Transform origin X: {0}, Y: {1}</value>
+  </data>
+  <data name="ConverterMessageZoom" xml:space="preserve">
+    <value>Zoom : {0}</value>
+  </data>
+  <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
+    <value>Show In Folder</value>
+  </data>
+  <data name="FileDialogAllFiles" xml:space="preserve">
+    <value>All Files (*.*)|*.*</value>
+  </data>
+  <data name="FileDialogAssemblyFiles" xml:space="preserve">
+    <value>Assembly Library Files (*.dll)|*.dll</value>
+  </data>
+  <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
+    <value>Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml</value>
+  </data>
+  <data name="FileDialogDefaultPNGName" xml:space="preserve">
+    <value>Capture.png</value>
+  </data>
+  <data name="FileDialogDefaultSTLModelName" xml:space="preserve">
+    <value>model.stl</value>
+  </data>
+  <data name="FileDialogDesignScriptFiles" xml:space="preserve">
+    <value>DesignScript Files (*.ds)|*.ds</value>
+  </data>
+  <data name="FileDialogDynamoCustomNode" xml:space="preserve">
+    <value>Dynamo Custom Node (*.dyf)|*.dyf</value>
+  </data>
+  <data name="FileDialogDynamoDefinitions" xml:space="preserve">
+    <value>Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf</value>
+  </data>
+  <data name="FileDialogDynamoWorkspace" xml:space="preserve">
+    <value>Dynamo Workspace (*.dyn)|*.dyn</value>
+  </data>
+  <data name="FileDialogLibraryFiles" xml:space="preserve">
+    <value>Library Files (*.dll, *.ds)|*.dll;*.ds</value>
+  </data>
+  <data name="FileDialogPNGFiles" xml:space="preserve">
+    <value>PNG Image|*.png</value>
+  </data>
+  <data name="FileDialogSTLModels" xml:space="preserve">
+    <value>STL Models|*.stl</value>
+  </data>
+  <data name="InfoBubbleError" xml:space="preserve">
+    <value>Error: </value>
+  </data>
+  <data name="InfoBubbleWarning" xml:space="preserve">
+    <value>Warning: </value>
+  </data>
+  <data name="MessageFailedToApplyCustomization" xml:space="preserve">
+    <value>Failed to apply NodeViewCustomization for {0}</value>
+  </data>
+  <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
+    <value>'AttachmentToRowColumnConverter' expects a 'ConverterParameter' value to be either 'Row' or 'Column'</value>
+  </data>
+  <data name="MessageFailedToAutocomple" xml:space="preserve">
+    <value>Failed to perform code block autocomplete with exception:</value>
+  </data>
+  <data name="MessageFailedToFindNodeById" xml:space="preserve">
+    <value>No node could be found with that Id.</value>
+  </data>
+  <data name="MessageFailedToOpenFile" xml:space="preserve">
+    <value>Error opening file: </value>
+  </data>
+  <data name="MessageFailedToSaveAsImage" xml:space="preserve">
+    <value>Failed to save the Workspace as image.</value>
+  </data>
+  <data name="MessageLoadingTime" xml:space="preserve">
+    <value>{0} elapsed for loading Dynamo main window.</value>
+  </data>
+  <data name="MessageNodeWithNullFunction" xml:space="preserve">
+    <value>There is a null function definition for this node.</value>
+  </data>
+  <data name="MessageNoNodeDescription" xml:space="preserve">
+    <value>No description provided</value>
+  </data>
+  <data name="MessageUnsavedChanges0" xml:space="preserve">
+    <value>The following workspaces have not been saved:</value>
+  </data>
+  <data name="MessageUnsavedChanges1" xml:space="preserve">
+    <value>. Please save them and try again.</value>
+  </data>
+  <data name="SearchViewTopResult" xml:space="preserve">
+    <value>Top Result</value>
+  </data>
+  <data name="TooltipCurrentIndex" xml:space="preserve">
+    <value>{0} of {1}</value>
   </data>
 </root>

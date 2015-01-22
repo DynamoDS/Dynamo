@@ -7,17 +7,17 @@ namespace Dynamo.Nodes
 {
     public class LineBound : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,/*NXLT*/"ProtoGeometry.dll", "Line.ByStartPointEndPoint",
+            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Line.ByStartPointEndPoint",
                 "Line.ByStartPointEndPoint@Point,Point");
         }
     }
 
     public class LineByStartPtDirLength : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -27,16 +27,16 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
-                /*NXLT*/"Line.ByStartPointDirectionLength",
-                /*NXLT*/"Line.ByStartPointDirectionLength@Point,Vector,double");
+            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+                "Line.ByStartPointDirectionLength",
+                "Line.ByStartPointDirectionLength@Point,Vector,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             //append asVector Node
             XmlElement pointAsVector0 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,/*NXLT*/"ProtoGeometry.dll",
-                /*NXLT*/"Point.AsVector", /*NXLT*/"Point.AsVector");
+                data.Document, oldNode, 1,"ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector0);
             string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
 
@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
 
     public class LineVectorfromXyz : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -61,8 +61,8 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
-                /*NXLT*/"Line.ByStartPointEndPoint", /*NXLT*/"Line.ByStartPointEndPoint@Point,Point");
+            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+                "Line.ByStartPointEndPoint", "Line.ByStartPointEndPoint@Point,Point");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -79,8 +79,8 @@ namespace Dynamo.Nodes
             {
                 // Create new node only when the old node is connected to a normal vector
                 XmlElement translateNode = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll", /*NXLT*/"Geometry.Translate",
-                    /*NXLT*/"Geometry.Translate@Autodesk.DesignScript.Geometry.Vector");
+                    data.Document, oldNode, 0,"ProtoGeometry.dll", "Geometry.Translate",
+                    "Geometry.Translate@Autodesk.DesignScript.Geometry.Vector");
                 migrationData.AppendNode(translateNode);
                 string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
 
@@ -103,7 +103,7 @@ namespace Dynamo.Nodes
 
     internal class BestFitLine : MigrationNode
     {
-        [NodeMigration(from: /*NXLT*/"0.6.3.0", to: /*NXLT*/"0.7.0.0")]
+        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
@@ -128,22 +128,22 @@ namespace Dynamo.Nodes
                 // When only the first output port is utilized, migrate to a chain of nodes
 
                 var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-                MigrationManager.SetFunctionSignature(newNode,/*NXLT*/"ProtoGeometry.dll",
-                    /*NXLT*/"Vector.AsPoint", /*NXLT*/"Vector.AsPoint");
+                MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+                    "Vector.AsPoint", "Vector.AsPoint");
 
                 var lineNode = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 0,/*NXLT*/"ProtoGeometry.dll",
-                    /*NXLT*/"Line.ByBestFitThroughPoints",
-                    /*NXLT*/"Line.ByBestFitThroughPoints@Point[]");
+                    data.Document, oldNode, 0,"ProtoGeometry.dll",
+                    "Line.ByBestFitThroughPoints",
+                    "Line.ByBestFitThroughPoints@Point[]");
                 string lineNodeId = MigrationManager.GetGuidFromXmlElement(lineNode);
                 
                 var directionNode = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 1,/*NXLT*/"ProtoGeometry.dll",
-                    /*NXLT*/"Line.Direction", /*NXLT*/"Line.Direction");
+                    data.Document, oldNode, 1,"ProtoGeometry.dll",
+                    "Line.Direction", "Line.Direction");
 
                 var normalizedNode = MigrationManager.CreateFunctionNode(
-                    data.Document, oldNode, 2,/*NXLT*/"ProtoGeometry.dll",
-                    /*NXLT*/"Vector.Normalized", /*NXLT*/"Vector.Normalized");
+                    data.Document, oldNode, 2,"ProtoGeometry.dll",
+                    "Vector.Normalized", "Vector.Normalized");
 
                 migrationData.AppendNode(newNode);
                 migrationData.AppendNode(lineNode);

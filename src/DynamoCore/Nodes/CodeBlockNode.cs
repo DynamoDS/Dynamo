@@ -194,19 +194,16 @@ namespace Dynamo.Nodes
                 string errorMessage = string.Empty;
                 string warningMessage = string.Empty;
 
-                using (recorder.BeginActionGroup())
-                {
-                    var inportConnections = new OrderedDictionary();
-                    var outportConnections = new OrderedDictionary();
-                    //Save the connectors so that we can recreate them at the correct positions
-                    SaveAndDeleteConnectors(inportConnections, outportConnections, recorder);
-                    
-                    code = newCode;
-                    ProcessCode(ref errorMessage, ref warningMessage);
+                var inportConnections = new OrderedDictionary();
+                var outportConnections = new OrderedDictionary();
+                //Save the connectors so that we can recreate them at the correct positions
+                SaveAndDeleteConnectors(inportConnections, outportConnections);
 
-                    //Recreate connectors that can be reused
-                    LoadAndCreateConnectors(inportConnections, outportConnections, recorder);
-                }
+                code = newCode;
+                ProcessCode(ref errorMessage, ref warningMessage);
+
+                //Recreate connectors that can be reused
+                LoadAndCreateConnectors(inportConnections, outportConnections);
 
                 RaisePropertyChanged("Code");
                 ForceReExecuteOfNode = true;
@@ -237,9 +234,6 @@ namespace Dynamo.Nodes
         {
             if (name != "Code") 
                 return base.UpdateValueCore(name, value, recorder);
-
-            //Remove the UpdateValue's recording
-            recorder.PopFromUndoGroup();
 
             value = CodeBlockUtils.FormatUserText(value);
 
@@ -580,8 +574,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="inportConnections">A list of connections that will be destroyed</param>
         /// <param name="outportConnections"></param>
-        /// <param name="recorder"></param>
-        private void SaveAndDeleteConnectors(IDictionary inportConnections, IDictionary outportConnections, UndoRedoRecorder recorder)
+        private void SaveAndDeleteConnectors(IDictionary inportConnections, IDictionary outportConnections)
         {
             //----------------------------Inputs---------------------------------
             foreach (var portModel in InPorts)
@@ -593,7 +586,6 @@ namespace Dynamo.Nodes
                     foreach (var connector in portModel.Connectors)
                     {
                         (inportConnections[portName] as List<PortModel>).Add(connector.Start);
-                        recorder.RecordDeletionForUndo(connector);
                     }
                 }
                 else
@@ -622,7 +614,6 @@ namespace Dynamo.Nodes
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
                         (outportConnections[portName] as List<PortModel>).Add(connector.End);
-                        recorder.RecordDeletionForUndo(connector);
                     }
                 }
                 else
@@ -644,8 +635,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="inportConnections"></param>
         /// <param name="outportConnections"> List of the connections that were killed</param>
-        /// <param name="recorder"></param>
-        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections, UndoRedoRecorder recorder)
+        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections)
         {
             //----------------------------Inputs---------------------------------
             /* Input Port connections are matched only if the name is the same */
@@ -665,7 +655,6 @@ namespace Dynamo.Nodes
                                 this,
                                 startNode.GetPortIndexAndType(startPortModel, out p),
                                 i);
-                            recorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
                     }
@@ -695,7 +684,6 @@ namespace Dynamo.Nodes
                             NodeModel endNode = endPortModel.Owner;
                             var connector = ConnectorModel.Make(this, endNode, i,
                                 endNode.GetPortIndexAndType(endPortModel, out p));
-                            recorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
                     }
@@ -724,7 +712,6 @@ namespace Dynamo.Nodes
                         NodeModel endNode = endPortModel.Owner;
                         var connector = ConnectorModel.Make(this, endNode, index,
                             endNode.GetPortIndexAndType(endPortModel, out p));
-                        recorder.RecordCreationForUndo(connector);
                     }
                     outportConnections[index] = null;
                     undefinedIndices.Remove(index);
@@ -754,7 +741,6 @@ namespace Dynamo.Nodes
                         endNode,
                         undefinedIndices[0],
                         endNode.GetPortIndexAndType(endPortModel, out p));
-                    recorder.RecordCreationForUndo(connector);
                 }
                 undefinedIndices.RemoveAt(0);
                 unusedConnections.RemoveAt(0);

@@ -22,9 +22,9 @@ namespace Dynamo.TestInfrastructure
         {
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
-            string pathToNodesDll = assemblyDir + /*NXLT*/"\\nodes\\DSCoreNodesUI.dll";
+            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(pathToNodesDll);
-            Type type = assembly.GetType(/*NXLT*/"Dynamo.Nodes.IntegerSlider");
+            Type type = assembly.GetType("Dynamo.Nodes.IntegerSlider");
 
             return type;
         }
@@ -122,10 +122,10 @@ namespace Dynamo.TestInfrastructure
         {
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
-            string pathToNodesDll = assemblyDir + /*NXLT*/"\\nodes\\DSCoreNodesUI.dll";
+            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(pathToNodesDll);
 
-            Type type = assembly.GetType(/*NXLT*/"Dynamo.Nodes.IntegerSlider");
+            Type type = assembly.GetType("Dynamo.Nodes.IntegerSlider");
 
             PropertyInfo propInfo = type.GetProperty("Min");
             dynamic propertyMin = propInfo.GetValue(node, null);

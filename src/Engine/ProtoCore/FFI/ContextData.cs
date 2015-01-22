@@ -50,7 +50,7 @@ namespace ProtoFFI
 
     class CoreDataProvider : IContextDataProvider
     {
-        private static readonly string mName = /*NXLT*/"ProtoCoreDataProvider"; 
+        private static readonly string mName = "ProtoCoreDataProvider"; 
         private ProtoCore.Core mCoreObject = null;
         public CoreDataProvider(ProtoCore.Core core)
         {

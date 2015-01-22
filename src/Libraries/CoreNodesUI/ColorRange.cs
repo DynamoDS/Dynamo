@@ -10,9 +10,9 @@ using ProtoCore.AST.AssociativeAST;
 namespace DSCoreNodesUI
 {
     [IsDesignScriptCompatible]
-    [NodeName(/*NXLT*/"Color Range")]
-    [NodeCategory(/*NXLT*/"Core.Color.Create")]
-    [NodeDescription(/*NXLT*/"ColorRangeDescription",typeof(Properties.Resources))]
+    [NodeName("Color Range")]
+    [NodeCategory("Core.Color.Create")]
+    [NodeDescription("ColorRangeDescription",typeof(Properties.Resources))]
     public class ColorRange : NodeModel
     {
         public event EventHandler RequestChangeColorRange;
@@ -24,10 +24,10 @@ namespace DSCoreNodesUI
 
         public ColorRange()
         {
-            InPortData.Add(new PortData(/*NXLT*/"start", Resources.ColorRangePortDataStartToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"end", Resources.ColorRangePortDataEndToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"value", Resources.ColorRangePortDataValueToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"color", Resources.ColorRangePortDataResultToolTip));
+            InPortData.Add(new PortData("start", Resources.ColorRangePortDataStartToolTip));
+            InPortData.Add(new PortData("end", Resources.ColorRangePortDataEndToolTip));
+            InPortData.Add(new PortData("value", Resources.ColorRangePortDataValueToolTip));
+            OutPortData.Add(new PortData("color", Resources.ColorRangePortDataResultToolTip));
 
             RegisterAllPorts();
 
@@ -38,7 +38,7 @@ namespace DSCoreNodesUI
 
         void ColorRange_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != /*NXLT*/"IsUpdated")
+            if (e.PropertyName != "IsUpdated")
                 return;
 
             if (InPorts.Any(x => x.Connectors.Count == 0))

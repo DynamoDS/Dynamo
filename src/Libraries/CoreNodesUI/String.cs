@@ -40,7 +40,7 @@ namespace DSCoreNodesUI.StringNodes
                     AstFactory.BuildBooleanNode(true)
                 };
 
-                rhs = AstFactory.BuildFunctionCall(/*NXLT*/"_SingleFunctionObject", inputParams);
+                rhs = AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
             }
             else
             {
@@ -54,34 +54,34 @@ namespace DSCoreNodesUI.StringNodes
         }
     }
 
-    [NodeName(/*NXLT*/"String from Object")]
-    [NodeDescription(/*NXLT*/"StringfromObjectDescription", typeof(Properties.Resources))]
-    [NodeCategory(/*NXLT*/"Core.String.Actions")]
-    [NodeSearchTags(/*NXLT*/"FromObjectSearchTags", typeof(Properties.Resources))]
+    [NodeName("String from Object")]
+    [NodeDescription("StringfromObjectDescription", typeof(Properties.Resources))]
+    [NodeCategory("Core.String.Actions")]
+    [NodeSearchTags("FromObjectSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class FromObject: ToStringNodeBase 
     {
-        public FromObject() : base(/*NXLT*/"__ToStringFromObject")
+        public FromObject() : base("__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData(/*NXLT*/"obj", Resources.FromObjectPortDataObjToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"str", Resources.FormulaPortDataResultToolTip));
+            InPortData.Add(new PortData("obj", Resources.FromObjectPortDataObjToolTip));
+            OutPortData.Add(new PortData("str", Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
     }
 
-    [NodeName(/*NXLT*/"String from Array")]
-    [NodeDescription(/*NXLT*/"StringfromArrayDescription", typeof(Properties.Resources))]
-    [NodeCategory(/*NXLT*/"Core.String.Actions")]
-    [NodeSearchTags(/*NXLT*/"FromArraySearchTags", typeof(Properties.Resources))]
+    [NodeName("String from Array")]
+    [NodeDescription("StringfromArrayDescription", typeof(Properties.Resources))]
+    [NodeCategory("Core.String.Actions")]
+    [NodeSearchTags("FromArraySearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class FromArray : ToStringNodeBase 
     {
-        public FromArray() : base(/*NXLT*/"__ToStringFromArray")
+        public FromArray() : base("__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData(/*NXLT*/"arr", Resources.FromArrayPortDataArrayToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"str", Resources.FromArrayPortDataResultToolTip));
+            InPortData.Add(new PortData("arr", Resources.FromArrayPortDataArrayToolTip));
+            OutPortData.Add(new PortData("str", Resources.FromArrayPortDataResultToolTip));
             RegisterAllPorts();
         }
     }

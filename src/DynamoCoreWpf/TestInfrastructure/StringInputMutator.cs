@@ -41,7 +41,7 @@ namespace Dynamo.TestInfrastructure
             int numberOfUndosNeeded = Mutate(node);
             Thread.Sleep(100);
 
-            writer.WriteLine(/*NXLT*/"### - Beginning undo");
+            writer.WriteLine("### - Beginning undo");
             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
             {
                 DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
@@ -54,12 +54,12 @@ namespace Dynamo.TestInfrastructure
                 }));
                 Thread.Sleep(100);
             }
-            writer.WriteLine(/*NXLT*/"### - undo complete");
+            writer.WriteLine("### - undo complete");
             writer.Flush();
 
-            writer.WriteLine(/*NXLT*/"### - undo complete");
+            writer.WriteLine("### - undo complete");
             writer.Flush();
-            writer.WriteLine(/*NXLT*/"### - Beginning re-exec");
+            writer.WriteLine("### - Beginning re-exec");
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
@@ -74,11 +74,11 @@ namespace Dynamo.TestInfrastructure
             {
                 Thread.Sleep(10);
             }
-            writer.WriteLine(/*NXLT*/"### - re-exec complete");
+            writer.WriteLine("### - re-exec complete");
             writer.Flush();
-            writer.WriteLine(/*NXLT*/"### - Beginning readback");
+            writer.WriteLine("### - Beginning readback");
 
-            writer.WriteLine(/*NXLT*/"### - Beginning test of String");
+            writer.WriteLine("### - Beginning test of String");
             if (node.OutPorts.Count > 0)
             {
                 try
@@ -89,23 +89,23 @@ namespace Dynamo.TestInfrastructure
 
                     if (valmap != nodeVal)
                     {
-                        writer.WriteLine(/*NXLT*/"!!!!!!!!!!! - test of String is failed");
+                        writer.WriteLine("!!!!!!!!!!! - test of String is failed");
                         writer.WriteLine(node.GUID);
 
-                        writer.WriteLine(/*NXLT*/"Was: " + nodeVal);
-                        writer.WriteLine(/*NXLT*/"Should have been: " + valmap);
+                        writer.WriteLine("Was: " + nodeVal);
+                        writer.WriteLine("Should have been: " + valmap);
                         writer.Flush();
                         return pass;
                     }
                 }
                 catch (Exception)
                 {
-                    writer.WriteLine(/*NXLT*/"!!!!!!!!!!! - test of String is failed");
+                    writer.WriteLine("!!!!!!!!!!! - test of String is failed");
                     writer.Flush();
                     return pass;
                 }
             }
-            writer.WriteLine(/*NXLT*/"### - test of Number complete");
+            writer.WriteLine("### - test of Number complete");
             writer.Flush();
 
             return pass = true;
@@ -113,7 +113,7 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate(NodeModel node)
         {
-            string chars = /*NXLT*/"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*(),./[];=-:<\\>?";
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*(),./[];=-:<\\>?";
             Random random = new Random();
             string value = new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
 

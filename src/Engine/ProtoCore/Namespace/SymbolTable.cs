@@ -177,7 +177,7 @@ namespace ProtoCore.Namespace
             string symbolName = partialName.Split('.').Last();
             HashSet<Symbol> symbols = GetAllSymbols(symbolName);
             if (null == symbols)
-                throw new System.Collections.Generic.KeyNotFoundException(string.Format(/*NXLT*/"Failed to get unique matching symbol for {0}.", partialName));
+                throw new System.Collections.Generic.KeyNotFoundException(string.Format("Failed to get unique matching symbol for {0}.", partialName));
 
             return symbols.Where((Symbol sym) => sym.Matches(partialName)).ToArray();
         }
@@ -201,7 +201,7 @@ namespace ProtoCore.Namespace
 
             var symbols = GetMatchingSymbols(partialName);
             if (symbols == null || symbols.Length != 1)
-                throw new System.Collections.Generic.KeyNotFoundException(string.Format(/*NXLT*/"Failed to get unique matching symbol for {0}.", partialName));
+                throw new System.Collections.Generic.KeyNotFoundException(string.Format("Failed to get unique matching symbol for {0}.", partialName));
 
             return symbols.First().FullName;
         }

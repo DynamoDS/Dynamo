@@ -8,18 +8,18 @@ using DSCoreNodesUI.Properties;
 
 namespace DSCore
 {
-    [NodeName(/*NXLT*/"List.Map")]
+    [NodeName("List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ListMapDescription", typeof(Resources))]
+    [NodeDescription("ListMapDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Map : NodeModel
     {
         public Map()
         {
-            InPortData.Add(new PortData(/*NXLT*/"list", Resources.MapPortDataListToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"f(x)", Resources.MapPortDataFxToolTip));
+            InPortData.Add(new PortData("list", Resources.MapPortDataListToolTip));
+            InPortData.Add(new PortData("f(x)", Resources.MapPortDataFxToolTip));
 
-            OutPortData.Add(new PortData(/*NXLT*/"mapped", Resources.MapPortDataResultToolTip));
+            OutPortData.Add(new PortData("mapped", Resources.MapPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -32,11 +32,11 @@ namespace DSCore
                     GetAstIdentifierForOutputIndex(0),
                     IsPartiallyApplied
                         ? AstFactory.BuildFunctionObject(
-                            /*NXLT*/"__Map",
+                            "__Map",
                             2,
                             new[] { 0, 1 }.Where(HasConnectedInput).Select(x => 1 - x),
                             Enumerable.Reverse(inputAstNodes).ToList())
-                        : AstFactory.BuildFunctionCall(/*NXLT*/"__Map", Enumerable.Reverse(inputAstNodes).ToList()))
+                        : AstFactory.BuildFunctionCall("__Map", Enumerable.Reverse(inputAstNodes).ToList()))
             };
         }
     }
@@ -47,11 +47,11 @@ namespace DSCore
 
         protected CombinatorNode() : this(3)
         {
-            InPortData.Add(new PortData(/*NXLT*/"comb", Resources.CombinatorPortDataCombToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"list1", Resources.PortDataList1ToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"list2", Resources.PortDataList2ToolTip));
+            InPortData.Add(new PortData("comb", Resources.CombinatorPortDataCombToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData("list2", Resources.PortDataList2ToolTip));
 
-            OutPortData.Add(new PortData(/*NXLT*/"combined", Resources.CombinatorPortDataResultToolTip));
+            OutPortData.Add(new PortData("combined", Resources.CombinatorPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -78,9 +78,9 @@ namespace DSCore
         }
     }
 
-    [NodeName(/*NXLT*/"List.Combine")]
+    [NodeName("List.Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ListCombineDescription", typeof(Resources))]
+    [NodeDescription("ListCombineDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Combine : CombinatorNode
     {
@@ -91,7 +91,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        /*NXLT*/"__Combine",
+                        "__Combine",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -102,9 +102,9 @@ namespace DSCore
     }
 
     [IsVisibleInDynamoLibrary(false)]
-    [NodeName(/*NXLT*/"List.ForEach")]
+    [NodeName("List.ForEach")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ListForEachDescription", typeof(Resources))]
+    [NodeDescription("ListForEachDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class ForEach : CombinatorNode
     {
@@ -117,7 +117,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        /*NXLT*/"__ForEach",
+                        "__ForEach",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -128,9 +128,9 @@ namespace DSCore
     }
 
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
-    [NodeName(/*NXLT*/"List.LaceShortest")]
+    [NodeName("List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ListLaceShortestDescription", typeof(Resources))]
+    [NodeDescription("ListLaceShortestDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class LaceShortest : CombinatorNode
     {
@@ -141,7 +141,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        /*NXLT*/"__LaceShortest",
+                        "__LaceShortest",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -152,9 +152,9 @@ namespace DSCore
     }
 
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
-    [NodeName(/*NXLT*/"List.LaceLongest")]
+    [NodeName("List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ListLaceLongestDescription", typeof(Resources))]
+    [NodeDescription("ListLaceLongestDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class LaceLongest : CombinatorNode
     {
@@ -165,7 +165,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        /*NXLT*/"__LaceLongest",
+                        "__LaceLongest",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -177,9 +177,9 @@ namespace DSCore
 
     ///<search>cross</search>
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
-    [NodeName(/*NXLT*/"List.CartesianProduct")]
+    [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ListCartesianProductDescription", typeof(Resources))]
+    [NodeDescription("ListCartesianProductDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class CartesianProduct : CombinatorNode
     {
@@ -190,7 +190,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        /*NXLT*/"__CartesianProduct",
+                        "__CartesianProduct",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -262,9 +262,9 @@ namespace DSCore
     }
     */
 
-    [NodeName(/*NXLT*/"List.Reduce")]
+    [NodeName("List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ListReduceDescription", typeof(Resources))]
+    [NodeDescription("ListReduceDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Reduce : VariableInputNode
     {
@@ -272,11 +272,11 @@ namespace DSCore
 
         public Reduce()
         {
-            InPortData.Add(new PortData(/*NXLT*/"reductor", Resources.ReducePortDataReductorToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"seed", Resources.ReducePortDataSeedToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData("reductor", Resources.ReducePortDataReductorToolTip));
+            InPortData.Add(new PortData("seed", Resources.ReducePortDataSeedToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
 
-            OutPortData.Add(new PortData(/*NXLT*/"reduced", Resources.ReducePortDataResultToolTip));
+            OutPortData.Add(new PortData("reduced", Resources.ReducePortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -299,17 +299,17 @@ namespace DSCore
         private void UpdateReductorPort()
         {
             if (InPortData.Count > 6)
-                reductorPort.NickName = /*NXLT*/"f(x1, x2, ... xN, a)";
+                reductorPort.NickName = "f(x1, x2, ... xN, a)";
             else
             {
                 if (InPortData.Count == 3)
-                    reductorPort.NickName = /*NXLT*/"f(x, a)";
+                    reductorPort.NickName = "f(x, a)";
                 else
                 {
-                    reductorPort.NickName = /*NXLT*/"f("
+                    reductorPort.NickName = "f("
                         + string.Join(
                             ", ",
-                            Enumerable.Range(0, InPortData.Count - 2).Select(x => /*NXLT*/"x" + (x + 1)))
+                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
                         + ", a)";
                 }
             }
@@ -338,7 +338,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        /*NXLT*/"__Reduce",
+                        "__Reduce",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -349,9 +349,9 @@ namespace DSCore
         }
     }
 
-    [NodeName(/*NXLT*/"List.Scan")]
+    [NodeName("List.Scan")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ListScanDescription", typeof(Resources))]
+    [NodeDescription("ListScanDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class ScanList : VariableInputNode
     {
@@ -359,11 +359,11 @@ namespace DSCore
 
         public ScanList()
         {
-            InPortData.Add(new PortData(/*NXLT*/"reductor", Resources.ScanPortDataReductorToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"seed", Resources.ScanPortDataSeedToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData("reductor", Resources.ScanPortDataReductorToolTip));
+            InPortData.Add(new PortData("seed", Resources.ScanPortDataSeedToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
 
-            OutPortData.Add(new PortData(/*NXLT*/"scanned", Resources.ScanPortDataResultToolTip));
+            OutPortData.Add(new PortData("scanned", Resources.ScanPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -386,17 +386,17 @@ namespace DSCore
         private void UpdateReductorPort()
         {
             if (InPortData.Count > 6)
-                reductorPort.NickName = /*NXLT*/"f(x1, x2, ... xN, a)";
+                reductorPort.NickName = "f(x1, x2, ... xN, a)";
             else
             {
                 if (InPortData.Count == 3)
-                    reductorPort.NickName = /*NXLT*/"f(x, a)";
+                    reductorPort.NickName = "f(x, a)";
                 else
                 {
-                    reductorPort.NickName = /*NXLT*/"f("
+                    reductorPort.NickName = "f("
                         + string.Join(
                             ", ",
-                            Enumerable.Range(0, InPortData.Count - 2).Select(x => /*NXLT*/"x" + (x + 1)))
+                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
                         + ", a)";
                 }
             }
@@ -425,7 +425,7 @@ namespace DSCore
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildFunctionCall(
-                        /*NXLT*/"__Scan",
+                        "__Scan",
                         new List<AssociativeNode>
                         {
                             inputAstNodes[0],
@@ -436,19 +436,19 @@ namespace DSCore
         }
     }
 
-    [NodeName(/*NXLT*/"List.Filter")]
+    [NodeName("List.Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ListFilterDescription", typeof(Resources))]
+    [NodeDescription("ListFilterDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Filter : NodeModel
     {
         public Filter()
         {
-            InPortData.Add(new PortData(/*NXLT*/"list", Resources.FilterPortDataListToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"condition", Resources.FilterPortDataConditionToolTip));
+            InPortData.Add(new PortData("list", Resources.FilterPortDataListToolTip));
+            InPortData.Add(new PortData("condition", Resources.FilterPortDataConditionToolTip));
 
-            OutPortData.Add(new PortData(/*NXLT*/"in", Resources.FilterPortDataResultInToolTip));
-            OutPortData.Add(new PortData(/*NXLT*/"out", Resources.FilterPortDataResultOutToolTip));
+            OutPortData.Add(new PortData("in", Resources.FilterPortDataResultInToolTip));
+            OutPortData.Add(new PortData("out", Resources.FilterPortDataResultOutToolTip));
 
             RegisterAllPorts();
         }
@@ -456,12 +456,12 @@ namespace DSCore
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {
-            var packedId = /*NXLT*/"__temp" + GUID.ToString().Replace("-", "");
+            var packedId = "__temp" + GUID.ToString().Replace("-", "");
             return new[]
             {
                 AstFactory.BuildAssignment(
                     AstFactory.BuildIdentifier(packedId),
-                    AstFactory.BuildFunctionCall(/*NXLT*/"__Filter", inputAstNodes)),
+                    AstFactory.BuildFunctionCall("__Filter", inputAstNodes)),
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
                     new IdentifierNode(packedId)
@@ -478,19 +478,19 @@ namespace DSCore
         }
     }
 
-    [NodeName(/*NXLT*/"ReplaceByCondition")]
+    [NodeName("ReplaceByCondition")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(/*NXLT*/"ReplaceByConditionDescription", typeof(Resources))]
+    [NodeDescription("ReplaceByConditionDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Replace : NodeModel
     {
         public Replace()
         {
-            InPortData.Add(new PortData(/*NXLT*/"item", Resources.ReplacePortDataItemToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"replaceWith", Resources.ReplacePortDataReplaceWithToolTip));
-            InPortData.Add(new PortData(/*NXLT*/"condition", Resources.ReplacePortDataConditionToolTip));
+            InPortData.Add(new PortData("item", Resources.ReplacePortDataItemToolTip));
+            InPortData.Add(new PortData("replaceWith", Resources.ReplacePortDataReplaceWithToolTip));
+            InPortData.Add(new PortData("condition", Resources.ReplacePortDataConditionToolTip));
 
-            OutPortData.Add(new PortData(/*NXLT*/"var", Resources.ReplacePortDataResultToolTip));
+            OutPortData.Add(new PortData("var", Resources.ReplacePortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -502,7 +502,7 @@ namespace DSCore
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(/*NXLT*/"__Replace", inputAstNodes))
+                    AstFactory.BuildFunctionCall("__Replace", inputAstNodes))
             };
         }
     }
