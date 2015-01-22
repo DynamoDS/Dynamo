@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 ﻿﻿using Dynamo.Models;
 using DynamoMSOffice.Properties;
 
@@ -191,3 +191,4 @@ namespace Dynamo.Nodes
 =======
 ﻿
 >>>>>>> master
+*/

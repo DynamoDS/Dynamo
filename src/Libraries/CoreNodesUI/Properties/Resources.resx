@@ -299,7 +299,7 @@
     <comment>Description for List.Map</comment>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
-    <value>function,applied,over list, do to each</value>
+    <value>function;applied;over list;do to each</value>
     <comment>search tags for List.Map</comment>
   </data>
   <data name="ListReduceDescription" xml:space="preserve">
