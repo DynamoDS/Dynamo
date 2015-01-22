@@ -756,7 +756,7 @@ namespace Dynamo.Models
                         n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel)
                         .Select(n => n.GUID);
 
-                var nodeTraceDataList = core.GetTraceDataForNodes(nodeGuids);
+                var nodeTraceDataList = core.DSExecutable.RuntimeData.GetTraceDataForNodes(nodeGuids, core.DSExecutable);
 
                 if (nodeTraceDataList.Any())
                     Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
