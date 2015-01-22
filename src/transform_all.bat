@@ -22,7 +22,7 @@ for /f %%d in (t4list.txt) do (
 set file_name=%%d
 set file_name=!file_name:~0,-3!.%extension%
 echo:  \--^> !file_name!    
-"%COMMONPROGRAMFILES(x86)%\microsoft shared\TextTemplating\12.0\TextTransform.exe" -out !file_name! %%d
+"%COMMONPROGRAMFILES(x86)%\microsoft shared\TextTemplating\11.0\TextTransform.exe" -out !file_name! %%d
 )
 
 :: delete T4 list and return to previous directory
