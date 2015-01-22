@@ -369,7 +369,7 @@ namespace DynamoWebServer.Messages
             {
                 string data;
                 ExecutedNode exnode = nodes.FirstOrDefault(n => n.NodeId == node.GUID.ToString());
-                if (node is Function || node is CodeBlockNodeModel)
+                if (node is Function || node is CodeBlockNodeModel || node is VariableInputNode)
                 {
                     // include data about number of inputs and outputs
                     data = GetInOutPortsData(node);
@@ -494,7 +494,8 @@ namespace DynamoWebServer.Messages
 
         private string GetInOutPortsData(NodeModel node)
         {
-            var inPorts = node.InPorts.Select(port => "\"" + port.PortName + "\"").ToList();
+            var pattern = node is VariableInputNode ? "{{ \"name\":\"{0}\", \"type\": \"{1}\" }}" : "\"{0}\"";
+            var inPorts = node.InPorts.Select(port => string.Format(pattern, port.PortName, port.ToolTipContent)).ToList();
             var outPorts = node.OutPorts.Select(port => "\"" + port.ToolTipContent + "\"").ToList();
 
             var stringBuilder = new StringBuilder();
@@ -522,7 +523,27 @@ namespace DynamoWebServer.Messages
                 stringBuilder.Append("],");
             }
 
-            stringBuilder.Append("\"InPorts\": [");
+            if (node is VariableInputNode)
+            {
+                var type = node.GetType();
+                if (type.Name == "PythonNode")
+                {
+                    var script = type.GetProperty("Script").GetValue(node, null).ToString();
+
+                    stringBuilder.Append("\"Script\":\"");
+                    stringBuilder.Append(script.
+                            Replace("\n", "\\n").
+                            Replace("\"", "\\\""));
+                    stringBuilder.Append("\", ");
+                }
+
+                stringBuilder.Append("\"varInputs\": [");
+            }
+            else
+            {
+                stringBuilder.Append("\"InPorts\": [");
+            }
+
             stringBuilder.Append(inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "");
             stringBuilder.Append("], \"OutPorts\": [");
             stringBuilder.Append(outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "");
