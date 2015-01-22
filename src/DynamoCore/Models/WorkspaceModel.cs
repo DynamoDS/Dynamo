@@ -13,6 +13,7 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST;
+using ProtoCore.Namespace;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
 using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificationUndoHelper;
@@ -394,13 +395,15 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
+        public ElementResolver ElementResolver { get; private set; }
+
         #endregion
 
         #region constructors
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, string fileName="")
+            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
             Name = name;
 
@@ -416,6 +419,7 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
+            ElementResolver = elementResolver;
 
             foreach (var node in nodes)
                 RegisterNode(node);
@@ -820,11 +824,12 @@ namespace Dynamo.Models
             if (!retrievedModels.Any())
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
+            var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
             using (new ModelModificationUndoHelper(undoRecorder, retrievedModels))
             {
                 foreach (var retrievedModel in retrievedModels)
                 {
-                    retrievedModel.UpdateValue(propertyName, value, undoRecorder);
+                    retrievedModel.UpdateValue(updateValueParams);
                 }
             }
 
