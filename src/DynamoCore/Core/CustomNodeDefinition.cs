@@ -133,7 +133,7 @@ namespace Dynamo
         /// </summary>
         public string FunctionName
         {
-            get { return AstBuilder.StringConstants.FunctionPrefix +
+            get { return AstBuilder.StringConstants.FunctionPrefix + 
                          FunctionId.ToString().Replace("-", string.Empty); }
         }
 
