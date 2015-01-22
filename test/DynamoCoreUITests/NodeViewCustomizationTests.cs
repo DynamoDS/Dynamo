@@ -3,10 +3,7 @@ using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -14,10 +11,6 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Controls;
 using DynamoCoreUITests.Utility;
 using NUnit.Framework;
-<<<<<<< HEAD
-using Dynamo.Utilities;
-=======
->>>>>>> origin/master
 
 namespace DynamoCoreUITests
 {
@@ -269,12 +262,7 @@ namespace DynamoCoreUITests
 
             var watch3DView = watch3ds.First();
 
-<<<<<<< HEAD
             Assert.AreEqual(1, watch3DView.Points.Positions.Count);
-            
-=======
-            Assert.AreEqual(1, watch3DView.Points.Count);
->>>>>>> origin/master
         }
 
         [Test]
