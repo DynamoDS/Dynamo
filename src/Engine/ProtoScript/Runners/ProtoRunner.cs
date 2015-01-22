@@ -123,6 +123,7 @@ namespace ProtoScript.Runners
         public class ProtoVMState
         {
             private ProtoCore.Core core;
+
             public ProtoVMState(ProtoCore.Core core)
             {
                 this.core = core;

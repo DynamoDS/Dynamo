@@ -78,6 +78,7 @@ namespace ProtoTestFx
             CLRModuleType.ClearTypes();
 
             //Run
+
             fsr.Execute(code, core);
 
             return core;
@@ -104,7 +105,6 @@ namespace ProtoTestFx
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -144,7 +144,6 @@ namespace ProtoTestFx
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -185,7 +184,6 @@ namespace ProtoTestFx
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());

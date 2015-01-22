@@ -5,7 +5,7 @@ namespace ProtoCore
 {
 	public abstract class Executive
 	{
-        protected Core core;
+        protected Core core; 
 
 		public Executive (Core core)
 		{

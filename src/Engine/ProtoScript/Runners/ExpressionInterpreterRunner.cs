@@ -15,7 +15,7 @@ namespace ProtoScript.Runners
 
         public ExpressionInterpreterRunner(ProtoCore.Core core)
         {
-            this.Core = core;
+            Core = core;
             core.ExecMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
         }
 
