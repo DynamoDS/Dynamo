@@ -55,7 +55,7 @@ namespace Dynamo.PackageManager
 
         private void ScanAllPackageDirectories(IPreferences preferences)
         { 
-            foreach (var dir in
+            foreach (var dir in 
                 Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
             {
                 var pkg = ScanPackageDirectory(dir);

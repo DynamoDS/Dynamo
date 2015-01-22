@@ -27,8 +27,8 @@ namespace Dynamo.Models
 
         public readonly bool VerboseLogging;
 
-        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler,
-            NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName = "")
+        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
+            NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
                 engine,
                 scheduler,
@@ -41,10 +41,9 @@ namespace Dynamo.Models
 
         public HomeWorkspaceModel(
             EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
-            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
+            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
             double x, double y, bool verboseLogging,
-            bool isTestMode, string fileName = "")
-            : base("Home", e, n, x, y, factory, fileName)
+            bool isTestMode, string fileName="") : base("Home", e, n, x, y, factory, fileName)
         {
             RunEnabled = true;
             PreloadedTraceData = traceData;

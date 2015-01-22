@@ -174,7 +174,7 @@ namespace Dynamo.DSEngine
                         ",",
                         member.Parameters.Select(x => x.Type).Select(PrimitiveMap).ToArray()
                         );
-
+                    
                     if (!String.IsNullOrEmpty(paramTypesList)) memberName += "(" + paramTypesList + ")";
                     break;
 

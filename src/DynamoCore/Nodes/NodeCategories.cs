@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
         public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
         public const string CORE_LISTS_CREATE = "Core.List.Create";
-        public const string CORE_LISTS_ACTION = "Core.List.Actions";
+        public const string CORE_LISTS_ACTION = "Core.List.Actions";        
         public const string CORE_LISTS_QUERY = "Core.List.Query";
         public const string CORE_VIEW = "Core.View";
         public const string CORE_ANNOTATE = "Core.Annotate";

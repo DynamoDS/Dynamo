@@ -831,7 +831,7 @@ namespace Dynamo.UpdateManager
             var fileName = Path.GetFileNameWithoutExtension(filePath);
             var version = fileName.Substring(index + installNameBase.Length);
 
-            var splits = version.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+            var splits = version.Split(new [] { "." }, StringSplitOptions.RemoveEmptyEntries);
             if (splits.Count() < 3) // This can be 4 if it includes revision number.
                 return null;
 

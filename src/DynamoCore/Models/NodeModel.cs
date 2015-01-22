@@ -350,7 +350,7 @@ namespace Dynamo.Models
         {
             Type type = GetType();
             object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
-
+            
             if (type.Namespace != "Dynamo.Nodes" || type.IsAbstract || attribs.Length <= 0
                 || !type.IsSubclassOf(typeof(NodeModel))) 
                 return "";

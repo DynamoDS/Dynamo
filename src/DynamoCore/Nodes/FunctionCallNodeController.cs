@@ -99,7 +99,7 @@ namespace Dynamo.Nodes
                             AstFactory.BuildAssignment(
                                 model.GetAstIdentifierForOutputIndex(index),
                                 AstFactory.BuildFunctionObject(
-                            "__ComposeBuffered",
+                                    "__ComposeBuffered",
                                     3,
                                     new[] { 0, 1 },
                                     new List<AssociativeNode>

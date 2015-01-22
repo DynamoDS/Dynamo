@@ -132,7 +132,7 @@ namespace Dynamo.DSEngine
                 }
                 catch (Exception ex)
                 {
-                    Log(string.Format(Properties.Resources.WorkbenchNotOpen,variableName, //FailedToGetMirrorVariable, variableName,
+                    Log(string.Format(Properties.Resources.FailedToGetMirrorVariable,variableName,
                         ex.Message));
                 }
 

@@ -155,7 +155,7 @@ namespace Dynamo.Utilities
 		private string ToString (string format, IFormatProvider provider)
 		{
 			if (IsEmpty)
-                return "Empty";
+				return "Empty";
 
 			if (provider == null)
 				provider = CultureInfo.CurrentCulture;
@@ -163,15 +163,15 @@ namespace Dynamo.Utilities
 			if (format == null)
 				format = string.Empty;
 
-            string separator = ",";
+			string separator = ",";
 			NumberFormatInfo numberFormat =
 				provider.GetFormat (typeof (NumberFormatInfo)) as NumberFormatInfo;
 			if (numberFormat != null &&
 			    numberFormat.NumberDecimalSeparator == separator)
-                separator = ";";
+				separator = ";";
 
 			string rectFormat = String.Format (
-                "{{0:{0}}}{1}{{1:{0}}}{1}{{2:{0}}}{1}{{3:{0}}}",
+				"{{0:{0}}}{1}{{1:{0}}}{1}{{2:{0}}}{1}{{3:{0}}}",
 				format, separator);
 			return String.Format (provider, rectFormat,
 				x, y, width, height);

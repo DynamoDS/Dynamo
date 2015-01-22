@@ -17,7 +17,7 @@ namespace Dynamo
     {
         public CustomNodeDefinition(
             Guid functionId,
-            string displayName ="",
+            string displayName="",
             IList<NodeModel> nodeModels=null)
         {
             if (functionId == Guid.Empty)
@@ -58,7 +58,7 @@ namespace Dynamo
                             //If the node is a recursive instance...
                             topNode is Function && (topNode as Function).Definition.FunctionId == functionId
                                 // infinity output
-                                ? new[] { new { portIndex = 0, node = topNode, name = "∞" } }
+                                ? new[] {new {portIndex = 0, node = topNode, name = "∞"}}
                                 // otherwise, grab all ports with connected outputs and package necessary info
                                 : topNode.OutPortData
                                     .Select(
@@ -134,8 +134,7 @@ namespace Dynamo
         public string FunctionName
         {
             get { return AstBuilder.StringConstants.FunctionPrefix +
-                         FunctionId.ToString().Replace("-", string.Empty);
-            }
+                         FunctionId.ToString().Replace("-", string.Empty); }
         }
 
         /// <summary>
