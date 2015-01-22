@@ -248,7 +248,6 @@ namespace Dynamo.Tests
         public void RemoveEntry02NotExistentEntryNonEmptyTree()
         {
             var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
-
             viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
 
             element = CreateCustomNode("Member2", "TopCategory.SubCategory1");
@@ -291,6 +290,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void RemoveEntry04TheSameClass()
         {
+            // Tree preparation
             var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
             viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
 
@@ -311,6 +311,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void RemoveEntry05TheSameClassesContainer()
         {
+            // Tree preparation
             var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
             viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
 
@@ -328,6 +329,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void RemoveEntry06OldPathIsLonger()
         {
+            // Tree preparation
             var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
             viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
 
@@ -339,6 +341,51 @@ namespace Dynamo.Tests
             var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory");
 
             Assert.IsNull(category.SubCategories.FirstOrDefault(c => c.Name == "SubCategory2"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RemoveEntry07RemoveCategoryFromClass()
+        {
+            // Tree preparation
+            var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            element = CreateCustomNode("Member2", "TopCategory.SubCategory1.SubSubCat1");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            viewModel.RemoveEntry(element);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubCategory1");
+
+            Assert.AreEqual(1, category.Items.Count);
+            Assert.IsNotNull(category.Items.FirstOrDefault(c => c.Name == "Member1"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RemoveEntry08RemoveCategoryFromClassAddClassToContainer()
+        {
+            // Tree preparation            
+            var element = CreateCustomNode("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            element = CreateCustomNode("Member2", "TopCategory.SubCategory2");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            element = CreateCustomNode("Member3", "TopCategory.SubCategory1.SubSubCat1");
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            viewModel.RemoveEntry(element);
+
+            var theClass = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel);
+
+            Assert.AreEqual(2, theClass.Items.Count);
+            Assert.IsNotNull(theClass.SubCategories.FirstOrDefault(c => c.Name == "SubCategory1"));
+            Assert.IsNotNull(theClass.SubCategories.FirstOrDefault(c => c.Name == "SubCategory2"));
         }
 
         #endregion

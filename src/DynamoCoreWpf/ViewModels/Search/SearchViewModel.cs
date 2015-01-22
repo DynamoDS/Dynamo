@@ -319,6 +319,31 @@ namespace Dynamo.ViewModels
                     parent.Items.RemoveAt(0);
                 target = parent;
             }
+
+            // After removal of category "target" can become the class.
+            // In this case we need to add target to existing ClassesNodeCategoryViewModel
+            // or create new one.
+            if (treeStack.Any() && !target.SubCategories.Any())
+            {
+                var parent = treeStack.Pop();
+                // Do not continue if parent is already in ClassesNodeCategoryViewModel.
+                if (parent is ClassesNodeCategoryViewModel && parent.SubCategories.Contains(target))
+                    return;
+
+                // Do not continue as soon as our target is not class.
+                if (target.SubCategories.Any())
+                    return;
+
+                if (!(parent.SubCategories[0] is ClassesNodeCategoryViewModel))
+                    parent.SubCategories.Insert(0, new ClassesNodeCategoryViewModel(parent));
+
+                if (!parent.SubCategories[0].SubCategories.Contains(target))
+                {
+                    // Reattach target from parent to ClassesNodeCategoryViewModel.
+                    parent.SubCategories.Remove(target);
+                    parent.SubCategories[0].SubCategories.Add(target);
+                }
+            }
         }
 
         private static IEnumerable<NodeCategoryViewModel> GetTreeBranchToNode(
