@@ -8,6 +8,7 @@ using Dynamo.Library;
 
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using ProtoCore;
 
 namespace Dynamo.DSEngine
 {
@@ -47,13 +48,13 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
-        public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type, bool isOverloaded)
-            : this(null, null, name, parameters, null, type, isOverloaded)
+        public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
+            : this(null, null, name, parameters, TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar), type)
         { }
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, IEnumerable<TypedParameter> parameters,
-            string returnType, FunctionType type, bool isOverloaded, bool isVisibleInLibrary = true,
+            ProtoCore.Type returnType, FunctionType type,  bool isVisibleInLibrary = true,
             IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
             : this(
                 assembly,
@@ -63,7 +64,6 @@ namespace Dynamo.DSEngine
                 parameters,
                 returnType,
                 type,
-                isOverloaded,
                 isVisibleInLibrary,
                 returnKeys,
                 isVarArg,
@@ -71,11 +71,10 @@ namespace Dynamo.DSEngine
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, string summary,
-            IEnumerable<TypedParameter> parameters, string returnType, FunctionType type, bool isOverloaded,
+            IEnumerable<TypedParameter> parameters, ProtoCore.Type returnType, FunctionType type, 
             bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
         {
             this.summary = summary;
-            IsOverloaded = isOverloaded;
             Assembly = assembly;
             ClassName = className;
             FunctionName = functionName;
@@ -92,7 +91,7 @@ namespace Dynamo.DSEngine
                     });
             }
 
-            ReturnType = returnType == null ? "var[]..[]" : returnType.Split('.').Last();
+            ReturnType = returnType.ToShortString();
             Type = type;
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;
@@ -100,7 +99,7 @@ namespace Dynamo.DSEngine
             ObsoleteMessage = obsoleteMsg;
         }
 
-        public bool IsOverloaded { get; private set; }
+        public bool IsOverloaded { get; set; }
 
         /// <summary>
         ///     Full path to the assembly the defined this function

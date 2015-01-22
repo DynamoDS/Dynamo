@@ -16,6 +16,7 @@ using ProtoCore.Utils;
 using ProtoFFI;
 
 using Operator = ProtoCore.DSASM.Operator;
+using ProtoCore;
 
 namespace Dynamo.DSEngine
 {
@@ -438,7 +439,7 @@ namespace Dynamo.DSEngine
                                                                 (arg, argType) =>
                                                                     new TypedParameter(
                                                                     arg.Name,
-                                                                    argType.ToString()))
+                                                                    argType))
                                                         let visibleInLibrary =
                                                             (method.MethodAttribute == null
                                                                 || !method.MethodAttribute.HiddenInLibrary)
@@ -448,7 +449,7 @@ namespace Dynamo.DSEngine
                                                                 null,
                                                                 method.name,
                                                                 arguments,
-                                                                method.returntype.ToString(),
+                                                                method.returntype,
                                                                 FunctionType.GenericFunction,
                                                                 visibleInLibrary);
 
@@ -457,13 +458,13 @@ namespace Dynamo.DSEngine
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            yield return new TypedParameter(null, "x", string.Empty);
-            yield return new TypedParameter(null, "y", string.Empty);
+            yield return new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
+            yield return new TypedParameter(null, "y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
         {
-            return new List<TypedParameter> { new TypedParameter(null, "x", string.Empty), };
+            return new List<TypedParameter> { new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)), };
         }
 
         /// <summary>
@@ -483,13 +484,12 @@ namespace Dynamo.DSEngine
             };
 
             var functions =
-                ops.Select(op => new FunctionDescriptor(op, args, FunctionType.GenericFunction, false))
+                ops.Select(op => new FunctionDescriptor(op, args, FunctionType.GenericFunction))
                     .Concat(
                         new FunctionDescriptor(
                             Op.GetUnaryOpFunction(UnaryOperator.Not),
                             GetUnaryFuncArgs(),
-                            FunctionType.GenericFunction,
-                            false).AsSingleton());
+                            FunctionType.GenericFunction).AsSingleton());
 
             AddBuiltinFunctions(functions);
         }
@@ -598,7 +598,7 @@ namespace Dynamo.DSEngine
                         }
                     }
 
-                    return new TypedParameter(arg.Name, argType.ToString(), defaultValue);
+                    return new TypedParameter(arg.Name, argType, defaultValue);
                 });
 
             IEnumerable<string> returnKeys = null;
@@ -615,9 +615,8 @@ namespace Dynamo.DSEngine
                 className,
                 procName,
                 arguments,
-                proc.returntype.ToString(),
+                proc.returntype,
                 type,
-                false,
                 isVisible,
                 returnKeys,
                 proc.isVarArg,

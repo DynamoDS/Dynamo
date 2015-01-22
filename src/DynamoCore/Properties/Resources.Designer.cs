@@ -68,6 +68,13 @@ namespace Dynamo.Properties {
                 return ResourceManager.GetString("ArggOKButton", resourceCulture);
             }
         }
+        ///   Looks up a localized string similar to Cannot find type &apos;{0}&apos;.
+        /// </summary>
+        internal static string WarningCannotFindType {
+            get {
+                return ResourceManager.GetString("WarningCannotFindType", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
@@ -1147,5 +1154,19 @@ namespace Dynamo.Properties {
                 return ResourceManager.GetString("WorkbenchNotOpen", resourceCulture);
             }
         }
+        ///   Looks up a localized string similar to Invalid input.
+        ///
+        ///The name of parameter should start with alphabetic character. You can specify its type and default value. E.g., 
+        ///
+        ///input : var[]..[]
+        ///value: bool = false.
+        /// </summary>
+        internal static string WarningInvalidInput {
+            get {
+                return ResourceManager.GetString("WarningInvalidInput", resourceCulture);
+            }
+        
+        }
     }
-}
+}    
+

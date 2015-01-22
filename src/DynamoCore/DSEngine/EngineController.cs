@@ -16,6 +16,7 @@ using System.Text;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
+using ProtoCore.Utils;
 
 namespace Dynamo.DSEngine
 {
@@ -41,10 +42,13 @@ namespace Dynamo.DSEngine
         
         private readonly Object macroMutex = new Object();
 
+        public static CompilationServices CompilationServices; 
+
         public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
         {
             this.libraryServices = libraryServices; 
             libraryServices.LibraryLoaded += LibraryLoaded;
+            CompilationServices = new CompilationServices(libraryServices.LibraryManagementCore);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
@@ -310,7 +314,7 @@ namespace Dynamo.DSEngine
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = new HashSet<Guid>(
-                nodes.Where(n => n.ForceReExecuteOfNode)
+                nodes.Where(n => n.NeedsForceExecution)
                      .Select(n => n.GUID));
 
             if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
@@ -607,5 +611,20 @@ namespace Dynamo.DSEngine
         }
 
         #endregion
+    }
+
+    public class CompilationServices
+    {
+        private  ProtoCore.Core compilationCore;
+
+        public CompilationServices(ProtoCore.Core core)
+        {
+            compilationCore = core;
+        }
+
+        public bool PreCompileCodeBlock(ref ParseParam parseParams)
+        {
+            return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams);
+        }
     }
 }

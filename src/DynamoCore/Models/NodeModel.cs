@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
+using ProtoCore.Namespace;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
@@ -27,7 +28,6 @@ namespace Dynamo.Models
     {
         #region private members
 
-        private bool forceReExec;
         private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.First;
         private bool displayLabels;
@@ -95,24 +95,6 @@ namespace Dynamo.Models
         ///     Fired when this NodeModel is disposed.
         /// </summary>
         public event Action Disposed;
-
-        public event EventHandler BlockingStarted;
-        public virtual void OnBlockingStarted(EventArgs e)
-        {
-            if (BlockingStarted != null)
-            {
-                BlockingStarted(this, e);
-            }
-        }
-
-        public event EventHandler BlockingEnded;
-        public virtual void OnBlockingEnded(EventArgs e)
-        {
-            if (BlockingEnded != null)
-            {
-                BlockingEnded(this, e);
-            }
-        }
 
         /// <summary>
         ///     Called by nodes for behavior that they want to dispatch on the UI thread
@@ -296,8 +278,9 @@ namespace Dynamo.Models
                 {
                     argumentLacing = value;
                     RaisePropertyChanged("ArgumentLacing");
-                    ForceReExecuteOfNode = true;
-                    OnAstUpdated();
+
+                    // Mark node for update
+                    OnNodeModified();
                 }
             }
         }
@@ -543,7 +526,7 @@ namespace Dynamo.Models
             IsVisible = true;
             IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
-            forceReExec = true;
+            executionHint = ExecutionHints.Modified;
 
             PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
             {
@@ -608,10 +591,11 @@ namespace Dynamo.Models
         /// <summary>
         ///     Event fired when the DesignScript AST produced by this node has changed.
         /// </summary>
-        public event Action AstUpdated;
-        public virtual void OnAstUpdated()
+        public event Action NodeModified;
+        public virtual void OnNodeModified(bool forceExecute = false)
         {
-            var handler = AstUpdated;
+            MarkNodeAsModified(forceExecute);
+            var handler = NodeModified;
             if (handler != null) handler();
         }
 
@@ -787,7 +771,8 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
-            OnAstUpdated();
+
+            OnNodeModified();
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -800,7 +785,8 @@ namespace Dynamo.Models
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
-            OnAstUpdated();
+
+            OnNodeModified();
         }
 
         /// <summary>
@@ -1155,13 +1141,15 @@ namespace Dynamo.Models
                     p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                     {
                         if (args.PropertyName == "UsingDefaultValue")
-                            OnAstUpdated();
+                        {
+                            OnNodeModified();
+                        }
                     };
 
                     InPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += c => p_PortConnected(p, c);
+                    p.PortConnected += p_PortConnected;
                     p.PortDisconnected += p_PortDisconnected;
                     
                     return p;
@@ -1184,7 +1172,7 @@ namespace Dynamo.Models
                     OutPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += c => p_PortConnected(p, c);
+                    p.PortConnected += p_PortConnected;
                     p.PortDisconnected += p_PortDisconnected;
 
                     return p;
@@ -1205,16 +1193,15 @@ namespace Dynamo.Models
                 ConnectInput(data, outData, startPort.Owner);
                 startPort.Owner.ConnectOutput(outData, data, this);
                 OnConnectorAdded(connector);
-                ForceReExecuteOfNode = true;
-                OnAstUpdated();
+
+                // OnNodeModified();
             }
         }
 
-        private void p_PortDisconnected(object sender, EventArgs e)
+        private void p_PortDisconnected(PortModel port)
         {
             ValidateConnections();
 
-            var port = (PortModel)sender;
             if (port.PortType == PortType.Input)
             {
                 int data = InPorts.IndexOf(port);
@@ -1289,8 +1276,11 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name == "NickName")
             {
                 NickName = value;
@@ -1306,7 +1296,7 @@ namespace Dynamo.Models
                 return true;
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         #endregion
@@ -1432,20 +1422,44 @@ namespace Dynamo.Models
         #region Dirty Management
 
         /// <summary>
-        ///     This property forces all AST nodes that generated from this node
-        ///     to be executed, even there is no change in AST nodes.
+        /// Execution scenarios for a Node to be re-executed
         /// </summary>
-        public virtual bool ForceReExecuteOfNode
+        [Flags]
+        protected enum ExecutionHints
         {
-            get
-            {
-                return forceReExec;
-            }
-            set
-            {
-                forceReExec = value;
-                RaisePropertyChanged("ForceReExecuteOfNode");
-            }
+            None = 0,
+            Modified = 1,       // Marks as modified, but execution is optional if AST is unchanged.
+            ForceExecute = 3    // Marks as modified, force execution even if AST is unchanged.
+        }
+
+        private ExecutionHints executionHint;
+
+        public bool IsModified
+        {
+            get { return GetExecutionHintsCore().HasFlag(ExecutionHints.Modified); }
+        }
+
+        public bool NeedsForceExecution
+        {
+            get { return GetExecutionHintsCore().HasFlag(ExecutionHints.ForceExecute); }
+        }
+
+        public void MarkNodeAsModified(bool forceExecute = false)
+        {
+            executionHint = ExecutionHints.Modified;
+
+            if(forceExecute)
+                executionHint |= ExecutionHints.ForceExecute;
+        }
+
+        public void ClearDirtyFlag()
+        {
+            executionHint = ExecutionHints.None;
+        }
+
+        protected virtual ExecutionHints GetExecutionHintsCore()
+        {
+            return executionHint;
         }
 
         #endregion

@@ -13,6 +13,7 @@ using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.BuildData;
+using ProtoCore.Namespace;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
@@ -182,7 +183,7 @@ namespace Dynamo.Nodes
             private set { code = value; }
         }
 
-        public void SetCodeContent(string newCode, UndoRedoRecorder recorder)
+        public void SetCodeContent(string newCode)
         {
             if (code != null && code.Equals(newCode))
                 return;
@@ -206,8 +207,10 @@ namespace Dynamo.Nodes
                 LoadAndCreateConnectors(inportConnections, outportConnections);
 
                 RaisePropertyChanged("Code");
-                ForceReExecuteOfNode = true;
-                OnAstUpdated();
+                
+                // Mark node for update
+                OnNodeModified();
+                
                 ReportPosition();
 
                 ClearRuntimeError();
@@ -230,10 +233,13 @@ namespace Dynamo.Nodes
 
         #region Protected Methods
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name != "Code") 
-                return base.UpdateValueCore(name, value, recorder);
+                return base.UpdateValueCore(updateValueParams);
 
             value = CodeBlockUtils.FormatUserText(value);
 
@@ -248,7 +254,7 @@ namespace Dynamo.Nodes
             else
             {
                 if (!value.Equals(Code))
-                    SetCodeContent(value, recorder);
+                    SetCodeContent(value);
             }
             return true;
         }
@@ -356,8 +362,9 @@ namespace Dynamo.Nodes
 
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
-            ForceReExecuteOfNode = true;
-            OnAstUpdated();
+            
+            // Mark node for update
+            OnNodeModified();
             
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
