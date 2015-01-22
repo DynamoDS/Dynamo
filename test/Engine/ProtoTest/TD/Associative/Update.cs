@@ -1284,7 +1284,7 @@ test1 = b1.a2[0];
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467116 Sprint24 : rev 2806 : Cross language update issue");
             //Verification   
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
         }
 
         [Test]
