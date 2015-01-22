@@ -291,7 +291,7 @@ namespace Dynamo.UpdateManager
                     updateManager.OnLog(
                         new LogEventArgs(
                             string.Format(
-                        Properties.Resources.FailedToSave,
+                                Properties.Resources.FailedToSave,
                                 filePath,
                                 ex.Message),
                             LogLevel.Console));

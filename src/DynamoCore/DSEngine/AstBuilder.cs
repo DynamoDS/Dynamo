@@ -133,7 +133,7 @@ namespace Dynamo.DSEngine
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
-            Validity.Assert(inputAstNodes.All(n => n != null),
+            Validity.Assert(inputAstNodes.All(n => n != null), 
                 "Shouldn't have null nodes in the AST list");
 #endif
 

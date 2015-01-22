@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
 
             var oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "UnitsUI.AreaFromString", "Area From String");
+                oldNode, "UnitsUI.AreaFromString","Area From String");
             migrationData.AppendNode(newNode);
 
             foreach (XmlElement subNode in oldNode.ChildNodes)

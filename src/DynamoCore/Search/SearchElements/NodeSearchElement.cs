@@ -121,7 +121,6 @@ namespace Dynamo.Search.SearchElements
                 if (value == description) return;
                 description = value;
                 OnPropertyChanged("Description");
-
             }
         }
 

@@ -239,7 +239,7 @@ namespace Dynamo.Models
                 var old = currentWorkspace;
                 currentWorkspace = value;
                 OnWorkspaceHidden(old);
-                OnPropertyChanged(/*NXLT*/"CurrentWorkspace");
+                OnPropertyChanged("CurrentWorkspace");
             }
         }
 
@@ -453,7 +453,7 @@ namespace Dynamo.Models
             UpdateManager.UpdateManager.CheckForProductUpdate();
 
             Logger.Log(
-                string.Format(/*NXLT*/"Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
+                string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
             PackageManagerClient = new PackageManagerClient(
                 PackageLoader.RootPackagesDirectory,
@@ -501,7 +501,7 @@ namespace Dynamo.Models
                         var executionTimeSpan = new TimeSpan(end - start);
 
                         InstrumentationLogger.LogAnonymousTimedEvent(
-                            /*NXLT*/"Perf",
+                            "Perf",
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
@@ -686,16 +686,16 @@ namespace Dynamo.Models
         {
             switch (e.PropertyName)
             {
-                case /*NXLT*/"LengthUnit":
+                case "LengthUnit":
                     BaseUnit.LengthUnit = PreferenceSettings.LengthUnit;
                     break;
-                case /*NXLT*/"AreaUnit":
+                case "AreaUnit":
                     BaseUnit.AreaUnit = PreferenceSettings.AreaUnit;
                     break;
-                case /*NXLT*/"VolumeUnit":
+                case "VolumeUnit":
                     BaseUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
                     break;
-                case /*NXLT*/"NumberFormat":
+                case "NumberFormat":
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
@@ -758,9 +758,9 @@ namespace Dynamo.Models
         /// </summary>
         public void ForceRun()
         {
-            Logger.Log(/*NXLT*/"Beginning engine reset");
+            Logger.Log("Beginning engine reset");
             ResetEngine(true);
-            Logger.Log(/*NXLT*/"Reset complete");
+            Logger.Log("Reset complete");
             
             ((HomeWorkspaceModel)CurrentWorkspace).Run();
         }

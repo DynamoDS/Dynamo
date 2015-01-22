@@ -135,10 +135,8 @@ namespace Dynamo
             lock (this.guardMutex)
             {
                 //Don't overwhelm the logging system
-
                 if (debugSettings.VerboseLogging)
                     InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
-
 
                 switch (level)
                 {

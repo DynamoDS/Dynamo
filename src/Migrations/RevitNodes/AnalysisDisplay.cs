@@ -112,7 +112,7 @@ namespace Dynamo.Nodes
             migratedData.AppendNode(documentNode);
 
             XmlElement activeViewNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"RevitNodes.dll",
+                data.Document, oldNode, 1, "RevitNodes.dll",
                 "Document.ActiveView", "Document.ActiveView");
             migratedData.AppendNode(activeViewNode);
 
@@ -153,20 +153,20 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode,"RevitNodes.dll",
-                "VectorAnalysisDisplay.ByViewPointsAndVectorValues",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll",
+                "VectorAnalysisDisplay.ByViewPointsAndVectorValues", 
                 "VectorAnalysisDisplay.ByViewPointsAndVectorValues@var,Point[],Vector[]");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
 
             XmlElement documentNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"RevitNodes.dll",
+                data.Document, oldNode, 0, "RevitNodes.dll",
                 "Document.Current", "Document.Current");
             migratedData.AppendNode(documentNode);
 
             XmlElement activeViewNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"RevitNodes.dll",
+                data.Document, oldNode, 1, "RevitNodes.dll",
                 "Document.ActiveView", "Document.ActiveView");
             migratedData.AppendNode(activeViewNode);
 

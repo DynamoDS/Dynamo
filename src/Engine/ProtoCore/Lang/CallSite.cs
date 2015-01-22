@@ -93,7 +93,7 @@ namespace ProtoCore
 
                 if (hasNestedData)
                 {
-
+                    
                     int nestedDataCount = info.GetInt32(marker + objectID + "_NestedDataCount");
 
                     if (nestedDataCount > 0)

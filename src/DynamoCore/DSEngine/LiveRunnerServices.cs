@@ -66,7 +66,6 @@ namespace Dynamo.DSEngine
         /// <param name="verboseLogging"></param>
         public void UpdateGraph(GraphSyncData graphData, bool verboseLogging)
         {
-
             if (verboseLogging)
                 Log("LRS.UpdateGraph: " + graphData);
 

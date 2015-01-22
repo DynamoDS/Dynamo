@@ -118,7 +118,6 @@ namespace Dynamo.Models
             {
                 isSelected = value;
                 RaisePropertyChanged("IsSelected");
-
             }
         }
 

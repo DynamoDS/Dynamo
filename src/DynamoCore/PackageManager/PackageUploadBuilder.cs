@@ -65,7 +65,7 @@ namespace Dynamo.PackageManager
                 // give nicer error
                 throw new Exception(Properties.Resources.CouldNotCompressFile);
             }
-
+            
             if (info.Length > 15 * 1000000) throw new Exception(Properties.Resources.PackageTooLarge);
 
             return zipPath;

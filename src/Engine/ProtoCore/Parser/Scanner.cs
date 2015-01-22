@@ -118,7 +118,7 @@ public class Buffer {
 			}
 
 			if (value < 0 || value > fileLen) {
-                throw new FatalError("buffer out of bounds access, position: " + value);
+				throw new FatalError("buffer out of bounds access, position: " + value);
 			}
 
 			if (value >= bufStart && value < bufStart + bufLen) { // already in buffer
@@ -267,7 +267,7 @@ public class Scanner {
 			buffer = new Buffer(stream, false);
 			Init();
 		} catch (IOException) {
-            throw new FatalError("Cannot open file " + fileName);
+			throw new FatalError("Cannot open file " + fileName);
 		}
 	}
 	
@@ -284,7 +284,7 @@ public class Scanner {
 			NextCh(); int ch1 = ch;
 			NextCh(); int ch2 = ch;
 			if (ch1 != 0xBB || ch2 != 0xBF) {
-                throw new FatalError(String.Format("illegal byte order mark: EF {0,2:X} {1,2:X}", ch1, ch2));
+				throw new FatalError(String.Format("illegal byte order mark: EF {0,2:X} {1,2:X}", ch1, ch2));
 			}
 			buffer = new UTF8Buffer(buffer); col = 0; charPos = -1;
 			NextCh();

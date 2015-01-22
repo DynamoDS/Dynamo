@@ -252,7 +252,7 @@ namespace ProtoFFI
                 }
 
                 _Array arr = (_Array)Marshal.PtrToStructure(arrPtr, typeof(_Array));
-
+                
                 if (mReturnType.Name == "double")
                 {
                     double[] elements = new double[arr.numElems];

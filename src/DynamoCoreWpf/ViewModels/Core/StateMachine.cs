@@ -109,7 +109,7 @@ namespace Dynamo.ViewModels
 
             if (draggedNodes.Count <= 0) // There is nothing to drag.
             {
-                string message = /*NXLT*/"Shouldn't get here if nothing is dragged";
+                string message = "Shouldn't get here if nothing is dragged";
                 throw new InvalidOperationException(message);
             }
         }
@@ -119,7 +119,7 @@ namespace Dynamo.ViewModels
             if (draggedNodes.Count <= 0)
             {
                 throw new InvalidOperationException(
-                    /*NXLT*/"UpdateDraggedSelection cannot be called now");
+                    "UpdateDraggedSelection cannot be called now");
             }
 
             foreach (DraggedNode draggedNode in draggedNodes)
@@ -221,7 +221,7 @@ namespace Dynamo.ViewModels
                 this.activeConnector = null;
             }
 
-            this.RaisePropertyChanged(/*NXLT*/"ActiveConnector");
+            this.RaisePropertyChanged("ActiveConnector");
         }
 
         private void RecordSelectionForUndo()

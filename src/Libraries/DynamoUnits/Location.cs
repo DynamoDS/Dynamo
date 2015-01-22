@@ -49,7 +49,7 @@ namespace DynamoUnits
         
         public override string ToString()
         {
-            return string.Format("Name: {0}, Lat: {1}, Long: {2}", Name, Latitude.ToString(BaseUnit.NumberFormat), Longitude.ToString(BaseUnit.NumberFormat));
+            return string.Format("Name: {0}, Lat: {1}, Long: {2}",Name, Latitude.ToString(BaseUnit.NumberFormat), Longitude.ToString(BaseUnit.NumberFormat));
         }
     }
 }

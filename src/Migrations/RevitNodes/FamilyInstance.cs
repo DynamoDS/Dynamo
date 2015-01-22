@@ -34,7 +34,7 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(dsRevitNode,"RevitNodes.dll",
+            MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
                 "FamilyInstance.ByPoint", "FamilyInstance.ByPoint@FamilySymbol,Point");
 
             migratedData.AppendNode(dsRevitNode);
@@ -68,8 +68,8 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-             MigrationManager.SetFunctionSignature(dsRevitNode,"RevitNodes.dll",
-                 "FamilyInstance.ByPointAndLevel",
+             MigrationManager.SetFunctionSignature(dsRevitNode, "RevitNodes.dll", 
+                 "FamilyInstance.ByPointAndLevel", 
                  "FamilyInstance.ByPointAndLevel@FamilySymbol,Point,Level");
 
             migratedData.AppendNode(dsRevitNode);
@@ -102,7 +102,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"RevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "Element.Curves", "Element.Curves");
         }
     }
@@ -112,7 +112,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"RevitNodes.dll", "Element.SetParameterByName", "Element.SetParameterByName@string,object");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "Element.SetParameterByName", "Element.SetParameterByName@string,object");
         }
     }
 
@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"RevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "Element.GetParameterValueByName", "Element.GetParameterValueByName@string");
         }
     }
@@ -131,7 +131,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"RevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "FamilyInstance.Location", "FamilyInstance.Location");
         }
     }

@@ -207,10 +207,10 @@ namespace ProtoCore
 
             // Build the unique ID for a callsite 
             string callsiteIdentifier =
-                procName +
-                "_InClassDecl" + globalClassIndex +
-                "_InFunctionScope" + globalProcIndex +
-                "_Instance" + functionCallInstance.ToString() +
+                procName + 
+                "_InClassDecl" + globalClassIndex + 
+                "_InFunctionScope" + globalProcIndex + 
+                "_Instance" + functionCallInstance.ToString() + 
                 "_" + graphNode.guid.ToString();
 
             // TODO Jun: Address this in MAGN-3774

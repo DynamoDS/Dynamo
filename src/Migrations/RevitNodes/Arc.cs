@@ -10,7 +10,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Arc.ByThreePoints",
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Arc.ByThreePoints",
                 "Arc.ByThreePoints@Point,Point,Point");
         }
     }
@@ -30,14 +30,14 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Arc.ByCenterPointRadiusAngle", "Arc.ByCenterPointRadiusAngle@Point,double,double,double,Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new nodes
             XmlElement zAxisNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll", "Vector.ZAxis", "Vector.ZAxis");
+                data.Document, oldNode, 0, "ProtoGeometry.dll", "Vector.ZAxis", "Vector.ZAxis");
             migrationData.AppendNode(zAxisNode);
             string zAxisNodeId = MigrationManager.GetGuidFromXmlElement(zAxisNode);
 
@@ -78,7 +78,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Arc.ByBestFitThroughPoints", "Arc.ByBestFitThroughPoints@Point[]");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Arc.ByBestFitThroughPoints", "Arc.ByBestFitThroughPoints@Point[]");
         }
     }
 }

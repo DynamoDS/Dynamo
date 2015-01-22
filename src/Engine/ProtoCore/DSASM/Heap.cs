@@ -515,7 +515,7 @@ namespace ProtoCore.DSASM
 #endif
             }
         }
-
+    
         [Conditional("GC_REFERENCE_COUNTING")]
         public void GCRelease(StackValue[] ptrList, Executive exe)
         {
