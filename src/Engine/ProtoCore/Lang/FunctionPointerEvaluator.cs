@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ProtoCore.DSASM;
-using ProtoCore.Runtime;
+using ProtoCore.RuntimeData;
 using ProtoCore.Utils;
 
 namespace ProtoCore.Lang
@@ -34,19 +34,19 @@ namespace ProtoCore.Lang
                 procNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
             }
 
-            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.RuntimeData.FunctionTable, core.Options.ExecutionMode);
+            callsite = new ProtoCore.CallSite(classScope, Name, core.FunctionTable, core.Options.ExecutionMode);
         }
 
         public StackValue Evaluate(List<StackValue> args, StackFrame stackFrame)
         {
             // Build the stackframe
-            var core = interpreter.runtime.Core;
+            var runtimeCore = interpreter.runtime.Core;
 
             int classScopeCaller = stackFrame.ClassScope;
             int returnAddr = stackFrame.ReturnPC;
             int blockDecl = procNode.runtimeIndex;
             int blockCaller = stackFrame.FunctionCallerBlock;
-            int framePointer = core.Rmem.FramePointer;
+            int framePointer = runtimeCore.Rmem.FramePointer;
             StackValue thisPtr = StackValue.BuildPointer(Constants.kInvalidIndex);
 
             // Functoion has variable input parameter. This case only happen
@@ -82,7 +82,7 @@ namespace ProtoCore.Lang
                 thisPtr = args[0];
                 if (thisPtr.IsArray)
                 {
-                    isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, core);
+                    isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, runtimeCore);
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace ProtoCore.Lang
 
             if (!isValidThisPointer || (!thisPtr.IsPointer && !thisPtr.IsArray))
             {
-                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
                                                      StringConstants.kDeferencingNonPointer);
                 return StackValue.Null;
             }
@@ -120,11 +120,11 @@ namespace ProtoCore.Lang
                                                registers, 
                                                null);
 
-            bool isInDebugMode = core.Options.IDEDebugMode &&
-                                 core.ExecMode != InterpreterMode.kExpressionInterpreter;
+            bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
+                                 runtimeCore.ExecMode != InterpreterMode.kExpressionInterpreter;
             if (isInDebugMode)
             {
-                core.DebugProps.SetUpCallrForDebug(core, 
+                runtimeCore.DebugProps.SetUpCallrForDebug(runtimeCore, 
                                                           interpreter.runtime, 
                                                           procNode, 
                                                           returnAddr - 1, 
@@ -140,11 +140,11 @@ namespace ProtoCore.Lang
                                         args, 
                                         repGuides, 
                                         newStackFrame, 
-                                        core);
+                                        runtimeCore);
 
             if (isInDebugMode)
             {
-                core.DebugProps.RestoreCallrForNoBreak(core, procNode);
+                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }
 
             return rx;

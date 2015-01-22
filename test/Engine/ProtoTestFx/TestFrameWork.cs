@@ -41,7 +41,6 @@ namespace ProtoTestFx.TD
         {
             return testCore;
         }
-
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
@@ -606,12 +605,12 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.Runtime.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID id)
         {
             VerifyRuntimeWarning(testCore, id);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.Runtime.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.RuntimeData.WarningID id)
         {
             Assert.IsTrue(core.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
