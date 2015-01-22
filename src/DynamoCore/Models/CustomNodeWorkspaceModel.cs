@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
@@ -32,7 +33,7 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, double x, double y, Guid customNodeId,
-            NodeFactory factory, string fileName="")
+            NodeFactory factory, ElementResolver elementResolver, string fileName="")
             : this(
                 name,
                 category,
@@ -42,12 +43,12 @@ namespace Dynamo.Models
                 Enumerable.Empty<NoteModel>(),
                 x,
                 y,
-                customNodeId, fileName) { }
+                customNodeId, elementResolver, fileName) { }
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, Guid customNodeId, string fileName="") 
-            : base(name, e, n, x, y, factory, fileName)
+            double x, double y, Guid customNodeId, ElementResolver elementResolver, string fileName="") 
+            : base(name, e, n, x, y, factory, elementResolver, fileName)
         {
             CustomNodeId = customNodeId;
             HasUnsavedChanges = false;
@@ -151,9 +152,9 @@ namespace Dynamo.Models
         }
         private string description;
 
-        public override void OnAstUpdated()
+        public override void OnNodesModified()
         {
-            base.OnAstUpdated();
+            base.OnNodesModified();
             HasUnsavedChanges = true;
             OnDefinitionUpdated();
         }
