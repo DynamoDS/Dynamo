@@ -10,13 +10,7 @@ namespace ProtoTest
         public void TestDS()
         {
             String code =
-@"
-size;
-[Imperative]
-{
-	size = 5;
-}
-";
+@"size;[Imperative]{	size = 5;}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("size");
