@@ -935,7 +935,7 @@ namespace ProtoCore
         /// Properties in under COMPILER_GENERATED_TO_RUNTIME_DATA, are generated at compile time, and passed to RuntimeData/Exe
         /// Only Core can initialize these
         /// </summary>
-        #region COMPILER_GENERATED_TO_RUNTIME_DATA
+#region COMPILER_GENERATED_TO_RUNTIME_DATA
 
         public LangVerify Langverify { get; private set; }
         public FunctionTable FunctionTable { get; private set; }
