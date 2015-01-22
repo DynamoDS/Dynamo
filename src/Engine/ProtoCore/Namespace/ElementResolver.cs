@@ -25,7 +25,7 @@ namespace ProtoCore.Namespace
             resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
         }
 
-        public ElementResolver(Dictionary<string, KeyValuePair<string, string>> namespaceLookupMap)
+        public ElementResolver(IDictionary<string, KeyValuePair<string, string>> namespaceLookupMap)
         {
             resolutionMap = namespaceLookupMap;
         }
