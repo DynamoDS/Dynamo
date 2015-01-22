@@ -173,7 +173,7 @@ namespace ProtoScript.Runners
                 core.Rmem.PushFrameForGlobals(core.GlobOffset);
                 core.RunningBlock = blockId;
 
-                Execute(core, new ProtoCore.Runtime.Context());
+                Execute(core,  new ProtoCore.Runtime.Context());
 
                 if (!isTest) { core.Heap.Free(); }
             }
