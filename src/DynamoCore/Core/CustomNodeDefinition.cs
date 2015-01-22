@@ -7,6 +7,8 @@ using Dynamo.Library;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore;
+using ProtoCore.DSASM;
 
 namespace Dynamo
 {
@@ -107,10 +109,11 @@ namespace Dynamo
 
             //Find function entry point, and then compile
             var inputNodes = nodeModels.OfType<Symbol>().ToList();
-            var parameters =
-                inputNodes.Select(
-                    x => new TypedParameter(x.GetAstIdentifierForOutputIndex(0).Value, "var[]..[]"));
-            var displayParameters = inputNodes.Select(x => x.InputSymbol);
+            var parameters = inputNodes.Select(x => new TypedParameter(
+                                                   x.GetAstIdentifierForOutputIndex(0).Value, 
+                                                   x.Parameter.Type, 
+                                                   x.Parameter.DefaultValue));
+            var displayParameters = inputNodes.Select(x => x.Parameter.Name);
 
             #endregion
 

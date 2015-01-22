@@ -279,7 +279,7 @@ namespace Dynamo.DSEngine
                     new ArgumentSignatureNode
                     {
                         Arguments =
-                            parameters.Select(param => AstFactory.BuildParamNode(param.Name, allTypes)).ToList()
+                            parameters.Select(param => AstFactory.BuildParamNode(param.Name, param.Type)).ToList()
                     },
                 FunctionBody = functionBody,
                 ReturnType = allTypes

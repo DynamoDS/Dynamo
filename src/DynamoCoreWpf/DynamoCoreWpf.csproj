@@ -179,6 +179,9 @@
     <Compile Include="Views\Core\DynamoView.xaml.cs">
       <DependentUpon>DynamoView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Input\ParameterEditor.xaml.cs">
+      <DependentUpon>ParameterEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Preview\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
     </Compile>
@@ -924,6 +927,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Input\ParameterEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Page Include="Views\Preview\PreviewControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -991,6 +1000,11 @@
     <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\assemblies.png" />
+    <Resource Include="UI\Images\files.png" />
+    <Resource Include="UI\Images\nodes.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
