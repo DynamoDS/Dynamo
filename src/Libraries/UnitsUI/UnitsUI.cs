@@ -24,6 +24,7 @@ using Dynamo.Wpf;
 
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Namespace;
 
 namespace UnitsUI
 {
@@ -173,8 +174,11 @@ namespace UnitsUI
             }
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name == "Value")
             {
                 var converter = new MeasureConverter();
@@ -182,7 +186,7 @@ namespace UnitsUI
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
     }

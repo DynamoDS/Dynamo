@@ -31,8 +31,8 @@ namespace DataBridgeTests
             var innerWatch = customNodeWorkspace.FirstNodeFromWorkspace<Watch>();
             var outerWatch = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            Assert.AreEqual(10, (int)innerWatch.CachedValue);
-            Assert.AreEqual(10, (int)outerWatch.CachedValue);
+            Assert.AreEqual(10, innerWatch.CachedValue);
+            Assert.AreEqual(10, outerWatch.CachedValue);
         }
     }
 }

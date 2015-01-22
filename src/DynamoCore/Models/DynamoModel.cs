@@ -27,9 +27,10 @@ using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Exceptions;
-
+using ProtoCore.Namespace;
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
+using Symbol = Dynamo.Nodes.Symbol;
 using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -835,6 +836,7 @@ namespace Dynamo.Models
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
+            ElementResolver elementResolver = null;
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
@@ -844,7 +846,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                DebugSettings.VerboseLogging, IsTestMode, workspaceInfo.FileName);
+                DebugSettings.VerboseLogging, IsTestMode, elementResolver, workspaceInfo.FileName);
 
             RegisterHomeWorkspace(newWorkspace);
 

@@ -8,8 +8,6 @@ using Dynamo.Models;
 using ProtoScript.Runners;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
-using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
-using Dynamo.Interfaces;
 
 namespace Dynamo.Core.Threading
 {
