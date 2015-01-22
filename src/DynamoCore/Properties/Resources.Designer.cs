@@ -614,24 +614,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LRS.GetMirror var: {0} {1}.
-        /// </summary>
-        public static string LRSGetMirror {
-            get {
-                return ResourceManager.GetString("LRSGetMirror", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to LRS.UpdateGraph: {0}.
-        /// </summary>
-        public static string LRSUpdateGraph {
-            get {
-                return ResourceManager.GetString("LRSUpdateGraph", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} contains a package with a malformed header.  Ignoring it..
         /// </summary>
         public static string MalformedHeaderPackage {

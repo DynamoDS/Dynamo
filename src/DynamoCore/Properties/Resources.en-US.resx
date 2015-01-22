@@ -402,12 +402,6 @@ Sorry about that.</value>
   <data name="UnableToCreateCustomNodeID" xml:space="preserve">
     <value>Unable to create instance of custom node with id: \"</value>
   </data>
-  <data name="LRSGetMirror" xml:space="preserve">
-    <value>LRS.GetMirror var: {0} {1}</value>
-  </data>
-  <data name="LRSUpdateGraph" xml:space="preserve">
-    <value>LRS.UpdateGraph: {0}</value>
-  </data>
   <data name="BackUpOriginalFileMessage" xml:space="preserve">
     <value>Original file '{0}' gets backed up at '{1}'</value>
   </data>

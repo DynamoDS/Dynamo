@@ -51,10 +51,9 @@ namespace Dynamo.DSEngine
         {
 
             var mirror = liveRunner.InspectNodeValue(var);
-            var data = (mirror != null ? mirror.GetStringData() : "null");
 
             if (verboseLogging)
-                Log(string.Format(Properties.Resources.LRSGetMirror,var,data));
+                Log("LRS.GetMirror var: " + var + " " + (mirror != null ? mirror.GetStringData() : "null"));
 
             return mirror;
 
@@ -69,7 +68,7 @@ namespace Dynamo.DSEngine
         {
 
             if (verboseLogging)
-                Log(String.Format(Properties.Resources.LRSUpdateGraph, graphData));
+                Log("LRS.UpdateGraph: " + graphData);
 
             liveRunner.UpdateGraph(graphData);
         }
