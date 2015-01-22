@@ -951,7 +951,7 @@ namespace ProtoScript.Runners
         void ResetVMAndResyncGraph(IEnumerable<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
-        IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
+        IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
         
         // Event handlers for the notification from asynchronous call
@@ -1573,9 +1573,8 @@ namespace ProtoScript.Runners
         /// </summary>
         private void SuppressResovledUnboundVariableWarnings()
         {
-            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.DSExecutable.RuntimeData.UpdatedSymbols);
-
-            runnerCore.DSExecutable.RuntimeData.UpdatedSymbols.Clear();
+            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.UpdatedSymbols);
+            runnerCore.UpdatedSymbols.Clear();
         }
 
         private void ApplyUpdate()
@@ -1788,7 +1787,7 @@ namespace ProtoScript.Runners
         /// Returns runtime warnings.
         /// </summary>
         /// <returns></returns>
-        public IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
+        public IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
         {
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
@@ -1798,11 +1797,11 @@ namespace ProtoScript.Runners
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);
 
-            var ret = new Dictionary<Guid, List<ProtoCore.Runtime.WarningEntry>>();
+            var ret = new Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>>();
             foreach (var w in warnings)
             {
                 Guid guid = w.FirstOrDefault().GraphNodeGuid;
-                ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(w);
+                ret[guid] = new List<ProtoCore.RuntimeData.WarningEntry>(w);
             }
 
             return ret;

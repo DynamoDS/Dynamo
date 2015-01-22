@@ -262,7 +262,7 @@ namespace ProtoCore.Utils
             return languageString;
         }
 
-        public static void LogWarning(this Interpreter dsi, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
+        public static void LogWarning(this Interpreter dsi, ProtoCore.RuntimeData.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
         {
             ProtoCore.Core core = dsi.runtime.Core;
             core.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
@@ -274,7 +274,7 @@ namespace ProtoCore.Utils
             core.BuildStatus.LogSemanticError(msg, fileName, line, col);
         }
 
-        public static void LogWarning(this Core core, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
+        public static void LogWarning(this Core core, ProtoCore.RuntimeData.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
         {
             core.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
         }
