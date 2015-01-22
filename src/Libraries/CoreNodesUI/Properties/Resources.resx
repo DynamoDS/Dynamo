@@ -172,6 +172,12 @@
   <data name="CreateListPortDataResultToolTip" xml:space="preserve">
     <value>A list</value>
   </data>
+  <data name="DirectioryObjCreation" xml:space="preserve">
+    <value>Creates a directory object from a path.</value>
+  </data>
+  <data name="DirectioryPath" xml:space="preserve">
+    <value>Allows you to select a directory on the system to get its path.</value>
+  </data>
   <data name="DirectoryFromPathDescription" xml:space="preserve">
     <value>Creates a directory object from a path.</value>
     <comment>Description for Directory.FromPath</comment>
@@ -186,9 +192,15 @@
     <value>Allows you to select a directory on the system to get its path.</value>
     <comment>Description for Directory Path</comment>
   </data>
+  <data name="DoubleInput" xml:space="preserve">
+    <value>Creates a number.</value>
+  </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>A slider that produces double values.</value>
     <comment>Description for Double Slider</comment>
+  </data>
+  <data name="DoubleSliderValue" xml:space="preserve">
+    <value>A slider that produces double values.</value>
   </data>
   <data name="DropDownPortDataResultToolTip" xml:space="preserve">
     <value>The selected {0}</value>
@@ -196,6 +208,12 @@
   <data name="FileFromPathDescription" xml:space="preserve">
     <value>Creates a file object from a path.</value>
     <comment>Description for File.FromPath</comment>
+  </data>
+  <data name="FilenameSelected" xml:space="preserve">
+    <value>Allows you to select a file on the system to get its filename.</value>
+  </data>
+  <data name="FileObjCreation" xml:space="preserve">
+    <value>Creates a file object from a path.</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
     <value>Path to the file.</value>
@@ -222,6 +240,9 @@
   <data name="FormulaDescription" xml:space="preserve">
     <value>Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/</value>
     <comment>Description for Formula</comment>
+  </data>
+  <data name="FormulaMath" xml:space="preserve">
+    <value>Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/</value>
   </data>
   <data name="FormulaPortDataResultToolTip" xml:space="preserve">
     <value>Result of math computation</value>
@@ -261,6 +282,9 @@
   <data name="IntegerSliderDescription" xml:space="preserve">
     <value>A slider that produces integer values.</value>
     <comment>Description for Integer Slider</comment>
+  </data>
+  <data name="IntegerSliderValue" xml:space="preserve">
+    <value>A slider that produces integer values.</value>
   </data>
   <data name="LegacyNodeDescription" xml:space="preserve">
     <value>This is an obsolete node</value>
@@ -402,6 +426,9 @@
   <data name="StringfromObjectDescription" xml:space="preserve">
     <value>Convert an object to a string representation.</value>
     <comment>Description for String from Object</comment>
+  </data>
+  <data name="StringInputCreation" xml:space="preserve">
+    <value>Creates a string.</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>Visualize the output of node.</value>

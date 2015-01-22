@@ -5,11 +5,12 @@ using System.Text;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
+using Dynamo.Properties;
 
 namespace DSCoreNodesUI
 {
     [NodeName("Legacy Node")]
-    [NodeDescription("This is an obsolete node")]
+    [NodeDescription("DummyNode", typeof(Resources))]
     [IsMetaNode]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]

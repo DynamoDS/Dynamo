@@ -3,7 +3,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 
 using ProtoCore.AST.AssociativeAST;
-
+using DSCoreNodesUI.Properties;
 namespace DSCoreNodesUI
 {
     public abstract class Bool : BasicInteractive<bool>
@@ -36,8 +36,8 @@ namespace DSCoreNodesUI
 
     [NodeName("Boolean")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("BooleanDescription", typeof(Properties.Resources))]
-    [NodeSearchTags("BooleanSelectorSearchTags", typeof(Properties.Resources))]
+    [NodeDescription("BooleanDescription", typeof(Resources))]
+    [NodeSearchTags("BooleanSelectorSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class BoolSelector : Bool
     {

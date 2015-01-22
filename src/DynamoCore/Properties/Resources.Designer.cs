@@ -315,11 +315,29 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DesignScript Builtin Functions.
+        /// </summary>
+        public static string DSFunctionBuiltin {
+            get {
+                return ResourceManager.GetString("DSFunctionBuiltin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A duplicate of the package called {0} was found at {1}.  Ignoring it..
         /// </summary>
         public static string DulicatedPackage {
             get {
                 return ResourceManager.GetString("DulicatedPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is an obsolete node.
+        /// </summary>
+        public static string DummyNode {
+            get {
+                return ResourceManager.GetString("DummyNode", resourceCulture);
             }
         }
         
@@ -461,11 +479,29 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instance of a Custom Node.
+        /// </summary>
+        public static string FunctionCustomerNode {
+            get {
+                return ResourceManager.GetString("FunctionCustomerNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DesignScript Builtin Functions.
         /// </summary>
         public static string FunctionNodeDescription {
             get {
                 return ResourceManager.GetString("FunctionNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A function output, use with custom nodes.
+        /// </summary>
+        public static string FunctionOutput {
+            get {
+                return ResourceManager.GetString("FunctionOutput", resourceCulture);
             }
         }
         
@@ -979,6 +1015,15 @@ namespace Dynamo.Properties {
         public static string SubmitBugToGithub {
             get {
                 return ResourceManager.GetString("SubmitBugToGithub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
+        /// </summary>
+        public static string SymbolParameter {
+            get {
+                return ResourceManager.GetString("SymbolParameter", resourceCulture);
             }
         }
         

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Models;
-
+using Dynamo.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
@@ -13,7 +13,7 @@ namespace Dynamo.Nodes
     ///     DesignScript Custom Node instance.
     /// </summary>
     [NodeName("Custom Node")]
-    [NodeDescription("Instance of a Custom Node")]
+    [NodeDescription("FunctionCustomerNode",typeof(Resources))]
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function parameter, use with custom nodes")]
+    [NodeDescription("SymbolParameter",typeof(Resources))]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
@@ -245,7 +245,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Output")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function output, use with custom nodes")]
+    [NodeDescription("FunctionOutput",typeof(Resources))]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]

@@ -7,6 +7,8 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 
+using Dynamo.Properties;
+
 using NCalc;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -15,7 +17,7 @@ using Expression = NCalc.Expression;
 namespace DSCoreNodesUI
 {
     [NodeName("Formula")]
-    [NodeDescription("Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/")]
+    [NodeDescription("FormulaMath",typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     //[NodeDeprecated]

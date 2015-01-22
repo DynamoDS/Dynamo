@@ -503,4 +503,19 @@ If you don't mind, it would be helpful for you to send us your file. That will m
   <data name="ToolTipSymbol" xml:space="preserve">
     <value>symbol</value>
   </data>
+  <data name="DSFunctionBuiltin" xml:space="preserve">
+    <value>DesignScript Builtin Functions</value>
+  </data>
+  <data name="DummyNode" xml:space="preserve">
+    <value>This is an obsolete node</value>
+  </data>
+  <data name="FunctionCustomerNode" xml:space="preserve">
+    <value>Instance of a Custom Node</value>
+  </data>
+  <data name="FunctionOutput" xml:space="preserve">
+    <value>A function output, use with custom nodes</value>
+  </data>
+  <data name="SymbolParameter" xml:space="preserve">
+    <value>A function parameter, use with custom nodes</value>
+  </data>
 </root>
