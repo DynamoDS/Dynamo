@@ -32,10 +32,10 @@ namespace Dynamo.Nodes
             if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
                 foreach (string key in Definition.ReturnKeys)
-                    model.OutPortData.Add(new PortData(key, "return value"));
+                    model.OutPortData.Add(new PortData(key, Properties.Resources.ToolTipReturnValue));
             }
             else
-                model.OutPortData.Add(new PortData("", "return value"));
+                model.OutPortData.Add(new PortData("", Properties.Resources.ToolTipReturnValue));
         }
 
         protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)

@@ -18,12 +18,13 @@ using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore.Utils;
 using Dynamo.UI;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows for DesignScript code to be authored directly")]
+    [NodeDescription("CodeBlockDescription",typeof(Resources))]
     [IsDesignScriptCompatible]
     public class CodeBlockNodeModel : NodeModel
     {

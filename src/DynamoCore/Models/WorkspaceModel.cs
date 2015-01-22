@@ -450,7 +450,7 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void Clear()
         {
-            Log("Clearing workspace...");
+            Log(Properties.Resources.ClearingWorkSpace);
 
             foreach (NodeModel el in Nodes)
             {
@@ -485,7 +485,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log("Saving " + newPath + "...");
+            Log(String.Format(Properties.Resources.SavingInProgress, newPath));
             try
             {
                 if (SaveInternal(newPath, core))
@@ -593,7 +593,7 @@ namespace Dynamo.Models
 
         public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
         {
-            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? "New Note" : text, id);
+            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Properties.Resources.NewNoteString : text, id);
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note

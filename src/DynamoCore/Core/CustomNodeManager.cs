@@ -122,7 +122,7 @@ namespace Dynamo.Utilities
                 
                 // Couldn't find the workspace at all, prepare for a late initialization.
                 Log(
-                    "Unable to create instance of custom node with id: \"" + id + "\"",
+                    Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
                 info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
                 def = null;
@@ -564,13 +564,13 @@ namespace Dynamo.Utilities
                         return InitializeCustomNode(functionId, header, xmlDoc, out workspace);
                     }
                 }
-                Log(string.Format("Custom node \"{0}\" could not be initialized.", customNodeInfo.Name));
+                Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
                 workspace = null;
                 return false;
             }
             catch (Exception ex)
             {
-                Log("There was an error opening the workspace.");
+                Log(Properties.Resources.OpenWorkspaceError);
                 Log(ex);
 
                 if (isTestMode)
@@ -686,7 +686,7 @@ namespace Dynamo.Utilities
 
                 #region Detect 1-node holes (higher-order function extraction)
 
-                Log("Could not repair 1-node holes", WarningLevel.Mild);
+                Log(Properties.Resources.CouldNotRepairOneNodeHoles, WarningLevel.Mild);
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
 
                 //var curriedNodeArgs =
