@@ -28,6 +28,7 @@ namespace ProtoTestConsoleRunner
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
 
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
+
             ExecutionMirror mirror = runner.LoadAndExecute(filename, core);
         }
 
