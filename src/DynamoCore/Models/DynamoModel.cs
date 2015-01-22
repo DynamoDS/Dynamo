@@ -277,7 +277,11 @@ namespace Dynamo.Models
         /// </summary>
         public readonly List<WorkspaceModel> Workspaces =
             new List<WorkspaceModel>();
-        
+
+        public bool RunEnabled
+        {
+            get { return Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault().RunEnabled; }
+        }
         #endregion
 
         #region initialization and disposal
@@ -838,10 +842,13 @@ namespace Dynamo.Models
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
+            newWorkspace.RunEnabledChanged += OnHomeWorkspaceModelRunEnabledChanged;
             newWorkspace.Disposed += () =>
             {
+                newWorkspace.RunEnabledChanged -= OnHomeWorkspaceModelRunEnabledChanged;
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
             };
+            OnHomeWorkspaceModelRunEnabledChanged();
         }
 
         #endregion

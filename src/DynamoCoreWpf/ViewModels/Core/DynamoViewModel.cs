@@ -76,11 +76,7 @@ namespace Dynamo.ViewModels
 
         public bool RunEnabled
         {
-            get { return HomeSpace.RunEnabled; }
-            set
-            {
-                HomeSpace.RunEnabled = value;
-            }
+            get { return model.RunEnabled; }
         }
 
         public virtual bool CanRunDynamically
@@ -461,8 +457,6 @@ namespace Dynamo.ViewModels
             var homespace = new WorkspaceViewModel(model.CurrentWorkspace, this);
             workspaces.Add(homespace);
 
-            model.CurrentWorkspace.PropertyChanged += CurrentWorkspace_PropertyChanged;
-
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
             
@@ -792,25 +786,25 @@ namespace Dynamo.ViewModels
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CurrentWorkspace")
+            switch (e.PropertyName)
             {
-                IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
-                RaisePropertyChanged("IsAbleToGoHome");
-                RaisePropertyChanged("CurrentSpace");
-                RaisePropertyChanged("BackgroundColor");
-                RaisePropertyChanged("CurrentWorkspaceIndex");
-                RaisePropertyChanged("ViewingHomespace");
-                if (this.PublishCurrentWorkspaceCommand != null)
-                    this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged("IsPanning");
-                RaisePropertyChanged("IsOrbiting");
-            }
-        }
+                case "CurrentWorkspace":
+                    IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
+                    RaisePropertyChanged("IsAbleToGoHome");
+                    RaisePropertyChanged("CurrentSpace");
+                    RaisePropertyChanged("BackgroundColor");
+                    RaisePropertyChanged("CurrentWorkspaceIndex");
+                    RaisePropertyChanged("ViewingHomespace");
+                    if (this.PublishCurrentWorkspaceCommand != null)
+                        this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
+                    RaisePropertyChanged("IsPanning");
+                    RaisePropertyChanged("IsOrbiting");
+                    break;
 
-        void CurrentWorkspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "RunEnabled")
-                RaisePropertyChanged("RunEnabled");
+                case "RunEnabled":
+                    RaisePropertyChanged("RunEnabled");
+                    break;
+            }
         }
 
         private void CleanUp(DynamoModel dynamoModel)

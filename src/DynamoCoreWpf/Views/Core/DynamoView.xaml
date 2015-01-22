@@ -738,13 +738,13 @@
                                   Header="Force Re-execute"
                                   Command="{Binding ForceRunExpressionCommand}"
                                   CommandParameter="{Binding Path=RunInDebug}"
-                                  IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"></MenuItem>
+                                  IsEnabled="{Binding Path=RunEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="MutateTest"
                                   Header="Run mutation test"
                                   Command="{Binding MutateTestDelegateCommand}"
                                   CommandParameter="{Binding Path=RunInDebug}"
-                                  IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"></MenuItem>
+                                  IsEnabled="{Binding Path=RunEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="CheckDailyBuilds"
                                   Header="Check Daily Builds"
@@ -1569,7 +1569,7 @@
                                 Command="{Binding RunExpressionCommand}"
                                 CommandParameter="{Binding Path=RunInDebug}"
                                 ToolTip="Run Workflow (F5)"
-                                IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"
+                                IsEnabled="{Binding Path=RunEnabled}"
                                 Focusable="False" />
 
                         <Button Name="cancelButton"

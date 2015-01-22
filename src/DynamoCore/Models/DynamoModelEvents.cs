@@ -189,6 +189,10 @@ namespace Dynamo.Models
                 EvaluationCompleted(sender, e);
         }
 
+        internal void OnHomeWorkspaceModelRunEnabledChanged()
+        {
+            OnPropertyChanged("RunEnabled");
+        }
         #endregion
     }
 

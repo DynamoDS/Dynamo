@@ -19,7 +19,7 @@ namespace Dynamo.Models
             {
                 if (Equals(value, runEnabled)) return;
                 runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
+                OnRunEnabledChanged();
             }
         }
 
@@ -153,6 +153,7 @@ namespace Dynamo.Models
         {
             base.Clear();
             PreloadedTraceData = null;
+            RunEnabled = true;
         }
 
         #region evaluation
@@ -305,6 +306,12 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
+        public event Action RunEnabledChanged;
+        protected virtual void OnRunEnabledChanged()
+        {
+            var handler = RunEnabledChanged;
+            if (handler != null) handler();
+        }
         #endregion
     }
 }
