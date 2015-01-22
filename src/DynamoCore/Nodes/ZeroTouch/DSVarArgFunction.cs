@@ -82,7 +82,7 @@ namespace Dynamo.Nodes
             protected override string GetInputTooltip(int index)
             {
                 var type = nodeController.Definition.Parameters.Last().Type;
-                return (string.IsNullOrEmpty(type) ? "var" : type);
+                return type.ToShortString(); 
             }
         }
         #endregion

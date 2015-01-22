@@ -1002,11 +1002,6 @@ p11;
                             v = dv.GetValue();
                             ";
             thisTest.RunScriptSource(code);
-            var gcStrategy =  thisTest.SetupTestCore().Heap.GCStrategy;
-            if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                thisTest.Verify("v", 10);
-            }
             // For mark and sweep, the order of object dispose is not defined,
             // so we are not sure if AClass objects or BClass objects will be
             // disposed firstly, hence we can't verify the expected value.
@@ -1050,18 +1045,9 @@ p11;
                             v3 = dv.GetValue();
                             ";
             thisTest.RunScriptSource(code);
-            var gcStrategy =  thisTest.GetTestCore().Heap.GCStrategy;
-            if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
-            {
                 // For mark and sweep, it is straight, we only need to focus 
                 // on created objects. So the value = 3 + 10 + 20 + 30 = 63.
                 thisTest.Verify("v3", 63);
-            }
-            else
-            {
-                thisTest.Verify("v1", 3); 
-                thisTest.Verify("v2", 23);
-            }
         }
 
         [Test]
@@ -1110,19 +1096,11 @@ p11;
                             ";
 
             thisTest.RunScriptSource(code);
-            var gcStrategy = thisTest.GetTestCore().Heap.GCStrategy;
-            if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
             {
                 // For mark and sweep, the last object is a2, se the expected
                 // value = 4. But it is very fragile because the order of
                 // disposing is not defined. 
                 thisTest.Verify("v4", 4);
-            }
-            else
-            {
-                thisTest.Verify("v1", 3); 
-                thisTest.Verify("v2", 3); 
-                thisTest.Verify("v3", 16);
             }
         }
 

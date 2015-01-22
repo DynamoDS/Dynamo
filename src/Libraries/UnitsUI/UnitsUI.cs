@@ -25,6 +25,7 @@ using Dynamo.Wpf;
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 using UnitsUI.Properties;
+using ProtoCore.Namespace;
 
 namespace UnitsUI
 {
@@ -72,7 +73,7 @@ namespace UnitsUI
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            tb.OnChangeCommitted += model.OnAstUpdated;
+            tb.OnChangeCommitted += () => model.OnNodeModified();
 
             (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
         }
@@ -85,7 +86,8 @@ namespace UnitsUI
                 e.PropertyName == "NumberFormat")
             {
                 this.mesBaseModel.ForceValueRaisePropertyChanged();
-                this.mesBaseModel.OnAstUpdated();
+
+                this.mesBaseModel.OnNodeModified();
             }
         }
 
@@ -108,7 +110,7 @@ namespace UnitsUI
 
         public void Dispose()
         {
-            tb.OnChangeCommitted += mesBaseModel.OnAstUpdated;
+            tb.OnChangeCommitted += () => mesBaseModel.OnNodeModified();
         }
     }
 
@@ -173,8 +175,11 @@ namespace UnitsUI
             }
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name == "Value")
             {
                 var converter = new MeasureConverter();
@@ -182,7 +187,7 @@ namespace UnitsUI
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
     }

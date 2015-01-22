@@ -196,7 +196,7 @@ namespace Dynamo.DSEngine
 
             if (isDeltaExecution)
             {
-                sortedNodes = sortedNodes.Where(n => n.ForceReExecuteOfNode);
+                sortedNodes = sortedNodes.Where(n => n.IsModified);
             }
 
             var result = new List<AssociativeNode>();
@@ -279,7 +279,7 @@ namespace Dynamo.DSEngine
                     new ArgumentSignatureNode
                     {
                         Arguments =
-                            parameters.Select(param => AstFactory.BuildParamNode(param.Name, allTypes)).ToList()
+                            parameters.Select(param => AstFactory.BuildParamNode(param.Name, param.Type)).ToList()
                     },
                 FunctionBody = functionBody,
                 ReturnType = allTypes
