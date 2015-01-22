@@ -485,7 +485,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log(Properties.Resources.SavingInProgress + " " + newPath + "...");
+            Log(String.Format(Properties.Resources.SavingInProgress, newPath));
             try
             {
                 if (SaveInternal(newPath, core))

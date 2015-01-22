@@ -403,10 +403,10 @@ Sorry about that.</value>
     <value>Unable to create instance of custom node with id: \"</value>
   </data>
   <data name="LRSGetMirror" xml:space="preserve">
-    <value>LRS.GetMirror var:</value>
+    <value>LRS.GetMirror var: {0} {1}</value>
   </data>
   <data name="LRSUpdateGraph" xml:space="preserve">
-    <value>LRS.UpdateGraph:</value>
+    <value>LRS.UpdateGraph: {0}</value>
   </data>
   <data name="BackUpOriginalFileMessage" xml:space="preserve">
     <value>Original file '{0}' gets backed up at '{1}'</value>
@@ -474,7 +474,7 @@ If you don't mind, it would be helpful for you to send us your file. That will m
     <value>Proceed anyway</value>
   </data>
   <data name="SavingInProgress" xml:space="preserve">
-    <value>Saving</value>
+    <value>Saving {0} ...</value>
   </data>
   <data name="SubmitBugButton" xml:space="preserve">
     <value>Submit Bug To Github</value>

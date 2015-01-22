@@ -614,7 +614,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LRS.GetMirror var:.
+        ///   Looks up a localized string similar to LRS.GetMirror var: {0} {1}.
         /// </summary>
         public static string LRSGetMirror {
             get {
@@ -623,7 +623,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LRS.UpdateGraph:.
+        ///   Looks up a localized string similar to LRS.UpdateGraph: {0}.
         /// </summary>
         public static string LRSUpdateGraph {
             get {
@@ -938,7 +938,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saving.
+        ///   Looks up a localized string similar to Saving {0} ....
         /// </summary>
         public static string SavingInProgress {
             get {
