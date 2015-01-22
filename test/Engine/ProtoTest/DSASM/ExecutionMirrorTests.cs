@@ -10,13 +10,7 @@ namespace ProtoTest.Associative
         public void LiteralRetrival()
         {
             String code =
-@"
-foo;
-[Associative]
-{
-	foo = 5;
-}
-";
+@"foo;[Associative]{	foo = 5;}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
@@ -27,13 +21,7 @@ foo;
         public void ArrayRetrival1D()
         {
             String code =
-@"
-foo;
-[Associative]
-{
-	foo = {5};
-}
-";
+@"foo;[Associative]{	foo = {5};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
@@ -46,13 +34,7 @@ foo;
         public void ArrayRetrival2D()
         {
             String code =
-@"
-foo;
-[Associative]
-{
-	foo = {{5}};
-}
-";
+@"foo;[Associative]{	foo = {{5}};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
@@ -68,13 +50,7 @@ foo;
         public void ArrayRetrival2DJagged()
         {
             String code =
-@"
-foo;
-[Associative]
-{
-	foo = {{5}, 6};
-}
-";
+@"foo;[Associative]{	foo = {{5}, 6};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
@@ -90,13 +66,7 @@ foo;
         public void ArrayRetrival2D2b1()
         {
             String code =
-@"
-foo;
-[Associative]
-{
-	foo = {{5}, {6}};
-}
-";
+@"foo;[Associative]{	foo = {{5}, {6}};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             Obj o = mirror.GetValue("foo");
@@ -114,13 +84,7 @@ foo;
         public void ArrayRetrival1DEmpty()
         {
             String code =
-@"
-foo;
-[Associative]
-{
-	foo = {};
-}
-";
+@"foo;[Associative]{	foo = {};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core);
             ProtoCore.Lang.Obj o = mirror.GetValue("foo");
