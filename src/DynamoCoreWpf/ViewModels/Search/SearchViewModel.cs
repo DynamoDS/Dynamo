@@ -367,7 +367,7 @@ namespace Dynamo.ViewModels
         /// <param name="categoryNames">A list of entries that make up the fully qualified
         /// class name that contains function 'Foo', e.g. 'MyAssembly.MyNamespace.MyClass'.
         /// </param>
-        private void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
+        internal void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
         {
             var nameStack = new Stack<string>(categoryNames.Reverse());
             var target = libraryRoot;

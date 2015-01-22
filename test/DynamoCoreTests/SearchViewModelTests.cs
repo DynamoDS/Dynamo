@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -84,5 +86,158 @@ namespace Dynamo.Tests
                            " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
                            " MoreSymbols", result);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry01EmptyTree()
+        {
+            var elementVM = CreateCustomNodeViewModel("Member", "TopCategory.SubCategory");
+
+            Assert.IsFalse(viewModel.BrowserRootCategories.Any());
+
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubCategory");
+
+            Assert.IsTrue(category.Items.Contains(elementVM));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry02TheSameClass()
+        {
+            // Tree preparation
+            var elementVM = CreateCustomNodeViewModel("Member1", "TopCategory.SubCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            // Second member addition to the same class. 
+            elementVM = CreateCustomNodeViewModel("Member2", "TopCategory.SubCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubCategory");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "Member2"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry03TheSameClassesContainer()
+        {
+            // Tree preparation
+            var elementVM = CreateCustomNodeViewModel("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            // Member addition to new class but the same classes container.
+            elementVM = CreateCustomNodeViewModel("Member2", "TopCategory.SubCategory2");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var theClass = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel);
+
+            Assert.AreEqual(2, theClass.SubCategories.Count);
+            Assert.IsNotNull(theClass.SubCategories.FirstOrDefault(c => c.Name == "SubCategory1"));
+
+            var category = theClass.SubCategories.FirstOrDefault(c => c.Name == "SubCategory2");
+
+            Assert.AreEqual(2, theClass.SubCategories.Count);
+            Assert.IsNotNull(category);
+            Assert.IsNotNull(category.Items.FirstOrDefault(c => c.Name == "Member2"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry04NewPathIsLonger()
+        {
+            // Tree preparation
+            var elementVM = CreateCustomNodeViewModel("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            // Member addition to new path. Top category is the same. 
+            elementVM = CreateCustomNodeViewModel("Member2", "TopCategory.SubCategory2.SubSubCat2");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "SubCategory2").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubSubCat2");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "Member2"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry05AddCategoryToClass()
+        {
+            // Tree preparation
+            var elementVM = CreateCustomNodeViewModel("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            // New member with new category addition to class. 
+            elementVM = CreateCustomNodeViewModel("Member2", "TopCategory.SubCategory1.SubSubCat1");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "SubCategory1");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "Member1"));
+
+            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "SubCategory1").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubSubCat1");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "Member2"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry06AddCategoryToClassDoNotRemoveClass()
+        {
+            // Tree preparation
+            var elementVM = CreateCustomNodeViewModel("Member1", "TopCategory.SubCategory1");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("Member2", "TopCategory.SubCategory2");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            // New member with new category addition to class.
+            elementVM = CreateCustomNodeViewModel("Member3", "TopCategory.SubCategory1.SubSubCat1");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "SubCategory1");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "Member1"));
+
+            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubCategory2");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "Member2"));
+
+            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "SubCategory1").
+                SubCategories.First(c => c.Name == "Classes" && c is ClassesNodeCategoryViewModel).
+                SubCategories.First(c => c.Name == "SubSubCat1");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "Member3"));
+        }
+
+        #region Helpers
+
+        public static NodeSearchElementViewModel CreateCustomNodeViewModel(string name, string category,
+            string description = "", string path = "")
+        {
+            var element = new CustomNodeSearchElement(null,
+                new CustomNodeInfo(Guid.NewGuid(), name, category, description, path));
+
+            return new NodeSearchElementViewModel(element);
+        }
+
+        #endregion
     }
 }
