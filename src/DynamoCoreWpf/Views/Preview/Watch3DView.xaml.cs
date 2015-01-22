@@ -247,11 +247,13 @@ namespace Dynamo.Controls
                 var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
                 var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
                 var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
+                var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
 
                 vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Rendering Tier: {0}", renderingTier));
                 vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Pixel Shader 3 Supported: {0}", pixelShader3Supported));
                 vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Pixel Shader 4 Supported: {0}", pixelShader4Supported));
                 vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Software Effect Rendering Supported: {0}", softwareEffectSupported));
+                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Maximum hardware texture size: {0}", maxTextureSize));
             }
 
             DrawGrid();
