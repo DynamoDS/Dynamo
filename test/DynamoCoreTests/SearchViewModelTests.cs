@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
@@ -83,6 +84,33 @@ namespace Dynamo.Tests
                            " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
                            " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
                            " MoreSymbols", result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeRootCategoryExpandStateTest()
+        {
+            // No exception expected.
+            viewModel.ChangeRootCategoryExpandState(null, false);
+
+            // No exception expected.
+            viewModel.ChangeRootCategoryExpandState("", false);
+
+            // No exception expected.
+            viewModel.ChangeRootCategoryExpandState("CategoryWhichDoesntExist", true);
+
+            var element = new CustomNodeSearchElement(
+                   null,
+                   new CustomNodeInfo(Guid.NewGuid(), "Member", "TopCategory.SubCategory.SomeClass", "", ""));
+            model.Add(element);
+
+            viewModel.ChangeRootCategoryExpandState("TopCategory", true);
+            var rootCategory = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory");
+
+            Assert.IsTrue(rootCategory.IsExpanded);
+
+            viewModel.ChangeRootCategoryExpandState("TopCategory", false);
+            Assert.IsFalse(rootCategory.IsExpanded);
         }
     }
 }

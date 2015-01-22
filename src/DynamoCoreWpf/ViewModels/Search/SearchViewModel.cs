@@ -225,7 +225,7 @@ namespace Dynamo.ViewModels
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
 
-            ChangeCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
+            ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
 
         private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -284,13 +284,6 @@ namespace Dynamo.ViewModels
 
                 DefineFullCategoryNames(item.SubCategories, item.FullCategoryName);
             }
-        }
-
-        private void ChangeCategoryExpandState(string categoryName, bool isExpanded)
-        {
-            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
-            if (category != null && category.IsExpanded != isExpanded)
-                category.IsExpanded = isExpanded;
         }
 
         private void RemoveEntry(NodeSearchElement entry)
@@ -490,6 +483,13 @@ namespace Dynamo.ViewModels
         {
             return string.IsNullOrEmpty(path) ? addition :
                 path + Configurations.CategoryDelimiter + addition;
+        }
+
+        internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)
+        {
+            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
+            if (category != null && category.IsExpanded != isExpanded)
+                category.IsExpanded = isExpanded;
         }
 
         #endregion
