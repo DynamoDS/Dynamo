@@ -8,8 +8,7 @@ namespace ProtoImperative
 {
 	public class Executive : ProtoCore.Executive
 	{
-        public Executive(ProtoCore.Core core)
-            : base(core)
+		public Executive(ProtoCore.Core core) : base(core)
 		{
 		}
 
@@ -80,6 +79,7 @@ namespace ProtoImperative
             CurrentDSASMExec = interpreter.runtime;
             return interpreter.Run(breakpoints, codeblock, entry, ProtoCore.Language.kImperative);
         }
+
 	}
 }
 

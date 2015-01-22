@@ -72,7 +72,6 @@ namespace ProtoTestFx
                 core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
-                
                 ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
 
                 ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core);
@@ -146,7 +145,6 @@ namespace ProtoTestFx
                 core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
-
                 ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core);
                 ProtoScript.Config.RunConfiguration runnerConfig = new ProtoScript.Config.RunConfiguration();
                 runnerConfig.IsParrallel = false; 
