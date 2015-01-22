@@ -41,7 +41,7 @@ namespace DSCoreNodesUI
         protected BasicInteractive()
         {
             Type type = typeof(T);
-            OutPortData.Add(new PortData(string.Empty, type.Name));
+            OutPortData.Add(new PortData("", type.Name));
             RegisterAllPorts();
         }
 

@@ -477,7 +477,7 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
-            var dialogText = string.Empty; 
+            var dialogText = ""; 
             if (e.Workspace is CustomNodeWorkspaceModel)
             {
                 dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);

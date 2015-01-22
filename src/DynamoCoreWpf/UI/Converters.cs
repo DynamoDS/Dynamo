@@ -86,7 +86,7 @@ namespace Dynamo.Controls
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
                 {
-                    return String.Empty;
+                    return "";
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
                 {
