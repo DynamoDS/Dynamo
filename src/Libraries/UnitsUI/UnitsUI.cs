@@ -177,7 +177,7 @@ namespace UnitsUI
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
-            string value = updateValueParams.Value;
+            string value = updateValueParams.PropertyValue;
 
             if (name == "Value")
             {

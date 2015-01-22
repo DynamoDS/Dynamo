@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web;
-using Dynamo.Utilities;
+using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
@@ -15,7 +15,7 @@ namespace DSCoreNodesUI
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
-            string value = updateValueParams.Value;
+            string value = updateValueParams.PropertyValue;
             if (name == "Value")
             {
                 Value = HttpUtility.HtmlEncode(value);

@@ -823,8 +823,8 @@ namespace Dynamo.Models
 
             var handled = false;
             var nodeModel = retrievedModel as NodeModel;
-            
-            var updateValueParams = new UpdateValueParams(value, propertyName, ElementResolver);
+
+            var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
             if (nodeModel != null)
             {
                 using (new NodeModificationUndoHelper(undoRecorder, nodeModel))

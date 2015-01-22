@@ -33,7 +33,7 @@ namespace Dynamo.Nodes
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
-            string value = updateValueParams.Value;
+            string value = updateValueParams.PropertyValue;
 
             if (name == "Value")
             {
@@ -201,7 +201,7 @@ namespace Dynamo.Nodes
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
-            string value = updateValueParams.Value;
+            string value = updateValueParams.PropertyValue;
 
             if (name == "Value")
             {

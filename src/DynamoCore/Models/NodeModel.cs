@@ -1278,7 +1278,7 @@ namespace Dynamo.Models
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
-            string value = updateValueParams.Value;
+            string value = updateValueParams.PropertyValue;
 
             if (name == "NickName")
             {

@@ -346,7 +346,7 @@ namespace Dynamo.Nodes
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
-            string value = updateValueParams.Value;
+            string value = updateValueParams.PropertyValue;
 
             if (name == "InputSymbol")
             {
@@ -432,7 +432,7 @@ namespace Dynamo.Nodes
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
-            string value = updateValueParams.Value;
+            string value = updateValueParams.PropertyValue;
 
             if (name == "Symbol")
             {
