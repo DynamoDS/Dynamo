@@ -103,7 +103,6 @@
     <Compile Include="CodeFile.cs" />
     <Compile Include="CodeGenDS.cs" />
     <Compile Include="CodePoint.cs" />
-    <Compile Include="CompileData.cs" />
     <Compile Include="CompilerOptions.cs" />
     <Compile Include="CompilerUtils.cs" />
     <Compile Include="Core.cs" />
