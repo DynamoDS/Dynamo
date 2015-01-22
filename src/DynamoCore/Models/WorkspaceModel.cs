@@ -15,7 +15,7 @@ using Dynamo.Utilities;
 using ProtoCore.AST;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
-using NodeModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.NodeModificationUndoHelper;
+using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificationUndoHelper;
 
 namespace Dynamo.Models
 {
@@ -780,7 +780,7 @@ namespace Dynamo.Models
             var nodeModel = retrievedModel as NodeModel;
             if (nodeModel != null)
             {
-                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
+                using (new ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
                     handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
                 }
@@ -811,43 +811,21 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        internal void UpdateModelValue(Guid modelGuid, string propertyName, string value)
+        internal void UpdateModelValue(IEnumerable<Guid> modelGuids, string propertyName, string value)
         {
-            var retrievedModel = GetModelInternal(modelGuid);
-            if (retrievedModel == null)
+            if (modelGuids == null || (!modelGuids.Any()))
+                throw new ArgumentNullException("modelGuids");
+
+            var retrievedModels = GetModelsInternal(modelGuids);
+            if (!retrievedModels.Any())
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
-            var handled = false;
-            var nodeModel = retrievedModel as NodeModel;
-            if (nodeModel != null)
+            using (new ModelModificationUndoHelper(undoRecorder, retrievedModels))
             {
-                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
+                foreach (var retrievedModel in retrievedModels)
                 {
-                    handled = nodeModel.UpdateValue(propertyName, value, undoRecorder);
+                    retrievedModel.UpdateValue(propertyName, value, undoRecorder);
                 }
-            }
-            else
-            {
-                // Perform generic undo recording for models other than node.
-                RecordModelForModification(retrievedModel, UndoRecorder);
-                handled = retrievedModel.UpdateValue(propertyName, value, undoRecorder);
-            }
-
-            if (!handled) // Method call was not handled by any derived class.
-            {
-                string type = retrievedModel.GetType().FullName;
-                string message = string.Format(
-                    "ModelBase.UpdateValue call not handled.\n\n" +
-                    "Model type: {0}\n" +
-                    "Model GUID: {1}\n" +
-                    "Property name: {2}\n" +
-                    "Property value: {3}",
-                    type, modelGuid, propertyName, value);
-
-                // All 'UpdateValue' calls must be handled by one of the 
-                // ModelBase derived classes that the 'UpdateModelValue'
-                // is intended for.
-                throw new InvalidOperationException(message);
             }
 
             HasUnsavedChanges = true;
@@ -1232,6 +1210,21 @@ namespace Dynamo.Models
 
             return foundModel;
         }
+
+        private IEnumerable<ModelBase> GetModelsInternal(IEnumerable<Guid> modelGuids)
+        {
+            var foundModels = new List<ModelBase>();
+
+            foreach (var modelGuid in modelGuids)
+            {
+                var foundModel = GetModelInternal(modelGuid);
+                if (foundModel != null)
+                    foundModels.Add(foundModel);
+            }
+
+            return foundModels;
+        }
+
         #endregion
 
         #region Node To Code Reconnection

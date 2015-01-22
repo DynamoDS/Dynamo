@@ -268,7 +268,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        public void TestUpdateModelValueCommand()
+        public void TestUpdateModelValueCommand0()
         {
             Guid modelGuid = Guid.NewGuid();
             string name = randomizer.Next().ToString();
@@ -277,7 +277,31 @@ namespace DynamoCoreUITests
             var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuid, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
+            Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
+            Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
+            Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUpdateModelValueCommand1()
+        {
+            var modelGuids = new[]
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            };
+
+            string name = randomizer.Next().ToString();
+            string value = randomizer.Next().ToString();
+
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuids, name, value);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
             Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
             Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
         }

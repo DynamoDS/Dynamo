@@ -437,7 +437,7 @@ namespace Dynamo.UI.Controls
             {
                 nodeViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(nodeModel.GUID,
-                        /*NXLT*/"Code", InnerTextEditor.Text));
+                        "Code", InnerTextEditor.Text));
             }
 
             if (createdForNewCodeBlock)
@@ -464,7 +464,7 @@ namespace Dynamo.UI.Controls
             if (!string.IsNullOrEmpty(InnerTextEditor.Text))
             {
                 throw new InvalidOperationException(
-                    /*NXLT*/"This method is meant only for empty text box");
+                    "This method is meant only for empty text box");
             }
 
             if (createdForNewCodeBlock)
