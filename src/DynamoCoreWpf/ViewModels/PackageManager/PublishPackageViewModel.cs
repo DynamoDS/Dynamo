@@ -780,21 +780,10 @@ namespace Dynamo.PackageManager
 
             if (fDialog.ShowDialog() == DialogResult.OK)
             {
-                if (fDialog.FileNames.Length > 1)
+                foreach (var fn in fDialog.FileNames)
                 {
-                    foreach (var fn in fDialog.FileNames)
-                    {
-                        AddFile(fn);
-                    }
+                    AddFile(fn);
                 }
-                else
-                {
-                    AddFile(fDialog.FileName);
-                }
-
-
-                
-                
             }
         }
 
