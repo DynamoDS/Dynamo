@@ -817,9 +817,9 @@ namespace Dynamo.Models
         private bool OpenHomeWorkspace(
             XmlDocument xmlDoc, WorkspaceHeader workspaceInfo, out WorkspaceModel workspace)
         {
-            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
+            ElementResolver elementResolver;
+            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory, out elementResolver);
 
-            ElementResolver elementResolver = null;
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,

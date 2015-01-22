@@ -673,6 +673,27 @@ namespace Dynamo.Models
             return true;
         }
 
+        private void SerializeElementResolver(XmlElement root)
+        {
+            Debug.Assert(root != null);
+
+            XmlDocument xmlDoc = root.OwnerDocument;
+
+            var mapElement = xmlDoc.CreateElement("NamespaceResolutionMap");
+
+            foreach (var element in ElementResolver.ResolutionMap)
+            {
+                var resolverElement = xmlDoc.CreateElement("ClassMap");
+                
+                resolverElement.SetAttribute("partialName", element.Key);
+                resolverElement.SetAttribute("resolvedName", element.Value.Key);
+                resolverElement.SetAttribute("assemblyName", element.Value.Value);
+
+                mapElement.AppendChild(resolverElement);
+            }
+            root.AppendChild(mapElement);
+        }
+
         protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
         {
             try
@@ -683,6 +704,8 @@ namespace Dynamo.Models
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
+
+                SerializeElementResolver(root);
 
                 var elementList = xmlDoc.CreateElement("Elements");
                 //write the root element

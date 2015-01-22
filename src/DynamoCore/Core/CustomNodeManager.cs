@@ -479,10 +479,10 @@ namespace Dynamo.Core
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
             SetPreloadFunctionDefinition(functionId);
-
-            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
-
-            ElementResolver elementResolver = null;
+ 
+            ElementResolver elementResolver;
+            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory, out elementResolver);
+           
             var newWorkspace = new CustomNodeWorkspaceModel(
                 workspaceInfo.Name,
                 workspaceInfo.Category,
