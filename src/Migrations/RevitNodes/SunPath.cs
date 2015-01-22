@@ -23,7 +23,7 @@ namespace Dynamo.Nodes
             sunPathNode.SetAttribute("x", (Convert.ToDouble(oldNode.GetAttribute("x")) - 230).ToString());
 
             var vectorAsPoint = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(vectorAsPoint,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(vectorAsPoint, "ProtoGeometry.dll",
                 "Vector.AsPoint", "Vector.AsPoint");
             
             migrationData.AppendNode(sunPathNode);
@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
             var sunPathNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(
                 sunPathNode,
-               "RevitNodes.dll",
+                "RevitNodes.dll",
                 "SunSettings.SunDirection",
                 "SunSettings.SunDirection@var");
             migrationData.AppendNode(sunPathNode);

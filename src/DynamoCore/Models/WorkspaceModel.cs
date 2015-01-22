@@ -202,7 +202,7 @@ namespace Dynamo.Models
             set
             {
                 lastSaved = value;
-                RaisePropertyChanged(/*NXLT*/"LastSaved");
+                RaisePropertyChanged("LastSaved");
             }
         }
 
@@ -215,7 +215,7 @@ namespace Dynamo.Models
             set
             {
                 author = value;
-                RaisePropertyChanged(/*NXLT*/"Author");
+                RaisePropertyChanged("Author");
             }
         }
 
@@ -228,7 +228,7 @@ namespace Dynamo.Models
             set
             {
                 hasUnsavedChanges = value;
-                RaisePropertyChanged(/*NXLT*/"HasUnsavedChanges");
+                RaisePropertyChanged("HasUnsavedChanges");
             }
         }
 
@@ -263,7 +263,7 @@ namespace Dynamo.Models
             set
             {
                 fileName = value;
-                RaisePropertyChanged(/*NXLT*/"FileName");
+                RaisePropertyChanged("FileName");
             }
         }
 
@@ -276,7 +276,7 @@ namespace Dynamo.Models
             set
             {
                 name = value;
-                RaisePropertyChanged(/*NXLT*/"Name");
+                RaisePropertyChanged("Name");
             }
         }
 
@@ -289,7 +289,7 @@ namespace Dynamo.Models
             set
             {
                 x = value;
-                RaisePropertyChanged(/*NXLT*/"X");
+                RaisePropertyChanged("X");
             }
         }
 
@@ -302,7 +302,7 @@ namespace Dynamo.Models
             set
             {
                 y = value;
-                RaisePropertyChanged(/*NXLT*/"Y");
+                RaisePropertyChanged("Y");
             }
         }
 
@@ -312,7 +312,7 @@ namespace Dynamo.Models
             set
             {
                 zoom = value;
-                RaisePropertyChanged(/*NXLT*/"Zoom");
+                RaisePropertyChanged("Zoom");
             }
         }
 
@@ -325,7 +325,7 @@ namespace Dynamo.Models
             set
             {
                 height = value;
-                RaisePropertyChanged(/*NXLT*/"Height");
+                RaisePropertyChanged("Height");
             }
         }
 
@@ -338,7 +338,7 @@ namespace Dynamo.Models
             set
             {
                 width = value;
-                RaisePropertyChanged(/*NXLT*/"Width");
+                RaisePropertyChanged("Width");
             }
         }
 

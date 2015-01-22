@@ -71,7 +71,7 @@ namespace Dynamo.Python
         /// A bunch of regexes for use in introspaction
         /// </summary>
         public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s*)+)";
-        public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
+        public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";   
         public static string doubleQuoteStringRegex = "(\"[^\"]*\")";
         public static string singleQuoteStringRegex = "(\'[^\']*\')";
         public static string arrayRegex = "(\\[.*\\])";

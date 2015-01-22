@@ -7,8 +7,6 @@ using System.Xml;
 
 using Dynamo.Models;
 
-
-
 namespace DSCoreNodesUI
 {
     /// <summary>

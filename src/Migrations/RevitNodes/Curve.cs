@@ -15,14 +15,14 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Geometry.Transform", "Geometry.Transform@CoordinateSystem,CoordinateSystem");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement identityCoordinateSystem = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "CoordinateSystem.Identity",
                 "CoordinateSystem.Identity");
             migrationData.AppendNode(identityCoordinateSystem);
@@ -50,7 +50,7 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Line.ByStartPointEndPoint", "Line.ByStartPointEndPoint@Point,Point");
             newNode.SetAttribute("lacing", "Shortest");
             migrationData.AppendNode(newNode);
@@ -65,7 +65,7 @@ namespace Dynamo.Nodes
             string reverseId = MigrationManager.GetGuidFromXmlElement(reverse);
 
             XmlElement rest = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"DSCoreNodes.dll",
+                data.Document, oldNode, 1, "DSCoreNodes.dll",
                 "List.RestOfItems",
                 "List.RestOfItems@var[]..[]");
             migrationData.AppendNode(rest);
@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"RevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "CurveByPoints.ByReferencePoints", "CurveByPoints.ByReferencePoints@ReferencePoint,bool");
         }
     }
@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"RevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "ModelCurve.ByCurve", "ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve");
         }
     }
@@ -110,7 +110,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"RevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "ModelCurve.ReferenceCurveByCurve", "ModelCurve.ReferenceCurveByCurve@Curve");
         }
     }
@@ -120,7 +120,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"RevitNodes.dll",
+            return MigrateToDsFunction(data, "RevitNodes.dll",
                 "CurveElement.Curve", "CurveElement.Curve");
         }
     }
@@ -130,7 +130,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "PolyCurve.ByJoinedCurves",
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "PolyCurve.ByJoinedCurves",
                 "PolyCurve.ByJoinedCurves@Curve[]");
         }
     }
@@ -145,14 +145,14 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "PolyCurve.ByThickeningCurve", "PolyCurve.ByThickeningCurve@Curve,double,Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector);
             string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "PolyCurve.Curves", "PolyCurve.Curves");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "PolyCurve.Curves", "PolyCurve.Curves");
         }
     }
 
@@ -182,7 +182,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Curve.Offset", "Curve.Offset@double");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Curve.Offset", "Curve.Offset@double");
         }
     }
 
@@ -196,19 +196,19 @@ namespace Dynamo.Nodes
             // Create nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Curve.ParameterTrim", "Autodesk.DesignScript.Geometry.Curve.ParameterTrim@double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             XmlElement startParam = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Curve.ParameterAtPoint", "Curve.ParameterAtPoint@Point");
             migrationData.AppendNode(startParam);
             string startParamId = MigrationManager.GetGuidFromXmlElement(startParam);
 
             XmlElement endParam = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Curve.ParameterAtPoint", "Curve.ParameterAtPoint@Point");
             migrationData.AppendNode(endParam);
             string endParamId = MigrationManager.GetGuidFromXmlElement(endParam);
@@ -244,7 +244,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Curve.CoordinateSystemAtParameter",
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Curve.CoordinateSystemAtParameter",
                 "Curve.CoordinateSystemAtParameter@double");
         }
     }
@@ -259,7 +259,7 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Curve.CoordinateSystemAtParameter", "Curve.CoordinateSystemAtParameter@double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
@@ -281,7 +281,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Curve.ApproximateWithArcAndLineSegments",
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Curve.ApproximateWithArcAndLineSegments",
                 "Curve.ApproximateWithArcAndLineSegments");
         }
     }
@@ -310,7 +310,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Curve.Length",
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Curve.Length",
                 "Curve.Length");
         }
     }

@@ -272,9 +272,9 @@ namespace Dynamo.Search
             Grid g = (Grid)b.Parent;
             Label lb = (Label)(g.Children[0]);
             var bc = new BrushConverter();
-            lb.Foreground = (Brush)bc.ConvertFromString(/*NXLT*/"#cccccc");
+            lb.Foreground = (Brush)bc.ConvertFromString("#cccccc");
             Image collapsestate = (Image)(b).Content;
-            var collapsestateSource = new Uri(/*NXLT*/@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
+            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
             BitmapImage bmi = new BitmapImage(collapsestateSource);
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
             collapsestate.Source = new BitmapImage(collapsestateSource);
@@ -288,9 +288,9 @@ namespace Dynamo.Search
             Grid g = (Grid)b.Parent;
             Label lb = (Label)(g.Children[0]);
             var bc = new BrushConverter();
-            lb.Foreground = (Brush)bc.ConvertFromString(/*NXLT*/"#aaaaaa");
+            lb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
             Image collapsestate = (Image)(b).Content;
-            var collapsestateSource = new Uri(/*NXLT*/@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
+            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
             
             Cursor = null;
@@ -298,13 +298,13 @@ namespace Dynamo.Search
 
         private void OnSearchTextBoxGridMouseEnter(object sender, MouseEventArgs e)
         {
-            var searchIconSource = new Uri(/*NXLT*/@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/search_hover.png");
+            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/search_hover.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
         }
 
         private void OnSearchTextBoxGridMouseLeave(object sender, MouseEventArgs e)
         {
-            var searchIconSource = new Uri(/*NXLT*/@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/search_normal.png");
+            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/search_normal.png");
             SearchIcon.Source = new BitmapImage(searchIconSource);
         }
 

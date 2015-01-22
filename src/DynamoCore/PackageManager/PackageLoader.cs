@@ -200,7 +200,7 @@ namespace Dynamo.PackageManager
                 {
                     Log(
                         String.Format(
-                        "Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
+                            "Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
                             pkgNameDirTup),
                         WarningLevel.Moderate);
                 }

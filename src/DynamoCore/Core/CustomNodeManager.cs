@@ -545,6 +545,7 @@ namespace Dynamo.Utilities
                 var customNodeInfo = NodeInfos[functionId];
 
                 var xmlPath = customNodeInfo.Path;
+
                 Log(String.Format(Properties.Resources.LoadingNodeDefinition, customNodeInfo, xmlPath));
 
                 var xmlDoc = new XmlDocument();

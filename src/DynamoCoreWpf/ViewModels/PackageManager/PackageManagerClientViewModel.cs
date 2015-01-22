@@ -61,7 +61,6 @@ namespace Dynamo.ViewModels
                 DynamoModel.IsTestMode,
                 out currentFunDef))
             {
-
                 CustomNodeInfo currentFunInfo;
                 if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
                     ws.CustomNodeId,
@@ -70,7 +69,6 @@ namespace Dynamo.ViewModels
                     ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, currentFunDef) });
                     return;
                 }
-
             }
             
             MessageBox.Show(Resources.MessageSelectSymbolNotFound, 
@@ -111,7 +109,6 @@ namespace Dynamo.ViewModels
             }
 
             var manager = DynamoViewModel.Model.CustomNodeManager;
-
 
             var defs = new List<Tuple<CustomNodeInfo, CustomNodeDefinition>>();
             foreach (var node in nodeList)

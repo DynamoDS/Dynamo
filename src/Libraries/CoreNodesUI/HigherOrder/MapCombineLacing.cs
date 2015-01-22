@@ -298,11 +298,11 @@ namespace DSCore
 
         private void UpdateReductorPort()
         {
-            if (InPortData.Count > 6)
+            if (InPortData.Count > 6) 
                 reductorPort.NickName = "f(x1, x2, ... xN, a)";
             else
             {
-                if (InPortData.Count == 3)
+                if (InPortData.Count == 3) 
                     reductorPort.NickName = "f(x, a)";
                 else
                 {

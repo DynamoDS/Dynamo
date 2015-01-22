@@ -51,7 +51,7 @@ namespace Dynamo.ViewModels
             set
             {
                 workspaces = value;
-                RaisePropertyChanged(/*NXLT*/"Workspaces");
+                RaisePropertyChanged("Workspaces");
             }
         }
 
@@ -71,7 +71,7 @@ namespace Dynamo.ViewModels
             set
             {
                 transformOrigin = value;
-                RaisePropertyChanged(/*NXLT*/"TransformOrigin");
+                RaisePropertyChanged("TransformOrigin");
             }
         }
 
@@ -95,7 +95,7 @@ namespace Dynamo.ViewModels
             set
             {
                 canRunDynamically = value;
-                RaisePropertyChanged(/*NXLT*/"CanRunDynamically");
+                RaisePropertyChanged("CanRunDynamically");
             }
         }
 
@@ -107,10 +107,8 @@ namespace Dynamo.ViewModels
             }
             set
             {
-
                 HomeSpace.DynamicRunEnabled = value;
-                RaisePropertyChanged(/*NXLT*/"DynamicRunEnabled");
-
+                RaisePropertyChanged("DynamicRunEnabled");
             }
         }
 
@@ -143,7 +141,7 @@ namespace Dynamo.ViewModels
         {
             WorkspaceActualWidth = width;
             WorkspaceActualHeight = height;
-            RaisePropertyChanged(/*NXLT*/"WorkspaceActualSize");
+            RaisePropertyChanged("WorkspaceActualSize");
         }
 
         /// <summary>
@@ -184,7 +182,7 @@ namespace Dynamo.ViewModels
             set
             {
                 editName = value;
-                RaisePropertyChanged(/*NXLT*/"EditName");
+                RaisePropertyChanged("EditName");
             }
         }
 
@@ -205,7 +203,7 @@ namespace Dynamo.ViewModels
                 }
 
                 showStartPage = value;
-                RaisePropertyChanged(/*NXLT*/"ShowStartPage");
+                RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
                     DisplayStartPageCommand.RaiseCanExecuteChanged();
             }
@@ -217,9 +215,9 @@ namespace Dynamo.ViewModels
             set
             {
                 watchEscapeIsDown = value;
-                RaisePropertyChanged(/*NXLT*/"WatchEscapeIsDown");
-                RaisePropertyChanged(/*NXLT*/"ShouldBeHitTestVisible");
-                RaisePropertyChanged(/*NXLT*/"WatchPreviewHitTest");
+                RaisePropertyChanged("WatchEscapeIsDown");
+                RaisePropertyChanged("ShouldBeHitTestVisible");
+                RaisePropertyChanged("WatchPreviewHitTest");
             }
         }
 
@@ -241,7 +239,7 @@ namespace Dynamo.ViewModels
             set
             {
                 model.PreferenceSettings.FullscreenWatchShowing = value;
-                RaisePropertyChanged(/*NXLT*/"FullscreenWatchShowing");
+                RaisePropertyChanged("FullscreenWatchShowing");
 
                 if (!FullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
@@ -257,8 +255,8 @@ namespace Dynamo.ViewModels
             set
             {
                 canNavigateBackground = value;
-                RaisePropertyChanged(/*NXLT*/"CanNavigateBackground");
-                RaisePropertyChanged(/*NXLT*/"WatchBackgroundHitTest");
+                RaisePropertyChanged("CanNavigateBackground");
+                RaisePropertyChanged("WatchBackgroundHitTest");
 
                 int workspace_index = CurrentWorkspaceIndex;
 
@@ -283,7 +281,7 @@ namespace Dynamo.ViewModels
             {
                 model.PreferenceSettings.ConsoleHeight = value;
 
-                RaisePropertyChanged(/*NXLT*/"ConsoleHeight");
+                RaisePropertyChanged("ConsoleHeight");
             }
         }
 
@@ -297,7 +295,7 @@ namespace Dynamo.ViewModels
             {
                 model.IsShowingConnectors = value;
 
-                RaisePropertyChanged(/*NXLT*/"IsShowingConnectors");
+                RaisePropertyChanged("IsShowingConnectors");
             }
         }
 
@@ -315,7 +313,7 @@ namespace Dynamo.ViewModels
             {
                 model.ConnectorType = value;
 
-                RaisePropertyChanged(/*NXLT*/"ConnectorType");
+                RaisePropertyChanged("ConnectorType");
             }
         }
 
@@ -335,7 +333,7 @@ namespace Dynamo.ViewModels
             set
             {
                 recentFiles = value;
-                RaisePropertyChanged(/*NXLT*/"RecentFiles");
+                RaisePropertyChanged("RecentFiles");
             }
         }
 
@@ -397,7 +395,7 @@ namespace Dynamo.ViewModels
             set
             {
                 model.DebugSettings.VerboseLogging = value;
-                RaisePropertyChanged(/*NXLT*/"VerboseLogging");
+                RaisePropertyChanged("VerboseLogging");
             }
         }
 
@@ -407,7 +405,7 @@ namespace Dynamo.ViewModels
             set
             {
                 model.DebugSettings.ShowDebugASTs = value;
-                RaisePropertyChanged(/*NXLT*/"ShowDebugASTs");
+                RaisePropertyChanged("ShowDebugASTs");
             }
         }
 
@@ -744,8 +742,8 @@ namespace Dynamo.ViewModels
 
         void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
         {
-            RaisePropertyChanged(/*NXLT*/"Version");
-            RaisePropertyChanged(/*NXLT*/"IsUpdateAvailable");
+            RaisePropertyChanged("Version");
+            RaisePropertyChanged("IsUpdateAvailable");
         }
 
         void updateManager_ShutdownRequested(IUpdateManager updateManager)
@@ -759,7 +757,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "CollectInfoOption":
-                    RaisePropertyChanged(/*NXLT*/"CollectInfoOption");
+                    RaisePropertyChanged("CollectInfoOption");
                     break;
             }
         }
@@ -776,7 +774,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "IsUILocked":
-                    RaisePropertyChanged(/*NXLT*/"IsUILocked");
+                    RaisePropertyChanged("IsUILocked");
                     break;
             }
         }
@@ -787,8 +785,8 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "LogText":
-                    RaisePropertyChanged(/*NXLT*/"LogText");
-                    RaisePropertyChanged(/*NXLT*/"WarningText");
+                    RaisePropertyChanged("LogText");
+                    RaisePropertyChanged("WarningText");
                     break;
             }
 
@@ -799,22 +797,22 @@ namespace Dynamo.ViewModels
             if (e.PropertyName == "CurrentWorkspace")
             {
                 IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
-                RaisePropertyChanged(/*NXLT*/"IsAbleToGoHome");
-                RaisePropertyChanged(/*NXLT*/"CurrentSpace");
-                RaisePropertyChanged(/*NXLT*/"BackgroundColor");
-                RaisePropertyChanged(/*NXLT*/"CurrentWorkspaceIndex");
-                RaisePropertyChanged(/*NXLT*/"ViewingHomespace");
+                RaisePropertyChanged("IsAbleToGoHome");
+                RaisePropertyChanged("CurrentSpace");
+                RaisePropertyChanged("BackgroundColor");
+                RaisePropertyChanged("CurrentWorkspaceIndex");
+                RaisePropertyChanged("ViewingHomespace");
                 if (this.PublishCurrentWorkspaceCommand != null)
                     this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged(/*NXLT*/"IsPanning");
-                RaisePropertyChanged(/*NXLT*/"IsOrbiting");
+                RaisePropertyChanged("IsPanning");
+                RaisePropertyChanged("IsOrbiting");
             }
         }
 
         void CurrentWorkspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == /*NXLT*/"RunEnabled")
-                RaisePropertyChanged(/*NXLT*/"RunEnabled");
+            if (e.PropertyName == "RunEnabled")
+                RaisePropertyChanged("RunEnabled");
         }
 
         private void CleanUp(DynamoModel dynamoModel)
@@ -1083,7 +1081,7 @@ namespace Dynamo.ViewModels
                 if (debug)
                     DynamicRunEnabled = false;
 
-                RaisePropertyChanged(/*NXLT*/"RunInDebug");
+                RaisePropertyChanged("RunInDebug");
             }
 
         }
@@ -1665,7 +1663,7 @@ namespace Dynamo.ViewModels
 
         internal void Pan(object parameter)
         {
-            Debug.WriteLine(string.Format(/*NXLT*/"Offset: {0},{1}, Zoom: {2}", model.CurrentWorkspace.X, model.CurrentWorkspace.Y, model.CurrentWorkspace.Zoom));
+            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", model.CurrentWorkspace.X, model.CurrentWorkspace.Y, model.CurrentWorkspace.Zoom));
             var panType = parameter.ToString();
             double pan = 10;
             var pt = new Point2D(model.CurrentWorkspace.X, model.CurrentWorkspace.Y);
@@ -1786,8 +1784,8 @@ namespace Dynamo.ViewModels
             // Since panning and orbiting modes are exclusive from one another,
             // turning one on may turn the other off. This is the reason we must
             // raise property change for both at the same time to update visual.
-            RaisePropertyChanged(/*NXLT*/"IsPanning");
-            RaisePropertyChanged(/*NXLT*/"IsOrbiting");
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanTogglePan(object parameter)
@@ -1802,8 +1800,8 @@ namespace Dynamo.ViewModels
             // Since panning and orbiting modes are exclusive from one another,
             // turning one on may turn the other off. This is the reason we must
             // raise property change for both at the same time to update visual.
-            RaisePropertyChanged(/*NXLT*/"IsPanning");
-            RaisePropertyChanged(/*NXLT*/"IsOrbiting");
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanToggleOrbit(object parameter)
@@ -1818,8 +1816,8 @@ namespace Dynamo.ViewModels
             // Since panning and orbiting modes are exclusive from one another,
             // turning one on may turn the other off. This is the reason we must
             // raise property change for both at the same time to update visual.
-            RaisePropertyChanged(/*NXLT*/"IsPanning");
-            RaisePropertyChanged(/*NXLT*/"IsOrbiting");
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
         }
 
         internal bool CanEscape(object parameter)

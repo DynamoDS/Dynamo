@@ -4,7 +4,6 @@ using ProtoCore.AST.AssociativeAST;
 using System.Collections.Generic;
 
 using DSCoreNodesUI.Properties;
-
 namespace DSCoreNodesUI.StringNodes
 {
     /// <summary>

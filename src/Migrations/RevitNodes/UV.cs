@@ -10,7 +10,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "UV.ByCoordinates",
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "UV.ByCoordinates",
                 "UV.ByCoordinates@double,double");
         }
     }
@@ -127,7 +127,7 @@ namespace Dynamo.Nodes
             string codeBlockNodeId = MigrationManager.GetGuidFromXmlElement(codeBlockNode);
 
             XmlElement uvNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(uvNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(uvNode, "ProtoGeometry.dll",
                 "UV.ByCoordinates", "UV.ByCoordinates@double,double");
             uvNode.SetAttribute("lacing", "Longest");
             migrationData.AppendNode(uvNode);

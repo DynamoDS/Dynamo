@@ -5,14 +5,11 @@ using Dynamo.DSEngine;
 using Dynamo.Models;
 
 using DSCoreNodesUI.Properties;
-
-
 using ProtoCore.AST.AssociativeAST;
 using Image = System.Windows.Controls.Image;
 
 namespace Dynamo.Nodes
 {
-
     [NodeName("Watch Image")]
     [NodeDescription("WatchImageDescription", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]

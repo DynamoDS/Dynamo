@@ -10,7 +10,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Ellipse.ByOriginRadii",
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Ellipse.ByOriginRadii",
                 "Ellipse.ByOriginRadii@Point,double,double");
         }
     }
@@ -25,34 +25,34 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
-                "EllipseArc.ByPlaneRadiiStartAngleSweepAngle",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
+                "EllipseArc.ByPlaneRadiiStartAngleSweepAngle", 
                 "EllipseArc.ByPlaneRadiiStartAngleSweepAngle@Plane,double,double,double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement zAxis = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Vector.ZAxis",
                 "Vector.ZAxis");
             migrationData.AppendNode(zAxis);
 
             XmlElement planeNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1, "", "Plane.ByOriginNormal",
+                data.Document, oldNode, 1, "", "Plane.ByOriginNormal", 
                 "Plane.ByOriginNormal@Point,Vector");
             planeNode.SetAttribute("isVisible", "false");
             migrationData.AppendNode(planeNode);
             string planeNodeId = MigrationManager.GetGuidFromXmlElement(planeNode);
 
             XmlElement converterNode0 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2,"DSCoreNodes.dll",
+                data.Document, oldNode, 2, "DSCoreNodes.dll",
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode0);
             string converterNode0Id = MigrationManager.GetGuidFromXmlElement(converterNode0);
 
             XmlElement converterNode1 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 3,"DSCoreNodes.dll",
+                data.Document, oldNode, 3, "DSCoreNodes.dll",
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode1);
             string converterNode1Id = MigrationManager.GetGuidFromXmlElement(converterNode1);

@@ -15,7 +15,7 @@ namespace Dynamo.Nodes
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Point.ByCoordinates", "Point.ByCoordinates@double,double,double");
             migrationData.AppendNode(newNode);
 
@@ -37,20 +37,20 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Point.ByCylindricalCoordinates", "Point.ByCylindricalCoordinates@CoordinateSystem,double,double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement identityCoordinateSystem = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "CoordinateSystem.Identity",
                 "CoordinateSystem.Identity");
             migrationData.AppendNode(identityCoordinateSystem);
 
             XmlElement converterNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"DSCoreNodes.dll",
+                data.Document, oldNode, 1, "DSCoreNodes.dll",
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterNode);
             string converterNodeId = MigrationManager.GetGuidFromXmlElement(converterNode);
@@ -135,26 +135,26 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Point.BySphericalCoordinates", "Point.BySphericalCoordinates@CoordinateSystem,double,double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement identityCoordinateSystem = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "CoordinateSystem.Identity",
                 "CoordinateSystem.Identity");
             migrationData.AppendNode(identityCoordinateSystem);
 
             XmlElement converterPhiNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"DSCoreNodes.dll",
+                data.Document, oldNode, 1, "DSCoreNodes.dll",
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterPhiNode);
             string converterPhiNodeId = MigrationManager.GetGuidFromXmlElement(converterPhiNode);
 
             XmlElement converterThetaNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2,"DSCoreNodes.dll",
+                data.Document, oldNode, 2, "DSCoreNodes.dll",
                 "Math.RadiansToDegrees", "Math.RadiansToDegrees@double");
             migrationData.AppendNode(converterThetaNode);
             string converterThetaNodeId = MigrationManager.GetGuidFromXmlElement(converterThetaNode);
@@ -253,7 +253,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"RevitNodes.dll", "ReferencePoint.Point", "ReferencePoint.Point");
+            return MigrateToDsFunction(data, "RevitNodes.dll", "ReferencePoint.Point", "ReferencePoint.Point");
         }
     }
 
@@ -281,7 +281,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Point.X", "Point.X");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.X", "Point.X");
         }
     }
 
@@ -290,7 +290,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Point.Y", "Point.Y");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.Y", "Point.Y");
         }
     }
 
@@ -299,7 +299,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Point.Z", "Point.Z");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.Z", "Point.Z");
         }
     }
 
@@ -308,7 +308,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Geometry.DistanceTo", "Geometry.DistanceTo@Geometry");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Geometry.DistanceTo", "Geometry.DistanceTo@Geometry");
         }
     }
 
@@ -322,14 +322,14 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Vector.Length", "Vector.Length");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector);
             string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
@@ -357,19 +357,19 @@ namespace Dynamo.Nodes
             // Create nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Vector.AsPoint", "Vector.AsPoint");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector);
             string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
 
             XmlElement vectorNormalized = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Vector.Normalized", "Vector.Normalized");
             migrationData.AppendNode(vectorNormalized);
             string vectorNormalizedId = MigrationManager.GetGuidFromXmlElement(vectorNormalized);
@@ -407,12 +407,12 @@ namespace Dynamo.Nodes
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             XmlElement asVectorNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll", "Point.AsVector", "Point.AsVector");
+                data.Document, oldNode, 0, "ProtoGeometry.dll", "Point.AsVector", "Point.AsVector");
             migratedData.AppendNode(asVectorNode);
             string asVectorNodeId = MigrationManager.GetGuidFromXmlElement(asVectorNode);
 
             XmlElement lengthNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"ProtoGeometry.dll", "Vector.Length", "Vector.Length");
+                data.Document, oldNode, 1, "ProtoGeometry.dll", "Vector.Length", "Vector.Length");
             migratedData.AppendNode(lengthNode);
 
             XmlElement numberNode = MigrationManager.CreateCodeBlockNodeModelNode(
@@ -444,13 +444,13 @@ namespace Dynamo.Nodes
             // Create nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Vector.AsPoint", "Vector.AsPoint");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Vector.XAxis", "Vector.XAxis");
             migrationData.AppendNode(pointAsVector);
             string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
@@ -478,13 +478,13 @@ namespace Dynamo.Nodes
             // Create nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Vector.AsPoint", "Vector.AsPoint");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Vector.YAxis", "Vector.YAxis");
             migrationData.AppendNode(pointAsVector);
             string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
@@ -512,13 +512,13 @@ namespace Dynamo.Nodes
             // Create nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Vector.AsPoint", "Vector.AsPoint");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Vector.ZAxis", "Vector.ZAxis");
             migrationData.AppendNode(pointAsVector);
             string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
@@ -541,7 +541,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data,"ProtoGeometry.dll", "Geometry.Scale", "Geometry.Scale@double");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Geometry.Scale", "Geometry.Scale@double");
         }
     }
 
@@ -555,20 +555,20 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var pointAdd = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(pointAdd,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(pointAdd, "ProtoGeometry.dll",
                 "Point.Add", "Point.Add@Vector");
             migrationData.AppendNode(pointAdd);
             string pointAddId = MigrationManager.GetGuidFromXmlElement(pointAdd);
 
             // Create new nodes
             XmlElement vectorDiff = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Vector.ByTwoPoints", "Vector.ByTwoPoints@Point,Point");
             migrationData.AppendNode(vectorDiff);
             string vectorDiffId = MigrationManager.GetGuidFromXmlElement(vectorDiff);
 
             XmlElement geometryScale = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Geometry.Scale", "Geometry.Scale@double");
             migrationData.AppendNode(geometryScale);
             string geometryScaleId = MigrationManager.GetGuidFromXmlElement(geometryScale);
@@ -611,14 +611,14 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Point.Add", "Point.Add@Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector);
             string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
@@ -645,14 +645,14 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Point.Subtract", "Point.Subtract@Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             // Create new node
             XmlElement pointAsVector = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector);
             string pointAsVectorId = MigrationManager.GetGuidFromXmlElement(pointAsVector);
@@ -681,7 +681,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Point.ByCoordinates", "Point.ByCoordinates@double,double,double");
             migrationData.AppendNode(newNode);
 
@@ -715,7 +715,7 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var geometryScale = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(geometryScale,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(geometryScale, "ProtoGeometry.dll",
                 "Geometry.Scale", "Geometry.Scale@double");
             migrationData.AppendNode(geometryScale);
             
@@ -741,25 +741,25 @@ namespace Dynamo.Nodes
             // Create nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Vector.AsPoint", "Vector.AsPoint");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             XmlElement pointAsVector0 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector0);
             string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
 
             XmlElement pointAsVector1 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector1);
             string pointAsVector1Id = MigrationManager.GetGuidFromXmlElement(pointAsVector1);
 
             XmlElement vectorCross = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2,"ProtoGeometry.dll",
+                data.Document, oldNode, 2, "ProtoGeometry.dll",
                 "Vector.Cross", "Vector.Cross@Vector");
             migrationData.AppendNode(vectorCross);
             string vectorCrossId = MigrationManager.GetGuidFromXmlElement(vectorCross);
@@ -794,20 +794,20 @@ namespace Dynamo.Nodes
             // Create nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Vector.Dot", "Vector.Dot@Vector");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             XmlElement pointAsVector0 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
-               "Point.AsVector","Point.AsVector");
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector0);
             string pointAsVector0Id = MigrationManager.GetGuidFromXmlElement(pointAsVector0);
 
             XmlElement pointAsVector1 = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"ProtoGeometry.dll",
-               "Point.AsVector","Point.AsVector");
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
+                "Point.AsVector", "Point.AsVector");
             migrationData.AppendNode(pointAsVector1);
             string pointAsVector1Id = MigrationManager.GetGuidFromXmlElement(pointAsVector1);
 
@@ -841,17 +841,17 @@ namespace Dynamo.Nodes
 
             // Create nodes
             XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll", 
                 "Vector.AsPoint", "Vector.AsPoint");
             migrationData.AppendNode(newNode);
             
             XmlElement normalized = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Vector.Normalized", "Vector.Normalized@Vector");
             migrationData.AppendNode(normalized);
             
             XmlElement vectorNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"ProtoGeometry.dll",
+                data.Document, oldNode, 1, "ProtoGeometry.dll",
                 "Vector.ByTwoPoints", "Vector.ByTwoPoints@Point,Point");
             migrationData.AppendNode(vectorNode);
             string vectorNodeId = MigrationManager.GetGuidFromXmlElement(vectorNode);
@@ -906,7 +906,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Curve.PointAtParameter",
                 "Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double");
             newNode.SetAttribute("lacing", "CrossProduct");
@@ -915,7 +915,7 @@ namespace Dynamo.Nodes
 
             // Create new node
             XmlElement curveNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"RevitNodes.dll",
+                data.Document, oldNode, 0, "RevitNodes.dll",
                 "CurveElement.Curve", "CurveElement.Curve");
             migrationData.AppendNode(curveNode);
             string curveNodeId = MigrationManager.GetGuidFromXmlElement(curveNode);
@@ -955,7 +955,7 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Curve.PointAtDistance",
                 "Autodesk.DesignScript.Geometry.Curve.PointAtDistance@double");
             newNode.SetAttribute("lacing", "CrossProduct");
@@ -964,7 +964,7 @@ namespace Dynamo.Nodes
 
             // Create new node
             XmlElement curveNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"RevitNodes.dll",
+                data.Document, oldNode, 0, "RevitNodes.dll",
                 "CurveElement.Curve", "CurveElement.Curve");
             migrationData.AppendNode(curveNode);
             string curveNodeId = MigrationManager.GetGuidFromXmlElement(curveNode);
@@ -1003,13 +1003,13 @@ namespace Dynamo.Nodes
             // Create DSFunction node
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
                 "Curve.PointAtParameter", "Curve.PointAtParameter@double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
             XmlElement curveNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"RevitNodes.dll",
+                data.Document, oldNode, 0, "RevitNodes.dll",
                 "Element.Geometry", "Element.Geometry");
             migrationData.AppendNode(curveNode);
             string curveNodeId = MigrationManager.GetGuidFromXmlElement(curveNode);
@@ -1039,14 +1039,14 @@ namespace Dynamo.Nodes
 
             //create the node itself
             XmlElement translateNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(translateNode,"ProtoGeometry.dll",
+            MigrationManager.SetFunctionSignature(translateNode, "ProtoGeometry.dll",
                 "Geometry.Translate", "Geometry.Translate@Autodesk.DesignScript.Geometry.Vector,double");
 
             migratedData.AppendNode(translateNode);
             string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
 
             XmlElement distanceToNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 0,"ProtoGeometry.dll",
+                data.Document, oldNode, 0, "ProtoGeometry.dll",
                 "Geometry.DistanceTo", "Geometry.DistanceTo@Geometry");
             migratedData.AppendNode(distanceToNode);
             string distanceToNodeId = MigrationManager.GetGuidFromXmlElement(distanceToNode);
@@ -1057,7 +1057,7 @@ namespace Dynamo.Nodes
             string multiplyNodeId = MigrationManager.GetGuidFromXmlElement(multiplyNode);
 
             XmlElement asVectorNode = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2,"ProtoGeometry.dll","Point.AsVector","Point.AsVector");
+                data.Document, oldNode, 2, "ProtoGeometry.dll", "Point.AsVector", "Point.AsVector");
             migratedData.AppendNode(asVectorNode);
             string asVectorNodeId = MigrationManager.GetGuidFromXmlElement(asVectorNode);
 

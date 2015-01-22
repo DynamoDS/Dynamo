@@ -11,7 +11,6 @@ using DSCoreNodesUI.Properties;
 
 using Microsoft.Practices.Prism.Commands;
 
-
 namespace Dynamo.Nodes
 {
     public delegate List<string> ElementsSelectionDelegate(string message,

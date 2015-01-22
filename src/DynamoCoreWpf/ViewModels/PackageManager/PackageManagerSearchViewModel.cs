@@ -63,7 +63,7 @@ namespace Dynamo.PackageManager
             set
             {
                 _sortingKey = value;
-                RaisePropertyChanged(/*NXLT*/"SortingKey");
+                RaisePropertyChanged("SortingKey");
             }
         }
 
@@ -81,7 +81,7 @@ namespace Dynamo.PackageManager
             set
             {
                 _sortingDirection = value;
-                RaisePropertyChanged(/*NXLT*/"SortingDirection");
+                RaisePropertyChanged("SortingDirection");
             }
         }
 
@@ -98,7 +98,7 @@ namespace Dynamo.PackageManager
             set
             {
                 _SearchText = value;
-                RaisePropertyChanged(/*NXLT*/"SearchText");
+                RaisePropertyChanged("SearchText");
             }
         }
 
@@ -117,7 +117,7 @@ namespace Dynamo.PackageManager
                 if (_selectedIndex != value)
                 {
                     _selectedIndex = value;
-                    RaisePropertyChanged(/*NXLT*/"SelectedIndex");
+                    RaisePropertyChanged("SelectedIndex");
                 }
             }
         }
@@ -158,7 +158,7 @@ namespace Dynamo.PackageManager
             set
             {
                 _searchState = value;
-                RaisePropertyChanged(/*NXLT*/"SearchState");
+                RaisePropertyChanged("SearchState");
             }
         }
 
@@ -584,13 +584,13 @@ namespace Dynamo.PackageManager
                 this.ClearCompletedCommand.RaiseCanExecuteChanged();
             }
 
-            this.RaisePropertyChanged(/*NXLT*/"HasDownloads");
+            this.RaisePropertyChanged("HasDownloads");
 
         }
 
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            this.RaisePropertyChanged(/*NXLT*/"HasNoResults");
+            this.RaisePropertyChanged("HasNoResults");
         } 
 
         public void ClearCompleted()

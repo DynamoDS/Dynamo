@@ -54,7 +54,7 @@ namespace Dynamo.DSEngine
         {
             if (xml == null) return String.Empty;
 
-            return GetMemberElement(parameter.Function,
+            return GetMemberElement(parameter.Function, 
                 String.Format("param[@name='{0}']", parameter.Name), xml).CleanUpDocString();
         }
 
@@ -120,7 +120,7 @@ namespace Dynamo.DSEngine
             // match with fallback
             match = xml.XPathEvaluate(
                 String.Format(
-                "string(/doc/members/member[contains(@name,'{0}')]/{1})", methodName, suffix));
+                    "string(/doc/members/member[contains(@name,'{0}')]/{1})", methodName, suffix));
 
             if (match is String && !string.IsNullOrEmpty((string)match))
             {
