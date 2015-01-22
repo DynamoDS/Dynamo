@@ -786,7 +786,8 @@ namespace Dynamo.PackageManager
                 fDialog = new OpenFileDialog()
                 {
                     Filter = "Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml",
-                    Title = "Add Custom Node, Library, or XML file to Package..."
+                    Title = "Add Custom Node, Library, or XML file to Package...",
+                    Multiselect = true
                 };
             }
 
@@ -806,7 +807,21 @@ namespace Dynamo.PackageManager
 
             if (fDialog.ShowDialog() == DialogResult.OK)
             {
-                AddFile(fDialog.FileName);
+                if (fDialog.FileNames.Length > 1)
+                {
+                    foreach (var fn in fDialog.FileNames)
+                    {
+                        AddFile(fn);
+                    }
+                }
+                else
+                {
+                    AddFile(fDialog.FileName);
+                }
+
+
+                
+                
             }
         }
 

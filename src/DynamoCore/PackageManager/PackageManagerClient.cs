@@ -116,14 +116,16 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        private static readonly string serverUrl = "https://www.dynamopackages.com/";
+        //private static readonly string serverUrl = "https://107.20.146.184/";
+        private static readonly string serverUrl = "https://54.225.121.251/";
         
         public PackageManagerClient(string rootPkgDir,  CustomNodeManager customNodeManager)
         {
             this.rootPkgDir = rootPkgDir;
             this.customNodeManager = customNodeManager;
 
-            Client = new Client(null, "http://www.dynamopackages.com");
+            //Client = new Client(null, "http://107.20.146.184");
+            Client = new Client(null, "http://54.225.121.251");
         }
 
         //public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
