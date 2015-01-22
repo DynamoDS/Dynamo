@@ -296,7 +296,7 @@ namespace Dynamo.ViewModels
         private void RemoveEntry(NodeSearchElement entry)
         {
             var branch = GetTreeBranchToNode(libraryRoot, entry);
-            if (branch == null)
+            if (!branch.Any())
                 return;
             var treeStack = new Stack<NodeCategoryViewModel>(branch.Reverse());
 
@@ -349,7 +349,7 @@ namespace Dynamo.ViewModels
                         continue;
                     }
 
-                    return null;
+                    return Enumerable.Empty<NodeCategoryViewModel>();
                 }
                 nodesOnBranch.Push(target);
                 target = newTarget;
