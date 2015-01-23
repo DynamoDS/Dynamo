@@ -223,6 +223,24 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allows you to select a directory on the system to get its path.
+        /// </summary>
+        internal static string DirectoryNodeDescription {
+            get {
+                return ResourceManager.GetString("DirectoryNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a directory object from a path.
+        /// </summary>
+        internal static string DirectoryObjectNodeDescription {
+            get {
+                return ResourceManager.GetString("DirectoryObjectNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Path to the directory..
         /// </summary>
         internal static string DirectoryObjectPortDataPathToolTip {
@@ -250,11 +268,29 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creates a number..
+        /// </summary>
+        internal static string DoubleInputNodeDescription {
+            get {
+                return ResourceManager.GetString("DoubleInputNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A slider that produces double values..
         /// </summary>
         internal static string DoubleSliderDescription {
             get {
                 return ResourceManager.GetString("DoubleSliderDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A slider that produces numeric values..
+        /// </summary>
+        internal static string DoubleSliderNodeDescription {
+            get {
+                return ResourceManager.GetString("DoubleSliderNodeDescription", resourceCulture);
             }
         }
         
@@ -273,6 +309,24 @@ namespace DSCoreNodesUI.Properties {
         internal static string FileFromPathDescription {
             get {
                 return ResourceManager.GetString("FileFromPathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows you to select a file on the system to get its filename.
+        /// </summary>
+        internal static string FilenameNodeDescription {
+            get {
+                return ResourceManager.GetString("FilenameNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a file object from a path..
+        /// </summary>
+        internal static string FileObjectNodeDescription {
+            get {
+                return ResourceManager.GetString("FileObjectNodeDescription", resourceCulture);
             }
         }
         
@@ -444,6 +498,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string IntegerSliderDescription {
             get {
                 return ResourceManager.GetString("IntegerSliderDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A slider that produces integer values..
+        /// </summary>
+        internal static string IntegerSliderNodeDescription {
+            get {
+                return ResourceManager.GetString("IntegerSliderNodeDescription", resourceCulture);
             }
         }
         
@@ -842,6 +905,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creates a string..
+        /// </summary>
+        internal static string StringInputNodeDescription {
+            get {
+                return ResourceManager.GetString("StringInputNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Visualize the output of node..
         /// </summary>
         internal static string WatchDescription {
@@ -865,6 +937,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string WatchImageSearchTags {
             get {
                 return ResourceManager.GetString("WatchImageSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visualize the output of node..
+        /// </summary>
+        internal static string WatchNodeDescription {
+            get {
+                return ResourceManager.GetString("WatchNodeDescription", resourceCulture);
             }
         }
         
