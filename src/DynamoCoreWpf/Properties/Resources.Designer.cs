@@ -1674,24 +1674,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A function output, use with custom nodes.
-        /// </summary>
-        public static string FuncOutputOfCustomerNodeDescription {
-            get {
-                return ResourceManager.GetString("FuncOutputOfCustomerNodeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
-        /// </summary>
-        public static string FunctionParamOfCustomerNodeDescription {
-            get {
-                return ResourceManager.GetString("FunctionParamOfCustomerNodeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sample Left Button.
         /// </summary>
         public static string GenericTaskDialogSampleLeftButton {

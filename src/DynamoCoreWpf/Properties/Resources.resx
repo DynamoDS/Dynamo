@@ -1528,17 +1528,12 @@ Click CANCEL to cancel the update.</value>
   <data name="CustomNodeDescription" xml:space="preserve">
     <value>Instance of a Custom Node</value>
   </data>
-  <data name="FuncOutputOfCustomerNodeDescription" xml:space="preserve">
-    <value>A function output, use with custom nodes</value>
-  </data>
+  
   <data name="Point2Node" xml:space="preserve">
     <value>Create a point in the XY plane.</value>
   </data>
   <data name="Point3Node" xml:space="preserve">
     <value>Create a point in 3D space.</value>
-  </data>
-  <data name="FunctionParamOfCustomerNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes</value>
   </data>
   <data name="OutputNodeDescription" xml:space="preserve">
     <value>A function output, use with custom nodes</value>
