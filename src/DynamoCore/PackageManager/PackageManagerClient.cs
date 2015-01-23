@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dynamo.Core;
+using Dynamo.Models;
+
 using Dynamo.Utilities;
 using Greg;
 using Greg.AuthProviders;

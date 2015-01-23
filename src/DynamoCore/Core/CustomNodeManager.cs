@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
+using ProtoCore.Namespace;
+using Symbol = Dynamo.Nodes.Symbol;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Core
 {
     /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
@@ -477,9 +479,9 @@ namespace Dynamo.Utilities
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
             SetPreloadFunctionDefinition(functionId);
-
+ 
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
-
+           
             var newWorkspace = new CustomNodeWorkspaceModel(
                 workspaceInfo.Name,
                 workspaceInfo.Category,
@@ -489,7 +491,7 @@ namespace Dynamo.Utilities
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                functionId, workspaceInfo.FileName);
+                functionId, nodeGraph.ElementResolver, workspaceInfo.FileName);
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -598,7 +600,7 @@ namespace Dynamo.Utilities
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
-            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, string.Empty);
+            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, new ElementResolver(), string.Empty);
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
@@ -1022,7 +1024,7 @@ namespace Dynamo.Utilities
                     Enumerable.Empty<NoteModel>(),
                     0,
                     0,
-                    newId, string.Empty);
+                    newId, currentWorkspace.ElementResolver, string.Empty);
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 

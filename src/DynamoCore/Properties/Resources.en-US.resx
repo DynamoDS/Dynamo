@@ -1,0 +1,506 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BuildSublistsDescription" xml:space="preserve">
+    <value>Build sublists from a list using DesignScript range syntax.</value>
+    <comment>Description for code block node</comment>
+  </data>
+  <data name="CodeBlockNodeDescription" xml:space="preserve">
+    <value>Allows for DesignScript code to be authored directly</value>
+  </data>
+  <data name="NumberNodeDescription" xml:space="preserve">
+    <value>Creates a number.</value>
+    <comment>Description for number node</comment>
+  </data>
+  <data name="StringNodeDescription" xml:space="preserve">
+    <value>Creates a string.</value>
+    <comment>Description for string node</comment>
+  </data>
+  <data name="FunctionNodeDescription" xml:space="preserve">
+    <value>DesignScript Builtin Functions</value>
+    <comment>Description for function node</comment>
+  </data>
+  <data name="CustomNodeDesciption" xml:space="preserve">
+    <value>Instance of a Custom Node</value>
+    <comment>Description for custom node</comment>
+  </data>
+  <data name="ComposeFunctionNodeDescription" xml:space="preserve">
+    <value>Composes two single parameter functions into one function.</value>
+    <comment>Description for compose function node</comment>
+  </data>
+  <data name="OutputNodeDescription" xml:space="preserve">
+    <value>A function output, use with custom nodes</value>
+    <comment>Description for output node</comment>
+  </data>
+  <data name="InputNodeDescription" xml:space="preserve">
+    <value>A function parameter, use with custom nodes</value>
+    <comment>Description for input node</comment>
+  </data>
+  <data name="InputNodeSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
+  </data>
+  <data name="ComposeFunctionPortDataFunctionToolTip" xml:space="preserve">
+    <value>A Function</value>
+  </data>
+  <data name="ComposeFunctionPortDataResultToolTip" xml:space="preserve">
+    <value>Composed function: g(f(x))</value>
+  </data>
+  <data name="NumberRangePortDataAmountToolTip" xml:space="preserve">
+    <value>Amount of numbers in the sequence</value>
+  </data>
+  <data name="NumberRangePortDataEndToolTip" xml:space="preserve">
+    <value>Number to end the sequence at</value>
+  </data>
+  <data name="NumberRangePortDataSeqToolTip" xml:space="preserve">
+    <value>New sequence</value>
+  </data>
+  <data name="NumberRangePortDataStartToolTip" xml:space="preserve">
+    <value>Number to start the sequence at</value>
+  </data>
+  <data name="NumberRangePortDataStepToolTip" xml:space="preserve">
+    <value>Space between numbers</value>
+  </data>
+  <data name="PortDataParameterToolTip" xml:space="preserve">
+    <value>parameter</value>
+  </data>
+  <data name="PortDataVariableToolTip" xml:space="preserve">
+    <value>variable</value>
+    <comment>Tooltip to indidate it is a variable</comment>
+  </data>
+  <data name="SublistPortDataResultToolTip" xml:space="preserve">
+    <value>The sublists.</value>
+    <comment>Tooltip</comment>
+  </data>
+  <data name="SublistsPortDataListToolTip" xml:space="preserve">
+    <value>The list from which to create sublists.</value>
+    <comment>Tooltip for inport data</comment>
+  </data>
+  <data name="SublistsPortDataOffsetToolTip" xml:space="preserve">
+    <value>The offset to apply to the sub-list. Ex. The range "0..2" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}...</value>
+    <comment>Tooltip</comment>
+  </data>
+  <data name="PortDataFunctionOutputToolTip" xml:space="preserve">
+    <value>function output</value>
+  </data>
+  <data name="PortDataInputToolTip" xml:space="preserve">
+    <value>Input #{0}</value>
+  </data>
+  <data name="PortDataOutputToolTip" xml:space="preserve">
+    <value>Output #{0}</value>
+  </data>
+  <data name="PortDataPathToFileToolTip" xml:space="preserve">
+    <value>Path to the file</value>
+  </data>
+  <data name="PortDataReturnValueToolTip" xml:space="preserve">
+    <value>return value</value>
+  </data>
+  <data name="PortDataSymbolToolTip" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="ButtonDownloadLastest" xml:space="preserve">
+    <value>Download latest version</value>
+    <comment>Button Download Lastest</comment>
+  </data>
+  <data name="ArggOKButton" xml:space="preserve">
+    <value>Arrrrg, ok</value>
+    <comment>Button OK</comment>
+  </data>
+  <data name="ButtonProcess" xml:space="preserve">
+    <value>Proceed anyway</value>
+    <comment>Button Process</comment>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>Button Cancel</comment>
+  </data>
+  <data name="CannotOpenFile" xml:space="preserve">
+    <value>Your file cannot be opened</value>
+  </data>
+  <data name="DisplayEnigineFailureMessageDescription" xml:space="preserve">
+    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely "having great difficulties pulling itself together. It is "recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
+
+If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
+  </data>
+  <data name="FileNotOpenedCorrectly" xml:space="preserve">
+    <value>Your file may not open correctly</value>
+  </data>
+  <data name="IncompatibleOfFileAndDynamo" xml:space="preserve">
+    <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
+  </data>
+  <data name="IncorrectVersionToOpenFile" xml:space="preserve">
+    <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>
+  </data>
+  <data name="SubmitBugToGithub" xml:space="preserve">
+    <value>Submit Bug To Github</value>
+    <comment>Button submit</comment>
+  </data>
+  <data name="UnhandledExceptionInDynamoEngine" xml:space="preserve">
+    <value>Unhandled exception in Dynamo engine</value>
+  </data>
+  <data name="UsageReportingErrorMessage" xml:space="preserve">
+    <value>Uh oh...
+ We're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.
+You can also try deleting [FILEPATH] and trying again.
+Depending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.
+Sorry about that.</value>
+  </data>
+  <data name="CouldNotLoadTypes" xml:space="preserve">
+    <value>Could not load types.</value>
+  </data>
+  <data name="CreatingConnectorError" xml:space="preserve">
+    <value>ERROR : Could not create connector between {0} and {1}.</value>
+  </data>
+  <data name="DllLoadException" xml:space="preserve">
+    <value>Dll Load Exception:</value>
+  </data>
+  <data name="ElapsedWhenLoadingXml" xml:space="preserve">
+    <value>{0} elapsed for loading xml.</value>
+  </data>
+  <data name="EvaluationComleted" xml:space="preserve">
+    <value>Evaluation completed in {0}</value>
+  </data>
+  <data name="FailedToLoadHeader" xml:space="preserve">
+    <value>ERROR: The header for the custom node at {0} failed to load.  It will be left out of search.</value>
+  </data>
+  <data name="FileBackUpLocation" xml:space="preserve">
+    <value>Original file '{0}' gets backed up at '{1}'</value>
+  </data>
+  <data name="LoadingNodeDefinition" xml:space="preserve">
+    <value>Loading node definition for "{0}" from: {1}</value>
+  </data>
+  <data name="NodeProblemEncountered" xml:space="preserve">
+    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}</value>
+  </data>
+  <data name="OpeningHomeWorkspace" xml:space="preserve">
+    <value>Opening home workspace {0}...</value>
+  </data>
+  <data name="OpenWorkbenchError" xml:space="preserve">
+    <value>There was an error opening the workbench.</value>
+  </data>
+  <data name="BadIdentifierSyntax" xml:space="preserve">
+    <value>Bad identifier syntax: "{0}"</value>
+  </data>
+  <data name="BadRangeSyntax" xml:space="preserve">
+    <value>Bad range syntax: not of format \"start..end[..(increment|#count)]\"</value>
+  </data>
+  <data name="CannotHave0Step" xml:space="preserve">
+    <value>Can't have 0 step.</value>
+  </data>
+  <data name="ClearingWorkflow" xml:space="preserve">
+    <value>Clearing workflow...</value>
+  </data>
+  <data name="CouldNotCompressFile" xml:space="preserve">
+    <value>Could not compress file.  Is the file in use?</value>
+  </data>
+  <data name="CouldNotGetLatestBuild" xml:space="preserve">
+    <value>Couldn't get the latest build from S3</value>
+  </data>
+  <data name="CouldNotGetUpdateData" xml:space="preserve">
+    <value>Couldn't get update data from {0}</value>
+  </data>
+  <data name="DulicatedPackage" xml:space="preserve">
+    <value>A duplicate of the package called {0} was found at {1}.  Ignoring it.</value>
+  </data>
+  <data name="DynamoUpToDate" xml:space="preserve">
+    <value>Dynamo is up to date.</value>
+  </data>
+  <data name="ExceptionEncountered" xml:space="preserve">
+    <value>Exception encountered scanning the package directory at {0}</value>
+  </data>
+  <data name="FailedToLoad" xml:space="preserve">
+    <value>Failed to load {0}\n, Exception: {1}</value>
+  </data>
+  <data name="FailedToLoadCustomNode" xml:space="preserve">
+    <value>Failed to load custom node: {0}.  Replacing with proxy custom node.</value>
+  </data>
+  <data name="FailedToSave" xml:space="preserve">
+    <value>Failed to save {0}\n, Exception: {1}</value>
+  </data>
+  <data name="IdentifiersNotFound" xml:space="preserve">
+    <value>No identifiers found.</value>
+  </data>
+  <data name="InvalidStartOrEndOfRange" xml:space="preserve">
+    <value>The start or end of a range is greater than the number of available elements in the list.</value>
+  </data>
+  <data name="MalformedHeaderPackage" xml:space="preserve">
+    <value>{0} contains a package with a malformed header.  Ignoring it.</value>
+  </data>
+  <data name="NoHeaderPackage" xml:space="preserve">
+    <value>{0} contains a package without a header.  Ignoring it.</value>
+  </data>
+  <data name="PackageEmpty" xml:space="preserve">
+    <value>The package was found to be empty and was not installed.</value>
+  </data>
+  <data name="PackageTooLarge" xml:space="preserve">
+    <value>The package is too large!  The package must be less than 15 MB!</value>
+  </data>
+  <data name="PathNotRegconizableAsStableOrDailyBuild" xml:space="preserve">
+    <value>The specified file path is not recognizable as a stable or a daily build</value>
+  </data>
+  <data name="RangeEndCouldNotBeParsed" xml:space="preserve">
+    <value>Range end could not be parsed.</value>
+  </data>
+  <data name="RangeOrApprIdentifierAlrUsed" xml:space="preserve">
+    <value>Cannot use range or approx. identifier on increment field when one has already been used to specify a count.</value>
+  </data>
+  <data name="RangeStepCouldNotBeParsed" xml:space="preserve">
+    <value>Range step could not be parsed.</value>
+  </data>
+  <data name="RangeValuesGreaterThanZero" xml:space="preserve">
+    <value>Range values must be greater than zero.</value>
+  </data>
+  <data name="RequestingVersionUpdate" xml:space="preserve">
+    <value>Requesting version update info...</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update available: {0}</value>
+  </data>
+  <data name="UpdateDownloadComplete" xml:space="preserve">
+    <value>Update download complete.</value>
+  </data>
+  <data name="UpdateDownloadProgress" xml:space="preserve">
+    <value>Update download progress: {0}%</value>
+  </data>
+  <data name="UpdateDownloadStarted" xml:space="preserve">
+    <value>Update download started...</value>
+  </data>
+  <data name="WorkbenchNotOpen" xml:space="preserve">
+    <value>Workbench could not be opened.</value>
+  </data>
+  <data name="CouldNotRepairOneNodeHoles" xml:space="preserve">
+    <value>Could not repair 1-node holes</value>
+  </data>
+  <data name="CustomNodeCouldNotBeInitialized" xml:space="preserve">
+    <value>Custom node \"{0}\" could not be initialized.</value>
+  </data>
+  <data name="FailedToGetMirrorVariable" xml:space="preserve">
+    <value>Failed to get mirror for variable:  {0}; reason: {1}.</value>
+  </data>
+  <data name="FailedToLoadType" xml:space="preserve">
+    <value>Failed to load type from {0}. The type was {1}.</value>
+  </data>
+  <data name="OpenWorkspaceError" xml:space="preserve">
+    <value>There was an error opening the workspace.</value>
+  </data>
+  <data name="UnableToCreateCustomNodeID" xml:space="preserve">
+    <value>Unable to create instance of custom node with id: \"</value>
+  </data>
+  <data name="BackUpOriginalFileMessage" xml:space="preserve">
+    <value>Original file '{0}' gets backed up at '{1}'</value>
+  </data>
+  <data name="ClearingWorkSpace" xml:space="preserve">
+    <value>Clearing workspace...</value>
+  </data>
+  <data name="CodeBlockDescription" xml:space="preserve">
+    <value>Allows for DesignScript code to be authored directly</value>
+  </data>
+  <data name="DownloadLatestButton" xml:space="preserve">
+    <value>Download latest version</value>
+  </data>
+  <data name="DuplicateMigrationTypeRegistered" xml:space="preserve">
+    <value>Duplicate migration type registered for {0}</value>
+  </data>
+  <data name="ExceptionIsNotHeapCorruptionDescription" xml:space="preserve">
+    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better.
+
+If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
+  </data>
+  <data name="FileCannotBeOpened" xml:space="preserve">
+    <value>Your file cannot be opened.</value>
+  </data>
+  <data name="FutureFileDescription" xml:space="preserve">
+    <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>
+  </data>
+  <data name="FutureFileSummary" xml:space="preserve">
+    <value>Your file may not open correctly</value>
+  </data>
+  <data name="FutureFileTitle" xml:space="preserve">
+    <value>Future File</value>
+  </data>
+  <data name="GoodByeLog" xml:space="preserve">
+    <value>Goodbye</value>
+  </data>
+  <data name="InvalidLibraryFormat" xml:space="preserve">
+    <value>Invalid library format.</value>
+  </data>
+  <data name="LibraryBuildError" xml:space="preserve">
+    <value>Build error for library: {0}</value>
+  </data>
+  <data name="LibraryHasBeenLoaded" xml:space="preserve">
+    <value>Library {0} has been loaded.</value>
+  </data>
+  <data name="LibraryIsDumped" xml:space="preserve">
+    <value>Library is dumped to \"{0}\".</value>
+  </data>
+  <data name="LibraryPathCannotBeFound" xml:space="preserve">
+    <value>Cannot find library path: {0}.</value>
+  </data>
+  <data name="NewNoteString" xml:space="preserve">
+    <value>New Note</value>
+  </data>
+  <data name="ObsoleteFileDescription" xml:space="preserve">
+    <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
+  </data>
+  <data name="ObsoleteFileTitle" xml:space="preserve">
+    <value>Obsolete File</value>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ProceedButton" xml:space="preserve">
+    <value>Proceed anyway</value>
+  </data>
+  <data name="SavingInProgress" xml:space="preserve">
+    <value>Saving {0} ...</value>
+  </data>
+  <data name="SubmitBugButton" xml:space="preserve">
+    <value>Submit Bug To Github</value>
+  </data>
+  <data name="ToolTipForTempVar" xml:space="preserve">
+    <value>Statement Output</value>
+  </data>
+  <data name="ToolTipReturnValue" xml:space="preserve">
+    <value>return value</value>
+  </data>
+  <data name="UnhandledExceptionSummary" xml:space="preserve">
+    <value>Unhandled exception in Dynamo engine</value>
+  </data>
+  <data name="UnhandledExceptionTitle" xml:space="preserve">
+    <value>Unhandled Exception</value>
+  </data>
+  <data name="UnknownVersion" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="WelcomeMessage" xml:space="preserve">
+    <value>Welcome to Dynamo!</value>
+  </data>
+  <data name="ToolTipFunctionOutput" xml:space="preserve">
+    <value>function output</value>
+  </data>
+  <data name="ToolTipInput" xml:space="preserve">
+    <value>input #</value>
+  </data>
+  <data name="ToolTipOutput" xml:space="preserve">
+    <value>output #</value>
+  </data>
+  <data name="ToolTipSymbol" xml:space="preserve">
+    <value>symbol</value>
+  </data>
+</root>

@@ -28,9 +28,9 @@ using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
-
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
+using Symbol = Dynamo.Nodes.Symbol;
 using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
@@ -837,7 +837,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                DebugSettings.VerboseLogging, IsTestMode, workspaceInfo.FileName);
+                DebugSettings.VerboseLogging, IsTestMode, nodeGraph.ElementResolver, workspaceInfo.FileName);
 
             RegisterHomeWorkspace(newWorkspace);
             

@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
-using DSCoreNodesUI.Input;
-using Dynamo.Core;
+
 using Dynamo.Models;
+using Dynamo.Nodes;
+
 using ProtoCore.AST.AssociativeAST;
 
-namespace Dynamo.Nodes
+namespace DSCoreNodesUI.Input
 {
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
@@ -52,9 +54,10 @@ namespace Dynamo.Nodes
             return Value.ToString(CultureInfo.InvariantCulture);
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
-            WorkspaceModel.RecordModelForModification(this, recorder);
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
 
             switch (name)
             {
@@ -76,7 +79,7 @@ namespace Dynamo.Nodes
                     return true;
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         #region Serialization/Deserialization Methods
@@ -128,5 +131,22 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+    }
+}
+
+namespace Dynamo.Nodes
+{
+    public class DoubleSlider
+    {
+        [NodeMigration(@from: "0.7.5.0")]
+        public static NodeMigrationData Migrate_0750(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.Input.DoubleSlider", "Number Slider");
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 }
