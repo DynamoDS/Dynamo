@@ -1065,6 +1065,10 @@ namespace Dynamo.Controls
                         tabSlidingWindowStart--;
                         tabSlidingWindowEnd--;
                     }
+                    else if (tabSlidingWindowEnd < lastTab)
+                    {
+                        tabSlidingWindowEnd++;
+                    }
                 }
             }
 
