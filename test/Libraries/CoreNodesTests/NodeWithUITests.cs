@@ -13,10 +13,13 @@
 // 
 using System.Collections.Generic;
 using System.Linq;
+
 using Dynamo.Models;
-using Dynamo.Nodes;
+
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
+using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
+using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DSCoreNodesTests
 {

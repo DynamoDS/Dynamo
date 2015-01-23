@@ -1,9 +1,9 @@
 using DSCoreNodesUI.Input;
+
 using Dynamo.Controls;
-using Dynamo.Nodes;
 using Dynamo.Wpf.Controls;
 
-namespace Dynamo.Wpf.Nodes
+namespace Dynamo.Wpf.NodeViewCustomizations
 {
     public class DoubleSliderNodeViewCustomization : INodeViewCustomization<DoubleSlider>
     {
