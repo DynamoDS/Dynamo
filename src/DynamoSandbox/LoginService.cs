@@ -12,7 +12,7 @@ namespace Dynamo.Applications.Authentication
 {
     internal class LoginService
     {
-        private SynchronizationContext context;
+        private readonly SynchronizationContext context;
 
         public LoginService(SynchronizationContext context)
         {
