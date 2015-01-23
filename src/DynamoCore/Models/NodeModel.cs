@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
+using ProtoCore.Namespace;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
@@ -1147,7 +1148,7 @@ namespace Dynamo.Models
                     InPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += c => p_PortConnected(p, c);
+                    p.PortConnected += p_PortConnected;
                     p.PortDisconnected += p_PortDisconnected;
                     
                     return p;
@@ -1170,7 +1171,7 @@ namespace Dynamo.Models
                     OutPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += c => p_PortConnected(p, c);
+                    p.PortConnected += p_PortConnected;
                     p.PortDisconnected += p_PortDisconnected;
 
                     return p;
@@ -1196,11 +1197,10 @@ namespace Dynamo.Models
             }
         }
 
-        private void p_PortDisconnected(object sender, EventArgs e)
+        private void p_PortDisconnected(PortModel port)
         {
             ValidateConnections();
 
-            var port = (PortModel)sender;
             if (port.PortType == PortType.Input)
             {
                 int data = InPorts.IndexOf(port);
@@ -1275,8 +1275,11 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name == "NickName")
             {
                 NickName = value;
@@ -1292,7 +1295,7 @@ namespace Dynamo.Models
                 return true;
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         #endregion

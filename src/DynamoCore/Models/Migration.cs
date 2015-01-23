@@ -854,6 +854,8 @@ namespace Dynamo.Models
             foreach (XmlAttribute attribute in element.Attributes)
                 cloned.SetAttribute(attribute.Name, attribute.Value);
 
+            cloned.InnerXml = element.InnerXml;
+
             cloned.SetAttribute("type", type);
             cloned.SetAttribute("nickname", nickname);
             return cloned;

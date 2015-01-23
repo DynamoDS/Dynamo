@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Input;
 using System.Xml;
 
 using SystemTestServices;
-
-using DSCoreNodesUI.Input;
 
 using DSIronPythonNode;
 using Dynamo;
@@ -22,6 +18,7 @@ using NUnit.Framework;
 using Dynamo.UI;
 using DynamoUtilities;
 using System.Reflection;
+using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DynamoCoreUITests
 {
@@ -268,7 +265,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        public void TestUpdateModelValueCommand()
+        public void TestUpdateModelValueCommand0()
         {
             Guid modelGuid = Guid.NewGuid();
             string name = randomizer.Next().ToString();
@@ -277,7 +274,31 @@ namespace DynamoCoreUITests
             var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuid, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
+            Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
+            Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
+            Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUpdateModelValueCommand1()
+        {
+            var modelGuids = new[]
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            };
+
+            string name = randomizer.Next().ToString();
+            string value = randomizer.Next().ToString();
+
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuids, name, value);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
             Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
             Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
         }
@@ -1948,14 +1969,14 @@ namespace DynamoCoreUITests
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -1963,14 +1984,14 @@ namespace DynamoCoreUITests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -2043,14 +2064,14 @@ namespace DynamoCoreUITests
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2058,14 +2079,14 @@ namespace DynamoCoreUITests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
