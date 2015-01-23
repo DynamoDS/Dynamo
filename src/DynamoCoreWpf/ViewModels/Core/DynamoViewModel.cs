@@ -998,7 +998,8 @@ namespace Dynamo.ViewModels
             {
                 Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
                 string location = Path.GetDirectoryName(dynamoAssembly.Location);
-                string path = Path.Combine(location, "samples");
+                string UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
+                string path = Path.Combine(location, "samples", UICulture);
 
                 if (Directory.Exists(path))
                     _fileDialog.InitialDirectory = path;
