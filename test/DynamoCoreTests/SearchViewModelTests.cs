@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -388,6 +389,18 @@ namespace Dynamo.Tests
             Assert.IsNotNull(theClass.SubCategories.FirstOrDefault(c => c.Name == "SubCategory2"));
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void RemoveEntry09RemoveAllNodes()
+        {
+            var searchElements = PrepareTestTree();
+
+            foreach (var element in searchElements)
+                viewModel.RemoveEntry(element.Model);
+
+            Assert.IsFalse(viewModel.BrowserRootCategories.Any());
+        }
+
         #endregion
 
         #region Helpers
@@ -411,6 +424,42 @@ namespace Dynamo.Tests
         private static NodeSearchElementViewModel CreateCustomNodeViewModel(NodeSearchElement element)
         {
             return new NodeSearchElementViewModel(element);
+        }
+
+        /// <summary>
+        /// Build complex tree.
+        /// </summary>
+        /// <returns>All members of built tree.</returns>
+        private static IEnumerable<NodeSearchElementViewModel> PrepareTestTree()
+        {
+            // Next tree will be built.
+            // Used blocks: ─, │, ┌, ┐, ┤, ├, ┴, ┬. 
+            //
+            //                                        Top
+            //                          ┌──────────────┼────────────┐
+            //                       Sub1_1         Sub1_2       Sub1_3
+            //             ┌────────────┤              │            │
+            //          Sub2_1         Classes      Sub2_3       Sub2_4
+            //    ┌────────┤            │              │            ├────────────┐
+            // Classes     Member2   Sub2_2         Classes         Member6   Classes
+            //    │                     │              │                         │
+            // Sub3_1                   Member3        │                      Sub3_4
+            //    │                              ┌─────┴─────┐                   |
+            //    Member1                     Sub3_2      Sub3_3                 Member7
+            //                                   │           │
+            //                                   Member4     Member5
+            //
+            var searchElements = new List<NodeSearchElementViewModel>();
+
+            searchElements.Add(CreateCustomNodeViewModel("Member1", "Top.Sub1_1.Sub2_1.Sub3_1"));
+            searchElements.Add(CreateCustomNodeViewModel("Member2", "Top.Sub1_1.Sub2_1"));
+            searchElements.Add(CreateCustomNodeViewModel("Member3", "Top.Sub1_1.Sub2_2"));
+            searchElements.Add(CreateCustomNodeViewModel("Member4", "Top.Sub1_2.Sub2_3.Sub3_2"));
+            searchElements.Add(CreateCustomNodeViewModel("Member5", "Top.Sub1_2.Sub2_3.Sub3_3"));
+            searchElements.Add(CreateCustomNodeViewModel("Member6", "Top.Sub1_3.Sub2_4"));
+            searchElements.Add(CreateCustomNodeViewModel("Member7", "Top.Sub1_3.Sub2_4.Sub3_4"));
+
+            return searchElements;
         }
 
         #endregion
