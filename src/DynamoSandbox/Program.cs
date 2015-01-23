@@ -24,11 +24,7 @@ namespace DynamoSandbox
     {
         private static void MakeStandaloneAndRun(string commandFilePath, ref DynamoViewModel viewModel)
         {
-            // authentication
-            var url = ConfigurationManager.AppSettings["authAddress"];
-            var authProvider = new OxygenProvider(url);
-            var loginService = new LoginService(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
-            authProvider.RequestLogin += loginService.ShowLogin;
+            var authProvider = new OxygenProvider(ConfigurationManager.AppSettings["authAddress"]);
 
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
@@ -50,6 +46,9 @@ namespace DynamoSandbox
                 });
 
             var view = new DynamoView(viewModel);
+
+            var loginService = new LoginService(view, new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            authProvider.RequestLogin += loginService.ShowLogin;
 
             var app = new Application();
             app.Run(view);

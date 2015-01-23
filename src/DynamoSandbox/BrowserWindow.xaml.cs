@@ -31,6 +31,12 @@ namespace Dynamo.Applications.Authentication
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // hide loading grid when navigation ready
+            this.Browser.Navigated += (s, a) =>
+            {
+                this.LoadingGrid.Visibility = Visibility.Collapsed;
+                this.Browser.Visibility = Visibility.Visible;
+            };
             this.Browser.Navigate( _location.AbsoluteUri );
         }
     }

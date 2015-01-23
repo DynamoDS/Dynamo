@@ -3,8 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="SignInWindow" Height="365" Width="360">
     <Grid>
-        <WebBrowser Name="Browser">
-            
-        </WebBrowser>
+
+        <Grid Name="LoadingGrid" Background="#ececec">
+            <TextBlock Padding="40" Foreground="#222">Loading...</TextBlock>
+        </Grid>
+        
+        <WebBrowser Name="Browser" Visibility="Collapsed"></WebBrowser>
+                 
     </Grid>
 </Window>
