@@ -763,20 +763,20 @@ b = c[w][x][y][z];";
 
         #region Codeblock Namespace Resolution Tests
 
-        [Test]
-        public void SerializeResolutionMap_SaveFile()
-        {
-            string code = "a : int;";
+        //[Test]
+        //public void SerializeResolutionMap_SaveFile()
+        //{
+        //    string code = "a : int;";
 
-            var cbn = new CodeBlockNodeTester(ViewModel.Model.LibraryServices);
+        //    var cbn = new CodeBlockNodeTester(ViewModel.Model.LibraryServices);
             
-            UpdateCodeBlockNodeContent(cbn, code);
+        //    UpdateCodeBlockNodeContent(cbn, code);
 
-            XmlDocument xmlDoc = new XmlDocument();
-            var element = cbn.Serialize(xmlDoc, SaveContext.File);
+        //    XmlDocument xmlDoc = new XmlDocument();
+        //    var element = cbn.Serialize(xmlDoc, SaveContext.File);
 
-            cbn.Deserialize(element, SaveContext.File);
-        }
+        //    cbn.Deserialize(element, SaveContext.File);
+        //}
 
         #endregion
 
@@ -799,16 +799,16 @@ b = c[w][x][y][z];";
         }
     }
 
-    internal class CodeBlockNodeTester : CodeBlockNodeModel
-    {
-        internal CodeBlockNodeTester(LibraryServices ls) : base(ls)
-        {
-            elementResolver = new ElementResolver();
-            elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
-            elementResolver.AddToResolutionMap("Rhino.Point", "Rhino.Geometry.Point", "Rhynamo.dll");
+    //internal class CodeBlockNodeTester : CodeBlockNodeModel
+    //{
+    //    internal CodeBlockNodeTester(LibraryServices ls) : base(ls)
+    //    {
+    //        elementResolver = new ElementResolver();
+    //        elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
+    //        elementResolver.AddToResolutionMap("Rhino.Point", "Rhino.Geometry.Point", "Rhynamo.dll");
             
-        }
-    }
+    //    }
+    //}
 
     public class CodeBlockCompletionTests 
     {
@@ -1378,6 +1378,22 @@ a;b;c;d;e1;f;g;
             caretPos += 40;
             Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
         }
-    }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionForPrimitiveTypes()
+        {
+            // Unit test for CodeCommpletionServices.SearchTypes() which should
+            // include primitive types as well.
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string code = "boo";
+            var completions = codeCompletionServices.SearchTypes(code);
+            Assert.AreEqual(1, completions.Count());
+
+            string[] expected = { "bool" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+            Assert.AreEqual(expected, actual);
+        }
+    }
 }

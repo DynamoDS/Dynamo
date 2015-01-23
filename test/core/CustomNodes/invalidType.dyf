@@ -1,0 +1,9 @@
+<Workspace Version="0.7.6.3485" X="0" Y="0" zoom="1" Description="" Category="Test" Name="invalidType" ID="5ccea00b-4e37-447b-8e34-9dd29eadb0a5">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c13047c0-c5f8-44aa-bf52-280620deab46" nickname="Input" x="283.6" y="249.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x : bol" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

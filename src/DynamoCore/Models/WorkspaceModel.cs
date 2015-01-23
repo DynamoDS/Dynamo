@@ -13,9 +13,10 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST;
+using ProtoCore.Namespace;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
-using NodeModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.NodeModificationUndoHelper;
+using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificationUndoHelper;
 
 namespace Dynamo.Models
 {
@@ -394,13 +395,15 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
+        public ElementResolver ElementResolver { get; private set; }
+
         #endregion
 
         #region constructors
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, string fileName="")
+            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
             Name = name;
 
@@ -416,6 +419,7 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
+            ElementResolver = elementResolver;
 
             foreach (var node in nodes)
                 RegisterNode(node);
@@ -669,6 +673,27 @@ namespace Dynamo.Models
             return true;
         }
 
+        private void SerializeElementResolver(XmlElement root)
+        {
+            Debug.Assert(root != null);
+
+            XmlDocument xmlDoc = root.OwnerDocument;
+
+            var mapElement = xmlDoc.CreateElement("NamespaceResolutionMap");
+
+            foreach (var element in ElementResolver.ResolutionMap)
+            {
+                var resolverElement = xmlDoc.CreateElement("ClassMap");
+                
+                resolverElement.SetAttribute("partialName", element.Key);
+                resolverElement.SetAttribute("resolvedName", element.Value.Key);
+                resolverElement.SetAttribute("assemblyName", element.Value.Value);
+
+                mapElement.AppendChild(resolverElement);
+            }
+            root.AppendChild(mapElement);
+        }
+
         protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
         {
             try
@@ -679,6 +704,8 @@ namespace Dynamo.Models
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
+
+                SerializeElementResolver(root);
 
                 var elementList = xmlDoc.CreateElement("Elements");
                 //write the root element
@@ -780,7 +807,7 @@ namespace Dynamo.Models
             var nodeModel = retrievedModel as NodeModel;
             if (nodeModel != null)
             {
-                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
+                using (new ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
                     handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
                 }
@@ -811,43 +838,22 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        internal void UpdateModelValue(Guid modelGuid, string propertyName, string value)
+        internal void UpdateModelValue(IEnumerable<Guid> modelGuids, string propertyName, string value)
         {
-            var retrievedModel = GetModelInternal(modelGuid);
-            if (retrievedModel == null)
+            if (modelGuids == null || (!modelGuids.Any()))
+                throw new ArgumentNullException("modelGuids");
+
+            var retrievedModels = GetModelsInternal(modelGuids);
+            if (!retrievedModels.Any())
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
-            var handled = false;
-            var nodeModel = retrievedModel as NodeModel;
-            if (nodeModel != null)
+            var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
+            using (new ModelModificationUndoHelper(undoRecorder, retrievedModels))
             {
-                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
+                foreach (var retrievedModel in retrievedModels)
                 {
-                    handled = nodeModel.UpdateValue(propertyName, value, undoRecorder);
+                    retrievedModel.UpdateValue(updateValueParams);
                 }
-            }
-            else
-            {
-                // Perform generic undo recording for models other than node.
-                RecordModelForModification(retrievedModel, UndoRecorder);
-                handled = retrievedModel.UpdateValue(propertyName, value, undoRecorder);
-            }
-
-            if (!handled) // Method call was not handled by any derived class.
-            {
-                string type = retrievedModel.GetType().FullName;
-                string message = string.Format(
-                    "ModelBase.UpdateValue call not handled.\n\n" +
-                    "Model type: {0}\n" +
-                    "Model GUID: {1}\n" +
-                    "Property name: {2}\n" +
-                    "Property value: {3}",
-                    type, modelGuid, propertyName, value);
-
-                // All 'UpdateValue' calls must be handled by one of the 
-                // ModelBase derived classes that the 'UpdateModelValue'
-                // is intended for.
-                throw new InvalidOperationException(message);
             }
 
             HasUnsavedChanges = true;
@@ -1232,6 +1238,21 @@ namespace Dynamo.Models
 
             return foundModel;
         }
+
+        private IEnumerable<ModelBase> GetModelsInternal(IEnumerable<Guid> modelGuids)
+        {
+            var foundModels = new List<ModelBase>();
+
+            foreach (var modelGuid in modelGuids)
+            {
+                var foundModel = GetModelInternal(modelGuid);
+                if (foundModel != null)
+                    foundModels.Add(foundModel);
+            }
+
+            return foundModels;
+        }
+
         #endregion
 
         #region Node To Code Reconnection

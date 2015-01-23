@@ -7,6 +7,7 @@ using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
+using ProtoCore.Namespace;
 using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ using System.Text;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
+using ProtoCore.Utils;
 
 namespace Dynamo.DSEngine
 {
@@ -41,10 +43,13 @@ namespace Dynamo.DSEngine
         
         private readonly Object macroMutex = new Object();
 
+        public static CompilationServices CompilationServices; 
+
         public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
         {
             this.libraryServices = libraryServices; 
             libraryServices.LibraryLoaded += LibraryLoaded;
+            CompilationServices = new CompilationServices(libraryServices.LibraryManagementCore);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
@@ -608,5 +613,20 @@ namespace Dynamo.DSEngine
 
         #endregion
 
+    }
+
+    public class CompilationServices
+    {
+        private  ProtoCore.Core compilationCore;
+
+        public CompilationServices(ProtoCore.Core core)
+        {
+            compilationCore = core;
+        }
+
+        public bool PreCompileCodeBlock(ref ParseParam parseParams, ElementResolver elementResolver)
+        {
+            return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams, elementResolver);
+        }
     }
 }

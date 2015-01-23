@@ -257,7 +257,7 @@ namespace ProtoCore.Utils
         /// <param name="parseParams"> container for compilation related parameters </param>
         /// <param name="elementResolver"> classname resolver </param>
         /// <returns> true if code compilation succeeds, false otherwise </returns>
-        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, ref ElementResolver elementResolver)
+        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, ElementResolver elementResolver)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
@@ -276,10 +276,10 @@ namespace ProtoCore.Utils
 
             // Compile the code to get the resultant unboundidentifiers  
             // and any errors or warnings that were caught by the compiler and cache them in parseParams
-            return CompileCodeBlockAST(core, parseParams, ref elementResolver);
+            return CompileCodeBlockAST(core, parseParams, elementResolver);
         }
 
-        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, ref ElementResolver elementResolver)
+        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, ElementResolver elementResolver)
         {
             Dictionary<int, List<VariableLine>> unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
             IEnumerable<BuildData.WarningEntry> warnings = null;
@@ -302,7 +302,9 @@ namespace ProtoCore.Utils
                 // before passing them for pre-compilation. If partial class is not found in map, 
                 // update Resolution map in elementResolver with fully resolved name from compiler.
                 var astNodes = parseParams.ParsedNodes;
-                ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, ref elementResolver, ref astNodes);
+
+                if(elementResolver != null)
+                    ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, elementResolver, ref astNodes);
 
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
                 // while performing SSA transforms and we want to keep the original AST's

@@ -1,4 +1,5 @@
-﻿using ProtoCore.AST;
+﻿using System.Diagnostics;
+using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
@@ -26,9 +27,10 @@ namespace ProtoCore.Namespace
         /// update ResolutionMap with fully resolved name from compiler.
         /// </summary>
         /// <param name="classTable"></param>
+        /// <param name="elementResolver"></param>
         /// <param name="astNodes"> parent AST node </param>
         public static void ReplaceClassNamesWithResolvedNames(ClassTable classTable,
-            ref ElementResolver elementResolver, ref IEnumerable<Node> astNodes)
+            ElementResolver elementResolver, ref IEnumerable<Node> astNodes)
         {
             var elementRewriter = new ElementRewriter(elementResolver);
 
@@ -44,6 +46,8 @@ namespace ProtoCore.Namespace
 
         private void LookupResolvedNameAndRewriteAst(ClassTable classTable, ref AssociativeNode astNode)
         {
+            Debug.Assert(elementResolver != null);
+
             // Get partial class identifier/identifier lists
             var classIdentifiers = GetClassIdentifiers(astNode);
 

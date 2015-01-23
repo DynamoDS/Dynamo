@@ -14,6 +14,7 @@ using DynamoCoreUITests.Utility;
 using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Selection;
+using ProtoCore.Namespace;
 
 namespace DynamoCoreUITests
 {
@@ -399,7 +400,8 @@ namespace DynamoCoreUITests
 
             var cbn = model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == "fdec3b9b-56ae-4d01-85c2-47b8425e3130") as CodeBlockNodeModel;
             Assert.IsNotNull(cbn);
-            cbn.SetCodeContent("Point.ByCoordinates(a<1>,a<1>,a<1>);", model.CurrentWorkspace.UndoRecorder);
+            var elementResolver = model.CurrentWorkspace.ElementResolver;
+            cbn.SetCodeContent("Point.ByCoordinates(a<1>,a<1>,a<1>);", elementResolver);
             
             // run the expression
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
@@ -410,7 +412,7 @@ namespace DynamoCoreUITests
             cbn.DisplayLabels = true;
             Assert.AreEqual(BackgroundPreview.Text.Count(), 4);
 
-            cbn.SetCodeContent("Point.ByCoordinates(a<1>,a<2>,a<3>);", model.CurrentWorkspace.UndoRecorder);
+            cbn.SetCodeContent("Point.ByCoordinates(a<1>,a<2>,a<3>);", elementResolver);
 
             //change the lacing to cross product 
             //ensure that the labels update to match

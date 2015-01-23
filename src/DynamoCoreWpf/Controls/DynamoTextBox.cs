@@ -153,6 +153,11 @@ namespace Dynamo.Nodes
         new public string Text
         {
             get { return base.Text; }
+            set
+            {
+                base.Text = value;
+                UpdateDataSource(true);
+            }
         }
 
         #endregion
@@ -261,40 +266,6 @@ namespace Dynamo.Nodes
 
         #endregion
     }
-
-    public class DynamoSlider : Slider
-    {
-        readonly NodeModel nodeModel;
-        private readonly UndoRedoRecorder recorder;
-
-        public DynamoSlider(NodeModel model, UndoRedoRecorder undoRecorder)
-        {
-            nodeModel = model;
-            recorder = undoRecorder;
-        }
-
-        #region Event Handlers
-        protected override void OnThumbDragStarted(DragStartedEventArgs e)
-        {
-            base.OnThumbDragStarted(e);
-            WorkspaceModel.RecordModelForModification(nodeModel, recorder);
-        }
-
-        protected override void OnThumbDragCompleted(DragCompletedEventArgs e)
-        {
-            base.OnThumbDragCompleted(e);
-            nodeModel.OnNodeModified();
-        }
-
-        protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnPreviewMouseLeftButtonDown(e);
-            if (e.OriginalSource is Rectangle)
-                WorkspaceModel.RecordModelForModification(nodeModel, recorder);
-        }
-        #endregion
-    }
-
 }
 
 namespace Dynamo.UI.Controls

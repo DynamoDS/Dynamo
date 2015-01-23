@@ -84,10 +84,10 @@
     <AssemblyOriginatorKeyFile>ProtoCore.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;GC_MARK_AND_SWEEP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>TRACE;GC_MARK_AND_SWEEP</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -117,7 +117,6 @@
     <Compile Include="DSASM\InstructionSet.cs" />
     <Compile Include="DSASM\Mirror\DSASMMirror.cs" />
     <Compile Include="DSASM\Mirror\ExecutionMirror.cs" />
-    <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Exceptions\CompilerInternalException.cs" />
     <Compile Include="Exceptions\ExceptionHandling.cs" />
     <Compile Include="Exceptions\MethodResolution.cs" />
@@ -136,6 +135,7 @@
     <Compile Include="Lang\Replication\Replicator.cs" />
     <Compile Include="Lang\TraceUtils.cs" />
     <Compile Include="Namespace\ElementRewriter.cs" />
+    <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
     <Compile Include="ParserUtils.cs" />
     <Compile Include="Reflection\GraphicDataProvider.cs" />

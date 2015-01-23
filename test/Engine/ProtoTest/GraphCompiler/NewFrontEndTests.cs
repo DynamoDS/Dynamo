@@ -23,7 +23,7 @@ namespace ProtoTest.GraphCompiler
 
             ParseParam parseParam = new ParseParam(Guid.NewGuid(), code);
             ElementResolver elementResolver = new ElementResolver();
-            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam, ref elementResolver));
+            Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam, elementResolver));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Count() > 0);
 
             var parsedNode = parseParam.ParsedNodes.ElementAt(0);

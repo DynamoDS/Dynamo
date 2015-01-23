@@ -1,9 +1,5 @@
-﻿using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+﻿using System.Collections.Generic;
 
 namespace ProtoCore.Namespace
 {
@@ -12,13 +8,13 @@ namespace ProtoCore.Namespace
     /// </summary>
     public class ElementResolver
     {
-        private Dictionary<string, KeyValuePair<string, string>> resolutionMap;
+        private readonly IDictionary<string, KeyValuePair<string, string>> resolutionMap;
 
         /// <summary>
         /// Maintains a lookup table of partial class identifiers vs. 
         /// fully qualified class identifier names and assembly name
         /// </summary>
-        public Dictionary<string, KeyValuePair<string, string>> ResolutionMap
+        public IDictionary<string, KeyValuePair<string, string>> ResolutionMap
         {
             get { return resolutionMap; }
         }
@@ -30,7 +26,7 @@ namespace ProtoCore.Namespace
             resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
         }
 
-        public ElementResolver(Dictionary<string, KeyValuePair<string, string>> namespaceLookupMap)
+        public ElementResolver(IDictionary<string, KeyValuePair<string, string>> namespaceLookupMap)
         {
             resolutionMap = namespaceLookupMap;
         }
