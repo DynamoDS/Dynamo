@@ -481,9 +481,9 @@ namespace Dynamo.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
-        public static string FunctionCustomerNodeDescription {
+        public static string FunctionCustomeNodeDescription {
             get {
-                return ResourceManager.GetString("FunctionCustomerNodeDescription", resourceCulture);
+                return ResourceManager.GetString("FunctionCustomeNodeDescription", resourceCulture);
             }
         }
         
@@ -821,15 +821,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
-        /// </summary>
-        public static string ParameterOfCustomerNodeDescription {
-            get {
-                return ResourceManager.GetString("ParameterOfCustomerNodeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The specified file path is not recognizable as a stable or a daily build.
         /// </summary>
         public static string PathNotRegconizableAsStableOrDailyBuild {
@@ -1024,6 +1015,15 @@ namespace Dynamo.Properties {
         public static string SubmitBugToGithub {
             get {
                 return ResourceManager.GetString("SubmitBugToGithub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
+        /// </summary>
+        public static string SymobolNodeDescription {
+            get {
+                return ResourceManager.GetString("SymobolNodeDescription", resourceCulture);
             }
         }
         

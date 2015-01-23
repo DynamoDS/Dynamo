@@ -520,13 +520,13 @@ value: bool = false</value>
   <data name="DummyNodeDescription" xml:space="preserve">
     <value>This is an obsolete node</value>
   </data>
-  <data name="FunctionCustomerNodeDescription" xml:space="preserve">
+  <data name="FunctionCustomeNodeDescription" xml:space="preserve">
     <value>Instance of a Custom Node</value>
   </data>
   <data name="FunctionOutput" xml:space="preserve">
     <value>A function output, use with custom nodes</value>
   </data>
-  <data name="ParameterOfCustomerNodeDescription" xml:space="preserve">
+  <data name="SymobolNodeDescription" xml:space="preserve">
     <value>A function parameter, use with custom nodes</value>
   </data>
 </root>

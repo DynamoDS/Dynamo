@@ -1525,7 +1525,7 @@ Click CANCEL to cancel the update.</value>
   <data name="DSVarArgFuncBuiltin" xml:space="preserve">
     <value>DesignScript Builtin Functions</value>
   </data>
-  <data name="InstanceOfCustomerNodeDescription" xml:space="preserve">
+  <data name="CustomeNodeDescription" xml:space="preserve">
     <value>Instance of a Custom Node</value>
   </data>
   <data name="FuncOutputOfCustomerNodeDescription" xml:space="preserve">
@@ -1538,6 +1538,12 @@ Click CANCEL to cancel the update.</value>
     <value>Create a point in 3D space.</value>
   </data>
   <data name="FunctionParamOfCustomerNodeDescription" xml:space="preserve">
+    <value>A function parameter, use with custom nodes</value>
+  </data>
+  <data name="OutputNodeDescription" xml:space="preserve">
+    <value>A function output, use with custom nodes</value>
+  </data>
+  <data name="SymbolNodeDescription" xml:space="preserve">
     <value>A function parameter, use with custom nodes</value>
   </data>
 </root>

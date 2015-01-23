@@ -324,6 +324,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instance of a Custom Node.
+        /// </summary>
+        public static string CustomeNodeDescription {
+            get {
+                return ResourceManager.GetString("CustomeNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom Node Property Error.
         /// </summary>
         public static string CustomNodePropertyErrorMessageBoxTitle {
@@ -1989,15 +1998,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instance of a Custom Node.
-        /// </summary>
-        public static string InstanceOfCustomerNodeDescription {
-            get {
-                return ResourceManager.GetString("InstanceOfCustomerNodeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}..
         /// </summary>
         public static string LacingCrossProductToolTip {
@@ -2617,6 +2617,15 @@ namespace Dynamo.Wpf.Properties {
         public static string OpenDynamoDefinitionDialogTitle {
             get {
                 return ResourceManager.GetString("OpenDynamoDefinitionDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A function output, use with custom nodes.
+        /// </summary>
+        public static string OutputNodeDescription {
+            get {
+                return ResourceManager.GetString("OutputNodeDescription", resourceCulture);
             }
         }
         
@@ -3445,6 +3454,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageVisitDynamoBim {
             get {
                 return ResourceManager.GetString("StartPageVisitDynamoBim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
+        /// </summary>
+        public static string SymbolNodeDescription {
+            get {
+                return ResourceManager.GetString("SymbolNodeDescription", resourceCulture);
             }
         }
         
