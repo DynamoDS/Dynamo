@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using System.IO;
 
-using DSCoreNodesUI.Input;
-
 using Dynamo.Core;
-using Dynamo.DSEngine;
-using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using DSCoreNodesUI;
 using NUnit.Framework;
-using System.Reflection;
+using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 
 namespace Dynamo.Tests
 {
