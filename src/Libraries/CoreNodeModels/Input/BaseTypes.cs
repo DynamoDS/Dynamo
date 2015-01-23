@@ -14,12 +14,12 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using String = DSCoreNodesUI.String;
-
+using DSCoreNodesUI.Properties;
 namespace Dynamo.Nodes
 {
     [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a string.")]
+    [NodeDescription("StringNodeDescription",typeof(Resources))]
     [IsDesignScriptCompatible]
     public class StringInput : String
     {
@@ -118,7 +118,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a number.")]
+    [NodeDescription("NumberNodeDescription",typeof(Resources))]
     [IsDesignScriptCompatible]
     public class DoubleInput : NodeModel
     {

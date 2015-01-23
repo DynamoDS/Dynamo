@@ -214,6 +214,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creates a directory object from a path.
+        /// </summary>
+        internal static string DirectioryCreationDescription {
+            get {
+                return ResourceManager.GetString("DirectioryCreationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a directory object from a path..
         /// </summary>
         internal static string DirectoryFromPathDescription {
@@ -250,6 +259,24 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allows you to select a directory on the system to get its path.
+        /// </summary>
+        internal static string DirectoryPathGetNodeDescription {
+            get {
+                return ResourceManager.GetString("DirectoryPathGetNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DoubleSilderNodeDescription.
+        /// </summary>
+        internal static string DoubleSilderNodeDescription {
+            get {
+                return ResourceManager.GetString("DoubleSilderNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A slider that produces double values..
         /// </summary>
         internal static string DoubleSliderDescription {
@@ -264,6 +291,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string DropDownPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("DropDownPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a file object from a path.
+        /// </summary>
+        internal static string FileCreationNodeDescription {
+            get {
+                return ResourceManager.GetString("FileCreationNodeDescription", resourceCulture);
             }
         }
         
@@ -345,6 +381,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string FormulaDescription {
             get {
                 return ResourceManager.GetString("FormulaDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/.
+        /// </summary>
+        internal static string FormulaNodeDescription {
+            get {
+                return ResourceManager.GetString("FormulaNodeDescription", resourceCulture);
             }
         }
         
@@ -444,6 +489,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string IntegerSliderDescription {
             get {
                 return ResourceManager.GetString("IntegerSliderDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A slider that produces integer values.
+        /// </summary>
+        internal static string IntSliderNodeDescription {
+            get {
+                return ResourceManager.GetString("IntSliderNodeDescription", resourceCulture);
             }
         }
         
@@ -570,6 +624,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string MapPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("MapPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a number.
+        /// </summary>
+        internal static string NumberNodeDescription {
+            get {
+                return ResourceManager.GetString("NumberNodeDescription", resourceCulture);
             }
         }
         
@@ -838,6 +901,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string StringfromObjectDescription {
             get {
                 return ResourceManager.GetString("StringfromObjectDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a string.
+        /// </summary>
+        internal static string StringNodeDescription {
+            get {
+                return ResourceManager.GetString("StringNodeDescription", resourceCulture);
             }
         }
         

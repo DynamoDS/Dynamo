@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Double Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces double values.")]
+    [NodeDescription("DoubleSilderNodeDescription",typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DoubleSlider : DSCoreNodesUI.Double
@@ -295,7 +295,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces integer values.")]
+    [NodeDescription("IntSliderNodeDescription",typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class IntegerSlider : DSCoreNodesUI.Integer

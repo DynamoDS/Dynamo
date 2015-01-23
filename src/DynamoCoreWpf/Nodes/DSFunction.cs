@@ -31,7 +31,7 @@ namespace Dynamo.Nodes
     /// same function node but internally have different procedure.
     /// </summary>
     [NodeName("Function Node")]
-    [NodeDescription("DesignScript Builtin Functions")]
+    [NodeDescription("DSFunctionNodeDescription",typeof(Resources))]
     [IsInteractive(false)]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
@@ -417,7 +417,7 @@ namespace Dynamo.Nodes
     /// DS Function Node that support Variable Arguments.
     /// </summary>
     [NodeName("Function Node w/ VarArgs")]
-    [NodeDescription("DesignScript Builtin Functions")]
+    [NodeDescription("DSVarArgFuncBuiltin",typeof(Resources))]
     [IsInteractive(false)]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]

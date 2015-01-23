@@ -324,6 +324,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instance of a Custom Node.
+        /// </summary>
+        public static string CustomNodeDescription {
+            get {
+                return ResourceManager.GetString("CustomNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom Node Property Error.
         /// </summary>
         public static string CustomNodePropertyErrorMessageBoxTitle {
@@ -410,6 +419,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DownloadWarningMessageBoxTitle {
             get {
                 return ResourceManager.GetString("DownloadWarningMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DesignScript Builtin Functions.
+        /// </summary>
+        public static string DSFunctionNodeDescription {
+            get {
+                return ResourceManager.GetString("DSFunctionNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DesignScript Builtin Functions.
+        /// </summary>
+        public static string DSVarArgFuncBuiltin {
+            get {
+                return ResourceManager.GetString("DSVarArgFuncBuiltin", resourceCulture);
             }
         }
         
@@ -2576,6 +2603,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A function output, use with custom nodes.
+        /// </summary>
+        public static string OutputNodeDescription {
+            get {
+                return ResourceManager.GetString("OutputNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Download Confirmation.
         /// </summary>
         public static string PackageDownloadConfirmMessageBoxTitle {
@@ -2999,6 +3035,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a point in the XY plane..
+        /// </summary>
+        public static string Point2Node {
+            get {
+                return ResourceManager.GetString("Point2Node", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a point in 3D space..
+        /// </summary>
+        public static string Point3Node {
+            get {
+                return ResourceManager.GetString("Point3Node", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Default Value.
         /// </summary>
         public static string PortViewContextMenuUserDefaultValue {
@@ -3382,6 +3436,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageVisitDynamoBim {
             get {
                 return ResourceManager.GetString("StartPageVisitDynamoBim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
+        /// </summary>
+        public static string SymbolNodeDescription {
+            get {
+                return ResourceManager.GetString("SymbolNodeDescription", resourceCulture);
             }
         }
         
