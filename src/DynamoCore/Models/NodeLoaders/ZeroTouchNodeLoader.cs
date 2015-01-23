@@ -40,7 +40,9 @@ namespace Dynamo.Models.NodeLoaders
             {
                 var xmlAttribute = nodeElement.Attributes["assembly"];
                 if (xmlAttribute != null)
-                    assembly = xmlAttribute.Value;
+                {
+                    assembly = Uri.UnescapeDataString(xmlAttribute.Value);
+                }
 
                 string xmlSignature = nodeElement.Attributes["function"].Value;
 
