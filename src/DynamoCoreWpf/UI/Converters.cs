@@ -86,7 +86,7 @@ namespace Dynamo.Controls
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
                 {
-                    return String.Empty;
+                    return "";
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
                 {
@@ -323,7 +323,7 @@ namespace Dynamo.Controls
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
                             thickness = new Thickness(left + 0, top - 10, right - 25, bottom - 10);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
-                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom + 3);
+                            thickness = new Thickness(left + 0, top - 10, right - 25, bottom + 3);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
                             thickness = new Thickness(left + 0, top + 3, right - 25, bottom - 10);
                         break;

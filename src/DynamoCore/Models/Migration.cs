@@ -119,7 +119,7 @@ namespace Dynamo.Models
             foreach (var aka in t.AlsoKnownAs)
             {
                 if (nodeMigrationLookup.ContainsKey(aka))
-                    Log(string.Format("Duplicate migration type registered for {0}", aka), WarningLevel.Moderate);
+                    Log(string.Format(Properties.Resources.DuplicateMigrationTypeRegistered, aka), WarningLevel.Moderate);
                 nodeMigrationLookup[aka] = t.Type;
             }
         }
@@ -170,7 +170,7 @@ namespace Dynamo.Models
                     if (!isTestMode && BackupOriginalFile(xmlPath, ref backupPath))
                     {
                         string message = String.Format(
-                            "Original file '{0}' gets backed up at '{1}'",
+                            Properties.Resources.BackUpOriginalFileMessage,
                             Path.GetFileName(xmlPath),
                             backupPath);
 
@@ -853,6 +853,8 @@ namespace Dynamo.Models
 
             foreach (XmlAttribute attribute in element.Attributes)
                 cloned.SetAttribute(attribute.Name, attribute.Value);
+
+            cloned.InnerXml = element.InnerXml;
 
             cloned.SetAttribute("type", type);
             cloned.SetAttribute("nickname", nickname);

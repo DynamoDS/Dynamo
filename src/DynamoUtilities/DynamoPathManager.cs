@@ -157,7 +157,7 @@ namespace DynamoUtilities
                 Directory.CreateDirectory(CommonSamples);
             }
 
-            Ui = Path.Combine(MainExecPath, "UI");
+            Ui = Path.Combine(MainExecPath , "UI");
 
             if (Nodes == null)
             {

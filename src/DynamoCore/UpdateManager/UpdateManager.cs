@@ -291,7 +291,7 @@ namespace Dynamo.UpdateManager
                     updateManager.OnLog(
                         new LogEventArgs(
                             string.Format(
-                        Properties.Resources.FailedToSave,
+                                Properties.Resources.FailedToSave,
                                 filePath,
                                 ex.Message),
                             LogLevel.Console));
@@ -741,6 +741,11 @@ namespace Dynamo.UpdateManager
             // Order the results according to their LastUpdated field.
 
             var bucketresult = doc.Element(ns + "ListBucketResult");
+
+            if (bucketresult == null)
+            {
+                return null;
+            }
 
             var builds = bucketresult.Descendants(ns + "LastModified").
                 OrderByDescending(x => DateTime.Parse(x.Value)).

@@ -127,6 +127,37 @@ namespace Dynamo.DSEngine.CodeCompletion
         }
 
         /// <summary>
+        ///  Matches the completion string with classes, including primitive types.
+        /// </summary>
+        /// <param name="stringToComplete"></param>
+        /// <returns></returns>
+        internal IEnumerable<CompletionData> SearchTypes(string stringToComplete)
+        {
+            var completions = new List<CompletionData>();
+            var partialName = stringToComplete.ToLower();
+
+            // Add matching Classes
+            var classMirrorGroups = 
+                    StaticMirror.GetAllTypes(core)
+                                .Where(x => !x.IsHiddenInLibrary && x.Alias.ToLower().StartsWith(partialName))
+                                .GroupBy(x => x.Alias);
+
+            // For those class names that have collisions (same alias), list 
+            // their fully qualified names in completion window.
+            foreach (var classMirrorGroup in classMirrorGroups)
+            {
+                bool useFullyQualifiedName = classMirrorGroup.Count() > 1;
+                foreach (var classMirror in classMirrorGroup)
+                {
+                    var completionData = CompletionData.ConvertMirrorToCompletionData(classMirror, useFullyQualifiedName);
+                    completions.Add(completionData);
+                }
+            }
+
+            return completions;
+        }
+
+        /// <summary>
         /// Returns the list of function signatures of all overloads of a given method
         /// </summary>
         /// <param name="code"> code being typed in code block </param>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
-using ProtoCore.RuntimeData;
+using ProtoCore.Runtime;
 using ProtoCore.Properties;
 
 namespace ProtoCore.Utils
@@ -552,7 +552,7 @@ namespace ProtoCore.Utils
             Validity.Assert(array.IsArray || array.IsString);
             if (array.IsString && !value.IsChar)
             {
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, Resources.kAssignNonCharacterToString);
+                core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kAssignNonCharacterToString);
                 return StackValue.Null;
             }
 
@@ -590,15 +590,9 @@ namespace ProtoCore.Utils
                 }
 
                 StackValue oldValue;
-                GCUtils.GCRetain(value, core);
-                if (he.Dict.TryGetValue(index, out oldValue))
-                {
-                    GCUtils.GCRelease(oldValue, core);
-                }
-                else
+                if (!he.Dict.TryGetValue(index, out oldValue))
                 {
                     oldValue = StackValue.Null;
-                    GCUtils.GCRetain(index, core);
                 }
                 he.Dict[index] = value;
 
@@ -643,7 +637,6 @@ namespace ProtoCore.Utils
                 if (!subArray.IsArray)
                 {
                     subArray = core.Heap.AllocateArray(new StackValue[] { subArray }, null);
-                    GCUtils.GCRetain(subArray, core);
                     SetValueForIndex(array, index, subArray, core);
                 }
 
@@ -674,7 +667,6 @@ namespace ProtoCore.Utils
             if (zippedIndices.Length == 1)
             {
                 StackValue coercedData = TypeSystem.Coerce(value, t, core);
-                GCUtils.GCRetain(coercedData, core);
                 return ArrayUtils.SetValueForIndices(array, zippedIndices[0], coercedData, core);
             }
 
@@ -693,7 +685,6 @@ namespace ProtoCore.Utils
                 for (int i = 0; i < length; ++i)
                 {
                     StackValue coercedData = TypeSystem.Coerce(dataHeapElement.Stack[i], t, core);
-                    GCUtils.GCRetain(coercedData, core);
                     oldValues[i] = SetValueForIndices(array, zippedIndices[i], coercedData, core);
                 }
 
@@ -705,7 +696,6 @@ namespace ProtoCore.Utils
                 // Replication is only on the LHS, so collect all old values 
                 // and return them in an array. 
                 StackValue coercedData = TypeSystem.Coerce(value, t, core);
-                GCUtils.GCRetain(coercedData, core);
 
                 StackValue[] oldValues = new StackValue[zippedIndices.Length];
                 for (int i = 0; i < zippedIndices.Length; ++i)
@@ -878,11 +868,6 @@ namespace ProtoCore.Utils
 
             if (zippedIndices.Length > 1)
             {
-                for (int i = 0; i < values.Length; ++i)
-                {
-                    GCUtils.GCRetain(values[i], core);
-                }
-
                 return core.Heap.AllocateArray(values, null);
             }
             else
@@ -926,7 +911,6 @@ namespace ProtoCore.Utils
             for (int i = 0; i < elementSize; i++)
             {
                 StackValue coercedValue = TypeSystem.Coerce(he.Stack[i], type, core);
-                GCUtils.GCRetain(coercedValue, core);
                 elements[i] = coercedValue;
             }
 
@@ -939,9 +923,6 @@ namespace ProtoCore.Utils
                     StackValue key = pair.Key;
                     StackValue value = pair.Value;
                     StackValue coercedValue = TypeSystem.Coerce(value, type, core);
-
-                    GCUtils.GCRetain(key, core);
-                    GCUtils.GCRetain(coercedValue, core);
 
                     dict[key] = coercedValue;
                 }
@@ -1101,9 +1082,6 @@ namespace ProtoCore.Utils
             {
                 if (he.Dict != null && he.Dict.ContainsKey(key))
                 {
-                    StackValue value = he.Dict[key];
-                    GCUtils.GCRelease(key, core);
-                    GCUtils.GCRelease(value, core);
                     he.Dict.Remove(key);
                     return true;
                 }
@@ -1170,7 +1148,6 @@ namespace ProtoCore.Utils
                 if (TryGetValueFromNestedDictionaries(element, key, out valueInElement, core))
                 {
                     hasValue = true;
-                    GCUtils.GCRetain(valueInElement, core);
                     values.Add(valueInElement);
                 }
             }

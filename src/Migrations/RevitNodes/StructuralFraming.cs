@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
 
             // Create DSFunction node
             XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
-            MigrationManager.SetFunctionSignature(newNode,"RevitNodes.dll",
+            MigrationManager.SetFunctionSignature(newNode, "RevitNodes.dll",
                 "StructuralFraming.ByCurveLevelUpVectorAndType",
                 "StructuralFraming.ByCurveLevelUpVectorAndType@Curve,Level,Vector,StructuralType,FamilySymbol");
             migrationData.AppendNode(newNode);
@@ -48,14 +48,14 @@ namespace Dynamo.Nodes
             string oneId = MigrationManager.GetGuidFromXmlElement(one);
 
             XmlElement level = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 1,"RevitNodes.dll",
+                data.Document, oldNode, 1, "RevitNodes.dll",
                 "Level.ByElevation", "Level.ByElevation@double");
             migrationData.AppendNode(level);
             string levelId = MigrationManager.GetGuidFromXmlElement(level);
 
             // Assume that structural framing created by 0.6.3 is always Beam
             XmlElement beam = MigrationManager.CreateFunctionNode(
-                data.Document, oldNode, 2,"RevitNodes.dll",
+                data.Document, oldNode, 2, "RevitNodes.dll",
                 "StructuralType.Beam", "StructuralType.Beam");
             migrationData.AppendNode(beam);
             string beamId = MigrationManager.GetGuidFromXmlElement(beam);

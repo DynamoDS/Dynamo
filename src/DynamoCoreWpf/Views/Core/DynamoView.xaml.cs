@@ -477,7 +477,7 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
-            var dialogText = string.Empty; 
+            var dialogText = ""; 
             if (e.Workspace is CustomNodeWorkspaceModel)
             {
                 dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
@@ -660,10 +660,8 @@ namespace Dynamo.Controls
                 //else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
                 //{
                 //    error = "A built-in node with the given name already exists.";
-                        //MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameExist, 
-                        //Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
-                        //MessageBoxButton.OK,
-                        //                           MessageBoxImage.Error);
+                //    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
+                //                                   MessageBoxImage.Error);
                 //}
 
                 else if (dialog.Category.Equals(""))

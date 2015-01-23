@@ -1,8 +1,4 @@
-﻿﻿using System.Globalization;
-using System.Windows;
-using System.Windows.Media;
-
-using Dynamo.UI;
+﻿using Dynamo.UI;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -136,7 +132,6 @@ namespace Dynamo.Utilities
 
             return true;
         }
-
 
         /// <summary>
         /// Call this method to format user codes in the following ways:

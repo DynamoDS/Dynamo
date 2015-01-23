@@ -289,7 +289,7 @@ namespace ProtoCore.DSASM.Mirror
                         return (string.Format("{0}{{{1}}}", classnode.name, classtrace.ToString()));
                     else
                     {
-                        string tempstr = (string.Format("{0}({1})", classnode.name, classtrace.ToString()));
+                        string tempstr =  (string.Format("{0}({1})", classnode.name, classtrace.ToString()));
                         return tempstr;
                     }
 
@@ -1454,7 +1454,6 @@ namespace ProtoCore.DSASM.Mirror
                 int size = sv.Length;
 
                 StackValue ptr = heap.AllocateArray(sv);
-                heap.IncRefCount(ptr);
                 return ptr;
             }
 

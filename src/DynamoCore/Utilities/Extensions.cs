@@ -265,7 +265,6 @@ namespace Dynamo.Utilities
 
         public static Collection<T> AddRange<T>(this Collection<T> collection, IEnumerable<T> items)
         {
-
             if (collection == null) throw new ArgumentNullException("collection");
             if (items == null) throw new ArgumentNullException("items");
 
@@ -431,7 +430,6 @@ namespace Dynamo.Utilities
         public static string GetFullName(this Delegate del)
         {
             if (del.Method.DeclaringType == null)
-
                 throw new ArgumentException(@"Delegate has no declaring type.", @"del");
 
             return String.Format("{0}.{1}", del.Method.DeclaringType.FullName, del.Method.Name);

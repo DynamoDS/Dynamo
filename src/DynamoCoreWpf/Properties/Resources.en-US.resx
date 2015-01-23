@@ -1403,10 +1403,9 @@ You will get a chance to save your work.</value>
     <comment>ErrorString</comment>
   </data>
   <data name="UpdateMessage" xml:space="preserve">
-    <value>An update is available for Dynamo
-
-Click OK to close Dynamo and install
-Click CANCEL to cancel the update.</value>
+    <value>An update is available for Dynamo.
+Installing the latest update requires Dynamo and any host applications to close.
+Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="VersionValueGreaterThan0" xml:space="preserve">
     <value>At least one of your version values must be greater than 0.</value>

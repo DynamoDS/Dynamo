@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Greg.Requests;
@@ -65,7 +66,7 @@ namespace Dynamo.PackageManager
                 // give nicer error
                 throw new Exception(Properties.Resources.CouldNotCompressFile);
             }
-
+            
             if (info.Length > 15 * 1000000) throw new Exception(Properties.Resources.PackageTooLarge);
 
             return zipPath;

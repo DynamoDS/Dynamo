@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
@@ -200,7 +201,7 @@ namespace Dynamo.PackageManager
                 {
                     Log(
                         String.Format(
-                        "Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
+                            "Failed to delete package directory at \"{0}\", you may need to delete the directory manually.",
                             pkgNameDirTup),
                         WarningLevel.Moderate);
                 }

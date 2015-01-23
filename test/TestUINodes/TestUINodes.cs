@@ -8,9 +8,9 @@ using System.Text;
 
 namespace TestUINodes 
 {
-    [NodeName(/*NXLT*/"NodeWithFailingASTOutput")]
+    [NodeName("NodeWithFailingASTOutput")]
     [NodeCategory("TestUINodes")]
-    [NodeDescription(/*NXLT*/"A test UI node which will throw an excpetion when it is compiled to AST node.")]
+    [NodeDescription("A test UI node which will throw an excpetion when it is compiled to AST node.")]
     [IsVisibleInDynamoLibrary(false)]
     public class NodeWithFailingASTOutput: NodeModel
     {

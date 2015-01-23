@@ -141,26 +141,28 @@ namespace Dynamo.Models
         {
             //This is now handled via NodeGraph.LoadConnectorFromXml
 
-            //var helper = new XmlElementHelper(element);
+            /*
+            var helper = new XmlElementHelper(element);
 
-            //// Restore some information from the node attributes.
-            //GUID = helper.ReadGuid("guid", GUID);
-            //Guid startNodeId = helper.ReadGuid("start");
-            //int startIndex = helper.ReadInteger("start_index");
-            //Guid endNodeId = helper.ReadGuid("end");
-            //int endIndex = helper.ReadInteger("end_index");
-            //var portType = ((PortType)helper.ReadInteger("portType"));
-            //// Get to the start and end nodes that this connector connects to.
-            //var startNode = workspaceModel.GetModelInternal(startNodeId) as NodeModel;
-            //var endNode = workspaceModel.GetModelInternal(endNodeId) as NodeModel;
+            // Restore some information from the node attributes.
+            GUID = helper.ReadGuid("guid", GUID);
+            Guid startNodeId = helper.ReadGuid("start");
+            int startIndex = helper.ReadInteger("start_index");
+            Guid endNodeId = helper.ReadGuid("end");
+            int endIndex = helper.ReadInteger("end_index");
+            var portType = ((PortType)helper.ReadInteger("portType"));
 
-            //pStart = startNode.OutPorts[startIndex];
-            //PortModel endPort = null;
-            //if (portType == PortType.Input)
-            //    endPort = endNode.InPorts[endIndex];
+            // Get to the start and end nodes that this connector connects to.
+            var startNode = workspaceModel.GetModelInternal(startNodeId) as NodeModel;
+            var endNode = workspaceModel.GetModelInternal(endNodeId) as NodeModel;
 
-            //pStart.Connect(this);
-            //Connect(endPort);
+            pStart = startNode.OutPorts[startIndex];
+            PortModel endPort = null;
+            if (portType == PortType.Input)
+                endPort = endNode.InPorts[endIndex];
+
+            pStart.Connect(this);
+            Connect(endPort);*/
         }
 
         #endregion

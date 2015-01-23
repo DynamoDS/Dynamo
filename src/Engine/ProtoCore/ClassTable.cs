@@ -2,9 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Properties;
 using ProtoCore.Utils;
 using System.Linq;
-using ProtoCore.Properties;
 
 namespace ProtoCore.DSASM
 {

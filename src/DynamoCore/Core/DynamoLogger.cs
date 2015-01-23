@@ -135,10 +135,8 @@ namespace Dynamo
             lock (this.guardMutex)
             {
                 //Don't overwhelm the logging system
-
                 if (debugSettings.VerboseLogging)
                     InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
-
 
                 switch (level)
                 {
@@ -294,7 +292,7 @@ namespace Dynamo
                 try
                 {
                     FileWriter.Flush();
-                    Log("Goodbye", LogLevel.Console, false);
+                    Log(Properties.Resources.GoodByeLog, LogLevel.Console, false);
                     FileWriter.Close();
                 }
                 catch

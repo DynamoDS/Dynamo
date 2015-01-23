@@ -413,7 +413,7 @@ namespace ProtoCore.DSASM
         public const int kRecursionTheshold = 1000;
         //public const int kRepetationTheshold = 1000;
         public const int kExressionInterpreterStackSize = 1;
-
+ 
         public const string termline = ";\n";
         public const string kInternalNamePrefix = "%";
         public const string kStaticPropertiesInitializer = "%init_static_properties";

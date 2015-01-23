@@ -93,7 +93,7 @@ namespace ProtoCore
 
                 if (hasNestedData)
                 {
-
+                    
                     int nestedDataCount = info.GetInt32(marker + objectID + "_NestedDataCount");
 
                     if (nestedDataCount > 0)
@@ -916,7 +916,7 @@ namespace ProtoCore
 
                 possibleFuncs.AppendLine("Error code: {DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}");
 
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
+                core.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
             }
 
             return feps[0];
@@ -1094,7 +1094,7 @@ namespace ProtoCore
 
                 if (candidateFunctions.Count == 0)
                 {
-                    core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAmbiguousMethodDispatch,
+                    core.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch,
                                                   Resources.kAmbigousMethodDispatch);
                     return null;
                 }
@@ -1247,11 +1247,6 @@ namespace ProtoCore
                                    List<ReplicationInstruction> replicationInstructions, DSASM.StackFrame stackFrame,
                                    Core core, FunctionGroup funcGroup)
         {
-            for (int i = 0; i < formalParameters.Count; ++i)
-            {
-                GCUtils.GCRetain(formalParameters[i], core);
-            }
-
             StackValue ret;
 
             if (replicationInstructions.Count == 0)
@@ -1323,16 +1318,6 @@ namespace ProtoCore
                     traceData.Add(newTraceData);
                 }
             }
-
-            // Explicit calls require the GC of arguments in the function return instruction
-            if (!ret.IsExplicitCall)
-            {
-                for (int i = 0; i < formalParameters.Count; ++i)
-                {
-                    GCUtils.GCRelease(formalParameters[i], core);
-                }
-            }
-
 
             invokeCount++; //We've completed this invocation
 
@@ -1513,7 +1498,6 @@ namespace ProtoCore
                 }
 
                 StackValue ret = core.Heap.AllocateArray(retSVs, null);
-                GCUtils.GCRetain(ret, core);
                 return ret;
             }
             else
@@ -1679,7 +1663,6 @@ namespace ProtoCore
                 }
 
                 StackValue ret = core.Heap.AllocateArray(retSVs, null);
-                GCUtils.GCRetain(ret, core);
                 return ret;
 
             }
@@ -1705,7 +1688,7 @@ namespace ProtoCore
 
             if (functionEndPoint == null)
             {
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure,
+                core.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure,
                                               "Function dispatch could not be completed {2EB39E1B-557C-4819-94D8-CF7C9F933E8A}");
                 return StackValue.Null;
             }
@@ -1847,25 +1830,17 @@ namespace ProtoCore
             {
                 int promotionsRequired = listOfGuidesCounts[i] - maxDepths[i];
                 StackValue oldSv = newArgs[i];
-
                 
                 for (int p = 0; p < promotionsRequired; p++)
                 {
-
                     StackValue newSV = core.Heap.AllocateArray( new StackValue[1] { oldSv } , null);
-
-                    GCUtils.GCRetain(newSV, core);
-                    // GCUtils.GCRelease(oldSv, core);
-
                     oldSv = newSV;
                 }
 
                 newArgs[i] = oldSv;
-
             }
 
             return newArgs;
-
         }
 
         public static StackValue PerformReturnTypeCoerce(ProcedureNode procNode, Core core, StackValue ret)
@@ -1886,9 +1861,6 @@ namespace ProtoCore
                 else
                 {
                     StackValue coercedRet = TypeSystem.Coerce(ret, procNode.returntype, core);
-                        //IT was a var type, so don't cast
-                    GCUtils.GCRetain(coercedRet, core);
-                    GCUtils.GCRelease(ret, core);
                     return coercedRet;
                 }
             }
@@ -1901,23 +1873,17 @@ namespace ProtoCore
                 retType.IsIndexable)
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
-                GCUtils.GCRetain(coercedRet, core);
-                GCUtils.GCRelease(ret, core);
                 return coercedRet;
             }
-
 
             if (ret.metaData.type == retType.UID)
             {
                 return ret;
             }
 
-
             if (ret.IsArray && procNode.returntype.IsIndexable)
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
-                GCUtils.GCRetain(coercedRet, core);
-                GCUtils.GCRelease(ret, core);
                 return coercedRet;
             }
 
@@ -1925,7 +1891,7 @@ namespace ProtoCore
             {
                 //@TODO(Luke): log no-type coercion possible warning
 
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible,
+                core.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible,
                                               Resources.kConvertNonConvertibleTypes);
 
                 return StackValue.Null;
@@ -1933,8 +1899,6 @@ namespace ProtoCore
             else
             {
                 StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
-                GCUtils.GCRetain(coercedRet, core);
-                GCUtils.GCRelease(ret, core);
                 return coercedRet;
             }
         }

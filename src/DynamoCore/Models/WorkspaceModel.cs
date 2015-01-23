@@ -13,9 +13,10 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST;
+using ProtoCore.Namespace;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
-using NodeModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.NodeModificationUndoHelper;
+using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificationUndoHelper;
 
 namespace Dynamo.Models
 {
@@ -202,7 +203,7 @@ namespace Dynamo.Models
             set
             {
                 lastSaved = value;
-                RaisePropertyChanged(/*NXLT*/"LastSaved");
+                RaisePropertyChanged("LastSaved");
             }
         }
 
@@ -215,7 +216,7 @@ namespace Dynamo.Models
             set
             {
                 author = value;
-                RaisePropertyChanged(/*NXLT*/"Author");
+                RaisePropertyChanged("Author");
             }
         }
 
@@ -228,7 +229,7 @@ namespace Dynamo.Models
             set
             {
                 hasUnsavedChanges = value;
-                RaisePropertyChanged(/*NXLT*/"HasUnsavedChanges");
+                RaisePropertyChanged("HasUnsavedChanges");
             }
         }
 
@@ -263,7 +264,7 @@ namespace Dynamo.Models
             set
             {
                 fileName = value;
-                RaisePropertyChanged(/*NXLT*/"FileName");
+                RaisePropertyChanged("FileName");
             }
         }
 
@@ -276,7 +277,7 @@ namespace Dynamo.Models
             set
             {
                 name = value;
-                RaisePropertyChanged(/*NXLT*/"Name");
+                RaisePropertyChanged("Name");
             }
         }
 
@@ -289,7 +290,7 @@ namespace Dynamo.Models
             set
             {
                 x = value;
-                RaisePropertyChanged(/*NXLT*/"X");
+                RaisePropertyChanged("X");
             }
         }
 
@@ -302,7 +303,7 @@ namespace Dynamo.Models
             set
             {
                 y = value;
-                RaisePropertyChanged(/*NXLT*/"Y");
+                RaisePropertyChanged("Y");
             }
         }
 
@@ -312,7 +313,7 @@ namespace Dynamo.Models
             set
             {
                 zoom = value;
-                RaisePropertyChanged(/*NXLT*/"Zoom");
+                RaisePropertyChanged("Zoom");
             }
         }
 
@@ -325,7 +326,7 @@ namespace Dynamo.Models
             set
             {
                 height = value;
-                RaisePropertyChanged(/*NXLT*/"Height");
+                RaisePropertyChanged("Height");
             }
         }
 
@@ -338,7 +339,7 @@ namespace Dynamo.Models
             set
             {
                 width = value;
-                RaisePropertyChanged(/*NXLT*/"Width");
+                RaisePropertyChanged("Width");
             }
         }
 
@@ -394,13 +395,15 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
+        public ElementResolver ElementResolver { get; private set; }
+
         #endregion
 
         #region constructors
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, string fileName="")
+            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
             Name = name;
 
@@ -416,6 +419,7 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
+            ElementResolver = elementResolver;
 
             foreach (var node in nodes)
                 RegisterNode(node);
@@ -450,7 +454,7 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void Clear()
         {
-            Log("Clearing workspace...");
+            Log(Properties.Resources.ClearingWorkSpace);
 
             foreach (NodeModel el in Nodes)
             {
@@ -485,7 +489,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log("Saving " + newPath + "...");
+            Log(String.Format(Properties.Resources.SavingInProgress, newPath));
             try
             {
                 if (SaveInternal(newPath, core))
@@ -549,16 +553,16 @@ namespace Dynamo.Models
 
         private void RegisterNode(NodeModel node)
         {
-            node.AstUpdated += OnAstUpdated;
+            node.NodeModified += OnNodesModified;
             node.ConnectorAdded += OnConnectorAdded;
         }
 
         /// <summary>
         ///     Indicates that this workspace's DesignScript AST has been updated.
         /// </summary>
-        public virtual void OnAstUpdated()
+        public virtual void OnNodesModified()
         {
-
+            
         }
 
         /// <summary>
@@ -570,14 +574,14 @@ namespace Dynamo.Models
             if (nodes.Remove(model))
             {
                 DisposeNode(model);
-                OnAstUpdated();
+                OnNodesModified();
             }
         }
 
         protected void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
-            model.AstUpdated -= OnAstUpdated;
+            model.NodeModified -= OnNodesModified;
             OnNodeRemoved(model);
         }
 
@@ -593,7 +597,7 @@ namespace Dynamo.Models
 
         public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
         {
-            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? "New Note" : text, id);
+            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Properties.Resources.NewNoteString : text, id);
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
@@ -756,7 +760,7 @@ namespace Dynamo.Models
                         n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel)
                         .Select(n => n.GUID);
 
-                var nodeTraceDataList = core.GetTraceDataForNodes(nodeGuids);
+                var nodeTraceDataList = core.DSExecutable.RuntimeData.GetTraceDataForNodes(nodeGuids, core.DSExecutable);
 
                 if (nodeTraceDataList.Any())
                     Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
@@ -780,7 +784,7 @@ namespace Dynamo.Models
             var nodeModel = retrievedModel as NodeModel;
             if (nodeModel != null)
             {
-                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
+                using (new ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
                     handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
                 }
@@ -811,43 +815,22 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        internal void UpdateModelValue(Guid modelGuid, string propertyName, string value)
+        internal void UpdateModelValue(IEnumerable<Guid> modelGuids, string propertyName, string value)
         {
-            var retrievedModel = GetModelInternal(modelGuid);
-            if (retrievedModel == null)
+            if (modelGuids == null || (!modelGuids.Any()))
+                throw new ArgumentNullException("modelGuids");
+
+            var retrievedModels = GetModelsInternal(modelGuids);
+            if (!retrievedModels.Any())
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
-            var handled = false;
-            var nodeModel = retrievedModel as NodeModel;
-            if (nodeModel != null)
+            var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
+            using (new ModelModificationUndoHelper(undoRecorder, retrievedModels))
             {
-                using (new NodeModificationUndoHelper(undoRecorder, nodeModel))
+                foreach (var retrievedModel in retrievedModels)
                 {
-                    handled = nodeModel.UpdateValue(propertyName, value, undoRecorder);
+                    retrievedModel.UpdateValue(updateValueParams);
                 }
-            }
-            else
-            {
-                // Perform generic undo recording for models other than node.
-                RecordModelForModification(retrievedModel, UndoRecorder);
-                handled = retrievedModel.UpdateValue(propertyName, value, undoRecorder);
-            }
-
-            if (!handled) // Method call was not handled by any derived class.
-            {
-                string type = retrievedModel.GetType().FullName;
-                string message = string.Format(
-                    "ModelBase.UpdateValue call not handled.\n\n" +
-                    "Model type: {0}\n" +
-                    "Model GUID: {1}\n" +
-                    "Property name: {2}\n" +
-                    "Property value: {3}",
-                    type, modelGuid, propertyName, value);
-
-                // All 'UpdateValue' calls must be handled by one of the 
-                // ModelBase derived classes that the 'UpdateModelValue'
-                // is intended for.
-                throw new InvalidOperationException(message);
             }
 
             HasUnsavedChanges = true;
@@ -943,7 +926,7 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
-            OnAstUpdated();
+            OnNodesModified();
         }
 
         #endregion
@@ -1232,6 +1215,21 @@ namespace Dynamo.Models
 
             return foundModel;
         }
+
+        private IEnumerable<ModelBase> GetModelsInternal(IEnumerable<Guid> modelGuids)
+        {
+            var foundModels = new List<ModelBase>();
+
+            foreach (var modelGuid in modelGuids)
+            {
+                var foundModel = GetModelInternal(modelGuid);
+                if (foundModel != null)
+                    foundModels.Add(foundModel);
+            }
+
+            return foundModels;
+        }
+
         #endregion
 
         #region Node To Code Reconnection

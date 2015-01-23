@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
+using ProtoCore.Namespace;
+using Symbol = Dynamo.Nodes.Symbol;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Core
 {
     /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
@@ -122,7 +124,7 @@ namespace Dynamo.Utilities
                 
                 // Couldn't find the workspace at all, prepare for a late initialization.
                 Log(
-                    "Unable to create instance of custom node with id: \"" + id + "\"",
+                    Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
                 info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
                 def = null;
@@ -476,6 +478,7 @@ namespace Dynamo.Utilities
 
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
 
+            ElementResolver elementResolver = null;
             var newWorkspace = new CustomNodeWorkspaceModel(
                 workspaceInfo.Name,
                 workspaceInfo.Category,
@@ -485,7 +488,7 @@ namespace Dynamo.Utilities
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                functionId, workspaceInfo.FileName);
+                functionId, elementResolver, workspaceInfo.FileName);
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -545,6 +548,7 @@ namespace Dynamo.Utilities
                 var customNodeInfo = NodeInfos[functionId];
 
                 var xmlPath = customNodeInfo.Path;
+
                 Log(String.Format(Properties.Resources.LoadingNodeDefinition, customNodeInfo, xmlPath));
 
                 var xmlDoc = new XmlDocument();
@@ -563,13 +567,13 @@ namespace Dynamo.Utilities
                         return InitializeCustomNode(functionId, header, xmlDoc, out workspace);
                     }
                 }
-                Log(string.Format("Custom node \"{0}\" could not be initialized.", customNodeInfo.Name));
+                Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
                 workspace = null;
                 return false;
             }
             catch (Exception ex)
             {
-                Log("There was an error opening the workspace.");
+                Log(Properties.Resources.OpenWorkspaceError);
                 Log(ex);
 
                 if (isTestMode)
@@ -593,7 +597,7 @@ namespace Dynamo.Utilities
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
-            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, string.Empty);
+            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, new ElementResolver(), string.Empty);
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
@@ -685,7 +689,7 @@ namespace Dynamo.Utilities
 
                 #region Detect 1-node holes (higher-order function extraction)
 
-                Log("Could not repair 1-node holes", WarningLevel.Mild);
+                Log(Properties.Resources.CouldNotRepairOneNodeHoles, WarningLevel.Mild);
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
 
                 //var curriedNodeArgs =
@@ -867,6 +871,33 @@ namespace Dynamo.Utilities
                             X = 0
                         };
 
+                        // Try to figure out the type of input of custom node 
+                        // from the type of input of selected node. There are
+                        // two kinds of nodes whose input type are available:
+                        // function node and custom node. 
+                        List<Library.TypedParameter> parameters = null;
+                        if (inputReceiverNode is Function) 
+                        {
+                            var func = inputReceiverNode as Function; 
+                            parameters =  func.Controller.Definition.Parameters.ToList(); 
+                        }
+                        else if (inputReceiverNode is DSFunctionBase)
+                        {
+                            var dsFunc = inputReceiverNode as DSFunctionBase;
+                            parameters = dsFunc.Controller.Definition.Parameters.ToList(); 
+                        }
+
+                        // so the input of custom node has format 
+                        //    input_var_name : type
+                        if (parameters != null && parameters.Count() > inputReceiverData)
+                        {
+                            var typeName = parameters[inputReceiverData].DisplayTypeName;
+                            if (!string.IsNullOrEmpty(typeName))
+                            {
+                                node.InputSymbol += " : " + typeName;
+                            }
+                        }
+
                         node.SetNickNameFromAttribute();
                         node.Y = inputIndex*(50 + node.Height);
 
@@ -990,7 +1021,7 @@ namespace Dynamo.Utilities
                     Enumerable.Empty<NoteModel>(),
                     0,
                     0,
-                    newId, string.Empty);
+                    newId, currentWorkspace.ElementResolver, string.Empty);
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 

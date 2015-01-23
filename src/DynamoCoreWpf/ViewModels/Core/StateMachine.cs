@@ -109,7 +109,7 @@ namespace Dynamo.ViewModels
 
             if (draggedNodes.Count <= 0) // There is nothing to drag.
             {
-                string message = /*NXLT*/"Shouldn't get here if nothing is dragged";
+                string message = "Shouldn't get here if nothing is dragged";
                 throw new InvalidOperationException(message);
             }
         }
@@ -119,7 +119,7 @@ namespace Dynamo.ViewModels
             if (draggedNodes.Count <= 0)
             {
                 throw new InvalidOperationException(
-                    /*NXLT*/"UpdateDraggedSelection cannot be called now");
+                    "UpdateDraggedSelection cannot be called now");
             }
 
             foreach (DraggedNode draggedNode in draggedNodes)
@@ -169,11 +169,18 @@ namespace Dynamo.ViewModels
             this.SetActiveConnector(null);
         }
 
-        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM)
+        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM,bool isSnapping = true)
         {
             // Check if required ports exist
             if (this.activeConnector == null || portVM == null)
                 return false;
+            //By default the ports will be in snapping mode. But if the connection is not completed,
+            //then on mouse leave, the cursor should be pointed as arcselect instead of arcadd.             
+            if (!isSnapping)
+            {
+                CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+                return false;
+            }
 
             PortModel srcPortM = this.activeConnector.ActiveStartPort;
             PortModel desPortM = portVM.PortModel;
@@ -221,7 +228,7 @@ namespace Dynamo.ViewModels
                 this.activeConnector = null;
             }
 
-            this.RaisePropertyChanged(/*NXLT*/"ActiveConnector");
+            this.RaisePropertyChanged("ActiveConnector");
         }
 
         private void RecordSelectionForUndo()

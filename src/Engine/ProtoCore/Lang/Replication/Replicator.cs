@@ -925,7 +925,7 @@ namespace ProtoCore.Lang.Replication
         /// <returns></returns>
         private static int RecursiveProtectGetMaxReductionDepth(StackValue sv, Core core, int depthCount)
         {
-            Validity.Assert(depthCount < 1000,
+            Validity.Assert(depthCount < 1000, 
                 "StackOverflow protection trap. This is almost certainly a VM cycle-in-array bug. {0B530165-2E38-431D-88D9-56B0636364CD}");
 
             //PERF(Luke): Could be non-recursive

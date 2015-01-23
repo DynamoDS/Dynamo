@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
@@ -32,7 +33,7 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, double x, double y, Guid customNodeId,
-            NodeFactory factory, string fileName="")
+            NodeFactory factory, ElementResolver elementResolver, string fileName="")
             : this(
                 name,
                 category,
@@ -42,12 +43,12 @@ namespace Dynamo.Models
                 Enumerable.Empty<NoteModel>(),
                 x,
                 y,
-                customNodeId, fileName) { }
+                customNodeId, elementResolver, fileName) { }
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, Guid customNodeId, string fileName="") 
-            : base(name, e, n, x, y, factory, fileName)
+            double x, double y, Guid customNodeId, ElementResolver elementResolver, string fileName="") 
+            : base(name, e, n, x, y, factory, elementResolver, fileName)
         {
             CustomNodeId = customNodeId;
             HasUnsavedChanges = false;
@@ -59,10 +60,10 @@ namespace Dynamo.Models
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == /*NXLT*/"Name")
+            if (args.PropertyName == "Name")
                 OnInfoChanged();
 
-            if (args.PropertyName == /*NXLT*/"Category" || args.PropertyName == /*NXLT*/"Description")
+            if (args.PropertyName == "Category" || args.PropertyName == "Description")
             {
                 HasUnsavedChanges = true;
                 OnInfoChanged();
@@ -151,9 +152,9 @@ namespace Dynamo.Models
         }
         private string description;
 
-        public override void OnAstUpdated()
+        public override void OnNodesModified()
         {
-            base.OnAstUpdated();
+            base.OnNodesModified();
             HasUnsavedChanges = true;
             OnDefinitionUpdated();
         }
@@ -210,9 +211,9 @@ namespace Dynamo.Models
                 return false;
             
             var guid = CustomNodeDefinition != null ? CustomNodeDefinition.FunctionId : Guid.NewGuid();
-            root.SetAttribute(/*NXLT*/"ID", guid.ToString());
-            root.SetAttribute(/*NXLT*/"Description", Description);
-            root.SetAttribute(/*NXLT*/"Category", Category);
+            root.SetAttribute("ID", guid.ToString());
+            root.SetAttribute("Description", Description);
+            root.SetAttribute("Category", Category);
             
             return true;
         }

@@ -49,6 +49,12 @@ namespace Dynamo.Nodes
             View.View.Camera.Position = model.CameraPosition;
             View.View.Camera.LookDirection = model.LookDirection;
 
+            // When user sizes a watch node, only view gets resized. The actual 
+            // NodeModel does not get updated. This is where the view updates the 
+            // model whenever its size is updated.
+            View.SizeChanged += (sender, args) => 
+                model.SetSize(args.NewSize.Width, args.NewSize.Height);
+
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
 
             var mi = new MenuItem { Header = "Zoom to Fit" };
@@ -63,7 +69,7 @@ namespace Dynamo.Nodes
                 IsHitTestVisible = false
             };
             var bc = new BrushConverter();
-            var strokeBrush = (Brush)bc.ConvertFrom(/*NXLT*/"#313131");
+            var strokeBrush = (Brush)bc.ConvertFrom("#313131");
             backgroundRect.Stroke = strokeBrush;
             backgroundRect.StrokeThickness = 1;
             var backgroundBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
@@ -125,10 +131,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName(/*NXLT*/"Watch 3D")]
+    [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription(/*NXLT*/"Watch3DDescription",typeof(Properties.Resources))]
-    [AlsoKnownAs(/*NXLT*/"Dynamo.Nodes.dyn3DPreview", /*NXLT*/"Dynamo.Nodes.3DPreview")]
+    [NodeDescription("Watch3DDescription",typeof(Properties.Resources))]
+    [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel, IWatchViewModel
     {
@@ -176,7 +182,7 @@ namespace Dynamo.Nodes
             set
             {
                 _canNavigateBackground = value;
-                RaisePropertyChanged(/*NXLT*/"CanNavigateBackground");
+                RaisePropertyChanged("CanNavigateBackground");
             }
         }
 
@@ -194,8 +200,8 @@ namespace Dynamo.Nodes
 
         public Watch3D()
         {
-            InPortData.Add(new PortData(String.Empty, Resources.Watch3DPortDataInputToolTip));
-            OutPortData.Add(new PortData(String.Empty, Resources.Watch3DPortDataOutputToolTip));
+            InPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
+            OutPortData.Add(new PortData("", Resources.Watch3DPortDataOutputToolTip));
 
             RegisterAllPorts();
 
@@ -234,8 +240,8 @@ namespace Dynamo.Nodes
                         AstFactory.BuildFunctionObject(
                             new IdentifierListNode
                             {
-                                LeftNode = AstFactory.BuildIdentifier(/*NXLT*/"DataBridge"),
-                                RightNode = AstFactory.BuildIdentifier(/*NXLT*/"BridgeData")
+                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
+                                RightNode = AstFactory.BuildIdentifier("BridgeData")
                             },
                             2,
                             new[] { 0 },
@@ -249,9 +255,6 @@ namespace Dynamo.Nodes
 
             var resultAst = new[]
             {
-                //AstFactory.BuildAssignment(
-                //    GetAstIdentifierForOutputIndex(0),
-                //    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };
 
@@ -268,8 +271,10 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(viewElement);
             var viewHelper = new XmlElementHelper(viewElement);
 
-            viewHelper.SetAttribute(/*NXLT*/"width", Width);
-            viewHelper.SetAttribute(/*NXLT*/"height", Height);
+            WatchWidth = Width;
+            WatchHeight = Height;
+            viewHelper.SetAttribute("width", WatchWidth);
+            viewHelper.SetAttribute("height", WatchHeight);
 
             // the view stores the latest position
             OnRequestUpdateLatestCameraPosition();
@@ -278,12 +283,12 @@ namespace Dynamo.Nodes
             viewElement.AppendChild(camElement);
             var camHelper = new XmlElementHelper(camElement);
 
-            camHelper.SetAttribute(/*NXLT*/"pos_x", CameraPosition.X);
-            camHelper.SetAttribute(/*NXLT*/"pos_y", CameraPosition.Y);
-            camHelper.SetAttribute(/*NXLT*/"pos_z", CameraPosition.Z);
-            camHelper.SetAttribute(/*NXLT*/"look_x", LookDirection.X);
-            camHelper.SetAttribute(/*NXLT*/"look_y", LookDirection.Y);
-            camHelper.SetAttribute(/*NXLT*/"look_z", LookDirection.Z);
+            camHelper.SetAttribute("pos_x", CameraPosition.X);
+            camHelper.SetAttribute("pos_y", CameraPosition.Y);
+            camHelper.SetAttribute("pos_z", CameraPosition.Z);
+            camHelper.SetAttribute("look_x", LookDirection.X);
+            camHelper.SetAttribute("look_y", LookDirection.Y);
+            camHelper.SetAttribute("look_z", LookDirection.Z);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -293,21 +298,21 @@ namespace Dynamo.Nodes
             {
                 foreach (XmlNode node in nodeElement.ChildNodes)
                 {
-                    if (node.Name == /*NXLT*/"view")
+                    if (node.Name == "view")
                     {
-                        WatchWidth = Convert.ToDouble(node.Attributes[/*NXLT*/"width"].Value);
-                        WatchHeight = Convert.ToDouble(node.Attributes[/*NXLT*/"height"].Value);
+                        WatchWidth = Convert.ToDouble(node.Attributes["width"].Value);
+                        WatchHeight = Convert.ToDouble(node.Attributes["height"].Value);
 
                         foreach (XmlNode inNode in node.ChildNodes)
                         {
                             if (inNode.Name == "camera")
                             {
-                                var x = Convert.ToDouble(inNode.Attributes[/*NXLT*/"pos_x"].Value);
-                                var y = Convert.ToDouble(inNode.Attributes[/*NXLT*/"pos_y"].Value);
-                                var z = Convert.ToDouble(inNode.Attributes[/*NXLT*/"pos_z"].Value);
-                                var lx = Convert.ToDouble(inNode.Attributes[/*NXLT*/"look_x"].Value);
-                                var ly = Convert.ToDouble(inNode.Attributes[/*NXLT*/"look_y"].Value);
-                                var lz = Convert.ToDouble(inNode.Attributes[/*NXLT*/"look_z"].Value);
+                                var x = Convert.ToDouble(inNode.Attributes["pos_x"].Value);
+                                var y = Convert.ToDouble(inNode.Attributes["pos_y"].Value);
+                                var z = Convert.ToDouble(inNode.Attributes["pos_z"].Value);
+                                var lx = Convert.ToDouble(inNode.Attributes["look_x"].Value);
+                                var ly = Convert.ToDouble(inNode.Attributes["look_y"].Value);
+                                var lz = Convert.ToDouble(inNode.Attributes["look_z"].Value);
                                 CameraPosition = new Point3D(x, y, z);
                                 LookDirection = new Vector3D(lx, ly, lz);
                             }

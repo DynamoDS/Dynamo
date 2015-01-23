@@ -8,6 +8,7 @@ using Dynamo.DSEngine;
 using Dynamo.Library;
 
 using NUnit.Framework;
+using ProtoCore;
 
 namespace Dynamo.Tests
 {
@@ -41,9 +42,9 @@ namespace Dynamo.Tests
         {
             var parms = new List<TypedParameter>()
             {
-                new TypedParameter("xTranslation", "double"),
-                new TypedParameter("yTranslation", "double"),
-                new TypedParameter("zTranslation", "double")
+                new TypedParameter("xTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                new TypedParameter("yTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                new TypedParameter("zTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0))
             };
 
             var funcDesc = new FunctionDescriptor(
@@ -51,9 +52,8 @@ namespace Dynamo.Tests
                 "Autodesk.DesignScript.Geometry.Geometry",
                 "Translate",
                 parms,
-                "Autodesk.DesignScript.Geometry.Geometry",
-                FunctionType.InstanceMethod,
-                false);
+                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
+                FunctionType.InstanceMethod);
 
             parms.ForEach(x => x.Function = funcDesc);
 

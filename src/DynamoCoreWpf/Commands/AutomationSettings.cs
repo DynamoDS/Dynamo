@@ -53,7 +53,6 @@ namespace Dynamo.ViewModels
         /// This is set to "true" by default for recorded command files.
         /// </summary>
         /// 
-
         private const string EXIT_ATTRIB_NAME = "ExitAfterPlayback";
 
         /// <summary>
@@ -63,7 +62,6 @@ namespace Dynamo.ViewModels
         /// window will not be closed after playback is completed).
         /// </summary>
         /// 
-
         private const string PAUSE_ATTRIB_NAME = "PauseAfterPlaybackInMs";
 
         /// <summary>
@@ -72,9 +70,7 @@ namespace Dynamo.ViewModels
         /// command will be executed after this interval elapsed. The default
         /// value for command interval is 20 milliseconds.
         /// </summary>
-
         private const string INTERVAL_ATTRIB_NAME = "CommandIntervalInMs";
-
 
         private Window mainWindow;
         private readonly DynamoModel owningDynamoModel;
