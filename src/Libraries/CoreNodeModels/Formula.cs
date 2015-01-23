@@ -59,7 +59,7 @@ namespace DSCoreNodesUI
         public Formula()
         {
             ArgumentLacing = LacingStrategy.Shortest;
-            OutPortData.Add(new PortData(string.Empty, Properties.Resources.FormulaPortDataResultToolTip));
+            OutPortData.Add(new PortData("", Properties.Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
 

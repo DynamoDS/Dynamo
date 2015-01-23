@@ -194,8 +194,8 @@ namespace Dynamo.Nodes
 
         public Watch3D()
         {
-            InPortData.Add(new PortData(String.Empty, Resources.Watch3DPortDataInputToolTip));
-            OutPortData.Add(new PortData(String.Empty, Resources.Watch3DPortDataOutputToolTip));
+            InPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
+            OutPortData.Add(new PortData("", Resources.Watch3DPortDataOutputToolTip));
 
             RegisterAllPorts();
 
