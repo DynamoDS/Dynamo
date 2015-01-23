@@ -16,7 +16,7 @@ using System.Text;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
-using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
+using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
 
 namespace Dynamo.DSEngine
@@ -93,6 +93,7 @@ namespace Dynamo.DSEngine
         
         /// <summary>
         /// Get DesignScript core.
+        /// This will be superceeded by the runtime core
         /// </summary>
         public ProtoCore.Core LiveRunnerCore
         {
@@ -101,6 +102,7 @@ namespace Dynamo.DSEngine
                 return liveRunnerServices.Core;
             }
         }
+
 
         /// <summary>
         /// Return libary service instance.
