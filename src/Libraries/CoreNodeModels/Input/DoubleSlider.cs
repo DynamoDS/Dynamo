@@ -14,7 +14,7 @@ namespace DSCoreNodesUI.Input
 {
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces numeric values.")]
+    [NodeDescription("DoubleSliderNodeDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [NodeSearchTags(new[] {"double", "number", "float", "integer", "slider"})]

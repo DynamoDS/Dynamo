@@ -29,7 +29,7 @@ namespace DSCore.File
 
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows you to select a file on the system to get its filename.")]
+    [NodeDescription("FilenameNodeDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
@@ -42,7 +42,7 @@ namespace DSCore.File
 
     [NodeName("Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows you to select a directory on the system to get its path.")]
+    [NodeDescription("DirectoryNodeDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
@@ -165,7 +165,7 @@ namespace DSCore.File
 
     [NodeName("File.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("Creates a file object from a path.")]
+    [NodeDescription("FileObjectNodeDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
@@ -219,7 +219,7 @@ namespace DSCore.File
 
     [NodeName("Directory.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("Creates a directory object from a path.")]
+    [NodeDescription("DirectoryObjectNodeDescription",typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
