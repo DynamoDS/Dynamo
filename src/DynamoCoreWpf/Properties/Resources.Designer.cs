@@ -416,9 +416,9 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to DesignScript Builtin Functions.
         /// </summary>
-        public static string DSFunctionBuiltin {
+        public static string DSFunctionNodeDescription {
             get {
-                return ResourceManager.GetString("DSFunctionBuiltin", resourceCulture);
+                return ResourceManager.GetString("DSFunctionNodeDescription", resourceCulture);
             }
         }
         
@@ -1665,11 +1665,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instance of a Custom Node.
+        ///   Looks up a localized string similar to A function output, use with custom nodes.
         /// </summary>
-        public static string FunctionCusNode {
+        public static string FuncOutputOfCustomerNodeDescription {
             get {
-                return ResourceManager.GetString("FunctionCusNode", resourceCulture);
+                return ResourceManager.GetString("FuncOutputOfCustomerNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
+        /// </summary>
+        public static string FunctionParamOfCustomerNodeDescription {
+            get {
+                return ResourceManager.GetString("FunctionParamOfCustomerNodeDescription", resourceCulture);
             }
         }
         
@@ -1976,6 +1985,15 @@ namespace Dynamo.Wpf.Properties {
         public static string InstallMessageCaption {
             get {
                 return ResourceManager.GetString("InstallMessageCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance of a Custom Node.
+        /// </summary>
+        public static string InstanceOfCustomerNodeDescription {
+            get {
+                return ResourceManager.GetString("InstanceOfCustomerNodeDescription", resourceCulture);
             }
         }
         
@@ -2599,15 +2617,6 @@ namespace Dynamo.Wpf.Properties {
         public static string OpenDynamoDefinitionDialogTitle {
             get {
                 return ResourceManager.GetString("OpenDynamoDefinitionDialogTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A function output, use with custom nodes.
-        /// </summary>
-        public static string OutputFunc {
-            get {
-                return ResourceManager.GetString("OutputFunc", resourceCulture);
             }
         }
         
@@ -3436,15 +3445,6 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageVisitDynamoBim {
             get {
                 return ResourceManager.GetString("StartPageVisitDynamoBim", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
-        /// </summary>
-        public static string SymbolParm {
-            get {
-                return ResourceManager.GetString("SymbolParm", resourceCulture);
             }
         }
         

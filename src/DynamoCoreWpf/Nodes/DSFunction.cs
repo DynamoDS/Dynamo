@@ -31,7 +31,7 @@ namespace Dynamo.Nodes
     /// same function node but internally have different procedure.
     /// </summary>
     [NodeName("Function Node")]
-    [NodeDescription("DSFunctionBuiltin",typeof(Resources))]
+    [NodeDescription("DSFunctionNodeDescription",typeof(Resources))]
     [IsInteractive(false)]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]

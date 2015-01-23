@@ -21,7 +21,7 @@ using Expression = NCalc.Expression;
 namespace DSCoreNodesUI
 {
     [NodeName("Formula")]
-    [NodeDescription("FormulaMath",typeof(Resources))]
+    [NodeDescription("FormulaNodeDescription",typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     public class Formula : NodeModel

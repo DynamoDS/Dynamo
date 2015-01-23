@@ -10,7 +10,7 @@ using Dynamo.Properties;
 namespace DSCoreNodesUI
 {
     [NodeName("Legacy Node")]
-    [NodeDescription("DummyNode", typeof(Resources))]
+    [NodeDescription("DummyNodeDescription", typeof(Resources))]
     [IsMetaNode]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]

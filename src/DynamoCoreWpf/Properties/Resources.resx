@@ -1519,16 +1519,16 @@ Click CANCEL to cancel the update.</value>
   <data name="TooltipCurrentIndex" xml:space="preserve">
     <value>{0} of {1}</value>
   </data>
-  <data name="DSFunctionBuiltin" xml:space="preserve">
+  <data name="DSFunctionNodeDescription" xml:space="preserve">
     <value>DesignScript Builtin Functions</value>
   </data>
   <data name="DSVarArgFuncBuiltin" xml:space="preserve">
     <value>DesignScript Builtin Functions</value>
   </data>
-  <data name="FunctionCusNode" xml:space="preserve">
+  <data name="InstanceOfCustomerNodeDescription" xml:space="preserve">
     <value>Instance of a Custom Node</value>
   </data>
-  <data name="OutputFunc" xml:space="preserve">
+  <data name="FuncOutputOfCustomerNodeDescription" xml:space="preserve">
     <value>A function output, use with custom nodes</value>
   </data>
   <data name="Point2Node" xml:space="preserve">
@@ -1537,7 +1537,7 @@ Click CANCEL to cancel the update.</value>
   <data name="Point3Node" xml:space="preserve">
     <value>Create a point in 3D space.</value>
   </data>
-  <data name="SymbolParm" xml:space="preserve">
+  <data name="FunctionParamOfCustomerNodeDescription" xml:space="preserve">
     <value>A function parameter, use with custom nodes</value>
   </data>
 </root>

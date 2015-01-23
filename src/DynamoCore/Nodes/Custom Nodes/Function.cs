@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
     ///     DesignScript Custom Node instance.
     /// </summary>
     [NodeName("Custom Node")]
-    [NodeDescription("FunctionCustomerNode",typeof(Resources))]
+    [NodeDescription("FunctionCustomerNodeDescription",typeof(Resources))]
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
@@ -176,7 +176,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("SymbolParameter",typeof(Resources))]
+    [NodeDescription("ParameterOfCustomerNodeDescription",typeof(Resources))]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]

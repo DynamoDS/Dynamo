@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("StringInputCreation",typeof(Resources))]
+    [NodeDescription("StringNodeDescription",typeof(Resources))]
     [IsDesignScriptCompatible]
     public class StringInput : String
     {
@@ -118,7 +118,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("DoubleInput",typeof(Resources))]
+    [NodeDescription("NumberNodeDescription",typeof(Resources))]
     [IsDesignScriptCompatible]
     public class DoubleInput : NodeModel
     {

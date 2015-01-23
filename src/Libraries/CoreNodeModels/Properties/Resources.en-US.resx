@@ -223,6 +223,9 @@
     <value>Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/</value>
     <comment>Description for Formula</comment>
   </data>
+  <data name="FormulaNodeDescription" xml:space="preserve">
+    <value>Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/</value>
+  </data>
   <data name="FormulaPortDataResultToolTip" xml:space="preserve">
     <value>Result of math computation</value>
   </data>
@@ -315,6 +318,9 @@
   <data name="MapPortDataResultToolTip" xml:space="preserve">
     <value>Mapped list</value>
   </data>
+  <data name="NumberNodeDescription" xml:space="preserve">
+    <value>Creates a number</value>
+  </data>
   <data name="NumberRangeDescription" xml:space="preserve">
     <value>Creates a sequence of numbers in the specified range.</value>
     <comment>Description for Number Range</comment>
@@ -403,6 +409,9 @@
     <value>Convert an object to a string representation.</value>
     <comment>Description for String from Object</comment>
   </data>
+  <data name="StringNodeDescription" xml:space="preserve">
+    <value>Creates a string</value>
+  </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>Visualize the output of node.</value>
     <comment>Description for Watch</comment>
@@ -434,5 +443,23 @@
   </data>
   <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
     <value>The url for the web request.</value>
+  </data>
+  <data name="DirectioryCreationDescription" xml:space="preserve">
+    <value>Creates a directory object from a path</value>
+  </data>
+  <data name="DirectoryPathGetNodeDescription" xml:space="preserve">
+    <value>Allows you to select a directory on the system to get its path</value>
+  </data>
+  <data name="DoubleSilderNodeDescription" xml:space="preserve">
+    <value>DoubleSilderNodeDescription</value>
+  </data>
+  <data name="FileCreationNodeDescription" xml:space="preserve">
+    <value>Creates a file object from a path</value>
+  </data>
+  <data name="FilenameNodeDescription" xml:space="preserve">
+    <value>Allows you to select a file on the system to get its filename</value>
+  </data>
+  <data name="IntSliderNodeDescription" xml:space="preserve">
+    <value>A slider that produces integer values</value>
   </data>
 </root>

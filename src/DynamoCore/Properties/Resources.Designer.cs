@@ -68,13 +68,6 @@ namespace Dynamo.Properties {
                 return ResourceManager.GetString("ArggOKButton", resourceCulture);
             }
         }
-        ///   Looks up a localized string similar to Cannot find type &apos;{0}&apos;.
-        /// </summary>
-        internal static string WarningCannotFindType {
-            get {
-                return ResourceManager.GetString("WarningCannotFindType", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
@@ -324,9 +317,9 @@ namespace Dynamo.Properties {
         /// <summary>
         ///   Looks up a localized string similar to DesignScript Builtin Functions.
         /// </summary>
-        public static string DSFunctionBuiltin {
+        public static string DSFunctionNodeDescription {
             get {
-                return ResourceManager.GetString("DSFunctionBuiltin", resourceCulture);
+                return ResourceManager.GetString("DSFunctionNodeDescription", resourceCulture);
             }
         }
         
@@ -342,9 +335,9 @@ namespace Dynamo.Properties {
         /// <summary>
         ///   Looks up a localized string similar to This is an obsolete node.
         /// </summary>
-        public static string DummyNode {
+        public static string DummyNodeDescription {
             get {
-                return ResourceManager.GetString("DummyNode", resourceCulture);
+                return ResourceManager.GetString("DummyNodeDescription", resourceCulture);
             }
         }
         
@@ -488,9 +481,9 @@ namespace Dynamo.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
-        public static string FunctionCustomerNode {
+        public static string FunctionCustomerNodeDescription {
             get {
-                return ResourceManager.GetString("FunctionCustomerNode", resourceCulture);
+                return ResourceManager.GetString("FunctionCustomerNodeDescription", resourceCulture);
             }
         }
         
@@ -828,6 +821,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
+        /// </summary>
+        public static string ParameterOfCustomerNodeDescription {
+            get {
+                return ResourceManager.GetString("ParameterOfCustomerNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified file path is not recognizable as a stable or a daily build.
         /// </summary>
         public static string PathNotRegconizableAsStableOrDailyBuild {
@@ -1026,15 +1028,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A function parameter, use with custom nodes.
-        /// </summary>
-        public static string SymbolParameter {
-            get {
-                return ResourceManager.GetString("SymbolParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Statement Output.
         /// </summary>
         public static string ToolTipForTempVar {
@@ -1183,6 +1176,29 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot find type &apos;{0}&apos;.
+        /// </summary>
+        public static string WarningCannotFindType {
+            get {
+                return ResourceManager.GetString("WarningCannotFindType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid input.
+        ///
+        ///The name of parameter should start with alphabetic character. You can specify its type and default value. E.g., 
+        ///
+        ///input : var[]..[]
+        ///value: bool = false.
+        /// </summary>
+        public static string WarningInvalidInput {
+            get {
+                return ResourceManager.GetString("WarningInvalidInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to Dynamo!.
         /// </summary>
         public static string WelcomeMessage {
@@ -1199,19 +1215,5 @@ namespace Dynamo.Properties {
                 return ResourceManager.GetString("WorkbenchNotOpen", resourceCulture);
             }
         }
-        ///   Looks up a localized string similar to Invalid input.
-        ///
-        ///The name of parameter should start with alphabetic character. You can specify its type and default value. E.g., 
-        ///
-        ///input : var[]..[]
-        ///value: bool = false.
-        /// </summary>
-        internal static string WarningInvalidInput {
-            get {
-                return ResourceManager.GetString("WarningInvalidInput", resourceCulture);
-            }
-        
-        }
     }
-}    
-
+}
