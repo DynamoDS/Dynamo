@@ -117,6 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+
   <data name="BuildSublistsDescription" xml:space="preserve">
     <value>Build sublists from a list using DesignScript range syntax.</value>
     <comment>Description for code block node</comment>
@@ -495,12 +496,23 @@ If you don't mind, it would be helpful for you to send us your file. That will m
     <value>function output</value>
   </data>
   <data name="ToolTipInput" xml:space="preserve">
-    <value>input #</value>
+    <value>Input #</value>
   </data>
   <data name="ToolTipOutput" xml:space="preserve">
-    <value>output #</value>
+    <value>Output #</value>
   </data>
   <data name="ToolTipSymbol" xml:space="preserve">
-    <value>symbol</value>
+    <value>Symbol</value>
+	</data>
+  <data name="WarningCannotFindType" xml:space="preserve">
+    <value>Cannot find type '{0}'</value>
+  </data>
+  <data name="WarningInvalidInput" xml:space="preserve">
+    <value>Invalid input.
+
+The name of parameter should start with alphabetic character. You can specify its type and default value. E.g., 
+
+input : var[]..[]
+value: bool = false</value>
   </data>
 </root>
