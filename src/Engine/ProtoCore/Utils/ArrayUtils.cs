@@ -4,6 +4,7 @@ using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
+using ProtoCore.Properties;
 
 namespace ProtoCore.Utils
 {

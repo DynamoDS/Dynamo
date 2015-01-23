@@ -7,6 +7,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System.Linq;
 using ProtoCore.Runtime;
+using ProtoCore.Properties;
 
 namespace ProtoCore
 {
