@@ -122,6 +122,8 @@ namespace Dynamo.DSEngine
 
         private const string imagesSuffix = "Images";
 
+        public Assembly Assembly { get { return resourceAssembly; } }
+
         internal LibraryCustomization(Assembly resAssembly, XDocument document)
         {
             this.xmlDocument = document;
