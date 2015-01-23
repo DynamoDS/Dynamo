@@ -10,6 +10,7 @@ using System.Linq;
 using Dynamo.Nodes;
 using DSCoreNodesUI;
 using ProtoCore.Mirror;
+using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace Dynamo.Tests
 {

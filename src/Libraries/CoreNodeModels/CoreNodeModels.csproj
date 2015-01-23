@@ -52,7 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\SliderBase.cs" />
-    <Compile Include="Input\SliderViewModel.cs" />
     <Compile Include="Input\Double.cs" />
     <Compile Include="Input\BaseTypes.cs" />
     <Compile Include="Input\DoubleSlider.cs" />

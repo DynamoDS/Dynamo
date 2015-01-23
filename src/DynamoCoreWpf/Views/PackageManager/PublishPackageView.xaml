@@ -316,21 +316,21 @@
                                         <DataTrigger.Value>
                                             <packagemanager:DependencyType>File</packagemanager:DependencyType>
                                         </DataTrigger.Value>
-                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/files.png"/>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/files.png"/>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding DependencyType}">
                                         <DataTrigger.Value>
                                             <packagemanager:DependencyType>Assembly</packagemanager:DependencyType>
                                         </DataTrigger.Value>
-                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/assemblies.png"/>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/assemblies.png"/>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding DependencyType}">
                                         <DataTrigger.Value>
                                             <packagemanager:DependencyType>CustomNode</packagemanager:DependencyType>
                                         </DataTrigger.Value>
-                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/nodes.png"/>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/nodes.png"/>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding DependencyType}">

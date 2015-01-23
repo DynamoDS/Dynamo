@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
-using ProtoCore.RuntimeData;
-using ProtoCore.Properties;
+using ProtoCore.Runtime;
 
 namespace ProtoCore.Utils
 {
@@ -552,7 +551,7 @@ namespace ProtoCore.Utils
             Validity.Assert(array.IsArray || array.IsString);
             if (array.IsString && !value.IsChar)
             {
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, Resources.kAssignNonCharacterToString);
+                core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kAssignNonCharacterToString);
                 return StackValue.Null;
             }
 

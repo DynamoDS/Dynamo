@@ -49,6 +49,12 @@ namespace Dynamo.Nodes
             View.View.Camera.Position = model.CameraPosition;
             View.View.Camera.LookDirection = model.LookDirection;
 
+            // When user sizes a watch node, only view gets resized. The actual 
+            // NodeModel does not get updated. This is where the view updates the 
+            // model whenever its size is updated.
+            View.SizeChanged += (sender, args) => 
+                model.SetSize(args.NewSize.Width, args.NewSize.Height);
+
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
 
             var mi = new MenuItem { Header = "Zoom to Fit" };
@@ -249,9 +255,6 @@ namespace Dynamo.Nodes
 
             var resultAst = new[]
             {
-                //AstFactory.BuildAssignment(
-                //    GetAstIdentifierForOutputIndex(0),
-                //    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };
 
@@ -268,8 +271,10 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(viewElement);
             var viewHelper = new XmlElementHelper(viewElement);
 
-            viewHelper.SetAttribute("width", Width);
-            viewHelper.SetAttribute("height", Height);
+            WatchWidth = Width;
+            WatchHeight = Height;
+            viewHelper.SetAttribute("width", WatchWidth);
+            viewHelper.SetAttribute("height", WatchHeight);
 
             // the view stores the latest position
             OnRequestUpdateLatestCameraPosition();

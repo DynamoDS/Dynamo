@@ -100,7 +100,7 @@ namespace ProtoCore.Lang
                     // But since we dont even need to to reach there if we dont have a valid this pointer, then just return null
                     if (formalParameters[thisPtrIndex].IsNull)
                     {
-                        core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
+                        core.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
                         return StackValue.Null;
                     }
 

@@ -84,6 +84,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
+    <Compile Include="Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
@@ -293,6 +297,10 @@
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+    <EmbeddedResource Include="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
     <None Include="UI\Fonts\OpenSans-Bold.ttf">
@@ -934,7 +942,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-   <ItemGroup>
+  <ItemGroup>
     <Page Include="Views\Input\ParameterEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1008,6 +1016,11 @@
     <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
     <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\assemblies.png" />
+    <Resource Include="UI\Images\files.png" />
+    <Resource Include="UI\Images\nodes.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

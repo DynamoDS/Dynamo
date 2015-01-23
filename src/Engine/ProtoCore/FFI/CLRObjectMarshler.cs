@@ -126,7 +126,7 @@ namespace ProtoFFI
             if (dsObject.opdata > MaxValue || dsObject.opdata < MinValue)
             {
                 string message = String.Format(Resources.kFFIInvalidCast, dsObject.opdata, type.Name, MinValue, MaxValue);
-                dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch, message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
             return CastToObject(dsObject.opdata);
@@ -161,7 +161,7 @@ namespace ProtoFFI
             if (dsObject.RawDoubleValue > MaxValue || dsObject.RawDoubleValue < MinValue)
             {
                 string message = String.Format(Resources.kFFIInvalidCast, dsObject.RawDoubleValue, type.Name, MinValue, MaxValue);
-                dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch, message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
             return CastToDouble(dsObject.RawDoubleValue);

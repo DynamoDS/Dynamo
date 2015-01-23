@@ -9,7 +9,6 @@ namespace ProtoCore.DSASM
 
         public Interpreter(Core core, bool isFEP = false)
         {
-            //runtime = new Executive(core, isFEP);
             runtime = core.ExecutiveProvider.CreateExecutive(core, isFEP);
         }
         

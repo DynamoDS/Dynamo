@@ -742,6 +742,11 @@ namespace Dynamo.UpdateManager
 
             var bucketresult = doc.Element(ns + "ListBucketResult");
 
+            if (bucketresult == null)
+            {
+                return null;
+            }
+
             var builds = bucketresult.Descendants(ns + "LastModified").
                 OrderByDescending(x => DateTime.Parse(x.Value)).
                 Where(x => x.Parent.Value.Contains(InstallNameBase) || x.Parent.Value.Contains(OldDailyInstallNameBase)).
