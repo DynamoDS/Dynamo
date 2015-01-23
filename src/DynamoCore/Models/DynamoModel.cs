@@ -817,8 +817,7 @@ namespace Dynamo.Models
         private bool OpenHomeWorkspace(
             XmlDocument xmlDoc, WorkspaceHeader workspaceInfo, out WorkspaceModel workspace)
         {
-            ElementResolver elementResolver;
-            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory, out elementResolver);
+            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
@@ -829,7 +828,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                DebugSettings.VerboseLogging, IsTestMode, elementResolver, workspaceInfo.FileName);
+                DebugSettings.VerboseLogging, IsTestMode, nodeGraph.ElementResolver, workspaceInfo.FileName);
 
             RegisterHomeWorkspace(newWorkspace);
             

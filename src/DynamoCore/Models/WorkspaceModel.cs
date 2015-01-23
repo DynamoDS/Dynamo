@@ -673,11 +673,11 @@ namespace Dynamo.Models
             return true;
         }
 
-        private void SerializeElementResolver(XmlElement root)
+        private void SerializeElementResolver(XmlDocument xmlDoc)
         {
-            Debug.Assert(root != null);
+            Debug.Assert(xmlDoc != null);
 
-            XmlDocument xmlDoc = root.OwnerDocument;
+            var root = xmlDoc.DocumentElement;
 
             var mapElement = xmlDoc.CreateElement("NamespaceResolutionMap");
 
@@ -705,7 +705,7 @@ namespace Dynamo.Models
                 root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
 
-                SerializeElementResolver(root);
+                SerializeElementResolver(xmlDoc);
 
                 var elementList = xmlDoc.CreateElement("Elements");
                 //write the root element
