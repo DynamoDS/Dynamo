@@ -967,6 +967,11 @@ namespace Dynamo.Controls
                 return;
             }
 
+            // Selection is home tab
+            int currentSlidingWindowSize = tabSlidingWindowEnd - tabSlidingWindowStart + 1;
+            int windowDiff = Math.Abs(currentSlidingWindowSize - newSlidingWindowSize);
+            int lastTab = WorkspaceTabs.Items.Count - 1;
+
             if (tabSelected != 0)
             {
                 // Selection is not home tab
@@ -974,100 +979,58 @@ namespace Dynamo.Controls
                 {
                     // Slide window towards the front
                     tabSlidingWindowStart = tabSelected;
-                    tabSlidingWindowEnd = tabSlidingWindowStart + (newSlidingWindowSize - 1);
+                    tabSlidingWindowEnd = tabSelected + (newSlidingWindowSize - 1);
                 }
                 else if (tabSelected > tabSlidingWindowEnd)
                 {
                     // Slide window towards the end
+                    tabSlidingWindowStart = tabSelected - (newSlidingWindowSize - 1);
                     tabSlidingWindowEnd = tabSelected;
-                    tabSlidingWindowStart = tabSlidingWindowEnd - (newSlidingWindowSize - 1);
                 }
                 else
                 {
-                    int currentSlidingWindowSize = tabSlidingWindowEnd - tabSlidingWindowStart + 1;
-                    int windowDiff = Math.Abs(currentSlidingWindowSize - newSlidingWindowSize);
-
                     // Handles sliding window size change caused by window resizing
                     if (currentSlidingWindowSize > newSlidingWindowSize)
                     {
                         // Trim window
-                        while (windowDiff > 0)
-                        {
-                            if (tabSelected == tabSlidingWindowEnd)
-                                tabSlidingWindowStart++; // Trim from front
-                            else
-                                tabSlidingWindowEnd--; // Trim from end
-
-                            windowDiff--;
-                        }
+                        if (tabSelected == tabSlidingWindowEnd)
+                            tabSlidingWindowStart += windowDiff;
+                        else
+                            tabSlidingWindowEnd -= windowDiff;
                     }
                     else if (currentSlidingWindowSize < newSlidingWindowSize)
                     {
                         // Expand window
-                        int lastTab = WorkspaceTabs.Items.Count - 1;
-
-                        while (windowDiff > 0)
-                        {
-                            if (tabSlidingWindowEnd == lastTab)
-                                tabSlidingWindowStart--;
-                            else
-                                tabSlidingWindowEnd++;
-
-                            windowDiff--;
-                        }
-                    }
-                    else
-                    {
-                        // Handle tab closing
-
+                        if (tabSlidingWindowEnd == lastTab)
+                            tabSlidingWindowStart -= windowDiff;
+                        else
+                            tabSlidingWindowEnd += windowDiff;
                     }
                 }
             }
             else
             {
-                // Selection is home tab
-                int currentSlidingWindowSize = tabSlidingWindowEnd - tabSlidingWindowStart + 1;
-                int windowDiff = Math.Abs(currentSlidingWindowSize - newSlidingWindowSize);
-
-                int lastTab = WorkspaceTabs.Items.Count - 1;
-
                 // Handles sliding window size change caused by window resizing and tab close
                 if (currentSlidingWindowSize > newSlidingWindowSize)
                 {
-                    // Trim window
-                    while (windowDiff > 0)
-                    {
-                        tabSlidingWindowEnd--; // Trim from end
-
-                        windowDiff--;
-                    }
+                    tabSlidingWindowEnd -= windowDiff;
                 }
                 else if (currentSlidingWindowSize < newSlidingWindowSize)
                 {
                     // Expand window due to window resize
-                    while (windowDiff > 0)
-                    {
-                        if (tabSlidingWindowEnd == lastTab)
-                            tabSlidingWindowStart--;
-                        else
-                            tabSlidingWindowEnd++;
-
-                        windowDiff--;
-                    }
+                    if (tabSlidingWindowEnd == lastTab)
+                        tabSlidingWindowStart -= windowDiff;
+                    else
+                        tabSlidingWindowEnd += windowDiff;
                 }
                 else
                 {
                     // Handle tab closing with no change in window size
                     // Shift window
-
                     if (tabSlidingWindowEnd > lastTab)
                     {
                         tabSlidingWindowStart--;
                         tabSlidingWindowEnd--;
-                    }
-                    else if (tabSlidingWindowEnd < lastTab)
-                    {
-                        tabSlidingWindowEnd++;
                     }
                 }
             }
