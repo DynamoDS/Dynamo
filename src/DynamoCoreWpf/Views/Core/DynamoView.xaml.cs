@@ -23,7 +23,7 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
-
+using Dynamo.Wpf.Controls;
 using DynamoUtilities;
 
 using String = System.String;
@@ -175,6 +175,12 @@ namespace Dynamo.Controls
             Debug.WriteLine("Resizing window to {0}:{1}", e.NewSize.Width, e.NewSize.Height);
         }
 
+        void InitializeLogin()
+        {
+            var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
+            loginGrid.Children.Add(login);
+        }
+
         void InitializeShortcutBar()
         {
             ShortcutToolbar shortcutBar = new ShortcutToolbar();
@@ -321,6 +327,7 @@ namespace Dynamo.Controls
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
                                                                      _timer.Elapsed));
+            InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage();
 

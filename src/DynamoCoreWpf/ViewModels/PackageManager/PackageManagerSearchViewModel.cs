@@ -700,36 +700,6 @@ namespace Dynamo.PackageManager
 
         }
 
-        /// <summary>
-        ///     Performs a search using the given string as query, but does not update
-        ///     the SearchResults object.
-        /// </summary>
-        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
-        /// <param name="search"> The search query </param>
-        internal List<PackageManagerSearchElementViewModel> SearchOnline(string search)
-        {
-            bool emptySearch = false;
-            if (search == "")
-            {
-                search = "dyn*";
-                emptySearch = true;
-            }
-            else
-            {
-                search = String.Join("* ", search.Split(' ')) + "*"; // append wild card to each search
-            }
-
-            var results =
-                PackageManagerClientViewModel.Search(search, MaxNumSearchResults)
-                    .Select(x => new PackageManagerSearchElementViewModel(x)).ToList();
-
-            if (emptySearch)
-            {
-                Sort(results, this.SortingKey);
-            }
-
-            return results;
-        }
 
         /// <summary>
         /// Sort a list of search results by the given key

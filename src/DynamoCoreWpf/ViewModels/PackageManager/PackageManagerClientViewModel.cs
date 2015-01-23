@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -17,7 +18,7 @@ namespace Dynamo.ViewModels
     ///     A thin wrapper on the Greg rest client for performing IO with
     ///     the Package Manager
     /// </summary>
-    public class PackageManagerClientViewModel
+    public class PackageManagerClientViewModel : NotificationObject
     {
 
         #region Properties/Fields
@@ -41,6 +42,11 @@ namespace Dynamo.ViewModels
         public readonly DynamoViewModel DynamoViewModel;
         public PackageManagerClient Model { get; private set; }
 
+        public bool IsLoggedIn
+        {
+            get { return Model.IsLoggedIn; }
+        }
+
         #endregion
 
         public PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
@@ -48,6 +54,8 @@ namespace Dynamo.ViewModels
             this.DynamoViewModel = dynamoViewModel;
             Model = model;
             CachedPackageList = new List<PackageManagerSearchElement>();
+
+            model.LoginStateChanged += b => RaisePropertyChanged("IsLoggedIn");
         }
 
         public void PublishCurrentWorkspace(object m)
@@ -79,8 +87,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCurrentWorkspace(object m)
         {
-            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel
-                && Model.HasAuthenticator;
+            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel;
         }
 
         public void PublishNewPackage(object m)
@@ -90,7 +97,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishNewPackage(object m)
         {
-            return Model.HasAuthenticator;
+            return true;
         }
 
         public void PublishSelectedNodes(object m)
@@ -135,8 +142,7 @@ namespace Dynamo.ViewModels
         public bool CanPublishSelectedNodes(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                DynamoSelection.Instance.Selection.All(x => x is Function) &&
-                Model.HasAuthenticator;
+                   DynamoSelection.Instance.Selection.All(x => x is Function);
         }
 
         private void ShowNodePublishInfo()
@@ -186,13 +192,6 @@ namespace Dynamo.ViewModels
             return CachedPackageList;
         }
 
-        public List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
-        {
-            return Model.Search(search, maxNumSearchResults)
-                               .Select((header) => new PackageManagerSearchElement(Model, header))
-                               .ToList();
-        }
-
         /// <summary>
         /// This method downloads the package represented by the PackageDownloadHandle,
         /// uninstalls its current installation if necessary, and installs the package.
@@ -202,9 +201,6 @@ namespace Dynamo.ViewModels
         /// <param name="packageDownloadHandle"></param>
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
-            
-
-            var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
@@ -213,8 +209,8 @@ namespace Dynamo.ViewModels
             {
                 try
                 {
-                    var response = Model.Client.Execute(pkgDownload);
-                    var pathDl = PackageDownload.GetFileFromResponse(response);
+                    var pathDl = Model.DownloadPackage(packageDownloadHandle.Header._id,
+                        packageDownloadHandle.VersionName);
 
                     DynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
                     {
@@ -281,7 +277,7 @@ namespace Dynamo.ViewModels
 
         internal void GoToWebsite()
         {
-            Process.Start(Model.Client.BaseUrl);
+            Process.Start(Model.BaseUrl);
         }
 
     }

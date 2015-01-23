@@ -125,7 +125,7 @@ namespace Dynamo.PackageManager
 
         public bool CanUpvote()
         {
-            return client != null && client.HasAuthenticator;
+            return client != null;
         }
 
         public void Downvote()
@@ -142,7 +142,7 @@ namespace Dynamo.PackageManager
 
         public bool CanDownvote()
         {
-            return client != null && client.HasAuthenticator;
+            return client != null;
         }
 
         public static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(

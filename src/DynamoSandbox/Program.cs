@@ -1,33 +1,44 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
-
+using System.Windows.Threading;
 using Dynamo;
+using Dynamo.Applications.Authentication;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Services;
 using Dynamo.ViewModels;
-
 using DynamoUtilities;
+using Greg;
+using Greg.AuthProviders;
 
 namespace DynamoSandbox
 {
-    class Program
+    internal class Program
     {
         private static void MakeStandaloneAndRun(string commandFilePath, ref DynamoViewModel viewModel)
         {
+            var url = ConfigurationManager.AppSettings["authAddress"];
+            var authProvider = new OxygenProvider(url);
+            var loginService = new LoginService(new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            authProvider.RequestLogin += loginService.ShowLogin;
+
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-            
+
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    Preferences = PreferenceSettings.Load()
+                    Preferences = PreferenceSettings.Load(),
+                    AuthProvider = authProvider
                 });
 
             viewModel = DynamoViewModel.Start(
@@ -43,6 +54,7 @@ namespace DynamoSandbox
             app.Run(view);
         }
 
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -53,11 +65,11 @@ namespace DynamoSandbox
                 // Running Dynamo sandbox with a command file:
                 // DynamoSandbox.exe /c "C:\file path\file.xml"
                 // 
-                string commandFilePath = string.Empty;
-                for (int i = 0; i < args.Length; ++i)
+                var commandFilePath = string.Empty;
+                for (var i = 0; i < args.Length; ++i)
                 {
                     // Looking for '/c'
-                    string arg = args[i];
+                    var arg = args[i];
                     if (arg.Length != 2 || (arg[0] != '/'))
                         continue;
 
@@ -73,7 +85,6 @@ namespace DynamoSandbox
             }
             catch (Exception e)
             {
-
                 try
                 {
 #if DEBUG
@@ -105,7 +116,6 @@ namespace DynamoSandbox
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
-
         }
     }
 }

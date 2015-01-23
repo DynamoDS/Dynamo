@@ -773,16 +773,31 @@
         </Border>
 
         <!--Shortcuts Toolbar-->
-        <Border Name="shortcutBarBorder"
-                Grid.Row="1"
+        <Grid Grid.Row="1"
                 Grid.Column="0"
-                Grid.ColumnSpan="3"
+                Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <Grid Name="loginGrid" 
+                  Grid.Row="0" 
+                  Grid.Column="1">
+                
+            </Grid>
+            
+            <Border Name="shortcutBarBorder"
+                Grid.Row="0"
+                Grid.Column="0"
                 Height="32"
                 BorderBrush="#FF3F4040"
                 BorderThickness="0,0,0,1">
-            <Grid Name="shortcutBarGrid">
-            </Grid>
-        </Border>
+                <Grid Name="shortcutBarGrid">
+                </Grid>
+            </Border>
+
+        </Grid>
 
         <Grid HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
