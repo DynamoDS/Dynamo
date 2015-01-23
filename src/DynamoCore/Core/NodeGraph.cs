@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Xml;
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using ProtoCore.AST;
 using ProtoCore.Namespace;
-using Double = System.Double;
 
 namespace Dynamo.Core
 {
