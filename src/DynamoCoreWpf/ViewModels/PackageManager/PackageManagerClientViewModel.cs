@@ -5,12 +5,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
+using Greg.AuthProviders;
 using Greg.Requests;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -42,12 +45,14 @@ namespace Dynamo.ViewModels
         public readonly DynamoViewModel DynamoViewModel;
         public PackageManagerClient Model { get; private set; }
 
-        public bool IsLoggedIn
+        public LoginState LoginState
         {
-            get { return Model.IsLoggedIn; }
+            get { return Model.LoginState; }
         }
 
         #endregion
+
+        public ICommand LoginLogoutCommand { get; private set; }
 
         public PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
         {
@@ -55,7 +60,26 @@ namespace Dynamo.ViewModels
             Model = model;
             CachedPackageList = new List<PackageManagerSearchElement>();
 
-            model.LoginStateChanged += b => RaisePropertyChanged("IsLoggedIn");
+            this.LoginLogoutCommand = new DelegateCommand(LoginLogout, CanLoginLogout);
+
+            model.LoginStateChanged += b => RaisePropertyChanged("LoginState");
+        }
+
+        private void LoginLogout()
+        {
+            if (this.LoginState == LoginState.LoggedIn)
+            {
+                this.Model.Logout();
+            }
+            else
+            {
+                this.Model.Login();
+            }
+        }
+
+        private bool CanLoginLogout()
+        {
+            return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
         }
 
         public void PublishCurrentWorkspace(object m)

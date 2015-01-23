@@ -25,12 +25,24 @@ namespace Dynamo.Applications.Authentication
 
             if (o == null) throw new Exception("Invalid URL for login page!");
 
+            var success = false;
+
             context.Send((_) => {
                 var window = new BrowserWindow(url);
+
+                window.Browser.Navigated += (sender, args) =>
+                {
+                    if (args.Uri.LocalPath == "/OAuth/Allow")
+                    {
+                        success = true;
+                        window.Close();
+                    }
+                };
+
                 window.ShowDialog();
             }, null);
 
-            return true;
+            return success;
         }
     }
 }

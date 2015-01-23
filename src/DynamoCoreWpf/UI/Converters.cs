@@ -21,7 +21,7 @@ using DynamoUnits;
 using Dynamo.UI.Controls;
 using Dynamo.Search.SearchElements;
 using System.Windows.Input;
-
+using Greg.AuthProviders;
 using RestSharp.Contrib;
 
 namespace Dynamo.Controls
@@ -39,6 +39,19 @@ namespace Dynamo.Controls
                 return tooltip.Remove(trimIndex > 0 ? trimIndex : MaxChars - 5) + " ...";
             } 
             return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class LoginStateToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

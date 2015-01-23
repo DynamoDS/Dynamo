@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dynamo.Utilities;
 using Greg;
+using Greg.AuthProviders;
 using Greg.Requests;
 using Greg.Responses;
 
@@ -22,14 +23,14 @@ namespace Dynamo.PackageManager
         private readonly CustomNodeManager _customNodeManager;
         private readonly string _rootPkgDir;
 
-        public event Action<bool> LoginStateChanged;
+        public event Action<LoginState> LoginStateChanged;
 
         /// <summary>
         ///     Specifies whether the user is logged in or not.
         /// </summary>
-        public bool IsLoggedIn
+        public LoginState LoginState
         {
-            get { return _client.AuthProvider.IsLoggedIn; }
+            get { return _client.AuthProvider.LoginState; }
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace Dynamo.PackageManager
             _client.AuthProvider.LoginStateChanged += OnLoginStateChanged;
         }
 
-        private void OnLoginStateChanged(bool status)
+        private void OnLoginStateChanged(LoginState status)
         {
             if (LoginStateChanged != null)
             {
@@ -214,6 +215,16 @@ namespace Dynamo.PackageManager
                 var pkgResponse = _client.ExecuteAndDeserialize(new Undeprecate(name, "dynamo"));
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }, new PackageManagerResult("Failed to send.", false));
+        }
+
+        internal void Logout()
+        {
+            this._client.AuthProvider.Logout();
+        }
+
+        internal void Login()
+        {
+            this._client.AuthProvider.Login();
         }
     }
 }

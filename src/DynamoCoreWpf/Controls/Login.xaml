@@ -5,17 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              mc:Ignorable="d" 
-             
              d:DesignHeight="300" d:DesignWidth="300" >
-    <Grid Background="AliceBlue" d:DataContext="{d:DesignInstance viewModels:PackageManagerClientViewModel }">
-        <Button>
-
+    
+    <Grid d:DataContext="{d:DesignInstance viewModels:PackageManagerClientViewModel }">
+        <Button Command="{Binding LoginLogoutCommand}">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Content" Value="Login" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="true">
+                        <DataTrigger Binding="{Binding LoginState}" Value="LoggedIn">
                             <Setter Property="Content" Value="{Binding Model.Username}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding LoginState}" Value="LoggingIn">
+                            <Setter Property="Content" Value="Logging in..." />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding LoginState}" Value="RequestingUserData">
+                            <Setter Property="Content" Value="Getting user data..." />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style> 
