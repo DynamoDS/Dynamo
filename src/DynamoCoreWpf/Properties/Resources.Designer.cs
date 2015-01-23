@@ -326,9 +326,9 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
-        public static string CustomeNodeDescription {
+        public static string CustomNodeDescription {
             get {
-                return ResourceManager.GetString("CustomeNodeDescription", resourceCulture);
+                return ResourceManager.GetString("CustomNodeDescription", resourceCulture);
             }
         }
         

@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
     ///     DesignScript Custom Node instance.
     /// </summary>
     [NodeName("Custom Node")]
-    [NodeDescription("FunctionCustomeNodeDescription",typeof(Resources))]
+    [NodeDescription("FunctionCustomNodeDescription",typeof(Resources))]
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]

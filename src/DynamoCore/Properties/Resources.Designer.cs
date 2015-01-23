@@ -481,9 +481,9 @@ namespace Dynamo.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Instance of a Custom Node.
         /// </summary>
-        public static string FunctionCustomeNodeDescription {
+        public static string FunctionCustomNodeDescription {
             get {
-                return ResourceManager.GetString("FunctionCustomeNodeDescription", resourceCulture);
+                return ResourceManager.GetString("FunctionCustomNodeDescription", resourceCulture);
             }
         }
         
