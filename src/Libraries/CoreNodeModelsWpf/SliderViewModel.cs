@@ -20,22 +20,22 @@ namespace Dynamo.Wpf
 
         public string MaxText
         {
-            get { return ConvertNumberToString(model.Max); }
+            get { return SliderBase<T>.ConvertNumberToString(model.Max); }
         }
 
         public string MinText
         {
-            get { return ConvertNumberToString(model.Min); }
+            get { return SliderBase<T>.ConvertNumberToString(model.Min); }
         }
 
         public string StepText
         {
-            get { return ConvertNumberToString(model.Step); }
+            get { return SliderBase<T>.ConvertNumberToString(model.Step); }
         }
 
         public string ValueText
         {
-            get { return ConvertNumberToString(model.Value); }
+            get { return SliderBase<T>.ConvertNumberToString(model.Value); }
         }
 
         public T Max
@@ -98,23 +98,5 @@ namespace Dynamo.Wpf
             }
         }
 
-        internal static string ConvertNumberToString(T value)
-        {
-            return Convert.ToString(value, CultureInfo.InvariantCulture);
-        }
-
-        internal static double ConvertStringToDouble(string value)
-        {
-            double result = 0.0;
-            System.Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
-            return result;
-        }
-
-        internal static int ConvertStringToInt(string value)
-        {
-            int result = 0;
-            System.Int32.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
-            return result;
-        }
     }
 }
