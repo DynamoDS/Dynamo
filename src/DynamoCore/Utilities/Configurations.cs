@@ -67,12 +67,7 @@ namespace Dynamo.UI
         public static double MaxOpacity = 0.95;
 
         #region Preview Bubble
-        public static int CondensedPreviewMaxLength = 25;
-
-        public static double PreviewFrameStrokeThickness = 1;
-
         public static double PreviewTextFontSize = 10;
-        public static FontWeight PreviewTextFontWeight = FontWeights.Light;
         public static Thickness PreviewContentMargin = new Thickness(5, 12, 5, 5);
 
         public static double PreviewMaxWidth = 500;

@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Resources;
-using System.Windows;
-using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Dynamo.UI;
@@ -108,30 +102,17 @@ namespace Dynamo.DSEngine
         }
     }
 
-    // TODO (Vladimir): Class should not have references on types of PresentationCore.dll
-    //                  Should be reworked. Task: MAGN-5656.
     public class LibraryCustomization
     {
-        private readonly XDocument xmlDocument;
-
-        private Dictionary<string, BitmapSource> cachedIcons =
-            new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
-
-        private readonly string assemblyName;
         private readonly Assembly resourceAssembly;
-
-        private const string imagesSuffix = "Images";
+        private readonly XDocument xmlDocument;
 
         public Assembly Assembly { get { return resourceAssembly; } }
 
         internal LibraryCustomization(Assembly resAssembly, XDocument document)
         {
             this.xmlDocument = document;
-            if (resAssembly != null)
-            {
-                resourceAssembly = resAssembly;
-                assemblyName = resAssembly.GetName().Name.Split('.').First();
-            }
+            this.resourceAssembly = resAssembly;
         }
 
         public string GetNamespaceCategory(string namespaceName)
@@ -141,54 +122,6 @@ namespace Dynamo.DSEngine
             if (xmlDocument != null)
                 obj = xmlDocument.XPathEvaluate(String.Format(format, namespaceName));
             return obj.ToString().Trim();
-        }
-
-        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
-        public static extern bool DeleteObject(IntPtr hObject);
-
-        internal BitmapSource LoadIconInternal(string iconKey)
-        {
-            if (cachedIcons.ContainsKey(iconKey))
-                return cachedIcons[iconKey];
-
-            if (resourceAssembly == null)
-            {
-                cachedIcons.Add(iconKey, null);
-                return null;
-            }
-
-            ResourceManager rm = new ResourceManager(assemblyName + imagesSuffix, resourceAssembly);
-
-            BitmapSource bitmapSource = null;
-
-            var source = (Bitmap)rm.GetObject(iconKey);
-            if (source == null)
-            {
-                cachedIcons.Add(iconKey, null);
-                return null;
-            }
-            var hBitmap = source.GetHbitmap();
-
-            try
-            {
-                bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                    hBitmap,
-                    IntPtr.Zero,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions());
-            }
-            catch (Win32Exception)
-            {
-                bitmapSource = null;
-            }
-            finally
-            {
-                DeleteObject(hBitmap);
-            }
-
-            cachedIcons.Add(iconKey, bitmapSource);
-
-            return bitmapSource;
         }
     }
 }
