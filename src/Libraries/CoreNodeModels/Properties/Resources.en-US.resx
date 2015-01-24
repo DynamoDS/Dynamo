@@ -291,9 +291,17 @@
     <value>Applies a combinator to each pair in the cartesian product of two sequences</value>
     <comment>Description for List.CartesianProduct</comment>
   </data>
+  <data name="ListCartesianProductSearchTags" xml:space="preserve">
+    <value>cross product;crossreference;cross ref;</value>
+    <comment>search tags List.CartesianProcut</comment>
+  </data>
   <data name="ListCombineDescription" xml:space="preserve">
     <value>Applies a combinator to each element in two sequences</value>
     <comment>Description for List.Combine</comment>
+  </data>
+  <data name="ListCombineSearchTags" xml:space="preserve">
+    <value>map multiple;apply over lists;multiple inputs</value>
+    <comment>List.Combine search tags</comment>
   </data>
   <data name="ListCreateDescription" xml:space="preserve">
     <value>Makes a new list out of the given inputs</value>
@@ -303,29 +311,57 @@
     <value>Filters a sequence by a given condition such that for an arbitrary element "x," condition(x) = True or False.</value>
     <comment>Description for List.Filter</comment>
   </data>
+  <data name="ListFilterSearchTags" xml:space="preserve">
+    <value>screen;dispatch;</value>
+    <comment>List.Filter search tags</comment>
+  </data>
   <data name="ListForEachDescription" xml:space="preserve">
     <value>Performs a computation on each element of a list. Does not accumulate results.</value>
     <comment>Description for List.ForEach</comment>
+  </data>
+   <data name="ListForEachSearchTags" xml:space="preserve">
+    <value>apply function;void;</value>
+    <comment>List.ForEach search tags</comment>
   </data>
   <data name="ListLaceLongestDescription" xml:space="preserve">
     <value>Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.</value>
     <comment>Description for List.LaceLongest</comment>
   </data>
+  <data name="ListLaceLongestSearchTags" xml:space="preserve">
+    <value>repeat last;</value>
+    <comment>search tags List.LaceLongest</comment>
+  </data>
   <data name="ListLaceShortestDescription" xml:space="preserve">
     <value>Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.</value>
     <comment>Description for List.LaceShortest</comment>
+  </data>
+  <data name="ListLaceShortestSearchTags" xml:space="preserve">
+    <value>mix;trim end</value>
+    <comment>search tags List.LaceShortest</comment>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
     <value>Applies a function over all elements of a list, generating a new list from the results.</value>
     <comment>Description for List.Map</comment>
   </data>
+  <data name="ListMapSearchTags" xml:space="preserve">
+    <value>function;applied;over list;do to each</value>
+    <comment>search tags for List.Map</comment>
+  </data>
   <data name="ListReduceDescription" xml:space="preserve">
     <value>Reduces a list into a new value by combining each element with an accumulated result.</value>
     <comment>Description for List.Reduce</comment>
   </data>
+  <data name="ListReduceSearchTags" xml:space="preserve">
+    <value>accumulate;aggregate;fold</value>
+    <comment>search tags List.Reduce</comment>
+  </data>
   <data name="ListScanDescription" xml:space="preserve">
     <value>Reduces a list into a new value by combining each element with an accumulated result, produces a list of successive reduced values.</value>
     <comment>Description for List.Scan</comment>
+  </data>
+   <data name="ListScanSearchTags" xml:space="preserve">
+    <value>intermediate;maps;folds</value>
+    <comment>List.Scan search tags</comment>
   </data>
   <data name="MapPortDataFxToolTip" xml:space="preserve">
     <value>The procedure used to map element</value>
@@ -387,6 +423,10 @@
   <data name="ReplaceByConditionDescription" xml:space="preserve">
     <value>Replaces an object with a given substitute if the original object satisfies a given condition.</value>
     <comment>Description for ReplaceByCondition</comment>
+  </data>
+  <data name="ReplaceByConditionSearchTags" xml:space="preserve">
+    <value>predicate;override;replace if,</value>
+    <comment>ReplaceByCondition search tags</comment>
   </data>
   <data name="ReplacePortDataConditionToolTip" xml:space="preserve">
     <value>Predicate used to determine if it should be replaced.</value>
