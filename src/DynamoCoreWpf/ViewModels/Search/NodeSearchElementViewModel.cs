@@ -7,6 +7,7 @@ using Dynamo.DSEngine;
 using Dynamo.Search.Interfaces;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
+using Dynamo.Wpf.Services;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -169,10 +170,10 @@ namespace Dynamo.Wpf.ViewModels
             if (string.IsNullOrEmpty(Model.Assembly))
                 return null;
 
-            var cust = LibraryCustomizationServices.GetForAssembly(Model.Assembly);
+            var warehouse = IconsService.GetForAssembly(Model.Assembly);
             BitmapSource icon = null;
-            if (cust != null)
-                icon = cust.LoadIconInternal(fullNameOfIcon);
+            if (warehouse != null)
+                icon = warehouse.LoadIconInternal(fullNameOfIcon);
             return icon;
         }
 
@@ -181,8 +182,8 @@ namespace Dynamo.Wpf.ViewModels
             if (resourceType == ResourceType.LargeIcon)
                 return null;
 
-            var cust = LibraryCustomizationServices.GetForAssembly(Configurations.DefaultAssembly);
-            return cust.LoadIconInternal(Configurations.DefaultIcon);
+            var warehouse = IconsService.GetForAssembly(Configurations.DefaultAssembly);
+            return warehouse.LoadIconInternal(Configurations.DefaultIcon);
         }
     }
 
