@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Xml;
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Double = System.Double;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Core
 {
@@ -15,6 +13,8 @@ namespace Dynamo.Core
         public List<NodeModel> Nodes { get; private set; }
         public List<ConnectorModel> Connectors { get; private set; }
         public List<NoteModel> Notes { get; private set; }
+        public ElementResolver ElementResolver { get; private set; }
+    
 
         private NodeGraph() { }
 
@@ -114,14 +114,39 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="xmlDoc">An XmlDocument representing a serialized Dynamo workspace.</param>
         /// <param name="nodeFactory">A NodeFactory, used to load and instantiate nodes.</param>
+        /// <param name="elementResolver"></param>
         /// <returns></returns>
         public static NodeGraph LoadGraphFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {
+            var elementResolver = LoadElementResolver(xmlDoc);
+
             var nodes = LoadNodesFromXml(xmlDoc, nodeFactory).ToList();
             var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
             var notes = LoadNotesFromXml(xmlDoc).ToList();
 
-            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes };
+            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, ElementResolver = elementResolver };
+        }
+
+        private static ElementResolver LoadElementResolver(XmlDocument xmlDoc)
+        {
+            var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
+            
+            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
+            if (nodes.Count > 0)
+            {
+                foreach (XmlNode child in nodes[0].ChildNodes)
+                {
+                    if (child.Attributes != null)
+                    {
+                        XmlAttribute pName = child.Attributes["partialName"];
+                        XmlAttribute rName = child.Attributes["resolvedName"];
+                        XmlAttribute aName = child.Attributes["assemblyName"];
+                        var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
+                        resolutionMap.Add(pName.Value, kvp);
+                    }
+                }
+            }
+            return new ElementResolver(resolutionMap);
         }
     }
 }
