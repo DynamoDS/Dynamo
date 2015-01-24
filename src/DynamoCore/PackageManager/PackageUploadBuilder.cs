@@ -67,7 +67,7 @@ namespace Dynamo.PackageManager
                 throw new Exception("Could not compress file.  Is the file in use?");
             }
             
-            if (info.Length > 15 * 1000000) throw new Exception("The package is too large!  The package must be less than 15 MB!");
+            if (info.Length > 100 * 1024 * 1024) throw new Exception("The package is too large!  The package must be less than 100 MB!");
 
             return zipPath;
         }

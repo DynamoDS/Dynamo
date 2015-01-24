@@ -416,7 +416,8 @@ namespace Dynamo.PackageManager
             set
             {
                 customNodeDefinitions = value;
-                Name = CustomNodeDefinitions[0].DisplayName;
+                if (CustomNodeDefinitions != null && CustomNodeDefinitions.Count > 0)
+                    Name = CustomNodeDefinitions[0].DisplayName;
                 UpdateDependencies();
             }
         }
@@ -523,7 +524,7 @@ namespace Dynamo.PackageManager
                 Description = l.Description,
                 Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
                 CustomNodeDefinitions = defs,
-                Assemblies = l.LoadedAssemblies.ToList(),
+                Assemblies = new List<PackageAssembly>(),
                 Name = l.Name,
                 RepositoryUrl = l.RepositoryUrl ?? "",
                 SiteUrl = l.SiteUrl ?? "",
@@ -531,35 +532,7 @@ namespace Dynamo.PackageManager
                 License = l.License
             };
 
-            // add additional files
-            l.EnumerateAdditionalFiles();
-            foreach (var file in l.AdditionalFiles)
-            {
-                vm.AdditionalFiles.Add(file.Model.FullName);
-            }
-
             var nodeLibraryNames = l.Header.node_libraries;
-
-            // load assemblies into reflection only context
-            foreach (var file in l.EnumerateAssemblyFilesInBinDirectory())
-            {
-                Assembly assem;
-                var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
-                if (result)
-                {
-                    var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
-                    vm.Assemblies.Add(new  PackageAssembly()
-                    {
-                        IsNodeLibrary = isNodeLibrary,
-                        Assembly = assem
-                    });
-                }
-                else
-                {
-                    // if it's not a .NET assembly, we load it as an additional file
-                    vm.AdditionalFiles.Add(file);
-                }
-            }
 
             if (l.VersionName == null) return vm;
 
@@ -786,7 +759,8 @@ namespace Dynamo.PackageManager
                 fDialog = new OpenFileDialog()
                 {
                     Filter = "Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml",
-                    Title = "Add Custom Node, Library, or XML file to Package..."
+                    Title = "Add Custom Node, Library, or XML file to Package...",
+                    Multiselect = true
                 };
             }
 
@@ -806,7 +780,10 @@ namespace Dynamo.PackageManager
 
             if (fDialog.ShowDialog() == DialogResult.OK)
             {
-                AddFile(fDialog.FileName);
+                foreach (var fn in fDialog.FileNames)
+                {
+                    AddFile(fn);
+                }
             }
         }
 
