@@ -673,7 +673,7 @@ namespace Dynamo
             rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
             rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
 
-            Debug.WriteLine(string.Format("Render aggregation complete for {0}", task.NodeId));
+            Debug.WriteLine("Render aggregation complete for {0}", task.NodeId);
 
             var e = new VisualizationEventArgs(rps, task.NodeId, -1);
             OnResultsReadyToVisualize(this, e);
