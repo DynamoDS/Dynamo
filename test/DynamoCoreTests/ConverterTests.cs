@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -248,20 +247,20 @@ namespace Dynamo.Tests
         [Test]
         public void ElementTypeToBoolConverterTest()
         {
-            // TODO(Vladimir): take a look.
-#if false
             ElementTypeToBoolConverter converter = new ElementTypeToBoolConverter();
-            var NseVM = new NodeSearchElementViewModel(new NodeSearchElement("name", "description", new List<string>() { "tag" }, SearchElementGroup.Action));
-            var BieVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
-            var BiefcVM = new BrowserInternalElementForClassesViewModel(new BrowserInternalElementForClasses("name", BieVM.Model));
-            var BreVM = new BrowserRootElementViewModel(new BrowserRootElement("name"));
+            var NseVM = new NodeSearchElementViewModel(
+                new NodeModelSearchElement(new TypeLoadData(typeof(Dynamo.Nodes.Symbol))));
+            var NcVM = new NodeCategoryViewModel("");
+            var RncVM = new RootNodeCategoryViewModel("");
+            var CncVM = new ClassesNodeCategoryViewModel(RncVM);
+
             object result;
 
             //1. Element is null.
             //2. Element is NodeSearchElement.
-            //3. Element is BrowserInternalElement.
-            //4. Element is BrowserInternalElementForClasses.
-            //5. Element is BrowserRootElement.
+            //3. Element is NodeCategoryViewModel.
+            //4. Element is RootNodeCategoryViewModel.
+            //5. Element is RootNodeCategoryViewModel with ClassesNodeCategoryViewModel.
 
             // 1 case
             result = converter.Convert(null, null, null, null);
@@ -272,17 +271,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, result);
 
             // 3 case
-            result = converter.Convert(BieVM, null, null, null);
+            result = converter.Convert(NcVM, null, null, null);
             Assert.AreEqual(true, result);
 
             // 4 case
-            result = converter.Convert(BiefcVM, null, null, null);
+            result = converter.Convert(RncVM, null, null, null);
             Assert.AreEqual(true, result);
 
             // 5 case
-            result = converter.Convert(BreVM, null, null, null);
-            Assert.AreEqual(true, result);
-#endif
+            RncVM.SubCategories.Add(CncVM);
+            result = converter.Convert(RncVM, null, null, null);
+            Assert.AreEqual(false, result);
         }
 
         [Test]
@@ -293,6 +292,7 @@ namespace Dynamo.Tests
             SolidColorBrush falseBrush = new SolidColorBrush(Colors.Red);
             converter.FalseBrush = falseBrush;
             converter.TrueBrush = trueBrush;
+
             object result;
 
             //1. Element is null.
@@ -302,29 +302,30 @@ namespace Dynamo.Tests
             result = converter.Convert(null, null, null, null);
             Assert.AreEqual(falseBrush, result);
 
-            // TODO(Vladimir): take a look.
             // 2 case
-            //var CneVM = new CustomNodeSearchElementViewModel(new CustomNodeSearchElement(new CustomNodeInfo(new Guid(), "name", "cat", "desc", "path"), SearchElementGroup.Action));
-            //result = converter.Convert(CneVM, null, null, null);
-            //Assert.AreEqual(trueBrush, result);
+            var CneVM = new CustomNodeSearchElementViewModel(
+                new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "", "", "", "")));
+
+            result = converter.Convert(CneVM, null, null, null);
+            Assert.AreEqual(trueBrush, result);
         }
 
         [Test]
         public void RootElementToBoolConverterTest()
         {
             var converter = new RootElementVMToBoolConverter();
-            var BreVM = new BrowserRootElementViewModel(new BrowserRootElement("BRE"));
+            var RncVM = new RootNodeCategoryViewModel("");
             object result;
 
             //1. Element is null.
-            //2. Element is BrowserRootElement.
+            //2. Element is RootNodeCategoryViewModel.
 
             // 1 case
             result = converter.Convert(null, null, null, null);
             Assert.AreEqual(false, result);
 
             // 2 case
-            result = converter.Convert(BreVM, null, null, null);
+            result = converter.Convert(RncVM, null, null, null);
             Assert.AreEqual(true, result);
         }
 
@@ -332,22 +333,38 @@ namespace Dynamo.Tests
         public void BrowserInternalElementToBoolConverterTest()
         {
             var converter = new NodeCategoryVMToBoolConverter();
-            var elementVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
+            var NcVM = new NodeCategoryViewModel("");
+            var RncVM = new RootNodeCategoryViewModel("");
+            var CncVM = new ClassesNodeCategoryViewModel(RncVM);
             object result;
 
             //1. Element is null.            
-            //2. Element is BrowserInternalElement.
+            //2. Element is NodeCategoryViewModel.
+            //2. Element is RootNodeCategoryViewModel.
+            //2. Element is ClassesNodeCategoryViewModel.
 
             // 1 case
             result = converter.Convert(null, null, null, null);
             Assert.AreEqual(false, result);
 
             // 2 case
-            result = converter.Convert(elementVM, null, null, null);
+            result = converter.Convert(NcVM, null, null, null);
             Assert.AreEqual(true, result);
+
+            // 3 case
+            result = converter.Convert(RncVM, null, null, null);
+            Assert.AreEqual(false, result);
+
+            // 4 case
+            result = converter.Convert(CncVM, null, null, null);
+            Assert.AreEqual(false, result);
         }
 
         [Test]
+        [Category("Failure")]
+        [Ignore]
+        // TODO(Vladimir): HasParentRootElement converter is not used anywhere.
+        // Reimplement test when needed.
         public void HasParentRootElementTest()
         {
             var converter = new HasParentRootElement();
@@ -411,17 +428,15 @@ namespace Dynamo.Tests
             //4. Name is "Category.NestedClass1".
             //5. Name is "Category.NestedClass1.NestedClass2".
 
-            // 1 case
-            result = converter.Convert(null, null, null, null);
-            Assert.AreEqual(thickness, result);
+            // 1 case            
+            Assert.Throws<ArgumentException>(() => { converter.Convert(null, null, null, null); });
 
-            // 2 case
-            result = converter.Convert(name, null, null, null);
-            Assert.AreEqual(thickness, result);
+            // 2 case            
+            Assert.Throws<ArgumentException>(() => { converter.Convert(name, null, null, null); });
 
             // 3 case
             name = "Category";
-            thickness = new Thickness(5, 0, 20, 0);
+            thickness = new Thickness(5, 0, 0, 0);
             result = converter.Convert(name, null, null, null);
             Assert.AreEqual(thickness, result);
 
@@ -468,26 +483,19 @@ namespace Dynamo.Tests
         [Test]
         public void LibraryTreeItemsHostVisibilityConverterTest()
         {
-            // TODO(Vladimir): take a look.
-#if false
             var converter = new LibraryTreeItemsHostVisibilityConverter();
 
             var result = converter.Convert(null, null, null, null);
             Assert.AreEqual(Visibility.Visible, result);
 
-            var BieVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
-            result = converter.Convert(BieVM, null, null, null);
+            var NcVM = new NodeCategoryViewModel("");
+            result = converter.Convert(NcVM, null, null, null);
             Assert.AreEqual(Visibility.Visible, result);
 
-            var rootElement = new BrowserRootElement("Top Category");
-            var BIEFC = new BrowserInternalElementForClasses("Classes", rootElement);
-            rootElement.Items.Add(BIEFC);
+            var RncVM = new ClassesNodeCategoryViewModel(NcVM);
 
-            var BreVM = new BrowserRootElementViewModel(rootElement);
-
-            result = converter.Convert(BreVM.Items[0], null, null, null);
+            result = converter.Convert(RncVM, null, null, null);
             Assert.AreEqual(Visibility.Collapsed, result);
-#endif
         }
 
         [Test]

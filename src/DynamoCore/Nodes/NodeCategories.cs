@@ -219,6 +219,34 @@ namespace Dynamo.Nodes
             return overridePrefix + "." + builder.ToString();
         }
 
+        internal static string ShortenCategoryName(string fullCategoryName)
+        {
+            if (string.IsNullOrEmpty(fullCategoryName))
+                return string.Empty;
+
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
+
+            // if the category name is too long, we strip off the interior categories
+            if (catName.Length > 50)
+            {
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
+                if (s.Count() > 4)
+                {
+                    s = new List<string>()
+                                        {
+                                            s[0],
+                                            "...",
+                                            s[s.Count - 3],
+                                            s[s.Count - 2],
+                                            s[s.Count - 1]
+                                        };
+                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
+                }
+            }
+
+            return catName;
+        }
+
         /// <summary>
         /// Call this method to associate/remove the target file path with/from
         /// the given XmlDocument object.

@@ -67,7 +67,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
-    <Compile Include="CategoryBuilderTests.cs" />
     <Compile Include="ConverterTests.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
