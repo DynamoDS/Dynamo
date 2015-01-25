@@ -240,7 +240,7 @@ namespace Dynamo.ViewModels
                 entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
                     element => element.Categories,
                     (name, subs, es) =>
-                        new NodeCategoryViewModel(name, es.Select(MakeNodeSearchElementVM), subs)
+                        new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs)
                         {
                             IsExpanded = expanded
                         },
@@ -281,6 +281,8 @@ namespace Dynamo.ViewModels
             foreach (var item in tree)
             {
                 item.FullCategoryName = MakeFullyQualifiedName(path, item.Name);
+                if (!item.SubCategories.Any())
+                    item.Assembly = (item.Items[0] as NodeSearchElementViewModel).Assembly;
 
                 DefineFullCategoryNames(item.SubCategories, item.FullCategoryName);
             }

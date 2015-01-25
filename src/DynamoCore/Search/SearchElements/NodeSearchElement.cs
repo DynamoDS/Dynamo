@@ -14,6 +14,8 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public abstract class NodeSearchElement : INotifyPropertyChanged, ISearchEntry, ISource<NodeModel>
     {
+        protected string iconName;
+
         private readonly HashSet<string> keywords = new HashSet<string>();
         private string fullCategoryName;
         private string description;
@@ -138,6 +140,11 @@ namespace Dynamo.Search.SearchElements
                 description = value;
                 OnPropertyChanged("Description");
             }
+        }
+
+        public string IconName
+        {
+            get { return iconName; }
         }
 
         /// <summary>
