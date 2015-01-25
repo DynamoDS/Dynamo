@@ -923,7 +923,7 @@ namespace DSCoreNodesUI.Properties {
         ///    
         ///    ... ado.net/XML headers &amp; schema ...
         ///    &lt;resheader name=&quot;resmimetype&quot;&gt;text/microsoft-resx&lt;/resheader&gt;
-        ///    &lt;resheader name=&quot;version&quot;&gt;2. [rest of string was truncated]&quot;;.
+        ///    &lt;resheader n [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Resources_en_US {
             get {
@@ -1022,7 +1022,7 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to image.
+        ///   Looks up a localized string similar to image;inspect image;pixels;display;panel;.
         /// </summary>
         internal static string WatchImageSearchTags {
             get {
@@ -1036,6 +1036,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string WatchNodeDescription {
             get {
                 return ResourceManager.GetString("WatchNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to print;output;disply;panel;inspect;debug.
+        /// </summary>
+        internal static string WatchNodeSearchTags {
+            get {
+                return ResourceManager.GetString("WatchNodeSearchTags", resourceCulture);
             }
         }
         
