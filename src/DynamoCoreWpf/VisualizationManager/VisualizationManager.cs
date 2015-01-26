@@ -6,12 +6,13 @@ using System.Diagnostics;
 using System.Linq;
 
 using Autodesk.DesignScript.Interfaces;
-using DSNodeServices;
 
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+
+using DynamoServices;
 
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
