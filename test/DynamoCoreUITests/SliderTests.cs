@@ -3,8 +3,9 @@ using System.IO;
 using System.Reflection;
 
 using DSCoreNodesUI.Input;
-using Dynamo.Nodes;
+
 using NUnit.Framework;
+using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 
 namespace DynamoCoreUITests
 {

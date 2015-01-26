@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using DSNodeServices;
+
+using DynamoServices;
 
 namespace FFITarget
 {
@@ -188,7 +189,7 @@ namespace FFITarget
         {
             WrapperGuid = Guid.NewGuid();
 
-            var traceVal = DSNodeServices.TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
+            var traceVal = TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
 
             if (traceVal != null)
             {
@@ -201,7 +202,7 @@ namespace FFITarget
             {
                 nextID++;
                 ID = nextID;
-                DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
+                TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
             }
 
 

@@ -176,6 +176,12 @@
     <value>Creates a directory object from a path.</value>
     <comment>Description for Directory.FromPath</comment>
   </data>
+  <data name="DirectoryNodeDescription" xml:space="preserve">
+    <value>Allows you to select a directory on the system to get its path</value>
+  </data>
+  <data name="DirectoryObjectNodeDescription" xml:space="preserve">
+    <value>Creates a directory object from a path</value>
+  </data>
   <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
     <value>Path to the directory.</value>
   </data>
@@ -186,9 +192,15 @@
     <value>Allows you to select a directory on the system to get its path.</value>
     <comment>Description for Directory Path</comment>
   </data>
+  <data name="DoubleInputNodeDescription" xml:space="preserve">
+    <value>Creates a number.</value>
+  </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>A slider that produces double values.</value>
     <comment>Description for Double Slider</comment>
+  </data>
+  <data name="DoubleSliderNodeDescription" xml:space="preserve">
+    <value>A slider that produces numeric values.</value>
   </data>
   <data name="DropDownPortDataResultToolTip" xml:space="preserve">
     <value>The selected {0}</value>
@@ -196,6 +208,12 @@
   <data name="FileFromPathDescription" xml:space="preserve">
     <value>Creates a file object from a path.</value>
     <comment>Description for File.FromPath</comment>
+  </data>
+  <data name="FilenameNodeDescription" xml:space="preserve">
+    <value>Allows you to select a file on the system to get its filename</value>
+  </data>
+  <data name="FileObjectNodeDescription" xml:space="preserve">
+    <value>Creates a file object from a path.</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
     <value>Path to the file.</value>
@@ -261,6 +279,9 @@
   <data name="IntegerSliderDescription" xml:space="preserve">
     <value>A slider that produces integer values.</value>
     <comment>Description for Integer Slider</comment>
+  </data>
+  <data name="IntegerSliderNodeDescription" xml:space="preserve">
+    <value>A slider that produces integer values.</value>
   </data>
   <data name="LegacyNodeDescription" xml:space="preserve">
     <value>This is an obsolete node</value>
@@ -407,6 +428,9 @@
     <value>Convert an object to a string representation.</value>
     <comment>Description for String from Object</comment>
   </data>
+  <data name="StringInputNodeDescription" xml:space="preserve">
+    <value>Creates a string.</value>
+  </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>Visualize the output of node.</value>
     <comment>Description for Watch</comment>
@@ -418,6 +442,9 @@
   <data name="WatchImageSearchTags" xml:space="preserve">
     <value>image</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
+  </data>
+  <data name="WatchNodeDescription" xml:space="preserve">
+    <value>Visualize the output of node.</value>
   </data>
   <data name="WatchPortDataInputToolTip" xml:space="preserve">
     <value>Node to evaluate.</value>

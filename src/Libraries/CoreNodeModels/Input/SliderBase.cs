@@ -86,7 +86,7 @@ namespace DSCoreNodesUI.Input
             if (Value.CompareTo(Max) > 0) Max = Value;
         }
         
-        internal static string ConvertNumberToString(T value)
+        public static string ConvertNumberToString(T value)
         {
             return Convert.ToString(value, CultureInfo.InvariantCulture);
         }
