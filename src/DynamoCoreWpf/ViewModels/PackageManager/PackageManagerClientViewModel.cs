@@ -50,6 +50,11 @@ namespace Dynamo.ViewModels
             get { return Model.LoginState; }
         }
 
+        public bool HasAuthProvider
+        {
+            get { return Model.HasAuthProvider; }
+        }
+
         #endregion
 
         public ICommand LoginLogoutCommand { get; private set; }

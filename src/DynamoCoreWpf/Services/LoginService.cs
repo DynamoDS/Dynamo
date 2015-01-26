@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
-using Dynamo.DynamoSandbox;
 using Dynamo.PackageManager;
 using Greg;
 using Greg.AuthProviders;

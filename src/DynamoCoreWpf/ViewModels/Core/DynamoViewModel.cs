@@ -414,6 +414,13 @@ namespace Dynamo.ViewModels
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
+        /// <summary>
+        ///     Whether sign in should be shown in Dynamo.  In instances where Dynamo obtains
+        ///     authentication capabilities from a host, Dynamo's sign in should generally be 
+        ///     hidden to avoid inconsistencies in state.
+        /// </summary>
+        public bool ShowLogin { get; private set; }
+
         #endregion
 
         public struct StartConfiguration
@@ -422,6 +429,7 @@ namespace Dynamo.ViewModels
             public IVisualizationManager VisualizationManager { get; set; }
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
+            public bool ShowLogin { get; set; }
         }
 
         public static DynamoViewModel Start()
@@ -429,19 +437,21 @@ namespace Dynamo.ViewModels
             return Start(new StartConfiguration());
         }
 
-        public static DynamoViewModel Start(StartConfiguration startConfiguration)
+        public static DynamoViewModel Start(StartConfiguration config)
         {
-            var model = startConfiguration.DynamoModel ?? DynamoModel.Start();
-            var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
-            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager, 
+            var model = config.DynamoModel ?? DynamoModel.Start();
+            var vizManager = config.VisualizationManager ?? new VisualizationManager(model);
+            var watchHandler = config.WatchHandler ?? new DefaultWatchHandler(vizManager, 
                 model.PreferenceSettings);
-            
-            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath);
+
+            return new DynamoViewModel(model, watchHandler, vizManager, config.CommandFilePath, config.ShowLogin);
         }
 
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
-            IVisualizationManager vizManager, string commandFilePath)
+            IVisualizationManager vizManager, string commandFilePath, bool showLogin = false)
         {
+            this.ShowLogin = showLogin;
+
             // initialize core data structures
             this.model = dynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;

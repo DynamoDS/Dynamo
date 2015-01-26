@@ -10,9 +10,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Dynamo.Applications.Authentication;
 
-namespace Dynamo.Applications.Authentication
+namespace Dynamo.Applications
 {
     /// <summary>
     /// Interaction logic for SignInWindow.xaml

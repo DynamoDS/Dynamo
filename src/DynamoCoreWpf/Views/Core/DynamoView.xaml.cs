@@ -177,8 +177,11 @@ namespace Dynamo.Controls
 
         void InitializeLogin()
         {
-            var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
-            loginGrid.Children.Add(login);
+            if ( dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
+            {
+                var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
+                loginGrid.Children.Add(login);
+            }
         }
 
         void InitializeShortcutBar()

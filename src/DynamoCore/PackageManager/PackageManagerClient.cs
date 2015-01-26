@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dynamo.Core;
-using Dynamo.Models;
 
-using Dynamo.Utilities;
 using Greg;
 using Greg.AuthProviders;
 using Greg.Requests;
@@ -25,6 +23,7 @@ namespace Dynamo.PackageManager
         private readonly IGregClient _client;
         private readonly CustomNodeManager _customNodeManager;
         private readonly string _rootPkgDir;
+        private readonly IAuthProvider _authProvider;
 
         public event Action<LoginState> LoginStateChanged;
 
@@ -33,7 +32,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public LoginState LoginState
         {
-            get { return _client.AuthProvider.LoginState; }
+            get { return HasAuthProvider ? _authProvider.LoginState : Greg.AuthProviders.LoginState.LoggedOut; }
         }
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public string Username
         {
-            get { return _client.AuthProvider.Username; }
+            get { return HasAuthProvider ? _authProvider.Username : ""; }
         }
 
         /// <summary>
@@ -55,20 +54,24 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Determines if the client has login capabilities
         /// </summary>
-        public bool HasAuthenticator
+        public bool HasAuthProvider
         {
-            get { return _client.AuthProvider != null; }
+            get { return _authProvider != null; }
         }
 
         #endregion
 
-        public PackageManagerClient(IGregClient client, string rootPkgDir, CustomNodeManager customNodeManager)
+        internal PackageManagerClient(IGregClient client, string rootPkgDir, CustomNodeManager customNodeManager)
         {
             _rootPkgDir = rootPkgDir;
             _customNodeManager = customNodeManager;
-
             _client = client;
-            _client.AuthProvider.LoginStateChanged += OnLoginStateChanged;
+            _authProvider = client.AuthProvider;
+
+            if (_authProvider != null)
+            {
+                _client.AuthProvider.LoginStateChanged += OnLoginStateChanged;
+            }
         }
 
         private void OnLoginStateChanged(LoginState status)
@@ -91,7 +94,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public bool Upvote(string packageId)
+        internal bool Upvote(string packageId)
         {
             return TryExecute(() =>
             {
@@ -100,7 +103,7 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        public bool Downvote(string packageId)
+        internal bool Downvote(string packageId)
         {
             return TryExecute(() =>
             {
@@ -109,13 +112,13 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        public string DownloadPackage(string packageId, string version)
+        internal string DownloadPackage(string packageId, string version)
         {
             var response = _client.Execute( new PackageDownload( packageId, version) );
             return PackageDownload.GetFileFromResponse(response);
         }
 
-        public IEnumerable<PackageHeader> ListAll()
+        internal IEnumerable<PackageHeader> ListAll()
         {
             return TryExecute(() =>
             {
@@ -125,7 +128,7 @@ namespace Dynamo.PackageManager
             }, new List<PackageHeader>());
         }
 
-        public PackageUploadHandle Publish(Package l, List<string> files, bool isNewVersion, bool isTestMode)
+        internal PackageUploadHandle Publish(Package l, List<string> files, bool isNewVersion, bool isTestMode)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(l));
             return PublishPackage(isNewVersion, l, files, packageUploadHandle, isTestMode);
@@ -176,13 +179,7 @@ namespace Dynamo.PackageManager
             return packageUploadHandle;
         }
 
-        /// <summary>
-        ///     Synchronously download a package header
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="header"></param>
-        /// <returns></returns>
-        public PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
+        internal PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
         {
             var pkgDownload = new HeaderDownload(id);
 
@@ -222,12 +219,14 @@ namespace Dynamo.PackageManager
 
         internal void Logout()
         {
-            this._client.AuthProvider.Logout();
+            if (!HasAuthProvider) return; 
+            _authProvider.Logout();
         }
 
         internal void Login()
         {
-            this._client.AuthProvider.Login();
+            if (!HasAuthProvider) return;
+            _authProvider.Login();
         }
     }
 }

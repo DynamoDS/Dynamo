@@ -84,6 +84,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\LoginService.cs" />
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
@@ -173,6 +174,9 @@
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\BrowserWindow.xaml.cs">
+      <DependentUpon>BrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockCompletionData.cs" />
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.xaml.cs">
@@ -892,6 +896,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\BrowserWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\CodeBlocks\CodeBlockEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

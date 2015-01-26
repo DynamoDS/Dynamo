@@ -784,7 +784,6 @@
             <Grid Name="loginGrid" 
                   Grid.Row="0" 
                   Grid.Column="1">
-                
             </Grid>
             
             <Border Name="shortcutBarBorder"

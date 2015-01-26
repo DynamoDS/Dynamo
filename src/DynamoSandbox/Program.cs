@@ -42,7 +42,8 @@ namespace DynamoSandbox
                 new DynamoViewModel.StartConfiguration()
                 {
                     CommandFilePath = commandFilePath,
-                    DynamoModel = model
+                    DynamoModel = model,
+                    ShowLogin = true
                 });
 
             var view = new DynamoView(viewModel);
@@ -53,7 +54,6 @@ namespace DynamoSandbox
             var app = new Application();
             app.Run(view);
         }
-
 
         [STAThread]
         public static void Main(string[] args)

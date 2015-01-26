@@ -172,7 +172,7 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthProvider;
         }
 
         private void Undeprecate()
@@ -185,7 +185,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthProvider;
         }
 
         private void PublishNewPackageVersion(bool isTestMode)
@@ -199,7 +199,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackageVersion()
         {
-            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthProvider;
         }
 
         private void PublishNewPackage(bool isTestMode)
@@ -213,7 +213,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackage()
         {
-            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthProvider;
         }
 
         private void GetLatestVersion()

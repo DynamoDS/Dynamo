@@ -352,6 +352,7 @@ namespace Dynamo.Models
             public ISchedulerThread SchedulerThread { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public string PackageManagerAddress { get; set; }
+            public bool AllowAuthentication { get; set; }
         }
 
         /// <summary>

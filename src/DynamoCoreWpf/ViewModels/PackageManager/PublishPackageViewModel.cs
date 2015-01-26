@@ -955,7 +955,7 @@ namespace Dynamo.PackageManager
         {
             // Typically, this code should never be seen as the publish package dialogs should not 
             // be active when there is no authenticator
-            if (dynamoViewModel == null || !dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
+            if (dynamoViewModel == null || !dynamoViewModel.Model.PackageManagerClient.HasAuthProvider)
             {
                 ErrorString = "Your package must contain at least one file.";
                 return false;
