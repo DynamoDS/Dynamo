@@ -79,6 +79,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
     <Compile Include="Interfaces\IWebSocket.cs" />
     <Compile Include="Messages\ClearWorkspaceMessage.cs" />
     <Compile Include="Messages\HasUnsavedChangesMessage.cs" />
