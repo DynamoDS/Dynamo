@@ -413,6 +413,8 @@ namespace Dynamo.Models
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
             double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
+            guid = Guid.NewGuid();
+
             Name = name;
 
             nodes = new ObservableCollection<NodeModel>(e);
