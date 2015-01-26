@@ -1,6 +1,4 @@
-﻿using System.Configuration;
 using DSCoreNodesUI;
-using DSNodeServices;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
@@ -12,6 +10,9 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+
+using DynamoServices;
+
 using DynamoUnits;
 using DynamoUtilities;
 using Greg;
@@ -799,7 +800,6 @@ namespace Dynamo.Models
                     {
                         AddWorkspace(ws);
                         CurrentWorkspace = ws;
-
                         return;
                     }
                 }
