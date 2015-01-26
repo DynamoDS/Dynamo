@@ -115,6 +115,15 @@ namespace Dynamo.Wpf.ViewModels
         private bool isExpanded;
         private bool isSelected;
 
+        public event RequestBitmapSourceHandler RequestBitmapSource;
+        public void OnRequestBitmapSource(IconRequestEventArgs e)
+        {
+            if (RequestBitmapSource != null)
+            {
+                RequestBitmapSource(e);
+            }
+        }
+
         public string Name
         {
             get { return name; }
@@ -241,15 +250,6 @@ namespace Dynamo.Wpf.ViewModels
                     icon = LoadDefaultIcon();
 
                 return icon;
-            }
-        }
-
-        public event RequestBitmapSourceHandler RequestBitmapSource;
-        public void OnRequestBitmapSource(IconRequestEventArgs e)
-        {
-            if (RequestBitmapSource != null)
-            {
-                RequestBitmapSource(e);
             }
         }
 
@@ -468,18 +468,19 @@ namespace Dynamo.Wpf.ViewModels
 
         private BitmapSource GetIcon(string fullNameOfIcon)
         {
-            var warehouse = IconServices.GetForAssembly(Assembly);
+            var iconRequest = new IconRequestEventArgs(Assembly, fullNameOfIcon);
+            OnRequestBitmapSource(iconRequest);
 
-            BitmapSource icon = null;
-            if (warehouse != null)
-                icon = warehouse.LoadIconInternal(fullNameOfIcon);
-            return icon;
+            return iconRequest.Icon;
         }
 
         private BitmapSource LoadDefaultIcon()
         {
-            var warehouse = IconServices.GetForAssembly(Configurations.DefaultAssembly);
-            return warehouse.LoadIconInternal(Configurations.DefaultIcon);
+            var iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly,
+                Configurations.DefaultIcon);
+            OnRequestBitmapSource(iconRequest);
+
+            return iconRequest.Icon;
         }
     }
 

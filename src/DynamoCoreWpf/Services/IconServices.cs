@@ -13,10 +13,10 @@ namespace Dynamo.Wpf.Services
 {
     public class IconServices
     {
-        private static Dictionary<Assembly, IconWarehouse> warehouses =
+        private Dictionary<Assembly, IconWarehouse> warehouses =
             new Dictionary<Assembly, IconWarehouse>();
 
-        internal static IconWarehouse GetForAssembly(string assemblyPath)
+        internal IconWarehouse GetForAssembly(string assemblyPath)
         {
             var libraryCustomization = LibraryCustomizationServices.GetForAssembly(assemblyPath);
             if (libraryCustomization == null)
