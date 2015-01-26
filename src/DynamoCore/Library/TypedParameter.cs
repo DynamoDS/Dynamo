@@ -13,18 +13,16 @@ namespace Dynamo.Library
     {
         private string summary;
 
-        public TypedParameter(string parameter, string type, object defaultValue = null)
+        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null)
             : this(null, parameter, type, defaultValue) { }
 
         public TypedParameter(
-            FunctionDescriptor function, string name, string type, object defaultValue = null)
+            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException();
-            Name = name;
+            if (name == null) 
+                throw new ArgumentNullException("name");
 
-            if (null == type)
-                throw new ArgumentNullException("type", @"Type cannot be null.");
+            Name = name;
             Type = type;
             DefaultValue = defaultValue;
             Function = function;
@@ -32,7 +30,7 @@ namespace Dynamo.Library
 
         public FunctionDescriptor Function { get; set; }
         public string Name { get; private set; }
-        public string Type { get; private set; }
+        public ProtoCore.Type Type { get; private set; }
         public object DefaultValue { get; private set; }
 
         public string Summary
@@ -45,22 +43,19 @@ namespace Dynamo.Library
             get
             {
                 return !String.IsNullOrEmpty(Summary)
-                    ? Summary + " (" + (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName) + ")"
-                    : (string.IsNullOrEmpty(Type) ? "var" : DisplayTypeName);
+                    ? Summary + " (" + DisplayTypeName + ")"
+                    : DisplayTypeName;
             }
         }
 
         public string DisplayTypeName
         {
-            get { return Type.Split('.').Last(); }
+            get { return Type.ToShortString(); }
         }
 
         public override string ToString()
         {
-            string str = Name;
-
-            if (!String.IsNullOrEmpty(Type))
-                str = Name + ": " + Type.Split('.').Last();
+            string str = Name + ": " + DisplayTypeName;
 
             if (DefaultValue != null)
             {

@@ -6,6 +6,8 @@ using NUnit.Framework;
 using DynNodes = Dynamo.Nodes;
 using System.Xml;
 using System.IO;
+using ProtoCore.AST.AssociativeAST;
+using DynamoUtilities;
 
 namespace Dynamo.Tests
 {
@@ -583,6 +585,46 @@ namespace Dynamo.Tests
             });
 
             Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestTypeSwitch()
+        {
+            object v = null;
+            object node = null;
+
+            DoubleNode doubleNode = new DoubleNode(1.2);
+            node = doubleNode;
+            TypeSwitch.Do(
+                node,
+                TypeSwitch.Case<IntNode>(n => v = n.Value),
+                TypeSwitch.Case<DoubleNode>(n => v = n.Value),
+                TypeSwitch.Case<BooleanNode>(n => v = n.Value),
+                TypeSwitch.Case<StringNode>(n => v = n.value),
+                TypeSwitch.Default(() => v = null));
+            Assert.AreEqual(v, 1.2);
+
+            IntNode intNode = new IntNode(42);
+            node = intNode;
+            TypeSwitch.Do(
+                node,
+                TypeSwitch.Case<IntNode>(n => v = n.Value),
+                TypeSwitch.Case<DoubleNode>(n => v = n.Value),
+                TypeSwitch.Case<BooleanNode>(n => v = n.Value),
+                TypeSwitch.Case<StringNode>(n => v = n.value),
+                TypeSwitch.Default(() => v = null));
+            Assert.AreEqual(v, 42);
+
+            StringNode sNode = new StringNode(); 
+            node = sNode;
+            TypeSwitch.Do(
+                node,
+                TypeSwitch.Case<IntNode>(n => v = n.Value),
+                TypeSwitch.Case<DoubleNode>(n => v = n.Value),
+                TypeSwitch.Case<BooleanNode>(n => v = n.Value),
+                TypeSwitch.Default(() => v = 24));
+            Assert.AreEqual(v, 24);
         }
     }
 }

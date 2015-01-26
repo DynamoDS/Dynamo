@@ -688,7 +688,7 @@ r = a;
                 @"                s = """";                r = s[0];                ";
             thisTest.RunScriptSource(code);
             // Will get an index out of range runtime warning
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
         }
     }
 }

@@ -134,6 +134,7 @@
     <Compile Include="Lang\Replication\ReplicationInstruction.cs" />
     <Compile Include="Lang\Replication\Replicator.cs" />
     <Compile Include="Lang\TraceUtils.cs" />
+    <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
     <Compile Include="ParserUtils.cs" />
     <Compile Include="Reflection\GraphicDataProvider.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Reflection\MirrorData.cs" />
     <Compile Include="Reflection\Reflection.cs" />
     <Compile Include="RuntimeContext.cs" />
+    <Compile Include="RuntimeData.cs" />
     <Compile Include="RuntimeMemory.cs" />
     <Compile Include="RuntimeStatus.cs" />
     <Compile Include="DSDefinitions.cs" />
