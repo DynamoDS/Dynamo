@@ -1203,8 +1203,20 @@ namespace Dynamo.Models
                 workspace.MessageLogged -= LogMessage;
             };
 
-            Workspaces.Add(workspace);
+            HomeWorkspaceModel oldHomeWorkspace = null;
+            if (workspace is HomeWorkspaceModel)
+            {
+                oldHomeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+                ResetEngine();
+                Workspaces.Insert(0, workspace);
+            }
+            else
+                Workspaces.Add(workspace);
+
             OnWorkspaceAdded(workspace);
+
+            if (oldHomeWorkspace != null)
+                RemoveWorkspace(oldHomeWorkspace);
         }
         enum ButtonId
         {
