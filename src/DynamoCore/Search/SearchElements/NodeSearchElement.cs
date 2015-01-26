@@ -14,6 +14,8 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public abstract class NodeSearchElement : INotifyPropertyChanged, ISearchEntry, ISource<NodeModel>
     {
+        protected string iconName;
+
         private readonly HashSet<string> keywords = new HashSet<string>();
         private string fullCategoryName;
         private string description;
@@ -140,6 +142,11 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        public string IconName
+        {
+            get { return iconName; }
+        }
+
         /// <summary>
         ///     Group to which Node belongs to 
         /// </summary>        
@@ -206,32 +213,6 @@ namespace Dynamo.Search.SearchElements
             if (handler != null) handler(obj);
         }
 
-        // TODO(Vladimir): find the place where inputparameters can be entered.
-#if false
-        /// <param name="name"></param>
-        /// <param name="description"></param>
-        /// <param name="tags"></param>
-        /// <param name="fullName"></param>
-        public NodeSearchElement(string name, string description,
-                                 IEnumerable<string> tags, SearchElementGroup group,
-                                 string fullName = "", string _assembly = "",
-                                 IEnumerable<Tuple<string, string>> inputParameters = null,
-                                 List<string> outputParameters = null)
-        {
-            this.Node = null;
-            this._name = name;
-            this.Weight = 1;
-            this.Keywords = String.Join(" ", tags);
-            this._type = "Node";
-            this._description = description;
-            this._fullName = fullName;
-            this._group = group;
-            if (inputParameters != null)
-                this._inputParameters = inputParameters.ToList();
-            this._outputParameters = outputParameters;
-            this.Assembly = _assembly;
-        }
-#endif
         /// <summary>
         ///     Creates a new NodeModel to be inserted into the current Dynamo workspace.
         /// </summary>

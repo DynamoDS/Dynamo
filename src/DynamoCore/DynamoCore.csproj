@@ -117,7 +117,6 @@ limitations under the License.
     <Compile Include="Search\NodeSearchModel.cs" />
     <Compile Include="Search\SearchElements\CodeBlockNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeModelSearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeModelSearchElementBase.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
@@ -182,7 +181,6 @@ limitations under the License.
     <Compile Include="PackageManager\PackageUtilities.cs" />
     <Compile Include="Search\Legacy\BrowserItem.cs" />
     <Compile Include="Search\Legacy\CategoryBuilder.cs" />
-    <Compile Include="Search\SearchModel.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />

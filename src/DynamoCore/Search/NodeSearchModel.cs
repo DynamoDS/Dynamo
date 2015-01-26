@@ -89,7 +89,7 @@ namespace Dynamo.Search
         ///     "Core.List.Create" will remain as "Core.List.Create"
         /// 
         /// </summary>
-        private string ProcessNodeCategory(string category, ref SearchElementGroup group)
+        internal string ProcessNodeCategory(string category, ref SearchElementGroup group)
         {
             if (string.IsNullOrEmpty(category))
                 return category;
