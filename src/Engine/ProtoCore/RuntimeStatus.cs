@@ -6,11 +6,11 @@ using System.Text;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System.Linq;
-using ProtoCore.RuntimeData;
+using ProtoCore.Runtime;
 
 namespace ProtoCore
 {
-    namespace RuntimeData
+    namespace Runtime
     {
         public enum WarningID
         {
@@ -35,7 +35,7 @@ namespace ProtoCore
 
         public struct WarningEntry
         {
-            public RuntimeData.WarningID ID;
+            public Runtime.WarningID ID;
             public string Message;
             public int Line;
             public int Column;
@@ -51,7 +51,7 @@ namespace ProtoCore
         private ProtoCore.Core core;
         private bool warningAsError;
         private System.IO.TextWriter output = System.Console.Out;
-        private List<RuntimeData.WarningEntry> warnings;
+        private List<Runtime.WarningEntry> warnings;
 
         public IOutputStream MessageHandler 
         { 
@@ -63,7 +63,7 @@ namespace ProtoCore
             get; set; 
         }
 
-        public IEnumerable<RuntimeData.WarningEntry> Warnings 
+        public IEnumerable<Runtime.WarningEntry> Warnings 
         { 
             get 
             { 
@@ -103,7 +103,7 @@ namespace ProtoCore
                              bool warningAsError = false, 
                              System.IO.TextWriter writer = null)
         {
-            warnings = new List<RuntimeData.WarningEntry>();
+            warnings = new List<Runtime.WarningEntry>();
             this.warningAsError = warningAsError;
             this.core = core;
 
@@ -119,7 +119,7 @@ namespace ProtoCore
             }
         }
 
-        public void LogWarning(RuntimeData.WarningID ID, string message, string filename, int line, int col)
+        public void LogWarning(Runtime.WarningID ID, string message, string filename, int line, int col)
         {
             filename = filename ?? string.Empty;
 
@@ -160,11 +160,11 @@ namespace ProtoCore
                 // internal graph node. 
                 if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
                 {
-                    executingGraphNode = core.ExecutingGraphnode;
+                    executingGraphNode = core.DSExecutable.RuntimeData.ExecutingGraphnode;
                 }
             }
 
-            var entry = new RuntimeData.WarningEntry
+            var entry = new Runtime.WarningEntry
             {
                 ID = ID,
                 Message = message,
@@ -182,7 +182,7 @@ namespace ProtoCore
             }
         }
 
-        public void LogWarning(RuntimeData.WarningID ID, string message)
+        public void LogWarning(Runtime.WarningID ID, string message)
         {
             LogWarning(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
         }
@@ -260,7 +260,7 @@ namespace ProtoCore
             {
                 message = String.Format(StringConstants.kMethodResolutionFailure, methodName);
             }
-            LogWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure, message);
+            LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure, message);
         }
     }
 }
