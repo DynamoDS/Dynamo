@@ -127,26 +127,26 @@ namespace Dynamo.Core
             return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes };
         }
 
-        private static ElementResolver LoadElementResolver(XmlDocument xmlDoc)
-        {
-            var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
+        //private static ElementResolver LoadElementResolver(XmlDocument xmlDoc)
+        //{
+        //    var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
             
-            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
-            if (nodes.Count > 0)
-            {
-                foreach (XmlNode child in nodes[0].ChildNodes)
-                {
-                    if (child.Attributes != null)
-                    {
-                        XmlAttribute pName = child.Attributes["partialName"];
-                        XmlAttribute rName = child.Attributes["resolvedName"];
-                        XmlAttribute aName = child.Attributes["assemblyName"];
-                        var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
-                        resolutionMap.Add(pName.Value, kvp);
-                    }
-                }
-            }
-            return new ElementResolver(resolutionMap);
-        }
+        //    var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
+        //    if (nodes.Count > 0)
+        //    {
+        //        foreach (XmlNode child in nodes[0].ChildNodes)
+        //        {
+        //            if (child.Attributes != null)
+        //            {
+        //                XmlAttribute pName = child.Attributes["partialName"];
+        //                XmlAttribute rName = child.Attributes["resolvedName"];
+        //                XmlAttribute aName = child.Attributes["assemblyName"];
+        //                var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
+        //                resolutionMap.Add(pName.Value, kvp);
+        //            }
+        //        }
+        //    }
+        //    return new ElementResolver(resolutionMap);
+        //}
     }
 }

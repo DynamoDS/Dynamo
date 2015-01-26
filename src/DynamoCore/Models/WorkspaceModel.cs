@@ -419,6 +419,7 @@ namespace Dynamo.Models
 
             NodeFactory = factory;
 
+            // Update ElementResolver from nodeGraph.Nodes (where node is CBN)
             ElementResolver = new ElementResolver();
             foreach (var node in nodes)
             {

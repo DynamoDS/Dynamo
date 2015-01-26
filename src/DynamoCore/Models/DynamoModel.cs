@@ -818,7 +818,6 @@ namespace Dynamo.Models
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
-            // Update WorkspaceModel.ElementResolver from nodeGraph.Nodes (where node is CBN)
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
