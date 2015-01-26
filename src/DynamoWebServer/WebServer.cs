@@ -3,7 +3,6 @@ using System.Configuration;
 using System.Net;
 
 using Dynamo.Models;
-using Dynamo.Utilities;
 
 using DynamoWebServer.Messages;
 using DynamoWebServer.Responses;
@@ -119,9 +118,7 @@ namespace DynamoWebServer
 
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
-            // Close connection if not from localhost
-            if (!session.RemoteEndPoint.Address.Equals(IPAddress.Loopback) ||
-                webSocket.GetSessionCount() > 1)
+            if ( webSocket.GetSessionCount() > 1)
             {
                 session.Close();
                 return;
@@ -185,9 +182,6 @@ namespace DynamoWebServer
             webSocket.NewMessageReceived += socketServer_NewMessageReceived;
             webSocket.SessionClosed += socketServer_SessionClosed;
             webSocket.NewDataReceived += socketServer_NewDataReceived;
-
-            // FIXME
-            CodeBlockUtils.RequestLogicalToVisualLineIndexMap += Dynamo.Wpf.UI.VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
         }
 
         void UnBindEvents()
@@ -196,8 +190,6 @@ namespace DynamoWebServer
             webSocket.NewMessageReceived -= socketServer_NewMessageReceived;
             webSocket.SessionClosed -= socketServer_SessionClosed;
             webSocket.NewDataReceived -= socketServer_NewDataReceived;
-
-            CodeBlockUtils.RequestLogicalToVisualLineIndexMap -= Dynamo.Wpf.UI.VisualCodeBlockUtils.MapLogicalToVisualLineIndices;
         }
 
         void ExecuteMessageFromSocket(Message message, string sessionId, bool enqueue)
