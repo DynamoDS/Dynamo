@@ -244,11 +244,13 @@ namespace Dynamo.ViewModels
                 entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
                     element => element.Categories,
                     (name, subs, es) =>
-                        new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs)
-                        {
-                            IsExpanded = expanded
-                        },
-                    "");
+                    {
+                        var category =
+                            new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs);
+                        category.IsExpanded = expanded;
+                        category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                        return category;
+                    }, "");
             var result =
                 tempRoot.SubCategories.Select(
                     cat =>
