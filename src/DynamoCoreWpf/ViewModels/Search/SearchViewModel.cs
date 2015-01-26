@@ -225,7 +225,7 @@ namespace Dynamo.ViewModels
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
 
-            ChangeCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
+            ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
 
         private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -240,7 +240,7 @@ namespace Dynamo.ViewModels
                 entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
                     element => element.Categories,
                     (name, subs, es) =>
-                        new NodeCategoryViewModel(name, es.Select(MakeNodeSearchElementVM), subs)
+                        new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs)
                         {
                             IsExpanded = expanded
                         },
@@ -281,16 +281,11 @@ namespace Dynamo.ViewModels
             foreach (var item in tree)
             {
                 item.FullCategoryName = MakeFullyQualifiedName(path, item.Name);
+                if (!item.SubCategories.Any())
+                    item.Assembly = (item.Items[0] as NodeSearchElementViewModel).Assembly;
 
                 DefineFullCategoryNames(item.SubCategories, item.FullCategoryName);
             }
-        }
-
-        private void ChangeCategoryExpandState(string categoryName, bool isExpanded)
-        {
-            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
-            if (category != null && category.IsExpanded != isExpanded)
-                category.IsExpanded = isExpanded;
         }
 
         private void RemoveEntry(NodeSearchElement entry)
@@ -527,6 +522,13 @@ namespace Dynamo.ViewModels
                 path + Configurations.CategoryDelimiter + addition;
         }
 
+        internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)
+        {
+            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
+            if (category != null && category.IsExpanded != isExpanded)
+                category.IsExpanded = isExpanded;
+        }
+
         #endregion
 
         #region Search
@@ -557,66 +559,8 @@ namespace Dynamo.ViewModels
 
             UpdateTopResult();
             RaisePropertyChanged("SearchRootCategories");
-            //SearchRootCategories.Clear();
 
-            //if (string.IsNullOrEmpty(query))
-            //    return;
-
-            //var result =
-            //    Model.Search(query).Where(r => r.IsVisibleInSearch).Take(MaxNumSearchResults).ToList();
-
-            //// Add top result
-            //var firstRes = result.FirstOrDefault();
-            //if (firstRes == null)
-            //    return; //No results
-
-            // TODO(Vladimir): master implementation
-#if false
-            var topResultCategory = new RootNodeCategoryViewModel("Top Result");
-            SearchRootCategories.Add(topResultCategory);
-
-            var copy = MakeNodeSearchElementVM(firstRes);
-            var catName = MakeShortCategoryString(firstRes.FullCategoryName);
-
-            var breadCrumb = new NodeCategoryViewModel(catName) { IsExpanded = true };
-            breadCrumb.Entries.Add(copy);
-            topResultCategory.SubCategories.Add(breadCrumb);
-            topResultCategory.Visibility = true;
-            topResultCategory.IsExpanded = true;
-
-            SearchRootCategories.AddRange(CategorizeEntries(result, true));
-
-            visibleSearchResults.AddRange(SearchRootCategories.SelectMany(GetVisibleSearchResults));
-
-            if (visibleSearchResults.Any())
-            {
-                SelectedIndex = 0;
-                visibleSearchResults[0].IsSelected = true;
-            }
-
-            SearchResults.Clear();
-            foreach (var x in visibleSearchResults)
-                SearchResults.Add(x);
-#endif
-            // TODO(Vladimir): Sitrus implementation.
-#if false
-            //var sw = new Stopwatch();
-
-            //sw.Start();
-
-            var foundNodes = this.Model.Search(query);
-            
-            //sw.Stop();
-
-            //this.dynamoViewModel.Model.Logger.Log(String.Format("Search complete in {0}", sw.Elapsed));
-
-            RaisePropertyChanged("SearchAddonsVisibility");
-            RaisePropertyChanged("SearchRootCategories");
-
-            // SearchResults doesn't used everywhere.
-            // It is populated for making connected tests as successful.
-            SearchResults = new ObservableCollection<SearchElementBaseViewModel>(foundNodes.Select(node => new NodeSearchElementViewModel(node as NodeSearchElement)));
-#endif
+            SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
         }
 
 
@@ -813,32 +757,6 @@ namespace Dynamo.ViewModels
             //    return;
 
             //SearchText = SearchResults[SelectedIndex].Model.Name;
-        }
-
-        #endregion
-
-        #region Execution
-
-        /// <summary>
-        ///     Runs the Execute() method of the current selected SearchElementBase object.
-        /// </summary>
-        public void Execute()
-        {
-            // TODO (Vladimir): implement it for new navigation system
-
-            //// none of the elems are selected, return 
-            //if (SelectedIndex == -1)
-            //    return;
-
-            //if (visibleSearchResults.Count <= SelectedIndex)
-            //    return;
-
-            //TODO(Vladimir): master line
-            // visibleSearchResults[SelectedIndex].Model.ProduceNode();
-
-            //if (!(visibleSearchResults[SelectedIndex].Model is SearchElementBase)) return;
-
-            //ExecuteElement(visibleSearchResults[SelectedIndex].Model as SearchElementBase);
         }
 
         #endregion

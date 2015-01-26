@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
@@ -54,20 +55,20 @@ namespace Dynamo.Tests
         public void ShortenCategoryNameTests()
         {
             var categoryName = "";
-            var result = SearchModel.ShortenCategoryName(categoryName);
+            var result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual(string.Empty, result);
 
             categoryName = null;
-            result = SearchModel.ShortenCategoryName(categoryName);
+            result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual(string.Empty, result);
 
             categoryName = "Category1";
-            result = SearchModel.ShortenCategoryName(categoryName);
+            result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("Category1", result);
 
             categoryName = "Cat1 Cat" + Configurations.CategoryDelimiter + "Cat2 Cat" +
                                     Configurations.CategoryDelimiter + "Cat3";
-            result = SearchModel.ShortenCategoryName(categoryName);
+            result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("Cat1 Cat " + Configurations.ShortenedCategoryDelimiter + " Cat2 Cat " +
                                       Configurations.ShortenedCategoryDelimiter + " Cat3", result);
 
@@ -77,12 +78,39 @@ namespace Dynamo.Tests
                            "TenSymbol" + Configurations.CategoryDelimiter +
                            "TenSymbol" + Configurations.CategoryDelimiter +
                            "MoreSymbols";
-            result = SearchModel.ShortenCategoryName(categoryName);
+            result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("TenSymbol " + Configurations.ShortenedCategoryDelimiter +
                            " ... " + Configurations.ShortenedCategoryDelimiter +
                            " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
                            " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
                            " MoreSymbols", result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeRootCategoryExpandStateTest()
+        {
+            // No exception expected.
+            viewModel.ChangeRootCategoryExpandState(null, false);
+
+            // No exception expected.
+            viewModel.ChangeRootCategoryExpandState("", false);
+
+            // No exception expected.
+            viewModel.ChangeRootCategoryExpandState("CategoryWhichDoesntExist", true);
+
+            var element = new CustomNodeSearchElement(
+                   null,
+                   new CustomNodeInfo(Guid.NewGuid(), "Member", "TopCategory.SubCategory.SomeClass", "", ""));
+            model.Add(element);
+
+            viewModel.ChangeRootCategoryExpandState("TopCategory", true);
+            var rootCategory = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory");
+
+            Assert.IsTrue(rootCategory.IsExpanded);
+
+            viewModel.ChangeRootCategoryExpandState("TopCategory", false);
+            Assert.IsFalse(rootCategory.IsExpanded);
         }
     }
 }
