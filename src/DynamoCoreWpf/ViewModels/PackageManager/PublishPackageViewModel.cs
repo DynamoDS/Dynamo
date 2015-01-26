@@ -416,7 +416,12 @@ namespace Dynamo.PackageManager
             set
             {
                 customNodeDefinitions = value;
-                Name = CustomNodeDefinitions[0].DisplayName;
+
+                if (customNodeDefinitions.Count > 0 && Name == null)
+                {
+                    Name = CustomNodeDefinitions[0].DisplayName;
+                }
+                
                 UpdateDependencies();
             }
         }
@@ -523,7 +528,6 @@ namespace Dynamo.PackageManager
                 Description = l.Description,
                 Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
                 CustomNodeDefinitions = defs,
-                Assemblies = l.LoadedAssemblies.ToList(),
                 Name = l.Name,
                 RepositoryUrl = l.RepositoryUrl ?? "",
                 SiteUrl = l.SiteUrl ?? "",
