@@ -42,6 +42,7 @@ namespace Dynamo.Applications.Authentication
                 window.Browser.Navigated += (sender, args) =>
                 {
                     // if the user reaches this path, they've successfully logged in
+                    // note that this is necessary, but not sufficient for full authentication
                     if (args.Uri.LocalPath == "/OAuth/Allow")
                     {
                         navigateSuccess = true;
