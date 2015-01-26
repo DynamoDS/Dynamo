@@ -4,7 +4,9 @@ using System.Linq;
 
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+
 using ProtoCore.Namespace;
+
 
 namespace Dynamo.Models
 {
@@ -12,7 +14,7 @@ namespace Dynamo.Models
     {
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
-
+        private bool graphExecuted;
         public bool RunEnabled
         {
             get { return runEnabled; }
@@ -150,6 +152,9 @@ namespace Dynamo.Models
             {
                 DynamoModel.OnRequestDispatcherBeginInvoke(Run);
             }
+
+            //Find the next executing nodes
+            GetExecutingNodes();
         }
 
         /// <summary>
@@ -159,6 +164,12 @@ namespace Dynamo.Models
         {
             base.Clear();
             PreloadedTraceData = null;
+        }
+
+        public override void SetShowExecutionPreview(NodeModel node)
+        {
+            node.ShowExecutionPreview = DynamoModel.showRunPreview;
+            node.IsNodeAddedRecently = true;
         }
 
         #region evaluation
@@ -239,7 +250,14 @@ namespace Dynamo.Models
 
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
                 modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+                if (modifiedNode.State != ElementState.Error && modifiedNode.State != ElementState.Warning)
+                {
+                    modifiedNode.ShowExecutionPreview = false;
+                    modifiedNode.IsNodeAddedRecently = false;
+                }
+            }
 
             foreach (var node in Nodes)
             {
@@ -275,6 +293,7 @@ namespace Dynamo.Models
         /// </summary>
         public void Run()
         {
+            graphExecuted = true;
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
@@ -309,6 +328,52 @@ namespace Dynamo.Models
         {
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
+        }
+
+        internal void GetExecutingNodes()
+        {
+            var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
+            bool showRunPreview = DynamoModel.showRunPreview;           
+            //The Graph is executed and Show node execution is checked on the Debug menu
+            if (graphExecuted && showRunPreview)
+            {
+                if (task.Initialize(EngineController, this) != null)
+                {
+                    task.Completed += OnPreviewGraphCompleted;
+                    scheduler.ScheduleForExecution(task);
+                }
+            }
+            //Show node exection is checked but the graph has not RUN
+            else
+            {
+                foreach (var nodeModel in Nodes)
+                {
+                    nodeModel.ShowExecutionPreview = showRunPreview;
+                }
+            }
+        }
+
+        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
+        {
+            var updateTask = asyncTask as PreviewGraphAsyncTask;
+            if (updateTask != null)
+            {
+                var nodeGuids = updateTask.previewGraphData;
+                foreach (var nodeModel in Nodes)
+                {
+                    foreach (Guid t in nodeGuids)
+                    {
+                        if (nodeModel.GUID == t)
+                        {
+                            nodeModel.ShowExecutionPreview = true;
+                            nodeModel.IsNodeAddedRecently = false;
+                        }                       
+                    }
+                    /* Color the recently added nodes */
+                    if (nodeModel.IsNodeAddedRecently && !nodeModel.ShowExecutionPreview)
+                        nodeModel.ShowExecutionPreview = true;
+                }
+            }            
         }
 
         #endregion

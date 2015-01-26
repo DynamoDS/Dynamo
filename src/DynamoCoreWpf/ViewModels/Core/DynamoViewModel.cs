@@ -414,6 +414,15 @@ namespace Dynamo.ViewModels
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
+        public bool ShowRunPreview
+        {
+            get { return model.ShowRunPreview; }
+            set
+            {
+                model.ShowRunPreview = value;
+                RaisePropertyChanged("ShowRunPreview");
+            }
+        }
         #endregion
 
         public struct StartConfiguration
