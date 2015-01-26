@@ -288,13 +288,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void ChangeCategoryExpandState(string categoryName, bool isExpanded)
-        {
-            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
-            if (category != null && category.IsExpanded != isExpanded)
-                category.IsExpanded = isExpanded;
-        }
-
         internal void RemoveEntry(NodeSearchElement entry)
         {
             var branch = GetTreeBranchToNode(libraryRoot, entry);
@@ -323,12 +316,42 @@ namespace Dynamo.ViewModels
             }
 
             // After removal of category "target" can become the class.
-            // In this case we need to add target to existing ClassesNodeCategoryViewModel
-            // or create new one.
+            // In this case we need to add target to existing classes contaiiner 
+            // (ClassesNodeCategoryViewModel) or create new one.
+            // For example we have a structure.
+            //
+            //                         Top
+            //                          │
+            //                       Sub1_1  
+            //             ┌────────────┤       
+            //          Sub2_1       Classes 
+            //    ┌────────┤            │     
+            // Classes     Member2   Sub2_2   
+            //    │                     │     
+            // Sub3_1                   Member3
+            //    │                            
+            //    Member1   
+            // 
+            // Let's remove "Member1". Before next code we have removed entry "Member1" and
+            // categories "Sub3_1", "Classes". "Sub2_2" is "target" as soon as it has one item in
+            // Items collection. Next code will deattach from "Sub1_1" and attach target to another
+            // "Classes" category.
+            // Structure should become.
+            //
+            //                         Top
+            //                          │
+            //                       Sub1_1  
+            //                          │  
+            //                       Classes 
+            //               ┌──────────┤ 
+            //            Sub2_1     Sub2_2   
+            //               │          │     
+            //               Member2    Member3    
+            //
             if (treeStack.Any() && !target.SubCategories.Any())
             {
                 var parent = treeStack.Pop();
-                // Do not continue if parent is already in ClassesNodeCategoryViewModel.
+                // Do not continue if parent is already in classes container.
                 if (parent is ClassesNodeCategoryViewModel && parent.SubCategories.Contains(target))
                     return;
 
@@ -341,7 +364,7 @@ namespace Dynamo.ViewModels
 
                 if (!parent.SubCategories[0].SubCategories.Contains(target))
                 {
-                    // Reattach target from parent to ClassesNodeCategoryViewModel.
+                    // Reattach target from parent to classes container.
                     parent.SubCategories.Remove(target);
                     parent.SubCategories[0].SubCategories.Add(target);
                 }
