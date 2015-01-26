@@ -3,6 +3,7 @@ using ProtoCore.AST.AssociativeAST;
 
 using System.Collections.Generic;
 
+using DSCoreNodesUI.Properties;
 namespace DSCoreNodesUI.StringNodes
 {
     /// <summary>
@@ -53,33 +54,33 @@ namespace DSCoreNodesUI.StringNodes
     }
 
     [NodeName("String from Object")]
-    [NodeDescription("Convert an object to a string representation.")]
+    [NodeDescription("StringfromObjectDescription", typeof(Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
-    [NodeSearchTags("string.fromobject", "tostring", "2string", "number2string", "numbertostring")]
+    [NodeSearchTags("FromObjectSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class FromObject: ToStringNodeBase 
     {
         public FromObject() : base("__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("obj", "Object to be serialized"));
-            OutPortData.Add(new PortData("str", "String representation of the object"));
+            InPortData.Add(new PortData("obj", Resources.FromObjectPortDataObjToolTip));
+            OutPortData.Add(new PortData("str", Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
     }
 
     [NodeName("String from Array")]
-    [NodeDescription("Convert an array to a string representation.")]
+    [NodeDescription("StringfromArrayDescription", typeof(Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
-    [NodeSearchTags("string.fromarray", "tostring", "2string", "list2string", "listtostring", "array2string", "arraytostring")]
+    [NodeSearchTags("FromArraySearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class FromArray : ToStringNodeBase 
     {
         public FromArray() : base("__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("arr", "The array of object to be serialized"));
-            OutPortData.Add(new PortData("str", "String representation of the array"));
+            InPortData.Add(new PortData("arr", Resources.FromArrayPortDataArrayToolTip));
+            OutPortData.Add(new PortData("str", Resources.FromArrayPortDataResultToolTip));
             RegisterAllPorts();
         }
     }

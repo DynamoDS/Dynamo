@@ -292,7 +292,7 @@ namespace Dynamo
                 try
                 {
                     FileWriter.Flush();
-                    Log("Goodbye", LogLevel.Console, false);
+                    Log(Properties.Resources.GoodByeLog, LogLevel.Console, false);
                     FileWriter.Close();
                 }
                 catch

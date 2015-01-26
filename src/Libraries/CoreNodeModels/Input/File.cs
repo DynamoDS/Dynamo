@@ -6,6 +6,7 @@ using System.Linq;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
+using DSCoreNodesUI.Properties;
 
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
@@ -28,7 +29,7 @@ namespace DSCore.File
 
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows you to select a file on the system to get its filename.")]
+    [NodeDescription("FilenameNodeDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
@@ -41,7 +42,7 @@ namespace DSCore.File
 
     [NodeName("Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows you to select a directory on the system to get its path.")]
+    [NodeDescription("DirectoryNodeDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
@@ -164,7 +165,7 @@ namespace DSCore.File
 
     [NodeName("File.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("Creates a file object from a path.")]
+    [NodeDescription("FileObjectNodeDescription", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
@@ -172,8 +173,8 @@ namespace DSCore.File
         public FileObject()
             : base(IO.File.FromPath)
         {
-            InPortData.Add(new PortData("path", "Path to the file."));
-            OutPortData.Add(new PortData("file", "File object"));
+            InPortData.Add(new PortData("path", Resources.FileObjectPortDataPathToolTip));
+            OutPortData.Add(new PortData("file", Resources.FileObjectPortDataResultToolTip));
             RegisterAllPorts();
         }
 
@@ -218,7 +219,7 @@ namespace DSCore.File
 
     [NodeName("Directory.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
-    [NodeDescription("Creates a directory object from a path.")]
+    [NodeDescription("DirectoryObjectNodeDescription",typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
@@ -226,8 +227,8 @@ namespace DSCore.File
         public DirectoryObject()
             : base(IO.Directory.FromPath)
         {
-            InPortData.Add(new PortData("path", "Path to the directory."));
-            OutPortData.Add(new PortData("directory", "Directory object."));
+            InPortData.Add(new PortData("path", Resources.DirectoryObjectPortDataPathToolTip));
+            OutPortData.Add(new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip));
             RegisterAllPorts();
         }
 

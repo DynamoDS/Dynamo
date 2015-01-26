@@ -80,7 +80,7 @@ namespace DSCoreNodesUI
 
         protected DSDropDownBase(string outputName)
         {
-            OutPortData.Add(new PortData(outputName, string.Format("The selected {0}", outputName)));
+            OutPortData.Add(new PortData(outputName, string.Format(Properties.Resources.DropDownPortDataResultToolTip, outputName)));
             RegisterAllPorts();
             PopulateItems();
         }

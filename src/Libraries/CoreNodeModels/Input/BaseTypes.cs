@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
-
+using Dynamo.Properties;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a string.")]
+    [NodeDescription("StringInputNodeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class StringInput : String
     {
@@ -118,7 +118,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a number.")]
+    [NodeDescription("DoubleInputNodeDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class DoubleInput : NodeModel
     {
