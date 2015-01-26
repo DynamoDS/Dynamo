@@ -127,18 +127,20 @@ namespace ProtoScript.Runners
             return buildSucceeded;
         }
 
-        public void Execute(ProtoCore.Core core, ProtoCore.Runtime.Context context)
+        public void Execute(ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
         {
+            // Move these core setup to runtime core 
+            core.Rmem.PushFrameForGlobals(core.GlobOffset);
+            core.RunningBlock = runningBlock;
+            core.InitializeContextGlobals(staticContext.GlobalVarList);
+
+            ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, runtimeContext);
+
             try
             {
                 core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
                 foreach (ProtoCore.DSASM.CodeBlock codeblock in core.CodeBlockList)
                 {
-                    //ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-
-                    int locals = 0;
-
-
                     // Comment Jun:
                     // On first bounce, the stackframe depth is initialized to -1 in the Stackfame constructor.
                     // Passing it to bounce() increments it so the first depth is always 0
@@ -150,7 +152,8 @@ namespace ProtoScript.Runners
                     StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                     stackFrame.TX = svCallConvention;
 
-                    core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, EventSink);
+                    int locals = 0;
+                    core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals, EventSink);
                 }
                 core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
@@ -170,10 +173,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushFrameForGlobals(core.GlobOffset);
-                core.RunningBlock = blockId;
-
-                Execute(core, new ProtoCore.Runtime.Context());
+                Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
 
                 if (!isTest) { core.Heap.Free(); }
             }
@@ -199,12 +199,8 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushFrameForGlobals(core.GlobOffset);
-                core.RunningBlock = blockId;
-                core.InitializeContextGlobals(staticContext.GlobalVarList);
-
                 Validity.Assert(null != runtimeContext);
-                Execute(core, runtimeContext);
+                Execute(core, blockId, staticContext, runtimeContext);
                 if (!isTest)
                 {
                     core.Heap.Free();
@@ -230,10 +226,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushFrameForGlobals(core.GlobOffset);
-                core.RunningBlock = blockId;
-
-                Execute(core, new ProtoCore.Runtime.Context());
+                Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
                 if (!isTest) 
                 { 
                     core.Heap.Free(); 
@@ -259,12 +252,9 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                core.Rmem.PushFrameForGlobals(core.GlobOffset);
-                core.RunningBlock = blockId;
-
                 try
                 {
-                    Execute(core, new ProtoCore.Runtime.Context());
+                    Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
                 }
                 catch (ProtoCore.Exceptions.ExecutionCancelledException e)
                 {
