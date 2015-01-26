@@ -126,7 +126,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishNewPackage(object m)
         {
-            return true;
+            return HasAuthProvider;
         }
 
         public void PublishSelectedNodes(object m)

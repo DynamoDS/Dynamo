@@ -353,7 +353,6 @@ namespace Dynamo.Models
             public ISchedulerThread SchedulerThread { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public string PackageManagerAddress { get; set; }
-            public bool AllowAuthentication { get; set; }
         }
 
         /// <summary>
@@ -464,7 +463,7 @@ namespace Dynamo.Models
             var url = config.PackageManagerAddress ??
                       AssemblyConfiguration.Instance.GetAppSetting("packageManagerAddress");
 
-            Logger.Log("Dynamo Package Manager at : " + url);
+            Logger.Log("Dynamo will use the package manager server at : " + url);
 
             PackageManagerClient = new PackageManagerClient( 
                 new GregClient(config.AuthProvider, url), 

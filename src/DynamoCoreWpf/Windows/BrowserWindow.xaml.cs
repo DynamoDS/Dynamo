@@ -13,9 +13,6 @@ using System.Windows.Shapes;
 
 namespace Dynamo.Applications
 {
-    /// <summary>
-    /// Interaction logic for SignInWindow.xaml
-    /// </summary>
     public partial class BrowserWindow : Window
     {
         private readonly Uri _location;
