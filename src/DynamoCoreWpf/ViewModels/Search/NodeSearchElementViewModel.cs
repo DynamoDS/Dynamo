@@ -163,7 +163,7 @@ namespace Dynamo.Wpf.ViewModels
             if (string.IsNullOrEmpty(Model.Assembly))
                 return null;
 
-            var warehouse = IconsService.GetForAssembly(Model.Assembly);
+            var warehouse = IconServices.GetForAssembly(Model.Assembly);
             BitmapSource icon = null;
             if (warehouse != null)
                 icon = warehouse.LoadIconInternal(fullNameOfIcon);
@@ -175,7 +175,7 @@ namespace Dynamo.Wpf.ViewModels
             if (resourceType == ResourceType.LargeIcon)
                 return null;
 
-            var warehouse = IconsService.GetForAssembly(Configurations.DefaultAssembly);
+            var warehouse = IconServices.GetForAssembly(Configurations.DefaultAssembly);
             return warehouse.LoadIconInternal(Configurations.DefaultIcon);
         }
     }

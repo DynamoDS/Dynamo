@@ -5,19 +5,18 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Dynamo.DSEngine;
 
 namespace Dynamo.Wpf.Services
 {
-    public class IconsService
+    public class IconServices
     {
-        private static Dictionary<Assembly, IconsWarehouse> warehouses =
-            new Dictionary<Assembly, IconsWarehouse>();
+        private static Dictionary<Assembly, IconWarehouse> warehouses =
+            new Dictionary<Assembly, IconWarehouse>();
 
-        internal static IconsWarehouse GetForAssembly(string assemblyPath)
+        internal static IconWarehouse GetForAssembly(string assemblyPath)
         {
             var libraryCustomization = LibraryCustomizationServices.GetForAssembly(assemblyPath);
             if (libraryCustomization == null)
@@ -26,13 +25,13 @@ namespace Dynamo.Wpf.Services
             var assembly = libraryCustomization.Assembly;
 
             if (!warehouses.ContainsKey(assembly))
-                warehouses[assembly] = new IconsWarehouse(assembly);
+                warehouses[assembly] = new IconWarehouse(assembly);
 
             return warehouses[assembly];
         }
     }
 
-    public class IconsWarehouse
+    public class IconWarehouse
     {
         private Dictionary<string, BitmapSource> cachedIcons =
             new Dictionary<string, BitmapSource>(StringComparer.OrdinalIgnoreCase);
@@ -42,7 +41,7 @@ namespace Dynamo.Wpf.Services
 
         private const string imagesSuffix = "Images";
 
-        internal IconsWarehouse(Assembly resAssembly)
+        internal IconWarehouse(Assembly resAssembly)
         {
             if (resAssembly != null)
             {

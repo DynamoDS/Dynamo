@@ -458,7 +458,7 @@ namespace Dynamo.Wpf.ViewModels
 
         private BitmapSource GetIcon(string fullNameOfIcon)
         {
-            var warehouse = IconsService.GetForAssembly(Assembly);
+            var warehouse = IconServices.GetForAssembly(Assembly);
 
             BitmapSource icon = null;
             if (warehouse != null)
@@ -468,7 +468,7 @@ namespace Dynamo.Wpf.ViewModels
 
         private BitmapSource LoadDefaultIcon()
         {
-            var warehouse = IconsService.GetForAssembly(Configurations.DefaultAssembly);
+            var warehouse = IconServices.GetForAssembly(Configurations.DefaultAssembly);
             return warehouse.LoadIconInternal(Configurations.DefaultIcon);
         }
     }
