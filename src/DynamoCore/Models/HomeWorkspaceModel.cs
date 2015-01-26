@@ -13,17 +13,6 @@ namespace Dynamo.Models
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
 
-        public bool RunEnabled
-        {
-            get { return runEnabled; }
-            set
-            {
-                if (Equals(value, runEnabled)) return;
-                runEnabled = value;
-                OnRunEnabledChanged();
-            }
-        }
-
         public bool DynamicRunEnabled;
 
         public readonly bool VerboseLogging;
@@ -101,8 +90,6 @@ namespace Dynamo.Models
             }
         }
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
-
-        private bool runEnabled;
 
         internal bool IsEvaluationPending
         {
@@ -310,13 +297,6 @@ namespace Dynamo.Models
         {
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
-        }
-
-        public event Action RunEnabledChanged;
-        protected virtual void OnRunEnabledChanged()
-        {
-            var handler = RunEnabledChanged;
-            if (handler != null) handler();
         }
         #endregion
     }

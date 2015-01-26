@@ -844,13 +844,10 @@ namespace Dynamo.Models
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
-            newWorkspace.RunEnabledChanged += OnHomeWorkspaceModelRunEnabledChanged;
             newWorkspace.Disposed += () =>
             {
-                newWorkspace.RunEnabledChanged -= OnHomeWorkspaceModelRunEnabledChanged;
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
             };
-            OnHomeWorkspaceModelRunEnabledChanged();
         }
 
         #endregion
@@ -1206,10 +1203,12 @@ namespace Dynamo.Models
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
+            workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
             {
                 workspace.WorkspaceSaved -= savedHandler;
                 workspace.MessageLogged -= LogMessage;
+                workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };
 
             Workspaces.Add(workspace);
@@ -1341,6 +1340,11 @@ If you don't mind, it would be helpful for you to send us your file. That will m
             return args.ClickedButtonId == (int)ButtonId.Proceed;
         }
 
+        private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "RunEnabled")
+                OnPropertyChanged("RunEnabled");
+        }
         #endregion
     }
 }
