@@ -9,7 +9,7 @@ namespace DSCoreNodesUI
     public abstract class BasicInteractive<T> : NodeModel
     {
         private T value;
-        public T Value
+        public virtual T Value
         {
             get
             {

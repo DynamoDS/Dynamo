@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -30,6 +31,19 @@ namespace DSCoreNodesUI.Input
             ShouldDisplayPreviewCore = false;
         }
 
+        public override int Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                base.Value = value;
+                RaisePropertyChanged("Value");
+            }
+        }
+
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
@@ -47,7 +61,7 @@ namespace DSCoreNodesUI.Input
                     return true; // UpdateValueCore handled.
                 case "Value":
                 case "ValueText":
-                    Value = ConvertStringToInt(value);
+                    Value = ConvertStringToInt(value);                   
                     return true; // UpdateValueCore handled.
                 case "Step":
                 case "StepText":
