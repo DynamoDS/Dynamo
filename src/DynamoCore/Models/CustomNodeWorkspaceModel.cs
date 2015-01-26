@@ -33,7 +33,7 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, double x, double y, Guid customNodeId,
-            NodeFactory factory, ElementResolver elementResolver, string fileName="")
+            NodeFactory factory, string fileName = "")
             : this(
                 name,
                 category,
@@ -43,20 +43,24 @@ namespace Dynamo.Models
                 Enumerable.Empty<NoteModel>(),
                 x,
                 y,
-                customNodeId, elementResolver, fileName) { }
+                customNodeId, fileName) { }
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, Guid customNodeId, ElementResolver elementResolver, string fileName="") 
-            : base(name, e, n, x, y, factory, elementResolver, fileName)
+            double x, double y, Guid customNodeId, string fileName="", ElementResolver elementResolver = null) 
+            : base(name, e, n, x, y, factory, fileName)
         {
             CustomNodeId = customNodeId;
             HasUnsavedChanges = false;
             Category = category;
             Description = description;
+            if (elementResolver != null)
+                ElementResolver = elementResolver;
 
             PropertyChanged += OnPropertyChanged;
         }
+
+        #endregion
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
@@ -70,7 +74,6 @@ namespace Dynamo.Models
             }
         }
 
-        #endregion
 
         /// <summary>
         ///     All CustomNodeDefinitions which this Custom Node depends on.

@@ -13,7 +13,7 @@ namespace Dynamo.Core
         public List<NodeModel> Nodes { get; private set; }
         public List<ConnectorModel> Connectors { get; private set; }
         public List<NoteModel> Notes { get; private set; }
-        public ElementResolver ElementResolver { get; private set; }
+        //public ElementResolver ElementResolver { get; private set; }
     
 
         private NodeGraph() { }
@@ -118,13 +118,13 @@ namespace Dynamo.Core
         /// <returns></returns>
         public static NodeGraph LoadGraphFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {
-            var elementResolver = LoadElementResolver(xmlDoc);
+            //var elementResolver = LoadElementResolver(xmlDoc);
 
             var nodes = LoadNodesFromXml(xmlDoc, nodeFactory).ToList();
             var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
             var notes = LoadNotesFromXml(xmlDoc).ToList();
 
-            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, ElementResolver = elementResolver };
+            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes };
         }
 
         private static ElementResolver LoadElementResolver(XmlDocument xmlDoc)

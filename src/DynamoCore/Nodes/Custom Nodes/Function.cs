@@ -184,6 +184,7 @@ namespace Dynamo.Nodes
     {
         private string inputSymbol = String.Empty;
         private string nickName = String.Empty;
+        private ElementResolver elementResolver;
 
         public Symbol()
         {
@@ -296,6 +297,33 @@ namespace Dynamo.Nodes
             }
 
             ArgumentLacing = LacingStrategy.Disabled;
+
+            DeserializeElementResolver(nodeElement);
+        }
+
+        private void DeserializeElementResolver(XmlElement nodeElement)
+        {
+            var nodes = nodeElement.GetElementsByTagName("NamespaceResolutionMap");
+
+            if (nodes.Count == 0)
+            {
+                // no namespace resolution map information exists in the DYN file
+                return;
+            }
+
+            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
+            foreach (XmlNode child in nodes[0].ChildNodes)
+            {
+                if (child.Attributes != null)
+                {
+                    XmlAttribute pName = child.Attributes["partialName"];
+                    XmlAttribute rName = child.Attributes["resolvedName"];
+                    XmlAttribute aName = child.Attributes["assemblyName"];
+                    var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
+                    resolutionMap.Add(pName.Value, kvp);
+                }
+            }
+            elementResolver = new ElementResolver(resolutionMap);
         }
 
         private bool TryParseInputSymbol(string inputSymbol, 
@@ -321,9 +349,10 @@ namespace Dynamo.Nodes
                 parseString = string.Format(dummyExpression, parseString);
             }
 
-            ParseParam parseParam = new ParseParam(this.GUID, parseString);
+            ParseParam parseParam = new ParseParam(this.GUID, parseString, elementResolver);
 
-            ElementResolver elementResolver = null;
+            // TODO: Pass the element resolver from WorkspaceModel in here
+            //ElementResolver elementResolver = null;
             if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam, elementResolver) &&
                 parseParam.ParsedNodes != null &&
                 parseParam.ParsedNodes.Any())

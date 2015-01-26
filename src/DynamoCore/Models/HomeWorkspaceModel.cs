@@ -38,14 +38,14 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 0,
-                0, verboseLogging, isTestMode, new ElementResolver(), fileName) { }
+                0, verboseLogging, isTestMode, fileName) { }
 
         public HomeWorkspaceModel(
             EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
             double x, double y, bool verboseLogging,
-            bool isTestMode, ElementResolver elementResolver, string fileName = "")
-            : base("Home", e, n, x, y, factory, elementResolver, fileName)
+            bool isTestMode, string fileName = "")
+            : base("Home", e, n, x, y, factory, fileName)
         {
             RunEnabled = true;
             PreloadedTraceData = traceData;

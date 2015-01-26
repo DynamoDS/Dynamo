@@ -54,7 +54,7 @@ namespace ProtoCore.Namespace
             var resolvedNames = new Queue<string>();
             foreach (var identifier in classIdentifiers)
             {
-                var partialName = CoreUtils.GetIdentifierStringUntilFirstParenthesis(identifier);
+                var partialName = CoreUtils.GetIdentifierExceptMethodName(identifier);
                 var resolvedName = elementResolver.LookupResolvedName(partialName);
                 if (string.IsNullOrEmpty(resolvedName))
                 {

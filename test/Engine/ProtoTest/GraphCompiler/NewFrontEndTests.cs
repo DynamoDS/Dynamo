@@ -21,8 +21,9 @@ namespace ProtoTest.GraphCompiler
                             b = (1 + 2) * 3;
                             c = 1 + 2 * 3;";
 
-            ParseParam parseParam = new ParseParam(Guid.NewGuid(), code);
             ElementResolver elementResolver = new ElementResolver();
+            ParseParam parseParam = new ParseParam(Guid.NewGuid(), code, elementResolver);
+            
             Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam, elementResolver));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Count() > 0);
 

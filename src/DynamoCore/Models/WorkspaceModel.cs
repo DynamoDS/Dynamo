@@ -394,7 +394,7 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
-        public ElementResolver ElementResolver { get; private set; }
+        public ElementResolver ElementResolver { get; protected set; }
 
         #endregion
 
@@ -402,7 +402,7 @@ namespace Dynamo.Models
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
+            double x, double y, NodeFactory factory, string fileName="")
         {
             Name = name;
 
@@ -418,10 +418,18 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
-            ElementResolver = elementResolver;
 
+            ElementResolver = new ElementResolver();
             foreach (var node in nodes)
+            {
                 RegisterNode(node);
+
+                var cbn = node as CodeBlockNodeModel;
+                if (cbn != null)
+                {
+                    ElementResolver.CopyResolutionMap(cbn.ElementResolver);
+                }
+            }
 
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
@@ -615,6 +623,7 @@ namespace Dynamo.Models
 
         internal void ResetWorkspace()
         {
+            ElementResolver = new ElementResolver();
             ResetWorkspaceCore();
         }
 

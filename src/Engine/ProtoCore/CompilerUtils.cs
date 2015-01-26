@@ -91,16 +91,17 @@ namespace ProtoCore.Utils
 
     public class ParseParam
     {
-        private List<string> temporaries = null;
-        private List<string> unboundIdentifiers = null;
-        private List<ProtoCore.AST.Node> parsedNodes = null;
-        private List<ProtoCore.BuildData.ErrorEntry> errors = null;
-        private List<ProtoCore.BuildData.WarningEntry> warnings = null;
+        private List<string> temporaries;
+        private List<string> unboundIdentifiers;
+        private List<ProtoCore.AST.Node> parsedNodes;
+        private List<ProtoCore.BuildData.ErrorEntry> errors;
+        private List<ProtoCore.BuildData.WarningEntry> warnings;
 
-        public ParseParam(System.Guid postfixGuid, System.String code)
+        public ParseParam(System.Guid postfixGuid, System.String code, ElementResolver elementResolver)
         {
             this.PostfixGuid = postfixGuid;
             this.OriginalCode = code;
+            this.ElementResolver = elementResolver;
         }
 
         public void AppendTemporaryVariable(string variable)
@@ -155,6 +156,7 @@ namespace ProtoCore.Utils
         public System.Guid PostfixGuid { get; private set; }
         public System.String OriginalCode { get; private set; }
         public System.String ProcessedCode { get; internal set; }
+        public ElementResolver ElementResolver { get; private set; }
 
         public IEnumerable<System.String> Temporaries
         {
@@ -279,10 +281,9 @@ namespace ProtoCore.Utils
             return CompileCodeBlockAST(core, parseParams, elementResolver);
         }
 
-        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, ElementResolver elementResolver)
+        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, ElementResolver workspaceElementResolver)
         {
-            Dictionary<int, List<VariableLine>> unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
-            IEnumerable<BuildData.WarningEntry> warnings = null;
+            var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
 
             ProtoCore.BuildStatus buildStatus = null;
             try
@@ -297,14 +298,17 @@ namespace ProtoCore.Utils
 
                 core.ResetForPrecompilation();
 
+                var astNodes = parseParams.ParsedNodes;
+
+                // During loading of CBN from file, the elementResolver from the workspace is unavailable
+                // in which case, a local copy of the ER obtained from the CBN is used
+                ElementResolver resolver = workspaceElementResolver ?? parseParams.ElementResolver;
+
                 // Lookup namespace resolution map in elementResolver to rewrite 
                 // partial classnames with their fully qualified names in ASTs
                 // before passing them for pre-compilation. If partial class is not found in map, 
                 // update Resolution map in elementResolver with fully resolved name from compiler.
-                var astNodes = parseParams.ParsedNodes;
-
-                if(elementResolver != null)
-                    ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, elementResolver, ref astNodes);
+                ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, resolver, ref astNodes);
 
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
                 // while performing SSA transforms and we want to keep the original AST's
@@ -324,7 +328,7 @@ namespace ProtoCore.Utils
                 {
                     return false;
                 }
-                warnings = buildStatus.Warnings;
+                IEnumerable<BuildData.WarningEntry> warnings = buildStatus.Warnings;
 
                 // Get the unboundIdentifiers from the warnings
                 GetInputLines(parseParams.ParsedNodes, warnings, unboundIdentifiers);

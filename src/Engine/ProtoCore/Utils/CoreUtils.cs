@@ -755,6 +755,32 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
+        /// Retrieves the string format of the identifier list from left to right, leaving out any symbols after the last identifier.
+        /// Given: A.B()
+        ///     Return: "A"
+        /// Given: A.B.C()[0]
+        ///     Return: "A.B"
+        /// Given: A.B().C
+        ///     Return: "A"
+        /// Given: A.B[0].C
+        ///     Return: "A.B[0].C"
+        /// </summary>
+        /// <param name="identList"></param>
+        /// <returns></returns>
+        public static string GetIdentifierExceptMethodName(ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
+        {
+            Validity.Assert(null != identList);
+            string identListString = identList.ToString();
+            int removeIndex = identListString.IndexOf('(');
+            if (removeIndex > 0)
+            {
+                identListString = identListString.Remove(removeIndex);
+                identListString = identListString.Remove(identListString.LastIndexOf('.'));
+            }
+            return identListString;
+        }
+
+        /// <summary>
         /// Traverses the identifierlist argument until class name resolution succeeds or fails.
         /// </summary>
         /// <param name="classTable"></param>

@@ -1,5 +1,6 @@
 
 ﻿using System.Collections.Generic;
+﻿using System.Linq;
 
 namespace ProtoCore.Namespace
 {
@@ -29,6 +30,14 @@ namespace ProtoCore.Namespace
         public ElementResolver(IDictionary<string, KeyValuePair<string, string>> namespaceLookupMap)
         {
             resolutionMap = namespaceLookupMap;
+        }
+
+        public void CopyResolutionMap(ElementResolver otherResolver)
+        {
+            foreach (var e in otherResolver.ResolutionMap.Where(e => !resolutionMap.ContainsKey(e.Key)))
+            {
+                resolutionMap.Add(e);
+            }
         }
 
         public string LookupResolvedName(string partialName)

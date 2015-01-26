@@ -818,6 +818,7 @@ namespace Dynamo.Models
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
+            // Update WorkspaceModel.ElementResolver from nodeGraph.Nodes (where node is CBN)
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
@@ -827,7 +828,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                DebugSettings.VerboseLogging, IsTestMode, nodeGraph.ElementResolver, workspaceInfo.FileName);
+                DebugSettings.VerboseLogging, IsTestMode, workspaceInfo.FileName);
 
             RegisterHomeWorkspace(newWorkspace);
             
