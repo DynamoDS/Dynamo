@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Dynamo.DSEngine;
-using Dynamo.Search.Interfaces;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Services;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -145,6 +144,15 @@ namespace Dynamo.Wpf.ViewModels
         }
 
         public ICommand ClickedCommand { get; private set; }
+
+        public event RequestBitmapSourceHandler RequestBitmapSource;
+        public void OnRequestBitmapSource(IconRequestEventArgs e)
+        {
+            if (RequestBitmapSource != null)
+            {
+                RequestBitmapSource(e);
+            }
+        }
 
         private string GetResourceName(ResourceType resourceType)
         {
