@@ -242,7 +242,7 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Private helping methods
+        #region Private helper methods
 
         string GetCommandWithPathAndGuid(string commandText, string path = "", string guid = "")
         {
@@ -366,7 +366,7 @@ namespace Dynamo.Tests
                 }
                 else
                 {
-                    Assert.IsTrue(false, WebServerErrorMessages.WrongResponse);
+                    Assert.Fail(WebServerErrorMessages.WrongResponse);
                 }
             };
 
