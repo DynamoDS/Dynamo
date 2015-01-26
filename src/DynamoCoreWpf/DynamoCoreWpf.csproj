@@ -1014,6 +1014,9 @@
     <Resource Include="UI\Images\files.png" />
     <Resource Include="UI\Images\nodes.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\profile_normal.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
