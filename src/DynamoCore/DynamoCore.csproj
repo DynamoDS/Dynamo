@@ -102,7 +102,6 @@ limitations under the License.
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -290,9 +289,9 @@ limitations under the License.
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NodeServices\NodeServices.csproj">
+    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>NodeServices</Name>
+      <Name>DynamoServices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -319,6 +318,7 @@ copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
 xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
+xcopy  /Y "$(SolutionDir)..\extern\LibG_221\*" "$(OutputPath)libg_221\"
 xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
 </PostBuildEvent>
   </PropertyGroup>

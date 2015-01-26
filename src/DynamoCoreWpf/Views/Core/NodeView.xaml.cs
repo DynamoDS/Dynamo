@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -319,11 +320,13 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null) return;
 
-            var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-
-            ViewModel.DynamoViewModel.ReturnFocusToSearch();
-
-            view.mainGrid.Focus();
+            if ((ViewModel.NodeLogic is CodeBlockNodeModel) == false)
+            {
+                // Do not return focus to search if this is a code block node.
+                var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+                ViewModel.DynamoViewModel.ReturnFocusToSearch();
+                view.mainGrid.Focus();
+            }
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(

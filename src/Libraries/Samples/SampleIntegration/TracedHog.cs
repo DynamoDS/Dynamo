@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
+using DynamoServices;
+
 class TracedHogManager
 {
     private static int hogID = 0;
@@ -68,8 +70,8 @@ public class HogID : ISerializable
 }
 
 
-[DSNodeServices.RegisterForTrace]
-public class TracedHog
+[RegisterForTrace]
+public class TracedHog : IDisposable
 {
     //TODO(lukechurch): This really should have been moved into the attribute already
     private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
@@ -92,17 +94,24 @@ public class TracedHog
         this.ID = id;
 
         TracedHogManager.RegisterHogForID(id, this);
+
+        WorkspaceEvents.WorkspaceAdded += WorkspaceEventsWorkspaceAdded;
+    }
+
+    void WorkspaceEventsWorkspaceAdded(WorkspacesModificationEventArgs args)
+    {
+        // What does a hog do when a workspace is opened?
     }
 
     public static TracedHog ByPoint(double x, double y)
     {
         TracedHog tHog;
 
-        HogID hid = DSNodeServices.TraceUtils.GetTraceData(REVIT_TRACE_ID) as HogID;
+        HogID hid = TraceUtils.GetTraceData(REVIT_TRACE_ID) as HogID;
 
         if (hid == null)
         {
-            //Trace didn't give us a hog, it's a new one
+            // Trace didn't give us a hog, it's a new one.
             tHog = new TracedHog(x, y);
         }
         else
@@ -110,6 +119,8 @@ public class TracedHog
             tHog = TracedHogManager.GetHogByID(hid.IntID);
         }
 
+        // Set the trace data on the return to be this hog.
+        TraceUtils.SetTraceData(REVIT_TRACE_ID, new HogID { IntID = tHog.ID });
         return tHog;
     }
 
@@ -118,4 +129,9 @@ public class TracedHog
         return String.Format("{0}: ({1}, {2})", ID, X, Y);
     }
 
+    public void Dispose()
+    {
+        // Unhook the workspace event handler.
+        WorkspaceEvents.WorkspaceAdded -= WorkspaceEventsWorkspaceAdded;
+    }
 }

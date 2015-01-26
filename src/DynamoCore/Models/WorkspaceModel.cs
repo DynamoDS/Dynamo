@@ -12,9 +12,10 @@ using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-
+using ProtoCore.Namespace;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
+using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificationUndoHelper;
 
 namespace Dynamo.Models
 {
@@ -38,6 +39,7 @@ namespace Dynamo.Models
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
         private readonly UndoRedoRecorder undoRecorder;
+        private Guid guid;
 
         #endregion
 
@@ -393,21 +395,33 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
+        /// <summary>
+        /// A unique identifier for the workspace.
+        /// </summary>
+        public Guid Guid
+        {
+            get { return guid; }
+        }
+
+        public ElementResolver ElementResolver { get; private set; }
+
         #endregion
 
         #region constructors
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory)
+            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
+            guid = Guid.NewGuid();
+
             Name = name;
 
             nodes = new ObservableCollection<NodeModel>(e);
             notes = new ObservableCollection<NoteModel>(n);
             X = x;
             Y = y;
-
+            FileName = fileName;
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
@@ -415,6 +429,7 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
+            ElementResolver = elementResolver;
 
             foreach (var node in nodes)
                 RegisterNode(node);
@@ -548,16 +563,16 @@ namespace Dynamo.Models
 
         private void RegisterNode(NodeModel node)
         {
-            node.AstUpdated += OnAstUpdated;
+            node.NodeModified += OnNodesModified;
             node.ConnectorAdded += OnConnectorAdded;
         }
 
         /// <summary>
         ///     Indicates that this workspace's DesignScript AST has been updated.
         /// </summary>
-        public virtual void OnAstUpdated()
+        public virtual void OnNodesModified()
         {
-
+            
         }
 
         /// <summary>
@@ -569,14 +584,14 @@ namespace Dynamo.Models
             if (nodes.Remove(model))
             {
                 DisposeNode(model);
-                OnAstUpdated();
+                OnNodesModified();
             }
         }
 
         protected void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
-            model.AstUpdated -= OnAstUpdated;
+            model.NodeModified -= OnNodesModified;
             OnNodeRemoved(model);
         }
 
@@ -668,6 +683,27 @@ namespace Dynamo.Models
             return true;
         }
 
+        private void SerializeElementResolver(XmlDocument xmlDoc)
+        {
+            Debug.Assert(xmlDoc != null);
+
+            var root = xmlDoc.DocumentElement;
+
+            var mapElement = xmlDoc.CreateElement("NamespaceResolutionMap");
+
+            foreach (var element in ElementResolver.ResolutionMap)
+            {
+                var resolverElement = xmlDoc.CreateElement("ClassMap");
+                
+                resolverElement.SetAttribute("partialName", element.Key);
+                resolverElement.SetAttribute("resolvedName", element.Value.Key);
+                resolverElement.SetAttribute("assemblyName", element.Value.Value);
+
+                mapElement.AppendChild(resolverElement);
+            }
+            root.AppendChild(mapElement);
+        }
+
         protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
         {
             try
@@ -678,6 +714,8 @@ namespace Dynamo.Models
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
+
+                SerializeElementResolver(xmlDoc);
 
                 var elementList = xmlDoc.CreateElement("Elements");
                 //write the root element
@@ -755,7 +793,7 @@ namespace Dynamo.Models
                         n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel)
                         .Select(n => n.GUID);
 
-                var nodeTraceDataList = core.GetTraceDataForNodes(nodeGuids);
+                var nodeTraceDataList = core.DSExecutable.RuntimeData.GetTraceDataForNodes(nodeGuids, core.DSExecutable);
 
                 if (nodeTraceDataList.Any())
                     Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
@@ -771,55 +809,64 @@ namespace Dynamo.Models
 
         internal void SendModelEvent(Guid modelGuid, string eventName)
         {
-            ModelBase model = GetModelInternal(modelGuid);
-            if (null != model)
+            var retrievedModel = GetModelInternal(modelGuid);
+            if (retrievedModel == null)
+                throw new InvalidOperationException("SendModelEvent: Model not found");
+
+            var handled = false;
+            var nodeModel = retrievedModel as NodeModel;
+            if (nodeModel != null)
             {
-                RecordModelForModification(model, UndoRecorder);
-                if (!model.HandleModelEvent(eventName, undoRecorder))
+                using (new ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
-                    string type = model.GetType().FullName;
-                    string message = string.Format(
-                        "ModelBase.HandleModelEvent call not handled.\n\n" +
-                        "Model type: {0}\n" +
-                        "Model GUID: {1}\n" +
-                        "Event name: {2}",
-                        type, modelGuid, eventName);
-
-                    // All 'HandleModelEvent' calls must be handled by one of 
-                    // the ModelBase derived classes that the 'SendModelEvent'
-                    // is intended for.
-                    throw new InvalidOperationException(message);
+                    handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
                 }
-
-                HasUnsavedChanges = true;
             }
+            else
+            {
+                // Perform generic undo recording for models other than node.
+                RecordModelForModification(retrievedModel, UndoRecorder);
+                handled = retrievedModel.HandleModelEvent(eventName, undoRecorder);
+            }
+
+            if (!handled) // Method call was not handled by any derived class.
+            {
+                string type = retrievedModel.GetType().FullName;
+                string message = string.Format(
+                    "ModelBase.HandleModelEvent call not handled.\n\n" +
+                    "Model type: {0}\n" +
+                    "Model GUID: {1}\n" +
+                    "Event name: {2}",
+                    type, modelGuid, eventName);
+
+                // All 'HandleModelEvent' calls must be handled by one of 
+                // the ModelBase derived classes that the 'SendModelEvent'
+                // is intended for.
+                throw new InvalidOperationException(message);
+            }
+
+            HasUnsavedChanges = true;
         }
 
-        internal void UpdateModelValue(Guid modelGuid, string propertyName, string value)
+        internal void UpdateModelValue(IEnumerable<Guid> modelGuids, string propertyName, string value)
         {
-            ModelBase model = GetModelInternal(modelGuid);
-            if (null != model)
+            if (modelGuids == null || (!modelGuids.Any()))
+                throw new ArgumentNullException("modelGuids");
+
+            var retrievedModels = GetModelsInternal(modelGuids);
+            if (!retrievedModels.Any())
+                throw new InvalidOperationException("UpdateModelValue: Model not found");
+
+            var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
+            using (new ModelModificationUndoHelper(undoRecorder, retrievedModels))
             {
-                RecordModelForModification(model, UndoRecorder);
-                if (!model.UpdateValue(propertyName, value, undoRecorder))
+                foreach (var retrievedModel in retrievedModels)
                 {
-                    string type = model.GetType().FullName;
-                    string message = string.Format(
-                        "ModelBase.UpdateValue call not handled.\n\n" +
-                        "Model type: {0}\n" +
-                        "Model GUID: {1}\n" +
-                        "Property name: {2}\n" +
-                        "Property value: {3}",
-                        type, modelGuid, propertyName, value);
-
-                    // All 'UpdateValue' calls must be handled by one of the 
-                    // ModelBase derived classes that the 'UpdateModelValue'
-                    // is intended for.
-                    throw new InvalidOperationException(message);
+                    retrievedModel.UpdateValue(updateValueParams);
                 }
-
-                HasUnsavedChanges = true;
             }
+
+            HasUnsavedChanges = true;
         }
 
         [Obsolete("Node to Code not enabled, API subject to change.")]
@@ -912,7 +959,7 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
-            OnAstUpdated();
+            OnNodesModified();
         }
 
         #endregion
@@ -1152,8 +1199,10 @@ namespace Dynamo.Models
 
             if (typeName.StartsWith("Dynamo.Models.ConnectorModel"))
             {
-                NodeGraph.LoadConnectorFromXml(modelData,
+                var connector = NodeGraph.LoadConnectorFromXml(modelData,
                     Nodes.ToDictionary(node => node.GUID));
+
+                OnConnectorAdded(connector); // Update view-model and view.
             }
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
@@ -1164,6 +1213,7 @@ namespace Dynamo.Models
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
+                RegisterNode(nodeModel);
             }
         }
 
@@ -1198,6 +1248,21 @@ namespace Dynamo.Models
 
             return foundModel;
         }
+
+        private IEnumerable<ModelBase> GetModelsInternal(IEnumerable<Guid> modelGuids)
+        {
+            var foundModels = new List<ModelBase>();
+
+            foreach (var modelGuid in modelGuids)
+            {
+                var foundModel = GetModelInternal(modelGuid);
+                if (foundModel != null)
+                    foundModels.Add(foundModel);
+            }
+
+            return foundModels;
+        }
+
         #endregion
 
         #region Node To Code Reconnection

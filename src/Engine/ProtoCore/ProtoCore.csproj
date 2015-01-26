@@ -84,10 +84,10 @@
     <AssemblyOriginatorKeyFile>ProtoCore.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;GC_MARK_AND_SWEEP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>TRACE;GC_MARK_AND_SWEEP</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -134,6 +134,7 @@
     <Compile Include="Lang\Replication\ReplicationInstruction.cs" />
     <Compile Include="Lang\Replication\Replicator.cs" />
     <Compile Include="Lang\TraceUtils.cs" />
+    <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
     <Compile Include="ParserUtils.cs" />
     <Compile Include="Reflection\GraphicDataProvider.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Reflection\MirrorData.cs" />
     <Compile Include="Reflection\Reflection.cs" />
     <Compile Include="RuntimeContext.cs" />
+    <Compile Include="RuntimeData.cs" />
     <Compile Include="RuntimeMemory.cs" />
     <Compile Include="RuntimeStatus.cs" />
     <Compile Include="DSDefinitions.cs" />
@@ -186,7 +188,6 @@
     <Compile Include="Utils\ClassUtils.cs" />
     <Compile Include="Utils\CoreUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
-    <Compile Include="Utils\GCUtils.cs" />
     <Compile Include="Utils\MathUtils.cs" />
     <Compile Include="Utils\LegacyUtils.cs" />
     <Compile Include="Utils\LexUtils.cs" />

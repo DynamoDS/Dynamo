@@ -1787,6 +1787,17 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             return migrationData;
         }
+
+        [NodeMigration(from: "0.7.0.0")]
+        public static NodeMigrationData Migrate_070_And_Beyond(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.Input.DoubleSlider", "Number Slider", true);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 
     public class IntegerSliderInput : MigrationNode
@@ -1815,6 +1826,17 @@ namespace Dynamo.Nodes
 
             newNode.AppendChild(newChild1);
             newNode.AppendChild(newChild2);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
+
+        [NodeMigration(from: "0.7.0.0")]
+        public static NodeMigrationData Migrate_070_And_Beyond(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.Input.IntegerSlider", "Integer Slider", true);
 
             migrationData.AppendNode(newNode);
             return migrationData;

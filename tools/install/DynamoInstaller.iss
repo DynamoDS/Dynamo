@@ -59,9 +59,13 @@ Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForVasariBeta3
 Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForVasariBeta3
 
-;Revit 2015 / Revit 2016
-Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015 DynamoForRevit2016
-Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015 DynamoForRevit2016
+;Revit 2015
+Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015 
+Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015 
+
+;Revit 2016
+Source: temp\bin\Revit_2016\*; DestDir: {app}\Revit_2016; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components:  DynamoForRevit2016
+Source: temp\bin\Revit_2016\nodes\*; DestDir: {app}\Revit_2016\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2016
 
 ;AddinGenerator
 Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoCore
@@ -70,6 +74,7 @@ Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwr
 ;LibG
 Source: temp\bin\LibG_219\*; DestDir: {app}\libg_219; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_220\*; DestDir: {app}\libg_220; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\LibG_221\*; DestDir: {app}\libg_221; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 
 ;Icon
 Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
@@ -91,6 +96,7 @@ Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoVersionSele
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoVersionSelector.addin"
 Type: filesandordirs; Name: {app}\libg_219
 Type: filesandordirs; Name: {app}\libg_220
+Type: filesandordirs; Name: {app}\libg_221
 
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};

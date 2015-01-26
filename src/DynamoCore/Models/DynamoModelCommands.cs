@@ -279,7 +279,7 @@ namespace Dynamo.Models
 
         void UpdateModelValueImpl(UpdateModelValueCommand command)
         {
-            CurrentWorkspace.UpdateModelValue(command.ModelGuid,
+            CurrentWorkspace.UpdateModelValue(command.ModelGuids,
                 command.Name, command.Value);
         }
 
