@@ -141,19 +141,19 @@ namespace DynamoAddinGenerator
             {
                 ClassName = "Dynamo.Applications.DynamoRevitApp";
                 var assemblyName = "DynamoRevitDS.dll";
-                if (product.VersionString == "Revit2014")
+                switch (product.VersionString)
                 {
-                    subfolder = "Revit_2014";
-                    ClassName = "Dynamo.Applications.VersionLoader";
-                    assemblyName = "DynamoRevitVersionSelector.dll";
-                }
-                else if (product.VersionString == "Revit2015")
-                {
-                    subfolder = "Revit_2015";
-                }
-                else if (product.VersionString == "Revit2016")
-                {
-                    subfolder = "Revit_2016";
+                    case "Revit2014":
+                        subfolder = "Revit_2014";
+                        ClassName = "Dynamo.Applications.VersionLoader";
+                        assemblyName = "DynamoRevitVersionSelector.dll";
+                        break;
+                    case "Revit2015":
+                        subfolder = "Revit_2015";
+                        break;
+                    case "Revit2016":
+                        subfolder = "Revit_2016";
+                        break;
                 }
                 AssemblyPath = Path.Combine(latestDynamoInstall.Folder, subfolder, assemblyName);
             }
