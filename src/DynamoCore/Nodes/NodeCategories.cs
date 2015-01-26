@@ -180,7 +180,7 @@ namespace Dynamo.Nodes
 
             foreach (TypedParameter tp in descriptor.Parameters)
             {
-                string typeOfParameter = tp.Type.Name;
+                string typeOfParameter = tp.Type.ToString();
 
                 // Check if there simbols like "[]".
                 // And remove them, according how much we found.
