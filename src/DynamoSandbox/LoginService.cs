@@ -35,6 +35,7 @@ namespace Dynamo.Applications.Authentication
 
                 var window = new BrowserWindow(url)
                 {
+                    Title = "Autodesk Sign In",
                     Owner = _parent,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };

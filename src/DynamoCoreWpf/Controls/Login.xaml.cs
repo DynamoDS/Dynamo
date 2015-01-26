@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dynamo.ViewModels;
+using Greg.AuthProviders;
 
 namespace Dynamo.Wpf.Controls
 {
@@ -20,11 +21,28 @@ namespace Dynamo.Wpf.Controls
     /// </summary>
     public partial class Login : UserControl
     {
+        private readonly PackageManagerClientViewModel _viewModel;
+
         public Login(PackageManagerClientViewModel viewModel)
         {
             this.DataContext = viewModel;
+            this._viewModel = viewModel;
 
             InitializeComponent();
+        }
+
+        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.LoginState == LoginState.LoggedIn)
+            {
+                var button = (Button) sender;
+                button.ContextMenu.DataContext = button.DataContext;
+                button.ContextMenu.IsOpen = true;
+            }
+            else if (_viewModel.LoginState == LoginState.LoggedOut)
+            {
+                _viewModel.LoginLogoutCommand.Execute(null);
+            }
         }
     }
 }
