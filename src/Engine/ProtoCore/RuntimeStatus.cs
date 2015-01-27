@@ -59,11 +59,6 @@ namespace ProtoCore
             get; set; 
         }
 
-        public IOutputStream WebMessageHandler 
-        { 
-            get; set; 
-        }
-
         public IEnumerable<Runtime.WarningEntry> Warnings 
         { 
             get 
@@ -108,11 +103,6 @@ namespace ProtoCore
             this.warningAsError = warningAsError;
             this.core = core;
 
-            if (core.Options.WebRunner)
-            {
-                this.WebMessageHandler = new WebOutputStream(core);
-            }
-
             if (writer != null)
             {
                 output = System.Console.Out;
@@ -137,12 +127,6 @@ namespace ProtoCore
             if (core.Options.Verbose)
             {
                 System.Console.WriteLine(warningMsg);
-            }
-            
-            if (WebMessageHandler != null)
-            {
-                var outputMessage = new OutputMessage(warningMsg);
-                WebMessageHandler.Write(outputMessage);
             }
 
             if (MessageHandler != null)

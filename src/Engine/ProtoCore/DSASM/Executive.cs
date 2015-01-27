@@ -1096,9 +1096,9 @@ namespace ProtoCore.DSASM
             if (0 != (debugFlags & (int)DebugFlags.ENABLE_LOG))
             {
                 if (exe.EventSink != null && exe.EventSink.PrintMessage != null)
+                {
                     exe.EventSink.PrintMessage.Invoke("VMLog: " + msg + "\n");
-                if (runtimeCore.RuntimeOptions.WebRunner && (null != core.ExecutionLog))
-                    core.ExecutionLog.WriteLine(msg);
+                }
             }
         }
        
@@ -1177,8 +1177,6 @@ namespace ProtoCore.DSASM
                     && exe.EventSink.PrintMessage != null)
                 {
                     exe.EventSink.PrintMessage.Invoke(lhs + " = " + rhs + "\n");
-                    if (runtimeCore.RuntimeOptions.WebRunner && (null != core.ExecutionLog))
-                        core.ExecutionLog.WriteLine(lhs + " = " + rhs + "\n");
                 }
             }
         }

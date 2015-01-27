@@ -194,7 +194,6 @@ namespace ProtoCore
             AssociativeToImperativePropagation = true;
             SuppressFunctionResolutionWarning = true;
             EnableVariableAccumulator = true;
-            WebRunner = false;
             DisableDisposeFunctionDebug = true;
             GenerateExprID = true;
             IsDeltaExecution = false;
@@ -230,7 +229,6 @@ namespace ProtoCore
         public bool localDependsOnGlobalSet { get; set; }
         public bool LHSGraphNodeUpdate { get; set; }
         public bool SuppressFunctionResolutionWarning { get; set; }
-        public bool WebRunner { get; set; }
 
         public bool TempReplicationGuideEmptyFlag { get; set; }
         public bool AssociativeToImperativePropagation { get; set; }

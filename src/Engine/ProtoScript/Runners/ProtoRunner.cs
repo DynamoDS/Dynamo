@@ -24,7 +24,6 @@ namespace ProtoScript.Runners
         public ProtoVMState PreStart(String source, Dictionary<string, Object> context)
         {
             ProtoCore.Options options = new ProtoCore.Options();
-            options.WebRunner = false;
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
 
 
