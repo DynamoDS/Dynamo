@@ -185,6 +185,7 @@ namespace Dynamo.Nodes
         private string inputSymbol = String.Empty;
         private string nickName = String.Empty;
         private ElementResolver elementResolver;
+        private ElementResolver workspaceElementResolver;
 
         public Symbol()
         {
@@ -298,7 +299,7 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
 
-            //DeserializeElementResolver(nodeElement);
+            DeserializeElementResolver(nodeElement);
         }
 
         private void DeserializeElementResolver(XmlElement nodeElement)
@@ -351,8 +352,6 @@ namespace Dynamo.Nodes
 
             ParseParam parseParam = new ParseParam(this.GUID, parseString, elementResolver);
 
-            // TODO: Pass the element resolver from WorkspaceModel in here
-            ElementResolver workspaceElementResolver = null;
             if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam, workspaceElementResolver) &&
                 parseParam.ParsedNodes != null &&
                 parseParam.ParsedNodes.Any())
@@ -377,6 +376,7 @@ namespace Dynamo.Nodes
         {
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
+            workspaceElementResolver = updateValueParams.ElementResolver;
 
             if (name == "InputSymbol")
             {
