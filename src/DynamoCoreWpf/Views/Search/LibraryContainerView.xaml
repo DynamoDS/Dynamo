@@ -10,6 +10,7 @@
              xmlns:search="clr-namespace:Dynamo.Search;assembly=DynamoCore"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements;assembly=DynamoCore"
              xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
              Visibility="Visible"
@@ -64,9 +65,8 @@
                    Padding="16,0,0,0"
                    Foreground="#AAAAAA"
                    VerticalAlignment="Center"
-                   HorizontalAlignment="Stretch">
-                Library
-            </Label>
+                   HorizontalAlignment="Stretch"
+                   Content="{x:Static p:Resources.LibraryViewTitle}"/>
             <Button Mouse.MouseEnter="OnLibraryExpanderMouseEnter"
                     Mouse.MouseLeave="OnLibraryExpanderMouseLeave"
                     Click="OnLibraryExpanderClick"
@@ -817,7 +817,7 @@
                             <StackPanel.ContextMenu>
 
                                 <ContextMenu>
-                                    <MenuItem Header="Edit..."
+                                    <MenuItem Header="{x:Static p:Resources.LibraryViewContextMenuEditNode}"
                                               Click="Edit_OnClick"></MenuItem>
                                 </ContextMenu>
 
@@ -858,7 +858,7 @@
                     <Setter Property="Margin"
                             Value="0,10,0,0" />
                     <Setter Property="Content"
-                            Value="No matches found" />
+                            Value="{x:Static p:Resources.LibraryViewNoMatchesFound}" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type Button}">

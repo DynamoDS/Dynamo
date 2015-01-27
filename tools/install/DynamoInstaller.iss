@@ -52,20 +52,21 @@ Source: "Extra\DynamoAddinGenerator.exe"; Flags: dontcopy
 ;Core Files
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly; Components: DynamoCore
-Source: Extra\README.txt; DestDir: {app}; Flags: isreadme ignoreversion overwritereadonly; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 
 ;Revit 2014 / Vasari Beta 3
-Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForVasariBeta3
-Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2014 DynamoForVasariBeta3
+Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2014 DynamoForVasariBeta3
+Source: temp\bin\Revit_2014\nodes\*; DestDir: {app}\Revit_2014\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2014 DynamoForVasariBeta3
 
 ;Revit 2015
-Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015 
-Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2015 
+Source: temp\bin\Revit_2015\*; DestDir: {app}\Revit_2015; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2015 
+Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2015 
 
 ;Revit 2016
-Source: temp\bin\Revit_2016\*; DestDir: {app}\Revit_2016; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components:  DynamoForRevit2016
-Source: temp\bin\Revit_2016\nodes\*; DestDir: {app}\Revit_2016\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly; Components: DynamoForRevit2016
+Source: temp\bin\Revit_2016\*; DestDir: {app}\Revit_2016; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components:  DynamoForRevit2016
+Source: temp\bin\Revit_2016\nodes\*; DestDir: {app}\Revit_2016\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2016
+
+#include "Localized.iss"
 
 ;AddinGenerator
 Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoCore
@@ -83,7 +84,7 @@ Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwrit
 Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;Samples
-Source: temp\Samples\*.*; DestDir: {commonappdata}\Dynamo\0.7\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
+Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\0.7\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 ;Other Custom Nodes
 Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\0.7\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore

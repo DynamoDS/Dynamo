@@ -5,7 +5,8 @@
                       xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
                       xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                       xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf"
-                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                      xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf">
 
     <!-- Templates
         
@@ -46,7 +47,7 @@
 
             <Grid.ContextMenu>
                 <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <MenuItem Header="Use Default Value"
+                    <MenuItem Header="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
                               IsCheckable="True"
                               IsEnabled="{Binding Path=DefaultValueEnabled, Mode=TwoWay}"
                               IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}" />

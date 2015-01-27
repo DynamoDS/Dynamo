@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-using Autodesk.DesignScript.Geometry;
-
 using DSCore;
 using Dynamo.Models;
-
+using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
@@ -15,7 +13,7 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     [NodeName("Color Range")]
     [NodeCategory("Core.Color.Create")]
-    [NodeDescription("Get a color given a color range.")]
+    [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
     public class ColorRange : NodeModel
     {
         public event EventHandler RequestChangeColorRange;
@@ -27,10 +25,10 @@ namespace DSCoreNodesUI
 
         public ColorRange()
         {
-            InPortData.Add(new PortData("colors", "A list of colors to include in the range."));
-            InPortData.Add(new PortData("indices", "A list of values between 0.0 and 1.0 which position the colors along the range."));
-            InPortData.Add(new PortData("value", "A list of values between 0 and 1. These values are used to look up the color within the range."));
-            OutPortData.Add(new PortData("color", "The selected color."));
+            InPortData.Add(new PortData("colors", Resources.ColorRangePortDataStartToolTip));
+            InPortData.Add(new PortData("indices", Resources.ColorRangePortDataEndToolTip));
+            InPortData.Add(new PortData("value", Resources.ColorRangePortDataValueToolTip));
+            OutPortData.Add(new PortData("color",  Resources.ColorRangePortDataResultToolTip));
 
             RegisterAllPorts();
 

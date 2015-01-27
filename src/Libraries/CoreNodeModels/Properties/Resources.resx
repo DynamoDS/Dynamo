@@ -140,16 +140,16 @@
     <comment>Description for Color Range</comment>
   </data>
   <data name="ColorRangePortDataEndToolTip" xml:space="preserve">
-    <value>The end color.</value>
+    <value>A list of values between 0.0 and 1.0 which position the colors along the range.</value>
   </data>
   <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
     <value>The selected color.</value>
   </data>
   <data name="ColorRangePortDataStartToolTip" xml:space="preserve">
-    <value>The start color.</value>
+    <value>A list of colors to include in the range.</value>
   </data>
   <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
-    <value>The value between 0 and 1 of the selected color.</value>
+    <value>A list of values between 0 and 1. These values are used to look up the color within the range.</value>
   </data>
   <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
     <value>Combinator</value>
