@@ -181,7 +181,7 @@ namespace Dynamo.Controls
             shortcutBar.Name = "ShortcutToolbar";
 
             ShortcutBarItem newScriptButton = new ShortcutBarItem();
-            newScriptButton.ShortcutToolTip = "New [Ctrl + N]";
+            newScriptButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarNewButtonTooltip;
             newScriptButton.ShortcutCommand = dynamoViewModel.NewHomeWorkspaceCommand;
             newScriptButton.ShortcutCommandParameter = null;
             newScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png";
@@ -189,7 +189,7 @@ namespace Dynamo.Controls
             newScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_hover.png";
 
             ShortcutBarItem openScriptButton = new ShortcutBarItem();
-            openScriptButton.ShortcutToolTip = "Open [Ctrl + O]";
+            openScriptButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarOpenButtonTooltip;
             openScriptButton.ShortcutCommand = dynamoViewModel.ShowOpenDialogAndOpenResultCommand;
             openScriptButton.ShortcutCommandParameter = null;
             openScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png";
@@ -197,7 +197,7 @@ namespace Dynamo.Controls
             openScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_hover.png";
 
             ShortcutBarItem saveButton = new ShortcutBarItem();
-            saveButton.ShortcutToolTip = "Save [Ctrl + S]";
+            saveButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarSaveButtonTooltip;
             saveButton.ShortcutCommand = dynamoViewModel.ShowSaveDialogIfNeededAndSaveResultCommand;
             saveButton.ShortcutCommandParameter = null;
             saveButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png";
@@ -205,7 +205,7 @@ namespace Dynamo.Controls
             saveButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_hover.png";
 
             ShortcutBarItem screenShotButton = new ShortcutBarItem();
-            screenShotButton.ShortcutToolTip = "Export Workspace As Image";
+            screenShotButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarExportButtonTooltip;
             screenShotButton.ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand;
             screenShotButton.ShortcutCommandParameter = null;
             screenShotButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png";
@@ -213,7 +213,7 @@ namespace Dynamo.Controls
             screenShotButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png";
 
             ShortcutBarItem undoButton = new ShortcutBarItem();
-            undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
+            undoButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarUndoButtonTooltip;
             undoButton.ShortcutCommand = dynamoViewModel.UndoCommand;
             undoButton.ShortcutCommandParameter = null;
             undoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png";
@@ -221,7 +221,7 @@ namespace Dynamo.Controls
             undoButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_hover.png";
 
             ShortcutBarItem redoButton = new ShortcutBarItem();
-            redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
+            redoButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarRedoButtonTooltip;
             redoButton.ShortcutCommand = dynamoViewModel.RedoCommand;
             redoButton.ShortcutCommandParameter = null;
             redoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png";
@@ -319,7 +319,7 @@ namespace Dynamo.Controls
             dynamoViewModel.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
-            dynamoViewModel.Model.Logger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
+            dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed));
             InitializeShortcutBar();
             InitializeStartPage();
@@ -477,28 +477,27 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
-            var dialogText = "";
+            var dialogText = ""; 
             if (e.Workspace is CustomNodeWorkspaceModel)
             {
-                dialogText = "You have unsaved changes to custom node workspace: \"" + e.Workspace.Name +
-                             "\"\n\n Would you like to save your changes?";
+                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
             }
             else // homeworkspace
             {
                 if (string.IsNullOrEmpty(e.Workspace.FileName))
                 {
-                    dialogText = "You have unsaved changes to the Home workspace." +
-                                 "\n\n Would you like to save your changes?";
+                    dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
                 }
                 else
                 {
-                    dialogText = "You have unsaved changes to " + Path.GetFileName(e.Workspace.FileName) +
-                    "\n\n Would you like to save your changes?";
+                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
                 }
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
+            var result = System.Windows.MessageBox.Show(dialogText, 
+                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle, 
+                buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -577,7 +576,7 @@ namespace Dynamo.Controls
                 }
                 catch
                 {
-                    dynamoViewModel.Model.Logger.Log("Failed to save the Workspace an image.");
+                    dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToSaveAsImage);
                 }
             }
         }
@@ -653,21 +652,23 @@ namespace Dynamo.Controls
 
                 if (String.IsNullOrEmpty(dialog.Text))
                 {
-                    error = "You must supply a name.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName, 
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+
                 //else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
                 //{
                 //    error = "A built-in node with the given name already exists.";
                 //    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                 //                                   MessageBoxImage.Error);
                 //}
+
                 else if (dialog.Category.Equals(""))
                 {
-                    error = "You must enter a new category or choose one from the existing categories.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory, 
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
@@ -848,7 +849,7 @@ namespace Dynamo.Controls
                 {
                     var showInFolder = new MenuItem
                     {
-                        Header = "Show In Folder",
+                        Header = Wpf.Properties.Resources.DynamoViewHelpMenuShowInFolder,
                         Tag = dirPaths[0]
                     };
                     showInFolder.Click += OnShowInFolder;

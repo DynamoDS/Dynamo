@@ -7,6 +7,7 @@ namespace Dynamo.UI
         #region Dynamo Universal Constants
 
         // Add 0.5 to place the point in the middle of a pixel to sharpen it
+        public static readonly string FallbackUiCulture = "en-US";
         public static readonly string BackupFolderName = "backup";
         public static readonly string FilePathAttribName = "TargetXmlFilePath";
         public static readonly double DoubleSliderTextBoxWidth = 55.0;
@@ -28,8 +29,6 @@ namespace Dynamo.UI
         public static string DynamoDownloadLink = "http://dynamobim.org/download/";
         public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
         public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
-
-        public static string UsageReportingErrorMessage = "Uh oh...\n\rWe're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.\n\rYou can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.\n\rSorry about that.";
         #endregion
 
         #region Canvas Configurations

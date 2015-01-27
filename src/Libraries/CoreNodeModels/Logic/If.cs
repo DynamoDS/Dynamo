@@ -3,6 +3,7 @@ using System.Linq;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
+using DSCoreNodesUI.Properties;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -11,17 +12,17 @@ namespace DSCoreNodesUI.Logic
 {
     [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("Conditional statement")]
+    [NodeDescription("IfDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class If : NodeModel
     {
         public If()
         {
-            InPortData.Add(new PortData("test", "Test block"));
-            InPortData.Add(new PortData("true", "True block"));
-            InPortData.Add(new PortData("false", "False block"));
+            InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));
+            InPortData.Add(new PortData("true", Resources.PortDataTrueBlockToolTip));
+            InPortData.Add(new PortData("false", Resources.PortDataFalseBlockToolTip));
 
-            OutPortData.Add(new PortData("result", "Result"));
+            OutPortData.Add(new PortData("result", Resources.PortDataResultToolTip));
 
             RegisterAllPorts();
 

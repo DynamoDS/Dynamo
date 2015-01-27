@@ -17,7 +17,7 @@ using Expression = NCalc.Expression;
 namespace DSCoreNodesUI
 {
     [NodeName("Formula")]
-    [NodeDescription("Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/")]
+    [NodeDescription("FormulaDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     public class Formula : NodeModel
@@ -55,7 +55,7 @@ namespace DSCoreNodesUI
         public Formula()
         {
             ArgumentLacing = LacingStrategy.Shortest;
-            OutPortData.Add(new PortData("", "Result of math computation"));
+            OutPortData.Add(new PortData("", Properties.Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using DSCoreNodesUI.Properties;
 
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -14,16 +15,16 @@ using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
 namespace DSCoreNodesUI.Logic
 {
     [NodeName("ScopeIf"), NodeCategory(BuiltinNodeCategories.LOGIC),
-     NodeDescription("Scoped If statement"), IsDesignScriptCompatible]
+     NodeDescription("ScopeIfDescription", typeof(Properties.Resources)), IsDesignScriptCompatible]
     public class ScopedIf : ScopedNodeModel
     {
         public ScopedIf() : base()
         {
-            InPortData.Add(new PortData("test", "Test block"));
-            InPortData.Add(new PortData("true", "True block"));
-            InPortData.Add(new PortData("false", "False block"));
+            InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));
+            InPortData.Add(new PortData("true", Resources.PortDataTrueBlockToolTip));
+            InPortData.Add(new PortData("false", Resources.PortDataFalseBlockToolTip));
 
-            OutPortData.Add(new PortData("result", "Result"));
+            OutPortData.Add(new PortData("result", Resources.PortDataResultToolTip));
             RegisterAllPorts();
         }
 

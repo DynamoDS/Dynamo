@@ -10,6 +10,7 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Greg.Requests;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.ViewModels
 {
@@ -70,11 +71,9 @@ namespace Dynamo.ViewModels
                 }
             }
             
-            MessageBox.Show(
-                "The selected symbol was not found in the workspace",
-                "Selection Error",
-                MessageBoxButton.OK,
-                MessageBoxImage.Question);
+            MessageBox.Show(Resources.MessageSelectSymbolNotFound, 
+                    Resources.SelectionErrorMessageBoxTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Question);
         }
 
         public bool CanPublishCurrentWorkspace(object m)
@@ -103,7 +102,9 @@ namespace Dynamo.ViewModels
 
             if (!nodeList.Any())
             {
-                MessageBox.Show("You must select at least one custom node.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                MessageBox.Show(Resources.MessageSelectAtLeastOneNode,
+                   Resources.SelectionErrorMessageBoxTitle,
+                   MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
             }
 
@@ -122,11 +123,9 @@ namespace Dynamo.ViewModels
                         continue;
                     }
                 }
-                MessageBox.Show(
-                    "There was a problem getting the node with id \"" + node + "\" from the workspace.",
-                    "Selection Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Question);
+                MessageBox.Show(Resources.MessageGettingNodeError, 
+                    Resources.SelectionErrorMessageBoxTitle, 
+                    MessageBoxButton.OK, MessageBoxImage.Question);
             }
 
             ShowNodePublishInfo(defs);
@@ -153,13 +152,9 @@ namespace Dynamo.ViewModels
 
                 if (DynamoViewModel.Model.PackageLoader.GetOwnerPackage(f.Item1) != null)
                 {
-                    var m =
-                        MessageBox.Show(
-                            "The node is part of the dynamo package called \"" + pkg.Name
-                                + "\" - do you want to submit a new version of this package?  \n\nIf not, this node will be moved to the new package you are creating.",
-                            "Package Warning",
-                            MessageBoxButton.YesNo,
-                            MessageBoxImage.Question);
+                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, pkg.Name),
+                            Resources.PackageWarningMessageBoxTitle, 
+                            MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (m == MessageBoxResult.Yes)
                     {
@@ -234,8 +229,9 @@ namespace Dynamo.ViewModels
                                 }
                                 catch
                                 {
-                                    MessageBox.Show("Dynamo failed to uninstall the package: " + packageDownloadHandle.Name +
-                                        "  The package may need to be reinstalled manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, packageDownloadHandle.Name),
+                                        Resources.UninstallFailureMessageBoxTitle, 
+                                        MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
                             }
 
