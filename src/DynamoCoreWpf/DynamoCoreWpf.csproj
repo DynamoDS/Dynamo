@@ -99,7 +99,6 @@
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
-    <Compile Include="Nodes\WatchHandler.cs" />
     <Compile Include="NodeViewCustomization\INodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\INodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\InternalNodeViewCustomization.cs" />
