@@ -54,9 +54,9 @@ namespace DSCoreNodesUI.StringNodes
     }
 
     [NodeName("String from Object")]
-    [NodeDescription("StringfromObjectDescription", typeof(Properties.Resources))]
+    [NodeDescription("StringfromObjectDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
-    [NodeSearchTags("FromObjectSearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags("FromObjectSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class FromObject: ToStringNodeBase 
     {
@@ -70,9 +70,9 @@ namespace DSCoreNodesUI.StringNodes
     }
 
     [NodeName("String from Array")]
-    [NodeDescription("StringfromArrayDescription", typeof(Properties.Resources))]
+    [NodeDescription("StringfromArrayDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory("Core.String.Actions")]
-    [NodeSearchTags("FromArraySearchTags", typeof(Properties.Resources))]
+    [NodeSearchTags("FromArraySearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class FromArray : ToStringNodeBase 
     {

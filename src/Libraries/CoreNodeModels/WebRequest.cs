@@ -9,7 +9,7 @@ using DSCoreNodesUI.Properties;
 namespace DSCoreNodesUI
 {
     [NodeName("Web Request")]
-    [NodeDescription("WebRequestDescription", typeof(Properties.Resources))]
+    [NodeDescription("WebRequestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel
