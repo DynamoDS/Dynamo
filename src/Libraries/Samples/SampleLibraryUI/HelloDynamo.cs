@@ -69,7 +69,7 @@ namespace SamplesLibraryUI
                 awesome = value;
                 RaisePropertyChanged("Awesome");
 
-                OnAstUpdated();
+                OnNodeModified();
             }
         }
 

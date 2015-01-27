@@ -448,21 +448,27 @@ namespace Dynamo.Core
             }
         }
 
-        internal class NodeModificationUndoHelper : IDisposable
+        internal class ModelModificationUndoHelper : IDisposable
         {
-            private readonly NodeModel node;
+            private readonly List<ModelBase> models;
             private readonly UndoRedoRecorder recorder;
             private readonly Dictionary<Guid, XmlElement> existingConnectors;
             private readonly Dictionary<Guid, ConnectorModel> remainingConnectors;
 
-            public NodeModificationUndoHelper(UndoRedoRecorder recorder, NodeModel node)
+            public ModelModificationUndoHelper(UndoRedoRecorder recorder, ModelBase model)
+                : this(recorder, new [] { model })
             {
-                this.node = node;
+            }
+
+            public ModelModificationUndoHelper(UndoRedoRecorder recorder, IEnumerable<ModelBase> models)
+            {
                 this.recorder = recorder;
 
+                this.models = new List<ModelBase>(models);
                 existingConnectors = new Dictionary<Guid, XmlElement>();
                 remainingConnectors = new Dictionary<Guid, ConnectorModel>();
 
+                var allConnectors = new List<ConnectorModel>();
                 using (this.recorder.BeginActionGroup())
                 {
                     // Assuming no connectors will be modified as part of this, we 
@@ -470,11 +476,18 @@ namespace Dynamo.Core
                     // reason connectors are dropped/created along the way, then 
                     // this particular action group will be pop off the undo stack.
                     // 
-                    this.recorder.RecordModificationForUndo(node);
+                    foreach (var model in this.models)
+                    {
+                        var nodeModel = model as NodeModel;
+                        if (nodeModel != null)
+                            allConnectors.AddRange(nodeModel.AllConnectors);
+
+                        this.recorder.RecordModificationForUndo(model);
+                    }
                 }
 
                 // Record the existing connectors...
-                foreach (var connectorModel in node.AllConnectors)
+                foreach (var connectorModel in allConnectors)
                 {
                     var element = connectorModel.Serialize(
                         recorder.document, SaveContext.Undo);
@@ -485,11 +498,17 @@ namespace Dynamo.Core
 
             public void Dispose()
             {
-                // Connectors after node is modified.
-                foreach (var connectorModel in node.AllConnectors)
+                foreach (var modelBase in models)
                 {
-                    var model = connectorModel;
-                    remainingConnectors.Add(model.GUID, model);
+                    if (!(modelBase is NodeModel)) // Only nodes have connectors.
+                        continue;
+
+                    var nodeModel = modelBase as NodeModel;
+                    foreach (var connectorModel in nodeModel.AllConnectors)
+                    {
+                        // Connectors after node is modified.
+                        remainingConnectors.Add(connectorModel.GUID, connectorModel);
+                    }
                 }
 
                 var removed = new List<XmlElement>();
@@ -519,7 +538,7 @@ namespace Dynamo.Core
 
                     foreach (XmlNode childNode in previousGroup.ChildNodes)
                     {
-                        // Record the node modification itself.
+                        // Record the model modification itself.
                         recorder.currentActionGroup.AppendChild(childNode);
                     }
 

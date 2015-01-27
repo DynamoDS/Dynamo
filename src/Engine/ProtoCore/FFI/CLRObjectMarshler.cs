@@ -125,7 +125,7 @@ namespace ProtoFFI
             if (dsObject.opdata > MaxValue || dsObject.opdata < MinValue)
             {
                 string message = String.Format(ProtoCore.StringConstants.kFFIInvalidCast, dsObject.opdata, type.Name, MinValue, MaxValue);
-                dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch, message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
             return CastToObject(dsObject.opdata);
@@ -160,7 +160,7 @@ namespace ProtoFFI
             if (dsObject.RawDoubleValue > MaxValue || dsObject.RawDoubleValue < MinValue)
             {
                 string message = String.Format(ProtoCore.StringConstants.kFFIInvalidCast, dsObject.RawDoubleValue, type.Name, MinValue, MaxValue);
-                dsi.LogWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch, message);
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
             return CastToDouble(dsObject.RawDoubleValue);
@@ -363,7 +363,6 @@ namespace ProtoFFI
             foreach (var item in collection)
             {
                 sv[index] = MarshalToStackValue(item, context, dsi);
-                dsi.runtime.rmem.Heap.IncRefCount(sv[index]);
                 ++index;
             }
 
@@ -381,7 +380,6 @@ namespace ProtoFFI
             }
 
             var heap = dsi.runtime.rmem.Heap;
-            svs.ForEach(sv => heap.IncRefCount(sv));
             var retVal = heap.AllocateArray(svs);
             return retVal;
         }
@@ -397,13 +395,8 @@ namespace ProtoFFI
             foreach (var key in dictionary.Keys)
             {
                 var value = dictionary[key];
-
                 StackValue dsKey = MarshalToStackValue(key, context, dsi);
-                GCUtils.GCRetain(dsKey, core);
-
                 StackValue dsValue = MarshalToStackValue(value, context, dsi);
-                GCUtils.GCRetain(dsValue, core);
-
                 ho.Dict[dsKey] = dsValue;
             }
 
@@ -1187,8 +1180,6 @@ namespace ProtoFFI
             //Must be a user defined type, and expecting a var object
             if (type == typeof(object) && dsObject.IsPointer)
             {
-                //TOD: Fix GC issue, don't know how/when this will get GCed??
-                dsi.runtime.rmem.Heap.IncRefCount(dsObject);
                 BindObjects(dsObject, dsObject);
                 return dsObject;
             }

@@ -33,6 +33,7 @@ namespace Dynamo.DSEngine
                 disposable.Dispose();
         }
 
+        // To be superceeded by runtime core
         public ProtoCore.Core Core
         {
             get
@@ -40,6 +41,7 @@ namespace Dynamo.DSEngine
                 return liveRunner.Core;
             }
         }
+
 
         /// <summary>
         /// TPDP
@@ -88,7 +90,7 @@ namespace Dynamo.DSEngine
         /// Return runtime warnings for this run.
         /// </summary>
         /// <returns></returns>
-        public IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
+        public IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
         {
             return liveRunner.GetRuntimeWarnings();
         }
