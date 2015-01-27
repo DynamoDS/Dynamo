@@ -6,11 +6,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -44,6 +46,8 @@ namespace Dynamo.ViewModels
         #endregion
 
         #region Properties/Fields
+
+        private IconServices iconServices = new IconServices();
 
         /// <summary>
         ///     Maximum number of items to show in search.
@@ -234,17 +238,19 @@ namespace Dynamo.ViewModels
                 SearchAndUpdateResults();
         }
 
-        private static IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
+        private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
         {
             var tempRoot =
                 entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
                     element => element.Categories,
                     (name, subs, es) =>
-                        new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs)
-                        {
-                            IsExpanded = expanded
-                        },
-                    "");
+                    {
+                        var category =
+                            new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs);
+                        category.IsExpanded = expanded;
+                        category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                        return category;
+                    }, "");
             var result =
                 tempRoot.SubCategories.Select(
                     cat =>
@@ -569,8 +575,18 @@ namespace Dynamo.ViewModels
             category.Entries.Add(entry);
         }
 
+        private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
+        {
+            var warehouse = iconServices.GetForAssembly(e.IconAssembly);
+            BitmapSource icon = null;
+            if (warehouse != null)
+                icon = warehouse.LoadIconInternal(e.IconFullPath);
+
+            e.Icon = icon;
+        }
+
         // Form a fully qualified name based on nested level of a "NodeCategoryViewModel" object.
-        // For example, `Core.File.Directory` is the fully qualified name for "Directory".
+        // For example, "Core.File.Directory" is the fully qualified name for "Directory".
         private static string MakeFullyQualifiedName(string path, string addition)
         {
             return string.IsNullOrEmpty(path) ? addition :
@@ -691,12 +707,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private static NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
+        private NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
         {
             var element = entry as CustomNodeSearchElement;
-            return element != null
+            var elementVM = element != null
                 ? new CustomNodeSearchElementViewModel(element)
                 : new NodeSearchElementViewModel(entry);
+
+            elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+            return elementVM;
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)

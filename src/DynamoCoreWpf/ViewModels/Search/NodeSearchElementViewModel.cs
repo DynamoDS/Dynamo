@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Dynamo.DSEngine;
-using Dynamo.Search.Interfaces;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Services;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -15,6 +15,15 @@ namespace Dynamo.Wpf.ViewModels
     public class NodeSearchElementViewModel : NotificationObject, ISearchEntryViewModel
     {
         private bool isSelected;
+
+        public event RequestBitmapSourceHandler RequestBitmapSource;
+        public void OnRequestBitmapSource(IconRequestEventArgs e)
+        {
+            if (RequestBitmapSource != null)
+            {
+                RequestBitmapSource(e);
+            }
+        }
 
         public NodeSearchElementViewModel(NodeSearchElement element)
         {
@@ -162,11 +171,10 @@ namespace Dynamo.Wpf.ViewModels
             if (string.IsNullOrEmpty(Model.Assembly))
                 return null;
 
-            var cust = LibraryCustomizationServices.GetForAssembly(Model.Assembly);
-            BitmapSource icon = null;
-            if (cust != null)
-                icon = cust.LoadIconInternal(fullNameOfIcon);
-            return icon;
+            var iconRequest = new IconRequestEventArgs(Model.Assembly, fullNameOfIcon);
+            OnRequestBitmapSource(iconRequest);
+
+            return iconRequest.Icon;
         }
 
         protected virtual BitmapSource LoadDefaultIcon(ResourceType resourceType)
@@ -174,8 +182,11 @@ namespace Dynamo.Wpf.ViewModels
             if (resourceType == ResourceType.LargeIcon)
                 return null;
 
-            var cust = LibraryCustomizationServices.GetForAssembly(Configurations.DefaultAssembly);
-            return cust.LoadIconInternal(Configurations.DefaultIcon);
+            var iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly,
+                Configurations.DefaultIcon);
+            OnRequestBitmapSource(iconRequest);
+
+            return iconRequest.Icon;
         }
     }
 

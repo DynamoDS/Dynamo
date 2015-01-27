@@ -84,6 +84,7 @@
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
+    <Compile Include="Services\IconServices.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="UI\HeaderTemplateSelector.cs" />
     <Compile Include="UI\FrozenResources.cs" />
@@ -961,7 +962,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-   <ItemGroup>
+  <ItemGroup>
     <Page Include="Views\Input\ParameterEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.Windows.Media.Imaging;
 using Dynamo.DSEngine;
 using Dynamo.UI;
 
@@ -17,59 +16,6 @@ namespace Dynamo.Search
 
         public BrowserItem Parent { get; set; }
         public BrowserItem OldParent { get; set; }
-
-        protected enum ResourceType
-        {
-            SmallIcon, LargeIcon
-        }
-
-        ///<summary>
-        /// Small icon for class and method buttons.
-        ///</summary>
-        public BitmapSource SmallIcon
-        {
-            get
-            {
-                var name = GetResourceName(ResourceType.SmallIcon, false);
-                BitmapSource icon = GetIcon(name + Configurations.SmallIconPostfix);
-
-                if (icon == null)
-                {
-                    // Get dis-ambiguous resource name and try again.
-                    name = GetResourceName(ResourceType.SmallIcon, true);
-                    icon = GetIcon(name + Configurations.SmallIconPostfix);
-
-                    // If there is no icon, use default.
-                    if (icon == null)
-                        icon = LoadDefaultIcon(ResourceType.SmallIcon);
-                }
-                return icon;
-            }
-        }
-
-        ///<summary>
-        /// Large icon for tooltips.
-        ///</summary>
-        public BitmapSource LargeIcon
-        {
-            get
-            {
-                var name = GetResourceName(ResourceType.LargeIcon, false);
-                BitmapSource icon = GetIcon(name + Configurations.LargeIconPostfix);
-
-                if (icon == null)
-                {
-                    // Get dis-ambiguous resource name and try again.
-                    name = GetResourceName(ResourceType.LargeIcon, true);
-                    icon = GetIcon(name + Configurations.LargeIconPostfix);
-
-                    // If there is no icon, use default.
-                    if (icon == null)
-                        icon = LoadDefaultIcon(ResourceType.LargeIcon);
-                }
-                return icon;
-            }
-        }
 
         public void ReturnToOldParent()
         {
@@ -171,35 +117,5 @@ namespace Dynamo.Search
         }
 
         public string FullCategoryName { get; set; }
-
-        protected virtual string GetResourceName(
-            ResourceType resourceType, bool disambiguate = false)
-        {
-            if (resourceType == ResourceType.SmallIcon)
-                return disambiguate ? string.Empty : this.Name;
-
-            return string.Empty;
-        }
-
-        protected BitmapSource GetIcon(string fullNameOfIcon)
-        {
-            if (string.IsNullOrEmpty(this.Assembly))
-                return null;
-
-            var cust = LibraryCustomizationServices.GetForAssembly(this.Assembly);
-            BitmapSource icon = null;
-            if (cust != null)
-                icon = cust.LoadIconInternal(fullNameOfIcon);
-            return icon;
-        }
-
-        protected virtual BitmapSource LoadDefaultIcon(ResourceType resourceType)
-        {
-            if (resourceType == ResourceType.LargeIcon)
-                return null;
-
-            var cust = LibraryCustomizationServices.GetForAssembly(Configurations.DefaultAssembly);
-            return cust.LoadIconInternal(Configurations.DefaultIcon);
-        }
     }
 }

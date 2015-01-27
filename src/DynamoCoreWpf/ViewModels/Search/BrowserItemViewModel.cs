@@ -6,9 +6,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Dynamo.DSEngine;
 using Dynamo.Search;
 using Dynamo.UI;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Services;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -113,6 +114,15 @@ namespace Dynamo.Wpf.ViewModels
         private bool visibility;
         private bool isExpanded;
         private bool isSelected;
+
+        public event RequestBitmapSourceHandler RequestBitmapSource;
+        public void OnRequestBitmapSource(IconRequestEventArgs e)
+        {
+            if (RequestBitmapSource != null)
+            {
+                RequestBitmapSource(e);
+            }
+        }
 
         public string Name
         {
@@ -458,17 +468,19 @@ namespace Dynamo.Wpf.ViewModels
 
         private BitmapSource GetIcon(string fullNameOfIcon)
         {
-            var cust = LibraryCustomizationServices.GetForAssembly(Assembly);
-            BitmapSource icon = null;
-            if (cust != null)
-                icon = cust.LoadIconInternal(fullNameOfIcon);
-            return icon;
+            var iconRequest = new IconRequestEventArgs(Assembly, fullNameOfIcon);
+            OnRequestBitmapSource(iconRequest);
+
+            return iconRequest.Icon;
         }
 
         private BitmapSource LoadDefaultIcon()
         {
-            var cust = LibraryCustomizationServices.GetForAssembly(Configurations.DefaultAssembly);
-            return cust.LoadIconInternal(Configurations.DefaultIcon);
+            var iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly,
+                Configurations.DefaultIcon);
+            OnRequestBitmapSource(iconRequest);
+
+            return iconRequest.Icon;
         }
     }
 
