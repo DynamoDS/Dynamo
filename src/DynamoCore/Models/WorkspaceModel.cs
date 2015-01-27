@@ -12,7 +12,6 @@ using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using ProtoCore.AST;
 using ProtoCore.Namespace;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
@@ -40,6 +39,7 @@ namespace Dynamo.Models
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
         private readonly UndoRedoRecorder undoRecorder;
+        private Guid guid;
 
         #endregion
 
@@ -395,6 +395,14 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
+        /// <summary>
+        /// A unique identifier for the workspace.
+        /// </summary>
+        public Guid Guid
+        {
+            get { return guid; }
+        }
+
         public ElementResolver ElementResolver { get; private set; }
 
         private bool runEnabled;
@@ -416,6 +424,8 @@ namespace Dynamo.Models
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
             double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
+            guid = Guid.NewGuid();
+
             Name = name;
 
             nodes = new ObservableCollection<NodeModel>(e);
@@ -465,7 +475,7 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void Clear()
         {
-            Log("Clearing workspace...");
+            Log(Properties.Resources.ClearingWorkSpace);
 
             foreach (NodeModel el in Nodes)
             {
@@ -500,7 +510,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log("Saving " + newPath + "...");
+            Log(String.Format(Properties.Resources.SavingInProgress, newPath));
             try
             {
                 if (SaveInternal(newPath, core))
@@ -608,7 +618,7 @@ namespace Dynamo.Models
 
         public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
         {
-            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? "New Note" : text, id);
+            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Properties.Resources.NewNoteString : text, id);
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
@@ -684,6 +694,27 @@ namespace Dynamo.Models
             return true;
         }
 
+        private void SerializeElementResolver(XmlDocument xmlDoc)
+        {
+            Debug.Assert(xmlDoc != null);
+
+            var root = xmlDoc.DocumentElement;
+
+            var mapElement = xmlDoc.CreateElement("NamespaceResolutionMap");
+
+            foreach (var element in ElementResolver.ResolutionMap)
+            {
+                var resolverElement = xmlDoc.CreateElement("ClassMap");
+                
+                resolverElement.SetAttribute("partialName", element.Key);
+                resolverElement.SetAttribute("resolvedName", element.Value.Key);
+                resolverElement.SetAttribute("assemblyName", element.Value.Value);
+
+                mapElement.AppendChild(resolverElement);
+            }
+            root.AppendChild(mapElement);
+        }
+
         protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
         {
             try
@@ -694,6 +725,8 @@ namespace Dynamo.Models
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
+
+                SerializeElementResolver(xmlDoc);
 
                 var elementList = xmlDoc.CreateElement("Elements");
                 //write the root element

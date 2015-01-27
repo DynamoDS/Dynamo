@@ -7,6 +7,8 @@ using System.Threading;
 
 using Dynamo.Tests;
 
+using DynamoServices;
+
 using NUnit.Framework;
 
 using ProtoScript.Runners;
@@ -40,16 +42,16 @@ namespace IntegrationTests
         [SetUp]
         public static void Setup()
         {
-            DSNodeServices.ExecutionEvents.GraphPreExecution += PreSeen;
-            DSNodeServices.ExecutionEvents.GraphPostExecution += PostSeen;
+            ExecutionEvents.GraphPreExecution += PreSeen;
+            ExecutionEvents.GraphPostExecution += PostSeen;
 
         }
 
         [TearDown]
         public static void Cleanup()
         {
-            DSNodeServices.ExecutionEvents.GraphPreExecution -= PreSeen;
-            DSNodeServices.ExecutionEvents.GraphPostExecution -= PostSeen;
+            ExecutionEvents.GraphPreExecution -= PreSeen;
+            ExecutionEvents.GraphPostExecution -= PostSeen;
 
             //Reset
             preSeen = false;

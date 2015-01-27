@@ -6,6 +6,7 @@ using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using Autodesk.DesignScript.Runtime;
+using DSCoreNodesUI.Properties;
 
 namespace DSCore.Logic
 {
@@ -21,9 +22,9 @@ namespace DSCore.Logic
         {
             _op = op;
 
-            InPortData.Add(new PortData("bool0", "operand"));
-            InPortData.Add(new PortData("bool1", "operand"));
-            OutPortData.Add(new PortData("", "result"));
+            InPortData.Add(new PortData("bool0", Resources.PortDataOperandToolTip));
+            InPortData.Add(new PortData("bool1", Resources.PortDataOperandToolTip));
+            OutPortData.Add(new PortData("", Resources.PortDataResultToolTip));
             RegisterAllPorts();
         }
 
@@ -64,7 +65,7 @@ namespace DSCore.Logic
     /// </summary>
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
+    [NodeDescription("AndDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class And : BinaryLogic
     {
@@ -76,7 +77,7 @@ namespace DSCore.Logic
     /// </summary>
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.")]
+    [NodeDescription("OrDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class Or : BinaryLogic
     {

@@ -1,5 +1,5 @@
 ﻿using DSCoreNodesUI;
-using DSNodeServices;
+
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
@@ -11,6 +11,9 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+
+using DynamoServices;
+
 using DynamoUnits;
 using DynamoUtilities;
 using ProtoCore;
@@ -26,7 +29,6 @@ using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
-using ProtoCore.Namespace;
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
@@ -510,7 +512,7 @@ namespace Dynamo.Models
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
-                        Logger.Log("Evaluation completed in " + executionTimeSpan);
+                        Logger.Log(String.Format(Properties.Resources.EvaluationComleted, executionTimeSpan));
                         ExecutionEvents.OnGraphPostExecution();
                     }
                     break;
@@ -793,7 +795,6 @@ namespace Dynamo.Models
                     {
                         AddWorkspace(ws);
                         CurrentWorkspace = ws;
-
                         return;
                     }
                 }
@@ -823,7 +824,6 @@ namespace Dynamo.Models
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
-            ElementResolver elementResolver = null;
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
@@ -833,7 +833,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                DebugSettings.VerboseLogging, IsTestMode, elementResolver, workspaceInfo.FileName);
+                DebugSettings.VerboseLogging, IsTestMode, nodeGraph.ElementResolver, workspaceInfo.FileName);
 
             RegisterHomeWorkspace(newWorkspace);
             
@@ -856,7 +856,7 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            Logger.Log("Welcome to Dynamo!");
+            Logger.Log(Properties.Resources.WelcomeMessage);
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
@@ -888,7 +888,7 @@ namespace Dynamo.Models
 
             SearchModel.DumpLibraryToXml(fullFileName);
 
-            Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
+            Logger.Log(string.Format(Properties.Resources.LibraryIsDumped, fullFileName));
         }
 
         internal bool CanDumpLibraryToXml(object obj)
@@ -1239,10 +1239,10 @@ namespace Dynamo.Models
                 "ObsoleteFileMessage",
                 fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            const string summary = "Your file cannot be opened";
+            string summary = Properties.Resources.FileCannotBeOpened;
             var description =
                 string.Format(
-                    "Your file '{0}' of version '{1}' cannot " + "be opened by this version of Dynamo ({2})",
+                    Properties.Resources.ObsoleteFileDescription,
                     fullFilePath,
                     fileVersion,
                     currVersion);
@@ -1250,11 +1250,11 @@ namespace Dynamo.Models
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                "Obsolete File",
+                Properties.Resources.ObsoleteFileTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Ok, "OK");
+            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.OKButton);
 
             OnRequestTaskDialog(null, args);
         }
@@ -1275,23 +1275,21 @@ namespace Dynamo.Models
                 InstrumentationLogger.LogException(exception);
             }
 
-            const string summary = "Unhandled exception in Dynamo engine";
+            string summary = Properties.Resources.UnhandledExceptionSummary;
 
             string description = (exception is HeapCorruptionException)
                 ? exception.Message
-                : @"The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better.
-
-If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.";
+                : @Properties.Resources.ExceptionIsNotHeapCorruptionDescription;
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                "Unhandled exception",
+                Properties.Resources.UnhandledExceptionTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Submit, "Submit Bug To Github");
-            args.AddRightAlignedButton((int)ButtonId.Ok, "Arrrrg, ok");
+            args.AddRightAlignedButton((int)ButtonId.Submit, Properties.Resources.SubmitBugButton);
+            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.ArggOKButton);
             args.Exception = exception;
 
             OnRequestTaskDialog(null, args);
@@ -1310,24 +1308,23 @@ If you don't mind, it would be helpful for you to send us your file. That will m
         /// <returns> true if the file must be opened and false otherwise </returns>
         private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
-            var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Properties.Resources.UnknownVersion);
+            var currVer = ((currVersion != null) ? currVersion.ToString() : Properties.Resources.UnknownVersion);
 
             InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            const string summary = "Your file may not open correctly";
-            var description = string.Format("Your file '{0}' was created in future version '{1}' and may not " +
-                "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
+            string summary = Properties.Resources.FutureFileSummary;
+            var description = string.Format(Properties.Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                "Future File", summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
+                Properties.Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
 
-            args.AddRightAlignedButton((int)ButtonId.Cancel, "Cancel");
-            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, "Download latest version");
-            args.AddRightAlignedButton((int)ButtonId.Proceed, "Proceed anyway");
+            args.AddRightAlignedButton((int)ButtonId.Cancel, Properties.Resources.CancelButton);
+            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, Properties.Resources.DownloadLatestButton);
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Properties.Resources.ProceedButton);
 
             OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)ButtonId.DownloadLatest)

@@ -5,6 +5,7 @@ using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using DSCoreNodesUI.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -104,7 +105,7 @@ namespace Dynamo.Nodes
             this.selectionType = selectionType;
             this.selectionObjectType = selectionObjectType;
 
-            OutPortData.Add(new PortData("Elements", "The selected elements."));
+            OutPortData.Add(new PortData("Elements", Resources.SelectionPortDataResultToolTip));
             RegisterAllPorts();
 
             Prefix = prefix;

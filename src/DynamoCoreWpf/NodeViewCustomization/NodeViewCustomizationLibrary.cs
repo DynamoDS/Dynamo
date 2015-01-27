@@ -67,7 +67,7 @@ namespace Dynamo.Wpf
             }
             catch (Exception e)
             {
-                var message = "Failed to apply NodeViewCustomization for " + model.GetType().Name;
+                var message = string.Format(Wpf.Properties.Resources.MessageFailedToApplyCustomization, model.GetType().Name);
                 logger.LogError(message);
                 logger.Log(e);
             }

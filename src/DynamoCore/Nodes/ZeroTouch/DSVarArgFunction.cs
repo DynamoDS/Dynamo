@@ -9,6 +9,7 @@ using Dynamo.DSEngine;
 using Dynamo.Library;
 using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -16,7 +17,7 @@ namespace Dynamo.Nodes
     ///     DesignScript var-arg function node. All functions from DesignScript share the
     ///     same function node but internally have different procedure.
     /// </summary>
-    [NodeName("Function Node w/ VarArgs"), NodeDescription("DesignScript Builtin Functions"),
+    [NodeName("Function Node w/ VarArgs"), NodeDescription("FunctionNodeDescription", typeof(Properties.Resources)),
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
     public class DSVarArgFunction : DSFunctionBase
     {

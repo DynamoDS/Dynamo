@@ -5,6 +5,7 @@ using System.Reflection;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using Autodesk.DesignScript.Runtime;
+using ProtoCore.Properties;
 
 namespace ProtoFFI
 {
@@ -266,7 +267,7 @@ namespace ProtoFFI
                 }
                 catch (InvalidOperationException)
                 {
-                    string message = String.Format(ProtoCore.StringConstants.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    string message = String.Format(Resources.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
                     return null;
                 }
@@ -314,7 +315,7 @@ namespace ProtoFFI
                 }
                 catch (InvalidOperationException)
                 {
-                    string message = String.Format(ProtoCore.StringConstants.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    string message = String.Format(Resources.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
                     return null;
                 }
