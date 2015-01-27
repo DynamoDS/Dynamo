@@ -39,6 +39,7 @@ namespace Dynamo.Models
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
         private readonly UndoRedoRecorder undoRecorder;
+        private Guid guid;
 
         #endregion
 
@@ -394,6 +395,14 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
+        /// <summary>
+        /// A unique identifier for the workspace.
+        /// </summary>
+        public Guid Guid
+        {
+            get { return guid; }
+        }
+
         public ElementResolver ElementResolver { get; private set; }
 
         #endregion
@@ -404,6 +413,8 @@ namespace Dynamo.Models
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
             double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
+            guid = Guid.NewGuid();
+
             Name = name;
 
             nodes = new ObservableCollection<NodeModel>(e);

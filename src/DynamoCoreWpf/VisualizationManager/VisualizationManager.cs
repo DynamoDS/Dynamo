@@ -6,12 +6,13 @@ using System.Diagnostics;
 using System.Linq;
 
 using Autodesk.DesignScript.Interfaces;
-using DSNodeServices;
 
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+
+using DynamoServices;
 
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
@@ -673,7 +674,7 @@ namespace Dynamo
             rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
             rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
 
-            Debug.WriteLine(string.Format("Render aggregation complete for {0}", task.NodeId));
+            Debug.WriteLine("Render aggregation complete for {0}", task.NodeId);
 
             var e = new VisualizationEventArgs(rps, task.NodeId, -1);
             OnResultsReadyToVisualize(this, e);

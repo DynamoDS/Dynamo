@@ -7,6 +7,7 @@ namespace Dynamo.UI
         #region Dynamo Universal Constants
 
         // Add 0.5 to place the point in the middle of a pixel to sharpen it
+        public static readonly string FallbackUiCulture = "en-US";
         public static readonly string BackupFolderName = "backup";
         public static readonly string FilePathAttribName = "TargetXmlFilePath";
         public static readonly double DoubleSliderTextBoxWidth = 55.0;
@@ -22,7 +23,7 @@ namespace Dynamo.UI
         public static string DynamoWikiLink = "https://github.com/DynamoDS/Dynamo/wiki";
         public static string DynamoBimForum = "http://dynamobim.org/forums/forum/dyn/";
         public static string DynamoTeamEmail = "mailto:team@dynamobim.org";
-        public static string DynamoAdvancedTutorials = "http://dynamobim.org/learn/#124";
+        public static string DynamoAdvancedTutorials = "http://dynamobim.org/learn/#7570";
         public static string DynamoVideoTutorials = "http://dynamobim.org/learn/#161";
         public static string DynamoMoreSamples = "http://dynamobim.org/learn/#159";
         public static string DynamoDownloadLink = "http://dynamobim.org/download/";

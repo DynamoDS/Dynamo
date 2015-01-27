@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
-
 using DynamoUtilities;
-using System.Reflection;
 
 namespace Dynamo.DSEngine
 {
@@ -67,7 +65,7 @@ namespace Dynamo.DSEngine
             if (File.Exists(documentationPath))
                 return true;
 
-            localizedResPath = Path.Combine(baseDir, "en-US");
+            localizedResPath = Path.Combine(baseDir, UI.Configurations.FallbackUiCulture);
             documentationPath = Path.Combine(localizedResPath, xmlFileName);
             if (File.Exists(documentationPath))
                 return true;
