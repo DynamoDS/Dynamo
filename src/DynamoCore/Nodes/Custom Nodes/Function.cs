@@ -298,7 +298,7 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
 
-            DeserializeElementResolver(nodeElement);
+            //DeserializeElementResolver(nodeElement);
         }
 
         private void DeserializeElementResolver(XmlElement nodeElement)
@@ -352,8 +352,8 @@ namespace Dynamo.Nodes
             ParseParam parseParam = new ParseParam(this.GUID, parseString, elementResolver);
 
             // TODO: Pass the element resolver from WorkspaceModel in here
-            //ElementResolver elementResolver = null;
-            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam, elementResolver) &&
+            ElementResolver workspaceElementResolver = null;
+            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam, workspaceElementResolver) &&
                 parseParam.ParsedNodes != null &&
                 parseParam.ParsedNodes.Any())
             {
