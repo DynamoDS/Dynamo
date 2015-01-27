@@ -801,6 +801,7 @@ namespace Dynamo.ViewModels
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
+                    RaisePropertyChanged("RunEnabled");
                     break;
 
                 case "RunEnabled":

@@ -283,7 +283,13 @@ namespace Dynamo.Models
 
         public bool RunEnabled
         {
-            get { return Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault().RunEnabled; }
+            get 
+            { 
+                if (CurrentWorkspace == null)
+                    return false;
+                
+                return this.CurrentWorkspace.RunEnabled;
+            }
         }
         #endregion
 
