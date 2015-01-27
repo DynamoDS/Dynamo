@@ -124,28 +124,28 @@
     <value>File : '{0}' is already imported</value>
   </data>
   <data name="kAmbigousMethodDispatch" xml:space="preserve">
-    <value>Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}.</value>
+    <value>Internal error, please report: Function could not be found on final dispatch (e5235508).</value>
   </data>
   <data name="kArgumentTypeUndefined" xml:space="preserve">
     <value>Type '{0}' of argument '{1}' is not defined.</value>
   </data>
   <data name="kArrayOverIndexed" xml:space="preserve">
-    <value>Variable is over indexed.</value>
+    <value>The List index is beyond the end of the list.</value>
   </data>
   <data name="kArrayRankReduction" xml:space="preserve">
-    <value>Type conversion would cause array rank reduction. This is not permitted outside of replication. {511ED65F-FB66-4709-BDDA-DCD5E053B87F}</value>
+    <value>Type conversion would cause array rank reduction. This is not permitted outside of replication. (0f001e47)</value>
   </data>
   <data name="kAssignNonCharacterToString" xml:space="preserve">
-    <value>Only character can be assigned to a position in a string.</value>
+    <value>A string must be made up of characters.</value>
   </data>
   <data name="kAssingToThis" xml:space="preserve">
     <value>'this' is readonly and cannot be assigned to.</value>
   </data>
   <data name="kCallingConstructorInConstructor" xml:space="preserve">
-    <value>Cannot call constructor '{0}()' in itself.</value>
+    <value>Cannot call the constructor '{0}()' inside itself.</value>
   </data>
   <data name="KCallingConstructorOnInstance" xml:space="preserve">
-    <value>Cannot call constructor '{0}()' on instance.</value>
+    <value>Cannot call the constructor '{0}()' on an existing object.</value>
   </data>
   <data name="kCallingNonStaticMethod" xml:space="preserve">
     <value>'{0}.{1}()' is not a static method.</value>
@@ -160,37 +160,37 @@
     <value>Converting an array to {0} would cause array rank reduction and is not permitted.</value>
   </data>
   <data name="kConvertDoubleToInt" xml:space="preserve">
-    <value>Converting double to int will cause possible information loss.</value>
+    <value>Converting a double to an int may lose information.</value>
   </data>
   <data name="kConvertNonConvertibleTypes" xml:space="preserve">
-    <value>Asked to convert non-convertible types.</value>
+    <value>Asked to convert between non-convertible types.</value>
   </data>
   <data name="kCyclicDependency" xml:space="preserve">
-    <value>Cyclic dependency detected at '{0}' and '{1}'.</value>
+    <value>A cyclic dependency was detected at '{0}' and '{1}'.</value>
   </data>
   <data name="kDeferencingNonPointer" xml:space="preserve">
-    <value>Dereferencing a non-pointer.</value>
+    <value>Internal error, please report: Dereferencing a non-pointer. (3f47aacd)</value>
   </data>
   <data name="kExceptionTypeUndefined" xml:space="preserve">
-    <value>Exception type '{0}' is not defined.</value>
+    <value>The exception type '{0}' is not defined.</value>
   </data>
   <data name="kFailToConverToFunction" xml:space="preserve">
-    <value>Converting other things to function pointer is not allowed.</value>
+    <value>Cannot convert objects to function pointers.</value>
   </data>
   <data name="kFailToConverToNull" xml:space="preserve">
-    <value>Converting other things to null is not allowed.</value>
+    <value>Cannot convert objects to null, try assigning null to the variable instead.</value>
   </data>
   <data name="kFailToConverToPointer" xml:space="preserve">
-    <value>Converting other things to pointer is not allowed.</value>
+    <value>Cannot convert objects to pointers.</value>
   </data>
   <data name="kFFIFailedToObtainObject" xml:space="preserve">
-    <value>Failed to obtain object '{0}' for '{1}.{2}'.</value>
+    <value>Internal error, please report: Failed to obtain object '{0}' for '{1}.{2}' (edb6d7d9).</value>
   </data>
   <data name="kFFIFailedToObtainThisObject" xml:space="preserve">
-    <value>Failed to obtain this object for '{0}.{1}'.</value>
+    <value>Internal error, please report: Failed to obtain this object for '{0}.{1}' (88facceb).</value>
   </data>
   <data name="kFFIInvalidCast" xml:space="preserve">
-    <value>'{0}' is being cast to '{1}', but the allowed range is [{2}..{3}].</value>
+    <value>Internal error, please report: '{0}' is being cast to '{1}', but the allowed range is [{2}..{3}]. (dff21092)</value>
   </data>
   <data name="kFileNotFound" xml:space="preserve">
     <value>File : '{0}' not found</value>
@@ -199,34 +199,34 @@
     <value>No candidate function could be found.</value>
   </data>
   <data name="kFunctionNotReturnAtAllCodePaths" xml:space="preserve">
-    <value>Method '{0}()' doesn't return at all code paths.</value>
+    <value>All paths through the method '{0}()' must return a value.</value>
   </data>
   <data name="kIndexOutOfRange" xml:space="preserve">
-    <value>Index is out of range.</value>
+    <value>The list index was beyond the end of the list.</value>
   </data>
   <data name="kInvalidAmountInRangeExpression" xml:space="preserve">
-    <value>The amount in range expression should be an positive integer.</value>
+    <value>The amount in a range expression must be an positive integer.</value>
   </data>
   <data name="kInvalidArguments" xml:space="preserve">
-    <value>Argument is invalid.</value>
+    <value>The argument was invalid.</value>
   </data>
   <data name="kInvalidArgumentsInRangeExpression" xml:space="preserve">
-    <value>The value that used in range expression should be either integer or double.</value>
+    <value>The value used in range expression must be a number.</value>
   </data>
   <data name="kInvalidBreakForFunction" xml:space="preserve">
-    <value>Statement break causes function to abnormally return null.</value>
+    <value>Internal error, please report: Statement break causes function to abnormally return null. (6ced82a9)</value>
   </data>
   <data name="kInvalidContinueForFunction" xml:space="preserve">
-    <value>Statement continue cause function to abnormally return null.</value>
+    <value>Internal error, please report: Statement continue cause function to abnormally return null. (fd67aaee)</value>
   </data>
   <data name="kInvalidStaticCyclicDependency" xml:space="preserve">
-    <value>Cyclic dependency detected at '{0}' and '{1}'.</value>
+    <value>Cyclic dependency detected between '{0}' and '{1}'.</value>
   </data>
   <data name="kInvalidThis" xml:space="preserve">
-    <value>'this' can only be used in member methods.</value>
+    <value>'this' can only be used in methods that are members of an object.</value>
   </data>
   <data name="kInvokeMethodOnInvalidObject" xml:space="preserve">
-    <value>Method '{0}()' is invoked on invalid object.</value>
+    <value>Internal error, please report: Method '{0}()' is invoked on an invalid object. (fa006d2b)</value>
   </data>
   <data name="kMethodAlreadyDefined" xml:space="preserve">
     <value>Method '{0}()' is already defined.</value>
@@ -235,22 +235,22 @@
     <value>'{0}()' has some invalid arguments.</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
-    <value>Method '{0}()' is inaccessible.</value>
+    <value>Method '{0}()' is can't be reached from here.</value>
   </data>
   <data name="kMethodNotFound" xml:space="preserve">
     <value>Method '{0}()' not found.</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B.</value>
+    <value>Internal error, please report: Method resolution failure on: {0}() - (8bc0db87).</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
-    <value>Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'.</value>
+    <value>A '{1}' can't be '{0}'ed with a '{2}'.</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn't find a version of {0} that takes arguments of type {1}.</value>
+    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}.</value>
   </data>
   <data name="kMethodStackOverflow" xml:space="preserve">
-    <value>Stack overflow caused by calling method '{0}()' recursively.</value>
+    <value>'{0}()' recursed until Dynamo ran out of memory.</value>
   </data>
   <data name="kMultipleSymbolFound" xml:space="preserve">
     <value>Multiple definitions for '{0}' are found as {1}</value>
@@ -259,37 +259,37 @@
     <value>Multiple definitions for '{0}' are found as {1}</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
-    <value>No step size is specified in amount range expression.</value>
+    <value>No step size specified in amount-based range expression.</value>
   </data>
   <data name="kPropertyInaccessible" xml:space="preserve">
-    <value>Property '{0}' is inaccessible.</value>
+    <value>Property '{0}' is inaccessible from here.</value>
   </data>
   <data name="kPropertyIsInaccessible" xml:space="preserve">
-    <value>Property '{0}' is inaccessible.</value>
+    <value>Property '{0}' is inaccessible from here.</value>
   </data>
   <data name="kPropertyNotFound" xml:space="preserve">
-    <value>Property '{0}' not found.</value>
+    <value>Property '{0}' was not found.</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
     <value>Class '{0}' does not have a property '{1}'.</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
-    <value>The amount operator cannot be used together with step operator.</value>
+    <value>An amount operator cannot be used together a step operator.</value>
   </data>
   <data name="kRangeExpressionWithInvalidAmount" xml:space="preserve">
-    <value>The amount of step is invalid.</value>
+    <value>The amount of the step was invalid.</value>
   </data>
   <data name="kRangeExpressionWithInvalidStepSize" xml:space="preserve">
-    <value>The step size of range expression is invalid.</value>
+    <value>The step size was invalid.</value>
   </data>
   <data name="kRangeExpressionWithNegativeStepNumber" xml:space="preserve">
-    <value>The step number of range expression should be greater than 0.</value>
+    <value>The step number must be greater than 0.</value>
   </data>
   <data name="kRangeExpressionWithNonIntegerStepNumber" xml:space="preserve">
-    <value>The step number of range expression should be integer.</value>
+    <value>The step number must be an integer.</value>
   </data>
   <data name="kRangeExpressionWithStepSizeZero" xml:space="preserve">
-    <value>The step size of range expression should not be 0.</value>
+    <value>The step size of must not be 0.</value>
   </data>
   <data name="kReturnTypeUndefined" xml:space="preserve">
     <value>Return type '{0}' of method '{1}()' is not defined.</value>
@@ -298,19 +298,19 @@
     <value>Cannot find static method or constructor {0}.{1}().</value>
   </data>
   <data name="kStringIndexOutOfRange" xml:space="preserve">
-    <value>The index to string is out of range</value>
+    <value>The index is off the end of the string.</value>
   </data>
   <data name="kStringOverIndexed" xml:space="preserve">
-    <value>String is over indexed.</value>
+    <value>The index is off the end of the string.</value>
   </data>
   <data name="kSymbolOverIndexed" xml:space="preserve">
     <value>'{0}' is over indexed.</value>
   </data>
   <data name="kTypeUndefined" xml:space="preserve">
-    <value>Type '{0}' is not defined.</value>
+    <value>The type '{0}' is not defined.</value>
   </data>
   <data name="kUnboundIdentifierMsg" xml:space="preserve">
-    <value>Variable '{0}' hasn't been defined yet.</value>
+    <value>The variable '{0}' hasn't been defined yet.</value>
   </data>
   <data name="kUsingNonStaticMemberInStaticContext" xml:space="preserve">
     <value>'{0}' is not a static property, so cannot be assigned to static properties or used in static methods.</value>
@@ -322,61 +322,61 @@
     <value>An attribute argument must be a constant expression</value>
   </data>
   <data name="failedToImport" xml:space="preserve">
-    <value>Failed to import {0}</value>
+    <value>Internal error, please report: Failed to import {0} (17072817)</value>
   </data>
   <data name="importStatementNotSupported" xml:space="preserve">
-    <value>Import statements are not supported in CodeBlock Nodes.</value>
+    <value>Import statements are not supported in CodeBlock Nodes, please use the library.</value>
   </data>
   <data name="modifierBlockNotSupported" xml:space="preserve">
-    <value>Modifier Blocks are not supported currently.</value>
+    <value>Modifier Blocks are not currently supported.</value>
   </data>
   <data name="noConstructorForAttribute" xml:space="preserve">
     <value>No constructors for Attribute '{0}' takes {1} arguments</value>
   </data>
   <data name="returnStatementIsNotAllowedInConstructor" xml:space="preserve">
-    <value>return statement is not allowed in constructor</value>
+    <value>return statements cannot be used in constructors</value>
   </data>
   <data name="unknownAttribute" xml:space="preserve">
     <value>Unknown attribute {0}</value>
   </data>
   <data name="tooManyCharacters" xml:space="preserve">
-    <value>Too many characters in character literal</value>
+    <value>A character literal must contain a single character</value>
   </data>
   <data name="keywordCannotBeUsedAsConstructorName" xml:space="preserve">
-    <value>\"{0}\" is a keyword, can't be used as constructor name</value>
+    <value>\"{0}\" is a keyword, and can't be used as constructor name</value>
   </data>
   <data name="emptyCharacterLiteral" xml:space="preserve">
-    <value>Empty character literal.</value>
+    <value>The character literal was empty.</value>
   </data>
   <data name="functionCallCannotBeAtLeftSide" xml:space="preserve">
-    <value>function call is not allowed at the left hand side of an assignment</value>
+    <value>Can't set a function call to a value, try a variable instead</value>
   </data>
   <data name="keywordCantBeUsedAsIdentifier" xml:space="preserve">
-    <value>\"{0}\" is a keyword, identifier expected</value>
+    <value>\"{0}\" is a keyword, a name was expected</value>
   </data>
   <data name="invalidLanguageBlockIdentifier" xml:space="preserve">
-    <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
+    <value>\"{0}\" is not a valid language block name, did you mean \"Associative\" or \"Imperative\"?</value>
   </data>
   <data name="baseIsExpectedToCallBaseConstructor" xml:space="preserve">
-    <value>'base' is expected here to call base constructor.</value>
+    <value>'base' is required here to call the base constructor.</value>
   </data>
   <data name="closeBracketExpected" xml:space="preserve">
-    <value>')' expected - Imcomplete Closure</value>
+    <value>A ')' was expected</value>
   </data>
   <data name="invalidSymbol" xml:space="preserve">
-    <value>Syntax Error: invalid symbol '{0}'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
+    <value>Invalid symbol '{0}'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
   </data>
   <data name="invalidReturnStatement" xml:space="preserve">
-    <value>Return statement is invalid. Do you mean: return = {0} ?</value>
+    <value>return must be used as an assignment. Did you mean: return = {0} ?</value>
   </data>
   <data name="semiColonExpected" xml:space="preserve">
-    <value>';' is expected.</value>
+    <value>A ';' was expected.</value>
   </data>
   <data name="validForImperativeBlockOnly" xml:space="preserve">
-    <value>'{0}' statement can only be used in imperative language block.</value>
+    <value>'{0}' statement can only be used in imperative language blocks.</value>
   </data>
   <data name="useInlineConditional" xml:space="preserve">
-    <value>'{0}' statement can only be used in imperative language block, consider using an inline conditional instead?</value>
+    <value>'{0}' statement can only be used in imperative language blocks, consider using an inline conditional x ? y : z instead</value>
   </data>
   <data name="noSuchFileOrDirectoryToImport" xml:space="preserve">
     <value>Cannot import file: '{0}': No such file or directory</value>
