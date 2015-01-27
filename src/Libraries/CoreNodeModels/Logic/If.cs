@@ -12,7 +12,7 @@ namespace DSCoreNodesUI.Logic
 {
     [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("IfDescription", typeof(Properties.Resources))]
+    [NodeDescription("IfDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class If : NodeModel
     {

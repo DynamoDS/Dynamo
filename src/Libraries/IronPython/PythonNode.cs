@@ -110,7 +110,7 @@ namespace DSIronPythonNode
 
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("PythonScriptDescription", typeof(Properties.Resources))]
+    [NodeDescription("PythonScriptDescription", typeof(DSIronPythonNode.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
@@ -199,7 +199,7 @@ namespace DSIronPythonNode
 
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("PythonScriptFromStringDescription", typeof(Properties.Resources))]
+    [NodeDescription("PythonScriptFromStringDescription", typeof(DSIronPythonNode.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase
