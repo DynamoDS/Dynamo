@@ -484,6 +484,86 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ConnectionStateToBrushConverter : IValueConverter
+    {
+        public SolidColorBrush ExecutionPreviewBrush { get; set; }
+        public SolidColorBrush NoneBrush { get; set; }
+        public SolidColorBrush SelectionBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return ExecutionPreviewBrush;
+                case PreviewState.None:
+                    return NoneBrush;
+                case PreviewState.Selection:
+                    return SelectionBrush;
+                default:
+                    return NoneBrush;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToColorConverter : IValueConverter
+    {
+        public Color ExecutionPreview { get; set; }
+        public Color None { get; set; }
+        public Color Selection { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return ExecutionPreview;
+                case PreviewState.None:
+                    return None;
+                case PreviewState.Selection:
+                    return Selection;
+                default:
+                    return None;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return Visibility.Visible;
+                case PreviewState.None:
+                    return Visibility.Collapsed;
+                case PreviewState.Selection:
+                    return Visibility.Visible;
+                default:
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class BooleanToSelectionColorConverter : IValueConverter
     {
         public Color True { get; set; }

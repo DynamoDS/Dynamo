@@ -346,22 +346,22 @@
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
                    Fill="Transparent"
-                   Stroke="#4192d9"
+                   Stroke="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
                    StrokeThickness="2"
                    IsHitTestVisible="False"
                    Canvas.ZIndex="41"
                    Margin="-1">
             <Rectangle.Visibility>
-                <Binding Path="IsSelected"
+                <Binding Path="PreviewState"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
-                         Converter="{StaticResource BooleanToVisibilityConverter}">
+                         Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}">
                 </Binding>
             </Rectangle.Visibility>
         </Rectangle>
 
         <!--DO NOT ERASE. THIS IS FOR DEBUGGING-->
-        <Rectangle Name="ForceReexecBorder"
+        <!--<Rectangle Name="ForceReexecBorder"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
@@ -380,7 +380,7 @@
                          Converter="{StaticResource BooleanToVisibilityConverter}">
                 </Binding>
             </Rectangle.Visibility>
-        </Rectangle>
+        </Rectangle>-->
 
         <Canvas Name="expansionBay"
                 Grid.Row="4"

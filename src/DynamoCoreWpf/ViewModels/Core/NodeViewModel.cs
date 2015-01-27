@@ -104,7 +104,10 @@ namespace Dynamo.ViewModels
 
         public bool IsSelected
         {
-            get { return nodeLogic.IsSelected; }
+            get
+            {
+                return nodeLogic.IsSelected;
+            }
         }
 
         public string NickName
@@ -264,6 +267,24 @@ namespace Dynamo.ViewModels
         public bool ShowExecutionPreview
         {
             get { return NodeModel.ShowExecutionPreview; }
+        }
+
+        public PreviewState PreviewState
+        {
+            get
+            {
+                if (NodeModel.ShowExecutionPreview)
+                {
+                    return PreviewState.ExecutionPreview;
+                }
+
+                if (NodeModel.IsSelected)
+                {
+                    return PreviewState.Selection;
+                }
+
+                return PreviewState.None;
+            }
         }
 
         #endregion
@@ -438,6 +459,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
+                    RaisePropertyChanged("PreviewState");
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -474,6 +496,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "ShowExecutionPreview":
                     RaisePropertyChanged("ShowExecutionPreview");
+                    RaisePropertyChanged("PreviewState");
                     break;
             }
         }
