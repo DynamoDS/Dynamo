@@ -39,6 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+   <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="DynamoMSOffice\Excel.cs" />
     <Compile Include="DynamoPython\dynPython.cs" />
     <Compile Include="DynamoRaaS\Nodes.cs" />
