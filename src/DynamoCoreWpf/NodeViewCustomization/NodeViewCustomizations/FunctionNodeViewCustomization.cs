@@ -3,6 +3,9 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
+using Dynamo.Wpf.Properties;
+
 
 namespace Dynamo.Wpf
 {
@@ -21,7 +24,7 @@ namespace Dynamo.Wpf
             // edit contents
             var editItem = new MenuItem
             {
-                Header = "Edit Custom Node...",
+                Header = Resources.ContextMenuEditCustomNode,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(editItem);
@@ -30,7 +33,7 @@ namespace Dynamo.Wpf
             // edit properties
             var editPropertiesItem = new MenuItem
             {
-                Header = "Edit Custom Node Properties...",
+                Header = Resources.ContextMenuEditCustomNodeProperty,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(editPropertiesItem);
@@ -39,7 +42,7 @@ namespace Dynamo.Wpf
             // publish
             var publishCustomNodeItem = new MenuItem
             {
-                Header = "Publish This Custom Node...",
+                Header = Resources.ContextMenuPublishCustomNode,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(publishCustomNodeItem);

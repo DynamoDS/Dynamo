@@ -1,10 +1,10 @@
 ﻿using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Namespace;
+using ProtoCore.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ProtoCore.Utils
 {
@@ -405,11 +405,11 @@ namespace ProtoCore.Utils
                 // Handle non Binary expression nodes separately
                 if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
                 {
-                    core.BuildStatus.LogSemanticError(StringConstants.modifierBlockNotSupported);
+                    core.BuildStatus.LogSemanticError(Resources.modifierBlockNotSupported);
                 }
                 else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
                 {
-                    core.BuildStatus.LogSemanticError(StringConstants.importStatementNotSupported);
+                    core.BuildStatus.LogSemanticError(Resources.importStatementNotSupported);
                 }
                 else if (isFunctionOrClassDef)
                 {
@@ -425,7 +425,7 @@ namespace ProtoCore.Utils
                         ModifierStackNode mNode = ben.RightNode as ModifierStackNode;
                         if (mNode != null)
                         {
-                            core.BuildStatus.LogSemanticError(StringConstants.modifierBlockNotSupported);
+                            core.BuildStatus.LogSemanticError(Resources.modifierBlockNotSupported);
                         }
                         IdentifierNode lNode = ben.LeftNode as IdentifierNode;
                         if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)

@@ -1,5 +1,6 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 using System.Collections.Generic;
@@ -8,16 +9,16 @@ namespace DSCoreNodesUI
 {
     [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("Creates a sequence of numbers in the specified range.")]
+    [NodeDescription("NumberRangeDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberRange : NodeModel
     {
         public NumberRange()
         {
-            InPortData.Add(new PortData("start", "Number to start the sequence at"));
-            InPortData.Add(new PortData("end", "Number to end the sequence at"));
-            InPortData.Add(new PortData("step", "Space between numbers"));
-            OutPortData.Add(new PortData("seq", "New sequence"));
+            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
+            InPortData.Add(new PortData("end", Resources.NumberRangePortDataEndToolTip));
+            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
+            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
 
             RegisterAllPorts();
 
@@ -44,16 +45,16 @@ namespace DSCoreNodesUI
 
     [NodeName("Number Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("Creates a sequence of numbers.")]
+    [NodeDescription("NumberSequenceDescription", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberSeq : NodeModel
     {
         public NumberSeq()
         {
-            InPortData.Add(new PortData("start", "Number to start the sequence at"));
-            InPortData.Add(new PortData("amount", "Amount of numbers in the sequence"));
-            InPortData.Add(new PortData("step", "Space between numbers"));
-            OutPortData.Add(new PortData("seq", "New sequence"));
+            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
+            InPortData.Add(new PortData("amount", Resources.NumberRangePortDataAmountToolTip));
+            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
+            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
 
             RegisterAllPorts();
 

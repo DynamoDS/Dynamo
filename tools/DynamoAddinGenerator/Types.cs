@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Autodesk.RevitAddIns;
 
 namespace DynamoAddinGenerator
@@ -138,16 +139,23 @@ namespace DynamoAddinGenerator
             }
             else
             {
-                ClassName = "Dynamo.Applications.VersionLoader";
-                if (product.VersionString == "Revit2014")
+                ClassName = "Dynamo.Applications.DynamoRevitApp";
+                var assemblyName = "DynamoRevitDS.dll";
+                switch (product.VersionString)
                 {
-                    subfolder = "Revit_2014";
+                    case "Revit2014":
+                        subfolder = "Revit_2014";
+                        ClassName = "Dynamo.Applications.VersionLoader";
+                        assemblyName = "DynamoRevitVersionSelector.dll";
+                        break;
+                    case "Revit2015":
+                        subfolder = "Revit_2015";
+                        break;
+                    case "Revit2016":
+                        subfolder = "Revit_2016";
+                        break;
                 }
-                else if (product.VersionString == "Revit2015")
-                {
-                    subfolder = "Revit_2015";
-                }
-                AssemblyPath = Path.Combine(latestDynamoInstall.Folder, subfolder, "DynamoRevitVersionSelector.dll");
+                AssemblyPath = Path.Combine(latestDynamoInstall.Folder, subfolder, assemblyName);
             }
 
             RevitSubfolder = subfolder;

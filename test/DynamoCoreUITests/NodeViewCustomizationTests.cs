@@ -275,6 +275,36 @@ namespace DynamoCoreUITests
             Assert.True(nodeView.customNodeBorder0.Visibility == Visibility.Visible);
         }
 
+        [Test]
+        public void DSVarArgFunctionNodeHasButtons()
+        {
+            Open(@"UI\VariableInputNodes.dyn");
+
+            var nodeView = NodeViewWithGuid("0abcef04-75e7-4264-b387-602aad74e34d"); // String.Join node
+
+            var eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
+            Assert.AreEqual(2, eles.Count());
+
+            var inPortGrid = nodeView.inPortGrid;
+            Assert.AreEqual(3, inPortGrid.ChildrenOfType<TextBlock>().Count());
+
+            nodeView = NodeViewWithGuid("2f031397-539e-4df4-bfca-d94d0bd02bc1"); // String.Concat node
+
+            eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
+            Assert.AreEqual(2, eles.Count());
+
+            inPortGrid = nodeView.inPortGrid;
+            Assert.AreEqual(2, inPortGrid.ChildrenOfType<TextBlock>().Count());
+
+            nodeView = NodeViewWithGuid("0cb04cce-1b05-47e0-a73f-ee81af4b7f43"); // List.Join node
+
+            eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
+            Assert.AreEqual(2, eles.Count());
+
+            inPortGrid = nodeView.inPortGrid;
+            Assert.AreEqual(2, inPortGrid.ChildrenOfType<TextBlock>().Count());
+        }
+
         private static class DispatcherUtil
         {
             /// <summary>

@@ -349,7 +349,11 @@ namespace DSCore.IO
         [MultiReturn("width", "height")]
         public static Dictionary<string, int> Dimensions(Bitmap image)
         {
-            return new Dictionary<string, int> { { "width", image.Width }, { "height", image.Height } };
+            return new Dictionary<string, int> 
+            { 
+                { "width", image.Width }, 
+                { "height", image.Height } 
+            };
         }
 
         /// <summary>
