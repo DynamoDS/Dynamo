@@ -201,7 +201,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Write Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("WriteArduinoDescription", typeof(Dynamo.Nodes.Properties.Resources))]
+    [NodeDescription("WriteArduinoDescription",typeof(Dynamo.Nodes.Properties.Resources))]
     public class ArduinoWrite : NodeModel
     {
         SerialPort port;

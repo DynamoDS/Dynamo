@@ -252,7 +252,7 @@ namespace UnitsUI
 
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
-    [NodeDescription("AreaFromStringDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("AreaFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("AreaFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
@@ -283,7 +283,7 @@ namespace UnitsUI
 
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
-    [NodeDescription("VolumeFromStringDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("VolumeFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("VolumeFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
