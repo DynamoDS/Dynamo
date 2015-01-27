@@ -46,7 +46,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3D", "Libraries\Dynamo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonUI", "Libraries\IronPython\IronPythonUI.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeServices", "NodeServices\NodeServices.csproj", "{EF879A10-041D-4C68-83E7-3192685F1BAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServices", "NodeServices\DynamoServices.csproj", "{EF879A10-041D-4C68-83E7-3192685F1BAE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection

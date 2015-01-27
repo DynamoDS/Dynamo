@@ -11,6 +11,7 @@ using Autodesk.DesignScript.Interfaces;
 using ProtoFFI;
 using System.Collections;
 using ProtoCore.Runtime;
+using ProtoCore.Properties;
 
 namespace ProtoCore.Lang
 {
@@ -163,7 +164,7 @@ namespace ProtoCore.Lang
                         {
                             interpreter.runtime.Core.RuntimeStatus.LogWarning(
                                 Runtime.WarningID.kInvalidArguments,
-                                StringConstants.kInvalidArguments);
+                                Resources.kInvalidArguments);
                         }
 
                         ret = DSASM.StackValue.Null;
@@ -511,7 +512,7 @@ namespace ProtoCore.Lang
 
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
-                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, StringConstants.kDeferencingNonPointer);
+                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
 
@@ -807,7 +808,7 @@ namespace ProtoCore.Lang
             if (!trans.IsBoolean)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, ProtoCore.StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
@@ -816,7 +817,7 @@ namespace ProtoCore.Lang
             // File not existing.
             if(null==path || !File.Exists(path))
             {
-                string message = String.Format(ProtoCore.StringConstants.kFileNotFound, path);
+                string message = String.Format(Resources.kFileNotFound, path);
                 runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kFileNotExist, message);
                 return DSASM.StackValue.Null;
             }
@@ -1033,7 +1034,7 @@ namespace ProtoCore.Lang
             {
                 core.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
@@ -1046,14 +1047,14 @@ namespace ProtoCore.Lang
                 {
                     core.RuntimeStatus.LogWarning(
                         WarningID.kInvalidArguments, 
-                        StringConstants.kInvalidAmountInRangeExpression);
+                        Resources.kInvalidAmountInRangeExpression);
                     return StackValue.Null;
                 }
                 else if (!hasStep)
                 {
                     core.RuntimeStatus.LogWarning(
                         WarningID.kInvalidArguments, 
-                        StringConstants.kNoStepSizeInAmountRangeExpression);
+                        Resources.kNoStepSizeInAmountRangeExpression);
                     return StackValue.Null;
                 }
             }
@@ -1062,14 +1063,14 @@ namespace ProtoCore.Lang
             {
                 core.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
             else if (!svStep.IsNull && !svStep.IsNumeric)
             {
                 core.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
@@ -1078,7 +1079,7 @@ namespace ProtoCore.Lang
             {
                 core.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
             decimal start = new decimal(startValue);
@@ -1088,7 +1089,7 @@ namespace ProtoCore.Lang
             {
                 core.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
             decimal end = new decimal(endValue);
@@ -1100,7 +1101,7 @@ namespace ProtoCore.Lang
                 {
                     core.RuntimeStatus.LogWarning(
                         WarningID.kInvalidArguments, 
-                        StringConstants.kInvalidArgumentsInRangeExpression);
+                        Resources.kInvalidArgumentsInRangeExpression);
                     return StackValue.Null;
                 }
             }
@@ -1115,7 +1116,7 @@ namespace ProtoCore.Lang
                 {
                    core.RuntimeStatus.LogWarning(
                        WarningID.kInvalidArguments, 
-                       StringConstants.kInvalidAmountInRangeExpression);
+                       Resources.kInvalidAmountInRangeExpression);
                    return StackValue.Null;
                 }
                 decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);
@@ -1355,7 +1356,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return false;
             }
 
@@ -1381,7 +1382,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return true;
             }
 
@@ -1430,7 +1431,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return true;// ProtoCore.DSASM.Constants.kInvalidIndex;
             }
             var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
@@ -1530,7 +1531,7 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray || !sv2.IsInteger)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
@@ -1545,7 +1546,7 @@ namespace ProtoCore.Lang
             if ((indexToBeRemoved < 0) || (indexToBeRemoved >= length))
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kIndexOutOfRange, StringConstants.kIndexOutOfRange);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kIndexOutOfRange, Resources.kIndexOutOfRange);
                 return DSASM.StackValue.Null;
             }
             List<StackValue> svList = new List<StackValue>();
@@ -1599,7 +1600,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
@@ -1637,7 +1638,7 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             string typeString = FileIOBuiltIns.ConvertToString(sv2, runtime);
@@ -1670,7 +1671,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
@@ -1682,7 +1683,7 @@ namespace ProtoCore.Lang
         {
             if (!sv1.IsArray)
             {
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return false;
             }
 
@@ -1718,7 +1719,7 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return false;
             }
             bool contains = false;
@@ -1763,7 +1764,7 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return notExist;
             }
             var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
@@ -1783,7 +1784,7 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return notExist;
             }
             var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
@@ -1810,7 +1811,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray || !mode.IsBoolean)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
                 
@@ -1832,7 +1833,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray || !mode.IsBoolean)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             bool ascending = mode.opdata != 0;
@@ -1867,12 +1868,12 @@ namespace ProtoCore.Lang
             if ((!sv1.IsArray) || (!sv2.IsArray))
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             if ((Rank(sv1, runtime) != 1) || (Rank(sv2, runtime) != 1))
             {
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             int length1 = runtime.runtime.rmem.Heap.GetHeapElement(sv1).Stack.Length;
@@ -1915,7 +1916,7 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray || !sv2.IsArray|| !idx.IsInteger)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
@@ -1926,7 +1927,7 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray || !idx.IsInteger)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
@@ -1972,7 +1973,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return true;
             }
             int overallRank = Rank(sv,runtime);
@@ -2023,7 +2024,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             int overallDepth = Rank(sv, runtime);
@@ -2038,7 +2039,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtime.runtime.Core.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             int overallDepth = Rank(sv, runtime);

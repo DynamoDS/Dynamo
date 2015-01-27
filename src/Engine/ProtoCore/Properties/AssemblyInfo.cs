@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,3 +13,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyKeyFile("ProtoCore.snk")]
 [assembly: InternalsVisibleTo("ProtoTest")]
 [assembly: InternalsVisibleTo("ProtoTestFx")]
+
+[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
