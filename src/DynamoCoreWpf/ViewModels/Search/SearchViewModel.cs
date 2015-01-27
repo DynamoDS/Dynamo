@@ -339,7 +339,7 @@ namespace Dynamo.ViewModels
             //    Member1   
             // 
             // Let's remove "Member1". Before next code we have removed entry "Member1" and
-            // categories "Sub3_1", "Classes". "Sub2_2" is "target" as soon as it has one item in
+            // categories "Sub3_1", "Classes". "Sub2_1" is "target" as soon as it has one item in
             // Items collection. Next code will deattach from "Sub1_1" and attach target to another
             // "Classes" category.
             // Structure should become.
