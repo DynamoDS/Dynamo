@@ -10,7 +10,7 @@ namespace DSCoreNodesUI.HigherOrder
 {
     [NodeName("Function.Apply")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("FunctionApplyDescription", typeof(Properties.Resources))]
+    [NodeDescription("FunctionApplyDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ApplyFunction : VariableInputNode
     {
@@ -66,7 +66,7 @@ namespace DSCoreNodesUI.HigherOrder
 
     [NodeName("Function.Compose")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("FunctionComposeDescription", typeof(Properties.Resources))]
+    [NodeDescription("FunctionComposeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ComposeFunctions : VariableInputNode
     {

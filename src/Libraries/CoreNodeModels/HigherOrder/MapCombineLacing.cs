@@ -10,8 +10,8 @@ namespace DSCore
 {
     [NodeName("List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListMapDescription", typeof(Resources))]
-    [NodeSearchTags("ListMapSearchTags",typeof(Resources))]
+    [NodeDescription("ListMapDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListMapSearchTags",typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Map : NodeModel
     {
@@ -81,8 +81,8 @@ namespace DSCore
 
     [NodeName("List.Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListCombineDescription", typeof(Resources))]
-	[NodeSearchTags("ListCombineSearchTags", typeof(Resources))]
+    [NodeDescription("ListCombineDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListCombineSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Combine : CombinatorNode
     {
@@ -106,8 +106,8 @@ namespace DSCore
     [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.ForEach")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListForEachDescription", typeof(Resources))]
-	[NodeSearchTags("ListForEachSearchTags", typeof(Resources))]
+    [NodeDescription("ListForEachDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListForEachSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ForEach : CombinatorNode
     {
@@ -133,8 +133,8 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListLaceShortestDescription", typeof(Resources))]
-	[NodeSearchTags("ListLaceShortestSearchTags", typeof(Resources))]
+    [NodeDescription("ListLaceShortestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListLaceShortestSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LaceShortest : CombinatorNode
     {
@@ -158,8 +158,8 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListLaceLongestDescription", typeof(Resources))]
-	[NodeSearchTags("ListLaceLongestSearchTags", typeof(Resources))]
+    [NodeDescription("ListLaceLongestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListLaceLongestSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LaceLongest : CombinatorNode
     {
@@ -184,8 +184,8 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListCartesianProductDescription", typeof(Resources))]
-	[NodeSearchTags("ListCartesianProductSearchTags", typeof(Resources))]
+	[NodeSearchTags("ListCartesianProductSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListCartesianProductDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class CartesianProduct : CombinatorNode
     {
@@ -270,8 +270,8 @@ namespace DSCore
 
     [NodeName("List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListReduceDescription", typeof(Resources))]
-	[NodeSearchTags("ListReduceSearchTags", typeof(Resources))]
+	[NodeSearchTags("ListReduceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("ListReduceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Reduce : VariableInputNode
     {
@@ -359,7 +359,8 @@ namespace DSCore
     [NodeName("List.Scan")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListScanDescription", typeof(Resources))]
-	[NodeSearchTags("ListScanSearchTags", typeof(Resources))]
+    [NodeDescription("ListScanDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListScanSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ScanList : VariableInputNode
     {
@@ -446,8 +447,8 @@ namespace DSCore
 
     [NodeName("List.Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListFilterDescription", typeof(Resources))]
-	[NodeSearchTags("ListFilterSearchTags", typeof(Resources))]
+    [NodeDescription("ListFilterDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListFilterSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Filter : NodeModel
     {
@@ -489,8 +490,8 @@ namespace DSCore
 
     [NodeName("ReplaceByCondition")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ReplaceByConditionDescription", typeof(Resources))]
-	[NodeSearchTags("ReplaceByConditionSearchTags", typeof(Resources))]
+    [NodeDescription("ReplaceByConditionDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ReplaceByConditionSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Replace : NodeModel
     {

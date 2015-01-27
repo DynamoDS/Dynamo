@@ -12,8 +12,8 @@ namespace Dynamo.Nodes
 {
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("WatchNodeDescription", typeof(Resources))]
-	[NodeSearchTags("WatchNodeSearchTags", typeof(Resources))]
+    [NodeDescription("WatchNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("WatchNodeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Watch : NodeModel
     {
