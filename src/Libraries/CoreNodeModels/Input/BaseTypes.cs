@@ -14,7 +14,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using String = DSCoreNodesUI.String;
-using DSCoreNodesUI.Properties;
+
 
 namespace Dynamo.Nodes
 {

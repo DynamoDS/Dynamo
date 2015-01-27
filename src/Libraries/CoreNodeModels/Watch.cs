@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
-using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 

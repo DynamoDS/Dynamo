@@ -184,8 +184,8 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-	[NodeSearchTags("ListCartesianProductSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeDescription("ListCartesianProductDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListCartesianProductSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class CartesianProduct : CombinatorNode
     {
@@ -358,7 +358,6 @@ namespace DSCore
 
     [NodeName("List.Scan")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("ListScanDescription", typeof(Resources))]
     [NodeDescription("ListScanDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("ListScanSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
