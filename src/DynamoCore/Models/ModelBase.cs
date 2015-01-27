@@ -5,10 +5,41 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
     public enum SaveContext { File, Copy, Undo };
+
+    /// <summary>
+    /// This class encapsulates the input parameters that need to be passed into nodes
+    /// when they are updated in the UI.
+    /// </summary>
+    public class UpdateValueParams
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName">Name of the property whose value is to be updated.
+        /// This parameter cannot be empty or null.</param>
+        /// <param name="propertyValue">Value of the named property whose value is to be 
+        /// updated. This parameter can either be null or empty if the targeted property 
+        /// allows such values.This value comes directly
+        /// from DynamoTextBox after user commits it. Overridden methods then use 
+        /// a specific IValueConverter to turn this string into another data type 
+        /// that it expects</param>
+        /// <param name="elementResolver">responsible for resolving class namespaces</param>
+        public UpdateValueParams(string propertyName, string propertyValue, ElementResolver elementResolver = null)
+        {
+            ElementResolver = elementResolver;
+            PropertyName = propertyName;
+            PropertyValue = propertyValue;
+        }
+
+        public string PropertyName { get; private set; }
+        public string PropertyValue { get; private set; }
+        public ElementResolver ElementResolver { get; private set; }
+    }
 
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
     {
@@ -173,9 +204,9 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        public bool UpdateValue(string name, string value, UndoRedoRecorder recorder)
+        public bool UpdateValue(UpdateValueParams updateValueParams)
         {
-            return UpdateValueCore(name, value, recorder);
+            return UpdateValueCore(updateValueParams);
         }
 
         /// <summary>
@@ -201,15 +232,10 @@ namespace Dynamo.Models
         /// method takes only string input (the way they appear in DynamoTextBox),
         /// which overridden method can use for value conversion.
         /// </summary>
-        /// <param name="name">The name of a property/value to update.</param>
-        /// <param name="value">The new value to be set. This value comes directly
-        /// from DynamoTextBox after user commits it. Overridden methods then use 
-        /// a specific IValueConverter to turn this string into another data type 
-        /// that it expects.</param>
-        /// <param name="recorder"></param>
+        /// <param name="updateValueParams">Please see UpdateValueParams for details.</param>
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
-        protected virtual bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected virtual bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             return false; // Base class does not handle this.
         }

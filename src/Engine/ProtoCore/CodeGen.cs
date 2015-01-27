@@ -8,6 +8,7 @@ using System.Text;
 using ProtoCore.AST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoCore
 {
@@ -192,16 +193,16 @@ namespace ProtoCore
             // Cache this function call instance count 
             // This is the count of the number of times in which this callsite appears in the program
             int callInstance = 0;
-            if (!core.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
+            if (!core.RuntimeData.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
             {
                 // The guid doesnt exist yet
-                core.CallsiteGuidMap.Add(graphNode.guid, 0);
+                core.RuntimeData.CallsiteGuidMap.Add(graphNode.guid, 0);
             }
             else
             {
                 // Increment the current count
-                core.CallsiteGuidMap[graphNode.guid]++;
-                functionCallInstance = core.CallsiteGuidMap[graphNode.guid];
+                core.RuntimeData.CallsiteGuidMap[graphNode.guid]++;
+                functionCallInstance = core.RuntimeData.CallsiteGuidMap[graphNode.guid];
             }
 
             // Build the unique ID for a callsite 
@@ -911,7 +912,7 @@ namespace ProtoCore
                     {
                         if (isAllocated && !isAccessible)
                         {
-                            string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, identnode.Value);
+                            string message = String.Format(Resources.kPropertyIsInaccessible, identnode.Value);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kAccessViolation, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             lefttype.UID = finalType.UID = (int)PrimitiveType.kTypeNull;
                             EmitPushNull();
@@ -919,7 +920,7 @@ namespace ProtoCore
                         }
                         else
                         {
-                            string message = String.Format(ProtoCore.StringConstants.kUnboundIdentifierMsg, identnode.Value);
+                            string message = String.Format(Resources.kUnboundIdentifierMsg, identnode.Value);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                         }
 
@@ -962,17 +963,17 @@ namespace ProtoCore
 
                             if (null != staticProcCallNode)
                             {
-                                string message = String.Format(ProtoCore.StringConstants.kMethodHasInvalidArguments, procName);
+                                string message = String.Format(Resources.kMethodHasInvalidArguments, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else if (CoreUtils.TryGetPropertyName(procName, out property))
                             {
-                                string message = String.Format(ProtoCore.StringConstants.kPropertyIsInaccessible, property);
+                                string message = String.Format(Resources.kPropertyIsInaccessible, property);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
                             else
                             {
-                                string message = String.Format(ProtoCore.StringConstants.kMethodIsInaccessible, procName);
+                                string message = String.Format(Resources.kMethodIsInaccessible, procName);
                                 buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, identnode.line, identnode.col, graphNode);
                             }
 
@@ -2230,7 +2231,7 @@ namespace ProtoCore
             String value = Encoding.UTF8.GetString(utf8bytes);
             if (value.Length > 1)
             {
-                buildStatus.LogSyntaxError(StringConstants.tooManyCharacters, null, node.line, node.col);
+                buildStatus.LogSyntaxError(Resources.tooManyCharacters, null, node.line, node.col);
             }
   
             String strValue = "'" + value + "'";
@@ -2605,7 +2606,7 @@ namespace ProtoCore
                 localProcedure.isConstructor &&
                 core.IsFunctionCodeBlock(codeBlock))
             {
-                buildStatus.LogSemanticError(StringConstants.returnStatementIsNotAllowedInConstructor, 
+                buildStatus.LogSemanticError(Resources.returnStatementIsNotAllowedInConstructor, 
                                              core.CurrentDSFileName, 
                                              node.line, 
                                              node.col);
@@ -2960,7 +2961,7 @@ namespace ProtoCore
             int cix = core.ClassTable.IndexOf(string.Format("{0}Attribute", anode.Function.Name));
             if (cix == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
-                buildStatus.LogSemanticError(string.Format(StringConstants.unknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resources.unknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
             }
             ProtoCore.DSASM.AttributeEntry attribute = new ProtoCore.DSASM.AttributeEntry();
             attribute.ClassIndex = cix;
@@ -2969,7 +2970,7 @@ namespace ProtoCore
             {
                 if (!IsConstantExpression(attr))
                 {
-                    buildStatus.LogSemanticError(StringConstants.attributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
+                    buildStatus.LogSemanticError(Resources.attributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
                     return null;
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);
@@ -2987,7 +2988,7 @@ namespace ProtoCore
             }
             if (!hasMatchedConstructor)
             {
-                buildStatus.LogSemanticError(string.Format(StringConstants.noConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resources.noConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
                 return null;
             }
             

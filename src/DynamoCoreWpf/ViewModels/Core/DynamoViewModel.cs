@@ -22,6 +22,7 @@ using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
+using Dynamo.Wpf.Properties;
 using DynamoUtilities;
 
 namespace Dynamo.ViewModels
@@ -353,7 +354,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return string.Format("Show Geometry in {0}",
+                return string.Format(Resources.DynamoViewViewMenuAlternateContextGeometry, 
                                      this.VisualizationManager.AlternateContextName);
             }
         }
@@ -385,7 +386,8 @@ namespace Dynamo.ViewModels
             {
                 string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
                 string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
-                var licensePath = System.IO.Path.Combine(rootModuleDirectory, "License.rtf");
+                var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
+                var licensePath = System.IO.Path.Combine(rootModuleDirectory, language, "License.rtf");
                 return licensePath;
             }
         }
@@ -935,14 +937,14 @@ namespace Dynamo.ViewModels
             if (workspace == HomeSpace)
             {
                 ext = ".dyn";
-                fltr = "Dynamo Workspace (*.dyn)|*.dyn";
+                fltr = Resources.FileDialogDynamoWorkspace;
             }
             else
             {
                 ext = ".dyf";
-                fltr = "Dynamo Custom Node (*.dyf)|*.dyf";
+                fltr = Resources.FileDialogDynamoCustomNode;
             }
-            fltr += "|All files (*.*)|*.*";
+            fltr += "|" + Resources.FileDialogAllFiles;
 
             fileDialog.FileName = workspace.Name + ext;
             fileDialog.AddExtension = true;
@@ -967,7 +969,7 @@ namespace Dynamo.ViewModels
             }
             catch (Exception e)
             {
-                model.Logger.Log("Error opening file:" + e.Message);
+                model.Logger.Log(Resources.MessageFailedToOpenFile + e.Message);
                 model.Logger.Log(e);
                 return;
             }            
@@ -994,8 +996,9 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = "Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf|All files (*.*)|*.*",
-                Title = "Open Dynamo Definition..."
+                Filter = Resources.FileDialogDynamoDefinitions + "|" + 
+                         Resources.FileDialogAllFiles,
+                Title = Resources.OpenDynamoDefinitionDialogTitle
             };
 
             // if you've got the current space path, use it as the inital dir
@@ -1008,7 +1011,8 @@ namespace Dynamo.ViewModels
             {
                 Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
                 string location = Path.GetDirectoryName(dynamoAssembly.Location);
-                string path = Path.Combine(location, "samples");
+                string UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
+                string path = Path.Combine(location, "samples", UICulture);
 
                 if (Directory.Exists(path))
                     _fileDialog.InitialDirectory = path;
@@ -1168,7 +1172,7 @@ namespace Dynamo.ViewModels
         {
             if (symbol == null)
             {
-                throw new Exception("There is a null function definition for this node.");
+                throw new Exception(Resources.MessageNodeWithNullFunction);
             }
 
             if (model.OpenCustomNodeWorkspace(symbol))
@@ -1534,9 +1538,9 @@ namespace Dynamo.ViewModels
                 {
                     AddExtension = true,
                     DefaultExt = ".png",
-                    FileName = "Capture.png",
-                    Filter = "PNG Image|*.png",
-                    Title = "Save your Workbench to an Image",
+                    FileName = Resources.FileDialogDefaultPNGName,
+                    Filter = Resources.FileDialogPNGFiles,
+                    Title = Resources.SaveWorkbenToImageDialogTitle
                 };
             }
 
@@ -1767,14 +1771,11 @@ namespace Dynamo.ViewModels
 
         public void ImportLibrary(object parameter)
         {
-            string fileFilter = "Library Files (*.dll, *.ds)|*.dll;*.ds|"
-                              + "Assembly Library Files (*.dll)|*.dll|"
-                              + "DesignScript Files (*.ds)|*.ds|"
-                              + "All Files (*.*)|*.*";
-
+            string[] fileFilter = {Resources.FileDialogLibraryFiles, Resources.FileDialogAssemblyFiles, 
+                                   Resources.FileDialogDesignScriptFiles, Resources.FileDialogAllFiles};
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = fileFilter;
-            openFileDialog.Title = "Import Library";
+            openFileDialog.Filter = String.Join("|", fileFilter);
+            openFileDialog.Title = Resources.ImportLibraryDialogTitle;
             openFileDialog.Multiselect = true;
             openFileDialog.RestoreDirectory = true;
 
@@ -1857,9 +1858,9 @@ namespace Dynamo.ViewModels
                 {
                     AddExtension = true,
                     DefaultExt = ".stl",
-                    FileName = "model.stl",
-                    Filter = "STL Models|*.stl",
-                    Title = "Save your model to STL.",
+                    FileName = Resources.FileDialogDefaultSTLModelName,
+                    Filter = Resources.FileDialogSTLModels,
+                    Title = Resources.SaveModelToSTLDialogTitle,
                 };
             }
 

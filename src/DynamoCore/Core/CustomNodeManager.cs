@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
+using ProtoCore.Namespace;
+using Symbol = Dynamo.Nodes.Symbol;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Core
 {
     /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
@@ -122,7 +124,7 @@ namespace Dynamo.Utilities
                 
                 // Couldn't find the workspace at all, prepare for a late initialization.
                 Log(
-                    "Unable to create instance of custom node with id: \"" + id + "\"",
+                    Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
                 info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
                 def = null;
@@ -418,9 +420,7 @@ namespace Dynamo.Utilities
                 WorkspaceHeader header;
                 if (!WorkspaceHeader.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
                 {
-                    Log(
-                        "ERROR: The header for the custom node at " + path
-                            + " failed to load.  It will be left out of search.");
+                    Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                     info = null;
                     return false;
                 }
@@ -434,9 +434,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception e)
             {
-                Log(
-                    "ERROR: The header for the custom node at " + path
-                        + " failed to load.  It will be left out of search.");
+                Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                 Log(e.ToString());
                 info = null;
                 return false;
@@ -477,9 +475,9 @@ namespace Dynamo.Utilities
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
             SetPreloadFunctionDefinition(functionId);
-
+ 
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
-
+           
             var newWorkspace = new CustomNodeWorkspaceModel(
                 workspaceInfo.Name,
                 workspaceInfo.Category,
@@ -489,7 +487,7 @@ namespace Dynamo.Utilities
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                functionId, workspaceInfo.FileName);
+                functionId, nodeGraph.ElementResolver, workspaceInfo.FileName);
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -550,7 +548,7 @@ namespace Dynamo.Utilities
 
                 var xmlPath = customNodeInfo.Path;
 
-                Log("Loading node definition for \"" + customNodeInfo + "\" from: " + xmlPath);
+                Log(String.Format(Properties.Resources.LoadingNodeDefinition, customNodeInfo, xmlPath));
 
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
@@ -568,13 +566,13 @@ namespace Dynamo.Utilities
                         return InitializeCustomNode(functionId, header, xmlDoc, out workspace);
                     }
                 }
-                Log(string.Format("Custom node \"{0}\" could not be initialized.", customNodeInfo.Name));
+                Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
                 workspace = null;
                 return false;
             }
             catch (Exception ex)
             {
-                Log("There was an error opening the workspace.");
+                Log(Properties.Resources.OpenWorkspaceError);
                 Log(ex);
 
                 if (isTestMode)
@@ -598,7 +596,7 @@ namespace Dynamo.Utilities
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
-            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, string.Empty);
+            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, new ElementResolver(), string.Empty);
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
@@ -690,7 +688,7 @@ namespace Dynamo.Utilities
 
                 #region Detect 1-node holes (higher-order function extraction)
 
-                Log("Could not repair 1-node holes", WarningLevel.Mild);
+                Log(Properties.Resources.CouldNotRepairOneNodeHoles, WarningLevel.Mild);
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
 
                 //var curriedNodeArgs =
@@ -1022,7 +1020,7 @@ namespace Dynamo.Utilities
                     Enumerable.Empty<NoteModel>(),
                     0,
                     0,
-                    newId, string.Empty);
+                    newId, currentWorkspace.ElementResolver, string.Empty);
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 

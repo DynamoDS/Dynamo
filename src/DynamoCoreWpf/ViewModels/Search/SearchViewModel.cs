@@ -652,7 +652,7 @@ namespace Dynamo.ViewModels
 
         private IEnumerable<NodeSearchElementViewModel> Search(string search, int maxNumSearchResults)
         {
-            var foundNodes = Model.Search(search).Take(15);
+            var foundNodes = Model.Search(search).Take(maxNumSearchResults);
 
             ClearSearchCategories();
             PopulateSearchCategories(foundNodes);

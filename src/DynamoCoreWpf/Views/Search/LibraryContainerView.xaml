@@ -11,6 +11,7 @@
              xmlns:search="clr-namespace:Dynamo.Search;assembly=DynamoCore"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements;assembly=DynamoCore"
              xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
              Visibility="Visible"
@@ -65,9 +66,8 @@
                    Padding="16,0,0,0"
                    Foreground="#AAAAAA"
                    VerticalAlignment="Center"
-                   HorizontalAlignment="Stretch">
-                Library
-            </Label>
+                   HorizontalAlignment="Stretch"
+                   Content="{x:Static p:Resources.LibraryViewTitle}" />
             <Button Mouse.MouseEnter="OnLibraryExpanderMouseEnter"
                     Mouse.MouseLeave="OnLibraryExpanderMouseLeave"
                     Click="OnLibraryExpanderClick"
