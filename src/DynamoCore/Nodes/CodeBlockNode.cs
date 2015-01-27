@@ -58,13 +58,6 @@ namespace Dynamo.Nodes
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
         }
 
-        //public CodeBlockNodeModel(string userCode, LibraryServices libraryServices)
-        //    : this(libraryServices)
-        //{
-        //    code = userCode;
-        //    ProcessCodeDirect();
-        //}
-
         public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
             : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices) { }
 
@@ -267,8 +260,6 @@ namespace Dynamo.Nodes
             helper.SetAttribute("CodeText", code);
             helper.SetAttribute("ShouldFocus", shouldFocus);
 
-            // Serialize elementResolver as strings of partial class name vs. fully resolved name
-            //SerializeElementResolver(element);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -363,26 +354,6 @@ namespace Dynamo.Nodes
 
         #region Private Methods
 
-        //private void SerializeElementResolver(XmlElement nodeElement)
-        //{
-        //    var xmlDoc = nodeElement.OwnerDocument;
-        //    Debug.Assert(xmlDoc != null);
-
-        //    var mapElement = xmlDoc.CreateElement("NamespaceResolutionMap");
-
-        //    foreach (var element in elementResolver.ResolutionMap)
-        //    {
-        //        var resolverElement = xmlDoc.CreateElement("ClassMap");
-                
-        //        resolverElement.SetAttribute("partialName", element.Key);
-        //        resolverElement.SetAttribute("resolvedName", element.Value.Key);
-        //        resolverElement.SetAttribute("assemblyName", element.Value.Value);
-
-        //        mapElement.AppendChild(resolverElement);
-        //    }
-        //    nodeElement.AppendChild(mapElement);
-        //}
-
         private void DeserializeElementResolver(XmlElement nodeElement)
         {
             var xmlDoc = nodeElement.OwnerDocument;
@@ -413,7 +384,7 @@ namespace Dynamo.Nodes
             string errorMessage = string.Empty;
             string warningMessage = string.Empty;
 
-            ProcessCode(ref errorMessage, ref warningMessage, null);
+            ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
             
             // Mark node for update
@@ -431,7 +402,7 @@ namespace Dynamo.Nodes
         }
 
         private void ProcessCode(ref string errorMessage, ref string warningMessage, 
-            ElementResolver workspaceElementResolver)
+            ElementResolver workspaceElementResolver = null)
         {
             code = CodeBlockUtils.FormatUserText(code);
             codeStatements.Clear();
@@ -445,7 +416,6 @@ namespace Dynamo.Nodes
                 if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, 
                     workspaceElementResolver))
                 {
-                    //ElementResolver = parseParam.ElementResolver;
                     if (parseParam.ParsedNodes != null)
                     {
                         // Create an instance of statement for each code statement written by the user
