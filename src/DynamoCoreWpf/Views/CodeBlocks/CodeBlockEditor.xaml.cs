@@ -223,7 +223,7 @@ namespace Dynamo.UI.Controls
             }
             catch (System.Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToAutocomple);
                 this.dynamoViewModel.Model.Logger.Log(ex.Message);
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
@@ -293,7 +293,7 @@ namespace Dynamo.UI.Controls
             }
             catch (System.Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToAutocomple);
                 this.dynamoViewModel.Model.Logger.Log(ex.Message);
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
@@ -437,7 +437,7 @@ namespace Dynamo.UI.Controls
             {
                 nodeViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(nodeModel.GUID,
-                        /*NXLT*/"Code", InnerTextEditor.Text));
+                        "Code", InnerTextEditor.Text));
             }
 
             if (createdForNewCodeBlock)
@@ -449,7 +449,14 @@ namespace Dynamo.UI.Controls
                 // Pop off the two action groups...
                 // 
                 recorder.PopFromUndoGroup(); // Pop off modification action.
-                recorder.PopFromUndoGroup(); // Pop off creation action.
+
+                // Note that due to various external factors a code block node 
+                // loaded from file may be created empty. In such cases, the 
+                // creation step would not have been recorded (there was no 
+                // explicit creation of the node, it was created from loading 
+                // of a file), and nothing should be popped off of the undo stack.
+                if (recorder.CanUndo)
+                    recorder.PopFromUndoGroup(); // Pop off creation action.
 
                 // ... and record this new node as new creation.
                 using (recorder.BeginActionGroup())
@@ -464,15 +471,22 @@ namespace Dynamo.UI.Controls
             if (!string.IsNullOrEmpty(InnerTextEditor.Text))
             {
                 throw new InvalidOperationException(
-                    /*NXLT*/"This method is meant only for empty text box");
+                    "This method is meant only for empty text box");
             }
 
             if (createdForNewCodeBlock)
             {
                 // If this editing was started due to a new code block node, 
                 // then by this point the creation of the node would have been 
-                // recorded, we need to pop that off the undo stack.
-                recorder.PopFromUndoGroup();
+                // recorded, we need to pop that off the undo stack. Note that 
+                // due to various external factors a code block node loaded 
+                // from file may be created empty. In such cases, the creation 
+                // step would not have been recorded (there was no explicit 
+                // creation of the node, it was created from loading of a file),
+                // and nothing should be popped off of the undo stack.
+                // 
+                if (recorder.CanUndo)
+                    recorder.PopFromUndoGroup(); // Pop off creation action.
 
                 // The empty code block node needs to be removed from workspace.
                 nodeViewModel.WorkspaceViewModel.Model.RemoveNode(nodeModel);

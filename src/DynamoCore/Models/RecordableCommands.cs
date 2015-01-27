@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -919,11 +920,18 @@ namespace Dynamo.Models
 
         public class UpdateModelValueCommand : RecordableCommand
         {
+            private readonly List<Guid> modelGuids;
+
             #region Public Class Methods
 
             public UpdateModelValueCommand(Guid modelGuid, string name, string value)
+                : this(new[] {modelGuid}, name, value)
             {
-                ModelGuid = modelGuid;
+            }
+
+            public UpdateModelValueCommand(IEnumerable<Guid> modelGuids, string name, string value)
+            {
+                this.modelGuids = new List<Guid>(modelGuids);
                 Name = name;
                 Value = value;
             }
@@ -931,17 +939,35 @@ namespace Dynamo.Models
             internal static UpdateModelValueCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                Guid modelGuid = helper.ReadGuid("ModelGuid");
                 string name = helper.ReadString("Name");
                 string value = helper.ReadString("Value");
-                return new UpdateModelValueCommand(modelGuid, name, value);
+
+                Guid modelGuid = helper.ReadGuid("ModelGuid", Guid.Empty);
+                if (modelGuid != Guid.Empty)
+                {
+                    // An old type of 'UpdateModelValueCommand' works for only one 
+                    // 'NodeModel' whose Guid is stored under 'ModelGuid' attribute.
+                    return new UpdateModelValueCommand(modelGuid, name, value);
+                }
+                else
+                {
+                    // Parsing a new type of 'UpdateModelValueCommand' that works 
+                    // for multiple 'NodeModel' whose Guid values are each stored 
+                    // as a 'ModelGuid' child element under the main element.
+                    // 
+                    var modelGuids = (from XmlNode xmlNode in element.ChildNodes
+                                      where xmlNode.Name.Equals("ModelGuid")
+                                      select Guid.Parse(xmlNode.InnerText)).ToList();
+
+                    return new UpdateModelValueCommand(modelGuids, name, value);
+                }
             }
 
             #endregion
 
             #region Public Command Properties
 
-            internal Guid ModelGuid { get; private set; }
+            internal IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
             internal string Name { get; private set; }
             internal string Value { get; private set; }
 
@@ -957,14 +983,22 @@ namespace Dynamo.Models
             protected override void SerializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                helper.SetAttribute("ModelGuid", ModelGuid);
                 helper.SetAttribute("Name", Name);
                 helper.SetAttribute("Value", Value);
+
+                var document = element.OwnerDocument;
+                foreach (var modelGuid in modelGuids)
+                {
+                    var childNode = document.CreateElement("ModelGuid");
+                    childNode.InnerText = modelGuid.ToString();
+                    element.AppendChild(childNode);
+                }
             }
 
             public override string ToString()
             {
-                return String.Format("ModelGuid: {0}, Name: {1}, Value: {2}", ModelGuid, Name, Value);
+                // This method will be removed if no one is referencing it.
+                throw new NotImplementedException("UpdateModelValueCommand.ToString");
             }
 
             #endregion

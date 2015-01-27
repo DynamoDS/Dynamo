@@ -15,6 +15,7 @@ using Dynamo.PackageManager;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
@@ -49,7 +50,7 @@ namespace Dynamo.Controls
             var dateString = value as string;
             if (dateString != null) return PrettyDate(dateString);
 
-            return "Unknown date format";
+            return Resources.UnknowDateFormat;
         }
 
         private string PrettyDate(string json_string)
@@ -76,7 +77,7 @@ namespace Dynamo.Controls
 
                 if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
                 {
-                    return "Search returned no results!";
+                    return Resources.PackageSearchStateNoResult;
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
                 {
@@ -84,15 +85,15 @@ namespace Dynamo.Controls
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
                 {
-                    return "Searching...";
+                    return Resources.PackageSearchStateSearching;
                 }
                 else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
                 {
-                    return "Syncing with server...";
+                    return Resources.PackageSearchStateSyncingWithServer;
                 }
             }
 
-            return "Unknown";
+            return Resources.PackageStateUnknown;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -112,32 +113,31 @@ namespace Dynamo.Controls
 
                 if (st == PackageUploadHandle.State.Compressing)
                 {
-                    return "Compressing...";
+                    return Resources.PackageUploadStateCompressing;
                 }
                 else if (st == PackageUploadHandle.State.Copying)
                 {
-                    return "Copying...";
+                    return Resources.PackageUploadStateCopying;
                 }
                 else if (st == PackageUploadHandle.State.Error)
                 {
-                    return "Error!";
+                    return Resources.PackageUploadStateError;
                 }
                 else if (st == PackageUploadHandle.State.Ready)
                 {
-                    return "Ready";
+                    return Resources.PackageUploadStateReady;
                 }
                 else if (st == PackageUploadHandle.State.Uploaded)
                 {
-                    return "Uploaded";
+                    return Resources.PackageUploadStateUploaded;
                 }
                 else if (st == PackageUploadHandle.State.Uploading)
                 {
-                    return "Uploading...";
+                    return Resources.PackageUploadStateUploading;
                 }
-
             }
 
-            return "Unknown";
+            return Resources.PackageStateUnknown;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -158,32 +158,31 @@ namespace Dynamo.Controls
 
                 if (st == PackageDownloadHandle.State.Downloaded)
                 {
-                    return "Downloaded";
+                    return Resources.PackageDownloadStateDownloaded;
                 }
                 else if (st == PackageDownloadHandle.State.Downloading)
                 {
-                    return "Downloading";
+                    return Resources.PackageDownloadStateDownloading;
                 }
                 else if (st == PackageDownloadHandle.State.Error)
                 {
-                    return "Error";
+                    return Resources.PackageDownloadStateError;
                 }
                 else if (st == PackageDownloadHandle.State.Installed)
                 {
-                    return "Installed";
+                    return Resources.PackageDownloadStateInstalled;
                 }
                 else if (st == PackageDownloadHandle.State.Installing)
                 {
-                    return "Installing";
+                    return Resources.PackageDownloadStateInstalling;
                 }
                 else if (st == PackageDownloadHandle.State.Uninitialized)
                 {
-                    return "Starting";
+                    return Resources.PackageDownloadStateStarting;
                 }
-
             }
 
-            return "Unknown";
+            return Resources.PackageStateUnknown;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -716,8 +715,7 @@ namespace Dynamo.Controls
             var rowColumn = parameter as string;
             if (rowColumn == null || (!rowColumn.Equals("Row") && (!rowColumn.Equals("Column"))))
             {
-                var message = "'AttachmentToRowColumnConverter' expects a " +
-                    "'ConverterParameter' value to be either 'Row' or 'Column'";
+                var message = Wpf.Properties.Resources.MessageFailedToAttachToRowColumn;
 
                 throw new ArgumentException(message);
             }
@@ -838,11 +836,11 @@ namespace Dynamo.Controls
         {
             if ((int)value > 0)
             {
-                return "Hide Console";
+                return Resources.DynamoViewViewMenuHideConsole;
             }
             else
             {
-                return "Show Console";
+                return Resources.DynamoViewViewMenuShowConsole;
             }
         }
 
@@ -862,7 +860,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            string menuValue = "Showing Background 3D Preview";
+            string menuValue = Resources.DynamoViewViewMenuShowBackground3DPreview;
             if ((bool)value == true)
                 return menuValue;
             else
@@ -887,11 +885,11 @@ namespace Dynamo.Controls
         {
             if ((bool)value == true)
             {
-                return "Hide Classic Node Library";
+                return Resources.HideClassicNodeLibrary;
             }
             else
             {
-                return "Show Classic Node Library";
+                return Resources.ShowClassicNodeLibrary;
             }
         }
 
@@ -911,7 +909,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            return string.Format("Zoom : {0}", value.ToString());
+            return string.Format(Wpf.Properties.Resources.ConverterMessageZoom, value.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -931,7 +929,7 @@ namespace Dynamo.Controls
             System.Globalization.CultureInfo culture)
         {
             Point p = (Point)value;
-            return string.Format("Transform origin X: {0}, Y: {1}", p.X, p.Y);
+            return string.Format(Wpf.Properties.Resources.ConverterMessageTransformOrigin, p.X, p.Y);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -951,7 +949,7 @@ namespace Dynamo.Controls
             System.Globalization.CultureInfo culture)
         {
             Point p = (Point)value;
-            return string.Format("Current offset X: {0}, Y: {1}", p.X, p.Y);
+            return string.Format(Wpf.Properties.Resources.ConverterMessageCurrentOffset, p.X, p.Y);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -1285,15 +1283,15 @@ namespace Dynamo.Controls
             switch (strategy)
             {
                 case LacingStrategy.Disabled:
-                    return "Arugment lacing is disabled for this node.";
+                    return Resources.LacingDisabledToolTip;
                 case LacingStrategy.CrossProduct:
-                    return "For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}.";
+                    return Resources.LacingCrossProductToolTip;
                 case LacingStrategy.First:
-                    return "For two lists {a,b,c}{1,2,3} returns {a1}.";
+                    return Resources.LacingFirstToolTip;
                 case LacingStrategy.Longest:
-                    return "For two lists {a,b,c}{1,2} returns {a1,b2,c2}.";
+                    return Resources.LacingLongestToolTip;
                 case LacingStrategy.Shortest:
-                    return "For two lists {a,b,c}{1,2} returns {a1,b2}.";
+                    return Resources.LacingShortestToolTip;
             }
 
             return "?";
@@ -1476,12 +1474,12 @@ namespace Dynamo.Controls
         {
             //source->target
             if (value == null)
-                return "No file selected.";
+                return Resources.FilePathConverterNoFileSelected;
 
             var str = HttpUtility.UrlDecode(value.ToString());
 
             if (string.IsNullOrEmpty(str))
-                return "No file selected.";
+                return Resources.FilePathConverterNoFileSelected;
 
             // if the number of directories deep exceeds threshold
             if (str.Length - str.Replace(@"\", "").Length >= 5)
@@ -1640,11 +1638,11 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value != true) return "(Up-to-date)";
+            if ((bool)value != true) return Resources.AboutWindowUpToDate;
 
             var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
 
-            return latest != null ? latest.ToString() : "Could not get version.";
+            return latest != null ? latest.ToString() : Resources.AboutWindowCannotGetVersion;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

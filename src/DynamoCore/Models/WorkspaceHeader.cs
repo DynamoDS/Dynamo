@@ -81,7 +81,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                logger.Log("There was an error opening the workspace.");
+                logger.Log(Properties.Resources.OpenWorkbenchError);
                 logger.Log(ex);
                 Debug.WriteLine(ex.Message + ":" + ex.StackTrace);
 

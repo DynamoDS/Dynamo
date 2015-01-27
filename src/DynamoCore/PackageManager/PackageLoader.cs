@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
@@ -77,11 +78,10 @@ namespace Dynamo.PackageManager
                 {
                     discoveredPkg = Package.FromJson(headerPath, AsLogger());
                     if (discoveredPkg == null)
-                        throw new Exception(
-                            headerPath + " contains a package with a malformed header.  Ignoring it.");
+                        throw new Exception(String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
-                    throw new Exception(headerPath + " contains a package without a header.  Ignoring it.");
+                    throw new Exception(String.Format(Properties.Resources.NoHeaderPackage, headerPath));
 
                 // prevent duplicates
                 if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
@@ -89,12 +89,11 @@ namespace Dynamo.PackageManager
                     LocalPackages.Add(discoveredPkg);
                     return discoveredPkg; // success
                 }
-                throw new Exception("A duplicate of the package called " + discoveredPkg.Name +
-                    " was found at " + discoveredPkg.RootDirectory + ".  Ignoring it.");
+                throw new Exception(String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
             catch (Exception e)
             {
-                Log("Exception encountered scanning the package directory at " + RootPackagesDirectory, WarningLevel.Error);
+                Log(String.Format(Properties.Resources.ExceptionEncountered, this.RootPackagesDirectory), WarningLevel.Error);
                 Log(e);
             }
 

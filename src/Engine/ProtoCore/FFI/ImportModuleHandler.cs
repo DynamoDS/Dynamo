@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoFFI
 {
@@ -61,7 +62,7 @@ namespace ProtoFFI
                 if (!FFIExecutionManager.Instance.IsInternalGacAssembly(moduleName))
                 {
                     System.Diagnostics.Debug.Write(@"Cannot import file: '" + modulePathFileName);
-                    _coreObj.LogWarning(ProtoCore.BuildData.WarningID.kFileNotFound, string.Format(ProtoCore.StringConstants.kFileNotFound, modulePathFileName));
+                    _coreObj.LogWarning(ProtoCore.BuildData.WarningID.kFileNotFound, string.Format(Resources.kFileNotFound, modulePathFileName));
                     return null;
                 }
             }
@@ -238,7 +239,7 @@ namespace ProtoFFI
                 }
                 catch
                 {
-                    _coreObj.LogSemanticError(string.Format(ProtoCore.StringConstants.failedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
+                    _coreObj.LogSemanticError(string.Format(Resources.failedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
                 }
             }
             

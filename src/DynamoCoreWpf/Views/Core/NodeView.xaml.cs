@@ -226,7 +226,7 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
-                Title = "Edit Node Name"
+                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle 
             };
 
             editWindow.Owner = Window.GetWindow(this);
