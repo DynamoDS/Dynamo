@@ -90,7 +90,7 @@ namespace Dynamo.Nodes
 
         private void LibraryServicesOnLibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs libraryLoadedEventArgs)
         {
-            ProcessCodeDirect();
+            //ProcessCodeDirect();
         }
 
         /// <summary>
@@ -445,7 +445,7 @@ namespace Dynamo.Nodes
                 if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, 
                     workspaceElementResolver))
                 {
-                    ElementResolver = parseParam.ElementResolver;
+                    //ElementResolver = parseParam.ElementResolver;
                     if (parseParam.ParsedNodes != null)
                     {
                         // Create an instance of statement for each code statement written by the user

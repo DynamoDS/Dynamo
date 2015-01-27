@@ -54,8 +54,11 @@ namespace Dynamo.Models
             HasUnsavedChanges = false;
             Category = category;
             Description = description;
+
             if (elementResolver != null)
-                ElementResolver = elementResolver;
+            {
+                ElementResolver.CopyResolutionMap(elementResolver);
+            }
 
             PropertyChanged += OnPropertyChanged;
         }

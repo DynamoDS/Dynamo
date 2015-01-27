@@ -437,7 +437,7 @@ namespace Dynamo.Models
                 RegisterNode(node);
 
                 var cbn = node as CodeBlockNodeModel;
-                if (cbn != null)
+                if (cbn != null && cbn.ElementResolver != null)
                 {
                     ElementResolver.CopyResolutionMap(cbn.ElementResolver);
                 }

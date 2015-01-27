@@ -151,13 +151,13 @@ namespace ProtoCore.Utils
             this.warnings.AddRange(warnings);
         }
 
-        public void UpdateCbnElementResolver(ElementResolver workspaceElementResolver)
-        {
-            if(ElementResolver == null)
-                ElementResolver = new ElementResolver();
+        //public void UpdateCbnElementResolver(ElementResolver workspaceElementResolver)
+        //{
+        //    if(ElementResolver == null)
+        //        ElementResolver = new ElementResolver();
 
-            ElementResolver.CopyResolutionMap(workspaceElementResolver);
-        }
+        //    ElementResolver.CopyResolutionMap(workspaceElementResolver);
+        //}
 
         #region Public Class Properties
 
@@ -318,11 +318,11 @@ namespace ProtoCore.Utils
                 // update Resolution map in elementResolver with fully resolved name from compiler.
                 ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, resolver, ref astNodes);
 
-                if (workspaceElementResolver != null)
-                {
-                    // Update CBN's copy of element resolver
-                    parseParams.UpdateCbnElementResolver(workspaceElementResolver);
-                }
+                //if (workspaceElementResolver != null)
+                //{
+                //    // Update CBN's copy of element resolver
+                //    parseParams.UpdateCbnElementResolver(workspaceElementResolver);
+                //}
 
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
                 // while performing SSA transforms and we want to keep the original AST's
