@@ -288,7 +288,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void RemoveEntry(NodeSearchElement entry)
+        internal void RemoveEntry(NodeSearchElement entry)
         {
             var branch = GetTreeBranchToNode(libraryRoot, entry);
             if (!branch.Any())
@@ -313,6 +313,61 @@ namespace Dynamo.ViewModels
                 if (parent.Items.Count == 1 && parent.Items[0] is ClassInformationViewModel)
                     parent.Items.RemoveAt(0);
                 target = parent;
+            }
+
+            // After removal of category "target" can become the class.
+            // In this case we need to add target to existing classes contaiiner 
+            // (ClassesNodeCategoryViewModel) or create new one.
+            // For example we have a structure.
+            //
+            //                         Top
+            //                          │
+            //                       Sub1_1  
+            //             ┌────────────┤       
+            //          Sub2_1       Classes 
+            //    ┌────────┤            │     
+            // Classes     Member2   Sub2_2   
+            //    │                     │     
+            // Sub3_1                   Member3
+            //    │                            
+            //    Member1   
+            // 
+            // Let's remove "Member1". Before next code we have removed entry "Member1" and
+            // categories "Sub3_1", "Classes". "Sub2_2" is "target" as soon as it has one item in
+            // Items collection. Next code will deattach from "Sub1_1" and attach target to another
+            // "Classes" category.
+            // Structure should become.
+            //
+            //                         Top
+            //                          │
+            //                       Sub1_1  
+            //                          │  
+            //                       Classes 
+            //               ┌──────────┤ 
+            //            Sub2_1     Sub2_2   
+            //               │          │     
+            //               Member2    Member3    
+            //
+            if (treeStack.Any() && !target.SubCategories.Any())
+            {
+                var parent = treeStack.Pop();
+                // Do not continue if parent is already in classes container.
+                if (parent is ClassesNodeCategoryViewModel && parent.SubCategories.Contains(target))
+                    return;
+
+                // Do not continue as soon as our target is not class.
+                if (target.SubCategories.Any())
+                    return;
+
+                if (!(parent.SubCategories[0] is ClassesNodeCategoryViewModel))
+                    parent.SubCategories.Insert(0, new ClassesNodeCategoryViewModel(parent));
+
+                if (!parent.SubCategories[0].SubCategories.Contains(target))
+                {
+                    // Reattach target from parent to classes container.
+                    parent.SubCategories.Remove(target);
+                    parent.SubCategories[0].SubCategories.Add(target);
+                }
             }
         }
 
@@ -362,7 +417,7 @@ namespace Dynamo.ViewModels
         /// <param name="categoryNames">A list of entries that make up the fully qualified
         /// class name that contains function 'Foo', e.g. 'MyAssembly.MyNamespace.MyClass'.
         /// </param>
-        private void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
+        internal void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
         {
             var nameStack = new Stack<string>(categoryNames.Reverse());
             var target = libraryRoot;
