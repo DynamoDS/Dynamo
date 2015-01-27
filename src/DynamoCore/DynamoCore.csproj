@@ -53,6 +53,7 @@ limitations under the License.
     <PlatformTarget>AnyCPU</PlatformTarget>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -94,11 +95,9 @@ limitations under the License.
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net40\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -111,6 +110,7 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="PackageManager\PackageManagerResult.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />
     <Compile Include="Search\NodeSearchModel.cs" />
@@ -120,6 +120,7 @@ limitations under the License.
     <Compile Include="Search\SearchElements\NodeModelSearchElementBase.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
+    <Compile Include="Utilities\AssemblyConfiguration.cs" />
     <Compile Include="Utilities\OrderedSet.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
@@ -267,6 +268,7 @@ limitations under the License.
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

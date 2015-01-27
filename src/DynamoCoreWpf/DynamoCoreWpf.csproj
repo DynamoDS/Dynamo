@@ -71,6 +71,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
@@ -90,6 +93,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\LoginService.cs" />
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
@@ -179,6 +183,9 @@
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\BrowserWindow.xaml.cs">
+      <DependentUpon>BrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockCompletionData.cs" />
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.xaml.cs">
@@ -279,6 +286,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ShortcutToolbar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -902,6 +913,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\BrowserWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\CodeBlocks\CodeBlockEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1023,6 +1038,9 @@
     <Resource Include="UI\Images\assemblies.png" />
     <Resource Include="UI\Images\files.png" />
     <Resource Include="UI\Images\nodes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

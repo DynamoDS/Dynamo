@@ -1,5 +1,4 @@
-﻿using DSCoreNodesUI;
-
+using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
@@ -16,6 +15,7 @@ using DynamoServices;
 
 using DynamoUnits;
 using DynamoUtilities;
+using Greg;
 using ProtoCore;
 using System;
 using System.Collections.Generic;
@@ -351,6 +351,8 @@ namespace Dynamo.Models
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
+            public IAuthProvider AuthProvider { get; set; }
+            public string PackageManagerAddress { get; set; }
         }
 
         /// <summary>
@@ -384,15 +386,15 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        protected DynamoModel(StartConfiguration configuration)
+        protected DynamoModel(StartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = 128;
 
-            string context = configuration.Context;
-            IPreferences preferences = configuration.Preferences;
-            string corePath = configuration.DynamoCorePath;
-            bool testMode = configuration.StartInTestMode;
+            string context = config.Context;
+            IPreferences preferences = config.Preferences;
+            string corePath = config.DynamoCorePath;
+            bool testMode = config.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
 
@@ -405,7 +407,7 @@ namespace Dynamo.Models
             MigrationManager.MessageLogged += LogMessage;
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
+            var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
             Scheduler = new DynamoScheduler(thread, IsTestMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
@@ -458,7 +460,13 @@ namespace Dynamo.Models
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
-            PackageManagerClient = new PackageManagerClient(
+            var url = config.PackageManagerAddress ??
+                      AssemblyConfiguration.Instance.GetAppSetting("packageManagerAddress");
+
+            Logger.Log("Dynamo will use the package manager server at : " + url);
+
+            PackageManagerClient = new PackageManagerClient( 
+                new GregClient(config.AuthProvider, url), 
                 PackageLoader.RootPackagesDirectory,
                 CustomNodeManager);
 
