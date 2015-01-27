@@ -1677,6 +1677,7 @@ namespace ProtoCore
                                           List<StackValue> formalParameters, StackFrame stackFrame, Core core,
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
+            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
             if(core.CancellationPending)
             {
                 throw new ExecutionCancelledException();               
@@ -1694,7 +1695,7 @@ namespace ProtoCore
 
             if (core.Options.IDEDebugMode && core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
-                DebugFrame debugFrame = core.DebugProps.DebugStackFrame.Peek();
+                DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
                 debugFrame.FinalFepChosen = finalFep;
             }
 

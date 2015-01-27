@@ -41,6 +41,7 @@ namespace ProtoCore.Lang
         {
             // Build the stackframe
             var core = interpreter.runtime.Core;
+            var runtimeCore = interpreter.runtime.RuntimeCore;
 
             int classScopeCaller = stackFrame.ClassScope;
             int returnAddr = stackFrame.ReturnPC;
@@ -124,7 +125,8 @@ namespace ProtoCore.Lang
                                  core.ExecMode != InterpreterMode.kExpressionInterpreter;
             if (isInDebugMode)
             {
-                core.DebugProps.SetUpCallrForDebug(core, 
+                runtimeCore.DebugProps.SetUpCallrForDebug(core, 
+                                                          runtimeCore,
                                                           interpreter.runtime, 
                                                           procNode, 
                                                           returnAddr - 1, 
@@ -144,7 +146,7 @@ namespace ProtoCore.Lang
 
             if (isInDebugMode)
             {
-                core.DebugProps.RestoreCallrForNoBreak(core, procNode);
+                runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode);
             }
 
             return rx;

@@ -851,12 +851,12 @@ namespace ProtoAssociative
                          procNode.pc);
             }
             // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
-            else if (core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
+            else if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
             {
-                Validity.Assert(core.DebugProps.highlightRange != null);
+                Validity.Assert(core.DebuggerProperties.highlightRange != null);
 
-                ProtoCore.CodeModel.CodePoint startInclusive = core.DebugProps.highlightRange.StartInclusive;
-                ProtoCore.CodeModel.CodePoint endExclusive = core.DebugProps.highlightRange.EndExclusive;
+                ProtoCore.CodeModel.CodePoint startInclusive = core.DebuggerProperties.highlightRange.StartInclusive;
+                ProtoCore.CodeModel.CodePoint endExclusive = core.DebuggerProperties.highlightRange.EndExclusive;
 
                 EmitCall(procNode.procId, type, depth, startInclusive.LineNo, startInclusive.CharNo, endExclusive.LineNo, endExclusive.CharNo, procNode.pc);
             }
@@ -1942,9 +1942,9 @@ namespace ProtoAssociative
                                  procNode.pc);
                     }
                     // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
-                    else if (core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
+                    else if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
                     {
-                        var codeRange = core.DebugProps.highlightRange;
+                        var codeRange = core.DebuggerProperties.highlightRange;
                         Validity.Assert(codeRange != null);
 
                         var startInclusive = codeRange.StartInclusive;
@@ -3847,6 +3847,8 @@ namespace ProtoAssociative
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
+            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+
             core.startPC = this.pc;
             compilePass = ProtoCore.Compiler.Associative.CompilePass.kGlobalScope;
             ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode;
@@ -3857,7 +3859,7 @@ namespace ProtoAssociative
             globalProcIndex = ProtoCore.DSASM.Constants.kGlobalScope;
 
             // check if currently inside a function when the break was called
-            if (core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
+            if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 // Save the current scope for the expression interpreter
                 globalClassIndex = core.watchClassScope = core.Rmem.CurrentStackFrame.ClassScope;
@@ -6481,17 +6483,17 @@ namespace ProtoAssociative
                     Validity.Assert(null != "Unknown node type!");
                 }
 
-                DebugProperties.BreakpointOptions oldOptions = core.DebugProps.breakOptions;
+                DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
 
                 if (emitBreakpointForPop)
                 {
                     DebugProperties.BreakpointOptions newOptions = oldOptions;
                     newOptions |= DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint;
-                    core.DebugProps.breakOptions = newOptions;
+                    core.DebuggerProperties.breakOptions = newOptions;
                 }
 
                 DfsTraverse(modifierNode, ref inferedType, isBooleanOp, graphNode, subPass);
-                core.DebugProps.breakOptions = oldOptions;
+                core.DebuggerProperties.breakOptions = oldOptions;
             }
             //core.Options.EmitBreakpoints = true;
         }
@@ -6697,12 +6699,12 @@ namespace ProtoAssociative
                 identNode.Name = ProtoCore.DSASM.Constants.kInlineConditionalMethodName;
                 inlineCall.Function = identNode;
 
-                DebugProperties.BreakpointOptions oldOptions = core.DebugProps.breakOptions;
+                DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
                 DebugProperties.BreakpointOptions newOptions = oldOptions;
                 newOptions |= DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint;
-                core.DebugProps.breakOptions = newOptions;
+                core.DebuggerProperties.breakOptions = newOptions;
 
-                core.DebugProps.highlightRange = new ProtoCore.CodeModel.CodeRange
+                core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
                 {
                     StartInclusive = new ProtoCore.CodeModel.CodePoint
                     {
@@ -6765,8 +6767,8 @@ namespace ProtoAssociative
                     inlineCall.FormalArguments.Add(dynBlockF);
                 }
 
-                core.DebugProps.breakOptions = oldOptions;
-                core.DebugProps.highlightRange = new ProtoCore.CodeModel.CodeRange
+                core.DebuggerProperties.breakOptions = oldOptions;
+                core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
                 {
                     StartInclusive = new ProtoCore.CodeModel.CodePoint
                     {
@@ -7957,7 +7959,7 @@ namespace ProtoAssociative
             ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
             ProtoCore.Type rightType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
-            DebugProperties.BreakpointOptions oldOptions = core.DebugProps.breakOptions;
+            DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
             
             /*
             proc emitbinaryexpression(node)
@@ -8222,7 +8224,7 @@ namespace ProtoAssociative
             {
                 DebugProperties.BreakpointOptions newOptions = oldOptions;
                 newOptions |= DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint;
-                core.DebugProps.breakOptions = newOptions;
+                core.DebuggerProperties.breakOptions = newOptions;
 
                 IdentifierNode t = bnode.LeftNode as IdentifierNode;
                 ProtoCore.DSASM.SymbolNode symbolnode = null;
@@ -8724,7 +8726,7 @@ namespace ProtoAssociative
                 buildStatus.LogSemanticError(message, core.CurrentDSFileName, bnode.line, bnode.col);
                 throw new BuildHaltException(message);
             }
-            core.DebugProps.breakOptions = oldOptions;
+            core.DebuggerProperties.breakOptions = oldOptions;
 
             //if post fix, now traverse the post fix
 

@@ -37,7 +37,8 @@ namespace ProtoCore.Lang
 
         public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
         {
-            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, true);
+            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, core.RuntimeCoreBridge, true);
             ProtoCore.DSASM.Executive oldDSASMExec = null;
             if (core.CurrentExecutive != null)
             {
@@ -143,7 +144,7 @@ namespace ProtoCore.Lang
             {
                 if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
                 {
-                    svRet = interpreter.Run(core.Breakpoints, core.RunningBlock, activation.pc, Language.kInvalid);
+                    svRet = interpreter.Run(runtimeCore.Breakpoints, core.RunningBlock, activation.pc, Language.kInvalid);
                 }
                 else
                 {

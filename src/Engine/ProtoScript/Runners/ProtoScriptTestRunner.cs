@@ -135,6 +135,7 @@ namespace ProtoScript.Runners
             core.InitializeContextGlobals(staticContext.GlobalVarList);
 
             ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, runtimeContext);
+            core.RuntimeCoreBridge = runtimeCore;
 
             try
             {

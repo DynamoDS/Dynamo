@@ -623,7 +623,7 @@ namespace ProtoCore
             }
         }
 
-        public void SetUpCallrForDebug(Core core, DSASM.Executive exec, ProcedureNode fNode, int pc, bool isBaseCall = false,
+        public void SetUpCallrForDebug(Core core, RuntimeCore runtimeCore, DSASM.Executive exec, ProcedureNode fNode, int pc, bool isBaseCall = false,
             CallSite callsite = null, List<StackValue> arguments = null, List<List<ReplicationGuide>> replicationGuides = null, StackFrame stackFrame = null,
             List<StackValue> dotCallDimensions = null, bool hasDebugInfo = false, bool isMember = false, StackValue? thisPtr = null)
         {
@@ -686,20 +686,20 @@ namespace ProtoCore
                 InstructionStream istream = core.DSExecutable.instrStreamList[CurrentBlockId];
                 Validity.Assert(istream.language == Language.kAssociative);
                 {
-                    core.DebugProps.InlineConditionOptions.isInlineConditional = true;
-                    core.DebugProps.InlineConditionOptions.startPc = pc;
+                    runtimeCore.DebugProps.InlineConditionOptions.isInlineConditional = true;
+                    runtimeCore.DebugProps.InlineConditionOptions.startPc = pc;
 
-                    core.DebugProps.InlineConditionOptions.endPc = FindEndPCForAssocGraphNode(pc, istream, fNode, exec.Properties.executingGraphNode, core.Options.ExecuteSSA);
+                    runtimeCore.DebugProps.InlineConditionOptions.endPc = FindEndPCForAssocGraphNode(pc, istream, fNode, exec.Properties.executingGraphNode, core.Options.ExecuteSSA);
 
 
-                    core.DebugProps.InlineConditionOptions.instructionStream = core.RunningBlock;
+                    runtimeCore.DebugProps.InlineConditionOptions.instructionStream = core.RunningBlock;
                     debugFrame.IsInlineConditional = true;
                 }
                 
                 // no replication case
                 if (willReplicate && replicationTrials.Count == 1)
                 {
-                    core.DebugProps.InlineConditionOptions.ActiveBreakPoints.AddRange(core.Breakpoints);
+                    runtimeCore.DebugProps.InlineConditionOptions.ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
 
                     /*if (core.DebugProps.RunMode == Runmode.StepNext)
                     {
@@ -715,8 +715,8 @@ namespace ProtoCore
                     // Clear all breakpoints for outermost replicated call
                     if(!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating))
                     {
-                        ActiveBreakPoints.AddRange(core.Breakpoints);
-                        core.Breakpoints.Clear();
+                        ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
+                        runtimeCore.Breakpoints.Clear();
                     }
 #endif
                     isExternalFunction = false;
@@ -736,8 +736,8 @@ namespace ProtoCore
                 // Clear all breakpoints 
                 if (!DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction) && fNode.name != Constants.kFunctionRangeExpression)
                 {
-                    ActiveBreakPoints.AddRange(core.Breakpoints);
-                    core.Breakpoints.Clear();
+                    ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
+                    runtimeCore.Breakpoints.Clear();
                 }
 
                 isExternalFunction = true;
@@ -751,8 +751,8 @@ namespace ProtoCore
                 // Clear all breakpoints for outermost replicated call
                 if(!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating))
                 {
-                    ActiveBreakPoints.AddRange(core.Breakpoints);
-                    core.Breakpoints.Clear();
+                    ActiveBreakPoints.AddRange(runtimeCore.Breakpoints);
+                    runtimeCore.Breakpoints.Clear();
                 }
 #endif
 
@@ -777,7 +777,7 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="fNode"></param>
         /// <param name="isReplicating"></param>
-        public void RestoreCallrForNoBreak(Core core, ProcedureNode fNode, bool isReplicating = false)
+        public void RestoreCallrForNoBreak(Core core, RuntimeCore runtimeCore, ProcedureNode fNode, bool isReplicating = false)
         {
             Validity.Assert(DebugStackFrame.Count > 0);
             
@@ -793,7 +793,7 @@ namespace ProtoCore
             {
                 if (ActiveBreakPoints.Count > 0 && fNode.name != Constants.kFunctionRangeExpression)
                 {
-                    core.Breakpoints.AddRange(ActiveBreakPoints);
+                    runtimeCore.Breakpoints.AddRange(ActiveBreakPoints);
                     //if (SetUpStepOverFunctionCalls(core, fNode, ActiveBreakPoints))
                     {
                         ActiveBreakPoints.Clear();
@@ -824,32 +824,32 @@ namespace ProtoCore
                     // if stepping over outermost function call
                     if (!DebugStackFrameContains(StackFrameFlagOptions.IsFunctionStepOver))
                     {
-                        SetUpStepOverFunctionCalls(core, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
+                        SetUpStepOverFunctionCalls(core, runtimeCore, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
                     }
                 }
             }
         }
-                
-        public void SetUpStepOverFunctionCalls(Core core, ProcedureNode fNode, GraphNode graphNode, bool hasDebugInfo)
+
+        public void SetUpStepOverFunctionCalls(Core core, RuntimeCore runtimeCore, ProcedureNode fNode, GraphNode graphNode, bool hasDebugInfo)
         {
             int tempPC = DebugEntryPC;
             int limit = 0;  // end pc of current expression
             InstructionStream istream;
 
             int pc = tempPC;
-            if (core.DebugProps.InlineConditionOptions.isInlineConditional)
+            if (runtimeCore.DebugProps.InlineConditionOptions.isInlineConditional)
             {
                 tempPC = InlineConditionOptions.startPc;
                 limit = InlineConditionOptions.endPc;
-                istream = core.DSExecutable.instrStreamList[InlineConditionOptions.instructionStream];
+                istream = runtimeCore.DSExecutable.instrStreamList[InlineConditionOptions.instructionStream];
             }
             else
             {
                 pc = tempPC;
-                istream = core.DSExecutable.instrStreamList[core.RunningBlock];
+                istream = runtimeCore.DSExecutable.instrStreamList[core.RunningBlock];
                 if (istream.language == Language.kAssociative)
                 {
-                    limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, core.Options.ExecuteSSA);
+                    limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, runtimeCore.RuntimeOptions.ExecuteSSA);
                     //Validity.Assert(limit != ProtoCore.DSASM.Constants.kInvalidIndex);
                 }
                 else if (istream.language == Language.kImperative)
@@ -883,8 +883,8 @@ namespace ProtoCore
             if (numNestedFunctionCalls == 0)
             {
                 // If this is the outermost function call 
-                core.Breakpoints.Clear();
-                core.Breakpoints.AddRange(AllbreakPoints);
+                runtimeCore.Breakpoints.Clear();
+                runtimeCore.Breakpoints.AddRange(AllbreakPoints);
 
                 pc = tempPC;
                 while (++pc <= limit)
@@ -894,8 +894,8 @@ namespace ProtoCore
                     if (instr.debug != null && instr.opCode != OpCode.RETC && instr.opCode != OpCode.RETURN && 
                         (instr.opCode != OpCode.RETB)) 
                     {
-                        if (core.Breakpoints.Contains(instr))
-                            core.Breakpoints.Remove(instr);
+                        if (runtimeCore.Breakpoints.Contains(instr))
+                            runtimeCore.Breakpoints.Remove(instr);
                     }
                 }
             }
@@ -932,6 +932,13 @@ namespace ProtoCore
     {
 
         /// <summary>
+        /// This is a temporary instance of RuntimeCore 
+        /// The purpose of this is to move core properties to runtime core in segments and to start using them within the runtime without having to break the exisiting APIs where Core is used.
+        /// Eventually, instances of Core will be removed from the runtime. This means replacing all instances of RuntimeCoreBridge and Core with RuntimeCore.
+        /// </summary>
+        public RuntimeCore RuntimeCoreBridge { get; set; }
+
+        /// <summary>
         /// Properties in under COMPILER_GENERATED_TO_RUNTIME_DATA, are generated at compile time, and passed to RuntimeData/Exe
         /// Only Core can initialize these
         /// </summary>
@@ -942,7 +949,7 @@ namespace ProtoCore
 
         public RuntimeData RuntimeData { get; set; }
 
-        #endregion
+#endregion
 
         // This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries in Graph UI
         public bool IsParsingPreloadedAssembly { get; set; }
@@ -1025,8 +1032,6 @@ namespace ProtoCore
 
         public Executable DSExecutable { get; set; }
 
-        public List<Instruction> Breakpoints { get; set; }
-
         public Options Options { get; private set; }
         public BuildStatus BuildStatus { get; private set; }
         public RuntimeStatus RuntimeStatus { get; private set; }
@@ -1082,7 +1087,12 @@ namespace ProtoCore
         // otherwize the inferedtype information will be lost
         public Type InferedType;
 
-        public DebugProperties DebugProps;
+
+        /// <summary>
+        /// Debugger properties generated at compile time.
+        /// This is copied to the RuntimeCore after compilation
+        /// </summary>
+        public DebugProperties DebuggerProperties;
         
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
 
@@ -1408,7 +1418,7 @@ namespace ProtoCore
             ExecutionLog = Console.Out;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
 
-            DebugProps = new DebugProperties();
+            DebuggerProperties = new DebugProperties();
             InterpreterProps = new Stack<InterpreterProperties>();
 
             ExecutiveProvider = new ExecutiveProvider();
@@ -1768,7 +1778,7 @@ namespace ProtoCore
                 int framePointer = stackFrame.FramePointer;
                 List<StackValue> registers = stackFrame.GetRegisters();
 
-                DebugProps.SetUpBounce(exec, blockCaller, returnAddr);
+                RuntimeCoreBridge.DebugProps.SetUpBounce(exec, blockCaller, returnAddr);
 
                 Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
             }
@@ -1872,7 +1882,6 @@ namespace ProtoCore
         {
             Validity.Assert(RuntimeData != null);
             RuntimeData.FunctionTable = FunctionTable;
-
             return RuntimeData;
         }
 
@@ -1979,7 +1988,7 @@ namespace ProtoCore
         {
             int constructBlockId = Rmem.CurrentConstructBlockId;
             if (constructBlockId == Constants.kInvalidIndex)
-                return DebugProps.CurrentBlockId;
+                return RuntimeCoreBridge.DebugProps.CurrentBlockId;
 
             CodeBlock constructBlock = GetCodeBlock(CodeBlockList, constructBlockId);
             while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
@@ -1990,8 +1999,8 @@ namespace ProtoCore
             if (null != constructBlock)
                 constructBlockId = constructBlock.codeBlockId;
 
-            if (constructBlockId != DebugProps.CurrentBlockId)
-                return DebugProps.CurrentBlockId;
+            if (constructBlockId != RuntimeCoreBridge.DebugProps.CurrentBlockId)
+                return RuntimeCoreBridge.DebugProps.CurrentBlockId;
             else
                 return Rmem.CurrentConstructBlockId;
         }

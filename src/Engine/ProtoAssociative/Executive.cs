@@ -149,7 +149,7 @@ namespace ProtoAssociative
         {
             if (!core.Options.CompileToLib)
             {
-                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
+                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, core.RuntimeCoreBridge);
                 CurrentDSASMExec = interpreter.runtime;
                 StackValue sv = interpreter.Run(codeblock, entry, Language.kAssociative);
                 return sv;
@@ -162,7 +162,7 @@ namespace ProtoAssociative
 
         public override StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, System.Collections.Generic.List<Instruction> breakpoints, ProtoCore.DebugServices.EventSink sink = null, bool fepRun = false)
         {
-            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, fepRun);
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, core.RuntimeCoreBridge, fepRun);
             CurrentDSASMExec = interpreter.runtime;
             StackValue sv = interpreter.Run(breakpoints, codeblock, entry, Language.kAssociative);
             return sv;

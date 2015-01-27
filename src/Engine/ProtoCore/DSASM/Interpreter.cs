@@ -7,9 +7,9 @@ namespace ProtoCore.DSASM
     {
         public Executive runtime;
 
-        public Interpreter(Core core, bool isFEP = false)
+        public Interpreter(Core core, RuntimeCore runtimeCore, bool isFEP = false)
         {
-            runtime = core.ExecutiveProvider.CreateExecutive(core, isFEP);
+            runtime = core.ExecutiveProvider.CreateExecutive(core, runtimeCore, isFEP);
         }
         
         public void Push(int val)

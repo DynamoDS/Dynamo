@@ -15,9 +15,9 @@ namespace ProtoTestFx
 {
     public class InjectionExecutiveProvider : IExecutiveProvider
     {
-        public ProtoCore.DSASM.Executive CreateExecutive(Core core, bool isFep)
+        public ProtoCore.DSASM.Executive CreateExecutive(Core core, RuntimeCore runtimeCore, bool isFep)
         {
-            return new InjectionExecutive(core, isFep);
+            return new InjectionExecutive(core, runtimeCore, isFep);
         }
     }
 
@@ -39,7 +39,7 @@ namespace ProtoTestFx
     public class InjectionExecutive : ProtoCore.DSASM.Executive
     {
 
-        public InjectionExecutive(Core core, bool isFep = false) : base(core, isFep) { }
+        public InjectionExecutive(Core core, RuntimeCore runtimeCore, bool isFep = false) : base(core, runtimeCore, isFep) { }
 
         public static int callrLineNo { get; private set; }
         public static bool IsPopToPropertyArray { get; set; }
@@ -142,8 +142,8 @@ namespace ProtoTestFx
 
                 if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    Core.DebugProps.IsPopmCall = false;
-                    Core.DebugProps.CurrentSymbolName = symbolName;
+                    Core.RuntimeCoreBridge.DebugProps.IsPopmCall = false;
+                    Core.RuntimeCoreBridge.DebugProps.CurrentSymbolName = symbolName;
                 }
 
                 // Add stackvalue against lineNo and variable name
@@ -176,10 +176,10 @@ namespace ProtoTestFx
 
                 if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    if (!Core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
+                    if (!Core.RuntimeCoreBridge.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
                     {
-                        Core.DebugProps.CurrentSymbolName = symbolName;
-                        Core.DebugProps.IsPopmCall = true;
+                        Core.RuntimeCoreBridge.DebugProps.CurrentSymbolName = symbolName;
+                        Core.RuntimeCoreBridge.DebugProps.IsPopmCall = true;
                     }
                 }
 
@@ -215,7 +215,7 @@ namespace ProtoTestFx
             {
                 if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    Core.DebugProps.IsPopmCall = false;
+                    Core.RuntimeCoreBridge.DebugProps.IsPopmCall = false;
                 }
 
                 callrLineNo = instruction.debug.Location.StartInclusive.LineNo;
@@ -434,7 +434,10 @@ namespace ProtoTestFx
             
             //Run
             fsr.PreStart(code, runnerConfig);
-            
+
+
+            RuntimeCore runtimeCore = fsr.runtimeCore;
+
             //StreamReader log = new StreamReader(logFile);
 
             //bool isPrevBreakAtPop = false;
@@ -473,15 +476,15 @@ namespace ProtoTestFx
                     {
                         if (opCode == ProtoCore.DSASM.OpCode.POP)
                         {
-                            VerifyWatch_Run(lineAtPrevBreak, core.DebugProps.CurrentSymbolName, core, map, watchNestedMode, defectID: defectID);
+                            VerifyWatch_Run(lineAtPrevBreak, runtimeCore.DebugProps.CurrentSymbolName, core, map, watchNestedMode, defectID: defectID);
                         }
                         // if previous breakpoint was at a CALLR
                         else if (opCode == ProtoCore.DSASM.OpCode.CALLR)
                         {
-                            if (core.DebugProps.IsPopmCall)
+                            if (runtimeCore.DebugProps.IsPopmCall)
                             {
                                 int ci = (int)currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                                VerifyWatch_Run(InjectionExecutive.callrLineNo, core.DebugProps.CurrentSymbolName, core, map, watchNestedMode, ci, defectID);
+                                VerifyWatch_Run(InjectionExecutive.callrLineNo, runtimeCore.DebugProps.CurrentSymbolName, core, map, watchNestedMode, ci, defectID);
                             }
                         }
                     }

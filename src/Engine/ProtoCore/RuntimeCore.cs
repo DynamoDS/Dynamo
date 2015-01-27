@@ -33,8 +33,10 @@ namespace ProtoCore
         public RuntimeCore(Options runtimeOptions, Executable executable, ProtoCore.Runtime.Context context)
         {
             this.context = context;
-            this.executable = executable;
-            this.runtimeOptions = runtimeOptions;
+            this.DSExecutable = executable;
+            this.RuntimeOptions = runtimeOptions;
+            
+            DebugProps = new DebugProperties();
         }
 
         public StackValue Bounce(
@@ -105,12 +107,18 @@ namespace ProtoCore
             return sv;
         }
 
-        public RuntimeMemory RuntimeMemory { get; set; }
-        public DebugProperties DebugProps { get; set; }
+        public Executable DSExecutable { get; private set; }
+        public Options RuntimeOptions { get; private set; }
 
+        public RuntimeMemory RuntimeMemory { get; set; }
         private Options runtimeOptions;
-        private Executable executable;
         private ProtoCore.Runtime.Context context;
         private Executive executiveRuntime;
+
+#region DEBUGGER_PROPERTIES
+        public DebugProperties DebugProps { get; set; }
+        public List<Instruction> Breakpoints { get; set; }
+#endregion 
+
     }
 }
