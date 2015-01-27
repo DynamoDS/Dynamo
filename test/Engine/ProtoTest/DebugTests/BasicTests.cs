@@ -9337,6 +9337,7 @@ b = 2;";
             }
 
         }
+
         [Test]
         [Category("Debugger")]
         public void SteppingOverinline_Imperative_723_6()
@@ -9374,6 +9375,36 @@ b = 2;";
             }
 
         }
+
+        [Test]
+        [Category("Debugger")]
+        public void TestStepInSimpleFunction()
+        {
+            string src =
+              @"def foo : int(a : int)
+                {
+                    return = a;
+                }
+                c1 = foo(10);";
+
+            fsr.PreStart(src, runnerConfig);
+            DebugRunner.VMState vms = fsr.Step();   // c1 = foo(10);
+
+            vms = fsr.Step();  // return = a;
+
+            Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
+            {
+                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ExecutionMirror mirror = watchRunner.Execute(@"a");
+                Obj objExecVal = mirror.GetWatchValue();
+                Assert.AreNotEqual(null, objExecVal);
+                Assert.AreEqual(10, (Int64)objExecVal.Payload);
+
+            }
+        }
+
+       
+
         [Test]
         [Category("Debugger")]
         public void StepIn_inlineconditional_Imperative_722()
