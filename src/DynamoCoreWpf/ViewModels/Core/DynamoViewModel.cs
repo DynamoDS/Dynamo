@@ -1402,7 +1402,7 @@ namespace Dynamo.ViewModels
             {
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
-                this.ShowStartPage = (Model.Workspaces.Count <= 1);
+                this.ShowStartPage = (Model.Workspaces.Count() <= 1);
             }
         }
 

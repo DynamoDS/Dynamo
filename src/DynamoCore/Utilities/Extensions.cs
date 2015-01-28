@@ -29,6 +29,25 @@ namespace Dynamo.Utilities
     public static class ExtensionMethods
     {
         /// <summary>
+        /// Get the index of an element in an IEnumerable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">The IEnumerable</param>
+        /// <param name="value">The value for which the index is sought</param>
+        /// <returns>Zero or greater if in the IEnumerable, otherwise -1</returns>
+        public static int IndexOf<T>(this IEnumerable<T> source, T value)
+        {
+            int index = 0;
+            var comparer = EqualityComparer<T>.Default; // or pass in as a parameter
+            foreach (T item in source)
+            {
+                if (comparer.Equals(item, value)) return index;
+                index++;
+            }
+            return -1;
+        }
+
+        /// <summary>
         ///     Gets all the tags of an ITree.
         /// </summary>
         /// <typeparam name="TNodeTag"></typeparam>

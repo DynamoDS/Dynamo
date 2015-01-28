@@ -966,8 +966,9 @@ namespace Dynamo.ViewModels
             if (!args.Success)
                 return;
 
-            DynamoViewModel.Model.CustomNodeManager.Collapse(
-                selectedNodes, Model, DynamoModel.IsTestMode, args);
+            DynamoViewModel.Model.AddCustomNodeWorkspace(
+                DynamoViewModel.Model.CustomNodeManager.Collapse(
+                    selectedNodes, Model, DynamoModel.IsTestMode, args));
         }
 
         internal void Loaded()

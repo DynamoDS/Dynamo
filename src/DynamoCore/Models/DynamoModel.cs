@@ -276,10 +276,17 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     The private collection of visible workspaces in Dynamo
+        /// </summary>
+        private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
+
+        /// <summary>
         ///     The collection of visible workspaces in Dynamo
         /// </summary>
-        public readonly List<WorkspaceModel> Workspaces =
-            new List<WorkspaceModel>();
+        public IEnumerable<WorkspaceModel> Workspaces 
+        {
+            get { return _workspaces; } 
+        }
         
         #endregion
 
@@ -896,6 +903,9 @@ namespace Dynamo.Models
 
         #region public methods
 
+        /// <summary>
+        ///     Add a new HomeWorkspace and set as current
+        /// </summary>
         public void AddHomeWorkspace()
         {
             var defaultWorkspace = new HomeWorkspaceModel(
@@ -909,14 +919,23 @@ namespace Dynamo.Models
             AddWorkspace(defaultWorkspace);
             CurrentWorkspace = defaultWorkspace;
         }
-        
+
+        /// <summary>
+        ///     Add a new, visible Custom Node workspace to Dynamo
+        /// </summary>
+        /// <param name="workspace"></param>
+        public void AddCustomNodeWorkspace(CustomNodeWorkspaceModel workspace)
+        {
+            AddWorkspace(workspace);
+        }
+
         /// <summary>
         ///     Remove a workspace from the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
         public void RemoveWorkspace(WorkspaceModel workspace)
         {
-            if (Workspaces.Remove(workspace))
+            if (_workspaces.Remove(workspace))
             {
                 if (workspace is HomeWorkspaceModel)
                     workspace.Dispose();
@@ -1196,6 +1215,8 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         private void AddWorkspace(WorkspaceModel workspace)
         {
+            if (workspace == null) return;
+            
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
@@ -1205,7 +1226,7 @@ namespace Dynamo.Models
                 workspace.MessageLogged -= LogMessage;
             };
 
-            Workspaces.Add(workspace);
+            _workspaces.Add(workspace);
             OnWorkspaceAdded(workspace);
         }
         enum ButtonId
