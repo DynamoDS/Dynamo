@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,8 +47,11 @@ namespace Dynamo.Nodes
                 Height = model.WatchHeight
             };
 
-            View.View.Camera.Position = model.CameraPosition;
-            View.View.Camera.LookDirection = model.LookDirection;
+            var pos = model.CameraPosition;
+            var viewDir = model.LookDirection;
+
+            View.View.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
+            View.View.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
 
             // When user sizes a watch node, only view gets resized. The actual 
             // NodeModel does not get updated. This is where the view updates the 
@@ -90,8 +94,12 @@ namespace Dynamo.Nodes
 
         private void UpdateLatestCameraPosition()
         {
-            watch3dModel.CameraPosition = View.View.Camera.Position;
-            watch3dModel.LookDirection = View.View.Camera.LookDirection;
+            var pos = View.View.Camera.Position;
+            var viewDir = View.View.Camera.LookDirection;
+
+            // Convert Helix3D coordinates from +Y up to +Z up.
+            watch3dModel.CameraPosition = new Point3D(pos.X, -pos.Z, pos.Y);
+            watch3dModel.LookDirection = new Vector3D(viewDir.X, -viewDir.Z, viewDir.Y);
         }
 
         private void RenderData(object data)
@@ -213,8 +221,10 @@ namespace Dynamo.Nodes
 
             WatchWidth = 200;
             WatchHeight = 200;
-            CameraPosition = new Point3D(10, 10, 10);
-            LookDirection = new Vector3D(-1, -1, -1);
+
+            // Camera coordinates stored on the model assume +Z up.
+            CameraPosition = new Point3D(10, -10, 10);
+            LookDirection = new Vector3D(-1, 1, -1);
 
             ShouldDisplayPreviewCore = false;
         }
@@ -283,6 +293,7 @@ namespace Dynamo.Nodes
             viewElement.AppendChild(camElement);
             var camHelper = new XmlElementHelper(camElement);
 
+            // Camera coordinates are saved to the xml assuming +Z up.
             camHelper.SetAttribute("pos_x", CameraPosition.X);
             camHelper.SetAttribute("pos_y", CameraPosition.Y);
             camHelper.SetAttribute("pos_z", CameraPosition.Z);
@@ -307,12 +318,12 @@ namespace Dynamo.Nodes
                         {
                             if (inNode.Name == "camera")
                             {
-                                var x = Convert.ToDouble(inNode.Attributes["pos_x"].Value);
-                                var y = Convert.ToDouble(inNode.Attributes["pos_y"].Value);
-                                var z = Convert.ToDouble(inNode.Attributes["pos_z"].Value);
-                                var lx = Convert.ToDouble(inNode.Attributes["look_x"].Value);
-                                var ly = Convert.ToDouble(inNode.Attributes["look_y"].Value);
-                                var lz = Convert.ToDouble(inNode.Attributes["look_z"].Value);
+                                var x = Convert.ToDouble(inNode.Attributes["pos_x"].Value, CultureInfo.InvariantCulture);
+                                var y = Convert.ToDouble(inNode.Attributes["pos_y"].Value, CultureInfo.InvariantCulture);
+                                var z = Convert.ToDouble(inNode.Attributes["pos_z"].Value, CultureInfo.InvariantCulture);
+                                var lx = Convert.ToDouble(inNode.Attributes["look_x"].Value, CultureInfo.InvariantCulture);
+                                var ly = Convert.ToDouble(inNode.Attributes["look_y"].Value, CultureInfo.InvariantCulture);
+                                var lz = Convert.ToDouble(inNode.Attributes["look_z"].Value, CultureInfo.InvariantCulture);
                                 CameraPosition = new Point3D(x, y, z);
                                 LookDirection = new Vector3D(lx, ly, lz);
                             }
