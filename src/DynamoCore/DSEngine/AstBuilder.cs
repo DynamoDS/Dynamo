@@ -345,7 +345,6 @@ namespace Dynamo.DSEngine
             public const string VarPrefix = @"var_";
             public const string ShortVarPrefix = @"t_";
             public const string CustomNodeReturnVariable = @"%arr";
-            public const string AstBuildBrokenMessage = "Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}";
         }
     }
 }

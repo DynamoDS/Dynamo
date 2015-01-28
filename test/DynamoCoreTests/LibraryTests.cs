@@ -254,7 +254,7 @@ namespace Dynamo.Tests
             // Assert that once a library with classname conflicts is loaded the CBN
             // displays the warning
             Assert.IsTrue(codeBlockNodeOne.ToolTipText.Contains(string.Format(
-                ProtoCore.StringConstants.kMultipleSymbolFoundFromName, "Point", "")));
+                ProtoCore.Properties.Resources.kMultipleSymbolFoundFromName, "Point", "")));
         }
 
         [Test]

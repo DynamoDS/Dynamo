@@ -9,7 +9,7 @@ using Dynamo.Models;
 namespace DSCoreNodesUI
 {
     [NodeName("Legacy Node")]
-    [NodeDescription("This is an obsolete node")]
+    [NodeDescription("DummyNodeDescription",typeof(Dynamo.Properties.Resources))]
     [IsMetaNode]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]

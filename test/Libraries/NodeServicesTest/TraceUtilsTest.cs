@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Threading;
+
+using DynamoServices;
+
 using NUnit.Framework;
 
-namespace DSNodeServicesTest
+namespace DynamoServicesTests
 {
     [TestFixture]
     class TraceUtilsTest
@@ -17,11 +20,11 @@ namespace DSNodeServicesTest
 
             SerializableSring ssString = new SerializableSring(testString);
 
-            DSNodeServices.TraceUtils.SetTraceData(id, ssString);
+            TraceUtils.SetTraceData(id, ssString);
 
             ssString = null;
 
-            SerializableSring ret = (SerializableSring)DSNodeServices.TraceUtils.GetTraceData(id);
+            SerializableSring ret = (SerializableSring)TraceUtils.GetTraceData(id);
 
             Assert.IsTrue(ret.Payload.Equals(testString));
 
@@ -36,7 +39,7 @@ namespace DSNodeServicesTest
 
             SerializableSring ssString = new SerializableSring(testString);
 
-            DSNodeServices.TraceUtils.SetTraceData(id, ssString);
+            TraceUtils.SetTraceData(id, ssString);
 
             ssString = null;
 
@@ -45,7 +48,7 @@ namespace DSNodeServicesTest
             Thread th = new Thread(
                 () =>
                 {
-                    SerializableSring ret = (SerializableSring)DSNodeServices.TraceUtils.GetTraceData(id);
+                    SerializableSring ret = (SerializableSring)TraceUtils.GetTraceData(id);
 
                     test = ret == null;
                         

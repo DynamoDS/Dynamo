@@ -3,20 +3,21 @@ using System.Linq;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
+using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI.HigherOrder
 {
     [NodeName("Function.Apply")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Applies a function to arguments.")]
+    [NodeDescription("FunctionApplyDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ApplyFunction : VariableInputNode
     {
         public ApplyFunction() : base()
         {
-            InPortData.Add(new PortData("func", "Function to apply."));
-            OutPortData.Add(new PortData("func(args)", "Result of application."));
+            InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
+            OutPortData.Add(new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip));
             AddInput();
             RegisterAllPorts();
         }
@@ -65,16 +66,16 @@ namespace DSCoreNodesUI.HigherOrder
 
     [NodeName("Function.Compose")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
-    [NodeDescription("Compose multiple functions.")]
+    [NodeDescription("FunctionComposeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ComposeFunctions : VariableInputNode
     {
         public ComposeFunctions()
         {
-            InPortData.Add(new PortData("func0", "Function #0"));
-            InPortData.Add(new PortData("func1", "Function #1"));
+            InPortData.Add(new PortData("func0", Resources.ComposePortDataFunc0ToolTip));
+            InPortData.Add(new PortData("func1", Resources.ComposePortDataFunc1ToolTip));
 
-            OutPortData.Add(new PortData("func", "Composed function."));
+            OutPortData.Add(new PortData("func", Resources.ComposePortDataResultToolTip));
             RegisterAllPorts();
         }
 

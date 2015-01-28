@@ -8,6 +8,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Wpf;
+using Dynamo.Nodes.Properties;
 
 
 namespace Dynamo.Nodes
@@ -65,7 +66,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("Manages connection to an Arduino microcontroller.")]
+    [NodeDescription("ArduinoDescription",typeof(Dynamo.Nodes.Properties.Resources))]
     [IsVisibleInDynamoLibrary(false)]
     public class Arduino : NodeModel
     {
@@ -73,8 +74,8 @@ namespace Dynamo.Nodes
 
         public Arduino()
         {
-            InPortData.Add(new PortData("exec", "Execution Interval"));
-            OutPortData.Add(new PortData("arduino", "Serial port for later read/write"));
+            InPortData.Add(new PortData("exec", Resources.ArduinoPortDataExecToolTip));
+            OutPortData.Add(new PortData("arduino", Resources.ArduinoPortDataOutputToolTip));
 
             RegisterAllPorts();
 
@@ -147,16 +148,16 @@ namespace Dynamo.Nodes
 
     [NodeName("Read Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("Reads values from an Arduino microcontroller.")]
+    [NodeDescription("ReadArduinoDescription", typeof(Dynamo.Nodes.Properties.Resources))]
     public class ArduinoRead : NodeModel
     {
         SerialPort port;
 
         public ArduinoRead()
         {
-            InPortData.Add(new PortData("arduino", "Arduino serial connection"));
-            InPortData.Add(new PortData("delimiter", "The delimeter in your data coming from the Arduino."));
-            OutPortData.Add(new PortData("output", "Serial output line"));
+            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
+            InPortData.Add(new PortData("delimiter", Resources.ArduionReadPortDataDelimiterToolTip));
+            OutPortData.Add(new PortData("output", Resources.ArduinoReadPortDataOutputToolTip));
 
             RegisterAllPorts();
         }
@@ -200,16 +201,16 @@ namespace Dynamo.Nodes
 
     [NodeName("Write Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("Writes values to an Arduino microcontroller.")]
+    [NodeDescription("WriteArduinoDescription",typeof(Dynamo.Nodes.Properties.Resources))]
     public class ArduinoWrite : NodeModel
     {
         SerialPort port;
 
         public ArduinoWrite()
         {
-            InPortData.Add(new PortData("arduino", "Arduino serial connection"));
-            InPortData.Add(new PortData("text", "Text to be written"));
-            OutPortData.Add(new PortData("success?", "Whether or not the operation was successful."));
+            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
+            InPortData.Add(new PortData("text", Resources.ArduionWritePortDataTextToolTip));
+            OutPortData.Add(new PortData("success?", Resources.ArduinoWritePortDataOutputToolTip));
 
             RegisterAllPorts();
         }
