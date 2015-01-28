@@ -1215,6 +1215,8 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         private void AddWorkspace(WorkspaceModel workspace)
         {
+            if (workspace == null) return;
+            
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
