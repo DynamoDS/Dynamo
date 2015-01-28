@@ -39,6 +39,10 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoInterface">
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -52,7 +56,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-   <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Controls\DynamoSlider.xaml.cs">

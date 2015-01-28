@@ -56,11 +56,11 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="Label.cs" />
     <Compile Include="PointData.cs" />
-  <ItemGroup> 
-  <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="DataTypes\Interfaces.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SurfaceData.cs" />
     <Compile Include="Utils.cs" />
