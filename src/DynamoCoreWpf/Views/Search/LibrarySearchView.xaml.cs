@@ -7,7 +7,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -624,8 +623,17 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            // Update highlighted item when the ItemContainerGenerator is ready.
-            topResultListBox.ItemContainerGenerator.StatusChanged += OnTopResultListBoxIcgStatusChanged;
+            if (topResultListBox.Items.Count > 0)
+            {
+                // Update highlighted item when the ItemContainerGenerator is ready.
+                topResultListBox.ItemContainerGenerator.StatusChanged += OnTopResultListBoxIcgStatusChanged;
+            }
+            else
+            {
+                // Or hide ToolTip if topResultListBox is empty.
+                libraryToolTipPopup.SetDataContext(null, true);
+                UpdateHighlightedItem(null);
+            }
         }
 
         // ListBox.ItemContainerGenerator works asynchronously. To make sure it is ready for use

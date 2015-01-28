@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
+using System.Windows.Threading;
 using Dynamo.Controls;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.UI;
-using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynCmd = Dynamo.Models.DynamoModel;
-using System.Windows.Controls.Primitives;
-using Dynamo.Core;
 using Thickness = System.Windows.Thickness;
-using System.Windows.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -429,6 +424,11 @@ namespace Dynamo.UI.Controls
         {
             double gap = Configurations.ToolTipTargetGapInPixels;
             var dynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this.PlacementTarget);
+            if (dynamoWindow == null)
+            {
+                SetDataContext(null, true);
+                return null;
+            }
             Point targetLocation = this.PlacementTarget
                 .TransformToAncestor(dynamoWindow)
                 .Transform(new Point(0, 0));
