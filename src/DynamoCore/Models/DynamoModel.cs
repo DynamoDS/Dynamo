@@ -275,6 +275,17 @@ namespace Dynamo.Models
             }
         }
 
+        public bool RunEnabled
+        {
+            get 
+            { 
+                if (CurrentWorkspace == null)
+                    return false;
+                
+                return this.CurrentWorkspace.RunEnabled;
+            }
+        }
+
         /// <summary>
         ///     The collection of visible workspaces in Dynamo
         /// </summary>
@@ -1199,10 +1210,12 @@ namespace Dynamo.Models
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
+            workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
             {
                 workspace.WorkspaceSaved -= savedHandler;
                 workspace.MessageLogged -= LogMessage;
+                workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };
 
             Workspaces.Add(workspace);
@@ -1329,6 +1342,12 @@ namespace Dynamo.Models
             }
 
             return args.ClickedButtonId == (int)ButtonId.Proceed;
+        }
+
+        private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "RunEnabled")
+                OnPropertyChanged("RunEnabled");
         }
 
         #endregion
