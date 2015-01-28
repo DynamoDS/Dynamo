@@ -47,7 +47,33 @@ namespace Analysis
         }
 
         /// <summary>
-        /// Create a SurfaceAnalysisData object.
+        /// Create a SurfaceData object without values.
+        /// </summary>
+        /// <param name="surface">The surface which contains the locations.</param>
+        /// <param name="uvs">A list of UV locations on the surface.</param>
+        /// <returns></returns>
+        public static SurfaceData BySurfaceAndPoints(Surface surface, IEnumerable<UV> uvs)
+        {
+            if (surface == null)
+            {
+                throw new ArgumentNullException("surface");
+            }
+
+            if (uvs == null)
+            {
+                throw new ArgumentNullException("uvs");
+            }
+
+            if (!uvs.Any())
+            {
+                throw new ArgumentException(AnalysisResources.EmptyUVsMessage);
+            }
+
+            return new SurfaceData(surface, uvs, null);
+        }
+
+        /// <summary>
+        /// Create a SurfaceData object.
         /// </summary>
         /// <param name="surface">The surface which contains the locations.</param>
         /// <param name="uvs">A list of UV locations on the surface.</param>
