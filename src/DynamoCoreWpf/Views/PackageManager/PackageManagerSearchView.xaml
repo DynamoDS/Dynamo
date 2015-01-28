@@ -4,11 +4,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
         d:DataContext="{d:DesignData Source=./SampleData/PackageManagerSearchViewModelSampleData.xaml}"
         mc:Ignorable="d" 
-        Title="Online Package Search" Name="PackageSearch"  Height="600" Width="480" MinWidth="480" MaxWidth="480">
+        Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="480" MinWidth="480" MaxWidth="480">
     
     <Window.Resources>
         <ResourceDictionary>
@@ -98,36 +99,37 @@
                 <TextBlock Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" 
                            Foreground="#666" 
                            IsHitTestVisible="False"
-                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
+                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                           Text="{x:Static p:Resources.PackageSearchViewSearchTextBox}"/>
 
                 <Button Width="80" Grid.Column="1" Click="SortButton_OnClick" 
-                        Style="{DynamicResource ResourceKey=STextButton}" >Sort by
+                        Style="{DynamicResource ResourceKey=STextButton}" Content="{x:Static p:Resources.PackageSearchViewSortByButton}">
 
                     <Button.ContextMenu>
 
                         <ContextMenu>
                             
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="NAME" Margin="3" 
-                                      IsCheckable="True" Header="Name"
+                                      IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=NAME, Mode=TwoWay}" />
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="LAST_UPDATE" Margin="3" 
-                                      IsCheckable="True" Header="Most Recent Update"
+                                      IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortyByUpdate}"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=LAST_UPDATE, Mode=TwoWay}" />
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="DOWNLOADS" Margin="3" 
-                                      IsCheckable="True" Header="Downloads"
+                                      IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByDownloads}"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DOWNLOADS, Mode=TwoWay}" />
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="VOTES" Margin="3" 
-                                      IsCheckable="True" Header="Votes"
+                                      IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByVotes}"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=VOTES, Mode=TwoWay}" />
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="MAINTAINERS" Margin="3" 
-                                      IsCheckable="True" Header="Author" 
+                                      IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByAuthor}" 
                                       IsChecked="{Binding Path=SortingKey,Converter={StaticResource EnumToBoolConverter},ConverterParameter=MAINTAINERS, Mode=TwoWay}" />
                             <Separator></Separator>
                             <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="ASCENDING" Margin="3" 
-                                      IsCheckable="True" Header="Ascending"
+                                      IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderAscending}"
                                       IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=ASCENDING, Mode=TwoWay}" />
                             <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="DESCENDING" Margin="3" 
-                                      IsCheckable="True" Header="Descending"
+                                      IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderDescending}"
                                       IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DESCENDING, Mode=TwoWay}" />
                         </ContextMenu>
 
@@ -160,7 +162,11 @@
 
                             <StackPanel Width ="445" Name="SearchEle">
 
-                                <TextBlock Text="DEPRECATED" Padding="5" Foreground ="#555" ToolTip="The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!" FontSize="10">
+                                <TextBlock Text="{x:Static p:Resources.PackageSearchViewDeprecated}" 
+                                           Padding="5" 
+                                           Foreground ="#555" 
+                                           ToolTip="{x:Static p:Resources.PackageSearchViewDeprecatedTooltip}" 
+                                           FontSize="10">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
@@ -225,24 +231,36 @@
                                     </Button>
 
                                     <StackPanel Width="30"  Orientation="Vertical" Margin="10,0,0,0">
-                                        <Button Name="UpvoteButton" FontSize="10" ToolTip="Vote in support of this package"  Content="▲" Foreground="Gray" Command="{Binding Path=UpvoteCommand}" Style="{StaticResource FlatButton}" />
+                                        <Button Name="UpvoteButton" 
+                                                FontSize="10" 
+                                                ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
+                                                Content="▲" 
+                                                Foreground="Gray" 
+                                                Command="{Binding Path=UpvoteCommand}" 
+                                                Style="{StaticResource FlatButton}" />
                                         <TextBlock FontSize="10"  HorizontalAlignment="Center" Padding="0,10" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
-                                        <Button Name="DownvoteButton" FontSize="10" ToolTip="Downvote to voice lack of support for this package" Foreground="Gray" Content="▼" Command="{Binding Path=DownvoteCommand}" Style="{StaticResource FlatButton}" />
+                                        <Button Name="DownvoteButton" 
+                                                FontSize="10" 
+                                                ToolTip="{x:Static p:Resources.PackageSearchViewDownvoteButtonTooltip}" 
+                                                Foreground="Gray" 
+                                                Content="▼" 
+                                                Command="{Binding Path=DownvoteCommand}" 
+                                                Style="{StaticResource FlatButton}" />
                                     </StackPanel>
                                 </StackPanel>
 
                                 <StackPanel Visibility="{Binding Path= Model.IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
 
-                                    <TextBlock FontSize="11" FontWeight="Bold" Text="Description" Foreground="WhiteSmoke"  Padding="10,10,0,0"/>
+                                    <TextBlock FontSize="11" FontWeight="Bold" Text="{x:Static p:Resources.PackageSearchViewDescription}" Foreground="WhiteSmoke"  Padding="10,10,0,0"/>
                                     <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
 
                                     <StackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Model.Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
-                                        <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                        <TextBlock FontSize="11" FontWeight="Bold" Text="{x:Static p:Resources.PackageSearchViewKeywords}" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
                                         <TextBlock FontSize="11" Text="{Binding Path=Model.Keywords}" Foreground="WhiteSmoke" />
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
-                                        <TextBlock FontSize="11" FontWeight="Bold" Text="Versions" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
+                                        <TextBlock FontSize="11" FontWeight="Bold" Text="{x:Static p:Resources.PackageSearchViewVersions}" Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
                                         <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
 
                                             <ListBox.ItemContainerStyle>
@@ -258,7 +276,11 @@
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                        <Button Name="DownloadVersionButton"  ToolTip="Install This Version" Content="⇓ Install" Command="{Binding Path=Item2}" Style="{StaticResource SBadgeButton}" />
+                                                        <Button Name="DownloadVersionButton"  
+                                                                ToolTip="{x:Static p:Resources.PackageSearchViewInstallButtonTooltip}" 
+                                                                Content="{x:Static p:Resources.PackageSearchViewInstallButton}" 
+                                                                Command="{Binding Path=Item2}" 
+                                                                Style="{StaticResource SBadgeButton}" />
                                                         <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
                                                     </StackPanel>
                                                 </DataTemplate>
@@ -267,8 +289,8 @@
                                         </ListBox>
                                     </StackPanel>
 
-                                    <Button Name="SiteButton" Content="Visit package website" Visibility="{Binding Path=Model.SiteUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitSiteCommand}" Style="{StaticResource SBadgeButton}" />
-                                    <Button Name="RepositoryButton" Content="Visit package repository" Visibility="{Binding Path=Model.RepositoryUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitRepositoryCommand}" Style="{StaticResource SBadgeButton}" />
+                                    <Button Name="SiteButton" Content="{x:Static p:Resources.PackageSearchViewVisitWebSiteButton}" Visibility="{Binding Path=Model.SiteUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitSiteCommand}" Style="{StaticResource SBadgeButton}" />
+                                    <Button Name="RepositoryButton" Content="{x:Static p:Resources.PackageSearchViewVisitRepositoryBuutton}" Visibility="{Binding Path=Model.RepositoryUrl, Converter={StaticResource EmptyStringToCollapsedConverter}}" Command="{Binding Path=VisitRepositoryCommand}" Style="{StaticResource SBadgeButton}" />
 
                                 </StackPanel>
 
@@ -302,7 +324,10 @@
 
             <StackPanel Name="Controls" Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Background="#222" Visibility="{Binding Path=HasDownloads, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-                <Button Name="ClearCompletedButton" Margin="1, 0, 1, 0" ToolTip="Clear Downloads" Content="Clear"
+                <Button Name="ClearCompletedButton" 
+                        Margin="1, 0, 1, 0" 
+                        ToolTip="{x:Static p:Resources.PackageSearchViewClearButtonTooltip}" 
+                        Content="{x:Static p:Resources.PackageSearchViewClearButton}"
                       Style="{DynamicResource SBadgeButton}" Command="{Binding Path=ClearCompletedCommand}"/>
 
             </StackPanel>

@@ -4,6 +4,7 @@ using System.Linq;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
+using ProtoCore.Properties;
 
 namespace ProtoCore.Utils
 {
@@ -551,7 +552,7 @@ namespace ProtoCore.Utils
             Validity.Assert(array.IsArray || array.IsString);
             if (array.IsString && !value.IsChar)
             {
-                core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, StringConstants.kAssignNonCharacterToString);
+                core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kAssignNonCharacterToString);
                 return StackValue.Null;
             }
 
@@ -817,7 +818,7 @@ namespace ProtoCore.Utils
                 {
                     if (!array.IsArray)
                     {
-                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                         return StackValue.Null;
                     }
                     array = GetValueFromIndex(array, index, core);
@@ -825,7 +826,7 @@ namespace ProtoCore.Utils
 
                 if (!array.IsArray && !array.IsString)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
@@ -849,7 +850,7 @@ namespace ProtoCore.Utils
             }
             else if (!array.IsArray && !array.IsString)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 

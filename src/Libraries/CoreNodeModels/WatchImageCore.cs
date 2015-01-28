@@ -4,21 +4,22 @@ using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 
+using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Watch Image")]
-    [NodeDescription("Previews an image")]
+    [NodeDescription("WatchImageDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeSearchTags("image")]
+    [NodeSearchTags("WatchImageSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class WatchImageCore : NodeModel
     {
         public WatchImageCore()
         {
-            InPortData.Add(new PortData("image", "image"));
-            OutPortData.Add(new PortData("image", "image"));
+            InPortData.Add(new PortData("image", Resources.PortDataImageToolTip));
+            OutPortData.Add(new PortData("image", Resources.PortDataImageToolTip));
 
             RegisterAllPorts(); 
             

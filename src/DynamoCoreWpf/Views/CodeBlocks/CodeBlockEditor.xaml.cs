@@ -223,7 +223,7 @@ namespace Dynamo.UI.Controls
             }
             catch (System.Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToAutocomple);
                 this.dynamoViewModel.Model.Logger.Log(ex.Message);
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
@@ -293,7 +293,7 @@ namespace Dynamo.UI.Controls
             }
             catch (System.Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToAutocomple);
                 this.dynamoViewModel.Model.Logger.Log(ex.Message);
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }

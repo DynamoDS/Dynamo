@@ -4,11 +4,12 @@ using DSCore;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using DSCoreNodesUI.Properties;
 
 namespace DSCoreNodesUI
 {
     [NodeName("Web Request")]
-    [NodeDescription("Make a web request given a url.")]
+    [NodeDescription("WebRequestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel
@@ -20,8 +21,8 @@ namespace DSCoreNodesUI
 
         public WebRequest()
         {
-            InPortData.Add(new PortData("url", "The url for the web request."));
-            OutPortData.Add(new PortData("result", "The result of the web request."));
+            InPortData.Add(new PortData("url", Resources.WebRequestPortDataUrlToolTip));
+            OutPortData.Add(new PortData("result", Resources.WebRequestPortDataResultToolTip));
             RegisterAllPorts();
         }
 

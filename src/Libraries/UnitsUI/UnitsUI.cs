@@ -24,6 +24,7 @@ using Dynamo.Wpf;
 
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
+using UnitsUI.Properties;
 using ProtoCore.Namespace;
 
 namespace UnitsUI
@@ -202,15 +203,15 @@ namespace UnitsUI
 
     [NodeName("Length From String")]
     [NodeCategory("Units.Length.Create")]
-    [NodeDescription("Enter a length.")]
-    [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
+    [NodeDescription("LengthFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
         public LengthFromString()
         {
             Measure = Length.FromDouble(0.0);
-            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters."));
+            OutPortData.Add(new PortData("length", Resources.LengthFromStringPortDataLengthToolTip));
             RegisterAllPorts();
         }
 
@@ -251,15 +252,15 @@ namespace UnitsUI
 
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
-    [NodeDescription("Enter an area.")]
-    [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
+    [NodeDescription("AreaFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("AreaFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class AreaFromString : MeasurementInputBase
     {
         public AreaFromString()
         {
             Measure = Area.FromDouble(0.0);
-            OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared."));
+            OutPortData.Add(new PortData("area", Resources.AreaFromStringPortDataAreaToolTip));
             RegisterAllPorts();
         }
 
@@ -282,15 +283,15 @@ namespace UnitsUI
 
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
-    [NodeDescription("Enter a volume.")]
-    [NodeSearchTags("Imperial", "Metric", "volume", "Project", "units")]
+    [NodeDescription("VolumeFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("VolumeFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class VolumeFromString : MeasurementInputBase
     {
         public VolumeFromString()
         {
             Measure = Volume.FromDouble(0.0);
-            OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed."));
+            OutPortData.Add(new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip));
             RegisterAllPorts();
         }
 
@@ -304,8 +305,8 @@ namespace UnitsUI
 
     [NodeName("Unit Types")]
     [NodeCategory("Units")]
-    [NodeDescription("Select a unit of measurement.")]
-    [NodeSearchTags("units")]
+    [NodeDescription("UnitTypesDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("UnitTypesSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {

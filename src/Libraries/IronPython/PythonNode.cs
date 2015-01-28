@@ -66,7 +66,7 @@ namespace DSIronPythonNode
     {
         protected PythonNodeBase()
         {
-            OutPortData.Add(new PortData("OUT", "Result of the python script"));
+            OutPortData.Add(new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -110,7 +110,7 @@ namespace DSIronPythonNode
 
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("Runs an embedded IronPython script.")]
+    [NodeDescription("PythonScriptDescription", typeof(DSIronPythonNode.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
@@ -199,14 +199,14 @@ namespace DSIronPythonNode
 
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("Runs a IronPython script from a string.")]
+    [NodeDescription("PythonScriptFromStringDescription", typeof(DSIronPythonNode.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase
     {
         public PythonStringNode()
         {
-            InPortData.Add(new PortData("script", "Python script to run."));
+            InPortData.Add(new PortData("script", Properties.Resources.PythonStringPortDataScriptToolTip));
             AddInput();
             RegisterAllPorts();
         }

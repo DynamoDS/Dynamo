@@ -6,6 +6,7 @@ using System.Text;
 using ProtoCore.DSASM;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoCore.Lang
 {
@@ -93,7 +94,7 @@ namespace ProtoCore.Lang
             if (!isValidThisPointer || (!thisPtr.IsPointer && !thisPtr.IsArray))
             {
                 core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
-                                                     StringConstants.kDeferencingNonPointer);
+                                              Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
 
