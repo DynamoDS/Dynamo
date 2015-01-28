@@ -66,7 +66,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("ArduinoDescription",typeof(Properties.Resources))]
+    [NodeDescription("ArduinoDescription",typeof(Dynamo.Nodes.Properties.Resources))]
     [IsVisibleInDynamoLibrary(false)]
     public class Arduino : NodeModel
     {
@@ -148,7 +148,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Read Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("ReadArduinoDescription", typeof(Properties.Resources))]
+    [NodeDescription("ReadArduinoDescription", typeof(Dynamo.Nodes.Properties.Resources))]
     public class ArduinoRead : NodeModel
     {
         SerialPort port;
@@ -201,7 +201,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Write Arduino")]
     [NodeCategory(BuiltinNodeCategories.IO_HARDWARE)]
-    [NodeDescription("WriteArduinoDescription",typeof(Properties.Resources))]
+    [NodeDescription("WriteArduinoDescription",typeof(Dynamo.Nodes.Properties.Resources))]
     public class ArduinoWrite : NodeModel
     {
         SerialPort port;

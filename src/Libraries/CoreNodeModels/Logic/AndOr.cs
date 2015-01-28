@@ -65,7 +65,7 @@ namespace DSCore.Logic
     /// </summary>
     [NodeName("And")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("AndDescription", typeof(Resources))]
+    [NodeDescription("AndDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class And : BinaryLogic
     {
@@ -77,7 +77,7 @@ namespace DSCore.Logic
     /// </summary>
     [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
-    [NodeDescription("OrDescription", typeof(Resources))]
+    [NodeDescription("OrDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Or : BinaryLogic
     {

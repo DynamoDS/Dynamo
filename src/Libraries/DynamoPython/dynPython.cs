@@ -8,7 +8,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("LEGACY Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
-    [NodeDescription("LEGACYPythonScriptDescription", typeof(Properties.Resources))]
+    [NodeDescription("LEGACYPythonScriptDescription", typeof(Dynamo.Properties.Resources))]
     public class Python : NodeModel
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
 
     [NodeName("LEGACY Python Script With Variable Number of Inputs")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
-    [NodeDescription("LEGACYPythonScriptDescription", typeof(Properties.Resources))]
+    [NodeDescription("LEGACYPythonScriptDescription", typeof(Dynamo.Properties.Resources))]
     public class PythonVarIn : NodeModel
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
 
     [NodeName("LEGACY Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING + ".Legacy")]
-    [NodeDescription("LEGACYPythonScriptFromStringDescription", typeof(Properties.Resources))]
+    [NodeDescription("LEGACYPythonScriptFromStringDescription", typeof(Dynamo.Properties.Resources))]
     public class PythonString : NodeModel
     {
         [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
