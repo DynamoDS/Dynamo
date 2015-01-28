@@ -766,7 +766,8 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                Log(ex.Message);
+                Log(ex.StackTrace);
                 return false;
             }
         }
