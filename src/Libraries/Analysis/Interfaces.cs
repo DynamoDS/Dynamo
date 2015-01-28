@@ -38,11 +38,11 @@ namespace Analysis
     /// An analysis model.
     /// </summary>
     /// <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
-    /// <typeparam name="TResult">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+    /// <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
     public interface IAnalysisModel<TLocation, TValue>
     {
         event EventHandler AnalysisCompleted;
         void Analyze(bool parallel);
-        IEnumerable<IStructuredData<TLocation, TValue>> Values { get; }
+        IEnumerable<IStructuredData<TLocation, TValue>> GetResultsByName(string name);
     }
 }
