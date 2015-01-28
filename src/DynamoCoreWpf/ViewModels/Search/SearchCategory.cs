@@ -35,10 +35,10 @@ namespace Dynamo.Search
             memberGroups = new List<SearchMemberGroup>();
         }
 
-        internal void AddMemberToGroup(NodeSearchElement memberNode)
+        internal void AddMemberToGroup(NodeSearchElementViewModel memberNode)
         {
-            string categoryWithGroup = AddGroupToCategory(memberNode.FullCategoryName,
-                memberNode.Group);
+            string categoryWithGroup = AddGroupToCategory(memberNode.Model.FullCategoryName,
+                memberNode.Model.Group);
             string shortenedCategory = Nodes.Utilities.ShortenCategoryName(categoryWithGroup);
 
             var group = memberGroups.FirstOrDefault(mg => mg.FullyQualifiedName == shortenedCategory);
@@ -48,7 +48,7 @@ namespace Dynamo.Search
                 memberGroups.Add(group);
             }
 
-            group.AddMember(new NodeSearchElementViewModel(memberNode));
+            group.AddMember(memberNode);
         }
 
         // TODO(Vladimir): classes functionality.

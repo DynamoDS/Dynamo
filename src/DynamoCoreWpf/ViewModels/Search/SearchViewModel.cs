@@ -673,7 +673,7 @@ namespace Dynamo.ViewModels
                     searchRootCategories.Add(category);
                 }
 
-                category.AddMemberToGroup(node);
+                category.AddMemberToGroup(MakeNodeSearchElementVM(node));
             }
 
             // Order found categories by name.
