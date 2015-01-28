@@ -521,8 +521,7 @@ namespace Dynamo.Controls
             MeshCount = 0;
 
             var packages = e.Packages
-                .Where(rp=>rp.TriangleVertices.Count % 9 == 0)
-                .ToArray();
+                .Where(rp=>rp.TriangleVertices.Count % 9 == 0);
 
             var points = InitPointGeometry();
             var lines = InitLineGeometry();
