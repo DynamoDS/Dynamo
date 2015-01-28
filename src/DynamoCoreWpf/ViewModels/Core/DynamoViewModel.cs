@@ -809,12 +809,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void CurrentWorkspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "RunEnabled")
-                RaisePropertyChanged("RunEnabled");
-        }
-
         private void CleanUp(DynamoModel dynamoModel)
         {
             UnsubscribeAllEvents();
