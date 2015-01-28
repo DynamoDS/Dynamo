@@ -176,7 +176,7 @@ namespace Dynamo.Nodes
 
             if (def.IsProxy)
             {
-                this.Error("Custom node not loaded!");
+                this.Error(Properties.Resources.CustomNodeNotLoaded);
             } 
             else
             {
