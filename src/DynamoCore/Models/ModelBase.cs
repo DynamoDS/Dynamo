@@ -251,8 +251,7 @@ namespace Dynamo.Models
 
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
-            string typeName = GetType().ToString();
-            XmlElement element = xmlDocument.CreateElement(typeName);
+            var element = CreateElement(xmlDocument, context);
             SerializeCore(element, context);
             return element;
         }
@@ -262,6 +261,13 @@ namespace Dynamo.Models
             DeserializeCore(element, context);
         }
 
+        protected virtual XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
+        {
+            string typeName = GetType().ToString();
+            XmlElement element = xmlDocument.CreateElement(typeName);
+            return element;
+        }
+        
         protected abstract void SerializeCore(XmlElement element, SaveContext context);
         protected abstract void DeserializeCore(XmlElement nodeElement, SaveContext context);
 
