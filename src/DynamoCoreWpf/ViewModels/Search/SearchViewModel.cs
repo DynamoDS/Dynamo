@@ -464,7 +464,7 @@ namespace Dynamo.ViewModels
                         target.SubCategories[0] is ClassesNodeCategoryViewModel)
                     {
                         target.SubCategories[0].SubCategories.Add(newTarget);
-                        newTarget.Entries.Add(entry);
+                        AddEntryToExistingCategory(newTarget, entry);
                         return;
                     }
 
@@ -508,17 +508,17 @@ namespace Dynamo.ViewModels
                 else
                     target = newTarget;
             }
-            target.Entries.Add(entry);
+            AddEntryToExistingCategory(target, entry);
         }
 
-        private static void InsertEntryIntoNewCategory(
+        private void InsertEntryIntoNewCategory(
             NodeCategoryViewModel category,
             NodeSearchElementViewModel entry,
             IEnumerable<string> categoryNames)
         {
             if (!categoryNames.Any())
             {
-                category.Entries.Add(entry);
+                AddEntryToExistingCategory(category, entry);
                 return;
             }
 
@@ -572,6 +572,13 @@ namespace Dynamo.ViewModels
                 category = newTarget;
             }
 
+            AddEntryToExistingCategory(category, entry);
+        }
+
+        private void AddEntryToExistingCategory(NodeCategoryViewModel category,
+            NodeSearchElementViewModel entry)
+        {
+            category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
             category.Entries.Add(entry);
         }
 
