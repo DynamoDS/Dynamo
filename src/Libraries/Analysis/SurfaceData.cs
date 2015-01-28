@@ -138,13 +138,19 @@ namespace Analysis
 
         private Color[,] CreateColorMap()
         {
+            if (Values == null) return null;
+
             // Find the minimum and the maximum for results
             var max = Values.Max();
             var min = Values.Min();
 
             var colorRange = Utils.CreateAnalyticalColorRange();
 
-            var analysisColors = Values.Select(v => colorRange.GetColorAtParameter((v - min) / (max - min))).ToList();
+            // If the values are all the same, ex. max-min == 0.0,
+            // then return the color at the top of the range. Otherwise,
+            // return the color value at the specified parameter.
+            var analysisColors = Values.Select(v => ((max-min) == 0.0 ? colorRange.GetColorAtParameter(1): colorRange.GetColorAtParameter((v - min) / (max - min)))).ToList();
+
             var colorRange2D = ColorRange2D.ByColorsAndParameters(analysisColors, ValueLocations.ToList());
             return colorRange2D.CreateColorMap(COLOR_MAP_WIDTH, COLOR_MAP_HEIGHT);
         }
@@ -154,7 +160,7 @@ namespace Analysis
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
-            if (!Values.Any())
+            if (!Values.Any() || Values == null)
             {
                 return;
             }
