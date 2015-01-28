@@ -142,8 +142,8 @@ namespace Dynamo.Nodes
 
         public double WatchWidth { get; private set; }
         public double WatchHeight { get; private set; }
-        public Point3D CameraPosition { get; internal set; }
-        public Vector3D LookDirection { get; internal set; }
+        public Point3D CameraPosition { get; set; }
+        public Vector3D LookDirection { get; set; }
 
         public delegate void VoidHandler();
         public event VoidHandler RequestUpdateLatestCameraPosition;

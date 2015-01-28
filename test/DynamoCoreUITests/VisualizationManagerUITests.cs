@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Media.Media3D;
+using System.Xml;
 
 using SystemTestServices;
 using Dynamo;
@@ -22,10 +25,7 @@ namespace DynamoCoreUITests
     {
         private Watch3DView BackgroundPreview
         {
-            get
-            {
-                return (Watch3DView)View.background_grid.FindName("background_preview");
-            }
+            get { return (Watch3DView)View.background_grid.FindName("background_preview"); }
         }
 
         [Test]
@@ -64,8 +64,9 @@ namespace DynamoCoreUITests
         [Test, Category("Failure")]
         public void CleansUpGeometryWhenNodeFails()
         {
-            Assert.Inconclusive("Can not test post-failure visualization state as we need to " +
-                                "throwing testing exception which avoid OnEvaluationComplete being called.");
+            Assert.Inconclusive(
+                "Can not test post-failure visualization state as we need to " +
+                    "throwing testing exception which avoid OnEvaluationComplete being called.");
 
             //var model = ViewModel.Model;
             //var viz = ViewModel.VisualizationManager;
@@ -97,7 +98,9 @@ namespace DynamoCoreUITests
             var model = ViewModel.Model;
             var viz = ViewModel.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points_line.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -113,7 +116,9 @@ namespace DynamoCoreUITests
 
             //now flip off the preview on one of the points
             //and ensure that the visualization updates without re-running
-            var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
+            var p1 =
+                model.CurrentWorkspace.Nodes.First(
+                    x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
             p1.IsVisible = false;
 
             Assert.AreEqual(1, BackgroundPreview.Points.Positions.Count);
@@ -121,7 +126,9 @@ namespace DynamoCoreUITests
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
             //flip off the lines node
-            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            var l1 =
+                model.CurrentWorkspace.Nodes.First(
+                    x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.IsVisible = false;
 
             Assert.AreEqual(1, BackgroundPreview.Points.Positions.Count);
@@ -142,7 +149,9 @@ namespace DynamoCoreUITests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points_line.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -157,18 +166,21 @@ namespace DynamoCoreUITests
             Assert.Null(BackgroundPreview.Mesh);
 
             //flip off the line node's preview upstream
-            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            var l1 =
+                model.CurrentWorkspace.Nodes.First(
+                    x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.IsUpstreamVisible = false;
 
             Assert.NotNull(model);
             Assert.NotNull(model.CurrentWorkspace);
-            
+
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
             //nodes, but watch 3D will not be showing them
 
-            var nodeViews = View.NodeViewsInFirstWorkspace().OfNodeModelType<Watch3D>().ToList();
-            
+            var views = View.NodeViewsInFirstWorkspace();
+            var nodeViews = views.OfNodeModelType<Watch3D>().ToList();
+
             Assert.AreEqual(1, nodeViews.Count());
 
             var watch3DNodeView = nodeViews.First();
@@ -183,9 +195,11 @@ namespace DynamoCoreUITests
             var model = ViewModel.Model;
             var viz = ViewModel.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            
+
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
@@ -213,7 +227,9 @@ namespace DynamoCoreUITests
             var model = ViewModel.Model;
             var viz = ViewModel.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points_line.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -225,10 +241,12 @@ namespace DynamoCoreUITests
             //ensure that the number of Drawable nodes
             //and the number of entries in the Dictionary match
             Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
-            Assert.AreEqual(6, BackgroundPreview.Lines.Positions.Count / 2);
-            
+            Assert.AreEqual(6, BackgroundPreview.Lines.Positions.Count/2);
+
             //delete a conector coming into the lines node
-            var lineNode = model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            var lineNode =
+                model.CurrentWorkspace.Nodes.FirstOrDefault(
+                    x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             var port = lineNode.InPorts.First();
             port.Connectors.First().Delete();
 
@@ -243,7 +261,9 @@ namespace DynamoCoreUITests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_thicken.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_thicken.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -259,7 +279,9 @@ namespace DynamoCoreUITests
         {
             var viz = ViewModel.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_cuboid.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_cuboid.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -274,7 +296,9 @@ namespace DynamoCoreUITests
         {
             var viz = ViewModel.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_coordinateSystem.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_coordinateSystem.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -290,7 +314,9 @@ namespace DynamoCoreUITests
         {
             var viz = ViewModel.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_python.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_python.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -308,7 +334,9 @@ namespace DynamoCoreUITests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
@@ -321,8 +349,10 @@ namespace DynamoCoreUITests
             Assert.AreEqual(6, BackgroundPreview.Points.Positions.Count);
 
             //delete a node and ensure that the renderables are cleaned up
-            var pointNode = model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == "0b472626-e18f-404a-bec4-d84ad7f33011");
-            var modelsToDelete = new List<ModelBase> {pointNode};
+            var pointNode =
+                model.CurrentWorkspace.Nodes.FirstOrDefault(
+                    x => x.GUID.ToString() == "0b472626-e18f-404a-bec4-d84ad7f33011");
+            var modelsToDelete = new List<ModelBase> { pointNode };
             model.DeleteModelInternal(modelsToDelete);
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
@@ -335,7 +365,9 @@ namespace DynamoCoreUITests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -357,8 +389,14 @@ namespace DynamoCoreUITests
             CustomNodeInfo info;
             Assert.IsTrue(
                 ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
-                    Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Points.dyf"), true, out info));
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_customNode.dyn");
+                    Path.Combine(
+                        GetTestDirectory(ExecutingDirectory),
+                        @"core\visualization\Points.dyf"),
+                    true,
+                    out info));
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_customNode.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -371,7 +409,9 @@ namespace DynamoCoreUITests
         [Test]
         public void HonorsPreviewSaveState()
         {
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line_noPreview.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points_line_noPreview.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // run the expression
@@ -387,7 +427,9 @@ namespace DynamoCoreUITests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\Labels.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\Labels.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
@@ -397,10 +439,13 @@ namespace DynamoCoreUITests
             //have label display set to false - the default
             Assert.IsTrue(ViewModel.HomeSpace.Nodes.All(x => x.DisplayLabels != true));
 
-            var cbn = model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == "fdec3b9b-56ae-4d01-85c2-47b8425e3130") as CodeBlockNodeModel;
+            var cbn =
+                model.CurrentWorkspace.Nodes.FirstOrDefault(
+                    x => x.GUID.ToString() == "fdec3b9b-56ae-4d01-85c2-47b8425e3130") as
+                    CodeBlockNodeModel;
             Assert.IsNotNull(cbn);
             cbn.SetCodeContent("Point.ByCoordinates(a<1>,a<1>,a<1>);");
-            
+
             // run the expression
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
@@ -430,7 +475,9 @@ namespace DynamoCoreUITests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points_line.dyn");
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points_line.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
@@ -443,11 +490,13 @@ namespace DynamoCoreUITests
             // run the expression
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
-            Assert.AreEqual(6, BackgroundPreview.Lines.Positions.Count() / 2);
+            Assert.AreEqual(6, BackgroundPreview.Lines.Positions.Count()/2);
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
-            var crvNode = model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            var crvNode =
+                model.CurrentWorkspace.Nodes.FirstOrDefault(
+                    x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
@@ -462,11 +511,13 @@ namespace DynamoCoreUITests
             // their render packages shouldn't be carried over to custom work
             // space.
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\");
+            var examplePath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\");
             ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "visualize_line_incustom.dyn"));
 
             ViewModel.HomeSpace.Run();
-            Assert.AreEqual(1, BackgroundPreview.Lines.Positions.Count / 2);
+            Assert.AreEqual(1, BackgroundPreview.Lines.Positions.Count/2);
 
             // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
             var workspace = model.CurrentWorkspace;
@@ -496,6 +547,66 @@ namespace DynamoCoreUITests
             Assert.Null(BackgroundPreview.Points);
             Assert.Null(BackgroundPreview.Lines);
             Assert.Null(BackgroundPreview.Mesh);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void Watch3dSizeStaysConstantBetweenSessions()
+        {
+            var random = new Random();
+            var original = new Watch3D();
+
+            // Update the original node instance.
+            var width = original.Width * (1.0 + random.NextDouble());
+            var height = original.Height * (1.0 + random.NextDouble());
+            original.SetSize(Math.Floor(width), Math.Floor(height));
+
+            original.CameraPosition = new Point3D(10, 20, 30);
+            original.LookDirection = new Vector3D(15, 25, 35);
+
+            // Ensure the serialization survives through file, undo, and copy.
+            var document = new XmlDocument();
+            var fileElement = original.Serialize(document, SaveContext.File);
+            var undoElement = original.Serialize(document, SaveContext.Undo);
+            var copyElement = original.Serialize(document, SaveContext.Copy);
+
+            // Duplicate the node in various save context.
+            var nodeFromFile = new Watch3D();
+            var nodeFromUndo = new Watch3D();
+            var nodeFromCopy = new Watch3D();
+            nodeFromFile.Deserialize(fileElement, SaveContext.File);
+            nodeFromUndo.Deserialize(undoElement, SaveContext.Undo);
+            nodeFromCopy.Deserialize(copyElement, SaveContext.Copy);
+
+            // Making sure we have properties preserved through file operation.
+            Assert.AreEqual(original.WatchWidth, nodeFromFile.WatchWidth);
+            Assert.AreEqual(original.WatchHeight, nodeFromFile.WatchHeight);
+            Assert.AreEqual(original.CameraPosition.X, nodeFromFile.CameraPosition.X);
+            Assert.AreEqual(original.CameraPosition.Y, nodeFromFile.CameraPosition.Y);
+            Assert.AreEqual(original.CameraPosition.Z, nodeFromFile.CameraPosition.Z);
+            Assert.AreEqual(original.LookDirection.X, nodeFromFile.LookDirection.X);
+            Assert.AreEqual(original.LookDirection.Y, nodeFromFile.LookDirection.Y);
+            Assert.AreEqual(original.LookDirection.Z, nodeFromFile.LookDirection.Z);
+
+            // Making sure we have properties preserved through undo operation.
+            Assert.AreEqual(original.WatchWidth, nodeFromUndo.WatchWidth);
+            Assert.AreEqual(original.WatchHeight, nodeFromUndo.WatchHeight);
+            Assert.AreEqual(original.CameraPosition.X, nodeFromUndo.CameraPosition.X);
+            Assert.AreEqual(original.CameraPosition.Y, nodeFromUndo.CameraPosition.Y);
+            Assert.AreEqual(original.CameraPosition.Z, nodeFromUndo.CameraPosition.Z);
+            Assert.AreEqual(original.LookDirection.X, nodeFromUndo.LookDirection.X);
+            Assert.AreEqual(original.LookDirection.Y, nodeFromUndo.LookDirection.Y);
+            Assert.AreEqual(original.LookDirection.Z, nodeFromUndo.LookDirection.Z);
+
+            // Making sure we have properties preserved through copy operation.
+            Assert.AreEqual(original.WatchWidth, nodeFromCopy.WatchWidth);
+            Assert.AreEqual(original.WatchHeight, nodeFromCopy.WatchHeight);
+            Assert.AreEqual(original.CameraPosition.X, nodeFromCopy.CameraPosition.X);
+            Assert.AreEqual(original.CameraPosition.Y, nodeFromCopy.CameraPosition.Y);
+            Assert.AreEqual(original.CameraPosition.Z, nodeFromCopy.CameraPosition.Z);
+            Assert.AreEqual(original.LookDirection.X, nodeFromCopy.LookDirection.X);
+            Assert.AreEqual(original.LookDirection.Y, nodeFromCopy.LookDirection.Y);
+            Assert.AreEqual(original.LookDirection.Z, nodeFromCopy.LookDirection.Z);
         }
 
         private int GetTotalDrawablesInModel()
