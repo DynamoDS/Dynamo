@@ -127,12 +127,19 @@ namespace ProtoScript.Runners
             return buildSucceeded;
         }
 
+        /// <summary>
+        /// Execute the data stored in core
+        /// This is the entry point of all DS code to be executed
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="runningBlock"></param>
+        /// <param name="staticContext"></param>
+        /// <param name="runtimeContext"></param>
         public void Execute(ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
         {
             // Move these core setup to runtime core 
             core.Rmem.PushFrameForGlobals(core.GlobOffset);
             core.RunningBlock = runningBlock;
-            core.InitializeContextGlobals(staticContext.GlobalVarList);
 
             ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, runtimeContext);
 
@@ -163,37 +170,22 @@ namespace ProtoScript.Runners
                 throw;
             }
         }
+        
 
-        public ExecutionMirror Execute(string code, ProtoCore.Core core, Dictionary<string, Object> values, bool isTest = true)
-        {
-            //Inject the context data values from external source.
-            core.AddContextData(values);
-            int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(code, core, out blockId);
-            if (succeeded)
-            {
-                core.GenerateExecutable();
-                Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
-
-                if (!isTest) { core.Heap.Free(); }
-            }
-            else
-            {
-                throw new ProtoCore.Exceptions.CompileErrorsOccured();
-            }
-
-            if (isTest && !core.Options.CompileToLib)
-            {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
-            }
-
-            return null;
-        }
-
+        /// <summary>
+        /// Compile and execute the source that is stored in the static context
+        /// </summary>
+        /// <param name="staticContext"></param>
+        /// <param name="runtimeContext"></param>
+        /// <param name="core"></param>
+        /// <param name="isTest"></param>
+        /// <returns></returns>
         public ExecutionMirror Execute(ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext, ProtoCore.Core core, bool isTest = true)
         {
             Validity.Assert(null != staticContext.SourceCode && String.Empty != staticContext.SourceCode);
-            
+
+            core.AddContextData(staticContext.GlobalVarList);
+   
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(staticContext, core, out blockId);
             if (succeeded)
@@ -219,6 +211,13 @@ namespace ProtoScript.Runners
             return null;
         }
 
+        /// <summary>
+        /// Compile and execute the given list of ASTs
+        /// </summary>
+        /// <param name="astList"></param>
+        /// <param name="core"></param>
+        /// <param name="isTest"></param>
+        /// <returns></returns>
         public ExecutionMirror Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
         {
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -244,11 +243,19 @@ namespace ProtoScript.Runners
 
             return null;
         }
+      
 
-        public ExecutionMirror Execute(string code, ProtoCore.Core core, bool isTest = true)
+        /// <summary>
+        /// Compile and execute the given sourcecode
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="core"></param>
+        /// <param name="isTest"></param>
+        /// <returns></returns>
+        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
         {
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(code, core, out blockId);
+            bool succeeded = Compile(sourcecode, core, out blockId);
             if (succeeded)
             {
                 core.GenerateExecutable();
@@ -279,6 +286,13 @@ namespace ProtoScript.Runners
             return null;
         }
 
+        /// <summary>
+        /// Load and execute the DS code in the specified file
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="core"></param>
+        /// <param name="isTest"></param>
+        /// <returns></returns>
         public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, bool isTest = true)
         {
             System.IO.StreamReader reader = null;
