@@ -66,6 +66,9 @@ namespace DynamoWebServer.Responses
             {
                 return cachedValue.Data.ToString();
             }
+            
+            if (!cachedValue.IsNull && cachedValue.Class != null)
+                return cachedValue.Class.ClassName;
 
             return "null";
         }
