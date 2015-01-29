@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="Controls\StandardPanel.xaml.cs">
       <DependentUpon>StandardPanel.xaml</DependentUpon>
+	</Compile>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
