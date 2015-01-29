@@ -148,12 +148,15 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var index = model.Workspaces.IndexOf(model.CurrentWorkspace);
+                var viewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+                var index = workspaces.IndexOf(viewModel);
                 return index;
             }
             set
             {
-                if (model.Workspaces.IndexOf(model.CurrentWorkspace) != value)
+                var viewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+                var index = workspaces.IndexOf(viewModel);
+                if (index != value)
                     this.ExecuteCommand(new DynamoModel.SwitchTabCommand(value));
             }
         }
@@ -590,7 +593,6 @@ namespace Dynamo.ViewModels
             DynamoModel.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
             DynamoModel.RequestDispatcherInvoke -= TryDispatcherInvoke;
         }
-
         #endregion
 
         private void InitializeAutomationSettings(string commandFilePath)
