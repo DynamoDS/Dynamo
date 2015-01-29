@@ -295,7 +295,7 @@ namespace Dynamo.Controls
             if (renderTimer.IsRunning)
             {
                 renderTimer.Stop();
-                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", renderTimer.Elapsed));
+                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
                 renderTimer.Reset();
             }
         }
@@ -530,7 +530,7 @@ namespace Dynamo.Controls
                 return;
             }
 
-            Debug.WriteLine(string.Format("Rendering visuals for {0}", e.Id));
+            //Debug.WriteLine(string.Format("Rendering visuals for {0}", e.Id));
 
 #if DEBUG
             renderTimer.Start();
@@ -568,6 +568,13 @@ namespace Dynamo.Controls
 
             if (!mesh.Positions.Any())
                 mesh = null;
+
+#if DEBUG
+            renderTimer.Stop();
+            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
+            renderTimer.Reset();
+            renderTimer.Start();
+#endif
 
             Dispatcher.Invoke(new Action<
                 PointGeometry3D,
