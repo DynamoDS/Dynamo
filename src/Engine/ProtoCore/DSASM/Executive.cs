@@ -108,6 +108,102 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
+        /// Bounce instantiates a new Executive 
+        /// Execution jumps to the new executive
+        /// </summary>
+        /// <param name="exeblock"></param>
+        /// <param name="entry"></param>
+        /// <param name="context"></param>
+        /// <param name="stackFrame"></param>
+        /// <param name="locals"></param>
+        /// <param name="locals"></param>
+        /// <returns></returns>
+        public StackValue Bounce(
+            int exeblock, 
+            int entry,
+            ProtoCore.Runtime.Context context,
+            StackFrame stackFrame, 
+            int locals = 0,
+            ProtoCore.DebugServices.EventSink sink = null)
+        {
+            if (stackFrame != null)
+            {
+                StackValue svThisPtr = stackFrame.ThisPtr;
+                int ci = stackFrame.ClassScope;
+                int fi = stackFrame.FunctionScope;
+                int returnAddr = stackFrame.ReturnPC;
+                int blockDecl = stackFrame.FunctionBlock;
+                int blockCaller = stackFrame.FunctionCallerBlock;
+                StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
+                StackFrameType frameType = stackFrame.StackFrameType;
+                Validity.Assert(frameType == StackFrameType.kTypeLanguage);
+
+                int depth = stackFrame.Depth;
+                int framePointer = stackFrame.FramePointer;
+                List<StackValue> registers = stackFrame.GetRegisters();
+
+                rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
+            }
+
+            Language id = exe.instrStreamList[exeblock].language;
+            core.CurrentExecutive = core.Executives[id];
+            StackValue sv = core.Executives[id].Execute(exeblock, entry, context, sink);
+            return sv;
+        }
+
+        /// <summary>
+        /// Bounce instantiates a new Executive 
+        /// Execution jumps to the new executive
+        /// This iverload handles debugger properties when bouncing
+        /// </summary>
+        /// <param name="exeblock"></param>
+        /// <param name="entry"></param>
+        /// <param name="context"></param>
+        /// <param name="breakpoints"></param>
+        /// <param name="stackFrame"></param>
+        /// <param name="locals"></param>
+        /// <param name="exec"></param>
+        /// <param name="fepRun"></param>
+        /// <returns></returns>
+        public StackValue Bounce(
+            int exeblock, 
+            int entry, 
+            ProtoCore.Runtime.Context context, 
+            List<Instruction> breakpoints, 
+            StackFrame stackFrame, 
+            int locals = 0,
+            DSASM.Executive exec = null,
+            ProtoCore.DebugServices.EventSink sink = null,
+            bool fepRun = false)
+        {
+            if (stackFrame != null)
+            {
+                StackValue svThisPtr = stackFrame.ThisPtr;
+                int ci = stackFrame.ClassScope;
+                int fi = stackFrame.FunctionScope;
+                int returnAddr = stackFrame.ReturnPC;
+                int blockDecl = stackFrame.FunctionBlock;
+                int blockCaller = stackFrame.FunctionCallerBlock;
+                StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
+                StackFrameType frameType = stackFrame.StackFrameType;
+                Validity.Assert(frameType == StackFrameType.kTypeLanguage);
+                int depth = stackFrame.Depth;
+                int framePointer = stackFrame.FramePointer;
+                List<StackValue> registers = stackFrame.GetRegisters();
+
+                core.DebugProps.SetUpBounce(exec, blockCaller, returnAddr);
+
+                rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
+            }
+
+            Language id = exe.instrStreamList[exeblock].language;
+            core.CurrentExecutive = core.Executives[id];
+
+            StackValue sv = core.Executives[id].Execute(exeblock, entry, context, breakpoints, sink, fepRun);
+            return sv;
+        }
+
+        /// <summary>
         /// Determines if the runtime is not inside a function 
         /// Will also return true if within a nested language block
         /// </summary>

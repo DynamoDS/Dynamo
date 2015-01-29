@@ -540,8 +540,6 @@ namespace ProtoScript.Runners
             core.Breakpoints = breakpoints;
             resumeBlockID = core.RunningBlock;
 
-            int locals = 0;
-
             if (core.DebugProps.FirstStackFrame != null)
             {
                 core.DebugProps.FirstStackFrame.FramePointer = core.GlobOffset;
@@ -551,7 +549,13 @@ namespace ProtoScript.Runners
                 StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                 core.DebugProps.FirstStackFrame.TX = svCallConvention;
             }
-            core.Bounce(resumeBlockID, programCounterToExecuteFrom, context, breakpoints, core.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);
+
+            // Initialize the entry point interpreter
+            int locals = 0; // This is the global scope, there are no locals
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
+            core.CurrentExecutive = core.Executives[ProtoCore.Language.kAssociative];
+            core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+            core.CurrentExecutive.CurrentDSASMExec.Bounce(resumeBlockID, programCounterToExecuteFrom, context, breakpoints, core.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);
 
             return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
 

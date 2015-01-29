@@ -157,7 +157,6 @@
     <Compile Include="FFI\CLRFFIFunctionPointer.cs" />
     <Compile Include="FFI\CLRObjectMarshler.cs" />
     <Compile Include="FFI\ImportModuleHandler.cs" />
-    <Compile Include="Lang\CSFFIFunctionEndPoint.cs" />
     <Compile Include="Parser\AssociativeAST.cs" />
     <Compile Include="Parser\AST.cs" />
     <Compile Include="Parser\DependencyTracker.cs" />

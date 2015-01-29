@@ -159,8 +159,12 @@ namespace ProtoScript.Runners
                     StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                     stackFrame.TX = svCallConvention;
 
-                    int locals = 0;
-                    core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals, EventSink);
+                    // Initialize the entry point interpreter
+                    int locals = 0; // This is the global scope, there are no locals
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
+                    core.CurrentExecutive = core.Executives[ProtoCore.Language.kAssociative];
+                    core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                    core.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals, EventSink);
                 }
                 core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }

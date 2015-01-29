@@ -127,7 +127,7 @@ namespace ProtoScript.Runners
                     ProtoCore.DSASM.StackFrame stackFrame = null;
                     int locals = 0;
 
-                    StackValue sv = Core.Bounce(blockId, Core.startPC, context, stackFrame, locals, EventSink);
+                    StackValue sv = Core.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.startPC, context, stackFrame, locals, EventSink);
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing
                     // it needs to be popped off at the end for stack alignment - pratapa
