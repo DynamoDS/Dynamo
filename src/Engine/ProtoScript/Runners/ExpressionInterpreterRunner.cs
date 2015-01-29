@@ -43,8 +43,8 @@ namespace ProtoScript.Runners
                 // Save the global offset and restore after compilation
                 int offsetRestore = Core.GlobOffset;
                 Core.GlobOffset = Core.Rmem.Stack.Count;
-                
-                Core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink);
+
+                Core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
                 // Restore the global offset
                 Core.GlobOffset = offsetRestore;

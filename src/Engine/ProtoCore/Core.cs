@@ -995,6 +995,7 @@ namespace ProtoCore
             return ts;
         }
 
+        public Dictionary<Language, Compiler> Compilers { get; private set; }
         public Dictionary<Language, Executive> Executives { get; private set; }
 
         // This will be moved to RuntimeCore

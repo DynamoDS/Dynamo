@@ -212,7 +212,7 @@ namespace ProtoCore.Utils
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 ProtoCore.Language id = globalBlock.language;
 
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, codeBlockNode: codeBlock);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context, codeBlockNode: codeBlock);
 
                 core.BuildStatus.ReportBuildResult();
 

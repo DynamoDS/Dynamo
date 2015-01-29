@@ -37,7 +37,7 @@ namespace ProtoScript.Runners
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.Language id = globalBlock.language;
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
                 core.BuildStatus.ReportBuildResult();
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
@@ -73,7 +73,7 @@ namespace ProtoScript.Runners
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 ProtoCore.Language id = globalBlock.language;
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
                 core.BuildStatus.ReportBuildResult();
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
@@ -113,7 +113,7 @@ namespace ProtoScript.Runners
 		        ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
                 codeblock.Body.AddRange(astList);
 
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink, codeblock);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink, codeblock);
 
                 core.BuildStatus.ReportBuildResult();
 
