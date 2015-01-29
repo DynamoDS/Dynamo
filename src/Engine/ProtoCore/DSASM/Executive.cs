@@ -5168,8 +5168,7 @@ namespace ProtoCore.DSASM
 
                 opdata2 = StackValue.BuildDouble(value1 + value2);
             }
-            else if ((opdata1.IsChar || opdata1.IsString) &&
-                     (opdata2.IsChar || opdata2.IsString))
+            else if (opdata1.IsString && opdata2.IsString)
             {
                 opdata2 = StringUtils.ConcatString(opdata2, opdata1, core);
             }

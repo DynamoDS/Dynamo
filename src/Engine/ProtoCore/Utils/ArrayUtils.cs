@@ -364,7 +364,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static HeapElement GetHeapElement(StackValue heapObject, Core core)
         {
-            if (!heapObject.IsArray && !heapObject.IsString)
+            if (!heapObject.IsArray && !heapObject.IsPointer)
             {
                 return null;
             }
