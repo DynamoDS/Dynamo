@@ -125,6 +125,10 @@ namespace DynamoWebServer.Messages
             {
                 RetrieveGeometry(((GetNodeGeometryMessage)message).NodeId, sessionId);
             }
+            else if (message is GetNodeArrayItemsMessage)
+            {
+                RetrieveArrayItems(message as GetNodeArrayItemsMessage, sessionId);
+            }
             else if (message is ClearWorkspaceMessage)
             {
                 ClearWorkspace((message as ClearWorkspaceMessage).ClearOnlyHome);
@@ -440,30 +444,20 @@ namespace DynamoWebServer.Messages
             }
         }
 
-        private string GetValueFromMirrorData(MirrorData cachedValue)
-        {
-            if (cachedValue.IsCollection)
-            {
-                Func<MirrorData, string> wrappedValue = (el) => "\"" + GetValueFromMirrorData(el) + "\"";
-                
-                var elements = cachedValue.GetElements().ConvertAll(e => wrappedValue(e));
-                
-                return "[" + string.Join(", ", elements) + "]";
-            }
-            else if (cachedValue.Data != null)
-            {
-                return cachedValue.Data.ToString();
-            }
-
-            return "null";
-        }
-
         private string GetValue(NodeModel node)
         {
             string data = "null";
             if (node.CachedValue != null)
             {
-                data = GetValueFromMirrorData(node.CachedValue);
+                data = "null";
+                if (node.CachedValue.IsCollection)
+                {
+                    data = "Array";
+                }
+                else if (node.CachedValue.Data != null)
+                {
+                    data = node.CachedValue.Data.ToString();
+                }
             }
             else if (node is DoubleInput)
             {
@@ -553,6 +547,19 @@ namespace DynamoWebServer.Messages
 
                 OnResultReady(this, new ResultReadyEventArgs(
                     new GeometryDataResponse(new GeometryData(nodeId, model.RenderPackages)), sessionId));
+            }
+        }
+
+        private void RetrieveArrayItems(GetNodeArrayItemsMessage message, string sessionId)
+        {
+            Guid guid;
+            var nodeMap = dynamoModel.NodeMap;
+            if (Guid.TryParse(message.NodeId, out guid) && nodeMap.ContainsKey(guid))
+            {
+                NodeModel model = nodeMap[guid];
+
+                OnResultReady(this, new ResultReadyEventArgs(
+                    new ArrayItemsDataResponse(model, message.IndexFrom, message.Length), sessionId));
             }
         }
 

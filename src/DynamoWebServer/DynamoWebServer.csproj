@@ -81,6 +81,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\IWebSocket.cs" />
     <Compile Include="Messages\ClearWorkspaceMessage.cs" />
+    <Compile Include="Messages\GetNodeArrayItemsMessage.cs" />
     <Compile Include="Messages\HasUnsavedChangesMessage.cs" />
     <Compile Include="Messages\GeometryData.cs" />
     <Compile Include="Messages\GetNodeGeometryMessage.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Messages\ResultReady.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Responses\ArrayItemsDataResponse.cs" />
     <Compile Include="Responses\CodeBlockDataResponse.cs" />
     <Compile Include="Responses\HasUnsavedChangesResponse.cs" />
     <Compile Include="Responses\GeometryDataResponse.cs" />

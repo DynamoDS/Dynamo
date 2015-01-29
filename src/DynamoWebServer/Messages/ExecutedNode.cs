@@ -35,10 +35,11 @@ namespace DynamoWebServer.Messages
         public string Data { get; private set; }
 
         /// <summary>
-        /// String representing if the result object is array
+        /// Number of array items the result object has.
+        /// It will be null for not array node
         /// </summary>
         [DataMember]
-        public bool IsArray { get; private set; }
+        public object ArrayItemsNumber { get; private set; }
 
         /// <summary>
         /// Indicates whether the result object should be drawn on the canvas
@@ -52,8 +53,12 @@ namespace DynamoWebServer.Messages
             this.State = node.State.ToString();
             this.StateMessage = node.ToolTipText;
             this.Data = data;
-            this.IsArray = node.CachedValue != null && node.CachedValue.IsCollection;
             this.ContainsGeometryData = node.HasRenderPackages;
+
+            if (node.CachedValue != null && node.CachedValue.IsCollection)
+            {
+                this.ArrayItemsNumber = node.CachedValue.GetElements().Count;
+            }
         }
     }
 }
