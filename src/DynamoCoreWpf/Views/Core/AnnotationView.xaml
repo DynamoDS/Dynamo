@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.AnnotationView"
+﻿<UserControl x:Class="Dynamo.Nodes.AnnotationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,10 +7,11 @@
              MinWidth="10"
              MinHeight="10"
              Height="Auto" Width="Auto"   Visibility="Visible"
+             MouseDown="AnnotationView_OnMouseDown"
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"
              PreviewMouseDown="AnnotationView_OnPreviewMouseDown"
-             Canvas.Left ="{Binding Left}"
-             Canvas.Top ="{Binding Top}">
+             Canvas.Left="{Binding Left}" 
+             Canvas.Top="{Binding Top}" >
     <UserControl.Resources>
         <Style x:Key="ColorSelectorListBox"
            TargetType="ListBox">
@@ -99,11 +100,7 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Grid Name="AnnotationGrid">
-        <!--<Grid.RowDefinitions>
-            <RowDefinition MaxHeight="20"  />
-            <RowDefinition Height="{Binding Height}" />
-        </Grid.RowDefinitions>-->
+    <Grid Name="AnnotationGrid">       
         <Canvas Background="{x:Null}">
         </Canvas>
         <Rectangle  Name="AnnotationRectangle"

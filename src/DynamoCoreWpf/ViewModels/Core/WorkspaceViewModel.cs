@@ -337,8 +337,7 @@ namespace Dynamo.ViewModels
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
-                    {
-                        //add a corresponding note
+                    {                     
                         var viewModel = new AnnotationViewModel(this, item as AnnotationModel);
                         _annotations.Add(viewModel);
                     }

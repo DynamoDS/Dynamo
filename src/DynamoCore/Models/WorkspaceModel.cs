@@ -621,13 +621,12 @@ namespace Dynamo.Models
             return noteModel;
         }
 
-        public AnnotationModel AddAnnotation(double x, double y, string text, Guid id)
+        public AnnotationModel AddAnnotation(double xPos, double yPos, string text, Guid id)
         {
             var selectedNodes = DynamoSelection.Instance.Selection.Where(n => n is NodeModel)
                 .Select(n => (n as NodeModel));
 
-            AnnotationModel annotationModel = new AnnotationModel(this, selectedNodes);
-            annotationModel.GUID = id;
+            var annotationModel = new AnnotationModel(this, selectedNodes) {GUID = id};
 
             var args = new ModelEventArgs(annotationModel, true);
             OnRequestNodeCentered(this, args);
@@ -1276,7 +1275,8 @@ namespace Dynamo.Models
         {
             ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
                 ?? (ModelBase)Nodes.FirstOrDefault(node => node.GUID == modelGuid))
-                ?? Notes.FirstOrDefault(note => note.GUID == modelGuid);
+                ?? (Notes.FirstOrDefault(note => note.GUID == modelGuid)
+                ?? (ModelBase) Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid));
 
             return foundModel;
         }

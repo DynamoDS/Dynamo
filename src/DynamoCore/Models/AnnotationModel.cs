@@ -92,7 +92,7 @@ namespace Dynamo.Models
         private string _backGroundColor;
         public string BackGroundColor
         {
-            get { return _backGroundColor ?? "#00FFFFFF"; }
+            get { return _backGroundColor ?? "#00655682"; }
             set
             {
                 _backGroundColor = value;

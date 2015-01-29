@@ -18,17 +18,15 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 
-namespace Dynamo.Controls
+namespace Dynamo.Nodes
 {
     /// <summary>
     /// Interaction logic for AnnotationView.xaml
     /// </summary>
-    public partial class AnnotationView : UserControl
+    public partial class AnnotationView : IViewModelView<AnnotationViewModel>
     {
-        private AnnotationViewModel annotationViewModel
-        {
-            get { return this.DataContext as AnnotationViewModel; }
-        }
+        public AnnotationViewModel ViewModel { get; private set; }
+
         public AnnotationView()
         {
             InitializeComponent();
@@ -37,8 +35,9 @@ namespace Dynamo.Controls
 
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
-            annotationViewModel.MakeTextBoxVisible = Visibility.Collapsed;
-            annotationViewModel.MakeTextBlockVisible = Visibility.Visible;
+            ViewModel = this.DataContext as AnnotationViewModel;
+            ViewModel.MakeTextBoxVisible = Visibility.Collapsed;
+            ViewModel.MakeTextBlockVisible = Visibility.Visible;
         }
 
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -52,20 +51,20 @@ namespace Dynamo.Controls
         {
             if (e.ClickCount == 2)
             {
-                annotationViewModel.MakeTextBoxVisible = Visibility.Visible;
-                annotationViewModel.MakeTextBlockVisible = Visibility.Collapsed;
+                ViewModel.MakeTextBoxVisible = Visibility.Visible;
+                ViewModel.MakeTextBlockVisible = Visibility.Collapsed;
             }
             else
             {
-                annotationViewModel.MakeTextBoxVisible = Visibility.Collapsed;
-                annotationViewModel.MakeTextBlockVisible = Visibility.Visible;
+                ViewModel.MakeTextBoxVisible = Visibility.Collapsed;
+                ViewModel.MakeTextBlockVisible = Visibility.Visible;
             }
         }
 
         private void UIElement_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            annotationViewModel.MakeTextBlockVisible = Visibility.Visible;
-            annotationViewModel.MakeTextBoxVisible = Visibility.Collapsed;
+            ViewModel.MakeTextBlockVisible = Visibility.Visible;
+            ViewModel.MakeTextBoxVisible = Visibility.Collapsed;
         }
 
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -79,22 +78,28 @@ namespace Dynamo.Controls
             {
                 var brush = rectangle.Fill as SolidColorBrush;
                 if (brush != null)
-                    annotationViewModel.BackGroundColor = brush.Color;
+                    ViewModel.BackGroundColor = brush.Color;
             }
         }
 
         private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
         {
 
-            if (annotationViewModel != null)
-                annotationViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+            if (ViewModel != null)
+                ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
         }
 
         private void AnnotationView_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            System.Guid annotationGuid = this.annotationViewModel.AnnotationModel.GUID;
-            annotationViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+            System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
         }
+
+        private void AnnotationView_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            String test = "test";
+        }
+        
     }
 }
