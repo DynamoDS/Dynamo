@@ -118,6 +118,8 @@ namespace Dynamo.Models
             CurrentWorkspace.RecordCreatedModel(noteModel);
         }
 
+
+
         void SelectModelImpl(SelectModelCommand command)
         {
             // Empty ModelGuid means clear selection.
