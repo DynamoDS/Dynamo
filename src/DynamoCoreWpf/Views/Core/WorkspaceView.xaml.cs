@@ -200,15 +200,6 @@ namespace Dynamo.Views
             }
         }
 
-        private void OnRemovingWorkspaceViewModel(WorkspaceViewModel workspaceViewModel)
-        {
-            if (ViewModel == workspaceViewModel)
-            {
-                ViewModel.DragSelectionStarted -= OnViewModelDragSelectionStarted;
-                ViewModel.DragSelectionEnded -= OnViewModelDragSelectionEnded;
-            }
-        }
-
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
         {
             var customNodeWs = workspace as CustomNodeWorkspaceModel;
