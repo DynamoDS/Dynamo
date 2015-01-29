@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
+using ProtoCore.AST;
 using ProtoCore.Exceptions;
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
@@ -827,6 +828,7 @@ namespace Dynamo.Models
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
+                nodeGraph.Annotations,
                 workspaceInfo.X,
                 workspaceInfo.Y,
                 DebugSettings.VerboseLogging, IsTestMode, nodeGraph.ElementResolver, workspaceInfo.FileName);

@@ -26,7 +26,7 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModels:AnnotationViewModel}">
-        <nodes:AnnotationView></nodes:AnnotationView>
+        <controls:AnnotationView></controls:AnnotationView>
     </DataTemplate>
 
 

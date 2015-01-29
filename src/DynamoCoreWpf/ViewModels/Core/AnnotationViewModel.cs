@@ -106,8 +106,7 @@ namespace Dynamo.ViewModels
         }
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
-        {
-            //TODO: Have  events for property changed
+        {            
             _annotationModel = model;
             this.WorkspaceViewModel = workspaceViewModel;
             this.MakeTextBlockVisible = Visibility.Visible;

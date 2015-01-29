@@ -7,6 +7,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.AST;
 using ProtoCore.Namespace;
 using Symbol = Dynamo.Nodes.Symbol;
 
@@ -489,6 +490,7 @@ namespace Dynamo.Core
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
+                nodeGraph.Annotations,
                 workspaceInfo.X,
                 workspaceInfo.Y,
                 functionId, nodeGraph.ElementResolver, workspaceInfo.FileName);
@@ -1022,6 +1024,7 @@ namespace Dynamo.Core
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
+                    Enumerable.Empty<AnnotationModel>(),
                     0,
                     0,
                     newId, currentWorkspace.ElementResolver, string.Empty);

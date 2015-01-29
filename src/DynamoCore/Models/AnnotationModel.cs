@@ -188,15 +188,16 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
-            if (name == "Text")
-            {
-                this.Text = value;
-                return true;
-            }
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
 
-            return base.UpdateValueCore(name, value);
+            if (name != "Text")
+                return base.UpdateValueCore(updateValueParams);
+
+            Text = value;
+            return true;
         }
 
         #endregion
