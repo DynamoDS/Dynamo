@@ -29,7 +29,6 @@ using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
-using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
 using Utils = Dynamo.Nodes.Utilities;
@@ -459,8 +458,8 @@ namespace Dynamo.Models
             var libraryCore =
                 new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
 
-            libraryCore.Executives.Add(Language.kAssociative, new Executive(libraryCore));
-            libraryCore.Executives.Add(Language.kImperative, new ProtoImperative.Executive(libraryCore));
+            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             LibraryServices = new LibraryServices(libraryCore);

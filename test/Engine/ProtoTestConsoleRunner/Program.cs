@@ -21,8 +21,6 @@ namespace ProtoTestConsoleRunner
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
             ProtoCore.Core core = new Core(opts);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             core.Options.DumpByteCode = verbose;
@@ -42,8 +40,6 @@ namespace ProtoTestConsoleRunner
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
             ProtoCore.Core core = new Core(opts);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 #if DEBUG

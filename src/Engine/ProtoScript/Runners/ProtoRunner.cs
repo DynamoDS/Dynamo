@@ -29,8 +29,6 @@ namespace ProtoScript.Runners
 
 
             RunnerCore = new ProtoCore.Core(options);
-            RunnerCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(RunnerCore));
-            RunnerCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(RunnerCore));
             RunnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(RunnerCore));
             RunnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(RunnerCore));
 

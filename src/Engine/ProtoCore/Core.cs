@@ -996,10 +996,10 @@ namespace ProtoCore
         }
 
         public Dictionary<Language, Compiler> Compilers { get; private set; }
-        public Dictionary<Language, Executive> Executives { get; private set; }
+        public Executive ExecutionInstance { get; private set; }
 
         // This will be moved to RuntimeCore
-        public Executive CurrentExecutive { get; set; }
+        public Executive CurrentExecutive { get; private set; }
 
         public int GlobOffset { get; set; }
         public int GlobHeapOffset { get; set; }
@@ -1331,7 +1331,7 @@ namespace ProtoCore
 
             Validity.AssertExpiry();
             Options = options;
-            Executives = new Dictionary<Language, Executive>();
+            ExecutionInstance = CurrentExecutive = new Executive(this);
             Compilers = new Dictionary<Language, Compiler>();
             ClassIndex = Constants.kInvalidIndex;
 

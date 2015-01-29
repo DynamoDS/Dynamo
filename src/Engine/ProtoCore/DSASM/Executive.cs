@@ -23,7 +23,7 @@ namespace ProtoCore.DSASM
         }
 
         public Executable exe { get; set; }
-        private Language executingLanguage;
+        public Language executingLanguage = Language.kAssociative;
 
         protected int pc = Constants.kInvalidPC;
         public int PC
@@ -145,9 +145,7 @@ namespace ProtoCore.DSASM
                 rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
             }
 
-            Language id = exe.instrStreamList[exeblock].language;
-            core.CurrentExecutive = core.Executives[id];
-            StackValue sv = core.Executives[id].Execute(exeblock, entry, context, sink);
+            StackValue sv = core.ExecutionInstance.Execute(exeblock, entry, context, sink);
             return sv;
         }
 
@@ -195,11 +193,7 @@ namespace ProtoCore.DSASM
 
                 rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
             }
-
-            Language id = exe.instrStreamList[exeblock].language;
-            core.CurrentExecutive = core.Executives[id];
-
-            StackValue sv = core.Executives[id].Execute(exeblock, entry, context, breakpoints, sink, fepRun);
+            StackValue sv = core.ExecutionInstance.Execute(exeblock, entry, context, breakpoints, sink, fepRun);
             return sv;
         }
 

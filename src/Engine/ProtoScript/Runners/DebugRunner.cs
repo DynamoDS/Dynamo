@@ -60,12 +60,6 @@ namespace ProtoScript.Runners
             if (null == core)
             {
                 core = new ProtoCore.Core(new ProtoCore.Options { IDEDebugMode = true });
-
-                //Register the default executives
-                //@TODO(Luke) this will need generaling to support dynamic loading of executives
-                core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-                core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-
                 core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
                 core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             }
@@ -556,7 +550,6 @@ namespace ProtoScript.Runners
             // Initialize the entry point interpreter
             int locals = 0; // This is the global scope, there are no locals
             ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
-            core.CurrentExecutive = core.Executives[ProtoCore.Language.kAssociative];
             core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
             core.CurrentExecutive.CurrentDSASMExec.Bounce(resumeBlockID, programCounterToExecuteFrom, context, breakpoints, core.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);
 
