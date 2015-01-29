@@ -70,6 +70,8 @@ namespace ProtoTestFx
                 core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(dsPath);
                 core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
                 core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+                core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+                core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
                 ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -143,6 +145,8 @@ namespace ProtoTestFx
                 core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(dsPath);
                 core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
                 core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+                core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+                core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
                 ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core);

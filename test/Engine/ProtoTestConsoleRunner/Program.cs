@@ -23,6 +23,8 @@ namespace ProtoTestConsoleRunner
             ProtoCore.Core core = new Core(opts);
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             core.Options.DumpByteCode = verbose;
             core.Options.Verbose = verbose;
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
@@ -42,6 +44,8 @@ namespace ProtoTestConsoleRunner
             ProtoCore.Core core = new Core(opts);
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 #if DEBUG
             core.Options.DumpByteCode = true;
             core.Options.Verbose = true;

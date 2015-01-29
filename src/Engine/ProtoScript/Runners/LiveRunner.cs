@@ -1122,6 +1122,8 @@ namespace ProtoScript.Runners
             runnerCore = new ProtoCore.Core(coreOptions);
             runnerCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(runnerCore));
             runnerCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(runnerCore));
+            runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
+            runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
             runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
 
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;

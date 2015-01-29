@@ -795,6 +795,8 @@ b = c[w][x][y][z];";
                 new ProtoAssociative.Executive(libraryServicesCore));
             libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
                 new ProtoImperative.Executive(libraryServicesCore));
+            libraryServicesCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryServicesCore));
+            libraryServicesCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryServicesCore));
 
             CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
         }

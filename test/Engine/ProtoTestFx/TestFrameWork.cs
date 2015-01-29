@@ -49,6 +49,8 @@ namespace ProtoTestFx.TD
             testCore.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
             testCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(testCore));
             testCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(testCore));
 
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
@@ -93,6 +95,8 @@ namespace ProtoTestFx.TD
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
             core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;

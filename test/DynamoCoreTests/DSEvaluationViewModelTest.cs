@@ -30,6 +30,8 @@ namespace Dynamo.Tests
                 new ProtoAssociative.Executive(libraryServicesCore));
             libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
                 new ProtoImperative.Executive(libraryServicesCore));
+            libraryServicesCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryServicesCore));
+            libraryServicesCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryServicesCore));
 
             libraryServices = new LibraryServices(libraryServicesCore);
         }

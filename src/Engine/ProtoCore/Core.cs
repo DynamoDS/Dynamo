@@ -1332,6 +1332,7 @@ namespace ProtoCore
             Validity.AssertExpiry();
             Options = options;
             Executives = new Dictionary<Language, Executive>();
+            Compilers = new Dictionary<Language, Compiler>();
             ClassIndex = Constants.kInvalidIndex;
 
             FunctionTable = new FunctionTable(); 
