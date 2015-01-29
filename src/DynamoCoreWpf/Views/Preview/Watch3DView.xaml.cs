@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -58,6 +59,10 @@ namespace Dynamo.Controls
         private HelixToolkit.Wpf.SharpDX.Camera camera;
         private SharpDX.Color4 selectionColor = new Color4(0,1,1,1);
         private bool showShadows;
+
+#if DEBUG
+        private Stopwatch renderTimer = new Stopwatch();
+#endif
 
         #endregion
 
@@ -228,7 +233,11 @@ namespace Dynamo.Controls
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
-            
+
+#if DEBUG
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
+#endif
+
             MouseLeftButtonDown += view_MouseButtonIgnore;
             MouseLeftButtonUp += view_MouseButtonIgnore;
             MouseRightButtonUp += view_MouseRightButtonUp;
@@ -279,6 +288,18 @@ namespace Dynamo.Controls
                 vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Maximum hardware texture size: {0}", maxTextureSize));
             }
         }
+
+#if DEBUG
+        void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+            if (renderTimer.IsRunning)
+            {
+                renderTimer.Stop();
+                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", renderTimer.Elapsed));
+                renderTimer.Reset();
+            }
+        }
+#endif
 
         /// <summary>
         /// Handler for the visualization manager's ResultsReadyToVisualize event.
@@ -511,8 +532,9 @@ namespace Dynamo.Controls
 
             Debug.WriteLine(string.Format("Rendering visuals for {0}", e.Id));
 
-            var sw = new Stopwatch();
-            sw.Start();
+#if DEBUG
+            renderTimer.Start();
+#endif
 
             Points = null;
             Lines = null;
@@ -534,9 +556,6 @@ namespace Dynamo.Controls
                 ConvertLines(package, lines, text);
                 ConvertMeshes(package, mesh);
             }
-
-            sw.Stop();
-            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", sw.Elapsed));
 
             if (!points.Positions.Any())
                 points = null;
@@ -616,7 +635,7 @@ namespace Dynamo.Controls
             Lines = lines;
             Mesh = mesh;
             Text = text;
-
+            
             // Send property changed notifications for everything
             NotifyPropertyChanged(string.Empty);
         }
