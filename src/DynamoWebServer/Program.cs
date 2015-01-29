@@ -1,11 +1,13 @@
 ﻿using System;
+using System.IO;
+using System.Configuration;
+using System.Reflection;
 using System.Windows;
 
 using Dynamo.Models;
 using Dynamo;
+
 using DynamoUtilities;
-using System.IO;
-using System.Reflection;
 
 namespace DynamoWebServer
 {
@@ -24,6 +26,7 @@ namespace DynamoWebServer
                 {
                     Preferences = PreferenceSettings.Load()
                 });
+            model.MaxTesselationDivisions = int.Parse(ConfigurationManager.AppSettings["MaxTesselationDivisions"]);
 
             var webSocketServer = new WebServer(model, new WebSocket());
 

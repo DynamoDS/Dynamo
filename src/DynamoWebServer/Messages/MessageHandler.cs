@@ -149,7 +149,7 @@ namespace DynamoWebServer.Messages
             if (workspaceToUpdate == null)
                 return;
 
-            if (!string.IsNullOrWhiteSpace(message.WorkspaceName) 
+            if (!string.IsNullOrWhiteSpace(message.WorkspaceName)
                 && !(workspaceToUpdate is HomeWorkspaceModel))
                 workspaceToUpdate.Name = message.WorkspaceName;
 
@@ -188,7 +188,7 @@ namespace DynamoWebServer.Messages
 
             if (cnModel != null)
                 return cnModel.CustomNodeDefinition.FunctionId.ToString();
-            
+
             return "";
         }
 
@@ -316,12 +316,12 @@ namespace DynamoWebServer.Messages
                     if (updateCommand != null)
                     {
                         var cbn = dynamoModel.CurrentWorkspace.GetModelInternal(updateCommand.ModelGuid) as CodeBlockNodeModel;
-                        if (cbn != null)
+                        if (cbn != null && updateCommand.Name == "Code")
                         {
                             var wsGuid = GetCurrentWorkspaceGuid();
                             var nodeGuid = updateCommand.ModelGuidAsString;
                             var data = GetInOutPortsData(cbn);
-                            
+
                             var response = new CodeBlockDataResponse(wsGuid, nodeGuid, data);
                             OnResultReady(this, new ResultReadyEventArgs(response, sessionId));
                         }
@@ -515,15 +515,13 @@ namespace DynamoWebServer.Messages
             if (node is CodeBlockNodeModel)
             {
                 var codeBlock = node as CodeBlockNodeModel;
-                var map = CodeBlockUtils.MapLogicalToVisualLineIndices(codeBlock.Code);
                 var allDefs = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlock.CodeStatements);
                 var lineIndices = new List<int>();
 
                 foreach (var def in allDefs)
                 {
                     var logicalIndex = def.Value - 1;
-                    var visualIndex = map.ElementAt(logicalIndex);
-                    lineIndices.Add(visualIndex);
+                    lineIndices.Add(logicalIndex);
                 }
 
                 stringBuilder.Append("\"Code\":\"");
@@ -557,7 +555,7 @@ namespace DynamoWebServer.Messages
                     new GeometryDataResponse(new GeometryData(nodeId, model.RenderPackages)), sessionId));
             }
         }
-        
+
         /// <summary>
         /// Cleanup Home workspace and remove all custom nodes
         /// </summary>
