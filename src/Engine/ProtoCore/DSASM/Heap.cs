@@ -176,19 +176,8 @@ namespace ProtoCore.DSASM
         {
             if (value.IsString)
             {
-                HeapElement he = ArrayUtils.GetHeapElement(value, core);
-                int length = he.VisibleSize;
-
-                unchecked
-                {
-                    int hash = 0;
-                    int step = (length >> 5) + 1;
-                    for (int i = he.VisibleSize; i >= step; i -= step)
-                    {
-                        hash = (hash * 397) ^ he.Stack[i - 1].opdata.GetHashCode();
-                    }
-                    return hash;
-                }
+                string s = core.Heap.GetString(value);
+                return s.GetHashCode();
             }
             else
             {
@@ -203,23 +192,44 @@ namespace ProtoCore.DSASM
         }
     }
 
+    public class StringTable
+    {
+        private Dictionary<string, int> stringToPointerTable;
+        private Dictionary<int, string> pointerToStringTable;
+
+        public StringTable()
+        {
+            stringToPointerTable = new Dictionary<string, int>();
+            pointerToStringTable = new Dictionary<int, string>();
+        }
+
+        public void AddString(int pointer, string s)
+        {
+            stringToPointerTable[s] = pointer;
+            pointerToStringTable[pointer] = s;
+        }
+
+        public bool TryGetString(int pointer, out string s)
+        {
+            return pointerToStringTable.TryGetValue(pointer, out s);
+        }
+
+        public bool TryGetPointer(string s, out int pointer)
+        {
+            return stringToPointerTable.TryGetValue(s, out pointer);
+        }
+    }
+
     public class Heap
     {
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
+        private HashSet<int> fixedHeapElements = new HashSet<int>(); 
+        private StringTable stringTable = new StringTable();
         private bool isGarbageCollecting = false;
 
         public Heap()
         {
-        }
-
-        public StackValue AllocateString(string str)
-        {
-            var chs = str.Select(c => StackValue.BuildChar(c)).ToArray();
-            int index = AllocateInternal(chs);
-            var heapElement = heapElements[index];
-            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeString};
-            return StackValue.BuildString(index);
         }
 
         public StackValue AllocateArray(IEnumerable<StackValue> values, 
@@ -263,7 +273,52 @@ namespace ProtoCore.DSASM
                     new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
-        public HeapElement GetHeapElement(StackValue pointer)
+        private int AllocateStringInternal(string str)
+        {
+            int index;
+            if (!stringTable.TryGetPointer(str, out index))
+            {
+                index = AllocateInternal(Enumerable.Empty<StackValue>());
+                stringTable.AddString(index, str);
+            }
+            return index;
+        }
+
+        /// <summary>
+        /// Allocate string that directly used in the code. These
+        /// string won't be garbage collected.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public StackValue AllocateFixedString(string str)
+        {
+            int index = AllocateStringInternal(str);
+            fixedHeapElements.Add(index);
+            return StackValue.BuildString(index);
+        }
+
+        public StackValue AllocateString(string str)
+        {
+            int index = AllocateStringInternal(str);
+            return StackValue.BuildString(index);
+        }
+
+        public string GetString(StackValue pointer)
+        {
+            if (!pointer.IsString)
+                return null;
+
+            int index = (int)pointer.opdata;
+            Validity.Assert(index >= 0 && index < heapElements.Count);
+
+            string s;
+            if (stringTable.TryGetString(index, out s))
+                return s;
+            else
+                return null;
+        }
+
+       public HeapElement GetHeapElement(StackValue pointer)
         {
             int index = (int)pointer.opdata;
             var heapElement = heapElements[index];
@@ -396,6 +451,11 @@ namespace ProtoCore.DSASM
                 // Mark
                 var count = heapElements.Count;
                 var markBits = new BitArray(count);
+                foreach (var index in fixedHeapElements)
+                {
+                    markBits.Set(index, true); 
+                }
+
                 var workingStack = new Stack<StackValue>(rootPointers);
                 while (workingStack.Any())
                 {
