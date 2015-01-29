@@ -1216,17 +1216,11 @@ namespace ProtoCore.DSASM
 
         private string UnboxString(StackValue pointer)
         {
-            HeapElement hs = rmem.Heap.GetHeapElement(pointer);
+            if (!pointer.IsString)
+                return null;
 
-            string str = "";
-            foreach (var item in hs.VisibleItems)
-            {
-                if (!item.IsChar)
-                    return null;
-                str += EncodingUtils.ConvertInt64ToCharacter(item.opdata);
-            }
-
-            if (str == "")
+            string str = rmem.Heap.GetString(pointer);
+            if (string.IsNullOrEmpty(str))
                 return null;
 
             return "\"" + str + "\"";
@@ -2831,6 +2825,7 @@ namespace ProtoCore.DSASM
                 case AddressType.Double:
                 case AddressType.Boolean:
                 case AddressType.Char:
+                case AddressType.String:
                 case AddressType.BlockIndex:
                 case AddressType.LabelIndex:
                 case AddressType.ArrayDim:

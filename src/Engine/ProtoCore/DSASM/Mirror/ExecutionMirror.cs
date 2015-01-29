@@ -179,9 +179,9 @@ namespace ProtoCore.DSASM.Mirror
                     return (val.opdata == 0) ? "false" : "true";
                 case AddressType.String:
                     if (forPrint)
-                        return GetStringTrace(val, heap);
+                        return heap.GetString(val);
                     else
-                        return "\"" + GetStringTrace(val, heap) + "\"";                    
+                        return "\"" + heap.GetString(val)+ "\"";                    
                 case AddressType.Char:
                     Char character = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(val.opdata);
                     if (forPrint)

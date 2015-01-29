@@ -2271,17 +2271,10 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeString;
             }
 
-            Byte[] utf8bytes = EncodingUtils.UTF8StringToUTF8Bytes((String)sNode.value);
-            String value = Encoding.UTF8.GetString(utf8bytes);
-
-            foreach (char ch in value)
-            {
-                String strValue = "'" + ch + "'";
-                EmitInstrConsole(kw.push, strValue);
-
-                StackValue op = StackValue.BuildChar(ch);
-                EmitPush(op, node.line, node.col);
-            }
+            string value = (string)sNode.value;
+            StackValue svString = core.Heap.AllocateFixedString(value);
+            EmitInstrConsole(kw.push, "\"" + value + "\"");
+            EmitPush(svString, node.line, node.col);
 
             if (IsAssociativeArrayIndexing && graphNode != null && graphNode.isIndexingLHS)
             {
@@ -2294,9 +2287,6 @@ namespace ProtoCore
 
                 graphNode.dimensionNodeList.Add(dimNode);
             }
-
-            EmitInstrConsole(kw.alloca, value.Length.ToString());
-            EmitPopString(value.Length);
         }
         
         protected void EmitDoubleNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.Compiler.Associative.SubCompilePass subPass = ProtoCore.Compiler.Associative.SubCompilePass.kNone)

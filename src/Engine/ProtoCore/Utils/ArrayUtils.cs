@@ -364,7 +364,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static HeapElement GetHeapElement(StackValue heapObject, Core core)
         {
-            if (!heapObject.IsArray && !heapObject.IsString && !heapObject.IsPointer)
+            if (!heapObject.IsArray && !heapObject.IsString)
             {
                 return null;
             }
@@ -426,8 +426,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static int GetElementSize(StackValue array, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
-            if (!array.IsArray && !array.IsString)
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return Constants.kInvalidIndex;
             }
@@ -549,13 +549,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, int index, StackValue value, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
-            if (array.IsString && !value.IsChar)
-            {
-                core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kAssignNonCharacterToString);
-                return StackValue.Null;
-            }
-
+            Validity.Assert(array.IsArray);
             HeapElement arrayHeap = GetHeapElement(array, core);
             index = arrayHeap.ExpandByAcessingAt(index);
             StackValue oldValue = arrayHeap.SetValue(index, value);
@@ -574,7 +568,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, StackValue index, StackValue value, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
+            Validity.Assert(array.IsArray);
 
             if (index.IsNumeric)
             {
@@ -613,7 +607,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndices(StackValue array, StackValue[] indices, StackValue value, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
+            Validity.Assert(array.IsArray);
 
             for (int i = 0; i < indices.Length - 1; ++i)
             {
@@ -717,8 +711,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndex(StackValue array, int index, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
-            if (!array.IsArray && !array.IsString)
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return StackValue.Null;
             }
@@ -738,8 +732,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndex(StackValue array, StackValue index, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
-            if (!array.IsArray && !array.IsString)
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return StackValue.Null;
             }
@@ -805,7 +799,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, StackValue[] indices, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
+            Validity.Assert(array.IsArray);
             for (int i = 0; i < indices.Length - 1; ++i)
             {
                 StackValue index = indices[i];
@@ -824,7 +818,7 @@ namespace ProtoCore.Utils
                     array = GetValueFromIndex(array, index, core);
                 }
 
-                if (!array.IsArray && !array.IsString)
+                if (!array.IsArray)
                 {
                     core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                     return StackValue.Null;

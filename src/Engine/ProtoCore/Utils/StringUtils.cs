@@ -12,33 +12,9 @@ namespace ProtoCore.Utils
     {
         public static int CompareString(StackValue s1, StackValue s2, Core core)
         {
-            if (!s1.IsString || !s2.IsString)
-            {
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            }
-
-            HeapElement he1 = ArrayUtils.GetHeapElement(s1, core);
-            HeapElement he2 = ArrayUtils.GetHeapElement(s2, core);
-
-            int len1 = he1.VisibleSize;
-            int len2 = he2.VisibleSize;
-
-            int len = len1 > len2 ? len2 : len1;
-            int i = 0;
-            for (; i < len; ++i)
-            {
-                if (he1.Stack[i].opdata != he2.Stack[i].opdata)
-                {
-                    return (he1.Stack[i].opdata > he2.Stack[i].opdata) ? 1 : -1;
-                }
-            }
-
-            if (len1 > len2)
-                return 1;
-            else if (len1 == len2)
-                return 0; 
-            else
-                return -1;
+            string str1 = core.Heap.GetString(s1);
+            string str2 = core.Heap.GetString(s2);
+            return string.Compare(str1, str2);
         }
 
         public static string GetStringValue(StackValue sv, Core core)
@@ -58,11 +34,9 @@ namespace ProtoCore.Utils
 
         public static StackValue ConcatString(StackValue op1, StackValue op2, ProtoCore.Core core)
         {
-            var v1 = op1.IsString ? ArrayUtils.GetValues(op1, core) : new StackValue[] { op1 };
-            var v2 = op2.IsString ? ArrayUtils.GetValues(op2, core) : new StackValue[] { op2 };
-            var v = v1.Concat(v2).ToList();
-            StackValue tmp = core.Heap.AllocateArray(v);
-            return StackValue.BuildString(tmp.opdata);
+            var v1 = core.Heap.GetString(op1);
+            var v2 = core.Heap.GetString(op2);
+            return StackValue.BuildString(v1 + v2, core.Heap);
         }
     }
 }
