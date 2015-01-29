@@ -34,7 +34,6 @@ namespace DynamoWebServer.Responses
             NodeId = node.GUID.ToString();
             if (node.CachedValue.IsCollection)
             {
-                //Func<MirrorData, string> wrappedValue = (el) => "\"" + GetValueFromMirrorData(el) + "\"";
                 var allItems = node.CachedValue.GetElements();
                 if (allItems.Count < indexFrom)
                 {
