@@ -86,20 +86,11 @@ namespace Dynamo.Views
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-
-            ViewModel.DragSelectionStarted += OnViewModelDragSelectionStarted;
-            ViewModel.DragSelectionEnded += OnViewModelDragSelectionEnded;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-
-            if (ViewModel != null)
-            {
-                ViewModel.DragSelectionStarted -= OnViewModelDragSelectionStarted;
-                ViewModel.DragSelectionEnded -= OnViewModelDragSelectionEnded;
-            }
         }
 
         /// <summary>
@@ -185,6 +176,8 @@ namespace Dynamo.Views
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+                oldViewModel.DragSelectionStarted -= OnViewModelDragSelectionStarted;
+                oldViewModel.DragSelectionEnded -= OnViewModelDragSelectionEnded;
             }
 
             if (ViewModel != null)
@@ -200,8 +193,19 @@ namespace Dynamo.Views
                 ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
                 ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
                 ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+                ViewModel.DragSelectionStarted += OnViewModelDragSelectionStarted;
+                ViewModel.DragSelectionEnded += OnViewModelDragSelectionEnded;
 
                 ViewModel.Loaded();
+            }
+        }
+
+        private void OnRemovingWorkspaceViewModel(WorkspaceViewModel workspaceViewModel)
+        {
+            if (ViewModel == workspaceViewModel)
+            {
+                ViewModel.DragSelectionStarted -= OnViewModelDragSelectionStarted;
+                ViewModel.DragSelectionEnded -= OnViewModelDragSelectionEnded;
             }
         }
 
