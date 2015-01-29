@@ -77,11 +77,7 @@ namespace Dynamo.ViewModels
 
         public bool RunEnabled
         {
-            get { return HomeSpace.RunEnabled; }
-            set
-            {
-                HomeSpace.RunEnabled = value;
-            }
+            get { return model.RunEnabled; }
         }
 
         public virtual bool CanRunDynamically
@@ -152,12 +148,15 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var index = model.Workspaces.IndexOf(model.CurrentWorkspace);
+                var viewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+                var index = workspaces.IndexOf(viewModel);
                 return index;
             }
             set
             {
-                if (model.Workspaces.IndexOf(model.CurrentWorkspace) != value)
+                var viewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+                var index = workspaces.IndexOf(viewModel);
+                if (index != value)
                     this.ExecuteCommand(new DynamoModel.SwitchTabCommand(value));
             }
         }
@@ -463,8 +462,6 @@ namespace Dynamo.ViewModels
             var homespace = new WorkspaceViewModel(model.CurrentWorkspace, this);
             workspaces.Add(homespace);
 
-            model.CurrentWorkspace.PropertyChanged += CurrentWorkspace_PropertyChanged;
-
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
             
@@ -596,7 +593,6 @@ namespace Dynamo.ViewModels
             DynamoModel.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
             DynamoModel.RequestDispatcherInvoke -= TryDispatcherInvoke;
         }
-
         #endregion
 
         private void InitializeAutomationSettings(string commandFilePath)
@@ -794,25 +790,25 @@ namespace Dynamo.ViewModels
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CurrentWorkspace")
+            switch (e.PropertyName)
             {
-                IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
-                RaisePropertyChanged("IsAbleToGoHome");
-                RaisePropertyChanged("CurrentSpace");
-                RaisePropertyChanged("BackgroundColor");
-                RaisePropertyChanged("CurrentWorkspaceIndex");
-                RaisePropertyChanged("ViewingHomespace");
-                if (this.PublishCurrentWorkspaceCommand != null)
-                    this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged("IsPanning");
-                RaisePropertyChanged("IsOrbiting");
+                case "CurrentWorkspace":
+                    IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
+                    RaisePropertyChanged("IsAbleToGoHome");
+                    RaisePropertyChanged("CurrentSpace");
+                    RaisePropertyChanged("BackgroundColor");
+                    RaisePropertyChanged("CurrentWorkspaceIndex");
+                    RaisePropertyChanged("ViewingHomespace");
+                    if (this.PublishCurrentWorkspaceCommand != null)
+                        this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
+                    RaisePropertyChanged("IsPanning");
+                    RaisePropertyChanged("IsOrbiting");
+                    RaisePropertyChanged("RunEnabled");
+                    break; 
+                case "RunEnabled":
+                    RaisePropertyChanged("RunEnabled");
+                    break;
             }
-        }
-
-        void CurrentWorkspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "RunEnabled")
-                RaisePropertyChanged("RunEnabled");
         }
 
         private void CleanUp(DynamoModel dynamoModel)
@@ -1402,7 +1398,7 @@ namespace Dynamo.ViewModels
             {
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
-                this.ShowStartPage = (Model.Workspaces.Count <= 1);
+                this.ShowStartPage = (Model.Workspaces.Count() <= 1);
             }
         }
 

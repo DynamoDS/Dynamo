@@ -197,7 +197,9 @@ namespace Dynamo.Models
             // custom node with a new function id
             if (originalPath != newPath)
             {
-                CustomNodeId = Guid.NewGuid();
+                // If it is a newly created node, no need to generate a new guid
+                if (!string.IsNullOrEmpty(originalPath))
+                    CustomNodeId = Guid.NewGuid();
 
                 // This comes after updating the Id, as if to associate the new name
                 // with the new Id.

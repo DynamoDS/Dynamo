@@ -637,7 +637,7 @@ namespace Dynamo.Core
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="isTestMode"></param>
         /// <param name="args"></param>
-        public WorkspaceModel Collapse(
+        public CustomNodeWorkspaceModel Collapse(
             IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
             bool isTestMode, FunctionNamePromptEventArgs args)
         {
@@ -1021,6 +1021,8 @@ namespace Dynamo.Core
                     0,
                     0,
                     newId, string.Empty, currentWorkspace.ElementResolver);
+
+                newWorkspace.HasUnsavedChanges = true;
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 

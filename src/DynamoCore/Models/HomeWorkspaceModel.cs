@@ -13,17 +13,6 @@ namespace Dynamo.Models
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
 
-        public bool RunEnabled
-        {
-            get { return runEnabled; }
-            set
-            {
-                if (Equals(value, runEnabled)) return;
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
-            }
-        }
-
         public bool DynamicRunEnabled;
 
         public readonly bool VerboseLogging;
@@ -102,8 +91,6 @@ namespace Dynamo.Models
         }
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
-        private bool runEnabled;
-
         internal bool IsEvaluationPending
         {
             get
@@ -159,6 +146,7 @@ namespace Dynamo.Models
         {
             base.Clear();
             PreloadedTraceData = null;
+            RunEnabled = true;
         }
 
         #region evaluation

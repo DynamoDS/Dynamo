@@ -5,12 +5,11 @@ using System.Text;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
-using Dynamo.Properties;
 
 namespace DSCoreNodesUI
 {
     [NodeName("Legacy Node")]
-    [NodeDescription("DummyNodeDescription",typeof(Resources))]
+    [NodeDescription("DummyNodeDescription",typeof(Dynamo.Properties.Resources))]
     [IsMetaNode]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
@@ -135,23 +134,20 @@ namespace DSCoreNodesUI
                 //instead of saving the dummy node.
                 if (OriginalNodeContent != null)
                 {
-                    XmlElement originalNode = nodeElement.OwnerDocument.CreateElement(OriginalNodeContent.Name);
+                    nodeElement.RemoveAll();
                     foreach (XmlAttribute attribute in OriginalNodeContent.Attributes)
-                        originalNode.SetAttribute(attribute.Name, attribute.Value);
+                        nodeElement.SetAttribute(attribute.Name, attribute.Value);
 
                     //overwrite the guid/x/y value of the original node.
-                    originalNode.SetAttribute("guid", nodeElement.GetAttribute("guid"));
-                    originalNode.SetAttribute("x", nodeElement.GetAttribute("x"));
-                    originalNode.SetAttribute("y", nodeElement.GetAttribute("y"));
+                    nodeElement.SetAttribute("guid", nodeElement.GetAttribute("guid"));
+                    nodeElement.SetAttribute("x", nodeElement.GetAttribute("x"));
+                    nodeElement.SetAttribute("y", nodeElement.GetAttribute("y"));
 
                     for (int i = 0; i < OriginalNodeContent.ChildNodes.Count; i++)
                     {
-                        XmlNode child =
-                            originalNode.OwnerDocument.ImportNode(OriginalNodeContent.ChildNodes[i], true);
-                        originalNode.AppendChild(child.CloneNode(true));
+                        XmlNode child = nodeElement.OwnerDocument.ImportNode(OriginalNodeContent.ChildNodes[i], true);
+                        nodeElement.AppendChild(child.CloneNode(true));
                     }
-
-                    nodeElement.ParentNode.ReplaceChild(originalNode, nodeElement);
                 }
                 else
                 {
@@ -165,6 +161,19 @@ namespace DSCoreNodesUI
         }
 
         #region SerializeCore/DeserializeCore
+
+        protected override XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
+        {
+            if (context == SaveContext.File && OriginalNodeContent != null)
+            {
+                XmlElement originalNode = xmlDocument.CreateElement(OriginalNodeContent.Name);
+                return originalNode;
+            }
+            else
+            {
+                return base.CreateElement(xmlDocument, context);
+            }
+        }
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {

@@ -177,7 +177,9 @@
                 <dynui:DynamoToolTip AttachmentSide="Top"
                                      Style="{DynamicResource ResourceKey=SLightToolTip}">
                     <Grid>
-                        <TextBlock Text="{Binding Path=Description}"></TextBlock>
+                        <TextBlock MaxWidth="320"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding Path=Description}"></TextBlock>
                     </Grid>
                 </dynui:DynamoToolTip>
             </Rectangle.ToolTip>

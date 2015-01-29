@@ -12,7 +12,7 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     [NodeName("Color Range")]
     [NodeCategory("Core.Color.Create")]
-    [NodeDescription("ColorRangeDescription",typeof(Properties.Resources))]
+    [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
     public class ColorRange : NodeModel
     {
         public event EventHandler RequestChangeColorRange;

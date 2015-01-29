@@ -10,9 +10,9 @@ using ProtoCore.AST.AssociativeAST;
 namespace Dynamo.Nodes
 {
     [NodeName("Watch Image")]
-    [NodeDescription("WatchImageDescription", typeof(Resources))]
+    [NodeDescription("WatchImageDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeSearchTags("WatchImageSearchTags", typeof(Resources))]
+    [NodeSearchTags("WatchImageSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class WatchImageCore : NodeModel
     {
