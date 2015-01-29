@@ -160,6 +160,7 @@
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
+    <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
@@ -176,6 +177,9 @@
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockMethodInsightWindow.cs" />
     <Compile Include="Views\CodeBlocks\CodeBlockEditorUtils.cs" />
+    <Compile Include="Views\Core\AnnotationView.xaml.cs">
+      <DependentUpon>AnnotationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\DynamoView.xaml.cs">
       <DependentUpon>DynamoView.xaml</DependentUpon>
     </Compile>
@@ -885,6 +889,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\CodeBlocks\CodeBlockEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Core\AnnotationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

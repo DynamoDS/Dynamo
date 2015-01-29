@@ -1238,7 +1238,7 @@ namespace Dynamo.Models
             }
             else if (typeName.StartsWith("Dynamo.Models.AnnotationModel"))
             {
-                var annotationModel = NodeGraph.LoadNoteFromXml(modelData);
+                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData);
                 Annotations.Add(annotationModel);
             }
             else // Other node types.

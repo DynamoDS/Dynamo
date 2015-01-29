@@ -13,6 +13,7 @@ namespace Dynamo.Core
         public List<NodeModel> Nodes { get; private set; }
         public List<ConnectorModel> Connectors { get; private set; }
         public List<NoteModel> Notes { get; private set; }
+        public List<AnnotationModel> Annotations { get; private set; }
         public ElementResolver ElementResolver { get; private set; }
     
 
@@ -109,6 +110,25 @@ namespace Dynamo.Core
                 : Enumerable.Empty<NoteModel>();
         }
 
+        public static AnnotationModel LoadAnnotationFromXml(XmlNode annotation)
+        {
+            var instance = new AnnotationModel(0, 0, string.Empty, Guid.NewGuid());
+            instance.Deserialize(annotation as XmlElement, SaveContext.File);
+            return instance;
+        }
+
+        private static IEnumerable<AnnotationModel> LoadAnnotationsFromXml(XmlDocument xmlDoc)
+        {
+            XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Annotations");
+            if (nNodes.Count == 0)
+                nNodes = xmlDoc.GetElementsByTagName("dynAnnotations");
+            XmlNode nNodesList = nNodes[0];
+
+            return nNodesList != null
+                ? nNodesList.ChildNodes.Cast<XmlNode>().Select(LoadAnnotationFromXml)
+                : Enumerable.Empty<AnnotationModel>();
+        }
+
         /// <summary>
         ///     Loads NodeModels, ConnectorModels, and NoteModels from an XmlDocument.
         /// </summary>
@@ -123,8 +143,9 @@ namespace Dynamo.Core
             var nodes = LoadNodesFromXml(xmlDoc, nodeFactory).ToList();
             var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
             var notes = LoadNotesFromXml(xmlDoc).ToList();
+            var annotations=LoadAnnotationsFromXml(xmlDoc).ToList();
 
-            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, ElementResolver = elementResolver };
+            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations =annotations, ElementResolver = elementResolver };
         }
 
         private static ElementResolver LoadElementResolver(XmlDocument xmlDoc)
