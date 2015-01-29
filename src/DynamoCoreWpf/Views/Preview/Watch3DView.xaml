@@ -98,7 +98,7 @@
             CameraRotationMode="Turntable"
             IsHitTestVisible="True"
             MouseLeftButtonDown="Watch_view_OnMouseDown" 
-            ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}"
+            ShowCoordinateSystem="False"
             RenderTechnique="{Binding RenderTechnique}"
             Camera="{Binding Camera}" 
             IsShadowMappingEnabled="{Binding ShowShadows}" UseDefaultGestures="False" >
