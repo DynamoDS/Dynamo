@@ -867,7 +867,9 @@ namespace Dynamo.Models
 
             var retrievedModels = GetModelsInternal(modelGuids);
             if (!retrievedModels.Any())
-                throw new InvalidOperationException("UpdateModelValue: Model not found");
+            {
+                return;
+            }
 
             var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
             using (new ModelModificationUndoHelper(undoRecorder, retrievedModels))
