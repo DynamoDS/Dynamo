@@ -118,12 +118,6 @@ namespace DynamoWebServer
 
         void socketServer_NewSessionConnected(WebSocketSession session)
         {
-            if ( webSocket.GetSessionCount() > 1)
-            {
-                session.Close();
-                return;
-            }
-
             messageHandler.SessionId = session.SessionID;
 
             ExecuteMessageFromSocket(new ClearWorkspaceMessage(), session.SessionID, true);
