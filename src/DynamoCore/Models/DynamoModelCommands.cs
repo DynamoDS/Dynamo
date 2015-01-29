@@ -118,7 +118,14 @@ namespace Dynamo.Models
             CurrentWorkspace.RecordCreatedModel(noteModel);
         }
 
+        void CreateAnnotationImpl(CreateAnnotationCommand command)
+        {
+            AnnotationModel annotationModel = currentWorkspace.AddAnnotation(command.X, command.Y,
+                command.AnnotationText, command.AnnotationId);
 
+            //TODO: Record the creation
+            CurrentWorkspace.RecordCreatedModel(annotationModel);
+        }
 
         void SelectModelImpl(SelectModelCommand command)
         {
