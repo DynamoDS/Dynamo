@@ -6,12 +6,11 @@
              mc:Ignorable="d"              
              MinWidth="10"
              MinHeight="10"
-             Height="Auto" Width="Auto"   Visibility="Visible"
-             MouseDown="AnnotationView_OnMouseDown"
+             Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"
              PreviewMouseDown="AnnotationView_OnPreviewMouseDown"
              Canvas.Left="{Binding Left}" 
-             Canvas.Top="{Binding Top}" >
+             Canvas.Top="{Binding Top}">
     <UserControl.Resources>
         <Style x:Key="ColorSelectorListBox"
            TargetType="ListBox">
@@ -100,52 +99,19 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Grid Name="AnnotationGrid">       
-        <Canvas Background="{x:Null}">
-        </Canvas>
-        <Rectangle  Name="AnnotationRectangle"
-                    Margin="10" 
-                    Width="{Binding Width}" 
-                    Height= "{Binding Height}"
-                    Stroke="Black"
-                    StrokeThickness="1"
-                    IsHitTestVisible="True"
-                    Opacity="0.5">
-            <Rectangle.Fill>
-                <SolidColorBrush Color="{Binding BackGroundColor}"></SolidColorBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-        <TextBlock             
-            Text ="{Binding AnnotationText, Mode=TwoWay}" 
-            Padding="12,8,0,0"
-            MouseDown="UIElement_OnMouseLeftButtonDown"
-            MaxWidth="{Binding Width}"
-            TextWrapping="Wrap"
-            Visibility="{Binding MakeTextBlockVisible}">
-        </TextBlock>
-        <TextBox 
-            Visibility="{Binding MakeTextBoxVisible}"
-            Text ="{Binding AnnotationText,Mode=TwoWay}"
-            Padding="12,8,0,0"
-            Margin="1"
-            MinHeight="10"
-            TextWrapping="Wrap"            
-            MaxWidth="{Binding Width}"
-            IsHitTestVisible="True" 
-            MouseLeave="UIElement_OnMouseLeave">
-        </TextBox>
+    <Grid Name="AnnotationGrid">
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem  Header="Delete Annotation"
                                Name="DeleteAnnotation"
                            Click="OnDeleteAnnotation"/>
-                <MenuItem  Header="Bring To Front"
+                <!--<MenuItem  Header="Bring To Front"
                                Name="BringToFront"
                            Command="{Binding BringToFrontCommand}"
-                           CommandParameter="{Binding RelativeSource = {RelativeSource Mode=Self}}"/>
-                <MenuItem  Header="Send To Back"
-                               Name="SendToBack"/>
-                <MenuItem  Header="Choose Color"
+                           CommandParameter="{Binding RelativeSource = {RelativeSource Mode=Self}}"/>-->
+                <!--<MenuItem  Header="Send To Back"
+                               Name="SendToBack"/>-->
+                <MenuItem  Header="Choose Background"
                                Name="ChooseColor"/>
                 <ListBox Style="{StaticResource ColorSelectorListBox}"
                          ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
@@ -171,5 +137,39 @@
                 </ListBox>
             </ContextMenu>
         </Grid.ContextMenu>
+        <Canvas Background="{x:Null}">
+        </Canvas>
+        <Rectangle  Name="AnnotationRectangle"
+                    Margin="10" 
+                    Width="{Binding Width}" 
+                    Height= "{Binding Height}"
+                    Stroke="Black"
+                    StrokeThickness="1"
+                    IsHitTestVisible="True"
+                    Opacity="0.5">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="{Binding BackGroundColor}"></SolidColorBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <TextBlock             
+            Text ="{Binding AnnotationText, Mode=TwoWay}"             
+            Padding="12,8,0,0"
+            MouseDown="UIElement_OnMouseLeftButtonDown"
+            MaxWidth="{Binding Width}"
+            TextWrapping="Wrap"
+            Visibility="{Binding MakeTextBlockVisible}">
+        </TextBlock>
+        <TextBox 
+            Visibility="{Binding MakeTextBoxVisible}"
+            Text ="{Binding AnnotationText,Mode=TwoWay}"
+            Padding="12,8,0,0"
+            Margin="1"
+            MinHeight="10"
+            TextWrapping="Wrap"            
+            MaxWidth="{Binding Width}"
+            IsHitTestVisible="True" 
+            MouseLeave="UIElement_OnMouseLeave">
+        </TextBox>
+        
     </Grid>
 </UserControl>
