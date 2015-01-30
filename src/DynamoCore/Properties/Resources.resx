@@ -526,9 +526,6 @@ value: bool = false</value>
   <data name="SymbolNodeDescription" xml:space="preserve">
     <value>A function parameter, use with custom nodes. \n\nYou can specify the type and default value for parameter. E.g.,\n\ninput : var[]..[]\nvalue : bool = false</value>
   </data>
-  <data name="AutodeskSignIn" xml:space="preserve">
-    <value>Autodesk Sign In</value>
-  </data>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
     <value>Custom node definition is not loaded!</value>
   </data>

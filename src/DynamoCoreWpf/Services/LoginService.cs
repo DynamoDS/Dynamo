@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
-using Dynamo.Properties;
 
-namespace Dynamo.Applications.Authentication
+namespace Dynamo.Wpf.Authentication
 {
     internal class LoginService
     {
@@ -29,7 +28,7 @@ namespace Dynamo.Applications.Authentication
 
                 var window = new BrowserWindow(url)
                 {
-                    Title = Resources.AutodeskSignIn,
+                    Title = Dynamo.Wpf.Properties.Resources.AutodeskSignIn,
                     Owner = parent,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };

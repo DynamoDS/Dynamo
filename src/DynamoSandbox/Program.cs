@@ -3,19 +3,16 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Dynamo;
-using Dynamo.Applications.Authentication;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.PackageManager;
 using Dynamo.Services;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Authentication;
 using DynamoUtilities;
-using Greg;
 using Greg.AuthProviders;
 
 namespace DynamoSandbox
