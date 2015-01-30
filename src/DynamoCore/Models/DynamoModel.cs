@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
+using ProtoCore.AST;
 using ProtoCore.Exceptions;
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
@@ -272,6 +273,17 @@ namespace Dynamo.Models
             set
             {
                 PreferenceSettings.ConnectorType = value;
+            }
+        }
+
+        public bool RunEnabled
+        {
+            get 
+            { 
+                if (CurrentWorkspace == null)
+                    return false;
+                
+                return this.CurrentWorkspace.RunEnabled;
             }
         }
 
@@ -1220,10 +1232,12 @@ namespace Dynamo.Models
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
+            workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
             {
                 workspace.WorkspaceSaved -= savedHandler;
                 workspace.MessageLogged -= LogMessage;
+                workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };
 
             _workspaces.Add(workspace);
@@ -1350,6 +1364,12 @@ namespace Dynamo.Models
             }
 
             return args.ClickedButtonId == (int)ButtonId.Proceed;
+        }
+
+        private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "RunEnabled")
+                OnPropertyChanged("RunEnabled");
         }
 
         #endregion
