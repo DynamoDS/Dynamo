@@ -1,5 +1,5 @@
 {
-    "$type":"DynamoWebServer.Messages.RunCommandsMessage, DynamoWebServer",
+    "type":"RunCommandsMessage",
     "commands":
     [{
         "$type":"Dynamo.Models.DynamoModel+DeleteModelCommand, DynamoCore",

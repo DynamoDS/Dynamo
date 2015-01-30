@@ -1,1 +1,1 @@
-{"Code":"A = B;\nC=1;", "LineIndices": [0, 1],"InPorts": ["B"], "OutPorts": ["A","C"], "Data": "null"}
+{"Code":"A = B;\nC=1;", "LineIndices": [0, 1],"InPorts": ["B"], "OutPorts": ["A","C"]}

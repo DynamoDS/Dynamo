@@ -211,5 +211,10 @@ namespace Dynamo.Tests
             return mirror;
         }
 
+        protected string GetCommandPathByFileName(string fileName, string fileExtension = "txt")
+        {
+            var partPathName = string.Format("core\\commands\\{0}.{1}", fileName, fileExtension);
+            return Path.Combine(GetTestDirectory(), partPathName);
+        }
     }
 }
