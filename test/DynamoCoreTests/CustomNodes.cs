@@ -622,6 +622,43 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CollapsedNodeWOrkspaceIsAddedToDynamoWithUnsavedChanges()
+        {
+            var model = ViewModel.Model;
+
+            NodeModel node;
+            if (!ViewModel.Model.NodeFactory.CreateNodeFromTypeName("Dynamo.Nodes.DoubleInput", out node))
+            {
+                throw new Exception("Failed to create node!");
+            }
+
+            var selectionSet = new[] { node };
+
+            DynamoModel.FunctionNamePromptRequestHandler del = (sender, args) =>
+            {
+                args.Category = "Testing";
+                args.Description = "";
+                args.Name = "__CollapseTest__";
+                args.Success = true;
+            };
+
+            ViewModel.Model.RequestsFunctionNamePrompt += del;
+
+            ViewModel.CurrentSpaceViewModel.CollapseNodes(selectionSet);
+
+            ViewModel.Model.RequestsFunctionNamePrompt += del;
+
+            Assert.IsNotNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.Workspaces.Count());
+
+            var customWorkspace = model.Workspaces.ElementAt(1);
+            Assert.AreEqual("__CollapseTest__", customWorkspace.Name);
+            Assert.IsTrue(customWorkspace.HasUnsavedChanges);
+        }
+
+        [Test]
         public void CollapsedNodeShouldHaveNewIdentfifer()
         {
             var model = ViewModel.Model;
