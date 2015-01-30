@@ -41,7 +41,7 @@ namespace Dynamo.Wpf.Controls
             }
             else if (_viewModel.LoginState == LoginState.LoggedOut)
             {
-                _viewModel.LoginLogoutCommand.Execute(null);
+                _viewModel.ToggleLoginStateCommand.Execute(null);
             }
         }
     }
