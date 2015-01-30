@@ -449,7 +449,6 @@ namespace DynamoWebServer.Messages
             string data = "null";
             if (node.CachedValue != null)
             {
-                data = "null";
                 if (node.CachedValue.IsCollection)
                 {
                     data = "Array";
