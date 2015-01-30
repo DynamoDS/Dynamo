@@ -711,14 +711,21 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndex(StackValue array, int index, Core core)
         {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
-            {
-                return StackValue.Null;
-            }
+            Validity.Assert(array.IsArray || array.IsString);
 
-            HeapElement he = GetHeapElement(array, core);
-            return StackUtils.GetValue(he, index, core);
+            if (array.IsString)
+            {
+                string str = core.Heap.GetString(array);
+                if (string.IsNullOrEmpty(str))
+                    return StackValue.Null;
+
+                return core.Heap.AllocateString(str.Substring(index, 1));
+            }
+            else
+            {
+                HeapElement he = GetHeapElement(array, core);
+                return StackUtils.GetValue(he, index, core);
+            }
         }
 
         /// <summary>
@@ -732,8 +739,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndex(StackValue array, StackValue index, Core core)
         {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
+            Validity.Assert(array.IsArray || array.IsString);
+            if (!array.IsArray && !array.IsString)
             {
                 return StackValue.Null;
             }
@@ -799,7 +806,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, StackValue[] indices, Core core)
         {
-            Validity.Assert(array.IsArray);
+            Validity.Assert(array.IsArray || array.IsString);
             for (int i = 0; i < indices.Length - 1; ++i)
             {
                 StackValue index = indices[i];

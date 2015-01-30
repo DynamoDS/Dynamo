@@ -2271,10 +2271,25 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeString;
             }
 
+            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            {
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, 0 + "[guide]");
+                StackValue opNumGuides = StackValue.BuildReplicationGuide(0);
+                EmitPush(opNumGuides);
+            }
+
             string value = (string)sNode.value;
             StackValue svString = core.Heap.AllocateFixedString(value);
-            EmitInstrConsole(kw.push, "\"" + value + "\"");
-            EmitPush(svString, node.line, node.col);
+            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            {
+                EmitInstrConsole(kw.pushg, "\"" + value + "\"");
+                EmitPushG(svString, node.line, node.col);
+            }
+            else
+            {
+                EmitInstrConsole(kw.push, "\"" + value + "\"");
+                EmitPush(svString, node.line, node.col);
+            }
 
             if (IsAssociativeArrayIndexing && graphNode != null && graphNode.isIndexingLHS)
             {
