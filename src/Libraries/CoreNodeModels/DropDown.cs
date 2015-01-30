@@ -135,7 +135,7 @@ namespace DSCoreNodesUI
         {
             var result = "-1";
 
-            if (index == -1)
+            if (index == -1 || items.Count == 0)
             {
                 result = index.ToString();
             }
