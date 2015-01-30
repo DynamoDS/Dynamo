@@ -369,7 +369,7 @@ namespace DynamoWebServer.Messages
             {
                 string data;
                 ExecutedNode exnode = nodes.FirstOrDefault(n => n.NodeId == node.GUID.ToString());
-                if (node is Function || node is CodeBlockNodeModel)
+                if (node is Function || node is CodeBlockNodeModel || node is VariableInputNode)
                 {
                     // include data about number of inputs and outputs
                     data = GetInOutPortsData(node);
@@ -494,39 +494,22 @@ namespace DynamoWebServer.Messages
 
         private string GetInOutPortsData(NodeModel node)
         {
-            var inPorts = node.InPorts.Select(port => "\"" + port.PortName + "\"").ToList();
-            var outPorts = node.OutPorts.Select(port => "\"" + port.ToolTipContent + "\"").ToList();
+            var isVarInputNode = false;
+            var stringBuilder = new StringBuilder("{");
 
-            var stringBuilder = new StringBuilder();
-
-            stringBuilder.Append("{");
             if (node is CodeBlockNodeModel)
             {
-                var codeBlock = node as CodeBlockNodeModel;
-                var allDefs = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlock.CodeStatements);
-                var lineIndices = new List<int>();
-
-                foreach (var def in allDefs)
-                {
-                    var logicalIndex = def.Value - 1;
-                    lineIndices.Add(logicalIndex);
-                }
-
-                stringBuilder.Append("\"Code\":\"");
-                stringBuilder.Append(codeBlock.Code.
-                                     Replace("\n", "\\n").
-                                     Replace("\"", "\\\""));
-                stringBuilder.Append("\", ");
-                stringBuilder.Append("\"LineIndices\": [");
-                stringBuilder.Append(string.Join(", ", lineIndices.Select(x => x.ToString()).ToArray()));
-                stringBuilder.Append("],");
+                stringBuilder.Append((node as CodeBlockNodeModel).GetExtraData());
+            } 
+            else if (node is VariableInputNode)
+            {
+                stringBuilder.Append((node as VariableInputNode).GetExtraData());
+                isVarInputNode = true;
             }
 
-            stringBuilder.Append("\"InPorts\": [");
-            stringBuilder.Append(inPorts.Any() ? inPorts.Aggregate((i, j) => i + "," + j) : "");
-            stringBuilder.Append("], \"OutPorts\": [");
-            stringBuilder.Append(outPorts.Any() ? outPorts.Aggregate((i, j) => i + "," + j) : "");
-            stringBuilder.Append("], \"Data\": \"" + GetValue(node) + "\"}");
+            stringBuilder.Append(node.GetInOutPortsData(isVarInputNode));
+            stringBuilder.Append(", \"Data\": \"" + GetValue(node));
+            stringBuilder.Append("\"}");
 
             return stringBuilder.ToString();
         }

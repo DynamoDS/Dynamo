@@ -73,6 +73,8 @@ namespace DynamoWebServer.Messages
                     break;
                 case "String":
                 case "Code Block":
+                case "Python Script":
+                case "List.Create":
                 case "Input":
                 case "Output":
                     Value = data;
