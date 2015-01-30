@@ -1,0 +1,15 @@
+{
+  "type":"RunCommandsMessage",
+  "Commands":
+  [
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateCustomNodeCommand, DynamoCore",
+      "nodeId":"0af1432e-397b-f756-a19c-c512d6e10933",
+      "name":"Circle",
+      "category":"Builtin Functions",
+      "description":"",
+      "makeCurrent":false
+    }
+  ],
+  "WorkspaceGuid":"0af1432e-397b-f756-a19c-c512d6e10933"
+}

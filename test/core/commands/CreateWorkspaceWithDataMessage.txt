@@ -1,0 +1,249 @@
+{
+  "type":"RunCommandsMessage",
+  "Commands":
+  [
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "nodeName":"Number",
+      "x":4396, "y":4628,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "name":"Value",
+      "value":2
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "name":"ArgumentLacing",
+      "value":"Disabled"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "name":"UsingDefaultValue",
+      "value":""
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "nodeName":"Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "x":5018, "y":4474,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "name":"UsingDefaultValue",
+      "value":"true;false"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"1935effc-c04c-8bbd-1969-22762f317056",
+      "nodeName":"Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "x":4692, "y":4402,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"1935effc-c04c-8bbd-1969-22762f317056",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"1935effc-c04c-8bbd-1969-22762f317056",
+      "name":"UsingDefaultValue",
+      "value":"false;false"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"1b7932f7-d840-be75-d9a0-0abae3282d25",
+      "nodeName":"Code Block",
+      "x":4472, "y":4358,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"1b7932f7-d840-be75-d9a0-0abae3282d25",
+      "name":"Code",
+      "value":"0..10..3;"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"1b7932f7-d840-be75-d9a0-0abae3282d25",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"1b7932f7-d840-be75-d9a0-0abae3282d25",
+      "name":"UsingDefaultValue",
+      "value":""
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"500a3b21-a4d2-c20e-9742-d41d9429bdad",
+      "nodeName":"Boolean",
+      "x":4450, "y":4532,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"500a3b21-a4d2-c20e-9742-d41d9429bdad",
+      "name":"Value",
+      "value":true
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"500a3b21-a4d2-c20e-9742-d41d9429bdad",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"500a3b21-a4d2-c20e-9742-d41d9429bdad",
+      "name":"UsingDefaultValue",
+      "value":""
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"4b7124b7-bf60-2d9c-c178-a32f13c0e940",
+      "nodeName":"If",
+      "x":4678, "y":4616,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"4b7124b7-bf60-2d9c-c178-a32f13c0e940",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"4b7124b7-bf60-2d9c-c178-a32f13c0e940",
+      "name":"UsingDefaultValue",
+      "value":"false;true;true"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"c0226614-6f26-c3dc-5959-c0558c1e9efe",
+      "nodeName":"Number",
+      "x":4396, "y":4695,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"c0226614-6f26-c3dc-5959-c0558c1e9efe",
+      "name":"ArgumentLacing",
+      "value":"Disabled"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"c0226614-6f26-c3dc-5959-c0558c1e9efe",
+      "name":"UsingDefaultValue",
+      "value":""
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"1935effc-c04c-8bbd-1969-22762f317056",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"1b7932f7-d840-be75-d9a0-0abae3282d25",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"1935effc-c04c-8bbd-1969-22762f317056",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"500a3b21-a4d2-c20e-9742-d41d9429bdad",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"4b7124b7-bf60-2d9c-c178-a32f13c0e940",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"3e7257ee-7227-f078-6c14-ac7f92a94afe",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"4b7124b7-bf60-2d9c-c178-a32f13c0e940",
+      "portIndex":1,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"4b7124b7-bf60-2d9c-c178-a32f13c0e940",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"689ca71c-598f-f806-922d-49fe6a2d434c",
+      "portIndex":1,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"c0226614-6f26-c3dc-5959-c0558c1e9efe",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"4b7124b7-bf60-2d9c-c178-a32f13c0e940",
+      "portIndex":2,
+      "portType":"INPUT",
+      "mode":"End"
+    }
+  ],
+  "WorkspaceGuid":"00000000-0000-0000-0000-000000000000"
+}

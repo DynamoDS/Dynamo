@@ -58,8 +58,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NodeGuids.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaveUploadTests.cs" />
     <Compile Include="SocketTests.cs" />
+    <Compile Include="ErrorMessages.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
@@ -69,6 +72,10 @@
     <ProjectReference Include="..\..\..\src\DynamoWebServer\DynamoWebServer.csproj">
       <Project>{55636e8f-53b1-4e27-a0d7-68a00da13c92}</Project>
       <Name>DynamoWebServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
