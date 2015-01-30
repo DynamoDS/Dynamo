@@ -382,7 +382,7 @@ Sorry about that.</value>
     <value>Update download started...</value>
   </data>
   <data name="WorkbenchNotOpen" xml:space="preserve">
-    <value>Workbench could not be opened.</value>
+    <value>Workspace could not be opened.</value>
   </data>
   <data name="CouldNotRepairOneNodeHoles" xml:space="preserve">
     <value>Could not repair 1-node holes</value>
@@ -525,5 +525,8 @@ value: bool = false</value>
   </data>
   <data name="SymbolNodeDescription" xml:space="preserve">
     <value>A function parameter, use with custom nodes. \n\nYou can specify the type and default value for parameter. E.g.,\n\ninput : var[]..[]\nvalue : bool = false</value>
+  </data>
+  <data name="CustomNodeNotLoaded" xml:space="preserve">
+    <value>Custom node definition is not loaded!</value>
   </data>
 </root>
