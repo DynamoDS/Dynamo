@@ -121,6 +121,7 @@ limitations under the License.
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
     <Compile Include="Utilities\AssemblyConfiguration.cs" />
+    <Compile Include="Utilities\FailFunc.cs" />
     <Compile Include="Utilities\OrderedSet.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
@@ -214,7 +215,6 @@ limitations under the License.
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\Configurations.cs" />
     <Compile Include="Utilities\LinkedListOfList.cs" />
-    <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\MigrationReport.cs" />
     <Compile Include="Utilities\Option.cs" />
     <Compile Include="Utilities\Point2D.cs" />

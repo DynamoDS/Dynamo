@@ -48,7 +48,7 @@ namespace DynamoSandbox
 
             var view = new DynamoView(viewModel);
 
-            var loginService = new LoginService(view, new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+            var loginService = new LoginService(view, new DispatcherSynchronizationContext(view.Dispatcher));
             authProvider.RequestLogin += loginService.ShowLogin;
 
             var app = new Application();
