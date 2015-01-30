@@ -716,8 +716,19 @@ namespace ProtoCore.Utils
             if (array.IsString)
             {
                 string str = core.Heap.GetString(array);
-                if (string.IsNullOrEmpty(str))
+                if (str == null)
                     return StackValue.Null;
+
+                if (index < 0)
+                {
+                    index = index + str.Length;
+                }
+
+                if (index >= str.Length || index < 0)
+                {
+                    core.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                    return StackValue.Null;
+                }
 
                 return core.Heap.AllocateString(str.Substring(index, 1));
             }
@@ -869,7 +880,15 @@ namespace ProtoCore.Utils
 
             if (zippedIndices.Length > 1)
             {
-                return core.Heap.AllocateArray(values, null);
+                if (array.IsString)
+                {
+                    string result = string.Join(string.Empty, values.Select(v => core.Heap.GetString(v)));
+                    return core.Heap.AllocateString(result);
+                }
+                else
+                {
+                    return core.Heap.AllocateArray(values, null);
+                }
             }
             else
             {

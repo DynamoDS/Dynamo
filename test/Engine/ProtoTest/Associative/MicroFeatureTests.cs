@@ -2270,7 +2270,7 @@ ns = s;
 ns[0] = 1;
 r9 = s != ""ab"";
 ss = ""abc"";
-ss[0] = 'x';
+ss[0] = ""x"";
 m = ss;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
