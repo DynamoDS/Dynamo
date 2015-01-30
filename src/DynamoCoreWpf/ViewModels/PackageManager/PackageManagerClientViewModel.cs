@@ -58,7 +58,7 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public ICommand LoginLogoutCommand { get; private set; }
+        public ICommand ToggleLoginStateCommand { get; private set; }
 
         public PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
         {
@@ -66,12 +66,12 @@ namespace Dynamo.ViewModels
             Model = model;
             CachedPackageList = new List<PackageManagerSearchElement>();
 
-            this.LoginLogoutCommand = new DelegateCommand(LoginLogout, CanLoginLogout);
+            this.ToggleLoginStateCommand = new DelegateCommand(ToggleLoginState, CanToggleLoginState);
 
             model.LoginStateChanged += b => RaisePropertyChanged("LoginState");
         }
 
-        private void LoginLogout()
+        private void ToggleLoginState()
         {
             if (this.LoginState == LoginState.LoggedIn)
             {
@@ -83,7 +83,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanLoginLogout()
+        private bool CanToggleLoginState()
         {
             return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
         }

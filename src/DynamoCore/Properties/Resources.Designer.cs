@@ -70,6 +70,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autodesk Sign In.
+        /// </summary>
+        public static string AutodeskSignIn {
+            get {
+                return ResourceManager.GetString("AutodeskSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
         /// </summary>
         public static string BackUpOriginalFileMessage {

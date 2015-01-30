@@ -1,41 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows;
-using Dynamo.PackageManager;
-using Greg;
-using Greg.AuthProviders;
+using Dynamo.Properties;
 
 namespace Dynamo.Applications.Authentication
 {
     internal class LoginService
     {
-        private readonly SynchronizationContext _context;
-        private readonly Window _parent;
+        private readonly SynchronizationContext context;
+        private readonly Window parent;
 
         public LoginService(Window parent, SynchronizationContext context)
         {
-            this._parent = parent;
-            this._context = context;
+            this.parent = parent;
+            this.context = context;
         }
 
         public bool ShowLogin(object o)
         {
             var url = o as Uri;
 
-            if (o == null) throw new Exception("Invalid URL for login page!");
+            if (o == null) throw new ArgumentException("Invalid URL for login page!");
 
             var navigateSuccess = false;
 
             // show the login
-            _context.Send((_) => {
+            context.Send((_) => {
 
                 var window = new BrowserWindow(url)
                 {
-                    Title = "Autodesk Sign In",
-                    Owner = _parent,
+                    Title = Resources.AutodeskSignIn,
+                    Owner = parent,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
