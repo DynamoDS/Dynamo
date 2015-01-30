@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
+using ProtoCore.AST;
 using ProtoCore.Exceptions;
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
@@ -275,11 +276,29 @@ namespace Dynamo.Models
             }
         }
 
+        public bool RunEnabled
+        {
+            get 
+            { 
+                if (CurrentWorkspace == null)
+                    return false;
+                
+                return this.CurrentWorkspace.RunEnabled;
+            }
+        }
+
+        /// <summary>
+        ///     The private collection of visible workspaces in Dynamo
+        /// </summary>
+        private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
+
         /// <summary>
         ///     The collection of visible workspaces in Dynamo
         /// </summary>
-        public readonly List<WorkspaceModel> Workspaces =
-            new List<WorkspaceModel>();
+        public IEnumerable<WorkspaceModel> Workspaces 
+        {
+            get { return _workspaces; } 
+        }
         
         #endregion
 
@@ -904,6 +923,9 @@ namespace Dynamo.Models
 
         #region public methods
 
+        /// <summary>
+        ///     Add a new HomeWorkspace and set as current
+        /// </summary>
         public void AddHomeWorkspace()
         {
             var defaultWorkspace = new HomeWorkspaceModel(
@@ -917,14 +939,23 @@ namespace Dynamo.Models
             AddWorkspace(defaultWorkspace);
             CurrentWorkspace = defaultWorkspace;
         }
-        
+
+        /// <summary>
+        ///     Add a new, visible Custom Node workspace to Dynamo
+        /// </summary>
+        /// <param name="workspace"></param>
+        public void AddCustomNodeWorkspace(CustomNodeWorkspaceModel workspace)
+        {
+            AddWorkspace(workspace);
+        }
+
         /// <summary>
         ///     Remove a workspace from the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
         public void RemoveWorkspace(WorkspaceModel workspace)
         {
-            if (Workspaces.Remove(workspace))
+            if (_workspaces.Remove(workspace))
             {
                 if (workspace is HomeWorkspaceModel)
                     workspace.Dispose();
@@ -1204,16 +1235,20 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         private void AddWorkspace(WorkspaceModel workspace)
         {
+            if (workspace == null) return;
+            
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
+            workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
             {
                 workspace.WorkspaceSaved -= savedHandler;
                 workspace.MessageLogged -= LogMessage;
+                workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };
 
-            Workspaces.Add(workspace);
+            _workspaces.Add(workspace);
             OnWorkspaceAdded(workspace);
         }
         enum ButtonId
@@ -1337,6 +1372,12 @@ namespace Dynamo.Models
             }
 
             return args.ClickedButtonId == (int)ButtonId.Proceed;
+        }
+
+        private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "RunEnabled")
+                OnPropertyChanged("RunEnabled");
         }
 
         #endregion

@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;ENABLE_DYNAMO_SCHEDULER</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -73,6 +73,8 @@
   <ItemGroup>
     <Compile Include="Controls\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
@@ -103,7 +105,6 @@
     <Compile Include="Interfaces\IViewModelView.cs" />
     <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
-    <Compile Include="Nodes\WatchHandler.cs" />
     <Compile Include="NodeViewCustomization\INodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\INodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\InternalNodeViewCustomization.cs" />
