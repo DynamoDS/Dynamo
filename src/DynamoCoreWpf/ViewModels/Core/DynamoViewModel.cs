@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 using Dynamo.DSEngine;
@@ -2141,6 +2143,19 @@ namespace Dynamo.ViewModels
         }
 
         public DynamoViewModel ViewModel { get { return this; } }
+
+        public ImageSource AboutBoxIcon
+        {
+            get
+            {
+                if (model.HostApplication != null)
+                    return model.HostApplication.GetImageSource(ResourceName.AboutBoxLogo);
+                
+                return new BitmapImage(
+                    new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png",
+                        UriKind.Absolute));
+            }
+        }
 
         #endregion
 
