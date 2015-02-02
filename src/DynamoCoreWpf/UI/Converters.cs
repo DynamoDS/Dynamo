@@ -757,8 +757,6 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is NodeSearchElementViewModel)
-                // TODO(Vladimir): Check if bug returns. Earlier line was:
-                //if (value is NodeSearchElement || value is NodeSearchElementViewModel)
                 return true;
 
             return false;

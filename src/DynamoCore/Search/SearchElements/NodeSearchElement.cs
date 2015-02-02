@@ -6,6 +6,7 @@ using Dynamo.Annotations;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search.Interfaces;
+using Dynamo.UI;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -172,7 +173,7 @@ namespace Dynamo.Search.SearchElements
 
                 // If there wasn't any assembly, then it's builtin function, operator or custom node.
                 // Icons for these members are in DynamoCore project.
-                return "DynamoCore";
+                return Configurations.DefaultAssembly;
             }
             set
             {

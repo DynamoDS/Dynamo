@@ -25,13 +25,6 @@ namespace Dynamo.Search
             get { return _name; }
         }
 
-        /// <summary>
-        /// Specifies whether or not Root Category package / packages need update.
-        /// Makes sense for packages only.
-        /// TODO: implement as design clarifications are provided.
-        /// </summary>
-        public bool IsUpdateAvailable { get; set; }
-
         public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {
             this.Height = 32;
