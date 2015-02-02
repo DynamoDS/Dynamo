@@ -182,9 +182,8 @@ namespace Dynamo.Nodes
             {
                 string typeOfParameter = tp.Type.ToString();
 
-                // Check if there simbols like "[]".
-                // And remove them, according how much we found.
-                // e.g. bool[][] -> bool2
+                // Check to see if there is array indexer symbols '[]', if so turn their 
+                // dimensionality into a number (e.g. 'bool[][]' turned into 'bool2').
                 int squareBrackets = typeOfParameter.Count(x => x == '[');
                 if (squareBrackets > 0)
                 {
@@ -198,8 +197,9 @@ namespace Dynamo.Nodes
                     else
                     {
                         // Remove square brackets.
-                        typeOfParameter =
-                            typeOfParameter.Remove(typeOfParameter.Length - squareBrackets * 2);
+                        int index = typeOfParameter.IndexOf('[');
+                        typeOfParameter = typeOfParameter.Substring(0, index).TrimEnd();
+
                         // Add number of them.
                         typeOfParameter = String.Concat(typeOfParameter, squareBrackets.ToString());
                     }
