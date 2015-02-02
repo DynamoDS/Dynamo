@@ -31,6 +31,9 @@ namespace DSCoreNodesUI.Input
             ShouldDisplayPreviewCore = false;
         }
 
+        //If the value field in the slider has a number greater than
+        //In32.Maxvalue (or MinValue), the value will be changed to Int32.MaxValue (or MinValue)
+        //The value will be changed, but to update the UI, this property is overridden here. 
         public override int Value
         {
             get
