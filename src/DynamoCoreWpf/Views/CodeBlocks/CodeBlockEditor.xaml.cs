@@ -472,7 +472,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private void DiscardChangesAndOptionallyRemoveNode(UndoRedoRecorder recorder,bool removeCodeBlockNode = false)
+        private void DiscardChangesAndOptionallyRemoveNode(UndoRedoRecorder recorder)
         {
             if (!string.IsNullOrEmpty(InnerTextEditor.Text))
             {
@@ -495,18 +495,15 @@ namespace Dynamo.UI.Controls
                     recorder.PopFromUndoGroup(); // Pop off creation action.
 
                 // The empty code block node needs to be removed from workspace.
-                //Fix - MAGN - 6138 - Do not remove empty code block when clicked outside.
-                if(removeCodeBlockNode)
-                    nodeViewModel.WorkspaceViewModel.Model.RemoveNode(nodeModel);
+                //Fix - MAGN - 6138 - Do not remove empty code block when clicked outside.               
+                //nodeViewModel.WorkspaceViewModel.Model.RemoveNode(nodeModel);
             }
             else
             {
                 // If the editing was started for an existing code block node,
                 // and user deletes the text contents, it should be restored to 
                 // the original codes.
-                InnerTextEditor.Text = nodeModel.Code;
-                if (removeCodeBlockNode)
-                    nodeViewModel.WorkspaceViewModel.Model.RemoveNode(nodeModel);
+                InnerTextEditor.Text = nodeModel.Code;               
             }
         }
 
