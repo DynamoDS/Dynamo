@@ -425,6 +425,12 @@ namespace Dynamo.UI.Controls
                 OnRequestReturnFocusToSearch();
             else
                 this.InnerTextEditor.Text = (DataContext as CodeBlockNodeModel).Code;
+
+            if (text == "")
+            {
+                var recorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
+                DiscardChangesAndOptionallyRemoveNode(recorder,true);
+            }
         }
 
         private void CommitChanges(UndoRedoRecorder recorder)
@@ -466,7 +472,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private void DiscardChangesAndOptionallyRemoveNode(UndoRedoRecorder recorder)
+        private void DiscardChangesAndOptionallyRemoveNode(UndoRedoRecorder recorder,bool removeCodeBlockNode = false)
         {
             if (!string.IsNullOrEmpty(InnerTextEditor.Text))
             {
@@ -489,7 +495,9 @@ namespace Dynamo.UI.Controls
                     recorder.PopFromUndoGroup(); // Pop off creation action.
 
                 // The empty code block node needs to be removed from workspace.
-                nodeViewModel.WorkspaceViewModel.Model.RemoveNode(nodeModel);
+                //Fix - MAGN - 6138 - Do not remove empty code block when clicked outside.
+                if(removeCodeBlockNode)
+                    nodeViewModel.WorkspaceViewModel.Model.RemoveNode(nodeModel);
             }
             else
             {
@@ -497,6 +505,8 @@ namespace Dynamo.UI.Controls
                 // and user deletes the text contents, it should be restored to 
                 // the original codes.
                 InnerTextEditor.Text = nodeModel.Code;
+                if (removeCodeBlockNode)
+                    nodeViewModel.WorkspaceViewModel.Model.RemoveNode(nodeModel);
             }
         }
 
