@@ -37,8 +37,6 @@ namespace ProtoCore
             this.runtimeOptions = runtimeOptions;
         }
 
-        public RuntimeMemory RuntimeMemory { get; set; }
-        public DebugProperties DebugProps { get; set; }
 
         private Options runtimeOptions;
         private Executable executable;
