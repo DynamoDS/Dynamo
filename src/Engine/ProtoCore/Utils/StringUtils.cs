@@ -12,6 +12,9 @@ namespace ProtoCore.Utils
     {
         public static int CompareString(StackValue s1, StackValue s2, Core core)
         {
+            if (s1.Equals(s2))
+                return 0;
+
             string str1 = core.Heap.GetString(s1);
             string str2 = core.Heap.GetString(s2);
             return string.Compare(str1, str2);
