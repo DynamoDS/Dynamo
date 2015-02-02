@@ -192,29 +192,49 @@ namespace ProtoCore.DSASM
         }
     }
 
-    public class StringTable
+    /// <summary>
+    /// String table to store all DS strings. 
+    /// </summary>
+    internal class StringTable
     {
         private Dictionary<string, int> stringToPointerTable;
         private Dictionary<int, string> pointerToStringTable;
 
-        public StringTable()
+        internal StringTable()
         {
             stringToPointerTable = new Dictionary<string, int>();
             pointerToStringTable = new Dictionary<int, string>();
         }
 
-        public void AddString(int pointer, string s)
+        /// <summary>
+        /// Add string to the string table. 
+        /// </summary>
+        /// <param name="pointer">The index of HeapElement that represents the string</param>
+        /// <param name="s"></param>
+        internal void AddString(int pointer, string s)
         {
             stringToPointerTable[s] = pointer;
             pointerToStringTable[pointer] = s;
         }
 
-        public bool TryGetString(int pointer, out string s)
+        /// <summary>
+        /// Get string from the string table.
+        /// </summary>
+        /// <param name="pointer">The index of HeapElement that represents the string</param>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        internal bool TryGetString(int pointer, out string s)
         {
             return pointerToStringTable.TryGetValue(pointer, out s);
         }
 
-        public bool TryGetPointer(string s, out int pointer)
+        /// <summary>
+        /// Get the index of HeapElement that represents the string
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
+        internal bool TryGetPointer(string s, out int pointer)
         {
             return stringToPointerTable.TryGetValue(s, out pointer);
         }
@@ -232,6 +252,12 @@ namespace ProtoCore.DSASM
         {
         }
 
+        /// <summary>
+        /// Allocate an array.
+        /// </summary>
+        /// <param name="values">Array elements whose indices are integer</param>
+        /// <param name="dict">Array elements whose indices are not integer</param>
+        /// <returns></returns>
         public StackValue AllocateArray(IEnumerable<StackValue> values, 
                                         Dictionary<StackValue, StackValue> dict = null)
         {
@@ -242,6 +268,12 @@ namespace ProtoCore.DSASM
             return StackValue.BuildArrayPointer(index);
         }
 
+        /// <summary>
+        /// Allocate an object pointer.
+        /// </summary>
+        /// <param name="values">Values of object properties</param>
+        /// <param name="metaData">Object type</param>
+        /// <returns></returns>
         public StackValue AllocatePointer(IEnumerable<StackValue> values, 
                                           MetaData metaData)
         {
@@ -251,6 +283,11 @@ namespace ProtoCore.DSASM
             return StackValue.BuildPointer(index, metaData);
         }
 
+        /// <summary>
+        /// Allocate an object pointer.
+        /// </summary>
+        /// <param name="values">Values of object properties</param>
+        /// <returns></returns>
         public StackValue AllocatePointer(IEnumerable<StackValue> values)
         {
             return AllocatePointer(
@@ -258,6 +295,12 @@ namespace ProtoCore.DSASM
                     new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
+        /// <summary>
+        /// Allocate an object pointer.
+        /// </summary>
+        /// <param name="size">The size of object properties.</param>
+        /// <param name="metadata">Object type</param>
+        /// <returns></returns>
         public StackValue AllocatePointer(int size, MetaData metadata)
         {    
             int index = AllocateInternal(size);
@@ -266,6 +309,11 @@ namespace ProtoCore.DSASM
             return StackValue.BuildPointer(index, metadata);
         }
 
+        /// <summary>
+        /// Allocate an object pointer.
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
         public StackValue AllocatePointer(int size)
         {
             return AllocatePointer(
@@ -273,6 +321,11 @@ namespace ProtoCore.DSASM
                     new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
+        /// <summary>
+        /// Allocate a string, the string will be put in string table.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         private int AllocateStringInternal(string str)
         {
             int index;
@@ -280,13 +333,13 @@ namespace ProtoCore.DSASM
             {
                 index = AllocateInternal(Enumerable.Empty<StackValue>());
                 stringTable.AddString(index, str);
+                heapElements[index].MetaData = new MetaData { type = (int)PrimitiveType.kTypeString};
             }
             return index;
         }
 
         /// <summary>
-        /// Allocate string that directly used in the code. These
-        /// string won't be garbage collected.
+        /// Allocate string constant. String constant won't be garbage collected.
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -297,12 +350,22 @@ namespace ProtoCore.DSASM
             return StackValue.BuildString(index);
         }
 
+        /// <summary>
+        /// Allocate string. 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public StackValue AllocateString(string str)
         {
             int index = AllocateStringInternal(str);
             return StackValue.BuildString(index);
         }
 
+        /// <summary>
+        /// Get string that pointer represents.
+        /// </summary>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public string GetString(StackValue pointer)
         {
             if (!pointer.IsString)
@@ -318,7 +381,12 @@ namespace ProtoCore.DSASM
                 return null;
         }
 
-       public HeapElement GetHeapElement(StackValue pointer)
+        /// <summary>
+        /// Get HeapElement that pointer represents.
+        /// </summary>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
+        public HeapElement GetHeapElement(StackValue pointer)
         {
             int index = (int)pointer.opdata;
             var heapElement = heapElements[index];

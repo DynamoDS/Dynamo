@@ -12,6 +12,9 @@ namespace ProtoCore.Utils
     {
         public static int CompareString(StackValue s1, StackValue s2, Core core)
         {
+            if (!s1.IsString || !s2.IsString)
+                return Constants.kInvalidIndex;
+
             if (s1.Equals(s2))
                 return 0;
 
