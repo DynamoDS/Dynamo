@@ -2149,7 +2149,8 @@ namespace Dynamo.ViewModels
             get
             {
                 if (model.HostApplication != null)
-                    return model.HostApplication.GetImageSource(ResourceName.AboutBoxLogo);
+                    return new BitmapImage(
+                        new Uri(model.HostApplication.GetImageSource(ResourceName.AboutBoxLogo)));
                 
                 return new BitmapImage(
                     new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png",
