@@ -242,22 +242,19 @@ namespace Dynamo.Nodes
 
             value = CodeBlockUtils.FormatUserText(value);
 
-            if (!value.Equals(Code))
-                SetCodeContent(value);
-
-            ////Since an empty Code Block Node should not exist, this checks for such instances.
-            //// If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
-            //// an empty Code Block Node should not be recorded, this method also checks and removes
-            //// any unwanted recordings
-            //if (value == "")
-            //{
-            //    Code = "";
-            //}
-            //else
-            //{
-            //    if (!value.Equals(Code))
-            //        SetCodeContent(value);
-            //}
+            //Since an empty Code Block Node should not exist, this checks for such instances.
+            // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
+            // an empty Code Block Node should not be recorded, this method also checks and removes
+            // any unwanted recordings
+            if (value == "")
+            {
+                Code = "";
+            }
+            else
+            {
+                if (!value.Equals(Code))
+                    SetCodeContent(value);
+            }
             return true;
         }
 
