@@ -902,7 +902,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDummyNodeInternals00()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -925,7 +925,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDummyNodeInternals01()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -951,7 +951,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDummyNodeSerialization()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "dummyNode.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
