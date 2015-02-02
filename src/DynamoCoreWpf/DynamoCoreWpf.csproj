@@ -71,6 +71,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AddonsTreeView.xaml.cs">
+      <DependentUpon>AddonsTreeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\HeaderStrip.xaml.cs">
       <DependentUpon>HeaderStrip.xaml</DependentUpon>
     </Compile>
@@ -215,6 +218,9 @@
     <Compile Include="Views\Search\LibraryContainerView.xaml.cs">
       <DependentUpon>LibraryContainerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Search\LibrarySearchView.xaml.cs">
+      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
     </Compile>
@@ -290,6 +296,10 @@
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\AddonsTreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -950,6 +960,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\Search\LibraryContainerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Search\LibrarySearchView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
