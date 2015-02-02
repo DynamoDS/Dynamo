@@ -300,7 +300,6 @@ namespace Dynamo.Models
         }
 
 
-        public IHostApplication HostApplication { get; private set; }
         
         #endregion
 
@@ -372,12 +371,6 @@ namespace Dynamo.Models
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
-
-            /// <summary>
-            /// This property is initialized if there is an external host application
-            /// at startup in order to be used to pass in host specific resources to DynamoModel
-            /// </summary>
-            public IHostApplication HostApplication { get; set; }
         }
 
         /// <summary>
@@ -420,7 +413,6 @@ namespace Dynamo.Models
             IPreferences preferences = configuration.Preferences;
             string corePath = configuration.DynamoCorePath;
             bool testMode = configuration.StartInTestMode;
-            HostApplication = configuration.HostApplication;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
 
