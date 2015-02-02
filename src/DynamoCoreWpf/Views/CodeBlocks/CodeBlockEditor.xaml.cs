@@ -428,8 +428,8 @@ namespace Dynamo.UI.Controls
 
             if (text == "")
             {
-                var recorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-                DiscardChangesAndOptionallyRemoveNode(recorder,true);
+                nodeViewModel.DynamoViewModel.ExecuteCommand(
+                   new DynCmd.DeleteModelCommand(nodeModel.GUID));
             }
         }
 
