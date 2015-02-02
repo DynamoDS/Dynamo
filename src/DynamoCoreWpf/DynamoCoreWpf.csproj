@@ -893,8 +893,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Core\AnnotationView.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Core\DynamoView.xaml">
       <Generator>MSBuild:Compile</Generator>
