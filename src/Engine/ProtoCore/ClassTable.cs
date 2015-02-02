@@ -221,13 +221,13 @@ namespace ProtoCore.DSASM
                 bool isAccessible = false;
                 if (isInMemberFunctionContext)
                 {
-                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.CompilerDefinitions.AccessSpecifier.kPrivate);
+                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.Compiler.AccessSpecifier.kPrivate);
                     if (isInStaticFunction)
                         isAccessible = isAccessible && symbol.isStatic;
                 }
                 else
                 {
-                    isAccessible = symbol.access == ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
+                    isAccessible = symbol.access == ProtoCore.Compiler.AccessSpecifier.kPublic;
                 }
 
                 if (isAccessible)
@@ -285,7 +285,7 @@ namespace ProtoCore.DSASM
 
                 if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
-                    isAccessible = (procNode.access == CompilerDefinitions.AccessSpecifier.kPublic);
+                    isAccessible = (procNode.access == Compiler.AccessSpecifier.kPublic);
                 }
                 else if (classScope == myClassIndex) 
                 {
@@ -293,11 +293,11 @@ namespace ProtoCore.DSASM
                 }
                 else if (typeSystem.classTable.ClassNodes[classScope].IsMyBase(myClassIndex))
                 {
-                    isAccessible = (procNode.access != CompilerDefinitions.AccessSpecifier.kPrivate);
+                    isAccessible = (procNode.access != Compiler.AccessSpecifier.kPrivate);
                 }
                 else
                 {
-                    isAccessible = (procNode.access == CompilerDefinitions.AccessSpecifier.kPublic);
+                    isAccessible = (procNode.access == Compiler.AccessSpecifier.kPublic);
                 }
 
                 return procNode;
@@ -340,11 +340,7 @@ namespace ProtoCore.DSASM
 
         public ProcedureNode GetFirstMemberFunctionBy(string procName, int argCount)
         {
-            if (vtable == null)
-            {
-                return null;
-            }
-
+            if (vtable == null)            {                return null;            }
             ProcedureNode procNode = vtable.GetFunctionsBy(procName, argCount).FirstOrDefault();
             if (procNode != null)
             {
