@@ -615,7 +615,7 @@ namespace Dynamo.Controls
             do
             {
                 var categorized = 
-                    SearchCategory.CategorizeSearchEntries(
+                    SearchCategoryUtil.CategorizeSearchEntries(
                         dynamoViewModel.Model.SearchModel.SearchEntries,
                         entry => entry.Categories);
 
