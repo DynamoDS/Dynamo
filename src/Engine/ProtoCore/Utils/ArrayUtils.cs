@@ -550,6 +550,7 @@ namespace ProtoCore.Utils
         public static StackValue SetValueForIndex(StackValue array, int index, StackValue value, Core core)
         {
             Validity.Assert(array.IsArray);
+
             HeapElement arrayHeap = GetHeapElement(array, core);
             index = arrayHeap.ExpandByAcessingAt(index);
             StackValue oldValue = arrayHeap.SetValue(index, value);

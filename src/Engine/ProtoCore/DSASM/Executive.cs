@@ -3079,8 +3079,8 @@ namespace ProtoCore.DSASM
             }
             else if (value.IsString)
             {
-                t = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0);
-                ret = ArrayUtils.SetValueForIndices(value, dimlist, data, t, core);
+                core.RuntimeStatus.LogWarning(WarningID.kInvalidIndexing, Resources.kStringIndexingCannotBeAssigned);
+                ret = StackValue.Null;
             }
             else
             {

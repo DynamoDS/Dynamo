@@ -381,4 +381,7 @@
   <data name="noSuchFileOrDirectoryToImport" xml:space="preserve">
     <value>Cannot import file: '{0}': No such file or directory</value>
   </data>
+  <data name="kStringIndexingCannotBeAssigned" xml:space="preserve">
+    <value>String indexing cannot be assigned to, it is read only.</value>
+  </data>
 </root>
