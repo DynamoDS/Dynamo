@@ -681,7 +681,7 @@ namespace Dynamo.ViewModels
                 }
 
                 var elementVM = MakeNodeSearchElementVM(node);
-                elementVM.Category = GetCategoryViewModel(node.Categories);
+                elementVM.Category = GetCategoryViewModel(libraryRoot, node.Categories);
 
                 category.AddMemberToGroup(elementVM);
             }
@@ -728,10 +728,11 @@ namespace Dynamo.ViewModels
             return elementVM;
         }
 
-        private NodeCategoryViewModel GetCategoryViewModel(IEnumerable<string> categories)
+        private static NodeCategoryViewModel GetCategoryViewModel(NodeCategoryViewModel rootCategory,
+            IEnumerable<string> categories)
         {
             var nameStack = new Stack<string>(categories.Reverse());
-            NodeCategoryViewModel target = libraryRoot;
+            NodeCategoryViewModel target = rootCategory;
             NodeCategoryViewModel newTarget = null;
             bool isCheckedForClassesCategory = false;
             while (nameStack.Any())
