@@ -340,6 +340,38 @@ namespace Dynamo.Controls
         }
     }
 
+    public class RunPreviewConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var dynamicRunEnabled = (bool)value;
+            return !dynamicRunEnabled;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class RunPreviewToolTipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var dynamicRunEnabled = (bool)value;
+            string toolTip = "Show Run Preview will be enabled when Run Automatically is not set";
+            if(dynamicRunEnabled)
+                 toolTip = "Show Run Preview will be enabled when Run Automatically is not set";
+            return toolTip;
+
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class MarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

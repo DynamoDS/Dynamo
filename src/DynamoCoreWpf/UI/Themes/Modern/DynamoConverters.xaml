@@ -126,4 +126,6 @@
     <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>
     <controls:StringLengthToVisibilityConverter x:Key="StringLengthToVisibilityConverter" />
     <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter"/>
+    <controls:RunPreviewConverter x:Key="RunPreviewConverter"/>
+    <controls:RunPreviewToolTipConverter x:Key="RunPreviewToolTipConverter"/>
 </ResourceDictionary>
