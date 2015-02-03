@@ -4,6 +4,15 @@
         <name>ProtoGeometry</name>
     </assembly>
     <members>
+        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,System.Double,System.Int32)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
+            <notranslation>true</notranslation>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.DisposeDisplayable">
             <summary>
             This method is called when the displayable is no more needed.
@@ -13,6 +22,12 @@
             <summary>
             This method should be called whenever this object is referenced by other object
             </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.GetHashCode">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Equals(System.Object)">
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
             <summary>
@@ -184,6 +199,9 @@
             <param name="hostType">Type of IGeometryEntity derived interfaces.</param>
             <param name="contructor">A delegate to construct Geometry.</param>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.FromObject(System.Int64)">
+            <notranslation>true</notranslation>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Dispose(System.Boolean)">
             <summary>
             
@@ -200,6 +218,11 @@
             <param name="zTranslation">Displacement along Z-axis.</param>
             <returns>Transformed Geometry.</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Translate geometry in the given direction by the vector length
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
             <summary>
             Translates any geometry type by the given distance in the given 
@@ -208,6 +231,11 @@
             <param name="direction">Displacement direction.</param>
             <param name="distance">Displacement distance along given direction.</param>
             <returns>Transformed Geometry.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
+            <summary>
+            Transforms geometry by the given CoordinateSystem's transform
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
@@ -317,6 +345,9 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
             WARNING: non-ascii characters are not supported in file nams.
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.UpdateDisplay">
+            <notranslation>true</notranslation>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Geometry.BoundingBox">
             <summary>
@@ -744,6 +775,18 @@
             <summary>
             Returns true if the Surface is rational.
             </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GraphicDataProvider.GetGraphicItems(System.Object)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GraphicDataProvider.Tessellate(System.Collections.Generic.List{System.Object},Autodesk.DesignScript.Interfaces.IRenderPackage,System.Double)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryGraphicItem.#ctor(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryGraphicItem.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,System.Double,System.Int32)">
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
             <summary>
@@ -1233,6 +1276,9 @@
             geometry integration.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Core.EntityTags.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object},Autodesk.DesignScript.Geometry.DesignScriptEntity)">
+            <notranslation>true</notranslation>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Core.EntityTags.AddTag(System.String,System.Object)">
             <summary>
             Add or overwrite a Geometry tag
@@ -1247,12 +1293,42 @@
             <param name="name"></param>
             <returns></returns>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Core.EntityTags.Parent">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.#ctor">
+            <notranslation>true</notranslation>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.#ctor(System.Array)">
             <summary>
             Constructor that expects input data as collection of name and value
             pairs.
             </summary>
             <param name="data">List of name, value pair data.</param>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.AddData(System.String,System.Object)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.GetData(System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.GetEnumerator">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.ToArray">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.ToParameterizedArray">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.GetCollection">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ParameterizedCollection.DoneReading">
+            <notranslation>true</notranslation>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.SerialDataReader">
             <summary>
@@ -1261,6 +1337,30 @@
             compact form of data. This doesn't support AddData() method.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.SerialDataReader.#ctor(System.Array)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.SerialDataReader.AddData(System.String,System.Object)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.SerialDataReader.GetData(System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.SerialDataReader.GetEnumerator">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.SerialDataReader.ToArray">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.SerialDataReader.DoneReading">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TypeSpecificSerializers.RegisterSerializers``1(System.String,System.Func{Autodesk.DesignScript.Geometry.GeometryDataSerializer,Autodesk.DesignScript.Interfaces.IDesignScriptEntity})">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TypeSpecificSerializers.GetReader(System.String)">
+            <notranslation>true</notranslation>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TypeSpecificSerializers.WriteEntity(Autodesk.DesignScript.Interfaces.IDesignScriptEntity,System.String@)">
             <summary>
             Finds the underlying interface implementation type and uses appropriate
@@ -1268,6 +1368,7 @@
             </summary>
             <param name="entity"></param>
             <param name="typeName">output type name</param>
+            <notranslation>true</notranslation>
             <returns></returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.#ctor(System.Array)">
@@ -1275,17 +1376,20 @@
             To be used for reading/de-serializating data
             </summary>
             <param name="data">Data to deserialize from</param>
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>
             To be used for reading/de-serializating parameterized data
             </summary>
             <param name="data">Parameterized data to deserialize from</param>
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.#ctor">
             <summary>
             To be used for serialization of data
             </summary>
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.CreateDataReader(System.Object)">
             <summary>
@@ -1293,6 +1397,24 @@
             </summary>
             <param name="data"></param>
             <returns></returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteObject(System.String,System.Object)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteBoolean(System.String,System.Boolean)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteDouble(System.String,System.Double)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteInteger(System.String,System.Int32)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteString(System.String,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteEntity``1(``0)">
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteEntity(Autodesk.DesignScript.Interfaces.IDesignScriptEntity,System.String@)">
             <summary>
@@ -1302,6 +1424,7 @@
             <param name="entity"></param>
             <param name="typeName">output type name</param>
             <returns></returns>
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.CreateGeometryFromData(System.String,System.Array)">
             <summary>
@@ -1310,6 +1433,139 @@
             <param name="geomType">Geometry type</param>
             <param name="data">Collection of input data to create geometry from</param>
             <returns>Collection of Geometry created using the given data</returns>
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ReadPoint">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteObject(Autodesk.DesignScript.Interfaces.IPointEntity)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ReadVector">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteObject(Autodesk.DesignScript.Interfaces.IVectorEntity)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ReadCoordinateSystem">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteObject(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ReadLine">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteObject(Autodesk.DesignScript.Interfaces.ILineEntity)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ReadCircle">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteObject(Autodesk.DesignScript.Interfaces.ICircleEntity)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ReadArc">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteObject(Autodesk.DesignScript.Interfaces.IArcEntity)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ReadBSplineCurve">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.WriteObject(Autodesk.DesignScript.Interfaces.INurbsCurveEntity)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.AddData(System.String,System.Object)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.GetData(System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ToArray">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.GetEnumerator">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ToString">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.ToString(System.Collections.IEnumerable)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataSerializer.DoneReading">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Application.OnSuspendExecution(Autodesk.DesignScript.Interfaces.IExecutionSession)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Application.OnResumeExecution(Autodesk.DesignScript.Interfaces.IExecutionSession)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Application.StartUp">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Application.ShutDown">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Application.PreloadAsmLibraries(System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Application.Session">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Application.Instance">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Application.IsExecuting">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.LessThanOrEquals(System.Double,System.Double,System.Double)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.Equals(System.Double,System.Double,System.Double)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.EqualsTo(System.Double,System.Double)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.LessThanOrEqualTo(System.Double,System.Double)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.AreCoincident(Autodesk.DesignScript.Interfaces.IPointEntity[])">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="F:Autodesk.DesignScript.Geometry.GeometryExtension.PI">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.DegreesToRadians(System.Double)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.RadiansToDegrees(System.Double)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.ToPointEntityArray(Autodesk.DesignScript.Geometry.Point[][],System.Boolean)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.ToPointArray(Autodesk.DesignScript.Interfaces.IPointEntity[][],System.Boolean)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.ToEntity(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.GetCurveEntity(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.ForEach``1(``0[],System.Action{``0})">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.ForEach``1(``0[][],System.Action{``0})">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.ConvertAll``2(``0[],System.Converter{``0,``1})">
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.ClipParamRange(System.Double@)">
             <summary>
@@ -1324,6 +1580,7 @@
             </summary>
             <param name="fileName">File name to locate.</param>
             <returns>Full path for the given file.</returns>
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ToString">
             <summary>
@@ -1650,6 +1907,45 @@
             Returns height distance.                         Note: This return the input dimensions of the Cuboid, NOT the                   actual world space dimensions. In other words, if you create a Cuboid                   width (X-axis) length 10, and transform it to a CoordinateSystem with                   2 times scaling in X, the width will still be 10. ASM does not allow you                   to extract the Vertices of a body in any predictable order, so it                    impossible to determine the dimensions after a transform.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity``1(Autodesk.DesignScript.Geometry.GeometryExpressionBuilder,Autodesk.DesignScript.Interfaces.IDesignScriptEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity(Autodesk.DesignScript.Interfaces.IPointEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity(Autodesk.DesignScript.Interfaces.IVectorEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity(Autodesk.DesignScript.Interfaces.ILineEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity(Autodesk.DesignScript.Interfaces.ICircleEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity(Autodesk.DesignScript.Interfaces.IArcEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity(Autodesk.DesignScript.Interfaces.INurbsCurveEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity(Autodesk.DesignScript.Interfaces.ISolidEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntity(Autodesk.DesignScript.Interfaces.ISurfaceEntity,System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.ToString">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.WriteEntities(Autodesk.DesignScript.Interfaces.IGeometryEntity[])">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryExpressionBuilder.GetExpression(Autodesk.DesignScript.Interfaces.IGeometryEntity[],System.String)">
+            <notranslation>true</notranslation>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
             <summary>
             Get a string representation of the PolyCurve
@@ -1972,6 +2268,18 @@
             <summary>
             The total sweep angle in degrees
             </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ProtoGeometryConfigurationManager.Save">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.ProtoGeometryConfigurationManager.Settings">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.ProtoGeometryConfiguration.GeometryFactoryFileName">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.ProtoGeometryConfiguration.PersistentManagerFileName">
+            <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ToString">
             <summary>
@@ -2601,6 +2909,30 @@
             The radius of the Cylinder
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataProvider.ImportData(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryDataProvider.GetExpression(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.GeometryDataProvider.Name">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryData.#ctor(System.String,System.Object,Autodesk.DesignScript.Interfaces.IContextDataProvider)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.GeometryData.Name">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.GeometryData.Data">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.GeometryData.ContextProvider">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="E:Autodesk.DesignScript.Geometry.GeometryData.DataChanged">
+            <notranslation>true</notranslation>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometrySettings.Reset">
             <summary>
             Resets the geometry settings to default
@@ -2640,6 +2972,16 @@
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ArrayFormatException">
+            <summary>
+              Looks up a localized string similar to Given data : \&quot;{0}\&quot; is not an array.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ConversionException">
+            <summary>
+              Looks up a localized string similar to Conversion of backing object to Geometry failed. Could not export SAT..
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.CurveNotClosed">
@@ -2682,6 +3024,11 @@
               Looks up a localized string similar to the {0} is invalid.
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.InvalidDataFormatException">
+            <summary>
+              Looks up a localized string similar to Invalid data : {0} for parameter {1}.
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.InvalidInput">
             <summary>
               Looks up a localized string similar to the input {0} is invalid for {1}.
@@ -2690,6 +3037,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.InvalidIntersect">
             <summary>
               Looks up a localized string similar to {0} cannot intersect with {1}.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.InvalidOperationException">
+            <summary>
+              Looks up a localized string similar to Can&apos;t locate Geometry constructor for type: {0}..
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.InvalidProjection">
@@ -2742,6 +3094,16 @@
               Looks up a localized string similar to the {0} is less than zero.
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
+            <summary>
+              Looks up a localized string similar to No implementation of IGeometryFactory found.  Make sure ProtoGeometry.config is properly configured..
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoParameterNameException">
+            <summary>
+              Looks up a localized string similar to WriteObject without parameter name is not supported for {0}.
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NotEqual">
             <summary>
               Looks up a localized string similar to the {0} is not equal to {2}.
@@ -2757,9 +3119,29 @@
               Looks up a localized string similar to the {0} is null.
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NullIDesignScriptEntityException">
+            <summary>
+              Looks up a localized string similar to DesignScriptEntity can&apos;t be created with null IDesignScriptEntity.
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.OperationFailed">
             <summary>
               Looks up a localized string similar to {0} operation failed.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.OwnerExistingException">
+            <summary>
+              Looks up a localized string similar to Input host already has owner assigned to it. DesignScriptEntity can&apos;t be created with it..
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ParameterFormatException">
+            <summary>
+              Looks up a localized string similar to The data for parameter : {0} is not in {1} format..
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ParameterizedCollectionException">
+            <summary>
+              Looks up a localized string similar to Given data : \&quot;{0}\&quot; is not an array of name value pairs.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
@@ -2770,6 +3152,16 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsColinear">
             <summary>
               Looks up a localized string similar to {0} are colinear.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.SATFileExportedException">
+            <summary>
+              Looks up a localized string similar to SAT file exported to an unexpected location..
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.SessionMismatchException">
+            <summary>
+              Looks up a localized string similar to Session mismatch for begin and end execution call..
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.Sheared">

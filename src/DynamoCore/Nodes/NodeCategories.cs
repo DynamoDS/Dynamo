@@ -4,6 +4,9 @@ using System.Linq;
 using System.Xml;
 using Dynamo.UI;
 using System.IO;
+using System.Text;
+using Dynamo.DSEngine;
+using Dynamo.Library;
 
 namespace Dynamo.Nodes
 {
@@ -18,7 +21,7 @@ namespace Dynamo.Nodes
         public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
         public const string CORE_LISTS_CREATE = "Core.List.Create";
-        public const string CORE_LISTS_ACTION = "Core.List.Actions";        
+        public const string CORE_LISTS_ACTION = "Core.List.Actions";
         public const string CORE_LISTS_QUERY = "Core.List.Query";
         public const string CORE_VIEW = "Core.View";
         public const string CORE_ANNOTATE = "Core.Annotate";
@@ -160,6 +163,88 @@ namespace Dynamo.Nodes
             className = className.Replace("XYZ", "Xyz");
             className = className.Replace("UV", "Uv");
             return newPrefix + className; // Always new prefix from now on.
+        }
+
+        /// <summary>
+        /// This method returns a name for the icon based on name of the node.
+        /// </summary>
+        /// <param name="descriptor">Function descriptor, that contains all info about node.</param>
+        /// <param name="overridePrefix">
+        /// overridePrefix is used as default value for generating node icon name.
+        /// If overridePrefix is empty, it uses QualifiedName property.
+        /// e.g. Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin
+        /// </param>
+        public static string TypedParametersToString(FunctionDescriptor descriptor, string overridePrefix = "")
+        {
+            var builder = new StringBuilder();
+
+            foreach (TypedParameter tp in descriptor.Parameters)
+            {
+                string typeOfParameter = tp.Type.ToString();
+
+                // Check to see if there is array indexer symbols '[]', if so turn their 
+                // dimensionality into a number (e.g. 'bool[][]' turned into 'bool2').
+                int squareBrackets = typeOfParameter.Count(x => x == '[');
+                if (squareBrackets > 0)
+                {
+                    if (typeOfParameter.Contains("[]..[]"))
+                    {
+                        // Remove square brackets.
+                        typeOfParameter = typeOfParameter.Replace("[]..[]", "");
+                        // Add number of them.
+                        typeOfParameter = String.Concat(typeOfParameter, "N");
+                    }
+                    else
+                    {
+                        // Remove square brackets.
+                        int index = typeOfParameter.IndexOf('[');
+                        typeOfParameter = typeOfParameter.Substring(0, index).TrimEnd();
+
+                        // Add number of them.
+                        typeOfParameter = String.Concat(typeOfParameter, squareBrackets.ToString());
+                    }
+                }
+
+                if (builder.Length > 0)
+                    builder.Append("-");
+
+                typeOfParameter = typeOfParameter.Split('.').Last();
+                builder.Append(typeOfParameter);
+            }
+
+            // If the caller does not supply a prefix, use default logic to generate one.
+            if (string.IsNullOrEmpty(overridePrefix))
+                overridePrefix = NormalizeAsResourceName(descriptor.QualifiedName);
+
+            return overridePrefix + "." + builder.ToString();
+        }
+
+        internal static string ShortenCategoryName(string fullCategoryName)
+        {
+            if (string.IsNullOrEmpty(fullCategoryName))
+                return string.Empty;
+
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiter.ToString(), " " + Configurations.ShortenedCategoryDelimiter + " ");
+
+            // if the category name is too long, we strip off the interior categories
+            if (catName.Length > 50)
+            {
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
+                if (s.Count() > 4)
+                {
+                    s = new List<string>()
+                                        {
+                                            s[0],
+                                            "...",
+                                            s[s.Count - 3],
+                                            s[s.Count - 2],
+                                            s[s.Count - 1]
+                                        };
+                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
+                }
+            }
+
+            return catName;
         }
 
         /// <summary>
@@ -409,6 +494,55 @@ namespace Dynamo.Nodes
             var relativeUri = new Uri(relativePath, UriKind.Relative);
             var resultUri = new Uri(baseUri, relativeUri);
             return resultUri.LocalPath;
+        }
+
+        /// <summary>
+        /// Add spaces to string before capital letters e.g. CoordinateSystem to Coordinate System.
+        /// </summary>
+        /// <param name="original">incoming string</param>
+        internal static string InsertSpacesToString(string original)
+        {
+            if (string.IsNullOrWhiteSpace(original))
+                return "";
+            StringBuilder newText = new StringBuilder(original.Length * 2);
+            newText.Append(original[0]);
+            for (int i = 1; i < original.Length; i++)
+            {
+                // We also have to check was previous character capital letter, e.g. Import From CSV                
+                var curr = original[i];
+                var prev = original[i - 1];
+                if ((Char.IsUpper(curr) || curr.Equals('(')) &&
+                    ((prev != ' ') && (!Char.IsUpper(prev))))
+                {
+                    newText.Append(" ");
+                }
+                newText.Append(original[i]);
+            }
+            return newText.ToString();
+        }
+
+        internal static string NormalizeAsResourceName(string resource)
+        {
+            if (string.IsNullOrWhiteSpace(resource))
+                return "";
+
+            StringBuilder newText = new StringBuilder(resource.Length);
+
+            // Dots and minus we add, they are for overloaded methods.
+            var query = resource.Where(
+                c =>
+                {
+                    if (c == '.' || (c == '-'))
+                        return true;
+
+                    return Char.IsLetterOrDigit(c);
+                });
+
+            foreach (var c in query)
+                newText.Append(c);
+
+            var result = newText.ToString();
+            return ((result == "-") ? string.Empty : result);
         }
 
         private static bool HasPathInformation(string fileNameOrPath)
