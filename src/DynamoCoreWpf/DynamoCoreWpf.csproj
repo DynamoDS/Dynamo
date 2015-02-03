@@ -80,6 +80,7 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
@@ -101,6 +102,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\DefaultBrandingResourceProvider.cs" />
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
@@ -181,6 +183,7 @@
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
