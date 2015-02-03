@@ -1,7 +1,7 @@
-﻿using Dynamo.Search.SearchElements;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.UI.Controls
 {
@@ -15,22 +15,9 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
         }
 
-        private void OnEditClick(object sender, RoutedEventArgs e)
+        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            // Logic of original TreeView should be saved until
-            // new design is not implemented.
-#if false
-            var menuItem = sender as MenuItem;
-            if (menuItem != null)
-            {
-                var element = menuItem.DataContext as CustomNodeSearchElement;
-                if (element != null)
-                {
-                    if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
-                        dynamoViewModel.OpenCommand.Execute(element.Path);
-                }
-            }
-#endif
+            libraryToolTipPopup.SetDataContext(null);
         }
 
         private void OnMemberMouseEnter(object sender, MouseEventArgs e)
@@ -41,11 +28,6 @@ namespace Dynamo.UI.Controls
                 libraryToolTipPopup.PlacementTarget = fromSender;
                 libraryToolTipPopup.SetDataContext(fromSender.DataContext);
             }
-        }
-
-        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            libraryToolTipPopup.SetDataContext(null);
         }
     }
 }

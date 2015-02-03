@@ -103,7 +103,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Image x:Name="ExpandCollapseStateIcon"
-                                   Source="/DynamoCore;component/UI/Images/collapsestate_normal.png"
+                                   Source="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"
                                    Width="16"
                                    Height="16"
                                    VerticalAlignment="Center" />
@@ -115,7 +115,6 @@
                                               TextBlock.Foreground="#989898" />
                         </Grid>
                         <ControlTemplate.Triggers>
-
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
@@ -128,7 +127,7 @@
                                 <MultiDataTrigger.Setters>
                                     <Setter Property="Source"
                                             TargetName="ExpandCollapseStateIcon"
-                                            Value="/DynamoCore;component/UI/Images/collapsestate_hover.png" />
+                                            Value="/DynamoCoreWpf;component/UI/Images/collapsestate_hover.png" />
                                 </MultiDataTrigger.Setters>
                             </MultiDataTrigger>
 
@@ -144,7 +143,7 @@
                                 <MultiDataTrigger.Setters>
                                     <Setter Property="Source"
                                             TargetName="ExpandCollapseStateIcon"
-                                            Value="/DynamoCore;component/UI/Images/expandstate_hover.png" />
+                                            Value="/DynamoCoreWpf;component/UI/Images/expandstate_hover.png" />
                                 </MultiDataTrigger.Setters>
                             </MultiDataTrigger>
 
@@ -160,7 +159,7 @@
                                 <MultiDataTrigger.Setters>
                                     <Setter Property="Source"
                                             TargetName="ExpandCollapseStateIcon"
-                                            Value="/DynamoCore;component/UI/Images/expandstate_normal.png" />
+                                            Value="/DynamoCoreWpf;component/UI/Images/expandstate_normal.png" />
                                 </MultiDataTrigger.Setters>
                             </MultiDataTrigger>
 
@@ -516,7 +515,7 @@
                            Height="13"
                            HorizontalAlignment="Right"
                            VerticalAlignment="Center"
-                           Source="/DynamoCore;component/UI/Images/addon_update_available.png">
+                           Source="/DynamoCoreWpf;component/UI/Images/addon_update_available.png">
                         <Image.Visibility>
                             <Binding Path="IsUpdateAvailable"
                                      Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
@@ -543,7 +542,7 @@
                     <Binding Path="ActualWidth"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
                 </StackPanel.Width>
-                <Image Source="/DynamoCore;component/UI/Images/CustomNode/customNode.png"
+                <Image Source="/DynamoCoreWpf;component/UI/Images/CustomNode/customNode.png"
                        Margin="30,0,0,0"
                        Width="30"
                        Height="30" />
