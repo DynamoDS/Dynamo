@@ -14,7 +14,7 @@ namespace Dynamo.Wpf.Nodes
             if (model.NodeNature == DummyNode.Nature.Unresolved)
                 fileName = "MissingNode.png";
 
-            var src = @"/DSCoreNodesWpf;component/Resources/" + fileName;
+            var src = @"/CoreNodeModelsWpf;component/Resources/" + fileName;
 
             Image dummyNodeImage = new Image()
             {

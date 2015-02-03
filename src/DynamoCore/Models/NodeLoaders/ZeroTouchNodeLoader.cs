@@ -6,6 +6,7 @@ using System.Xml;
 using DSCoreNodesUI;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models.NodeLoaders
 {
@@ -70,6 +71,7 @@ namespace Dynamo.Models.NodeLoaders
             if (null == descriptor)
             {
                 var inputcount = DetermineFunctionInputCount(nodeElement);
+
                 return new DummyNode(
                     inputcount,
                     1,
