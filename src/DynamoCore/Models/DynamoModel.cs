@@ -29,6 +29,7 @@ using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
+using RestSharp.Validation;
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
@@ -43,6 +44,8 @@ namespace Dynamo.Models
 
     public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager // : ModelBase
     {
+        public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
+
         #region private members
         private WorkspaceModel currentWorkspace;
         #endregion
@@ -389,7 +392,7 @@ namespace Dynamo.Models
         protected DynamoModel(StartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
-            MaxTesselationDivisions = 128;
+            MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
             string context = config.Context;
             IPreferences preferences = config.Preferences;
@@ -454,7 +457,7 @@ namespace Dynamo.Models
             ResetEngineInternal();
 
             AddHomeWorkspace();
-
+            
             UpdateManager.UpdateManager.CheckForProductUpdate();
 
             Logger.Log(
@@ -463,12 +466,10 @@ namespace Dynamo.Models
             var url = config.PackageManagerAddress ??
                       AssemblyConfiguration.Instance.GetAppSetting("packageManagerAddress");
 
-            Logger.Log("Dynamo will use the package manager server at : " + url);
+            PackageManagerClient = InitializePackageManager(config.AuthProvider, url,
+                PackageLoader.RootPackagesDirectory, CustomNodeManager);
 
-            PackageManagerClient = new PackageManagerClient( 
-                new GregClient(config.AuthProvider, url), 
-                PackageLoader.RootPackagesDirectory,
-                CustomNodeManager);
+            Logger.Log("Dynamo will use the package manager server at : " + url);
 
             InitializeNodeLibrary(preferences);
         }
@@ -537,6 +538,28 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             }
+        }
+
+        /// <summary>
+        ///     Validate the package manager url and initialize the PackageManagerClient object
+        /// </summary>
+        /// <param name="provider">A possibly null IAuthProvider</param>
+        /// <param name="url">The end point for the package manager server</param>
+        /// <param name="rootDirectory">The root directory for the package manager</param>
+        /// <param name="customNodeManager">A valid CustomNodeManager object</param>
+        /// <returns>Newly created object</returns>
+        private static PackageManagerClient InitializePackageManager(IAuthProvider provider, string url, string rootDirectory,
+            CustomNodeManager customNodeManager)
+        {
+            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            {
+                throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
+            }
+
+            return new PackageManagerClient(
+                new GregClient(provider, url),
+                rootDirectory,
+                customNodeManager);
         }
 
         private void InitializeCustomNodeManager()

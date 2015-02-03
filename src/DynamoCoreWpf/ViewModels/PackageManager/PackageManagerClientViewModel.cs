@@ -302,7 +302,11 @@ namespace Dynamo.ViewModels
 
         internal void GoToWebsite()
         {
-            Process.Start(Model.BaseUrl);
+            if (Uri.IsWellFormedUriString(Model.BaseUrl, UriKind.Absolute))
+            {
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(Model.BaseUrl).AbsoluteUri);
+                Process.Start(sInfo);
+            }
         }
 
     }
