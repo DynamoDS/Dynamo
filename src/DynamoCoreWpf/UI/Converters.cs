@@ -1772,6 +1772,28 @@ namespace Dynamo.Controls
         }
     }
 
+    /// The converter switches between LibraryView and LibrarySearchView
+    /// using SearchViewModel.ViewMode as value, the View as parameter.
+    /// Converter is used on LibraryConatiner.
+    public class ViewModeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null)
+                return Visibility.Collapsed;
+
+            if (((SearchViewModel.ViewMode)value).ToString() == parameter.ToString())
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // It's used for ClassDetails and ClassObject itself. ClassDetails should be not focusable,
     // in contrast to ClassObject.
     // Also decides, should be category underlined or not.
@@ -1832,6 +1854,23 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public class NodeCategoryVMToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is NodeCategoryViewModel) &&
+                (!(value is RootNodeCategoryViewModel)) &&
+                (!(value is ClassesNodeCategoryViewModel));
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
     public class HasParentRootElement : IValueConverter
     {
@@ -1862,6 +1901,32 @@ namespace Dynamo.Controls
         }
     }
 
+    // Depending on the number of points in FullCategoryName margin will be done.
+    // E.g. Geometry -> Margin="5,0,0,0"
+    // E.g. RootCategory.Namespace1.Namespace2 -> Margin="45,0,20,0"
+    public class FullCategoryNameToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var incomingString = value as string;
+
+            if (string.IsNullOrEmpty(incomingString))
+                throw new ArgumentException("value string should not be empty.");
+
+            var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
+            if (numberOfPoints == 0)
+                return new Thickness(5, 0, 0, 0);
+
+            return new Thickness(5 + 20 * numberOfPoints, 0, 20, 0);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Converter that will be used, if number of items equals 0. Then control should be collapsed.
     public class IntToVisibilityConverter : IValueConverter
     {
@@ -1878,6 +1943,25 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    // Converter is used in LibraryView.xaml. Do not show LibraryTreeView TreviewItem ItemsHost
+    // for only one item, item should be of type ClassesNodeCategoryViewModel.
+    public class LibraryTreeItemsHostVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ClassesNodeCategoryViewModel)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Converter is used to specify Margin of highlight rectangle. 
     // This rectangle highlights first instance of search phrase.
     //
