@@ -195,8 +195,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static ProtoCore.BuildStatus PreCompile(string code, Core core, CodeBlockNode codeBlock, out int blockId)
         {
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
-
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             try
             {

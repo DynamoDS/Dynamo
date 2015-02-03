@@ -44,7 +44,6 @@ namespace ProtoScript.Runners
             this.core = core;
             this.core.Options.IDEDebugMode = true;
             RegisteredBreakpoints = new List<Breakpoint>();
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
             executionsuspended = false;
         }
 
@@ -435,7 +434,7 @@ namespace ProtoScript.Runners
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 ProtoCore.Language id = globalBlock.language;
-                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context);
 
                 core.BuildStatus.ReportBuildResult();
 
@@ -551,7 +550,15 @@ namespace ProtoScript.Runners
             int locals = 0; // This is the global scope, there are no locals
             ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
             core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-            core.CurrentExecutive.CurrentDSASMExec.Bounce(resumeBlockID, programCounterToExecuteFrom, context, breakpoints, core.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);
+            core.CurrentExecutive.CurrentDSASMExec.Bounce(
+                resumeBlockID, 
+                programCounterToExecuteFrom,
+                context, 
+                core.DebugProps.FirstStackFrame, 
+                locals, 
+                fepRun,
+                null,
+                breakpoints);
 
             return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
 

@@ -335,17 +335,17 @@ namespace ProtoCore.Lang
                         // Comment Jun: the caller type is the current type in the stackframe
                         StackFrameType callerType = stackFrame.StackFrameType;
 
-                        if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
+                        //if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
                         {
                             blockCaller = core.DebugProps.CurrentBlockId;
                             StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = interpreter.runtime.Bounce(blockId, 0, context, core.Breakpoints, bounceStackFrame, 0, core.CurrentExecutive.CurrentDSASMExec);
+                            ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, core.CurrentExecutive.CurrentDSASMExec, core.Breakpoints);
                         }
-                        else
-                        {
-                            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame);
-                        }
+                        //else
+                        //{
+                        //    StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
+                        //    ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame);
+                        //}
 
                         core.RunningBlock = oldRunningBlockId;
                         break;
