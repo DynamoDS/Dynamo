@@ -359,9 +359,9 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var dynamicRunEnabled = (bool)value;
-            string toolTip = "Show Run Preview will be enabled when Run Automatically is not set";
+            string toolTip = "Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph";
             if(dynamicRunEnabled)
-                 toolTip = "Show Run Preview will be enabled when Run Automatically is not set";
+                toolTip = "Execution preview is not available when running automatically";
             return toolTip;
 
         }
