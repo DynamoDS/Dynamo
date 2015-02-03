@@ -238,6 +238,17 @@ namespace ProtoCore.DSASM
         {
             return stringToPointerTable.TryGetValue(s, out pointer);
         }
+
+        internal bool TryRemoveString(int pointer)
+        {
+            string stringToBeRemoved = null;
+            if (!pointerToStringTable.TryGetValue(pointer, out stringToBeRemoved))
+                return false;
+
+            pointerToStringTable.Remove(pointer);
+            stringToPointerTable.Remove(stringToBeRemoved);
+            return true;
+        }
     }
 
     public class Heap
@@ -563,7 +574,11 @@ namespace ProtoCore.DSASM
                     }
 
                     var metaData = heapElements[i].MetaData;
-                    if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
+                    if (metaData.type == (int)PrimitiveType.kTypeString)
+                    {
+                        stringTable.TryRemoveString(i);
+                    }
+                    else if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
                     {
                         var objPointer = StackValue.BuildPointer(i, metaData);
                         GCDisposeObject(objPointer, exe);
