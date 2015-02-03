@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Dynamo.Applications
+namespace Dynamo.Wpf
 {
     public partial class BrowserWindow : Window
     {

@@ -44,7 +44,7 @@
             <Button.ContextMenu>
                 <ContextMenu>
                     <!--<MenuItem Name="My account" Command="{Binding GoToAccountCommand}"></MenuItem>-->
-                    <MenuItem Name="Logout" Command="{Binding LoginLogoutCommand}" Header="Logout"></MenuItem>
+                    <MenuItem Name="Logout" Command="{Binding ToggleLoginStateCommand}" Header="Logout"></MenuItem>
                 </ContextMenu>
             </Button.ContextMenu>
 

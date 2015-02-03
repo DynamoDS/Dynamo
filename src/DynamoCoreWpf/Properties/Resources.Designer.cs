@@ -115,6 +115,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autodesk Sign In.
+        /// </summary>
+        public static string AutodeskSignIn {
+            get {
+                return ResourceManager.GetString("AutodeskSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string BrowserWindowLoading {
+            get {
+                return ResourceManager.GetString("BrowserWindowLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide a Build version as a non-negative integer..
         /// </summary>
         public static string BuildVersionNonNegative {
@@ -3431,10 +3449,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An update is available for Dynamo
-        ///
-        ///Click OK to close Dynamo and install
-        ///Click CANCEL to cancel the update..
+        ///   Looks up a localized string similar to An update is available for Dynamo.
+        ///Installing the latest update requires Dynamo and any host applications to close.
+        ///Do you want to install the latest Dynamo update?.
         /// </summary>
         public static string UpdateMessage {
             get {

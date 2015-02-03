@@ -1518,4 +1518,10 @@ Do you want to install the latest Dynamo update?</value>
   <data name="TooltipCurrentIndex" xml:space="preserve">
     <value>{0} of {1}</value>
   </data>
+  <data name="AutodeskSignIn" xml:space="preserve">
+    <value>Autodesk Sign In</value>
+  </data>
+  <data name="BrowserWindowLoading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
 </root>

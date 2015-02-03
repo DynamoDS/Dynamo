@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dynamo.Core;
-
+using Dynamo.Utilities;
 using Greg;
 using Greg.AuthProviders;
 using Greg.Requests;
@@ -14,16 +14,19 @@ namespace Dynamo.PackageManager
     {
         #region Properties/Fields
 
+        // These were used early on in order to identify packages with binaries and python scripts
+        // This is now a bona fide field in the DB so they are obsolete. 
+
         [Obsolete] internal static readonly string PackageContainsBinariesConstant =
             "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
 
         [Obsolete] internal static readonly string PackageContainsPythonScriptsConstant =
             "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
-        private readonly IGregClient _client;
-        private readonly CustomNodeManager _customNodeManager;
-        private readonly string _rootPkgDir;
-        private readonly IAuthProvider _authProvider;
+        private readonly IGregClient client;
+        private readonly CustomNodeManager customNodeManager;
+        private readonly string rootPackageDirectory;
+        private readonly IAuthProvider authProvider;
 
         public event Action<LoginState> LoginStateChanged;
 
@@ -32,7 +35,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public LoginState LoginState
         {
-            get { return HasAuthProvider ? _authProvider.LoginState : Greg.AuthProviders.LoginState.LoggedOut; }
+            get { return HasAuthProvider ? this.authProvider.LoginState : Greg.AuthProviders.LoginState.LoggedOut; }
         }
 
         /// <summary>
@@ -40,7 +43,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public string Username
         {
-            get { return HasAuthProvider ? _authProvider.Username : ""; }
+            get { return HasAuthProvider ? this.authProvider.Username : ""; }
         }
 
         /// <summary>
@@ -48,29 +51,29 @@ namespace Dynamo.PackageManager
         /// </summary>
         public string BaseUrl
         {
-            get { return _client.BaseUrl; }
+            get { return this.client.BaseUrl; }
         }
 
         /// <summary>
-        ///     Determines if the client has login capabilities
+        ///     Determines if the this.client has login capabilities
         /// </summary>
         public bool HasAuthProvider
         {
-            get { return _authProvider != null; }
+            get { return authProvider != null; }
         }
 
         #endregion
 
-        internal PackageManagerClient(IGregClient client, string rootPkgDir, CustomNodeManager customNodeManager)
+        internal PackageManagerClient(IGregClient client, string rootPackageDirectory, CustomNodeManager customNodeManager)
         {
-            _rootPkgDir = rootPkgDir;
-            _customNodeManager = customNodeManager;
-            _client = client;
-            _authProvider = client.AuthProvider;
+            this.rootPackageDirectory = rootPackageDirectory;
+            this.customNodeManager = customNodeManager;
+            this.client = client;
+            this.authProvider = this.client.AuthProvider;
 
-            if (_authProvider != null)
+            if (this.authProvider != null)
             {
-                _client.AuthProvider.LoginStateChanged += OnLoginStateChanged;
+                this.authProvider.LoginStateChanged += OnLoginStateChanged;
             }
         }
 
@@ -82,59 +85,46 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private T TryExecute<T>(Func<T> func, T failureResult)
-        {
-            try
-            {
-                return func();
-            }
-            catch
-            {
-                return failureResult;
-            }
-        }
-
         internal bool Upvote(string packageId)
         {
-            return TryExecute(() =>
+            return FailFunc.TryExecute(() =>
             {
-                var pkgResponse = _client.ExecuteAndDeserialize(new Upvote(packageId));
+                var pkgResponse = this.client.ExecuteAndDeserialize(new Upvote(packageId));
                 return pkgResponse.success;
             }, false);
         }
 
         internal bool Downvote(string packageId)
         {
-            return TryExecute(() =>
+            return FailFunc.TryExecute(() =>
             {
-                var pkgResponse = _client.ExecuteAndDeserialize(new Downvote(packageId));
+                var pkgResponse = this.client.ExecuteAndDeserialize(new Downvote(packageId));
                 return pkgResponse.success;
             }, false);
         }
 
         internal string DownloadPackage(string packageId, string version)
         {
-            var response = _client.Execute( new PackageDownload( packageId, version) );
+            var response = this.client.Execute( new PackageDownload( packageId, version) );
             return PackageDownload.GetFileFromResponse(response);
         }
 
         internal IEnumerable<PackageHeader> ListAll()
         {
-            return TryExecute(() =>
-            {
+            return FailFunc.TryExecute(() => {
                 var nv = HeaderCollectionDownload.ByEngine("dynamo");
-                var pkgResponse = _client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
                 return pkgResponse.content;
             }, new List<PackageHeader>());
         }
 
-        internal PackageUploadHandle Publish(Package l, List<string> files, bool isNewVersion, bool isTestMode)
+        internal PackageUploadHandle Publish(Package package, List<string> files, bool isNewVersion, bool isTestMode)
         {
-            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(l));
-            return PublishPackage(isNewVersion, l, files, packageUploadHandle, isTestMode);
+            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(package));
+            return PublishPackage(isNewVersion, package, files, packageUploadHandle, isTestMode);
         }
 
-        private PackageUploadHandle PublishPackage(bool isNewVersion, Package l, List<string> files,
+        private PackageUploadHandle PublishPackage(bool isNewVersion, Package package, List<string> files,
             PackageUploadHandle packageUploadHandle, bool isTestMode)
         {
             Task.Factory.StartNew(() =>
@@ -144,17 +134,17 @@ namespace Dynamo.PackageManager
                     ResponseBody ret = null;
                     if (isNewVersion)
                     {
-                        var pkg = PackageUploadBuilder.NewPackageVersion(_rootPkgDir, _customNodeManager, l, files,
+                        var pkg = PackageUploadBuilder.NewPackageVersion(this.rootPackageDirectory, this.customNodeManager, package, files,
                             packageUploadHandle, isTestMode);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
-                        ret = _client.ExecuteAndDeserialize(pkg);
+                        ret = this.client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
-                        var pkg = PackageUploadBuilder.NewPackage(_rootPkgDir, _customNodeManager, l, files,
+                        var pkg = PackageUploadBuilder.NewPackage(this.rootPackageDirectory, this.customNodeManager, package, files,
                             packageUploadHandle, isTestMode);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
-                        ret = _client.ExecuteAndDeserialize(pkg);
+                        ret = this.client.ExecuteAndDeserialize(pkg);
                     }
                     if (ret == null)
                     {
@@ -185,7 +175,7 @@ namespace Dynamo.PackageManager
 
             try
             {
-                var response = _client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgDownload);
+                var response = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgDownload);
                 if (!response.success) throw new Exception(response.message);
                 header = response.content;
             }
@@ -201,18 +191,18 @@ namespace Dynamo.PackageManager
 
         internal PackageManagerResult Deprecate(string name)
         {
-            return TryExecute(() =>
+            return FailFunc.TryExecute(() =>
             {
-                var pkgResponse = _client.ExecuteAndDeserialize(new Deprecate(name, "dynamo"));
+                var pkgResponse = this.client.ExecuteAndDeserialize(new Deprecate(name, "dynamo"));
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }, new PackageManagerResult("Failed to send.", false));
         }
 
         internal PackageManagerResult Undeprecate(string name)
         {
-            return TryExecute(() =>
+            return FailFunc.TryExecute(() =>
             {
-                var pkgResponse = _client.ExecuteAndDeserialize(new Undeprecate(name, "dynamo"));
+                var pkgResponse = this.client.ExecuteAndDeserialize(new Undeprecate(name, "dynamo"));
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }, new PackageManagerResult("Failed to send.", false));
         }
@@ -220,13 +210,13 @@ namespace Dynamo.PackageManager
         internal void Logout()
         {
             if (!HasAuthProvider) return; 
-            _authProvider.Logout();
+            this.authProvider.Logout();
         }
 
         internal void Login()
         {
             if (!HasAuthProvider) return;
-            _authProvider.Login();
+            this.authProvider.Login();
         }
     }
 }

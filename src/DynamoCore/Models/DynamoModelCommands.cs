@@ -309,7 +309,7 @@ namespace Dynamo.Models
         void SwitchTabImpl(SwitchTabCommand command)
         {
             // We don't attempt to null-check here, we need it to fail fast.
-            CurrentWorkspace = Workspaces[command.TabIndex];
+            CurrentWorkspace = Workspaces.ElementAt(command.TabIndex);
         }
     }
 }

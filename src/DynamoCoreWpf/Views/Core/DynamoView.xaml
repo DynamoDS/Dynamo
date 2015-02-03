@@ -739,13 +739,13 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuForceReExecute}"
                                   Command="{Binding ForceRunExpressionCommand}"
                                   CommandParameter="{Binding Path=RunInDebug}"
-                                  IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"></MenuItem>
+                                  IsEnabled="{Binding Path=RunEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="MutateTest"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuRunMutationTest}"
                                   Command="{Binding MutateTestDelegateCommand}"
                                   CommandParameter="{Binding Path=RunInDebug}"
-                                  IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"></MenuItem>
+                                  IsEnabled="{Binding Path=RunEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="CheckDailyBuilds"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuCheckDailyBuild}"
@@ -1584,7 +1584,7 @@
                                 Command="{Binding RunExpressionCommand}"
                                 CommandParameter="{Binding Path=RunInDebug}"
                                 ToolTip="{x:Static p:Resources.DynamoViewRunButtonTooltip}"
-                                IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}"
+                                IsEnabled="{Binding Path=RunEnabled}"
                                 Focusable="False" />
 
                         <Button Name="cancelButton"
