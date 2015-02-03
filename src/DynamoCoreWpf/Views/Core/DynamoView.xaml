@@ -496,7 +496,7 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"
                               Focusable="False"
-                              IsEnabled="True">
+                              IsEnabled="True">                   
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
                                   Name="ToggleIsUsageReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
@@ -509,20 +509,16 @@
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
-                                  ToolTip="Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&#x0a;It does not contain your graph or any personal data"
+                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
                                   Focusable="False"/>
                         <MenuItem Focusable="False" 
                                   Name="ShowNodeExecution" 
                                   IsCheckable="True" 
                                   IsChecked="{Binding ShowRunPreview}" 
-                                  Header="Show Run preview"
+                                  Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
+                                  ToolTipService.ShowOnDisabled="True" 
                                   ToolTip="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
                                   IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>                       
-=======
-                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
-                                  Focusable="False" />
->>>>>>> 338d0bb837accb285784be94bd22c714a82f2b3b
-
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuLengthUnits}"
                                   Name="LengthUnitsMenu">

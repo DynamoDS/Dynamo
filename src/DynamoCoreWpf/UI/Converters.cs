@@ -353,11 +353,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var dynamicRunEnabled = (bool)value;
-            string toolTip = "Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph";
-            if(dynamicRunEnabled)
-                toolTip = "Execution preview is not available when running automatically";
-            return toolTip;
-
+            return dynamicRunEnabled ? Resources.ShowRunPreviewDisableToolTip : Resources.ShowRunPreviewEnableToolTip;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
