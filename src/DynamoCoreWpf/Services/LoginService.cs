@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Authentication
         {
             var url = o as Uri;
 
-            if (o == null) throw new ArgumentException("Invalid URL for login page!");
+            if (o == null) throw new ArgumentException(Dynamo.Wpf.Properties.Resources.InvalidLoginUrl);
 
             var navigateSuccess = false;
 
