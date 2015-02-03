@@ -46,13 +46,12 @@ namespace Dynamo.UpdateManager
         void QuitAndInstallUpdate();
         void HostApplicationBeginQuit();
         void UpdateDataAvailable(IAsynchronousRequest request);
-        bool IsVersionCheckInProgress();
         bool CheckNewerDailyBuilds { get; set; }
         bool ForceUpdate { get; set; }
-        string UpdateFileLocation { get; }
         IUpdateManagerConfiguration Configuration { get; }
         event LogEventHandler Log;
         void OnLog(LogEventArgs args);
+        void RegisterExternalApplicationProcessId(int id);
     }
 
     public interface IUpdateManagerConfiguration
@@ -342,6 +341,7 @@ namespace Dynamo.UpdateManager
         private static IUpdateManager instance;
         private static readonly object lockingObject = new object();
         private UpdateManagerConfiguration configuration = null;
+        private int hostApplicationProcessId = -1;
 
         #endregion
 
@@ -654,20 +654,34 @@ namespace Dynamo.UpdateManager
 
         public void HostApplicationBeginQuit()
         {
-            if (!string.IsNullOrEmpty(UpdateFileLocation))
+            if (string.IsNullOrEmpty(UpdateFileLocation)) return;
+
+            var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var updater = Path.Combine(currDir, "InstallUpdate.exe");
+                
+            if (!File.Exists(updater)) return;
+
+            var p = new Process
             {
-                var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var updater = Path.Combine(currDir, "InstallUpdate.exe");
-                if (File.Exists(updater))
+                StartInfo =
                 {
-                    Process.Start(updater, UpdateFileLocation);
+                    FileName = updater,
+                    Arguments = UpdateFileLocation,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
                 }
+            };
+
+            if (hostApplicationProcessId != -1)
+            {
+                p.StartInfo.Arguments += " " + hostApplicationProcessId;
             }
+            p.Start();
         }
 
-        public bool IsVersionCheckInProgress()
+        public void RegisterExternalApplicationProcessId(int id)
         {
-            return versionCheckInProgress;
+            hostApplicationProcessId = id;
         }
 
         #endregion
