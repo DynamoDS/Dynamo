@@ -19,7 +19,7 @@ namespace DynamoSandbox
 {
     internal class Program
     {
-        private static void MakeStandaloneAndRun(string commandFilePath, ref DynamoViewModel viewModel)
+        private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
             var authProvider = new OxygenProvider(ConfigurationManager.AppSettings["authAddress"]);
 
@@ -78,7 +78,7 @@ namespace DynamoSandbox
                     }
                 }
 
-                MakeStandaloneAndRun(commandFilePath, ref viewModel);
+                MakeStandaloneAndRun(commandFilePath, out viewModel);
             }
             catch (Exception e)
             {

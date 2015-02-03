@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 using Dynamo.DSEngine;
@@ -17,6 +19,7 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using DynamoUnits;
 
@@ -24,6 +27,7 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
+using ResourceName = Dynamo.Wpf.Interfaces.ResourceName;
 
 namespace Dynamo.ViewModels
 {
@@ -431,6 +435,12 @@ namespace Dynamo.ViewModels
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
             public bool ShowLogin { get; set; }
+
+            /// <summary>
+            /// This property is initialized if there is an external host application
+            /// at startup in order to be used to pass in host specific resources to DynamoModel
+            /// </summary>
+            public IBrandingResourceProvider BrandingResourceProvider { get; set; }
         }
 
         public static DynamoViewModel Start()
@@ -438,18 +448,21 @@ namespace Dynamo.ViewModels
             return Start(new StartConfiguration());
         }
 
-        public static DynamoViewModel Start(StartConfiguration config)
+        public static DynamoViewModel Start(StartConfiguration startConfiguration)
         {
-            var model = config.DynamoModel ?? DynamoModel.Start();
-            var vizManager = config.VisualizationManager ?? new VisualizationManager(model);
-            var watchHandler = config.WatchHandler ?? new DefaultWatchHandler(vizManager, 
+            var model = startConfiguration.DynamoModel ?? DynamoModel.Start();
+            var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
+            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager, 
                 model.PreferenceSettings);
+            var resourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
-            return new DynamoViewModel(model, watchHandler, vizManager, config.CommandFilePath, config.ShowLogin);
+            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider, 
+                startConfiguration.ShowLogin);
         }
 
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
-            IVisualizationManager vizManager, string commandFilePath, bool showLogin = false)
+            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider, 
+            bool showLogin = false)
         {
             this.ShowLogin = showLogin;
 
@@ -466,6 +479,8 @@ namespace Dynamo.ViewModels
 
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
+
+            this.BrandingResourceProvider = resourceProvider;
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
@@ -2153,8 +2168,5 @@ namespace Dynamo.ViewModels
         public DynamoViewModel ViewModel { get { return this; } }
 
         #endregion
-
-
-
     }
 }
