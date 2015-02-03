@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Windows.Forms;
+
 using DynamoCrypto;
 
 namespace InstallUpdate
@@ -20,7 +23,7 @@ namespace InstallUpdate
         {
             if (args.Length < 1)
             {
-                Console.WriteLine("You must specify the path of the update to install.");
+                Console.WriteLine("You must specify the path of the update.");
                 return;
             }
 
@@ -29,6 +32,20 @@ namespace InstallUpdate
             {
                 Console.WriteLine("The specified file path does not exist.");
                 return;
+            }
+
+            int processId = -1;
+            if (args.Length > 1)
+            {
+                if (!Int32.TryParse(
+                    args[1],
+                    NumberStyles.Integer,
+                    CultureInfo.InvariantCulture,
+                    out processId))
+                {
+                    Console.WriteLine("The host application process id could not be parsed from the specified input.");
+                    return;
+                }
             }
 
             // Attempt to find the Dynamo certificate.
@@ -89,8 +106,58 @@ namespace InstallUpdate
                 return;
             }
 
+            if (processId != -1)
+            {
+                bool cancel = false;
+                while (CheckHostProcessEnded(processId, out cancel) == false)
+                {
+                    if (cancel)
+                    {
+                        Console.WriteLine("Update was cancelled.");
+                        return;
+                    }
+                }
+            }
+
             // Run the installer
             Process.Start(installerPath, "/UPDATE");
+        }
+
+        private static bool CheckHostProcessEnded(int processId, out bool requestCancel)
+        {
+            requestCancel = false;
+
+            Process hostProcess = null;
+            try
+            {
+                hostProcess = Process.GetProcessById(processId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            // If the host process is still running...
+            if (hostProcess != null)
+            {
+                var message = string.Format(
+                    "{0} must be closed before continuing installation.\n" +
+                        "When the application is closed, select OK to continue updating, or Cancel to quit updating.",
+                    hostProcess.ProcessName);
+
+                if (MessageBox.Show(
+                    message,
+                    "Dynamo Update",
+                    MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                {
+                    requestCancel = true;
+                    return true;
+                }
+
+                return false;
+            }
+
+            return true;
         }
 
         private static void RequestManualReinstall()
@@ -99,5 +166,20 @@ namespace InstallUpdate
             Console.WriteLine("Press any key to quit.");
             Console.ReadKey();
         }
+    }
+
+    public class WindowWrapper : System.Windows.Forms.IWin32Window
+    {
+        public WindowWrapper(IntPtr handle)
+        {
+            _hwnd = handle;
+        }
+
+        public IntPtr Handle
+        {
+            get { return _hwnd; }
+        }
+
+        private IntPtr _hwnd;
     }
 }
