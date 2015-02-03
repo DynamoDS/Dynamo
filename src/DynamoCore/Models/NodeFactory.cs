@@ -306,7 +306,7 @@ namespace Dynamo.Models
             node = new DummyNode(1, 1, typeName, elNode, "", DummyNode.Nature.Deprecated);
             return node;
         }
-
+         
         /// <summary>
         ///     Creates a new NodeModel from its typeName, using the node factories registered
         ///     in this factory.

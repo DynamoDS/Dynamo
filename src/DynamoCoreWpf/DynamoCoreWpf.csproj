@@ -71,6 +71,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\HeaderStrip.xaml.cs">
+      <DependentUpon>HeaderStrip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StandardPanel.xaml.cs">
+      <DependentUpon>StandardPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
@@ -79,6 +85,8 @@
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
+    <Compile Include="UI\ClassObjectTemplateSelector.cs" />
+    <Compile Include="UI\HeaderTemplateSelector.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -96,6 +104,7 @@
     </Compile>
     <Compile Include="UI\DefaultBrandingResourceProvider.cs" />
     <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
@@ -180,6 +189,7 @@
     <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
+    <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
@@ -220,6 +230,9 @@
     </Compile>
     <Compile Include="Views\PackageManager\PublishPackageView.xaml.cs">
       <DependentUpon>PublishPackageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TooltipWindow.xaml.cs">
+      <DependentUpon>TooltipWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\Watch3DView.xaml.cs">
       <DependentUpon>Watch3DView.xaml</DependentUpon>
@@ -284,12 +297,20 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\HeaderStrip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ShortcutToolbar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\StandardPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\StartPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -963,6 +984,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\PackageManager\PublishPackageView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\TooltipWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

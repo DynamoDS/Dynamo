@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
+    <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUnitTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
