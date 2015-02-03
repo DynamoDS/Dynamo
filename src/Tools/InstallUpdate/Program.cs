@@ -146,6 +146,7 @@ namespace InstallUpdate
                     hostProcess.ProcessName);
 
                 if (MessageBox.Show(
+                    new Form { TopMost = true },
                     message,
                     "Dynamo Update",
                     MessageBoxButtons.OKCancel) == DialogResult.Cancel)
