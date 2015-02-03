@@ -84,14 +84,10 @@ namespace Dynamo.DSEngine
         {
             try
             {
-                var qualifiedPath = Path.GetFullPath(assemblyLocation);
-                var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
+                var fn = Path.GetFileNameWithoutExtension(assemblyLocation);
+                resourceAssemblyPath = fn + Configurations.ResourcesDLL;
 
-                fn = fn + Configurations.ResourcesDLL;
-
-                resourceAssemblyPath = Path.Combine(DynamoPathManager.Instance.MainExecPath, fn);
-
-                return File.Exists(resourceAssemblyPath);
+                return DynamoPathManager.Instance.ResolveLibraryPath(ref resourceAssemblyPath);
             }
             catch
             {
