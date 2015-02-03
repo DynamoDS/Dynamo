@@ -185,6 +185,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpf", "DynamoCore
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServicesTests", "..\test\Libraries\NodeServicesTest\DynamoServicesTests.csproj", "{3E4278F7-60EC-491C-8094-B525C36A51A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocumentationsUtility", "Tools\XmlDocumentationsUtility\XmlDocumentationsUtility.csproj", "{4CAB9005-0001-4B03-BBA0-57070ED105F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

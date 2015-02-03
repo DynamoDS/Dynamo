@@ -12,48 +12,142 @@ namespace XmlDocumentationsUtility
 {
     public class XmlDocumentationsUtility
     {
+        internal enum Type { Field, Method, Property, Type };
 
+        internal struct MemberData
+        {
+            public Type type;
+            public string TypeName;
+            public string MemberName;
+        }
+
+        /// <summary>
+        /// helper function to isolate the elementName from method parameters and type
+        /// </summary>
+        /// <param name="elementName"></param>
+        /// <returns></returns>
+        internal static string GetMemberElement(string elementName)
+        {
+            string memberElement = elementName.Substring(elementName.IndexOf(':') + 1);
+            int methodParameterStartingIndex = memberElement.IndexOf('(');
+
+            if (methodParameterStartingIndex != -1)
+                memberElement = memberElement.Substring(0, methodParameterStartingIndex);
+            
+            return memberElement;
+        }
+
+        /// <summary>
+        /// helper funcation to split TypeName and MemberName
+        /// <remarks>does not return correct value for Type type</remarks>
+        /// </summary>
+        /// <param name="memberElement"></param>
+        /// <returns></returns>
+        internal static Tuple<string,string> GetTypeAndMemberName(string memberElement)
+        {
+            int typeNameStartingIndex = 0;
+            typeNameStartingIndex = memberElement.LastIndexOf('.');
+            string typeName = memberElement.Substring(0, typeNameStartingIndex);
+            string memberName = memberElement.Substring(typeNameStartingIndex + 1);
+           
+            return Tuple.Create(typeName,memberName);
+        }
+
+        /// <summary>
+        /// parse member element (type, property, method, field)
+        /// from the given elementName
+        /// </summary>
+        /// <param name="elementName"></param>
+        /// <returns></returns>
+        internal static MemberData ParseMemberElement(string elementName)
+        {
+            MemberData memberData = new MemberData();
+            char typeId = elementName[0];
+            string memberElement = GetMemberElement(elementName);
+            var typeMember = GetTypeAndMemberName(memberElement);
+
+            switch(typeId)
+            {
+                case 'F' :
+                    memberData.type = Type.Field;                    
+                    memberData.TypeName = typeMember.Item1;
+                    memberData.MemberName = typeMember.Item2;
+                    break;
+
+                case 'M' :
+                    memberData.type = Type.Method;        
+                    memberData.TypeName = typeMember.Item1;
+                    memberData.MemberName = typeMember.Item2;
+                    break;
+                case 'P' :
+                    memberData.type = Type.Property;        
+                    memberData.TypeName = typeMember.Item1;
+                    memberData.MemberName = typeMember.Item2;
+                    break;
+                case 'T' :
+                    memberData.type = Type.Type;
+                    memberData.TypeName = memberElement;
+                    memberData.MemberName = "";
+                    break;
+                default :
+                    break;
+            }
+            return memberData;
+        }
+        
+        /// <summary>
+        /// recursively search for xml files inside en-US folder
+        /// to remove hidden nodes inside xml.
+        /// only en-US needs to be iterated since other language resources 
+        /// is derived from the en-US resources
+        /// </summary>
+        /// <param name="searchDirectory"></param>
+        private static void recursiveCultureXmlSearch(string searchDirectory)
+        {
+            try
+            {
+                foreach (string directory in Directory.GetDirectories(searchDirectory))
+                {
+                    DirectoryInfo dirInfo = new DirectoryInfo(directory);
+
+                    if(dirInfo.Name == "en-US")
+                    {
+                        string[] xmlFiles = Directory.GetFiles(directory, "*.xml");
+
+                        foreach (string xmlPath in xmlFiles)
+                        {
+                            string xmlName = Path.GetFileNameWithoutExtension(xmlPath);
+                            string dllPath = Path.Combine(Path.GetDirectoryName(xmlPath), @"..\", string.Format("{0}.dll", xmlName));
+                            if (!File.Exists(dllPath))
+                                continue;
+
+                            string path = Path.GetFullPath(dllPath);
+                            ZeroTouchModule zeroTouchModule = new ZeroTouchModule(path);
+                            RemoveDocumentationForHiddenNodes(Path.GetFullPath(xmlPath), zeroTouchModule);
+                        }
+                    }
+                    recursiveCultureXmlSearch(directory);
+                }
+            }
+            catch (System.Exception excpt)
+            {
+                Console.WriteLine(excpt.Message);
+            }
+        }
+
+        /// <summary>
+        /// main function
+        /// </summary>
+        /// <param name="args">args[0] points to bin directory</param>
         static void Main(string[] args)
         {
             try
             {
-                //remove and check for node documentation xml under Debug configuration
-                string xmlDir = Path.Combine(args[0], "bin", "AnyCPU", "Debug", "en-US");
-                if (Directory.Exists(xmlDir))
-                {
-                    string[] xmlFiles = Directory.GetFiles(xmlDir, "*.xml");
+                string rootDir = Path.GetFullPath(args[0]);
+                DirectoryInfo dirInfo = new DirectoryInfo(rootDir);
 
-                    foreach (string xmlPath in xmlFiles)
-                    {
-                        string xmlName = Path.GetFileNameWithoutExtension(xmlPath);
-                        string dllPath = Path.Combine(Path.GetDirectoryName(xmlPath), @"..\", string.Format("{0}.dll", xmlName));
-                        if (!File.Exists(dllPath))
-                            continue;
-
-                        string path = Path.GetFullPath(dllPath);
-                        ZeroTouchModule zeroTouchModule = new ZeroTouchModule(path);
-                        CheckAndDeleteXmlNodes(Path.GetFullPath(xmlPath), zeroTouchModule);
-                    }
-                }
-
-                //remove and check for node documentation xml under Release configuration
-                xmlDir = Path.Combine(args[0], "bin", "AnyCPU", "Release", "en-US");
-                if (Directory.Exists(xmlDir))
-                {
-                    string[] xmlFiles = Directory.GetFiles(xmlDir, "*.xml");
-
-                    foreach (string xmlPath in xmlFiles)
-                    {
-                        string xmlName = Path.GetFileNameWithoutExtension(xmlPath);
-                        string dllPath = Path.Combine(Path.GetDirectoryName(xmlPath), @"..\", string.Format("{0}.dll", xmlName));
-                        if (!File.Exists(dllPath))
-                            continue;
-
-                        string path = Path.GetFullPath(dllPath);
-                        ZeroTouchModule zeroTouchModule = new ZeroTouchModule(path);
-                        CheckAndDeleteXmlNodes(Path.GetFullPath(xmlPath), zeroTouchModule);
-                    }
-                }
+                if(dirInfo.Exists)
+                    recursiveCultureXmlSearch(rootDir);  
             }
             catch (Exception e)
             {
@@ -62,102 +156,51 @@ namespace XmlDocumentationsUtility
             
         }
 
-        private static void CheckAndDeleteXmlNodes(string xmlPath,ZeroTouchModule zeroTouchModule)
+        /// <summary>
+        /// iterates through member nodes inside the given xml file,
+        /// and remove the node if it's hidden.
+        /// If there's no member nodes/ all of the member nodes have been removed,
+        /// the files is deleted
+        /// </summary>
+        /// <param name="xmlPath"></param>
+        /// <param name="zeroTouchModule"></param>
+        private static void RemoveDocumentationForHiddenNodes(string xmlPath,ZeroTouchModule zeroTouchModule)
         {
             XmlDocument xml = new XmlDocument();
             xml.Load(xmlPath);        
             XmlNodeList elemList = xml.GetElementsByTagName("member");
+            MemberData memberData;
 
             for (int i = 0; i < elemList.Count; i++)
             {
-                string attrVal = elemList[i].Attributes["name"].Value;
-                string type = "";
+                string elementName = elemList[i].Attributes["name"].Value;
                 bool hasToBeRemoved = false;
-                int index = 0;
-                switch (attrVal[0])
+                memberData = ParseMemberElement(elementName);
+                
+                switch(memberData.type)
                 {
-                    //extracting and checking method
-                    case 'M':
-                        //format: M:type.method(...)
-                        //extract type and method
+                    case Type.Field   :
 
-                        string[] splittedM = attrVal.Split(':', '(');
+                    case Type.Property:
 
-                        type = splittedM[1];
-                        index = type.Length - 1;
-                        
-                        //search for the latest '.' in string,
-                        //which is corresponded to the start of the method's name
-
-                        while(type[index] != '.')
-                            index--;
-
-                        string method = type.Substring(index + 1);
-                        type = type.Substring(0, index);
-
-                        if (!zeroTouchModule.MethodExists(type, method))
-                            //method is not exist, the xml node needs to be removed
+                        if (!zeroTouchModule.PropertyExists(memberData.TypeName, memberData.MemberName))
                             hasToBeRemoved = true;
-                                            
                         break;
 
-                    //extracting and checking property
-                    case 'P':
-                        //format: P:type.property
-                        //extract type and property
+                    case Type.Method  :
 
-                        string[] splittedP = attrVal.Split(':');
-
-                        type = splittedP[1];
-                        index = type.Length - 1;
-
-                        //search for the latest '.' in string,
-                        //which is corresponded to the start of the properties' name
-
-                        while(type[index] != '.')
-                            index--;
-
-                        string property = type.Substring(index + 1);
-                        type = type.Substring(0, index);
-
-                        if(!zeroTouchModule.PropertyExists(type, property))
-                            //property is not exist, the xml node needs to be removed
-                            hasToBeRemoved = true;;
-
+                        if (!zeroTouchModule.MethodExists(memberData.TypeName, memberData.MemberName))
+                            hasToBeRemoved = true;
                         break;
 
-                    //extracting and checking type
-                    case 'T':
-                        //format: T:type
-                      
-                        string[] splittedT = attrVal.Split(':');
+                    case Type.Type    :
 
-                        if(!zeroTouchModule.TypeExists(splittedT[1]))
-                            //type is not exist, the xml node needs to be removed
-                            hasToBeRemoved = true;;
+                        if (!zeroTouchModule.TypeExists(memberData.TypeName))
+                            hasToBeRemoved = true;
                         break;
 
-                    //extracting and checking field
-                    case 'F':
-                        //format: F:type.field
-                        //extract type and field
-                        //similar to the property extraction
+                    default: break;
 
-                        string[] splittedF = attrVal.Split(':');
-
-                        type = splittedF[1];
-                        index = type.Length - 1;
-                        while(type[index] != '.')
-                            index--;
-                        string field = type.Substring(index + 1);
-                        type = type.Substring(0, index);
-
-                        
-                        if(!zeroTouchModule.PropertyExists(type, field))
-                            hasToBeRemoved = true;;
-                        break;
-                    default:
-                        break;
                 }
 
                 if (hasToBeRemoved)
