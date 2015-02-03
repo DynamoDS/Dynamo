@@ -8,15 +8,16 @@ namespace Dynamo.Search
 {
     public class SearchCategory
     {
-        // TODO(Vladimir): classes functionality.
+        // TODO: classes functionality.
         //private readonly ObservableCollection<NodeCategoryViewModel> classes;
         private readonly List<SearchMemberGroup> memberGroups;
 
         public string Name { get; private set; }
 
-        // TODO(Vladimir): classes functionality.
-        //                 All functionality marked as 'classes functionality'
-        //                 Should be implemented as classes are shown in search results.
+        // TODO: classes functionality.
+        //       All functionality marked as 'classes functionality'
+        //       Should be implemented as classes are shown in search results.
+        //       http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6198
         //public ObservableCollection<NodeCategoryViewModel> Classes
         //{
         //    get { return classes; }
@@ -30,7 +31,7 @@ namespace Dynamo.Search
         internal SearchCategory(string name)
         {
             Name = name;
-            // TODO(Vladimir): classes functionality.
+            // TODO: classes functionality.
             //classes = new ObservableCollection<NodeCategoryViewModel>();
             memberGroups = new List<SearchMemberGroup>();
         }
@@ -51,11 +52,12 @@ namespace Dynamo.Search
             group.AddMember(memberNode);
         }
 
-        // TODO(Vladimir): classes functionality.
+        // TODO: classes functionality.
         internal void AddClassToGroup(NodeCategoryViewModel memberNode)
         {
-            // TODO(Vladimir): The following limit of displaying only two classes are 
+            // TODO: The following limit of displaying only two classes are 
             // temporary, it should be updated whenever the design intent has been finalized.
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6199
 
             //const int maxClassesCount = 2;
             //if (classes.Count >= maxClassesCount)
