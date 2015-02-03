@@ -6,6 +6,7 @@ using System.Xml;
 using DSCoreNodesUI;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models.NodeLoaders
 {
@@ -70,13 +71,20 @@ namespace Dynamo.Models.NodeLoaders
             if (null == descriptor)
             {
                 var inputcount = DetermineFunctionInputCount(nodeElement);
-                return new DummyNode(
+
+                var dummy = new DummyNode(
                     inputcount,
                     1,
                     nickname,
                     nodeElement,
                     assembly,
                     DummyNode.Nature.Unresolved);
+
+                var helper = new XmlElementHelper(nodeElement);
+                dummy.X = helper.ReadDouble("x", 0.0);
+                dummy.Y = helper.ReadDouble("y", 0.0);
+
+                return dummy;
             }
 
             DSFunctionBase result;
