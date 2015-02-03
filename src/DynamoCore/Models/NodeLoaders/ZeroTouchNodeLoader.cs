@@ -72,19 +72,13 @@ namespace Dynamo.Models.NodeLoaders
             {
                 var inputcount = DetermineFunctionInputCount(nodeElement);
 
-                var dummy = new DummyNode(
+                return new DummyNode(
                     inputcount,
                     1,
                     nickname,
                     nodeElement,
                     assembly,
                     DummyNode.Nature.Unresolved);
-
-                var helper = new XmlElementHelper(nodeElement);
-                dummy.X = helper.ReadDouble("x", 0.0);
-                dummy.Y = helper.ReadDouble("y", 0.0);
-
-                return dummy;
             }
 
             DSFunctionBase result;

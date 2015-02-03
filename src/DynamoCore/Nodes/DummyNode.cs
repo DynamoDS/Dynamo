@@ -2,6 +2,7 @@
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 namespace DSCoreNodesUI
 {
@@ -23,8 +24,7 @@ namespace DSCoreNodesUI
             LegacyNodeName = "DSCoreNodesUI.DummyNode";
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
-            Description = GetDescription(); 
-            
+            Description = GetDescription();
             ShouldDisplayPreviewCore = false;
         }
 
@@ -42,6 +42,10 @@ namespace DSCoreNodesUI
             ShouldDisplayPreviewCore = false;
 
             UpdatePorts();
+
+            var helper = new XmlElementHelper(originalElement);
+            X = helper.ReadDouble("x", 0.0);
+            Y = helper.ReadDouble("y", 0.0);
         }
 
         private void LoadNode(XmlNode nodeElement)
