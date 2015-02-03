@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Properties;
 using ProtoCore.Utils;
 using System.Linq;
 
@@ -651,7 +652,7 @@ namespace ProtoCore.DSASM
                 var symbols = symbolTable.GetAllSymbols(name);
                 if (symbols.Count > 1)
                 {
-                    string message = string.Format(StringConstants.kMultipleSymbolFound, name, "");
+                    string message = string.Format(Resources.kMultipleSymbolFound, name, "");
                     foreach (var symbol in symbols)
                     {
                         message += ", " + symbol.FullName;

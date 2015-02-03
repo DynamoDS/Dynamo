@@ -6,6 +6,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:dynamo="clr-namespace:Dynamo;assembly=DynamoCore"
              xmlns:dynamo1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -41,9 +42,9 @@
             <ContextMenu Name="MainContextMenu"
                          x:FieldModifier="public">
                 <MenuItem Name="deleteElem_cm"
-                          Header="Delete"
+                          Header="{x:Static p:Resources.NodeContextMenuDelete}"
                           Command="{Binding Path=DeleteCommand}" />
-                <MenuItem Header="Lacing"
+                <MenuItem Header="{x:Static p:Resources.NodeContextMenuLacing}"
                           Name="lacingStrategy"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
                     <MenuItem Name="lacing_strategy_single"
@@ -52,46 +53,46 @@
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=First,Mode=TwoWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="First"
-                              Header="First" />
+                              Header="{x:Static p:Resources.NodeContextMenuLacingFirst}" />
                     <MenuItem Name="lacing_strategy_shortest"
                               IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest, Mode=TwoWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="Shortest"
-                              Header="Shortest" />
+                              Header="{x:Static p:Resources.NodeContextMenuLacingShortest}" />
                     <MenuItem Name="lacing_strategy_longest"
                               IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Longest,Mode=TwoWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="Longest"
-                              Header="Longest" />
+                              Header="{x:Static p:Resources.NodeContextMenuLacingLongest}" />
                     <MenuItem Name="lacing_strategy_cross"
                               IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CrossProduct,Mode=TwoWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="CrossProduct"
-                              Header="Cross Product" />
+                              Header="{x:Static p:Resources.NodeContextMenuLacingCrossProduct}" />
                 </MenuItem>
                 <MenuItem Name="isVisible_cm"
-                          Header="Preview"
+                          Header="{x:Static p:Resources.NodeContextMenuPreview}"
                           IsChecked="{Binding Path=IsVisible}"
                           Command="{Binding Path=ToggleIsVisibleCommand}"
                           Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="isUpstreamVisible_cm"
-                          Header="Preview Upstream"
+                          Header="{x:Static p:Resources.NodeContextMenuPreviewUpstream}"
                           IsChecked="{Binding Path=IsUpstreamVisible}"
                           Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"
                           Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="isDisplayLabelsEnabled_cm"
-                          Header="Show Labels"
+                          Header="{x:Static p:Resources.NodeContextMenuShowLabels}"
                           IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
                           IsCheckable="True"
                           IsEnabled="{Binding Path=CanDisplayLabels}" />
                 <MenuItem Name="rename_cm"
-                          Header="Rename Node..."
+                          Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
                           Command="{Binding Path=RenameCommand}" />
                 <MenuItem Name="help_cm"
-                          Header="Help..."
+                          Header="{x:Static p:Resources.NodeContextMenuHelp}"
                           Command="{Binding Path=ShowHelpCommand}" />
             </ContextMenu>
         </Grid.ContextMenu>
@@ -176,7 +177,9 @@
                 <dynui:DynamoToolTip AttachmentSide="Top"
                                      Style="{DynamicResource ResourceKey=SLightToolTip}">
                     <Grid>
-                        <TextBlock Text="{Binding Path=Description}"></TextBlock>
+                        <TextBlock MaxWidth="320"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding Path=Description}"></TextBlock>
                     </Grid>
                 </dynui:DynamoToolTip>
             </Rectangle.ToolTip>

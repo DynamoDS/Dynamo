@@ -1508,22 +1508,6 @@ namespace ProtoCore
             CLRModuleType.ClearTypes();
         }
 
-        public void InitializeContextGlobals(Dictionary<string, object> context)
-        {
-            int globalBlock = 0;
-            foreach (KeyValuePair<string, object> global in context)
-            {
-                int stackIndex = CodeBlockList[globalBlock].symbolTable.IndexOf(global.Key);
-
-                if (global.Value.GetType() != typeof(Double) && global.Value.GetType() != typeof(Int32))
-                    throw new NotImplementedException("Context that's aren't double are not yet supported @TODO: Jun,Sharad,Luke ASAP");
-
-                double dValue = Convert.ToDouble(global.Value);
-                StackValue svData = StackValue.BuildDouble(dValue);
-                Rmem.SetGlobalStackData(stackIndex, svData);
-            }
-        }
-
         public Core(Options options)
         {
             ResetAll(options);

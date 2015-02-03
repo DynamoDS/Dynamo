@@ -3431,10 +3431,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An update is available for Dynamo
-        ///
-        ///Click OK to close Dynamo and install
-        ///Click CANCEL to cancel the update..
+        ///   Looks up a localized string similar to An update is available for Dynamo.
+        ///Installing the latest update requires Dynamo and any host applications to close.
+        ///Do you want to install the latest Dynamo update?.
         /// </summary>
         public static string UpdateMessage {
             get {

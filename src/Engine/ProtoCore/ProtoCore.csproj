@@ -137,11 +137,17 @@
     <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
     <Compile Include="ParserUtils.cs" />
+    <Compile Include="Properties\Resources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\GraphicDataProvider.cs" />
     <Compile Include="Reflection\Mirror.cs" />
     <Compile Include="Reflection\MirrorData.cs" />
     <Compile Include="Reflection\Reflection.cs" />
     <Compile Include="RuntimeContext.cs" />
+    <Compile Include="RuntimeCore.cs" />
     <Compile Include="RuntimeData.cs" />
     <Compile Include="RuntimeMemory.cs" />
     <Compile Include="RuntimeStatus.cs" />
@@ -177,12 +183,11 @@
     <Compile Include="Lang\FunctionEndPoint.cs" />
     <Compile Include="Lang\FunctionGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringConstants.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>StringConstants.resx</DependentUpon>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="StringConstantsOLD.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="Utils\ArrayUtils.cs" />
     <Compile Include="Utils\ClassUtils.cs" />
@@ -218,9 +223,13 @@
     <None Include="Parser\Scanner.frame" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="StringConstants.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>StringConstants.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

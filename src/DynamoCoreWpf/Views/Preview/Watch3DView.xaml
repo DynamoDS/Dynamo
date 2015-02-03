@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              Name="topControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -19,8 +20,8 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <Color x:Key="pointColor">#655682</Color>
-            <Color x:Key="lineColor">#655682</Color>
+            <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
+            <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -32,7 +33,7 @@
             <ContextMenu Name="MainContextMenu"
                          x:FieldModifier="public">
 
-                <MenuItem Header="Switch to Node _View">
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuSwitchView}">
                     <MenuItem.Command>
                         <Binding Path="PlacementTarget.DataContext.ToggleCanNavigateBackgroundCommand"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
@@ -46,7 +47,7 @@
                     </MenuItem.Visibility>
                 </MenuItem>
 
-                <MenuItem Header="_Rotate">
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuRotate}">
                     <MenuItem.Command>
                         <Binding Path="PlacementTarget.DataContext.ToggleOrbitCommand"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
@@ -65,7 +66,7 @@
                     </MenuItem.Visibility>
                 </MenuItem>
 
-                <MenuItem Header="_Pan">
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuPan}">
                     <MenuItem.Command>
                         <Binding Path="PlacementTarget.DataContext.TogglePanCommand"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
@@ -84,7 +85,7 @@
                     </MenuItem.Visibility>
                 </MenuItem>
 
-                <MenuItem Header="_Zoom to Fit"
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuZoomToFit}"
                           Click="OnZoomToFitClicked" />
             </ContextMenu>
         </Grid.ContextMenu>

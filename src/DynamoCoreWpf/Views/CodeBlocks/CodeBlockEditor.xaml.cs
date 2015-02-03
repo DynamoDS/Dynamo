@@ -1,4 +1,5 @@
 ﻿﻿using System.Diagnostics;
+﻿using Dynamo.Controls;
 ﻿using Dynamo.Core;
 ﻿using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -32,20 +33,22 @@ namespace Dynamo.UI.Controls
         private readonly CodeBlockNodeModel nodeModel;
         private CompletionWindow completionWindow;
         private CodeBlockMethodInsightWindow insightWindow;
+        private bool isDisposed;
 
         public CodeBlockEditor()
         {
             InitializeComponent();
         }
 
-        public CodeBlockEditor(NodeViewModel nodeViewModel)
+        public CodeBlockEditor(NodeView nodeView)
         {
             InitializeComponent();
 
-            this.nodeViewModel = nodeViewModel;
+            this.nodeViewModel = nodeView.ViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
             this.nodeModel = nodeViewModel.NodeModel as CodeBlockNodeModel;
+            
             if (nodeModel == null)
             {
                 throw new InvalidOperationException(
@@ -60,6 +63,7 @@ namespace Dynamo.UI.Controls
             // Register text editing events            
             this.InnerTextEditor.TextChanged += InnerTextEditor_TextChanged;
             this.InnerTextEditor.TextArea.LostFocus += TextArea_LostFocus;
+            nodeView.Unloaded += (obj, args) => isDisposed = true;
 
             // the code block should not be in focus upon undo/redo actions on node
             if (this.nodeModel.ShouldFocus)
@@ -134,6 +138,7 @@ namespace Dynamo.UI.Controls
                 target.Code = (string)args.NewValue;
             })
         );
+        
         #endregion
 
         #region Syntax highlighting helper methods
@@ -223,7 +228,7 @@ namespace Dynamo.UI.Controls
             }
             catch (System.Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToAutocomple);
                 this.dynamoViewModel.Model.Logger.Log(ex.Message);
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
@@ -293,7 +298,7 @@ namespace Dynamo.UI.Controls
             }
             catch (System.Exception ex)
             {
-                this.dynamoViewModel.Model.Logger.Log("Failed to perform code block autocomplete with exception:");
+                this.dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToAutocomple);
                 this.dynamoViewModel.Model.Logger.Log(ex.Message);
                 this.dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
@@ -384,6 +389,9 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         void TextArea_LostFocus(object sender, RoutedEventArgs e)
         {
+            if(isDisposed)
+                return;
+
             InnerTextEditor.TextArea.ClearSelection();
             var recorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
 

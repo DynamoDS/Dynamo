@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
-
 using DynamoUtilities;
 
 namespace Dynamo.DSEngine
@@ -54,14 +53,24 @@ namespace Dynamo.DSEngine
                 return false;
             }
 
-            var qualifiedPath = Path.GetFullPath(assemblyLocation);
-            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
-            var dir = Path.GetDirectoryName(qualifiedPath);
+            var assemblyPath = Path.GetFullPath(assemblyLocation);
 
-            fn = fn + ".xml";
+            var baseDir = Path.GetDirectoryName(assemblyPath);
+            var xmlFileName = Path.GetFileNameWithoutExtension(assemblyPath) + ".xml";
 
-            documentationPath = Path.Combine(dir, fn);
+            var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
+            var localizedResPath = Path.Combine(baseDir, language);
+            documentationPath = Path.Combine(localizedResPath, xmlFileName);
 
+            if (File.Exists(documentationPath))
+                return true;
+
+            localizedResPath = Path.Combine(baseDir, UI.Configurations.FallbackUiCulture);
+            documentationPath = Path.Combine(localizedResPath, xmlFileName);
+            if (File.Exists(documentationPath))
+                return true;
+
+            documentationPath = Path.Combine(baseDir, xmlFileName);
             return File.Exists(documentationPath);
         }
     }

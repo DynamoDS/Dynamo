@@ -140,8 +140,8 @@ namespace Dynamo.DSEngine
                 }
                 catch (Exception ex)
                 {
-                    Log("Failed to get mirror for variable: " + variableName + "; reason: " +
-                        ex.Message);
+                    Log(string.Format(Properties.Resources.FailedToGetMirrorVariable,variableName,
+                        ex.Message));
                 }
 
                 return mirror;

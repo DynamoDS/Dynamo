@@ -15,18 +15,9 @@ namespace Dynamo.Models
     {
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
-        private bool graphExecuted;
-        public bool RunEnabled
-        {
-            get { return runEnabled; }
-            set
-            {
-                if (Equals(value, runEnabled)) return;
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
-            }
-        }
 
+        private bool graphExecuted;
+        
         public bool DynamicRunEnabled;
 
         public readonly bool VerboseLogging;
@@ -105,8 +96,6 @@ namespace Dynamo.Models
         }
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
-        private bool runEnabled;
-
         internal bool IsEvaluationPending
         {
             get
@@ -165,6 +154,7 @@ namespace Dynamo.Models
         {
             base.Clear();
             PreloadedTraceData = null;
+            RunEnabled = true;
         }
 
         public override void SetShowExecutionPreview(NodeModel node)

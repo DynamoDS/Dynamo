@@ -28,7 +28,6 @@ using System.Reflection;
 using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
-using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Exceptions;
 using Executive = ProtoAssociative.Executive;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
@@ -281,11 +280,26 @@ namespace Dynamo.Models
             }
         }
 
+        public bool RunEnabled
+        {
+            get 
+            { 
+                if (CurrentWorkspace == null)
+                    return false;
+                
+                return this.CurrentWorkspace.RunEnabled;
+            }
+        }
+
         /// <summary>
-        ///     The collection of visible workspaces in Dynamo
+        ///     The private collection of visible workspaces in Dynamo
         /// </summary>
-        public readonly List<WorkspaceModel> Workspaces =
-            new List<WorkspaceModel>();
+        private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
+
+        public IEnumerable<WorkspaceModel> Workspaces 
+        {
+            get { return _workspaces; } 
+        }
 
         public static bool showRunPreview = true;
 
@@ -525,7 +539,7 @@ namespace Dynamo.Models
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
-                        Logger.Log("Evaluation completed in " + executionTimeSpan);
+                        Logger.Log(String.Format(Properties.Resources.EvaluationComleted, executionTimeSpan));
                         ExecutionEvents.OnGraphPostExecution();
                     }
                     break;
@@ -869,7 +883,7 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            Logger.Log("Welcome to Dynamo!");
+            Logger.Log(Properties.Resources.WelcomeMessage);
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
@@ -901,7 +915,7 @@ namespace Dynamo.Models
 
             SearchModel.DumpLibraryToXml(fullFileName);
 
-            Logger.Log(string.Format("Library is dumped to \"{0}\".", fullFileName));
+            Logger.Log(string.Format(Properties.Resources.LibraryIsDumped, fullFileName));
         }
 
         internal bool CanDumpLibraryToXml(object obj)
@@ -913,6 +927,9 @@ namespace Dynamo.Models
 
         #region public methods
 
+        /// <summary>
+        ///     Add a new HomeWorkspace and set as current
+        /// </summary>
         public void AddHomeWorkspace()
         {
             var defaultWorkspace = new HomeWorkspaceModel(
@@ -928,12 +945,21 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Add a new, visible Custom Node workspace to Dynamo
+        /// </summary>
+        /// <param name="workspace"></param>
+        public void AddCustomNodeWorkspace(CustomNodeWorkspaceModel workspace)
+        {
+            AddWorkspace(workspace);
+        }
+
+        /// <summary>
         ///     Remove a workspace from the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
         public void RemoveWorkspace(WorkspaceModel workspace)
         {
-            if (Workspaces.Remove(workspace))
+            if (_workspaces.Remove(workspace))
             {
                 if (workspace is HomeWorkspaceModel)
                     workspace.Dispose();
@@ -1213,16 +1239,20 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         private void AddWorkspace(WorkspaceModel workspace)
         {
+            if (workspace == null) return;
+            
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
+            workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
             {
                 workspace.WorkspaceSaved -= savedHandler;
                 workspace.MessageLogged -= LogMessage;
+                workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };
 
-            Workspaces.Add(workspace);
+            _workspaces.Add(workspace);
             OnWorkspaceAdded(workspace);
         }
         enum ButtonId
@@ -1250,10 +1280,10 @@ namespace Dynamo.Models
                 "ObsoleteFileMessage",
                 fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            const string summary = "Your file cannot be opened";
+            string summary = Properties.Resources.FileCannotBeOpened;
             var description =
                 string.Format(
-                    "Your file '{0}' of version '{1}' cannot " + "be opened by this version of Dynamo ({2})",
+                    Properties.Resources.ObsoleteFileDescription,
                     fullFilePath,
                     fileVersion,
                     currVersion);
@@ -1261,11 +1291,11 @@ namespace Dynamo.Models
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                "Obsolete File",
+                Properties.Resources.ObsoleteFileTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Ok, "OK");
+            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.OKButton);
 
             OnRequestTaskDialog(null, args);
         }
@@ -1286,23 +1316,21 @@ namespace Dynamo.Models
                 InstrumentationLogger.LogException(exception);
             }
 
-            const string summary = "Unhandled exception in Dynamo engine";
+            string summary = Properties.Resources.UnhandledExceptionSummary;
 
             string description = (exception is HeapCorruptionException)
                 ? exception.Message
-                : @"The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better.
-
-If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.";
+                : @Properties.Resources.ExceptionIsNotHeapCorruptionDescription;
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                "Unhandled exception",
+                Properties.Resources.UnhandledExceptionTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Submit, "Submit Bug To Github");
-            args.AddRightAlignedButton((int)ButtonId.Ok, "Arrrrg, ok");
+            args.AddRightAlignedButton((int)ButtonId.Submit, Properties.Resources.SubmitBugButton);
+            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.ArggOKButton);
             args.Exception = exception;
 
             OnRequestTaskDialog(null, args);
@@ -1321,24 +1349,23 @@ If you don't mind, it would be helpful for you to send us your file. That will m
         /// <returns> true if the file must be opened and false otherwise </returns>
         private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
-            var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Properties.Resources.UnknownVersion);
+            var currVer = ((currVersion != null) ? currVersion.ToString() : Properties.Resources.UnknownVersion);
 
             InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            const string summary = "Your file may not open correctly";
-            var description = string.Format("Your file '{0}' was created in future version '{1}' and may not " +
-                "open correctly in your installed version of Dynamo '{2}'", fullFilePath, fileVersion, currVersion);
+            string summary = Properties.Resources.FutureFileSummary;
+            var description = string.Format(Properties.Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                "Future File", summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
+                Properties.Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
 
-            args.AddRightAlignedButton((int)ButtonId.Cancel, "Cancel");
-            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, "Download latest version");
-            args.AddRightAlignedButton((int)ButtonId.Proceed, "Proceed anyway");
+            args.AddRightAlignedButton((int)ButtonId.Cancel, Properties.Resources.CancelButton);
+            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, Properties.Resources.DownloadLatestButton);
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Properties.Resources.ProceedButton);
 
             OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)ButtonId.DownloadLatest)
@@ -1349,6 +1376,12 @@ If you don't mind, it would be helpful for you to send us your file. That will m
             }
 
             return args.ClickedButtonId == (int)ButtonId.Proceed;
+        }
+
+        private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "RunEnabled")
+                OnPropertyChanged("RunEnabled");
         }
 
         #endregion
