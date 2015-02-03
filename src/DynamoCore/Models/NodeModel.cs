@@ -47,6 +47,7 @@ namespace Dynamo.Models
         private bool isUpdated;
         private MirrorData cachedMirrorData;
         private readonly object cachedMirrorDataMutex = new object();
+
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
@@ -353,7 +354,20 @@ namespace Dynamo.Models
             }
         }
 
-        public MirrorData GetCachedValueFromEngine(EngineController engine)
+        /// <summary>
+        /// WARNING: This method is meant for unit test only. It directly accesses
+        /// the EngineController for the mirror data without waiting for any 
+        /// possible execution to complete (which, in single-threaded nature of 
+        /// unit test, is an okay thing to do). The right way to get the cached 
+        /// value for a NodeModel is by going through its RequestValueUpdateAsync
+        /// method).
+        /// </summary>
+        /// <param name="engine">Instance of EngineController from which the node
+        /// value is to be retrieved.</param>
+        /// <returns>Returns the MirrorData if the node's value is computed, or 
+        /// null otherwise.</returns>
+        /// 
+        internal MirrorData GetCachedValueFromEngine(EngineController engine)
         {
             if (cachedMirrorData != null)
                 return cachedMirrorData;
