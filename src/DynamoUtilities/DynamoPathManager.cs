@@ -48,11 +48,6 @@ namespace DynamoUtilities
         public string Packages { get; set; }
 
         /// <summary>
-        /// The UI folder, which contains the UI resources.
-        /// </summary>
-        public string Ui { get; set; }
-
-        /// <summary>
         /// The ASM folder which contains LibG and the 
         /// ASM binaries.
         /// </summary>
@@ -157,8 +152,6 @@ namespace DynamoUtilities
                 Directory.CreateDirectory(CommonSamples);
             }
 
-            Ui = Path.Combine(MainExecPath , "UI");
-
             if (Nodes == null)
             {
                 Nodes = new HashSet<string>();
@@ -172,7 +165,6 @@ namespace DynamoUtilities
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(String.Format("Packages: {0}", Packages));
-            sb.AppendLine(String.Format("Ui: {0}", Ui));
             sb.AppendLine(String.Format("Asm: {0}", LibG));
             Nodes.ToList().ForEach(n=>sb.AppendLine(String.Format("Nodes: {0}", n)));
             
