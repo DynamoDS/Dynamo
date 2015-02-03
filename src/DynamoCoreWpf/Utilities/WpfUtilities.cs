@@ -74,6 +74,7 @@ namespace Dynamo.Utilities
 
         //TODO (Vladimir): take a look on ChildrenOfType method and try to rework 
         //                 FindChildren method in that manner.
+        //                 http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6202
 
         /// <summary>
         /// Call this method to find child elements in a visual tree of a specific type,
