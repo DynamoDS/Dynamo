@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
@@ -36,6 +33,7 @@ namespace DSCoreNodesUI
             InputCount = inputCount;
             OutputCount = outputCount;
             LegacyNodeName = legacyName;
+            NickName = legacyName;
             OriginalNodeContent = originalElement;
             LegacyAssembly = legacyAssembly;
             NodeNature = nodeNature;
