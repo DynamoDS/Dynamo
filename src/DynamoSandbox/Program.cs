@@ -21,7 +21,7 @@ namespace DynamoSandbox
     {
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
-            var authProvider = new OxygenProvider(ConfigurationManager.AppSettings["authAddress"]);
+            //var authProvider = new OxygenProvider(ConfigurationManager.AppSettings["authAddress"]);
 
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
@@ -32,7 +32,7 @@ namespace DynamoSandbox
                 new DynamoModel.StartConfiguration()
                 {
                     Preferences = PreferenceSettings.Load(),
-                    AuthProvider = authProvider
+                    //AuthProvider = authProvider
                 });
 
             viewModel = DynamoViewModel.Start(
@@ -40,13 +40,13 @@ namespace DynamoSandbox
                 {
                     CommandFilePath = commandFilePath,
                     DynamoModel = model,
-                    ShowLogin = true
+                    //ShowLogin = true
                 });
 
             var view = new DynamoView(viewModel);
 
-            var loginService = new LoginService(view, new DispatcherSynchronizationContext(view.Dispatcher));
-            authProvider.RequestLogin += loginService.ShowLogin;
+            //var loginService = new LoginService(view, new DispatcherSynchronizationContext(view.Dispatcher));
+            //authProvider.RequestLogin += loginService.ShowLogin;
 
             var app = new Application();
             app.Run(view);
