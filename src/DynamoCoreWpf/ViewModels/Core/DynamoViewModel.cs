@@ -446,9 +446,9 @@ namespace Dynamo.ViewModels
             var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
             var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager, 
                 model.PreferenceSettings);
+            var resourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
-            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath,
-                startConfiguration.BrandingResourceProvider);
+            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider);
         }
 
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
@@ -468,7 +468,7 @@ namespace Dynamo.ViewModels
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
-            this.BrandingResourceProvider = resourceProvider ?? new DefaultBrandingResourceProvider();
+            this.BrandingResourceProvider = resourceProvider;
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
@@ -2154,16 +2154,6 @@ namespace Dynamo.ViewModels
         }
 
         public DynamoViewModel ViewModel { get { return this; } }
-
-        public IBrandingResourceProvider BrandingResourceProvider { get; private set; }
-
-        public ImageSource AboutBoxIcon
-        {
-            get
-            {
-                return BrandingResourceProvider.GetImageSource(ResourceName.AboutBoxLogo);
-            }
-        }
 
         #endregion
     }

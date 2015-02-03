@@ -11,6 +11,6 @@ namespace Dynamo.Wpf.Interfaces
     public interface IBrandingResourceProvider
     {
         ImageSource GetImageSource(ResourceName resourceName);
-        string GetStringResource(ResourceName resourceName);
+        string GetString(ResourceName resourceName);
     }
 }

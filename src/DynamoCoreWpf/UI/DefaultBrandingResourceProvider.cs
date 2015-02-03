@@ -27,7 +27,7 @@ namespace Dynamo.Wpf.UI
             return image;
         }
 
-        public string GetStringResource(ResourceName resourceName)
+        public string GetString(ResourceName resourceName)
         {
             throw new NotImplementedException();
         }
