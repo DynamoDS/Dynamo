@@ -16,9 +16,6 @@ namespace ProtoScript.Runners
         public bool Compile(ProtoCore.CompileTime.Context context, ProtoCore.Core core, out int blockId)
         {
             bool buildSucceeded = false;
-
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
-
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             try
             {
@@ -37,7 +34,7 @@ namespace ProtoScript.Runners
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.Language id = globalBlock.language;
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
                 core.BuildStatus.ReportBuildResult();
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
@@ -53,9 +50,6 @@ namespace ProtoScript.Runners
         public bool Compile(string code, ProtoCore.Core core, out int blockId)
         {
             bool buildSucceeded = false;
-
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
-
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             try
             {
@@ -73,7 +67,7 @@ namespace ProtoScript.Runners
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 ProtoCore.Language id = globalBlock.language;
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
                 core.BuildStatus.ReportBuildResult();
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
@@ -90,9 +84,6 @@ namespace ProtoScript.Runners
         public bool Compile(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, out int blockId)
         {
             bool buildSucceeded = false;
-
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
-
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             try
             {
@@ -113,7 +104,7 @@ namespace ProtoScript.Runners
 		        ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
                 codeblock.Body.AddRange(astList);
 
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink, codeblock);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink, codeblock);
 
                 core.BuildStatus.ReportBuildResult();
 
@@ -159,8 +150,11 @@ namespace ProtoScript.Runners
                     StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                     stackFrame.TX = svCallConvention;
 
-                    int locals = 0;
-                    core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals, EventSink);
+                    // Initialize the entry point interpreter
+                    int locals = 0; // This is the global scope, there are no locals
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
+                    core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                    core.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
                 }
                 core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }

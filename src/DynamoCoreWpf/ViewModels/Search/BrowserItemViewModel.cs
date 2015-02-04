@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Input;
 
 using Dynamo.Search;
-
+using Dynamo.UI;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -103,6 +103,7 @@ namespace Dynamo.Wpf.ViewModels
         public ICommand ClickedCommand { get; private set; }
 
         private string name;
+        private string fullCategoryName;
         private ObservableCollection<ISearchEntryViewModel> items;
         private ObservableCollection<NodeSearchElementViewModel> entries;
         private ObservableCollection<NodeCategoryViewModel> subCategories;
@@ -118,6 +119,17 @@ namespace Dynamo.Wpf.ViewModels
                 if (value == name) return;
                 name = value;
                 RaisePropertyChanged("Name");
+            }
+        }
+
+        public string FullCategoryName
+        {
+            get { return fullCategoryName; }
+            set
+            {
+                if (value == fullCategoryName) return;
+                fullCategoryName = value;
+                RaisePropertyChanged("FullCategoryName");
             }
         }
 
@@ -417,5 +429,17 @@ namespace Dynamo.Wpf.ViewModels
             string name, IEnumerable<NodeSearchElementViewModel> entries,
             IEnumerable<NodeCategoryViewModel> subs) : base(name, entries, subs)
         { }
+    }
+
+    public class ClassesNodeCategoryViewModel : NodeCategoryViewModel
+    {
+        public NodeCategoryViewModel Parent { get; private set; }
+
+        public ClassesNodeCategoryViewModel(NodeCategoryViewModel parent)
+            : base(Configurations.ClassesDefaultName)
+        {
+            FullCategoryName = Configurations.ClassesDefaultName;
+            Parent = parent;
+        }
     }
 }

@@ -16,7 +16,6 @@ namespace ProtoScript.Runners
         public ExpressionInterpreterRunner(ProtoCore.Core core)
         {
             Core = core;
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
         }
 
         public bool Compile(string code, out int blockId)
@@ -43,8 +42,8 @@ namespace ProtoScript.Runners
                 // Save the global offset and restore after compilation
                 int offsetRestore = Core.GlobOffset;
                 Core.GlobOffset = Core.Rmem.Stack.Count;
-                
-                Core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink);
+
+                Core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
 
                 // Restore the global offset
                 Core.GlobOffset = offsetRestore;
@@ -63,6 +62,7 @@ namespace ProtoScript.Runners
 
         public ExecutionMirror Execute(string code)
         {
+            Core.ExecMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
             bool ssastate = Core.Options.GenerateSSA;
             bool ssastateExec = Core.Options.ExecuteSSA;
             Core.Options.GenerateSSA = false;
@@ -127,7 +127,7 @@ namespace ProtoScript.Runners
                     ProtoCore.DSASM.StackFrame stackFrame = null;
                     int locals = 0;
 
-                    StackValue sv = Core.Bounce(blockId, Core.startPC, context, stackFrame, locals, EventSink);
+                    StackValue sv = Core.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.startPC, context, stackFrame, locals);
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing
                     // it needs to be popped off at the end for stack alignment - pratapa
@@ -196,6 +196,7 @@ namespace ProtoScript.Runners
 
             Core.Options.GenerateSSA = ssastate;
             Core.Options.ExecuteSSA = ssastateExec;
+            Core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
 
             return new ExecutionMirror(Core.CurrentExecutive.CurrentDSASMExec, Core);
         }
