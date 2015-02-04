@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
-
+using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -42,9 +42,12 @@ namespace Dynamo.Wpf.Nodes
         private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             if (args.PropertyName != "IsUpdated") return;
+            
             using (var im = GetImageFromMirror())
             {
-                nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { im });
+                // The setter is invoked on the UI thread synchronously as it needs to wait for the
+                // setter to finish executing before it leaves the using scope and the Bitmap is deleted
+                nodeView.Dispatcher.Invoke(new Action<Bitmap>(SetImageSource), new object[] { im });
             }
         }
 
