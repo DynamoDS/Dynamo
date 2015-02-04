@@ -1391,8 +1391,23 @@ namespace Dynamo.Controls
         public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
-            int val = 0;
-            int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val);
+            int val = 0;          
+            if (int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val))
+                return val;
+            //check if the value exceeds the 32 bit maximum / minimum value
+            string integerValue = value.ToString();
+            if (integerValue.Length > 1)
+            {
+                var start =  integerValue[0] == '-' ? 1 : 0;
+                for (var i = start; i < integerValue.Length; i++)
+                {
+                    if (!char.IsDigit(integerValue[i]))
+                    {
+                        return 0;
+                    }
+                }
+                val = start == 0 ? int.MaxValue : int.MinValue;
+            }
             return val;
         }
     }
