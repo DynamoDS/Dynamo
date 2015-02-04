@@ -23,9 +23,6 @@ namespace Dynamo
     {
         public static string DynamoTestPath = null;
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
-        private LengthUnit lengthUnit;
-        private AreaUnit areaUnit;
-        private VolumeUnit volumeUnit;
         private string numberFormat;
         private string lastUpdateDownloadPath;
 
@@ -52,16 +49,6 @@ namespace Dynamo
             }
         }
 
-        public LengthUnit LengthUnit
-        {
-            get { return lengthUnit; }
-            set
-            {
-                lengthUnit = value;
-                RaisePropertyChanged("LengthUnit");
-            }
-        }
-
         public int MaxNumRecentFiles
         {
             get { return 10; }
@@ -71,26 +58,6 @@ namespace Dynamo
         public List<string> RecentFiles { get; set; }
 
         public List<string> PackageDirectoriesToUninstall { get; set; }
-
-        public AreaUnit AreaUnit
-        {
-            get { return areaUnit; }
-            set
-            {
-                areaUnit = value;
-                RaisePropertyChanged("AreaUnit");
-            }
-        }
-
-        public VolumeUnit VolumeUnit
-        {
-            get { return volumeUnit; }
-            set
-            {
-                volumeUnit = value;
-                RaisePropertyChanged("VolumeUnit");
-            }
-        }
 
         public double WindowX { get; set; }
         public double WindowY { get; set; }
@@ -118,9 +85,6 @@ namespace Dynamo
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             FullscreenWatchShowing = true;
-            LengthUnit = LengthUnit.Meter;
-            AreaUnit = DynamoUnits.AreaUnit.SquareMeter;
-            VolumeUnit = VolumeUnit.CubicMeter;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             LastUpdateDownloadPath = "";

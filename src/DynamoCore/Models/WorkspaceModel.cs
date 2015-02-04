@@ -457,7 +457,7 @@ namespace Dynamo.Models
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
-            WorkspaceSaved += OnWorkspaceSaved;       
+            //WorkspaceSaved += OnWorkspaceSaved;       
 
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
