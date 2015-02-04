@@ -26,21 +26,6 @@ namespace ProtoImperative
                 {
                     ProtoImperative.CodeGen codegen = new ProtoImperative.CodeGen(core, callContext, parentBlock);
 
-                    //(Fuqiang, Ayush) : The below code is to parse an Imperative code block. An imoerative code block should
-                    // never need to be parsed at this stage, as it would be parsed by the Assoc parser.
-
-                    //System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(langBlock.body));
-                    //ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
-                    //ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
-                    //System.IO.StringWriter parseErrors = new System.IO.StringWriter();
-                    //p.errors.errorStream = parseErrors;
-                    //p.Parse();
-                    //if (parseErrors.ToString() != String.Empty)
-                    //{
-                    //    core.BuildStatus.LogSyntaxError(parseErrors.ToString());
-                    //}
-                    //core.BuildStatus.errorCount += p.errors.count;
-
                     codegen.context = callContext;
                     codegen.codeBlock.EventSink = sink;
                     blockId = codegen.Emit(codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode, graphNode);
