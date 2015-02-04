@@ -37,11 +37,7 @@ namespace InstallUpdate
             int processId = -1;
             if (args.Length > 1)
             {
-                if (!Int32.TryParse(
-                    args[1],
-                    NumberStyles.Integer,
-                    CultureInfo.InvariantCulture,
-                    out processId))
+                if (!Int32.TryParse(args[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out processId))
                 {
                     Console.WriteLine("The host application process id could not be parsed from the specified input.");
                     return;
@@ -167,20 +163,5 @@ namespace InstallUpdate
             Console.WriteLine("Press any key to quit.");
             Console.ReadKey();
         }
-    }
-
-    public class WindowWrapper : System.Windows.Forms.IWin32Window
-    {
-        public WindowWrapper(IntPtr handle)
-        {
-            _hwnd = handle;
-        }
-
-        public IntPtr Handle
-        {
-            get { return _hwnd; }
-        }
-
-        private IntPtr _hwnd;
     }
 }
