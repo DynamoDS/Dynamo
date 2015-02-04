@@ -23,14 +23,14 @@ namespace InstallUpdate
         {
             if (args.Length < 1)
             {
-                Console.WriteLine("You must specify the path of the update.");
+                Console.WriteLine(Resources.Program_Main_You_must_specify_the_path_of_the_update_);
                 return;
             }
 
             var installerPath = args[0];
             if (!File.Exists(installerPath))
             {
-                Console.WriteLine("The specified file path does not exist.");
+                Console.WriteLine(Resources.Program_Main_The_specified_file_path_does_not_exist_);
                 return;
             }
 
@@ -39,7 +39,7 @@ namespace InstallUpdate
             {
                 if (!Int32.TryParse(args[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out processId))
                 {
-                    Console.WriteLine("The host application process id could not be parsed from the specified input.");
+                    Console.WriteLine(Resources.Program_Main_The_host_application_process_id_could_not_be_parsed_from_the_specified_input_);
                     return;
                 }
             }
@@ -54,7 +54,7 @@ namespace InstallUpdate
                 var certPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Dynamo.cer");
                 if (!File.Exists(certPath))
                 {
-                    Console.WriteLine("The Dynamo certificate could not be found. Update cancelled.");
+                    Console.WriteLine(Resources.Program_Main_The_Dynamo_certificate_could_not_be_found__Update_cancelled_);
                     return;
                 }
 
@@ -63,7 +63,7 @@ namespace InstallUpdate
 
             if (cert == null)
             {
-                Console.WriteLine("There was a problem with the security certificate. Update cancelled.");
+                Console.WriteLine(Resources.Program_Main_There_was_a_problem_with_the_security_certificate__Update_cancelled_);
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace InstallUpdate
             var pubKey = DynamoCrypto.Utils.GetPublicKeyFromCertificate(cert);
             if (pubKey == null)
             {
-                Console.WriteLine("Could not verify the update download");
+                Console.WriteLine(Resources.Program_Main_Could_not_verify_the_update_download);
                 RequestManualReinstall();
                 return;
             }
@@ -80,7 +80,7 @@ namespace InstallUpdate
             var sigDir = Path.GetDirectoryName(installerPath);
             if (string.IsNullOrEmpty(sigDir) || !Directory.Exists(sigDir))
             {
-                Console.WriteLine("A signature file could not be found to verify this update.");
+                Console.WriteLine(Resources.Program_Main_A_signature_file_could_not_be_found_to_verify_this_update_);
                 RequestManualReinstall();
                 return;
             }
@@ -90,14 +90,14 @@ namespace InstallUpdate
 
             if (!File.Exists(sigPath))
             {
-                Console.WriteLine("A signature file could not be found to verify this update.");
+                Console.WriteLine(Resources.Program_Main_A_signature_file_could_not_be_found_to_verify_this_update_);
                 RequestManualReinstall();
                 return;
             }
 
             if (!Utils.VerifyFile(installerPath, sigPath, pubKey))
             {
-                Console.WriteLine("The update could not be verified against the signature file.");
+                Console.WriteLine(Resources.Program_Main_The_update_could_not_be_verified_against_the_signature_file_);
                 RequestManualReinstall();
                 return;
             }
@@ -110,7 +110,7 @@ namespace InstallUpdate
                 {
                     if (cancel || tryCount == 5)
                     {
-                        Console.WriteLine("Update was cancelled.");
+                        Console.WriteLine(Resources.Program_Main_Update_was_cancelled_);
                         return;
                     }
 
@@ -164,8 +164,8 @@ namespace InstallUpdate
 
         private static void RequestManualReinstall()
         {
-            Console.WriteLine("Please reinstall Dynamo manually.");
-            Console.WriteLine("Press any key to quit.");
+            Console.WriteLine(Resources.Program_RequestManualReinstall_Please_reinstall_Dynamo_manually_);
+            Console.WriteLine(Resources.Program_RequestManualReinstall_Press_any_key_to_quit_);
             Console.ReadKey();
         }
     }
