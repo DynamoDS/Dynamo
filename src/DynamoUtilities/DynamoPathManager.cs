@@ -22,30 +22,30 @@ namespace DynamoUtilities
         /// The main execution path of Dynamo. This is the directory
         /// which contains DynamoCore.dll
         /// </summary>
-        public string MainExecPath { get; set; }
+        public string MainExecPath { get; private set; }
 
         /// <summary>
         /// The definitions folder, which contains custom nodes
         /// created by the user.
         /// </summary>
-        public string UserDefinitions { get; set; }
+        public string UserDefinitions { get; private set; }
 
         /// <summary>
         /// The definitions folder which contains custom nodes
         /// available to all users.
         /// </summary>
-        public string CommonDefinitions { get; set; }
+        public string CommonDefinitions { get; private set; }
 
         /// <summary>
         /// The location of the Samples folder.
         /// </summary>
-        public string CommonSamples { get; set; }
+        public string CommonSamples { get; private set; }
 
         /// <summary>
         /// The packages folder, which contains pacakages downloaded
         /// with the package manager.
         /// </summary>
-        public string Packages { get; set; }
+        public string Packages { get; private set; }
 
         /// <summary>
         /// The ASM folder which contains LibG and the 
@@ -56,7 +56,7 @@ namespace DynamoUtilities
         /// <summary>
         /// All 'nodes' folders.
         /// </summary>
-        public HashSet<string> Nodes { get; set; }
+        public HashSet<string> Nodes { get; private set; }
 
         /// <summary>
         /// Libraries to be preloaded by library services.
@@ -69,16 +69,16 @@ namespace DynamoUtilities
         /// <summary>
         /// The Logs folder.
         /// </summary>
-        public string Logs { get; set; }
+        public string Logs { get; private set; }
 
         /// <summary>
         /// The Dynamo folder in AppData
         /// </summary>
-        public string AppData { get; set;}
+        public string AppData { get; private set;}
 
-        public string GeometryFactory { get; set; }
+        public string GeometryFactory { get; private set; }
 
-        public string AsmPreloader { get; set; }
+        public string AsmPreloader { get; private set; }
 
         /// <summary>
         /// Additional paths that should be searched during
