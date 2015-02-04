@@ -757,8 +757,6 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is NodeSearchElementViewModel)
-                // TODO(Vladimir): Check if bug returns. Earlier line was:
-                //if (value is NodeSearchElement || value is NodeSearchElementViewModel)
                 return true;
 
             return false;
@@ -1864,13 +1862,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is RootNodeCategoryViewModel) return true;
-            if (value is NodeCategoryViewModel)
-            {
-                // TODO(Vladimir): take a look.
-                return false; //(value as BrowserInternalElementViewModel).CastedModel.Parent is BrowserRootElement;
-            }
-            else return false;
+            return (value is RootNodeCategoryViewModel);
         }
 
         public object ConvertBack(
@@ -2011,7 +2003,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // TODO(Vladimir): rework when ElementType returned.
+            // Implement converter. Refer to http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6197
+            // for more details.
 #if false
             var elementType = (SearchModel.ElementType)value;
 

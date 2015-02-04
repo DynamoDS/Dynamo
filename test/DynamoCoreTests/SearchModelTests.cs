@@ -430,8 +430,6 @@ namespace Dynamo.Tests
         }
         #endregion
 
-        // TODO(Vladimir): take a look.
-
         [Test]
         [Category("UnitTests")]
         public void ProcessNodeCategoryTests()
@@ -461,7 +459,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("Core.List", search.ProcessNodeCategory(category, ref group));
             Assert.AreEqual(SearchElementGroup.Create, group);
         }
-
 
         #region Remove Nodes
 

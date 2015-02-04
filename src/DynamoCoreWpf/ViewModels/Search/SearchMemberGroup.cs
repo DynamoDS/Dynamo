@@ -52,7 +52,7 @@ namespace Dynamo.Search
                 if (!showAllMembers)
                     return members;
 
-                if (members.Count == 0) return new List<NodeSearchElementViewModel>();
+                if (members.Count == 0) return members;
 
                 var firstMember = members[0] as NodeSearchElementViewModel;
 

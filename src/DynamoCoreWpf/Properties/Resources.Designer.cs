@@ -3431,10 +3431,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An update is available for Dynamo
-        ///
-        ///Click OK to close Dynamo and install
-        ///Click CANCEL to cancel the update..
+        ///   Looks up a localized string similar to An update is available for Dynamo.
+        ///Installing the latest update requires Dynamo and any host applications to close.
+        ///Do you want to install the latest Dynamo update?.
         /// </summary>
         public static string UpdateMessage {
             get {
@@ -3461,7 +3460,13 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We would like to collect some information about how Dynamo is used..
+        ///   Looks up a localized string similar to We would like to collect some information about how Dynamo is used.
+        ///
+        ///Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.
+        ///
+        ///The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).
+        ///
+        ///The information being collected  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string UsageReportPromptDialogMessagePart1 {
             get {
@@ -3470,56 +3475,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language..
+        ///   Looks up a localized string similar to It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting &apos;Enable usability data reporting&apos; in the settings menu of the UI.
+        ///
+        ///ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK.
+        ///
+        ///Many thanks!.
         /// </summary>
         public static string UsageReportPromptDialogMessagePart2 {
             get {
                 return ResourceManager.GetString("UsageReportPromptDialogMessagePart2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address)..
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart3 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The information being collected is:.
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart4 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting &apos;Enable usability data reporting&apos; in the settings menu of the UI..
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart5 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK..
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart6 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart6", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Many thanks!.
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart7 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart7", resourceCulture);
             }
         }
         

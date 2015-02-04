@@ -227,12 +227,11 @@ namespace Dynamo.UI.Views
 
             var routedEvent = Keyboard.KeyDownEvent; // Event to send
 
-
-
-            HighlightedItem.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice,
-                                                                            target,
-                                                                            0,
-                                                                            key) { RoutedEvent = routedEvent });
+            HighlightedItem.RaiseEvent(new KeyEventArgs(
+                Keyboard.PrimaryDevice, target, 0, key)
+                {
+                    RoutedEvent = routedEvent
+                });
         }
 
         private ListBoxItem GetSelectedListBoxItem(ListBox listbox)
@@ -275,7 +274,7 @@ namespace Dynamo.UI.Views
             if (e.Key == Key.Up)
                 nextselectedMemberIndex--;
 
-            if (nextselectedMemberIndex < 0 || nextselectedMemberIndex > members.Count - 1)
+            if (nextselectedMemberIndex < 0 || (nextselectedMemberIndex >= members.Count))
                 return;
 
             UpdateHighlightedItem(GetListItemByIndex(membersListBox, nextselectedMemberIndex));
@@ -320,7 +319,7 @@ namespace Dynamo.UI.Views
             // key event is considered not handled and will be left to the parent visual 
             // (e.g. class button or another category) to handle.
             e.Handled = false;
-            if (nextSelectedMemberGroupIndex < 0 || nextSelectedMemberGroupIndex > memberGroups.Count - 1)
+            if (nextSelectedMemberGroupIndex < 0 || (nextSelectedMemberGroupIndex >= memberGroups.Count))
                 return;
 
             var item = GetListItemByIndex(memberGroupListBox, nextSelectedMemberGroupIndex);

@@ -14,7 +14,7 @@ namespace Dynamo.Tests
         {
             //1. Foo(x: double, y : double) -> Foo.double-double
             //2. Foo(point : Point) -> Foo.Point
-            //3. Foo(a : bool[][], b : var[], c : double[][]) -> Foo.bool2-var1-double2
+            //3. Foo(a : bool [ ] [ ] , b : var[], c : double[][]) -> Foo.bool2-var1-double2            
             //4. Foo(arr : var[]..[], a : int) -> Foo.varN-int
             //5. Foo(a: Autodesk.DesignScript.Geometry.Circle, b: Xxxx.Yyy.Curve)
             //6. Empty string(a: int)
@@ -37,7 +37,7 @@ namespace Dynamo.Tests
 
             //3 case
             List<TypedParameter> parameters3 = new List<TypedParameter>();
-            parameters3.Add(new TypedParameter("a", new ProtoCore.Type { Name = "bool[][]" }));
+            parameters3.Add(new TypedParameter("a", new ProtoCore.Type { Name = "bool [ ] [ ] " }));
             parameters3.Add(new TypedParameter("b", new ProtoCore.Type { Name = "var[]" }));
             parameters3.Add(new TypedParameter("c", new ProtoCore.Type { Name = "double[][]" }));
             FunctionDescriptor functionItem3 = new FunctionDescriptor("Foo", parameters3, FunctionType.GenericFunction);

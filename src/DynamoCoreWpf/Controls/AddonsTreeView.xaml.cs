@@ -1,7 +1,7 @@
-﻿using Dynamo.Search.SearchElements;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.UI.Controls
 {
@@ -13,24 +13,6 @@ namespace Dynamo.UI.Controls
         public AddonsTreeView()
         {
             InitializeComponent();
-        }
-
-        private void OnEditClick(object sender, RoutedEventArgs e)
-        {
-            // Logic of original TreeView should be saved until
-            // new design is not implemented.
-#if false
-            var menuItem = sender as MenuItem;
-            if (menuItem != null)
-            {
-                var element = menuItem.DataContext as CustomNodeSearchElement;
-                if (element != null)
-                {
-                    if (dynamoViewModel.OpenCommand.CanExecute(element.Path))
-                        dynamoViewModel.OpenCommand.Execute(element.Path);
-                }
-            }
-#endif
         }
 
         private void OnMemberMouseEnter(object sender, MouseEventArgs e)

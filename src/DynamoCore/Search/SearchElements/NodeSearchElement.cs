@@ -6,6 +6,7 @@ using Dynamo.Annotations;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search.Interfaces;
+using Dynamo.UI;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -172,7 +173,7 @@ namespace Dynamo.Search.SearchElements
 
                 // If there wasn't any assembly, then it's builtin function, operator or custom node.
                 // Icons for these members are in DynamoCore project.
-                return "DynamoCore";
+                return Configurations.DefaultAssembly;
             }
             set
             {
@@ -186,8 +187,8 @@ namespace Dynamo.Search.SearchElements
         {
             get
             {
-                if (inputParameters == null)
-                    inputParameters = GenerateInputParameters();
+                if (!inputParameters.Any())
+                    GenerateInputParameters();
 
                 return inputParameters;
             }
@@ -198,7 +199,10 @@ namespace Dynamo.Search.SearchElements
         {
             get
             {
-                return GenerateOutputParameters();
+                if (!outputParameters.Any())
+                    GenerateOutputParameters();
+
+                return outputParameters;
             }
         }
 
@@ -246,19 +250,14 @@ namespace Dynamo.Search.SearchElements
 
         protected virtual List<string> GenerateOutputParameters()
         {
-            if (outputParameters == null)
-            {
-                outputParameters = new List<String>();
-                outputParameters.Add("none");
-            }
+            outputParameters.Add("none");
             return outputParameters;
         }
 
         protected virtual List<Tuple<string, string>> GenerateInputParameters()
         {
-            List<Tuple<string, string>> inputPar = new List<Tuple<string, string>>();
-            inputPar.Add(Tuple.Create("", "none"));
-            return inputPar;
+            inputParameters.Add(Tuple.Create("", "none"));
+            return inputParameters;
         }
     }
 }

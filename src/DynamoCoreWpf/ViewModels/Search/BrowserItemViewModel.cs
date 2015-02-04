@@ -9,7 +9,6 @@ using System.Windows.Media.Imaging;
 using Dynamo.Search;
 using Dynamo.UI;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Services;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 

@@ -477,7 +477,7 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
-            var dialogText = ""; 
+            var dialogText = "";
             if (e.Workspace is CustomNodeWorkspaceModel)
             {
                 dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
@@ -495,8 +495,8 @@ namespace Dynamo.Controls
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(dialogText, 
-                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle, 
+            var result = System.Windows.MessageBox.Show(dialogText,
+                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
                 buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
@@ -652,8 +652,8 @@ namespace Dynamo.Controls
 
                 if (String.IsNullOrEmpty(dialog.Text))
                 {
-                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName, 
-                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName,
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
@@ -666,8 +666,8 @@ namespace Dynamo.Controls
 
                 else if (dialog.Category.Equals(""))
                 {
-                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory, 
-                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory,
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else

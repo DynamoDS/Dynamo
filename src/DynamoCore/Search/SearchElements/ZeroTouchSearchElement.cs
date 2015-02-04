@@ -26,8 +26,7 @@ namespace Dynamo.Search.SearchElements
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
 
-            if (functionDescriptor.InputParameters != null)
-                inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
+            inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
             outputParameters = new List<string>() { functionDescriptor.ReturnType };
 
             foreach (var tag in functionDescriptor.GetSearchTags())
