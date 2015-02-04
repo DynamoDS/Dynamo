@@ -17,7 +17,7 @@ namespace DynamoSandbox
 {
     class Program
     {
-        private static void MakeStandaloneAndRun(string commandFilePath, ref DynamoViewModel viewModel)
+        private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
@@ -69,7 +69,7 @@ namespace DynamoSandbox
                     }
                 }
 
-                MakeStandaloneAndRun(commandFilePath, ref viewModel);
+                MakeStandaloneAndRun(commandFilePath, out viewModel);
             }
             catch (Exception e)
             {

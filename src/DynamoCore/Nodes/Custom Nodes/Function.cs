@@ -31,6 +31,7 @@ namespace Dynamo.Nodes
             CustomNodeDefinition def, string nickName, string description, string category)
             : base(new CustomNodeController<CustomNodeDefinition>(def))
         {
+            ValidateDefinition(def);
             ArgumentLacing = LacingStrategy.Shortest;
             NickName = nickName;
             Description = description;
@@ -166,8 +167,26 @@ namespace Dynamo.Nodes
 
         #endregion
 
+        private void ValidateDefinition(CustomNodeDefinition def)
+        {
+            if (def == null)
+            {
+                throw new ArgumentNullException("def");
+            }
+
+            if (def.IsProxy)
+            {
+                this.Error(Properties.Resources.CustomNodeNotLoaded);
+            } 
+            else
+            {
+                this.ClearRuntimeError();
+            }
+        }
+
         public void ResyncWithDefinition(CustomNodeDefinition def)
         {
+            ValidateDefinition(def);
             Controller.Definition = def;
             Controller.SyncNodeWithDefinition(this);
         }
