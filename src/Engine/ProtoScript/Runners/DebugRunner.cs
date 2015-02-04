@@ -80,7 +80,7 @@ namespace ProtoScript.Runners
                 //core.runningBlock = blockId;
 
                 ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-                runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, context);
+                runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, context, core.DebuggerProperties);
                 core.RuntimeCoreBridge = runtimeCore;
 
                 FirstExec();

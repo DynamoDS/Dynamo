@@ -50,26 +50,10 @@ namespace ProtoTestConsoleRunner
             core.Options.Verbose = false;
 #endif
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
-            //ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
+            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
 
             // Assuming current directory in test/debug mode is "...\Dynamo\bin\AnyCPU\Debug"
-            //ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core);
-
-            ////////////////
-
-            //ProtoTest.DebugTests.BasicTests test = new ProtoTest.DebugTests.BasicTests();
-            //test.Setup();
-            //test.TestMeTender();
-
-
-            //ProtoTest.DebugTests.RunWatchTests test = new ProtoTest.DebugTests.RunWatchTests();
-            //test.DebugWatch0_array();
-
-
-            ProtoTest.DSASM.HeapMarkAndSweepTests test = new ProtoTest.DSASM.HeapMarkAndSweepTests();
-            test.SetUp();
-            test.TestBasic();
-
+            ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core);
 
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();

@@ -30,7 +30,7 @@ namespace ProtoCore
     /// </summary>
     public class RuntimeCore
     {
-        public RuntimeCore(Options runtimeOptions, Executable executable, ProtoCore.Runtime.Context context)
+        public RuntimeCore(Options runtimeOptions, Executable executable, ProtoCore.Runtime.Context context, DebugProperties debugProps = null)
         {
             this.context = context;
             this.DSExecutable = executable;
