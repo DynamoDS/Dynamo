@@ -1391,8 +1391,23 @@ namespace Dynamo.Controls
         public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
-            int val = 0;
-            int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val);
+            int val = 0;          
+            if (int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val))
+                return val;
+            //check if the value exceeds the 32 bit maximum / minimum value
+            string integerValue = value.ToString();
+            if (integerValue.Length > 1)
+            {
+                var start =  integerValue[0] == '-' ? 1 : 0;
+                for (var i = start; i < integerValue.Length; i++)
+                {
+                    if (!char.IsDigit(integerValue[i]))
+                    {
+                        return 0;
+                    }
+                }
+                val = start == 0 ? int.MaxValue : int.MinValue;
+            }
             return val;
         }
     }
@@ -1772,6 +1787,55 @@ namespace Dynamo.Controls
         }
     }
 
+    /// The converter switches between LibraryView and LibrarySearchView
+    /// using SearchViewModel.ViewMode as value, the View as parameter.
+    /// Converter is used on LibraryConatiner.
+    public class ViewModeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null)
+                return Visibility.Collapsed;
+
+            if (((SearchViewModel.ViewMode)value).ToString() == parameter.ToString())
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // It's used for ClassDetails and ClassObject itself. ClassDetails should be not focusable,
+    // in contrast to ClassObject.
+    // Also decides, should be category underlined or not.
+    public class ElementTypeToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is NodeSearchElementViewModel)
+                return false;
+            if (value is RootNodeCategoryViewModel)
+            {
+                var rootElement = value as RootNodeCategoryViewModel;
+                return !rootElement.SubCategories.OfType<ClassesNodeCategoryViewModel>().Any();
+            }
+            if (value is NodeCategoryViewModel)
+                return true;
+
+            return false;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // This converter is used to change color of output parameters for custom node.
     public class NodeTypeToColorConverter : IValueConverter
     {
@@ -1783,6 +1847,51 @@ namespace Dynamo.Controls
             if (value is CustomNodeSearchElementViewModel)
                 return TrueBrush;
             return FalseBrush;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class RootElementVMToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is RootNodeCategoryViewModel);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class NodeCategoryVMToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is NodeCategoryViewModel) &&
+                (!(value is RootNodeCategoryViewModel)) &&
+                (!(value is ClassesNodeCategoryViewModel));
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
+    public class HasParentRootElement : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is RootNodeCategoryViewModel);
         }
 
         public object ConvertBack(
@@ -1807,6 +1916,32 @@ namespace Dynamo.Controls
         }
     }
 
+    // Depending on the number of points in FullCategoryName margin will be done.
+    // E.g. Geometry -> Margin="5,0,0,0"
+    // E.g. RootCategory.Namespace1.Namespace2 -> Margin="45,0,20,0"
+    public class FullCategoryNameToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var incomingString = value as string;
+
+            if (string.IsNullOrEmpty(incomingString))
+                throw new ArgumentException("value string should not be empty.");
+
+            var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
+            if (numberOfPoints == 0)
+                return new Thickness(5, 0, 0, 0);
+
+            return new Thickness(5 + 20 * numberOfPoints, 0, 20, 0);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Converter that will be used, if number of items equals 0. Then control should be collapsed.
     public class IntToVisibilityConverter : IValueConverter
     {
@@ -1816,6 +1951,108 @@ namespace Dynamo.Controls
                 return Visibility.Visible;
 
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Converter is used in LibraryView.xaml. Do not show LibraryTreeView TreviewItem ItemsHost
+    // for only one item, item should be of type ClassesNodeCategoryViewModel.
+    public class LibraryTreeItemsHostVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ClassesNodeCategoryViewModel)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // Converter is used to specify Margin of highlight rectangle. 
+    // This rectangle highlights first instance of search phrase.
+    //
+    // Input parameters:
+    //     values[0] (TextBlock) - name of member. Part of this text rectangle should highlight.
+    //     values[1] (SearchViewModel) - properties SearchText and RegularTypeface are used.
+    public class SearchHighlightMarginConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length != 2)
+                return new ArgumentException();
+
+            var textBlock = values[0] as TextBlock;
+            var viewModel = values[1] as SearchViewModel;
+            var searchText = viewModel.SearchText;
+            var typeface = viewModel.RegularTypeface;
+            var fullText = textBlock.Text;
+
+            var index = fullText.IndexOf(searchText, StringComparison.CurrentCultureIgnoreCase);
+            if (index == -1)
+                return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
+
+            double rightMargin = textBlock.ActualWidth -
+                ComputeTextWidth(fullText.Substring(0, index + searchText.Length), typeface, textBlock);
+
+            double leftMargin = textBlock.ActualWidth - rightMargin -
+                ComputeTextWidth(fullText.Substring(index, searchText.Length), typeface, textBlock);
+
+            return new Thickness(leftMargin, 0, rightMargin, 0);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        private double ComputeTextWidth(string text, Typeface typeface, TextBlock textBlock)
+        {
+            var formattedText = new FormattedText(text,
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                typeface,
+                textBlock.FontSize,
+                textBlock.Foreground);
+
+            return formattedText.Width;
+        }
+    }
+
+    // This converter is used to show text label of Addon type in AddonsTreeView control.
+    public class ElementTypeToShorthandConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Implement converter. Refer to http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6197
+            // for more details.
+#if false
+            var elementType = (SearchModel.ElementType)value;
+
+            switch (elementType)
+            {
+                case SearchModel.ElementType.Package:
+                    return Configurations.ElementTypeShorthandPackage;
+                case SearchModel.ElementType.CustomDll:
+                    return Configurations.ElementTypeShorthandImportedDll;
+                case SearchModel.ElementType.CustomNode:
+                    return Configurations.ElementTypeShorthandCategory;
+                default:
+                    return "NIL";
+                //TODO: as logic of specifying BrowserRootElement.ElementType is implemented
+                //      next line should be used.
+                //throw new Exception("Incorrect value provided to converter");
+            }
+#endif
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Dynamo.Models;
 
 namespace Dynamo.Search.SearchElements
@@ -15,6 +16,10 @@ namespace Dynamo.Search.SearchElements
                 SearchKeywords.Add(aka);
             FullCategoryName = typeLoadData.Category;
             Description = typeLoadData.Description;
+            Assembly = typeLoadData.Assembly.Location;
+            inputParameters = new List<System.Tuple<string, string>>();
+            outputParameters = new List<string>();
+            iconName = typeLoadData.Type.FullName;
         }
     }
 }

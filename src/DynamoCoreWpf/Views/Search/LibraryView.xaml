@@ -1,0 +1,1001 @@
+﻿<UserControl x:Class="Dynamo.UI.Views.LibraryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="525"
+             d:DesignWidth="350">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Region Converters -->
+
+            <!--Converter to Make class details not focusable-->
+            <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
+            <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
+            <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
+            <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
+            <controls:RootElementVMToBoolConverter x:Key="RootElementToBoolConverter" />
+            <controls:NodeCategoryVMToBoolConverter x:Key="NodeCategoryVMToBoolConverter" />
+            <!--Depending on the number of points in FullCategoryName margin will be done.-->
+            <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
+            <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+            <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
+
+            <!--EndRegion-->
+
+            <!-- Region Expander Templates -->
+
+            <ControlTemplate x:Key="CategoryExpanderButtonTemplate"
+                             TargetType="{x:Type ToggleButton}">
+                <Border x:Name="ExpanderButtonBorder"
+                        Background="#282828"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="8,0,0,0">
+                    <Grid MinHeight="27"
+                          MinWidth="66"
+                          Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image x:Name="ExpandCollapseStateIcon"
+                               Source="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"
+                               Width="16"
+                               Height="16"
+                               VerticalAlignment="Center" />
+                        <ContentPresenter x:Name="HeaderContent"
+                                          Grid.Column="1"
+                                          ContentSource="Content"
+                                          VerticalAlignment="Center"
+                                          TextBlock.FontSize="13"
+                                          TextBlock.Foreground="#989898"
+                                          Margin="8,0,0,0" />
+                    </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver"
+                                       Value="True" />
+                            <Condition Property="IsChecked"
+                                       Value="False" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Source"
+                                    TargetName="ExpandCollapseStateIcon"
+                                    Value="/DynamoCoreWpf;component/UI/Images/collapsestate_hover.png" />
+                            <Setter Property="Background"
+                                    TargetName="ExpanderButtonBorder"
+                                    Value="#222222" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver"
+                                       Value="True" />
+                            <Condition Property="IsChecked"
+                                       Value="True" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Source"
+                                    TargetName="ExpandCollapseStateIcon"
+                                    Value="/DynamoCoreWpf;component/UI/Images/expandstate_hover.png" />
+                            <Setter Property="TextBlock.FontWeight"
+                                    TargetName="HeaderContent"
+                                    Value="Semibold" />
+                            <Setter Property="TextBlock.Foreground"
+                                    TargetName="HeaderContent"
+                                    Value="#bbbbbb" />
+                            <Setter Property="Background"
+                                    TargetName="ExpanderButtonBorder"
+                                    Value="#222222" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver"
+                                       Value="False" />
+                            <Condition Property="IsChecked"
+                                       Value="True" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Source"
+                                    TargetName="ExpandCollapseStateIcon"
+                                    Value="/DynamoCoreWpf;component/UI/Images/expandstate_normal.png" />
+                            <Setter Property="TextBlock.FontWeight"
+                                    TargetName="HeaderContent"
+                                    Value="Semibold" />
+                            <Setter Property="TextBlock.Foreground"
+                                    TargetName="HeaderContent"
+                                    Value="#bbbbbb" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <ControlTemplate x:Key="CategoryExpanderTemplate"
+                             TargetType="{x:Type Expander}">
+                <DockPanel Background="#2F2F2F">
+                    <ToggleButton x:Name="ExpanderButton"
+                                  DockPanel.Dock="Top"
+                                  Template="{StaticResource CategoryExpanderButtonTemplate}"
+                                  Content="{TemplateBinding Header}"
+                                  IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                  OverridesDefaultStyle="True"
+                                  Height="27"
+                                  BorderBrush="#353535"
+                                  BorderThickness="0,0,0,1" />
+
+                    <ContentPresenter x:Name="ExpanderContent"
+                                      Visibility="Collapsed"
+                                      DockPanel.Dock="Bottom">
+                        <ContentPresenter.Width>
+                            <Binding Path="ActualWidth"
+                                     RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
+                        </ContentPresenter.Width>
+                    </ContentPresenter>
+                </DockPanel>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsExpanded"
+                             Value="True">
+                        <Setter TargetName="ExpanderContent"
+                                Property="Visibility"
+                                Value="Visible" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+
+            <!--EndRegion-->
+
+            <!-- Region DataContext Templates -->
+
+            <!-- This data template is used to show single member. -->
+            <DataTemplate x:Key="MemberControlTemplate">
+                <StackPanel Name="ImageAndNodeName"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <Image Margin="16,0,16,0"
+                           Height="32"
+                           Width="32"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Source="{Binding SmallIcon}"
+                           Name="SmallIcon" />
+                    <TextBlock Name="memberName"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               Text="{Binding Name}"
+                               Margin="5,0,0,0"
+                               Foreground="#989898"
+                               FontSize="13" />
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="Margin"
+                                    Value="3,0,0,0" />
+                            <Setter Property="Width">
+                                <Setter.Value>
+                                    <Binding Path="ActualWidth"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
+                                </Setter.Value>
+                            </Setter>
+                            <EventSetter Event="MouseEnter"
+                                         Handler="OnMemberMouseEnter" />
+                            <EventSetter Event="MouseLeave"
+                                         Handler="OnPopupMouseLeave" />
+
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="#404040" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                </StackPanel>
+            </DataTemplate>
+
+            <!-- This data template is used to show one subcategory. -->
+            <DataTemplate x:Key="ClassObjectDataTemplate">
+                <StackPanel Orientation="Vertical"
+                            Width="96"
+                            Height="96">
+                    <Border Padding="4">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding Path=SmallIcon}"
+                                   Width="32"
+                                   Height="32"
+                                   Margin="8"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Grid.Row="1"
+                                   Grid.Column="1" />
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Center"
+                                       Foreground="#989898"
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       FontSize="13">
+                                <TextBlock.Text>
+                                    <Binding Path="Name"
+                                             Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
+                                             ConverterParameter="ClassButton" />
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </DataTemplate>
+            <!-- This data template is used to show StandardPanel
+                 for some selected subcategory. -->
+            <DataTemplate x:Key="ClassDetailsDataTemplate">
+                <uicontrols:StandardPanel>
+                    <uicontrols:StandardPanel.Width>
+                        <Binding Path="ActualWidth"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
+                    </uicontrols:StandardPanel.Width>
+                </uicontrols:StandardPanel>
+            </DataTemplate>
+
+            <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
+                                                  ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
+                                                  ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
+
+            <!-- This data template is used to show the list of subcategories. -->
+            <DataTemplate x:Key="SubclassesTemplate">
+                <ListView Name="SubCategoryListView"
+                          ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
+                          Background="#2F2F2F"
+                          BorderThickness="0"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                          ScrollViewer.CanContentScroll="False"
+                          ScrollViewer.IsDeferredScrollingEnabled="False"
+                          ItemsSource="{Binding Path=Items}"
+                          PreviewKeyDown="OnSubCategoryListViewPreviewKeyDown">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <controls:LibraryWrapPanel Background="Transparent">
+                                <controls:LibraryWrapPanel.Width>
+                                    <Binding Path="ActualWidth"
+                                             ElementName="CategoryTreeView" />
+                                </controls:LibraryWrapPanel.Width>
+                            </controls:LibraryWrapPanel>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Style.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                 Color="#00000000" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                 Color="#00000000" />
+                            </Style.Resources>
+
+                            <EventSetter Event="PreviewMouseLeftButtonDown"
+                                         Handler="OnClassButtonCollapse" />
+
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <Border Margin="0"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="Transparent"
+                                                BorderThickness="0">
+                                            <ContentPresenter />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+
+                            <Setter Property="Focusable"
+                                    Value="False" />
+
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected"
+                                         Value="true">
+                                    <Setter Property="Background"
+                                            Value="#272727" />
+                                    <Setter Property="BorderThickness"
+                                            Value="0" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected"
+                                                   Value="False" />
+                                        <Condition Property="IsMouseOver"
+                                                   Value="True" />
+                                    </MultiTrigger.Conditions>
+                                    <MultiTrigger.Setters>
+                                        <Setter Property="Background"
+                                                Value="#404040" />
+                                    </MultiTrigger.Setters>
+                                </MultiTrigger>
+                            </Style.Triggers>
+
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </DataTemplate>
+
+            <!-- Used for nested categories. E.g. nodes stucture for Revit root. -->
+            <HierarchicalDataTemplate x:Key="NestedCategoryTemplate"
+                                      ItemsSource="{Binding Path=Items}">
+                <TextBlock Foreground="#989898"
+                           FontSize="13"
+                           Text="{Binding Path=Name}"
+                           VerticalAlignment="Center"
+                           Name="CategoryName">
+                    <TextBlock.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsExpanded, 
+                                                               RelativeSource={RelativeSource FindAncestor, 
+                                                                                              AncestorType={x:Type TreeViewItem}}}"
+                                             Value="True">
+                                    <Setter Property="TextBlock.FontWeight"
+                                            Value="SemiBold" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </HierarchicalDataTemplate>
+
+            <!--EndRegion-->
+
+            <!-- Region Selectors -->
+            <controls:LibraryTreeTemplateSelector x:Key="LibraryTreeTemplateSelector"
+                                                  MemberTemplate="{StaticResource MemberControlTemplate}"
+                                                  SubclassesTemplate="{StaticResource SubclassesTemplate}"
+                                                  NestedCategoryTemplate="{StaticResource NestedCategoryTemplate}" />
+
+            <!--EndRegion-->
+
+            <!-- Region ScrollBar Template-->
+
+            <ControlTemplate x:Key="ScrollViewerControlTemplate"
+                             TargetType="{x:Type ScrollViewer}">
+                <Grid x:Name="Grid"
+                      Background="{TemplateBinding Background}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                            CanContentScroll="{TemplateBinding CanContentScroll}"
+                                            CanHorizontallyScroll="False"
+                                            CanVerticallyScroll="True"
+                                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                                            Content="{TemplateBinding Content}"
+                                            Grid.RowSpan="2"
+                                            Margin="{TemplateBinding Padding}"
+                                            Grid.ColumnSpan="2" />
+                    <ScrollBar x:Name="PART_VerticalScrollBar"
+                               AutomationProperties.AutomationId="VerticalScrollBar"
+                               Cursor="Arrow"
+                               Grid.Column="1"
+                               Maximum="{TemplateBinding ScrollableHeight}"
+                               Minimum="0"
+                               Grid.Row="0"
+                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                               Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                               ViewportSize="{TemplateBinding ViewportHeight}"
+                               Width="8" />
+                </Grid>
+            </ControlTemplate>
+
+            <!--EndRegion-->
+
+            <!-- Region Styles -->
+
+            <!-- Region CategoriesTreeView -->
+
+            <Style x:Key="LibraryExpandCollapseToggleStyle"
+                   TargetType="{x:Type ToggleButton}">
+                <Setter Property="Focusable"
+                        Value="False" />
+                <Setter Property="Width"
+                        Value="24" />
+                <Setter Property="Height"
+                        Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Grid}}" />
+                <Setter Property="Padding"
+                        Value="0" />
+                <Setter Property="Margin"
+                        Value="0" />
+                <Setter Property="VerticalAlignment"
+                        Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border x:Name="ExpanderButtonBorder">
+                                <Grid MinHeight="24"
+                                      MinWidth="66">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Image x:Name="ExpandCollapseStateIcon"
+                                           Source="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"
+                                           Width="16"
+                                           Height="16"
+                                           VerticalAlignment="Center" />
+                                    <ContentPresenter x:Name="HeaderContent"
+                                                      Grid.Column="1"
+                                                      ContentSource="Content"
+                                                      VerticalAlignment="Center"
+                                                      TextBlock.FontSize="13"
+                                                      TextBlock.Foreground="#989898"
+                                                      Margin="8,0,0,0" />
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
+                                                                         Path=IsMouseOver}"
+                                                   Value="True" />
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                                                         Path=IsChecked}"
+                                                   Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source"
+                                                TargetName="ExpandCollapseStateIcon"
+                                                Value="/DynamoCoreWpf;component/UI/Images/collapsestate_hover.png" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
+                                                                         Path=IsMouseOver}"
+                                                   Value="True" />
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                                                         Path=IsChecked}"
+                                                   Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source"
+                                                TargetName="ExpandCollapseStateIcon"
+                                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_hover.png" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
+                                                                     Path=IsMouseOver}"
+                                                   Value="False" />
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                                                     Path=IsChecked}"
+                                                   Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source"
+                                                TargetName="ExpandCollapseStateIcon"
+                                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_normal.png" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="LibraryTreeViewItem"
+                   TargetType="{x:Type TreeViewItem}">
+                <Setter Property="IsExpanded"
+                        Value="{Binding IsExpanded, Mode=OneWay}" />
+                <Setter Property="Width">
+                    <Setter.Value>
+                        <Binding Path="ActualWidth"
+                                 ElementName="LibraryGrid" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                            <Button Command="{Binding ClickedCommand}"
+                                    PreviewMouseLeftButtonUp="OnExpanderButtonMouseLeftButtonUp">
+                                <Button.Focusable>False</Button.Focusable>
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <Border Name="Bd"
+                                        BorderThickness="0"
+                                        BorderBrush="Transparent">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+
+                                        <Border BorderBrush="#353535">
+                                            <Grid Background="Transparent">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+
+                                                <ToggleButton x:Name="Expander"
+                                                              Background="Transparent"
+                                                              IsHitTestVisible="False"
+                                                              Style="{StaticResource LibraryExpandCollapseToggleStyle}"
+                                                              ClickMode="Press"
+                                                              IsChecked="{Binding IsExpanded, Mode=OneWay}">
+                                                    <ToggleButton.Margin>
+                                                        <Binding Path="FullCategoryName"
+                                                                 Converter="{StaticResource FullCategoryNameToMarginConverter}" />
+                                                    </ToggleButton.Margin>
+                                                </ToggleButton>
+
+                                                <ContentPresenter Grid.Column="1"
+                                                                  Grid.ColumnSpan="2"
+                                                                  VerticalAlignment="Center"
+                                                                  ContentSource="Header" />
+
+                                                <Grid.Style>
+                                                    <Style TargetType="{x:Type Grid}">
+                                                        <Setter Property="Margin"
+                                                                Value="0,0,0,0" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                                             Path="DataContext"
+                                                                             Converter="{StaticResource RootElementToBoolConverter}" />
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Margin"
+                                                                        Value="5,0,0,0" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Grid.Style>
+                                            </Grid>
+
+                                            <Border.Style>
+                                                <Style TargetType="{x:Type Border}">
+                                                    <Style.Triggers>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=IsMouseOver}"
+                                                                           Value="True" />
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                           Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <MultiDataTrigger.Setters>
+                                                                <Setter Property="Background"
+                                                                        Value="#222222" />
+                                                            </MultiDataTrigger.Setters>
+                                                        </MultiDataTrigger>
+
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=IsMouseOver}"
+                                                                           Value="True" />
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                           Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <MultiDataTrigger.Setters>
+                                                                <Setter Property="Background"
+                                                                        Value="#404040" />
+                                                            </MultiDataTrigger.Setters>
+                                                        </MultiDataTrigger>
+
+                                                        <DataTrigger Value="True">
+                                                            <DataTrigger.Binding>
+                                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                                         Path="DataContext"
+                                                                         Converter="{StaticResource RootElementToBoolConverter}" />
+                                                            </DataTrigger.Binding>
+                                                            <Setter Property="BorderThickness"
+                                                                    Value="0,0,0,1" />
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Value="True">
+                                                            <DataTrigger.Binding>
+                                                                <Binding RelativeSource="{RelativeSource Self}"
+                                                                         Path="DataContext"
+                                                                         Converter="{StaticResource NodeCategoryVMToBoolConverter}" />
+                                                            </DataTrigger.Binding>
+                                                            <Setter Property="Height"
+                                                                    Value="32" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+
+                                        <Border Grid.Row="1"
+                                                Background="#2F2F2F">
+                                            <ItemsPresenter x:Name="ItemsHost"
+                                                            Margin="0,3,0,3">
+                                                <ItemsPresenter.Visibility>
+                                                    <Binding Converter="{StaticResource LibraryTreeItemsHostVisibilityConverter}" />
+                                                </ItemsPresenter.Visibility>
+                                            </ItemsPresenter>
+                                        </Border>
+                                    </Grid>
+                                    <Border.Style>
+                                        <!--If item is RootElement Background will be dark grey.
+                                            If item is InternalElement Background will be light grey.-->
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="Background"
+                                                    Value="#282828" />
+                                            <Style.Triggers>
+                                                <DataTrigger Value="False">
+                                                    <DataTrigger.Binding>
+                                                        <Binding RelativeSource="{RelativeSource Self}"
+                                                                 Path="DataContext"
+                                                                 Converter="{StaticResource RootElementToBoolConverter}" />
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="Background"
+                                                            Value="#2F2F2F" />
+                                                    <Setter Property="Padding"
+                                                            Value="0,0,0,0" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
+                            </Button>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsExpanded"
+                                         Value="false">
+                                    <Setter Property="Visibility"
+                                            TargetName="ItemsHost"
+                                            Value="Collapsed" />
+                                </Trigger>
+
+                                <Trigger Property="HasItems"
+                                         Value="false">
+                                    <Setter Property="Visibility"
+                                            TargetName="Expander"
+                                            Value="Collapsed" />
+                                </Trigger>
+
+                                <!--Highlight item just in case this item is root element, not selected and
+                                    ,mouse is over it.-->
+                                <DataTrigger Value="False">
+                                    <DataTrigger.Binding>
+                                        <Binding RelativeSource="{RelativeSource Self}"
+                                                 Path="DataContext"
+                                                 Converter="{StaticResource RootElementToBoolConverter}" />
+                                    </DataTrigger.Binding>
+                                    <Setter Property="Background"
+                                            Value="#2F2F2F" />
+                                    <Setter Property="Padding"
+                                            Value="0,0,0,3" />
+                                </DataTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <EventSetter Event="Expanded"
+                             Handler="OnExpanderCollapsed" />
+                <EventSetter Event="PreviewMouseLeftButtonDown"
+                             Handler="OnTreeViewItemPreviewMouseLeftButton" />
+            </Style>
+
+            <Style x:Key="LibraryTreeView"
+                   TargetType="{x:Type TreeView}">
+                <Setter Property="Focusable"
+                        Value="False" />
+                <Setter Property="VerticalContentAlignment"
+                        Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TreeView}">
+                            <Border SnapsToDevicePixels="True"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
+                                <ItemsPresenter />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!--EndRegion-->
+
+            <Style x:Key="AddButtonContextMenu"
+                   TargetType="{x:Type ContextMenu}">
+                <Setter Property="OverridesDefaultStyle"
+                        Value="True" />
+                <Setter Property="HasDropShadow"
+                        Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ContextMenu}">
+                            <Border x:Name="Border"
+                                    Background="#414141"
+                                    Padding="1,5,1,5">
+                                <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Resources>
+                    <Style x:Key="{x:Type MenuItem}"
+                           TargetType="MenuItem"
+                           BasedOn="{StaticResource MenuItemStyle}">
+                    </Style>
+                </Style.Resources>
+            </Style>
+
+            <Style x:Key="VerticalThumb"
+                   TargetType="{x:Type Thumb}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Grid>
+                                <Rectangle HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Stretch"
+                                           Width="Auto"
+                                           Height="Auto"
+                                           Fill="Transparent" />
+                                <Border x:Name="Rectangle1"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Width="7"
+                                        Height="Auto"
+                                        Background="#aaaaaa"
+                                        Opacity="0.5"
+                                        CornerRadius="2" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type ScrollBar}">
+                <Setter Property="Stylus.IsPressAndHoldEnabled"
+                        Value="false" />
+                <Setter Property="Stylus.IsFlicksEnabled"
+                        Value="false" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                <Setter Property="Width"
+                        Value="10" />
+                <Setter Property="MinWidth"
+                        Value="10" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ScrollBar}">
+                            <Grid x:Name="Bg"
+                                  SnapsToDevicePixels="true"
+                                  Background="Transparent">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="0.00001*" />
+                                </Grid.RowDefinitions>
+                                <Track x:Name="PART_Track"
+                                       IsDirectionReversed="true"
+                                       IsEnabled="{TemplateBinding IsMouseOver}">
+                                    <Track.Thumb>
+                                        <Thumb Style="{DynamicResource VerticalThumb}"
+                                               Width="8" />
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="Orientation"
+                             Value="Horizontal">
+                        <Setter Property="Width"
+                                Value="Auto" />
+                        <Setter Property="MinWidth"
+                                Value="0" />
+                        <Setter Property="Height"
+                                Value="10" />
+                        <Setter Property="MinHeight"
+                                Value="10" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                    <Grid x:Name="Bg"
+                                          SnapsToDevicePixels="true"
+                                          Background="#7FA7A7A7">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="0.00001*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Track x:Name="PART_Track"
+                                               IsEnabled="{TemplateBinding IsMouseOver}">
+                                            <Track.Thumb>
+                                                <Thumb Style="{DynamicResource HorizontalThumb}"
+                                                       Height="8" />
+                                            </Track.Thumb>
+                                        </Track>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!--Hide scrollbar, when mouse is not over.-->
+            <Style x:Key="ScrollLibraryViewerStyle"
+                   TargetType="ScrollViewer">
+                <Setter Property="VerticalScrollBarVisibility"
+                        Value="Hidden" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="true">
+                        <Setter Property="VerticalScrollBarVisibility"
+                                Value="Auto" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!--EndRegion-->
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Name="LibraryGrid">
+        <ScrollViewer CanContentScroll="True"
+                      PreviewMouseWheel="OnPreviewMouseWheel"
+                      Background="Transparent"
+                      Name="ScrollLibraryViewer"
+                      Template="{DynamicResource ScrollViewerControlTemplate}"
+                      Style="{StaticResource ScrollLibraryViewerStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+                <TreeView ItemsSource="{Binding BrowserRootCategories}"
+                          ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
+                          ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
+                          RequestBringIntoView="OnRequestBringIntoView"
+                          Name="CategoryTreeView">
+                    <TreeView.Template>
+                        <ControlTemplate>
+                            <ItemsPresenter />
+                        </ControlTemplate>
+                    </TreeView.Template>
+                </TreeView>
+                <!-- Do not remove. Possibly Addons TreeView will be return later. -->
+                <uicontrols:AddonsTreeView Grid.Row="1"
+                                           DataContext="{Binding}">
+                    <uicontrols:AddonsTreeView.Visibility>
+                        Collapsed
+                    </uicontrols:AddonsTreeView.Visibility>
+                </uicontrols:AddonsTreeView>
+                <Button Grid.Row="2"
+                        Height="23"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        PreviewMouseUp="OnAddButtonPreviewMouseDown"
+                        Content="Add">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Border x:Name="container"
+                                    Background="#282828"
+                                    BorderBrush="#555555"
+                                    BorderThickness="1">
+                                <Grid x:Name="inner">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="text"
+                                               VerticalAlignment="Center"
+                                               Margin="10, 0, 10, 0"
+                                               Foreground="#989898"
+                                               FontSize="13"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+
+                                    <TextBlock x:Name="arrow"
+                                               Grid.Column="1"
+                                               VerticalAlignment="Center"
+                                               Margin="0, 0, 10, 0"
+                                               Foreground="#787879"
+                                               FontSize="14"
+                                               Text="&#x25BE;" />
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Button.IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#2F2F2F" />
+                                    <Setter TargetName="arrow"
+                                            Property="Foreground"
+                                            Value="#AAABAB" />
+                                </Trigger>
+                                <Trigger Property="Button.IsPressed"
+                                         Value="True">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#222222" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ContextMenu>
+                        <ContextMenu Style="{StaticResource AddButtonContextMenu}">
+                            <MenuItem Focusable="False"
+                                      Header="Import Library..."
+                                      Command="{Binding Path=ImportLibraryCommand}" />
+                            <MenuItem Focusable="False"
+                                      Header="Search for a Package..."
+                                      Command="{Binding Path=ShowPackageManagerSearchCommand}" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </Grid>
+        </ScrollViewer>
+
+        <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
+                                        StaysOpen="True"
+                                        AllowsTransparency="True"
+                                        MouseLeave="OnPopupMouseLeave">
+            <uicontrols:LibraryToolTipPopup.IsOpen>
+                <Binding ElementName="libraryToolTipPopup"
+                         Path="DataContext"
+                         Mode="OneWay"
+                         Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
+            </uicontrols:LibraryToolTipPopup.IsOpen>
+        </uicontrols:LibraryToolTipPopup>
+    </Grid>
+</UserControl>

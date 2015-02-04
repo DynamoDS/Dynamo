@@ -32,6 +32,10 @@ robocopy %cwd%\..\..\extern\LibG_219 %cwd%\temp\bin\LibG_219
 robocopy %cwd%\..\..\extern\LibG_220 %cwd%\temp\bin\LibG_220
 robocopy %cwd%\..\..\extern\LibG_221 %cwd%\temp\bin\LibG_221
 
+SET PATH=%PATH%;%cwd%\..\..\src\Tools\XmlDocumentationsUtility\bin\%OPT_CONFIGURATION%
+echo %cwd%
+XmlDocumentationsUtility.exe %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\
+
 REM Localized resource assemblies
 for %%L in (en-US, de-DE, ja-JP) do (
     robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%%L %cwd%\temp\bin\%%L License.rtf
