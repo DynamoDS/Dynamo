@@ -85,7 +85,7 @@ namespace NodeDocumentationUtility
         /// </summary>
         /// <param name="typename">Fully qualified class name</param>
         /// <returns>ClassMirror of the given type if exists, else null</returns>
-        private ClassMirror GetClass(string typename)
+        internal ClassMirror GetClass(string typename)
         {
             return (from type in types where string.Compare(type.ClassName, typename, StringComparison.Ordinal) == 0 select type).FirstOrDefault();
         }

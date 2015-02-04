@@ -99,8 +99,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>copy $(SolutionDir)..\bin\AnyCPU\$(ConfigurationName)\ProtoGeometry.* $(TargetDir)\
-copy $(SolutionDir)..\bin\AnyCPU\$(ConfigurationName)\ProtoInterface.* $(TargetDir)\
-copy $(ProjectDir)dummyTest* $(TargetDir)\</PreBuildEvent>
+copy $(SolutionDir)..\bin\AnyCPU\$(ConfigurationName)\ProtoInterface.* $(TargetDir)\</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

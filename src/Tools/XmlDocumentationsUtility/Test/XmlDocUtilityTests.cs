@@ -19,7 +19,7 @@ namespace XmlDocumentationsUtility.Test
         [SetUp]
         public void SetUp()
         {
-            module = new ZeroTouchModule("ProtoGeometry.dll");
+
         }
 
         [Test]
@@ -64,18 +64,40 @@ namespace XmlDocumentationsUtility.Test
         [Test]
         public void RemoveDocumentationForHiddenNodes()
         {
-            XmlDocumentationsUtility.RemoveDocumentationForHiddenNodes("dummyTest.xml", module);
+            module = new ZeroTouchModule("ProtoGeometry.dll");
+            XmlDocumentationsUtility.RemoveDocumentationForHiddenNodes("ProtoGeometry.xml", module);
             XmlDocument xmlTestFile = new XmlDocument();
-            xmlTestFile.Load("dummyTest.xml");
+            xmlTestFile.Load("ProtoGeometry.xml");
 
             XmlNodeList elemTestList = xmlTestFile.GetElementsByTagName("member");
-            Assert.AreEqual(elemTestList.Count, 1);
+             
+            for(int i= 0;i<elemTestList.Count;i++)
+            {
+                var memberElement = XmlDocumentationsUtility.ParseMemberElement(elemTestList[i].Attributes["name"].Value);
 
-            string memberTestName = elemTestList[0].Attributes["name"].Value;
-            Assert.AreEqual(memberTestName, "M:Autodesk.DesignScript.Geometry.Vector.ByCoordinates(System.Double,System.Double,System.Double)");
+                switch (memberElement.type)
+                {
+                    case XmlDocumentationsUtility.Type.Field:
 
-            XmlDocumentationsUtility.RemoveDocumentationForHiddenNodes("dummyTest2.xml", module);
-            Assert.IsFalse(File.Exists("dummyTest2.xml"));
+                    case XmlDocumentationsUtility.Type.Property:
+
+                        Assert.IsTrue(module.PropertyExists(memberElement.TypeName, memberElement.MemberName));
+                        break;
+
+                    case XmlDocumentationsUtility.Type.Method:
+
+                        Assert.IsTrue(module.MethodExists(memberElement.TypeName, memberElement.MemberName));
+                        break;
+
+                    case XmlDocumentationsUtility.Type.Type:
+
+                        Assert.IsTrue(module.TypeExists(memberElement.TypeName)) ;
+                        break;
+
+                    default: break;
+
+                }
+            }
         }
     }
 }
