@@ -4,10 +4,13 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Data;
+using System.Windows.Input;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.UI.Prompts;
 
 namespace Dynamo.Nodes
 {
@@ -28,8 +31,8 @@ namespace Dynamo.Nodes
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as AnnotationViewModel;
-            ViewModel.MakeTextBoxVisible = Visibility.Collapsed;
-            ViewModel.MakeTextBlockVisible = Visibility.Visible;
+            //ViewModel.MakeTextBoxVisible = Visibility.Collapsed;
+            //ViewModel.MakeTextBlockVisible = Visibility.Visible;
         }
 
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -41,24 +44,28 @@ namespace Dynamo.Nodes
 
         private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2)
+            if (e.ClickCount >= 2)
             {
-                ViewModel.MakeTextBoxVisible = Visibility.Visible;
-                ViewModel.MakeTextBlockVisible = Visibility.Collapsed;
-            }
-            else
-            {
-                ViewModel.MakeTextBoxVisible = Visibility.Collapsed;
-                ViewModel.MakeTextBlockVisible = Visibility.Visible;
-            }
+                OnEditItemClick(this, null);
+                e.Handled = true;
+            }           
         }
 
-        private void UIElement_OnMouseLeave(object sender, MouseEventArgs e)
+        private void OnEditItemClick(object sender, RoutedEventArgs e)
         {
-            ViewModel.MakeTextBlockVisible = Visibility.Visible;
-            ViewModel.MakeTextBoxVisible = Visibility.Collapsed;
-        }
+            // Setup a binding with the edit window's text field
+            var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
+            var editWindow = new EditWindow(dynamoViewModel, true);
+            editWindow.BindToProperty(DataContext, new Binding("AnnotationText")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = (DataContext as AnnotationViewModel),
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
 
+            editWindow.ShowDialog();
+        }
+       
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -86,12 +93,6 @@ namespace Dynamo.Nodes
             System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
-        }
-
-        private void AnnotationView_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            String test = "test";
-        }
-
+        }      
     }
 }

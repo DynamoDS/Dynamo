@@ -105,7 +105,7 @@
             <ContextMenu>
                 <MenuItem  Header="Delete Annotation"
                                Name="DeleteAnnotation"
-                           Click="OnDeleteAnnotation"/>
+                           Click="OnDeleteAnnotation"/>               
                 <MenuItem  Header="Choose Background"
                                Name="ChooseColor"/>
                 <ListBox Style="{StaticResource ColorSelectorListBox}"
@@ -133,6 +133,12 @@
             </ContextMenu>
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
+            <Canvas.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Testing" Name="testing"></MenuItem>
+                </ContextMenu>
+               
+            </Canvas.ContextMenu>
         </Canvas>
         <Rectangle  Name="AnnotationRectangle"
                     Margin="10" 
@@ -142,19 +148,18 @@
                     StrokeThickness="1"
                     IsHitTestVisible="True"
                     Opacity="0.5">
-            <!--<Rectangle.Fill>
+            <Rectangle.Fill>
                 <SolidColorBrush Color="{Binding BackGroundColor}"></SolidColorBrush>
-            </Rectangle.Fill>-->
+            </Rectangle.Fill>
         </Rectangle>
         <TextBlock             
             Text ="{Binding AnnotationText, Mode=TwoWay}"             
             Padding="12,8,0,0"
             MouseDown="UIElement_OnMouseLeftButtonDown"
             MaxWidth="{Binding Width}"
-            TextWrapping="Wrap"
-            Visibility="{Binding MakeTextBlockVisible}">
+            TextWrapping="Wrap">
         </TextBlock>
-        <TextBox 
+        <!--<TextBox 
             Visibility="{Binding MakeTextBoxVisible}"
             Text ="{Binding AnnotationText,Mode=TwoWay}"
             Padding="12,8,0,0"
@@ -164,7 +169,7 @@
             MaxWidth="{Binding Width}"
             IsHitTestVisible="True" 
             MouseLeave="UIElement_OnMouseLeave">
-        </TextBox>
+        </TextBox>-->
 
     </Grid>
 </UserControl>

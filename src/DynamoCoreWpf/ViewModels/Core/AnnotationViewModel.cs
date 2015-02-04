@@ -17,6 +17,7 @@ namespace Dynamo.ViewModels
     {
         private AnnotationModel _annotationModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;
+        private double _zIndex = 2;
 
         public AnnotationModel AnnotationModel
         {
@@ -50,7 +51,12 @@ namespace Dynamo.ViewModels
 
         public double ZIndex
         {
-            get { return 3; }
+            get { return _zIndex; }
+            set
+            {
+                _zIndex = value;
+                RaisePropertyChanged("ZIndex");
+            }
         }
 
         public String AnnotationText
