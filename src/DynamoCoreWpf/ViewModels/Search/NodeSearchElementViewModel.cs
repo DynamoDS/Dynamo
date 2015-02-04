@@ -6,7 +6,6 @@ using System.Windows.Media.Imaging;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Services;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -100,6 +99,8 @@ namespace Dynamo.Wpf.ViewModels
         {
             get { return (!string.IsNullOrEmpty(Model.Description)); }
         }
+
+        public NodeCategoryViewModel Category { get; set; }
 
         public IEnumerable<Tuple<string, string>> InputParameters
         {

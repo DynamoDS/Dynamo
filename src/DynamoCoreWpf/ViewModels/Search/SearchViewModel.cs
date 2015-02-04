@@ -680,7 +680,10 @@ namespace Dynamo.ViewModels
                     searchRootCategories.Add(category);
                 }
 
-                category.AddMemberToGroup(MakeNodeSearchElementVM(node));
+                var elementVM = MakeNodeSearchElementVM(node);
+                elementVM.Category = GetCategoryViewModel(libraryRoot, node.Categories);
+
+                category.AddMemberToGroup(elementVM);
             }
 
             // Order found categories by name.
@@ -723,6 +726,37 @@ namespace Dynamo.ViewModels
 
             elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
             return elementVM;
+        }
+
+        private static NodeCategoryViewModel GetCategoryViewModel(NodeCategoryViewModel rootCategory,
+            IEnumerable<string> categories)
+        {
+            var nameStack = new Stack<string>(categories.Reverse());
+            NodeCategoryViewModel target = rootCategory;
+            NodeCategoryViewModel newTarget = null;
+            bool isCheckedForClassesCategory = false;
+            while (nameStack.Any())
+            {
+                var currentCategory = nameStack.Pop();
+                newTarget = target.SubCategories.FirstOrDefault(c => c.Name == currentCategory);
+                if (newTarget == null)
+                {
+                    if (!isCheckedForClassesCategory && target.SubCategories.Count > 0 &&
+                        target.SubCategories[0] is ClassesNodeCategoryViewModel)
+                    {
+                        isCheckedForClassesCategory = true;
+                        nameStack.Push(currentCategory);
+                        nameStack.Push(Configurations.ClassesDefaultName);
+                        continue;
+                    }
+
+                    return null;
+                }
+
+                target = newTarget;
+            }
+
+            return target;
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
