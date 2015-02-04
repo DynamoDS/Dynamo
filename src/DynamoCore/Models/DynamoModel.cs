@@ -702,9 +702,6 @@ namespace Dynamo.Models
 
         private static void InitializePreferences(IPreferences preferences)
         {
-            BaseUnit.LengthUnit = preferences.LengthUnit;
-            BaseUnit.AreaUnit = preferences.AreaUnit;
-            BaseUnit.VolumeUnit = preferences.VolumeUnit;
             BaseUnit.NumberFormat = preferences.NumberFormat;
         }
 
@@ -719,15 +716,6 @@ namespace Dynamo.Models
         {
             switch (e.PropertyName)
             {
-                case "LengthUnit":
-                    BaseUnit.LengthUnit = PreferenceSettings.LengthUnit;
-                    break;
-                case "AreaUnit":
-                    BaseUnit.AreaUnit = PreferenceSettings.AreaUnit;
-                    break;
-                case "VolumeUnit":
-                    BaseUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
-                    break;
                 case "NumberFormat":
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
