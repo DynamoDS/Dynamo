@@ -131,7 +131,6 @@ limitations under the License.
     <Compile Include="Search\Legacy\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
-    <Compile Include="Search\Legacy\BrowserInternalElementForClasses.cs" />
     <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Disposable.cs" />
@@ -182,7 +181,6 @@ limitations under the License.
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
     <Compile Include="Search\Legacy\BrowserItem.cs" />
-    <Compile Include="Search\Legacy\CategoryBuilder.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
