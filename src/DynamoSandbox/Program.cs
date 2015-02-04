@@ -11,9 +11,7 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Authentication;
 using DynamoUtilities;
-using Greg.AuthProviders;
 
 namespace DynamoSandbox
 {
@@ -21,8 +19,6 @@ namespace DynamoSandbox
     {
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
-            //var authProvider = new OxygenProvider(ConfigurationManager.AppSettings["authAddress"]);
-
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
@@ -31,22 +27,17 @@ namespace DynamoSandbox
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    Preferences = PreferenceSettings.Load(),
-                    //AuthProvider = authProvider
+                    Preferences = PreferenceSettings.Load()
                 });
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
                     CommandFilePath = commandFilePath,
-                    DynamoModel = model,
-                    //ShowLogin = true
+                    DynamoModel = model
                 });
 
             var view = new DynamoView(viewModel);
-
-            //var loginService = new LoginService(view, new DispatcherSynchronizationContext(view.Dispatcher));
-            //authProvider.RequestLogin += loginService.ShowLogin;
 
             var app = new Application();
             app.Run(view);
