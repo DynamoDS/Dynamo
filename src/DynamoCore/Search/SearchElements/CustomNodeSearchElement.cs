@@ -12,8 +12,8 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public class CustomNodeSearchElement : NodeSearchElement
     {
-        public Guid ID { get; private set; }
         private readonly ICustomNodeSource customNodeManager;
+        public Guid ID { get; private set; }
         private string path;
 
         /// <summary>

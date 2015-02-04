@@ -1,6 +1,4 @@
 using System.Collections.ObjectModel;
-using Dynamo.DSEngine;
-using Dynamo.UI;
 
 namespace Dynamo.Search
 {
@@ -49,26 +47,6 @@ namespace Dynamo.Search
             get { return _name; }
         }
 
-        /// <summary>
-        /// Assembly, from which we can get icon for class button.
-        /// </summary>
-        private string assembly;
-        public string Assembly
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(assembly))
-                    return assembly;
-
-                // If there wasn't any assembly, then it's buildin function or operator.
-                // Icons for these members are in DynamoCore project.
-                return "DynamoCore";
-            }
-
-            // Note: we need setter, when we set resource assembly in NodeSearchElement.
-            set { assembly = value; }
-        }
-
         public BrowserInternalElement()
         {
             this._name = "Default";
@@ -76,13 +54,15 @@ namespace Dynamo.Search
             this.OldParent = null;
         }
 
-        public BrowserInternalElement(string name, BrowserItem parent, string _assembly = "")
+        public BrowserInternalElement(string name, BrowserItem parent)
         {
             this._name = name;
-            this.assembly = _assembly;
             this.Parent = parent;
             this.OldParent = null;
         }
+
+
+        public string FullCategoryName { get; set; }
 
         public override void Execute()
         {
@@ -115,7 +95,5 @@ namespace Dynamo.Search
 
             this.IsExpanded = endState;
         }
-
-        public string FullCategoryName { get; set; }
     }
 }
