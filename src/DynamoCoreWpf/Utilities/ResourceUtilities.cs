@@ -17,10 +17,6 @@ namespace Dynamo.Utilities
             if (bmp == null)
                 return null;
 
-            // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
-            // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here 
-            // http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
-            // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
             ImageSource imageSource;
             var hbitmap = bmp.GetHbitmap();
             try
