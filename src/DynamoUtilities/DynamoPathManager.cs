@@ -290,6 +290,36 @@ namespace DynamoUtilities
             }
         }
 
+        private static bool FindSideBySideAsm(string version,
+            DynamoPathManager pathManager, out string hostLocation)
+        {
+            hostLocation = string.Empty;
+
+            try
+            {
+                var execFolder = Path.GetDirectoryName(pathManager.MainExecPath);
+                var libgFolder = Path.Combine(execFolder, "libg_" + version);
+
+                if (!Directory.Exists(libgFolder)) // Did not find the LibG folder.
+                    return false;
+
+                // The target binary file name to search for.
+                var targetFileName = string.Format("ASMAHL{0}A.DLL", version);
+
+                var directory = new DirectoryInfo(libgFolder);
+                var files = directory.GetFiles("*.dll");
+                if (files.Any(f => f.Name.ToUpper() == targetFileName))
+                    hostLocation = libgFolder;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            // Returns true if a host location is found.
+            return !String.IsNullOrEmpty(hostLocation);
+        }
+
         /// <summary>
         /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs
         /// for the specified version.
@@ -355,6 +385,11 @@ namespace DynamoUtilities
             Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
 
             string hostLocation;
+            if (FindSideBySideAsm(version, pathManager, out hostLocation))
+            {
+                return true;
+            }
+
             if (!FindAsm(version, out hostLocation))
             {
                 Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
