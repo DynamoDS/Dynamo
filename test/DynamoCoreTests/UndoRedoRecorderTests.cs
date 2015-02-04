@@ -900,10 +900,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDummyNodeInternals00()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -924,10 +923,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDummyNodeInternals01()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -948,6 +946,23 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(3, dummyNode.InPorts.Count);
             Assert.AreEqual(2, dummyNode.OutPorts.Count);
+        }
+
+        [Test]
+        public void TestDummyNodeSerialization()
+        {
+            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
+            ViewModel.OpenCommand.Execute(Path.Combine(folder, "dummyNode.dyn"));
+
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var dummyNode = workspace.Nodes.OfType<DSCoreNodesUI.DummyNode>().FirstOrDefault();
+
+            Assert.IsNotNull(dummyNode);
+            var xmlDocument = new XmlDocument();
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
+
+            // Dummy node should be serialized to its original node
+            Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
         }
     }
 }

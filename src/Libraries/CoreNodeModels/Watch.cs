@@ -12,7 +12,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("WatchNodeDescription", typeof(Properties.Resources))]
+    [NodeDescription("WatchNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("print", "output", "display")]
     [IsDesignScriptCompatible]
     public class Watch : NodeModel

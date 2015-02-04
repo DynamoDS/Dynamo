@@ -33,7 +33,7 @@ namespace ProtoCore.DSASM
         }
 
         public Executable exe { get; set; }
-        private Language executingLanguage;
+        public Language executingLanguage = Language.kAssociative;
 
         protected int pc = Constants.kInvalidPC;
         public int PC
@@ -93,12 +93,12 @@ namespace ProtoCore.DSASM
         private Dictionary<string, List<int>> symbolArrayIndexMap = new Dictionary<string,List<int>>();
 #endif
 
-        public Executive(Core core, RuntimeCore runtimeCore, bool isFep = false)
+        public Executive(Core core, bool isFep = false)
         {
             IsExplicitCall = false;
             Validity.Assert(core != null);
             this.core = core;
-            this.runtimeCore = runtimeCore;
+            this.runtimeCore = core.RuntimeCoreBridge;
             enableLogging = runtimeCore.RuntimeOptions.Verbose;
 
             exe = core.DSExecutable;
@@ -116,6 +116,74 @@ namespace ProtoCore.DSASM
             bounceType = CallingConvention.BounceType.kImplicit;
 
             deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
+        }
+
+        /// <summary>
+        /// Setup the stackframe for a Bounce operation and push it onto the stack
+        /// </summary>
+        /// <param name="exeblock"></param>
+        /// <param name="entry"></param>
+        /// <param name="context"></param>
+        /// <param name="stackFrame"></param>
+        /// <param name="locals"></param>
+        /// <param name="sink"></param>
+        private void SetupAndPushBounceStackFrame(
+          int exeblock,
+          int entry,
+          ProtoCore.Runtime.Context context,
+          StackFrame stackFrame,
+          int locals = 0,
+          ProtoCore.DebugServices.EventSink sink = null)
+        {
+            StackValue svThisPtr = stackFrame.ThisPtr;
+            int ci = stackFrame.ClassScope;
+            int fi = stackFrame.FunctionScope;
+            int returnAddr = stackFrame.ReturnPC;
+            int blockDecl = stackFrame.FunctionBlock;
+            int blockCaller = stackFrame.FunctionCallerBlock;
+            StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
+            StackFrameType frameType = stackFrame.StackFrameType;
+            Validity.Assert(frameType == StackFrameType.kTypeLanguage);
+
+            int depth = stackFrame.Depth;
+            int framePointer = stackFrame.FramePointer;
+            List<StackValue> registers = stackFrame.GetRegisters();
+
+            rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
+            
+        }
+
+
+        /// <summary>
+        /// Bounce instantiates a new Executive 
+        /// Execution jumps to the new executive
+        /// This iverload handles debugger properties when bouncing
+        /// </summary>
+        /// <param name="exeblock"></param>
+        /// <param name="entry"></param>
+        /// <param name="context"></param>
+        /// <param name="stackFrame"></param>
+        /// <param name="locals"></param>
+        /// <param name="exec"></param>
+        /// <param name="fepRun"></param>
+        /// <param name="breakpoints"></param>
+        /// <returns></returns>
+        public StackValue Bounce(
+            int exeblock, 
+            int entry, 
+            ProtoCore.Runtime.Context context, 
+            StackFrame stackFrame, 
+            int locals = 0,
+            bool fepRun = false,
+            DSASM.Executive exec = null,
+            List<Instruction> breakpoints = null)
+        {
+            if (stackFrame != null)
+            {
+                SetupAndPushBounceStackFrame(exeblock, entry, context, stackFrame, locals);
+                core.DebuggerProperties.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
+            }
+            return core.ExecutionInstance.Execute(exeblock, entry, context, fepRun, breakpoints);
         }
 
         /// <summary>
@@ -2472,8 +2540,6 @@ namespace ProtoCore.DSASM
 
         private void SetupExecutive(int exeblock, int entry, Language language, List<Instruction> breakpoints)
         {
-            core.ExecMode = InterpreterMode.kNormal;
-
             // exe need to be assigned at the constructor, 
             // for function call with replication, gc is triggered to handle the parameter and return value at FunctionEndPoint
             // gc requirs exe to be not null but at that point, Execute has not been called
@@ -2615,11 +2681,30 @@ namespace ProtoCore.DSASM
             return terminateExec;
         }
 
+        /// <summary>
+        /// This is the VM execution entry function
+        /// </summary>
+        /// <param name="exeblock"></param>
+        /// <param name="entry"></param>
+        /// <param name="breakpoints"></param>
+        /// <param name="language"></param>
+        public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
+        {
+            if (core.Options.IDEDebugMode && core.ExecMode != InterpreterMode.kExpressionInterpreter)
+            {
+                ExecuteDebug(exeblock, entry, breakpoints, language);
+            }
+            else
+            {
+                Execute(exeblock, entry, language);
+            }
+        }
+
         // This will be called only at the time of creation of the main interpreter in the explicit case OR
         // for every implicit function call (like in replication) OR 
         // for every implicit bounce (like in dynamic lang block in inline condition) OR
         // for a Debug Resume from a breakpoint
-        public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
+        private void ExecuteDebug(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
         {
             // TODO Jun: Call RestoreFromBounce here?
             StackValue svType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
@@ -2760,7 +2845,7 @@ namespace ProtoCore.DSASM
         }
 
 
-        public void Execute(int exeblock, int entry, Language language = Language.kInvalid)
+        private void Execute(int exeblock, int entry, Language language = Language.kInvalid)
         {
             SetupExecutive(exeblock, entry);
 

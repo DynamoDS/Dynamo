@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 using Dynamo.DSEngine;
@@ -17,6 +19,7 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using DynamoUnits;
 
@@ -24,6 +27,7 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
+using ResourceName = Dynamo.Wpf.Interfaces.ResourceName;
 
 namespace Dynamo.ViewModels
 {
@@ -77,11 +81,7 @@ namespace Dynamo.ViewModels
 
         public bool RunEnabled
         {
-            get { return HomeSpace.RunEnabled; }
-            set
-            {
-                HomeSpace.RunEnabled = value;
-            }
+            get { return model.RunEnabled; }
         }
 
         public virtual bool CanRunDynamically
@@ -152,12 +152,15 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var index = model.Workspaces.IndexOf(model.CurrentWorkspace);
+                var viewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+                var index = workspaces.IndexOf(viewModel);
                 return index;
             }
             set
             {
-                if (model.Workspaces.IndexOf(model.CurrentWorkspace) != value)
+                var viewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+                var index = workspaces.IndexOf(viewModel);
+                if (index != value)
                     this.ExecuteCommand(new DynamoModel.SwitchTabCommand(value));
             }
         }
@@ -424,6 +427,12 @@ namespace Dynamo.ViewModels
             public IVisualizationManager VisualizationManager { get; set; }
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
+
+            /// <summary>
+            /// This property is initialized if there is an external host application
+            /// at startup in order to be used to pass in host specific resources to DynamoModel
+            /// </summary>
+            public IBrandingResourceProvider BrandingResourceProvider { get; set; }
         }
 
         public static DynamoViewModel Start()
@@ -437,12 +446,13 @@ namespace Dynamo.ViewModels
             var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
             var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager, 
                 model.PreferenceSettings);
-            
-            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath);
+            var resourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
+
+            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider);
         }
 
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
-            IVisualizationManager vizManager, string commandFilePath)
+            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider)
         {
             // initialize core data structures
             this.model = dynamoModel;
@@ -458,12 +468,12 @@ namespace Dynamo.ViewModels
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
+            this.BrandingResourceProvider = resourceProvider;
+
             //add the initial workspace and register for future 
             //updates to the workspaces collection
             var homespace = new WorkspaceViewModel(model.CurrentWorkspace, this);
             workspaces.Add(homespace);
-
-            model.CurrentWorkspace.PropertyChanged += CurrentWorkspace_PropertyChanged;
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -596,7 +606,6 @@ namespace Dynamo.ViewModels
             DynamoModel.RequestDispatcherBeginInvoke -= TryDispatcherBeginInvoke;
             DynamoModel.RequestDispatcherInvoke -= TryDispatcherInvoke;
         }
-
         #endregion
 
         private void InitializeAutomationSettings(string commandFilePath)
@@ -794,25 +803,25 @@ namespace Dynamo.ViewModels
 
         void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CurrentWorkspace")
+            switch (e.PropertyName)
             {
-                IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
-                RaisePropertyChanged("IsAbleToGoHome");
-                RaisePropertyChanged("CurrentSpace");
-                RaisePropertyChanged("BackgroundColor");
-                RaisePropertyChanged("CurrentWorkspaceIndex");
-                RaisePropertyChanged("ViewingHomespace");
-                if (this.PublishCurrentWorkspaceCommand != null)
-                    this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged("IsPanning");
-                RaisePropertyChanged("IsOrbiting");
+                case "CurrentWorkspace":
+                    IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
+                    RaisePropertyChanged("IsAbleToGoHome");
+                    RaisePropertyChanged("CurrentSpace");
+                    RaisePropertyChanged("BackgroundColor");
+                    RaisePropertyChanged("CurrentWorkspaceIndex");
+                    RaisePropertyChanged("ViewingHomespace");
+                    if (this.PublishCurrentWorkspaceCommand != null)
+                        this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
+                    RaisePropertyChanged("IsPanning");
+                    RaisePropertyChanged("IsOrbiting");
+                    RaisePropertyChanged("RunEnabled");
+                    break; 
+                case "RunEnabled":
+                    RaisePropertyChanged("RunEnabled");
+                    break;
             }
-        }
-
-        void CurrentWorkspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "RunEnabled")
-                RaisePropertyChanged("RunEnabled");
         }
 
         private void CleanUp(DynamoModel dynamoModel)
@@ -1402,7 +1411,7 @@ namespace Dynamo.ViewModels
             {
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
-                this.ShowStartPage = (Model.Workspaces.Count <= 1);
+                this.ShowStartPage = (Model.Workspaces.Count() <= 1);
             }
         }
 
@@ -2147,8 +2156,5 @@ namespace Dynamo.ViewModels
         public DynamoViewModel ViewModel { get { return this; } }
 
         #endregion
-
-
-
     }
 }

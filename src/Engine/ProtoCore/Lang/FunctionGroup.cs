@@ -35,7 +35,7 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in rhs)
             {
                 Validity.Assert(null != fep.procedureNode);
-                if (fep.procedureNode.access != Compiler.AccessSpecifier.kPrivate && !fep.procedureNode.isConstructor)
+                if (fep.procedureNode.access != CompilerDefinitions.AccessSpecifier.kPrivate && !fep.procedureNode.isConstructor)
                 {
                     if (!FunctionEndPoints.Contains(fep))
                     {
@@ -53,7 +53,7 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in rhs)
             {
                 Validity.Assert(null != fep.procedureNode);
-                if (fep.procedureNode.access == Compiler.AccessSpecifier.kPublic)
+                if (fep.procedureNode.access == CompilerDefinitions.AccessSpecifier.kPublic)
                 {
                     if (!FunctionEndPoints.Contains(fep))
                     {

@@ -127,7 +127,11 @@ namespace Dynamo.Core
                     Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
                 info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
-                def = null;
+            }
+
+            if (def == null)
+            {
+                def = CustomNodeDefinition.MakeProxy(id, info.Name);
             }
 
             var node = new Function(def, info.Name, info.Description, info.Category);
@@ -637,7 +641,7 @@ namespace Dynamo.Core
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="isTestMode"></param>
         /// <param name="args"></param>
-        public WorkspaceModel Collapse(
+        public CustomNodeWorkspaceModel Collapse(
             IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
             bool isTestMode, FunctionNamePromptEventArgs args)
         {
@@ -1021,6 +1025,8 @@ namespace Dynamo.Core
                     0,
                     0,
                     newId, currentWorkspace.ElementResolver, string.Empty);
+
+                newWorkspace.HasUnsavedChanges = true;
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 

@@ -13,8 +13,7 @@ namespace ProtoTest.DSASM
     {
         private class TestExecutive : ProtoCore.DSASM.Executive
         {
-            public TestExecutive(Core core)
-                : base(core, new RuntimeCore(core.Options, core.DSExecutable, new ProtoCore.Runtime.Context()))
+            public TestExecutive(Core core) : base(core)
             {
             }
         }

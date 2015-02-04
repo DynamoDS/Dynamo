@@ -32,7 +32,7 @@ namespace ProtoCore.Lang
         public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
         {
             RuntimeCore runtimeCore = core.RuntimeCoreBridge;
-            ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core, runtimeCore);
+            ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core);
             StackValue ret;
 
             switch (buildInMethodId)
@@ -335,17 +335,11 @@ namespace ProtoCore.Lang
                         // Comment Jun: the caller type is the current type in the stackframe
                         StackFrameType callerType = stackFrame.StackFrameType;
 
-                        if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
-                        {
-                            blockCaller = runtimeCore.DebugProps.CurrentBlockId;
-                            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(blockId, 0, context, runtimeCore.Breakpoints, bounceStackFrame, 0, core.CurrentExecutive.CurrentDSASMExec);
-                        }
-                        else
-                        {
-                            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(blockId, 0, context, bounceStackFrame);
-                        }
+                        
+                        blockCaller = runtimeCore.DebugProps.CurrentBlockId;
+                        StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
+
+                        ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, core.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
                         core.RunningBlock = oldRunningBlockId;
                         break;

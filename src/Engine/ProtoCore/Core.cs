@@ -1000,9 +1000,12 @@ namespace ProtoCore
             return ts;
         }
 
-        public Dictionary<Language, Executive> Executives { get; private set; }
+        public Dictionary<Language, Compiler> Compilers { get; private set; }
+        public Executive ExecutionInstance { get; private set; }
 
+        // This will be moved to RuntimeCore
         public Executive CurrentExecutive { get; private set; }
+
         public int GlobOffset { get; set; }
         public int GlobHeapOffset { get; set; }
         public int BaseOffset { get; set; }
@@ -1336,7 +1339,8 @@ namespace ProtoCore
 
             Validity.AssertExpiry();
             Options = options;
-            Executives = new Dictionary<Language, Executive>();
+            ExecutionInstance = CurrentExecutive = new Executive(this);
+            Compilers = new Dictionary<Language, Compiler>();
             ClassIndex = Constants.kInvalidIndex;
 
             FunctionTable = new FunctionTable(); 
@@ -1514,25 +1518,6 @@ namespace ProtoCore
         {
             OnDispose();
             CLRModuleType.ClearTypes();
-        }
-
-        public void InitializeContextGlobals(Dictionary<string, object> context)
-        {
-            if (context != null)
-            {
-                int globalBlock = 0;
-                foreach (KeyValuePair<string, object> global in context)
-                {
-                    int stackIndex = CodeBlockList[globalBlock].symbolTable.IndexOf(global.Key);
-
-                    if (global.Value.GetType() != typeof(Double) && global.Value.GetType() != typeof(Int32))
-                        throw new NotImplementedException("Context that's aren't double are not yet supported @TODO: Jun,Sharad,Luke ASAP");
-
-                    double dValue = Convert.ToDouble(global.Value);
-                    StackValue svData = StackValue.BuildDouble(dValue);
-                    Rmem.SetGlobalStackData(stackIndex, svData);
-                }
-            }
         }
 
         public Core(Options options)
@@ -1729,63 +1714,6 @@ namespace ProtoCore
                 }
             }
             return codeblock;
-        }
-
-        public StackValue Bounce(int exeblock, int entry, Context context, StackFrame stackFrame, int locals = 0, EventSink sink = null)
-        {
-            if (stackFrame != null)
-            {
-                StackValue svThisPtr = stackFrame.ThisPtr;
-                int ci = stackFrame.ClassScope;
-                int fi = stackFrame.FunctionScope;
-                int returnAddr = stackFrame.ReturnPC;
-                int blockDecl = stackFrame.FunctionBlock;
-                int blockCaller = stackFrame.FunctionCallerBlock;
-                StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
-                StackFrameType frameType = stackFrame.StackFrameType;
-                Validity.Assert(frameType == StackFrameType.kTypeLanguage);
-
-                int depth = stackFrame.Depth;
-                int framePointer = stackFrame.FramePointer;
-                List<StackValue> registers = stackFrame.GetRegisters();
-
-                Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
-            }
-
-            Language id = DSExecutable.instrStreamList[exeblock].language;
-            CurrentExecutive = Executives[id];
-            StackValue sv = Executives[id].Execute(exeblock, entry, context, sink);
-            return sv;
-        }
-
-        public StackValue Bounce(int exeblock, int entry, Context context, List<Instruction> breakpoints, StackFrame stackFrame, int locals = 0, 
-            DSASM.Executive exec = null, EventSink sink = null, bool fepRun = false)
-        {
-            if (stackFrame != null)
-            {
-                StackValue svThisPtr = stackFrame.ThisPtr;
-                int ci = stackFrame.ClassScope;
-                int fi = stackFrame.FunctionScope;
-                int returnAddr = stackFrame.ReturnPC;
-                int blockDecl = stackFrame.FunctionBlock;
-                int blockCaller = stackFrame.FunctionCallerBlock;
-                StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
-                StackFrameType frameType = stackFrame.StackFrameType;
-                Validity.Assert(frameType == StackFrameType.kTypeLanguage);
-                int depth = stackFrame.Depth;
-                int framePointer = stackFrame.FramePointer;
-                List<StackValue> registers = stackFrame.GetRegisters();
-
-                RuntimeCoreBridge.DebugProps.SetUpBounce(exec, blockCaller, returnAddr);
-
-                Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
-            }
-
-            Language id = DSExecutable.instrStreamList[exeblock].language;
-            CurrentExecutive = Executives[id];
-
-            StackValue sv = Executives[id].Execute(exeblock, entry, context, breakpoints, sink, fepRun);
-            return sv;
         }
 
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)

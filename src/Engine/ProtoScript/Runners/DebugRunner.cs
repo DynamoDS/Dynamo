@@ -45,7 +45,6 @@ namespace ProtoScript.Runners
             this.core = core;
             this.core.Options.IDEDebugMode = true;
             RegisteredBreakpoints = new List<Breakpoint>();
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
             executionsuspended = false;
         }
 
@@ -61,11 +60,8 @@ namespace ProtoScript.Runners
             if (null == core)
             {
                 core = new ProtoCore.Core(new ProtoCore.Options { IDEDebugMode = true });
-
-                //Register the default executives
-                //@TODO(Luke) this will need generaling to support dynamic loading of executives
-                core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-                core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+                core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+                core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             }
 
             if (null != fileName)
@@ -443,7 +439,7 @@ namespace ProtoScript.Runners
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 ProtoCore.Language id = globalBlock.language;
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, EventSink);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context);
 
                 core.BuildStatus.ReportBuildResult();
 
@@ -545,10 +541,6 @@ namespace ProtoScript.Runners
             runtimeCore.Breakpoints = breakpoints;
             resumeBlockID = core.RunningBlock;
 
-            // Debugger setup
-            //runtimeCore.DebugProps = core.DebuggerProperties;
-
-            int locals = 0;
 
             if (runtimeCore.DebugProps.FirstStackFrame != null)
             {
@@ -559,7 +551,20 @@ namespace ProtoScript.Runners
                 StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                 runtimeCore.DebugProps.FirstStackFrame.TX = svCallConvention;
             }
-            core.Bounce(resumeBlockID, programCounterToExecuteFrom, context, breakpoints, runtimeCore.DebugProps.FirstStackFrame, locals, null, EventSink, fepRun);
+
+            // Initialize the entry point interpreter
+            int locals = 0; // This is the global scope, there are no locals
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
+            core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+            core.CurrentExecutive.CurrentDSASMExec.Bounce(
+                resumeBlockID, 
+                programCounterToExecuteFrom,
+                context, 
+                runtimeCore.DebugProps.FirstStackFrame, 
+                locals, 
+                fepRun,
+                null,
+                breakpoints);
 
             return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
 

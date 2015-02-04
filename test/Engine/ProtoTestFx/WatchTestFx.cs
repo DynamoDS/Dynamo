@@ -15,9 +15,9 @@ namespace ProtoTestFx
 {
     public class InjectionExecutiveProvider : IExecutiveProvider
     {
-        public ProtoCore.DSASM.Executive CreateExecutive(Core core, RuntimeCore runtimeCore, bool isFep)
+        public ProtoCore.DSASM.Executive CreateExecutive(Core core, bool isFep)
         {
-            return new InjectionExecutive(core, runtimeCore, isFep);
+            return new InjectionExecutive(core, isFep);
         }
     }
 
@@ -39,7 +39,7 @@ namespace ProtoTestFx
     public class InjectionExecutive : ProtoCore.DSASM.Executive
     {
 
-        public InjectionExecutive(Core core, RuntimeCore runtimeCore, bool isFep = false) : base(core, runtimeCore, isFep) { }
+        public InjectionExecutive(Core core, bool isFep = false) : base(core, isFep) { }
 
         public static int callrLineNo { get; private set; }
         public static bool IsPopToPropertyArray { get; set; }
@@ -373,9 +373,8 @@ namespace ProtoTestFx
 
             core.BuildStatus.MessageHandler = fs;
             core.RuntimeStatus.MessageHandler = fs;
-
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
@@ -422,9 +421,8 @@ namespace ProtoTestFx
             // Use the InjectionExecutive to overload POP and POPM
             // as we still need the symbol names and line nos. in debug mode for comparisons
             core.ExecutiveProvider = new InjectionExecutiveProvider();
-
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;

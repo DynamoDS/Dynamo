@@ -9,7 +9,7 @@ namespace DSCoreNodesUI
 {
     [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("NumberRangeDescription", typeof(Properties.Resources))]
+    [NodeDescription("NumberRangeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberRange : NodeModel
     {
@@ -45,7 +45,7 @@ namespace DSCoreNodesUI
 
     [NodeName("Number Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("NumberSequenceDescription", typeof(Properties.Resources))]
+    [NodeDescription("NumberSequenceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberSeq : NodeModel
     {
