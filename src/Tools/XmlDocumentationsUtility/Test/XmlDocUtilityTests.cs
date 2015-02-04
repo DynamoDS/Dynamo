@@ -14,7 +14,6 @@ namespace XmlDocumentationsUtility.Test
     [TestFixture]
     class XmlDocUtilityTests
     {
-        private ZeroTouchModule module = null;
 
         [SetUp]
         public void SetUp()
@@ -64,7 +63,7 @@ namespace XmlDocumentationsUtility.Test
         [Test]
         public void RemoveDocumentationForHiddenNodes()
         {
-            module = new ZeroTouchModule("ProtoGeometry.dll");
+            ZeroTouchModule module = new ZeroTouchModule("ProtoGeometry.dll");
             XmlDocumentationsUtility.RemoveDocumentationForHiddenNodes("ProtoGeometry.xml", module);
             XmlDocument xmlTestFile = new XmlDocument();
             xmlTestFile.Load("ProtoGeometry.xml");
