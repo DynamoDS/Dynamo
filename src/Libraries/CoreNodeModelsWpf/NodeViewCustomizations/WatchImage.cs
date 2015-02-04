@@ -42,13 +42,15 @@ namespace Dynamo.Wpf.Nodes
         private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             if (args.PropertyName != "IsUpdated") return;
-            var im = GetImageFromMirror();
-            nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { im });
+            using (var im = GetImageFromMirror())
+            {
+                nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { im });
+            }
         }
 
         private void SetImageSource(Bitmap bmp)
         {
-            image.Source = ResourceUtilities.SetImageSource(bmp);
+            image.Source = ResourceUtilities.ConvertToImageSource(bmp);
         }
 
         private Bitmap GetImageFromMirror()
