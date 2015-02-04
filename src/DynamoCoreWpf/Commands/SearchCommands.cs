@@ -48,28 +48,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private DelegateCommand importLibrary;
         public DelegateCommand ImportLibraryCommand
         {
-            get
-            {
-                if (importLibrary == null)
-                    importLibrary = new DelegateCommand(this.dynamoViewModel.ImportLibrary,
-                        this.dynamoViewModel.CanImportLibrary);
-                return importLibrary;
-            }
+            get { return dynamoViewModel.ImportLibraryCommand; }
         }
 
-        private DelegateCommand showPackageManagerSearch;
+
         public DelegateCommand ShowPackageManagerSearchCommand
         {
-            get
-            {
-                if (showPackageManagerSearch == null)
-                    showPackageManagerSearch = new DelegateCommand(this.dynamoViewModel.ShowPackageManagerSearch,
-                        this.dynamoViewModel.CanShowPackageManagerSearch);
-                return showPackageManagerSearch;
-            }
+            get { return dynamoViewModel.ShowPackageManagerCommand; }
         }
     }
 }

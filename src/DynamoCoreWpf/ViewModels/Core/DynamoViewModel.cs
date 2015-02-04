@@ -247,7 +247,7 @@ namespace Dynamo.ViewModels
                 if (!FullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
 
-                if(value)
+                if (value)
                     this.model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
@@ -344,7 +344,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return string.Format(Resources.DynamoViewViewMenuAlternateContextGeometry, 
+                return string.Format(Resources.DynamoViewViewMenuAlternateContextGeometry,
                                      this.VisualizationManager.AlternateContextName);
             }
         }
@@ -387,7 +387,7 @@ namespace Dynamo.ViewModels
             get { return VisualizationManager.MaxTesselationDivisions; }
             set
             {
-               VisualizationManager.MaxTesselationDivisions = value;
+                VisualizationManager.MaxTesselationDivisions = value;
                 this.model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
@@ -444,7 +444,7 @@ namespace Dynamo.ViewModels
         {
             var model = startConfiguration.DynamoModel ?? DynamoModel.Start();
             var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
-            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager, 
+            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager,
                 model.PreferenceSettings);
             var resourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
@@ -477,12 +477,12 @@ namespace Dynamo.ViewModels
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
-            
+
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
             SubscribeUpdateManagerHandlers();
-            
+
             InitializeAutomationSettings(commandFilePath);
 
             InitializeDelegateCommands();
@@ -817,7 +817,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     RaisePropertyChanged("RunEnabled");
-                    break; 
+                    break;
                 case "RunEnabled":
                     RaisePropertyChanged("RunEnabled");
                     break;
@@ -883,7 +883,7 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
-        
+
         private void WorkspaceAdded(WorkspaceModel item)
         {
             var newVm = new WorkspaceViewModel(item, this);
@@ -968,7 +968,7 @@ namespace Dynamo.ViewModels
                 model.Logger.Log(Resources.MessageFailedToOpenFile + e.Message);
                 model.Logger.Log(e);
                 return;
-            }            
+            }
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
@@ -992,7 +992,7 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = Resources.FileDialogDynamoDefinitions + "|" + 
+                Filter = Resources.FileDialogDynamoDefinitions + "|" +
                          Resources.FileDialogAllFiles,
                 Title = Resources.OpenDynamoDefinitionDialogTitle
             };
@@ -1140,12 +1140,12 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        internal void ShowPackageManagerSearch(object parameters)
+        private void ShowPackageManagerSearch(object parameters)
         {
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
-        internal bool CanShowPackageManagerSearch(object parameters)
+        private bool CanShowPackageManagerSearch(object parameters)
         {
             return true;
         }
@@ -1175,7 +1175,7 @@ namespace Dynamo.ViewModels
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
-                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));   
+                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));
             }
         }
 
@@ -1826,7 +1826,7 @@ namespace Dynamo.ViewModels
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
-           
+
             // Since panning and orbiting modes are exclusive from one another,
             // turning one on may turn the other off. This is the reason we must
             // raise property change for both at the same time to update visual.
@@ -2011,7 +2011,8 @@ namespace Dynamo.ViewModels
             public ShutdownParams(
                 bool shutdownHost,
                 bool allowCancellation,
-                bool closeDynamoView) : this()
+                bool closeDynamoView)
+                : this()
             {
                 ShutdownHost = shutdownHost;
                 AllowCancellation = allowCancellation;
