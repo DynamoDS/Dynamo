@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="UI\DefaultBrandingResourceProvider.cs" />
     <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
@@ -223,6 +224,9 @@
     </Compile>
     <Compile Include="Views\Search\LibrarySearchView.xaml.cs">
       <DependentUpon>LibrarySearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Search\LibraryView.xaml.cs">
+      <DependentUpon>LibraryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
@@ -967,6 +971,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Search\LibrarySearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Search\LibraryView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
