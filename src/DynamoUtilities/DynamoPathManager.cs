@@ -14,7 +14,7 @@ namespace DynamoUtilities
     public class DynamoPathManager
     {
         private readonly HashSet<string> preloadLibaries = new HashSet<string>();
-        private List<string> addResolvePaths = new List<string>();
+        private readonly List<string> addResolvePaths = new List<string>();
 
         private static DynamoPathManager instance;
 
@@ -87,7 +87,6 @@ namespace DynamoUtilities
         public List<string> AdditionalResolutionPaths
         {
             get { return addResolvePaths; }
-            set { addResolvePaths = value; }
         }
 
         public static DynamoPathManager Instance
