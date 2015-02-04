@@ -655,12 +655,25 @@ namespace Dynamo.UpdateManager
 
         public void HostApplicationBeginQuit()
         {
-            if (string.IsNullOrEmpty(UpdateFileLocation)) return;
+            // Double check that the updater path is not null and that there
+            // exists a file at that location on disk.
+            // Although this updater is stored in a temp directory,
+            // and the user wouldn't have come across it, there's the
+            // outside chance that it was deleted. Update cannot
+            // continue without this file.
+
+            if (string.IsNullOrEmpty(UpdateFileLocation) || !File.Exists(UpdateFileLocation))
+                return;
 
             var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var updater = Path.Combine(currDir, INSTALLUPDATE_EXE);
-                
-            if (!File.Exists(updater)) return;
+            
+            // Double check that that the updater program exists.
+            // This program lives in the users's base Dynamo directory. If 
+            // it doesn't exist, we can't run the update.
+
+            if (!File.Exists(updater)) 
+                return;
 
             var p = new Process
             {
