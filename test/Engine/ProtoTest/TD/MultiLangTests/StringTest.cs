@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -689,6 +689,14 @@ r = a;
             thisTest.RunScriptSource(code);
             // Will get an index out of range runtime warning
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
+        }
+
+        [Test]
+        public void TestLocalizedStringInCode()
+        {
+            string code = @"x = ""中文字符"";";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", "中文字符");
         }
     }
 }

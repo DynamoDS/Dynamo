@@ -2039,6 +2039,21 @@ namespace ProtoTest.ProtoAST
             Obj o = mirror.GetValue("a");
             Assert.IsTrue((Int64)o.Payload == 12);
         }
-    }
 
+        [Test]
+        public void TestLocalizedStringInAST()
+        {
+            // Build the AST tree
+            ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
+                new ProtoCore.AST.AssociativeAST.IdentifierNode("x"),
+                new ProtoCore.AST.AssociativeAST.StringNode() { value = "中文字符" });
+            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
+            astList.Add(assign);
+
+            // Verify the results
+            ExecutionMirror mirror = thisTest.RunASTSource(astList);
+            Obj o = mirror.GetValue("x");
+            Assert.IsTrue((string)o.Payload == "中文字符");
+        }
+    }
 }
