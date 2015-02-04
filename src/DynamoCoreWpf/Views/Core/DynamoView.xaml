@@ -519,7 +519,7 @@
                                   ToolTipService.ShowOnDisabled="True" 
                                   ToolTip="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
                                   IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>                       
-                        <MenuItem Focusable="False"
+                        <!--<MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuLengthUnits}"
                                   Name="LengthUnitsMenu">
                             <MenuItem Focusable="False"
@@ -649,7 +649,7 @@
                                       Command="{Binding SetVolumeUnitCommand}"
                                       CommandParameter="SquareMeter"
                                       Header="{x:Static p:Resources.DynamoViewSettingMenuCubicMeter}" />
-                        </MenuItem>
+                        </MenuItem>-->
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}"
                                   Name="NumberFormat">
