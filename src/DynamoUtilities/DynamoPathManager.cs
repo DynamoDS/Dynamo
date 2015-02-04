@@ -297,9 +297,7 @@ namespace DynamoUtilities
 
             try
             {
-                var execFolder = Path.GetDirectoryName(pathManager.MainExecPath);
-                var libgFolder = Path.Combine(execFolder, "libg_" + version);
-
+                var libgFolder = Path.Combine(pathManager.MainExecPath, "libg_" + version);
                 if (!Directory.Exists(libgFolder)) // Did not find the LibG folder.
                     return false;
 
@@ -385,15 +383,13 @@ namespace DynamoUtilities
             Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
 
             string hostLocation;
-            if (FindSideBySideAsm(version, pathManager, out hostLocation))
+            if (!FindSideBySideAsm(version, pathManager, out hostLocation))
             {
-                return true;
-            }
-
-            if (!FindAsm(version, out hostLocation))
-            {
-                Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
-                return false;
+                if (!FindAsm(version, out hostLocation))
+                {
+                    Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
+                    return false;
+                }
             }
 
             pathManager.SetLibGPath(version);
