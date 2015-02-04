@@ -141,15 +141,12 @@ namespace InstallUpdate
             // If the host process is still running...
             if (hostProcess != null)
             {
-                var message = string.Format(
-                    "{0} must be closed before continuing installation.\n" +
-                        "When the application is closed, select OK to continue updating, or Cancel to quit updating.",
-                    hostProcess.ProcessName);
+                var message = hostProcess.ProcessName + Resources.CloseContinuationMessage;
 
                 if (MessageBox.Show(
                     new Form { TopMost = true },
                     message,
-                    "Dynamo Update",
+                    Resources.Program_CheckHostProcessEnded_Dynamo_Update,
                     MessageBoxButtons.OKCancel) == DialogResult.Cancel)
                 {
                     requestCancel = true;

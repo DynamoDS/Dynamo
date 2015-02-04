@@ -61,6 +61,24 @@ namespace InstallUpdate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  must be closed before continuing installation. When the application is closed, select OK to continue updating, or Cancel to quit updating..
+        /// </summary>
+        internal static string CloseContinuationMessage {
+            get {
+                return ResourceManager.GetString("CloseContinuationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Update.
+        /// </summary>
+        internal static string Program_CheckHostProcessEnded_Dynamo_Update {
+            get {
+                return ResourceManager.GetString("Program_CheckHostProcessEnded_Dynamo_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A signature file could not be found to verify this update..
         /// </summary>
         internal static string Program_Main_A_signature_file_could_not_be_found_to_verify_this_update_ {
