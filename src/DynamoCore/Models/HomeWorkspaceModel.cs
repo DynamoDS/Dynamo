@@ -45,10 +45,8 @@ namespace Dynamo.Models
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
             VerboseLogging = verboseLogging;
-
-            ResetEngine(engine);
-
             IsTestMode = isTestMode;
+            EngineController = engine;
         }
 
         public override void Dispose()
