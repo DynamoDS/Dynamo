@@ -106,12 +106,6 @@
                 <MenuItem  Header="Delete Annotation"
                                Name="DeleteAnnotation"
                            Click="OnDeleteAnnotation"/>
-                <!--<MenuItem  Header="Bring To Front"
-                               Name="BringToFront"
-                           Command="{Binding BringToFrontCommand}"
-                           CommandParameter="{Binding RelativeSource = {RelativeSource Mode=Self}}"/>-->
-                <!--<MenuItem  Header="Send To Back"
-                               Name="SendToBack"/>-->
                 <MenuItem  Header="Choose Background"
                                Name="ChooseColor"/>
                 <ListBox Style="{StaticResource ColorSelectorListBox}"
@@ -148,9 +142,9 @@
                     StrokeThickness="1"
                     IsHitTestVisible="True"
                     Opacity="0.5">
-            <Rectangle.Fill>
+            <!--<Rectangle.Fill>
                 <SolidColorBrush Color="{Binding BackGroundColor}"></SolidColorBrush>
-            </Rectangle.Fill>
+            </Rectangle.Fill>-->
         </Rectangle>
         <TextBlock             
             Text ="{Binding AnnotationText, Mode=TwoWay}"             

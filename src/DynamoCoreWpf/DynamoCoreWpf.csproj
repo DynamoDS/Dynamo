@@ -80,6 +80,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\BindingTraceListener.cs" />
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />

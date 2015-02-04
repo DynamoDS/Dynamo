@@ -56,8 +56,7 @@ namespace Dynamo.Controls
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.UIDispatcher = Dispatcher;
-
+            this.dynamoViewModel.UIDispatcher = Dispatcher;            
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;

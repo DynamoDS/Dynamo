@@ -22,6 +22,7 @@ namespace Dynamo.Nodes
         {
             InitializeComponent();
             Loaded += AnnotationView_Loaded;
+            BindingErrorTraceListener.SetTrace();
         }
 
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)

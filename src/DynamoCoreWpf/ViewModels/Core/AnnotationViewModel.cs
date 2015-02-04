@@ -48,6 +48,11 @@ namespace Dynamo.ViewModels
             get { return _annotationModel.Left; }
         }
 
+        public double ZIndex
+        {
+            get { return 3; }
+        }
+
         public String AnnotationText
         {
             get { return _annotationModel.AnnotationText; }
