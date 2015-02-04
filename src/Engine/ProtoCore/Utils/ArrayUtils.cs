@@ -552,7 +552,7 @@ namespace ProtoCore.Utils
             Validity.Assert(array.IsArray || array.IsString);
             if (array.IsString && !value.IsChar)
             {
-                core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kAssignNonCharacterToString);
+                core.RuntimeCoreBridge.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kAssignNonCharacterToString);
                 return StackValue.Null;
             }
 
@@ -805,6 +805,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, StackValue[] indices, Core core)
         {
+            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
             Validity.Assert(array.IsArray || array.IsString);
             for (int i = 0; i < indices.Length - 1; ++i)
             {
@@ -818,7 +819,7 @@ namespace ProtoCore.Utils
                 {
                     if (!array.IsArray)
                     {
-                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                         return StackValue.Null;
                     }
                     array = GetValueFromIndex(array, index, core);
@@ -826,7 +827,7 @@ namespace ProtoCore.Utils
 
                 if (!array.IsArray && !array.IsString)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
@@ -844,13 +845,14 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, List<StackValue> indices, Core core)
         {
+            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
             if (indices.Count == 0)
             {
                 return array;
             }
             else if (!array.IsArray && !array.IsString)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 

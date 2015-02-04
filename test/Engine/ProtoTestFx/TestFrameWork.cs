@@ -55,6 +55,8 @@ namespace ProtoTestFx.TD
             testCore.Options.Verbose = false;
 //            testCore.Options.kDynamicCycleThreshold = 5;
             testCore.RuntimeCoreBridge = new ProtoCore.RuntimeCore(testCore.Options, testCore.DSExecutable, null, null);
+            testCore.RuntimeCoreBridge.RuntimeStatus = new ProtoCore.RuntimeStatus(testCore);
+            testCore.RuntimeCoreBridge.RuntimeStatus.MessageHandler = testCore.BuildStatus.MessageHandler;
             
             //FFI registration and cleanup
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
@@ -614,12 +616,12 @@ namespace ProtoTestFx.TD
 
         public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.Runtime.WarningID id)
         {
-            Assert.IsTrue(core.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
+            Assert.IsTrue(core.RuntimeCoreBridge.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyRuntimeWarningCount(int count)
         {
-            Assert.IsTrue(testCore.RuntimeStatus.WarningCount == count, mErrorMessage);
+            Assert.IsTrue(testCore.RuntimeCoreBridge.RuntimeStatus.WarningCount == count, mErrorMessage);
         }
 
         public void VerifyProperty(string dsVariable, string propertyName, object expectedValue, int startBlock = 0)

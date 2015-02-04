@@ -372,7 +372,6 @@ namespace ProtoCore
 
         public Options Options { get; private set; }
         public BuildStatus BuildStatus { get; private set; }
-        public RuntimeStatus RuntimeStatus { get; private set; }
 
         public TypeSystem TypeSystem { get; set; }
 
@@ -739,7 +738,6 @@ namespace ProtoCore
             {
                 BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError, null, Options.BuildOptErrorAsWarning);
             }
-            RuntimeStatus = new RuntimeStatus(this);
 
             SSASubscript = 0;
             SSASubscript_GUID = Guid.NewGuid();

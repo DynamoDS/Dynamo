@@ -81,6 +81,9 @@ namespace ProtoScript.Runners
 
                 ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
                 runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, context, core.DebuggerProperties);
+                runtimeCore.RuntimeStatus = new ProtoCore.RuntimeStatus(core);
+                runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
+
                 core.RuntimeCoreBridge = runtimeCore;
 
                 FirstExec();

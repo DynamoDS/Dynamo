@@ -40,6 +40,7 @@ namespace ProtoCore
 
         public Executable DSExecutable { get; private set; }
         public Options RuntimeOptions { get; private set; }
+        public RuntimeStatus RuntimeStatus { get; set; }
 
         public RuntimeMemory RuntimeMemory { get; set; }
         private ProtoCore.Runtime.Context context;

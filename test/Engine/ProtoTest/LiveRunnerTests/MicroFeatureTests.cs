@@ -5216,15 +5216,15 @@ v = foo(t);
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(0, astLiveRunner.Core.RuntimeCoreBridge.RuntimeStatus.WarningCount);
 
             List<Subtree> modified = new List<Subtree>();
             modified.Add(CreateSubTreeFromCode(guid2, codes[3]));
 
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
-            Assert.AreEqual(1, astLiveRunner.Core.RuntimeStatus.WarningCount);
-            Assert.AreEqual(guid2, astLiveRunner.Core.RuntimeStatus.Warnings.First().GraphNodeGuid);
+            Assert.AreEqual(1, astLiveRunner.RuntimeCore.RuntimeStatus.WarningCount);
+            Assert.AreEqual(guid2, astLiveRunner.RuntimeCore.RuntimeStatus.Warnings.First().GraphNodeGuid);
         }
 
 
@@ -5388,7 +5388,7 @@ a = p.UpdateCount;
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(0, astLiveRunner.RuntimeCore.RuntimeStatus.WarningCount);
         }
 
         [Test]
@@ -5410,7 +5410,7 @@ a = p.UpdateCount;
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(0, astLiveRunner.RuntimeCore.RuntimeStatus.WarningCount);
         }
 
         [Test]

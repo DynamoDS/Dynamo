@@ -134,6 +134,7 @@ namespace ProtoScript.Runners
 
             ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, runtimeContext, core.DebuggerProperties);
             core.RuntimeCoreBridge = runtimeCore;
+            runtimeCore.RuntimeStatus = new ProtoCore.RuntimeStatus(core);
 
             try
             {
