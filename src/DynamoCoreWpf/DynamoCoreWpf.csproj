@@ -71,6 +71,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AddonsTreeView.xaml.cs">
+      <DependentUpon>AddonsTreeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\HeaderStrip.xaml.cs">
       <DependentUpon>HeaderStrip.xaml</DependentUpon>
     </Compile>
@@ -192,6 +195,8 @@
     <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
+    <Compile Include="ViewModels\Search\SearchCategory.cs" />
+    <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -215,6 +220,9 @@
     </Compile>
     <Compile Include="Views\Search\LibraryContainerView.xaml.cs">
       <DependentUpon>LibraryContainerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Search\LibrarySearchView.xaml.cs">
+      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
@@ -291,6 +299,10 @@
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\AddonsTreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -954,6 +966,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Search\LibrarySearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Core\NodeView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -1050,6 +1066,10 @@
     <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\CustomNode\customNode.png" />
+    <Resource Include="UI\Images\Tooltip\code.png" />
+    <Resource Include="UI\Images\Tooltip\copy.png" />
+    <Resource Include="UI\Images\Tooltip\copy_hover.png" />
     <Resource Include="UI\Images\assemblies.png" />
     <Resource Include="UI\Images\files.png" />
     <Resource Include="UI\Images\nodes.png" />
