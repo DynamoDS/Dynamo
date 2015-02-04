@@ -108,6 +108,10 @@ namespace Dynamo.ViewModels
             set
             {
                 HomeSpace.DynamicRunEnabled = value;
+                //Uncheck the Show Run Preview in settings
+                if (value)
+                    ShowRunPreview = false;
+
                 RaisePropertyChanged("DynamicRunEnabled");
             }
         }
@@ -418,6 +422,16 @@ namespace Dynamo.ViewModels
         public IVisualizationManager VisualizationManager { get; private set; }
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
+
+        public bool ShowRunPreview
+        {
+            get { return model.ShowRunPreview; }
+            set
+            {
+                model.ShowRunPreview = value;
+                RaisePropertyChanged("ShowRunPreview");
+            }
+        }
 
         #endregion
 
