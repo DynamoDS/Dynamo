@@ -22,7 +22,7 @@ namespace DynamoWatch3D.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace DynamoWatch3D.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DynamoWatch3D.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace DynamoWatch3D.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace DynamoWatch3D.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Shows a dynamic preview of geometry..
         /// </summary>
-        internal static string Watch3DDescription {
+        public static string Watch3DDescription {
             get {
                 return ResourceManager.GetString("Watch3DDescription", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace DynamoWatch3D.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Incoming geometry objects..
         /// </summary>
-        internal static string Watch3DPortDataInputToolTip {
+        public static string Watch3DPortDataInputToolTip {
             get {
                 return ResourceManager.GetString("Watch3DPortDataInputToolTip", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace DynamoWatch3D.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Watch contents, passed through.
         /// </summary>
-        internal static string Watch3DPortDataOutputToolTip {
+        public static string Watch3DPortDataOutputToolTip {
             get {
                 return ResourceManager.GetString("Watch3DPortDataOutputToolTip", resourceCulture);
             }

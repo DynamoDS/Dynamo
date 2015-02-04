@@ -22,7 +22,7 @@ namespace UnitsUI.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace UnitsUI.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("UnitsUI.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace UnitsUI.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enter an area..
         /// </summary>
-        internal static string AreaFromStringDescription {
+        public static string AreaFromStringDescription {
             get {
                 return ResourceManager.GetString("AreaFromStringDescription", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The area. Stored internally as decimal meters squared..
         /// </summary>
-        internal static string AreaFromStringPortDataAreaToolTip {
+        public static string AreaFromStringPortDataAreaToolTip {
             get {
                 return ResourceManager.GetString("AreaFromStringPortDataAreaToolTip", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Imperial;Metric;Area;Project;units.
         /// </summary>
-        internal static string AreaFromStringSearchTags {
+        public static string AreaFromStringSearchTags {
             get {
                 return ResourceManager.GetString("AreaFromStringSearchTags", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enter a length..
         /// </summary>
-        internal static string LengthFromStringDescription {
+        public static string LengthFromStringDescription {
             get {
                 return ResourceManager.GetString("LengthFromStringDescription", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The length. Stored internally as decimal meters..
         /// </summary>
-        internal static string LengthFromStringPortDataLengthToolTip {
+        public static string LengthFromStringPortDataLengthToolTip {
             get {
                 return ResourceManager.GetString("LengthFromStringPortDataLengthToolTip", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Imperial;Metric;Length;Project;units.
         /// </summary>
-        internal static string LengthFromStringSearchTags {
+        public static string LengthFromStringSearchTags {
             get {
                 return ResourceManager.GetString("LengthFromStringSearchTags", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select a unit of measurement..
         /// </summary>
-        internal static string UnitTypesDescription {
+        public static string UnitTypesDescription {
             get {
                 return ResourceManager.GetString("UnitTypesDescription", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to units.
         /// </summary>
-        internal static string UnitTypesSearchTags {
+        public static string UnitTypesSearchTags {
             get {
                 return ResourceManager.GetString("UnitTypesSearchTags", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enter a volume..
         /// </summary>
-        internal static string VolumeFromStringDescription {
+        public static string VolumeFromStringDescription {
             get {
                 return ResourceManager.GetString("VolumeFromStringDescription", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The volume. Stored internally as decimal meters cubed..
         /// </summary>
-        internal static string VolumeFromStringPortDataVolumeToolTip {
+        public static string VolumeFromStringPortDataVolumeToolTip {
             get {
                 return ResourceManager.GetString("VolumeFromStringPortDataVolumeToolTip", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace UnitsUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Imperial;Metric;volume;Project;units.
         /// </summary>
-        internal static string VolumeFromStringSearchTags {
+        public static string VolumeFromStringSearchTags {
             get {
                 return ResourceManager.GetString("VolumeFromStringSearchTags", resourceCulture);
             }

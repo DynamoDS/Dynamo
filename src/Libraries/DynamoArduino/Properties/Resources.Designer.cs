@@ -22,7 +22,7 @@ namespace Dynamo.Nodes.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Dynamo.Nodes.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.Nodes.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Dynamo.Nodes.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Manages connection to an Arduino microcontroller..
         /// </summary>
-        internal static string ArduinoDescription {
+        public static string ArduinoDescription {
             get {
                 return ResourceManager.GetString("ArduinoDescription", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Execution Interval.
         /// </summary>
-        internal static string ArduinoPortDataExecToolTip {
+        public static string ArduinoPortDataExecToolTip {
             get {
                 return ResourceManager.GetString("ArduinoPortDataExecToolTip", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Serial port for later read/write.
         /// </summary>
-        internal static string ArduinoPortDataOutputToolTip {
+        public static string ArduinoPortDataOutputToolTip {
             get {
                 return ResourceManager.GetString("ArduinoPortDataOutputToolTip", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Serial output line.
         /// </summary>
-        internal static string ArduinoReadPortDataOutputToolTip {
+        public static string ArduinoReadPortDataOutputToolTip {
             get {
                 return ResourceManager.GetString("ArduinoReadPortDataOutputToolTip", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Whether or not the operation was successful..
         /// </summary>
-        internal static string ArduinoWritePortDataOutputToolTip {
+        public static string ArduinoWritePortDataOutputToolTip {
             get {
                 return ResourceManager.GetString("ArduinoWritePortDataOutputToolTip", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The delimeter in your data coming from the Arduino..
         /// </summary>
-        internal static string ArduionReadPortDataDelimiterToolTip {
+        public static string ArduionReadPortDataDelimiterToolTip {
             get {
                 return ResourceManager.GetString("ArduionReadPortDataDelimiterToolTip", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Text to be written.
         /// </summary>
-        internal static string ArduionWritePortDataTextToolTip {
+        public static string ArduionWritePortDataTextToolTip {
             get {
                 return ResourceManager.GetString("ArduionWritePortDataTextToolTip", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Arduino serial connection.
         /// </summary>
-        internal static string PortDataArduinoToolTip {
+        public static string PortDataArduinoToolTip {
             get {
                 return ResourceManager.GetString("PortDataArduinoToolTip", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Reads values from an Arduino microcontroller..
         /// </summary>
-        internal static string ReadArduinoDescription {
+        public static string ReadArduinoDescription {
             get {
                 return ResourceManager.GetString("ReadArduinoDescription", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Dynamo.Nodes.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Writes values to an Arduino microcontroller..
         /// </summary>
-        internal static string WriteArduinoDescription {
+        public static string WriteArduinoDescription {
             get {
                 return ResourceManager.GetString("WriteArduinoDescription", resourceCulture);
             }
