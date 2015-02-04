@@ -54,7 +54,7 @@ namespace Dynamo.DSEngine
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, IEnumerable<TypedParameter> parameters,
-            ProtoCore.Type returnType, FunctionType type,  bool isVisibleInLibrary = true,
+            ProtoCore.Type returnType, FunctionType type, bool isVisibleInLibrary = true,
             IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
             : this(
                 assembly,
@@ -71,7 +71,7 @@ namespace Dynamo.DSEngine
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, string summary,
-            IEnumerable<TypedParameter> parameters, ProtoCore.Type returnType, FunctionType type, 
+            IEnumerable<TypedParameter> parameters, ProtoCore.Type returnType, FunctionType type,
             bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
         {
             this.summary = summary;
@@ -90,6 +90,7 @@ namespace Dynamo.DSEngine
                         return x;
                     });
             }
+
             if (Parameters.Any())
             {
                 InputParameters = Parameters.Select(
@@ -98,6 +99,10 @@ namespace Dynamo.DSEngine
                         return Tuple.Create<string, string>(par.Name, par.DisplayTypeName);
                     }
                     );
+            }
+            else
+            {
+                InputParameters = new List<Tuple<string, string>>();
             }
 
             ReturnType = returnType.ToShortString();
