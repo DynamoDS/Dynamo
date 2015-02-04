@@ -5,15 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XmlDocumentationsUtility;
+using NodeDocumentationUtility;
+using System.IO;
+using System.Xml;
 
 namespace XmlDocumentationsUtility.Test
 {
     [TestFixture]
     class XmlDocUtilityTests
     {
+        private ZeroTouchModule module = null;
+
         [SetUp]
         public void SetUp()
         {
+            module = new ZeroTouchModule("ProtoGeometry.dll");
         }
 
         [Test]
@@ -53,6 +59,23 @@ namespace XmlDocumentationsUtility.Test
             Assert.IsTrue(memberData.type == XmlDocumentationsUtility.Type.Method);
             Assert.IsTrue(memberData.TypeName == "Analysis.DataTypes.SurfaceAnalysisData");
             Assert.IsTrue(memberData.MemberName == "BySurfacePointsAndResults");
+        }
+
+        [Test]
+        public void RemoveDocumentationForHiddenNodes()
+        {
+            XmlDocumentationsUtility.RemoveDocumentationForHiddenNodes("dummyTest.xml", module);
+            XmlDocument xmlTestFile = new XmlDocument();
+            xmlTestFile.Load("dummyTest.xml");
+
+            XmlNodeList elemTestList = xmlTestFile.GetElementsByTagName("member");
+            Assert.AreEqual(elemTestList.Count, 1);
+
+            string memberTestName = elemTestList[0].Attributes["name"].Value;
+            Assert.AreEqual(memberTestName, "M:Autodesk.DesignScript.Geometry.Vector.ByCoordinates(System.Double,System.Double,System.Double)");
+
+            XmlDocumentationsUtility.RemoveDocumentationForHiddenNodes("dummyTest2.xml", module);
+            Assert.IsFalse(File.Exists("dummyTest2.xml"));
         }
     }
 }

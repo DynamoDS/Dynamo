@@ -22,7 +22,7 @@ namespace XmlDocumentationsUtility.Test
         [Test]
         public void TypeExists()
         {
-            Assert.IsFalse(module.TypeExists("Analysis.IAnalysisData"));
+            Assert.IsFalse(module.TypeExists("Autodesk.DesignScript.Geometry.HostFactory"));
             Assert.IsTrue(module.TypeExists("Autodesk.DesignScript.Geometry.Point"));
         }
 

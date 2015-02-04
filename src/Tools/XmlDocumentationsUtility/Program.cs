@@ -164,7 +164,7 @@ namespace XmlDocumentationsUtility
         /// </summary>
         /// <param name="xmlPath"></param>
         /// <param name="zeroTouchModule"></param>
-        private static void RemoveDocumentationForHiddenNodes(string xmlPath,ZeroTouchModule zeroTouchModule)
+        internal static void RemoveDocumentationForHiddenNodes(string xmlPath,ZeroTouchModule zeroTouchModule)
         {
             XmlDocument xml = new XmlDocument();
             xml.Load(xmlPath);        
