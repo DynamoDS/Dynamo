@@ -181,7 +181,7 @@ namespace ProtoCore.DSASM
             if (stackFrame != null)
             {
                 SetupAndPushBounceStackFrame(exeblock, entry, context, stackFrame, locals);
-                core.DebuggerProperties.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
+                runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
             return core.ExecutionInstance.Execute(exeblock, entry, context, fepRun, breakpoints);
         }

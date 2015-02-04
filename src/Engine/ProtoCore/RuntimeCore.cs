@@ -35,8 +35,7 @@ namespace ProtoCore
             this.context = context;
             this.DSExecutable = executable;
             this.RuntimeOptions = runtimeOptions;
-            
-            DebugProps = new DebugProperties();
+            this.DebugProps = debugProps;
         }
 
         public Executable DSExecutable { get; private set; }
