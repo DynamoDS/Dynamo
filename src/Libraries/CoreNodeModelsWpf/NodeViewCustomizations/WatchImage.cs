@@ -2,13 +2,11 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
 
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-
+using Dynamo.Utilities;
 using Image = System.Windows.Controls.Image;
 
 namespace Dynamo.Wpf.Nodes
@@ -48,18 +46,9 @@ namespace Dynamo.Wpf.Nodes
             nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { im });
         }
 
-        private void SetImageSource(System.Drawing.Bitmap bmp)
+        private void SetImageSource(Bitmap bmp)
         {
-            if (bmp == null)
-                return;
-
-            // how to convert a bitmap to an imagesource http://blog.laranjee.com/how-to-convert-winforms-bitmap-to-wpf-imagesource/ 
-            // TODO - watch out for memory leaks using system.drawing.bitmaps in managed code, see here http://social.msdn.microsoft.com/Forums/en/csharpgeneral/thread/4e213af5-d546-4cc1-a8f0-462720e5fcde
-            // need to call Dispose manually somewhere, or perhaps use a WPF native structure instead of bitmap?
-
-            var hbitmap = bmp.GetHbitmap();
-            var imageSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
-            image.Source = imageSource;
+            image.Source = ResourceUtilities.SetImageSource(bmp);
         }
 
         private Bitmap GetImageFromMirror()
@@ -74,7 +63,7 @@ namespace Dynamo.Wpf.Nodes
             var data = mirror.GetData();
 
             if (data == null || data.IsNull) return null;
-            if (data.Data is System.Drawing.Bitmap) return data.Data as System.Drawing.Bitmap;
+            if (data.Data is Bitmap) return data.Data as System.Drawing.Bitmap;
             return null;
         }
 

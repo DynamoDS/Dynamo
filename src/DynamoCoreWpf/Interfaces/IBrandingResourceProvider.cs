@@ -5,7 +5,8 @@ namespace Dynamo.Wpf.Interfaces
     public enum ResourceName
     {
         StartPageLogo,
-        AboutBoxLogo
+        AboutBoxLogo,
+        UsageConsentFormImage
     }
 
     public interface IBrandingResourceProvider

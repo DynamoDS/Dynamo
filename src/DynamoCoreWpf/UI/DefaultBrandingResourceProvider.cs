@@ -18,6 +18,11 @@ namespace Dynamo.Wpf.UI
                     new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png",
                         UriKind.Absolute));
                     break;
+                case ResourceName.UsageConsentFormImage:
+                    image = new BitmapImage(
+                    new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/consent_form_image.png",
+                        UriKind.Absolute));
+                    break;
             }
             if (image == null)
             {
