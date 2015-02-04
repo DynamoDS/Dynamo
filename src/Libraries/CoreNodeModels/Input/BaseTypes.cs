@@ -15,7 +15,6 @@ using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using String = DSCoreNodesUI.String;
 
-
 namespace Dynamo.Nodes
 {
     [NodeName("String")]

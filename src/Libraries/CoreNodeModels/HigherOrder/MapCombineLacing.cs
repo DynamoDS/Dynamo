@@ -270,8 +270,8 @@ namespace DSCore
 
     [NodeName("List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-	[NodeSearchTags("ListReduceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeDescription("ListReduceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListReduceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Reduce : VariableInputNode
     {
