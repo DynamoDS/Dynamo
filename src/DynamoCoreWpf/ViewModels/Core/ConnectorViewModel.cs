@@ -2,10 +2,13 @@
 
 using Dynamo.Models;
 using Dynamo.Utilities;
+
 using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
+    public enum PreviewState{Selection, ExecutionPreview, None}
+
     public partial class ConnectorViewModel:ViewModelBase
     {
 
@@ -132,34 +135,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsStartSelected
-        {
-            get
-            {
-                if (ConnectorModel!=null && ConnectorModel.Start.Owner != null)
-                    return ConnectorModel.Start.Owner.IsSelected;
-                else return false;
-            }
-        }
-
-        public bool IsEndSelected
-        {
-            get
-            {
-                if(ConnectorModel!=null && ConnectorModel.End.Owner != null)
-                    return ConnectorModel.End.Owner.IsSelected;
-                return false;
-            }
-        }
-
-        public bool IsStartOrEndSelected
-        {
-            get
-            {
-                return IsStartSelected || IsEndSelected;
-            }
-        }
-
         private double _endDotSize = 6;
         public double EndDotSize
         {
@@ -209,6 +184,29 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public PreviewState PreviewState
+        {
+            get
+            {
+                if (_model == null)
+                {
+                    return PreviewState.None;
+                }
+
+                if (_model.Start.Owner.ShowExecutionPreview)
+                {
+                    return PreviewState.ExecutionPreview;
+                }
+
+                if (_model.Start.Owner.IsSelected ||
+                    _model.End.Owner.IsSelected)
+                {
+                    return PreviewState.Selection;
+                }
+
+                return PreviewState.None;
+            }
+        }
 #endregion
 
         /// <summary>
@@ -252,8 +250,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "IsSelected":
-                    RaisePropertyChanged("IsStartSelected");
-                    RaisePropertyChanged("IsStartOrEndSelected");
+                    RaisePropertyChanged("PreviewState");
                     break;
                 case "Position":
                     RaisePropertyChanged("CurvePoint0");
@@ -262,6 +259,9 @@ namespace Dynamo.ViewModels
                 case "Width":
                     RaisePropertyChanged("CurvePoint0");
                     Redraw();
+                    break;
+                case "ShowExecutionPreview":
+                    RaisePropertyChanged("PreviewState");
                     break;
             }
         }
@@ -276,8 +276,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "IsSelected":
-                    RaisePropertyChanged("IsEndSelected");
-                    RaisePropertyChanged("IsStartOrEndSelected");
+                    RaisePropertyChanged("PreviewState");
                     break;
                 case "Position":
                     RaisePropertyChanged("CurvePoint0");
@@ -286,6 +285,9 @@ namespace Dynamo.ViewModels
                 case "Width":
                     RaisePropertyChanged("CurvePoint0");
                     Redraw();
+                    break;
+                case "ShowExecutionPreview":
+                    RaisePropertyChanged("PreviewState");
                     break;
             }
         }
