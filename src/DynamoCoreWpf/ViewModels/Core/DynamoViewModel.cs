@@ -889,9 +889,11 @@ namespace Dynamo.ViewModels
             var newVm = new WorkspaceViewModel(item, this);
             if (item is HomeWorkspaceModel)
             {
+                bool dynamicRunEnabled = DynamicRunEnabled;
                 Model.RemoveWorkspace(HomeSpace);
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
+                DynamicRunEnabled = dynamicRunEnabled;
             }
             else
                 workspaces.Add(newVm);
