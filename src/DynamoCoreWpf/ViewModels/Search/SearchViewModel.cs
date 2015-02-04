@@ -589,7 +589,7 @@ namespace Dynamo.ViewModels
             if (warehouse != null)
                 icon = warehouse.LoadIconInternal(e.IconFullPath);
 
-            e.Icon = icon;
+            e.SetIcon(icon);
         }
 
         // Form a fully qualified name based on nested level of a "NodeCategoryViewModel" object.
