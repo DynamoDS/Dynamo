@@ -105,13 +105,18 @@ namespace InstallUpdate
             if (processId != -1)
             {
                 bool cancel = false;
+                int tryCount = 0;
                 while (CheckHostProcessEnded(processId, out cancel) == false)
                 {
-                    if (cancel)
+                    if (cancel || tryCount == 5)
                     {
                         Console.WriteLine("Update was cancelled.");
                         return;
                     }
+
+                    // Allow the user 5 chances to get this right
+                    // then cancel.
+                    tryCount++;
                 }
             }
 
