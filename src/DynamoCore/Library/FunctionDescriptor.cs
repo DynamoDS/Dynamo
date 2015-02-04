@@ -90,15 +90,6 @@ namespace Dynamo.DSEngine
                         return x;
                     });
             }
-            if (Parameters.Any())
-            {
-                InputParameters = Parameters.Select(
-                    par =>
-                    {
-                        return Tuple.Create<string, string>(par.Name, par.DisplayTypeName);
-                    }
-                    );
-            }
 
             if (Parameters.Any())
             {
