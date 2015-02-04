@@ -42,7 +42,6 @@ namespace ProtoCore
         public Options RuntimeOptions { get; private set; }
 
         public RuntimeMemory RuntimeMemory { get; set; }
-        private Options runtimeOptions;
         private ProtoCore.Runtime.Context context;
         private Executive executiveRuntime;
 
