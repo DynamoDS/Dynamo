@@ -279,7 +279,7 @@ namespace DSOffice
             return ws.Data;
         }
 
-        [Obsolete("Use Excel.ReadFromFile node instead.")]
+        [Obsolete("Use File.FromPath -> Excel.ReadFromFile node instead.")]
         public static object[][] Read(string filePath, string sheetName)
         {
             return ReadFromFile(new FileInfo(filePath), sheetName);

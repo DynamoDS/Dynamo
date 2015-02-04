@@ -133,6 +133,7 @@ limitations under the License.
     <Compile Include="Search\Legacy\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
+    <Compile Include="Search\SearchElementGroup.cs" />
     <Compile Include="Utilities\CodeBlockUtils.cs" />
     <Compile Include="Utilities\Disposable.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
@@ -140,6 +141,7 @@ limitations under the License.
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
     <Compile Include="Core\Threading\NotifyRenderPackagesReadyAsyncTask.cs" />
     <Compile Include="Core\Threading\QueryMirrorDataAsyncTask.cs" />
+    <Compile Include="Core\Threading\PreviewGraphAsyncTask.cs" />
     <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
     <Compile Include="DSEngine\CodeCompletionServices.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />

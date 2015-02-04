@@ -21,11 +21,31 @@ namespace Dynamo.Models
 {
     public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable
     {
+
         public const double ZOOM_MAXIMUM = 4.0;
         public const double ZOOM_MINIMUM = 0.01;
 
-        #region private members
-        
+        #region private/internal members
+
+        /// <summary>
+        ///     The offset of the elements in the current paste operation
+        /// </summary>
+        private int currentPasteOffset = 0;
+        internal int CurrentPasteOffset
+        {
+            get { return currentPasteOffset; }
+        }
+
+        /// <summary>
+        ///     The step to offset elements between subsequent paste operations
+        /// </summary>
+        internal static readonly int PASTE_OFFSET_STEP = 10;
+
+        /// <summary>
+        ///     The maximum paste offset before reset
+        /// </summary>
+        internal static readonly int PASTE_OFFSET_MAX = 60;
+
         private string fileName;
         private string name;
         private double height = 100;
@@ -55,6 +75,7 @@ namespace Dynamo.Models
         ///     Event that is fired when a workspace requests that a Node or Note model is
         ///     centered.
         /// </summary>
+
         public event NodeEventHandler RequestNodeCentered;
         
         /// <summary>
@@ -436,6 +457,8 @@ namespace Dynamo.Models
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
+            WorkspaceSaved += OnWorkspaceSaved;       
+
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
 
@@ -466,6 +489,7 @@ namespace Dynamo.Models
             Disposed = null;
         }
 
+     
         #endregion
 
         #region public methods
@@ -576,12 +600,18 @@ namespace Dynamo.Models
         {
             node.NodeModified += OnNodesModified;
             node.ConnectorAdded += OnConnectorAdded;
+            SetShowExecutionPreview(node);
         }
 
         /// <summary>
         ///     Indicates that this workspace's DesignScript AST has been updated.
         /// </summary>
         public virtual void OnNodesModified()
+        {
+            
+        }
+
+        public virtual void SetShowExecutionPreview(NodeModel node)
         {
             
         }
@@ -660,6 +690,14 @@ namespace Dynamo.Models
         public void ReportPosition()
         {
             RaisePropertyChanged("Position");
+        }
+
+        /// <summary>
+        ///     Increment the current paste offset to prevent overlapping pasted elements
+        /// </summary>
+        internal void IncrementPasteOffset()
+        {
+            this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
         }
 
         #endregion

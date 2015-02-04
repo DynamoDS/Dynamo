@@ -141,14 +141,7 @@ namespace ProtoCore.Lang
             }
             else
             {
-                if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
-                {
-                    svRet = interpreter.Run(core.Breakpoints, core.RunningBlock, activation.pc, Language.kInvalid);
-                }
-                else
-                {
-                    svRet = interpreter.Run(core.RunningBlock, activation.pc, Language.kInvalid);
-                }
+                svRet = interpreter.Run(core.RunningBlock, activation.pc, Language.kInvalid, core.Breakpoints);
                 core.RunningBlock = origRunningBlock;
             }
 

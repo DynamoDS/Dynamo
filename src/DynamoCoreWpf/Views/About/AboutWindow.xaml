@@ -68,7 +68,7 @@
                 </StackPanel>
             </Grid>
             <Button Grid.Row="2" Content="{x:Static p:Resources.AboutWIndowDynamoWebsiteButton}" Click="OnClickLink" Style="{StaticResource STextButton}"/>
-            <Image Grid.Column="0" Grid.Row="0" Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png" Height="128" Width="128"/>
+            <Image Grid.Column="0" Grid.Row="0" Source="{Binding Path=AboutBoxIcon}" Height="128" Width="128"/>
         </Grid>
         <ScrollViewer Grid.Column="1" Background="#363636" Padding="25">
             <views:RichTextFile File="{Binding LicenseFile}" 

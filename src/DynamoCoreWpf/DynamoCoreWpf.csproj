@@ -71,13 +71,25 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AddonsTreeView.xaml.cs">
+      <DependentUpon>AddonsTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\HeaderStrip.xaml.cs">
+      <DependentUpon>HeaderStrip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StandardPanel.xaml.cs">
+      <DependentUpon>StandardPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
+    <Compile Include="UI\ClassObjectTemplateSelector.cs" />
+    <Compile Include="UI\HeaderTemplateSelector.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -93,7 +105,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\DefaultBrandingResourceProvider.cs" />
     <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
+    <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
@@ -172,13 +187,17 @@
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
+    <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
+    <Compile Include="ViewModels\Search\SearchCategory.cs" />
+    <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -203,6 +222,12 @@
     <Compile Include="Views\Search\LibraryContainerView.xaml.cs">
       <DependentUpon>LibraryContainerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Search\LibrarySearchView.xaml.cs">
+      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Search\LibraryView.xaml.cs">
+      <DependentUpon>LibraryView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
       <DependentUpon>NodeView.xaml</DependentUpon>
     </Compile>
@@ -217,6 +242,9 @@
     </Compile>
     <Compile Include="Views\PackageManager\PublishPackageView.xaml.cs">
       <DependentUpon>PublishPackageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TooltipWindow.xaml.cs">
+      <DependentUpon>TooltipWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\Watch3DView.xaml.cs">
       <DependentUpon>Watch3DView.xaml</DependentUpon>
@@ -275,18 +303,30 @@
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\AddonsTreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\HeaderStrip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ShortcutToolbar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\StandardPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\StartPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -930,6 +970,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Search\LibrarySearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Search\LibraryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Core\NodeView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -960,6 +1008,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\PackageManager\PublishPackageView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\TooltipWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1022,6 +1074,10 @@
     <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\CustomNode\customNode.png" />
+    <Resource Include="UI\Images\Tooltip\code.png" />
+    <Resource Include="UI\Images\Tooltip\copy.png" />
+    <Resource Include="UI\Images\Tooltip\copy_hover.png" />
     <Resource Include="UI\Images\assemblies.png" />
     <Resource Include="UI\Images\files.png" />
     <Resource Include="UI\Images\nodes.png" />

@@ -14,7 +14,7 @@ namespace Dynamo.Wpf
     {
         public void CustomizeView(CodeBlockNodeModel model, NodeView nodeView)
         {
-            var cbe = new CodeBlockEditor(nodeView.ViewModel);
+            var cbe = new CodeBlockEditor(nodeView);
 
             nodeView.inputGrid.Children.Add(cbe);
             Grid.SetColumn(cbe, 0);
