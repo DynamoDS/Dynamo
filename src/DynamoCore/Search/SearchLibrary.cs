@@ -62,7 +62,7 @@ namespace Dynamo.Search
     /// <summary>
     ///     Utility methods for categorizing search elements.
     /// </summary>
-    public static class SearchCategory
+    public static class SearchCategoryUtil
     {
         private sealed class SearchCategoryImpl<TEntry> : ISearchCategory<TEntry>
         {

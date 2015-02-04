@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using System.Windows.Media;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -30,6 +31,13 @@ namespace Dynamo.ViewModels
         {
             if (RequestReturnFocusToSearch != null)
                 RequestReturnFocusToSearch(this, e);
+        }
+
+        public event EventHandler SearchTextChanged;
+        public void OnSearchTextChanged(object sender, EventArgs e)
+        {
+            if (SearchTextChanged != null)
+                SearchTextChanged(this, e);
         }
 
         #endregion
@@ -110,6 +118,20 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public enum ViewMode { LibraryView, LibrarySearchView };
+
+        /// <summary>
+        /// The property specifies which View is active now.
+        /// </summary>
+        public ViewMode CurrentMode
+        {
+            get
+            {
+                return string.IsNullOrEmpty(SearchText) ? ViewMode.LibraryView :
+                    ViewMode.LibrarySearchView;
+            }
+        }
+
         /// <summary>
         ///     SearchResults property
         /// </summary>
@@ -136,6 +158,8 @@ namespace Dynamo.ViewModels
             get { return searchScrollBarVisibility; }
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
+
+        public Typeface RegularTypeface { get; private set; }
 
         public ObservableCollection<NodeCategoryViewModel> SearchRootCategories { get; private set; }
 
