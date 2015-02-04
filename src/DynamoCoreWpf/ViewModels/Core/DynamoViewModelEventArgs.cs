@@ -105,16 +105,21 @@ namespace Dynamo.ViewModels
 
     public class IconRequestEventArgs : EventArgs
     {
-        public string IconAssembly { get; set; }
+        public string IconAssembly { get; private set; }
 
-        public string IconFullPath { get; set; }
+        public string IconFullPath { get; private set; }
 
-        public BitmapSource Icon { get; set; }
+        public BitmapSource Icon { get; private set; }
 
         public IconRequestEventArgs(string assembly, string fullPath)
         {
             IconAssembly = assembly;
             IconFullPath = fullPath;
+        }
+
+        public void SetIcon(BitmapSource icon)
+        {
+            Icon = icon;
         }
     }
 }
