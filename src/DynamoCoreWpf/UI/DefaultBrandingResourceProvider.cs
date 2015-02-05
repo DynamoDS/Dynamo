@@ -13,6 +13,11 @@ namespace Dynamo.Wpf.UI
             ImageSource image = null;
             switch (resourceName)
             {
+                case ResourceName.StartPageLogo:
+                    image = new BitmapImage(
+                        new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/StartPage/dynamo-logo.png", 
+                            UriKind.Absolute));
+                    break;
                 case ResourceName.AboutBoxLogo:
                     image = new BitmapImage(
                         new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png",
