@@ -1284,17 +1284,11 @@ namespace ProtoCore.DSASM
 
         private string UnboxString(StackValue pointer)
         {
-            HeapElement hs = rmem.Heap.GetHeapElement(pointer);
+            if (!pointer.IsString)
+                return null;
 
-            string str = "";
-            foreach (var item in hs.VisibleItems)
-            {
-                if (!item.IsChar)
-                    return null;
-                str += EncodingUtils.ConvertInt64ToCharacter(item.opdata);
-            }
-
-            if (str == "")
+            string str = rmem.Heap.GetString(pointer);
+            if (string.IsNullOrEmpty(str))
                 return null;
 
             return "\"" + str + "\"";
@@ -2916,6 +2910,7 @@ namespace ProtoCore.DSASM
                 case AddressType.Double:
                 case AddressType.Boolean:
                 case AddressType.Char:
+                case AddressType.String:
                 case AddressType.BlockIndex:
                 case AddressType.LabelIndex:
                 case AddressType.ArrayDim:
@@ -3169,8 +3164,8 @@ namespace ProtoCore.DSASM
             }
             else if (value.IsString)
             {
-                t = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeChar, 0);
-                ret = ArrayUtils.SetValueForIndices(value, dimlist, data, t, core);
+                core.RuntimeStatus.LogWarning(WarningID.kInvalidIndexing, Resources.kStringIndexingCannotBeAssigned);
+                ret = StackValue.Null;
             }
             else
             {
@@ -5258,8 +5253,7 @@ namespace ProtoCore.DSASM
 
                 opdata2 = StackValue.BuildDouble(value1 + value2);
             }
-            else if ((opdata1.IsChar || opdata1.IsString) &&
-                     (opdata2.IsChar || opdata2.IsString))
+            else if (opdata1.IsString && opdata2.IsString)
             {
                 opdata2 = StringUtils.ConcatString(opdata2, opdata1, core);
             }
