@@ -290,6 +290,7 @@ namespace DynamoUtilities
             }
         }
 
+        // This is a temporary method while we phase DynamoPathManager out.
         private static bool FindAlternativeAsm(string version,
             DynamoPathManager pathManager, out string hostLocation)
         {
