@@ -5,9 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.UI.Views
 {
@@ -24,6 +24,8 @@ namespace Dynamo.UI.Views
             InstallNewUpdate = false;
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = dynamoViewModel;
+
+            Title = dynamoViewModel.BrandingResourceProvider.GetString(ResourceName.AboutBoxTitle);
         }
 
         public bool InstallNewUpdate { get; private set; }
