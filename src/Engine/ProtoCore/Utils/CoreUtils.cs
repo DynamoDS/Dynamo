@@ -801,5 +801,87 @@ namespace ProtoCore.Utils
             }
             return astList;
         }
+
+        /// <summary>
+        /// Replace partial identifier with fully resolved identifier list in original AST
+        /// This is the same AST that is also passed to the VM for execution
+        /// </summary>
+        /// <param name="classTable"></param>
+        /// <param name="node"></param>
+        public static void RewriteASTWithResolvedName(ClassTable classTable, ref AssociativeNode node)
+        {
+            if (node is BinaryExpressionNode)
+            {
+                BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                AssociativeNode leftNode = bnode.LeftNode;
+                AssociativeNode rightNode = bnode.RightNode;
+                RewriteASTWithResolvedName(classTable, ref leftNode);
+                RewriteASTWithResolvedName(classTable, ref rightNode);
+
+                bnode.LeftNode = leftNode;
+                bnode.RightNode = rightNode;
+            }
+            else if (node is FunctionCallNode)
+            {
+                FunctionCallNode fCall = node as FunctionCallNode;
+                //foreach (AssociativeNode argNode in fCall.FormalArguments)
+                for (int n = 0; n < fCall.FormalArguments.Count; ++n)
+                {
+                    AssociativeNode argNode = fCall.FormalArguments[n];
+                    RewriteASTWithResolvedName(classTable, ref argNode);
+                }
+            }
+            else if (node is ExprListNode)
+            {
+                ExprListNode exprList = node as ExprListNode;
+                for (int n = 0; n < exprList.list.Count; ++n)
+                {
+                    AssociativeNode exprNode = exprList.list[n];
+                    RewriteASTWithResolvedName(classTable, ref exprNode);
+                }
+            }
+            else if (node is InlineConditionalNode)
+            {
+                InlineConditionalNode inlineNode = node as InlineConditionalNode;
+                AssociativeNode condition = inlineNode.ConditionExpression;
+                AssociativeNode trueBody = inlineNode.TrueExpression;
+                AssociativeNode falseBody = inlineNode.FalseExpression;
+                RewriteASTWithResolvedName(classTable, ref condition);
+                RewriteASTWithResolvedName(classTable, ref trueBody);
+                RewriteASTWithResolvedName(classTable, ref falseBody);
+            }
+            else if (node is IdentifierListNode)
+            {
+                IdentifierListNode identListNode = node as IdentifierListNode;
+                string[] matchingClasses = ProtoCore.Utils.CoreUtils.GetResolvedClassName(classTable, identListNode);
+
+                if (matchingClasses.Length == 1)
+                {
+                    string[] strIdentList = matchingClasses[0].Split('.');
+                    Validity.Assert(strIdentList.Length >= 2);
+
+                    IdentifierListNode newIdentList = new IdentifierListNode();
+                    newIdentList.LeftNode = new IdentifierNode(strIdentList[0]);
+                    newIdentList.RightNode = new IdentifierNode(strIdentList[1]);
+                    newIdentList.Optr = Operator.dot;
+                    for (int n = 2; n < strIdentList.Length; ++n)
+                    {
+                        IdentifierListNode subIdentList = new IdentifierListNode();
+                        subIdentList.LeftNode = newIdentList;
+                        subIdentList.RightNode = new IdentifierNode(strIdentList[n]);
+                        subIdentList.Optr = Operator.dot;
+                        newIdentList = subIdentList;
+                    }
+
+                    // The last ident list for the functioncall or identifier rhs
+                    IdentifierListNode lastIdentList = new IdentifierListNode();
+                    lastIdentList.LeftNode = newIdentList;
+                    lastIdentList.RightNode = identListNode.RightNode;
+                    lastIdentList.Optr = Operator.dot;
+
+                    node = lastIdentList;
+                }
+            }
+        }
     }
 }
