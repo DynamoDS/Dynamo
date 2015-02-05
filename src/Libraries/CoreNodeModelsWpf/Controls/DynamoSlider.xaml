@@ -77,7 +77,8 @@
                             IsSnapToTickEnabled="true" 
                             Grid.Column="2" 
                             Thumb.DragStarted="Slider_OnDragStarted"
-                            Thumb.DragCompleted="Slider_OnDragCompleted"/>
+                            Thumb.DragCompleted="Slider_OnDragCompleted"                            
+                            Validation.ErrorTemplate="{x:Null}"/>
 
         </Grid>
 
