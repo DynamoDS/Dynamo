@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace ProtoTest
 {
-    public abstract class ProtoTestBase
+    abstract class ProtoTestBase
     {
         protected ProtoCore.Core core;
         protected TestFrameWork thisTest = new TestFrameWork();
