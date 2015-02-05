@@ -117,40 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Program_Main_You_must_specify_the_path_of_the_update_" xml:space="preserve">
+  <data name="UpdaterPathRequiredMessage" xml:space="preserve">
     <value>You must specify the path of the update.</value>
   </data>
-  <data name="Program_Main_The_specified_file_path_does_not_exist_" xml:space="preserve">
+  <data name="UpdaterPathNotFoundMessage" xml:space="preserve">
     <value>The specified file path does not exist.</value>
   </data>
-  <data name="Program_Main_The_host_application_process_id_could_not_be_parsed_from_the_specified_input_" xml:space="preserve">
+  <data name="HostApplicationIdParseErrorMessage" xml:space="preserve">
     <value>The host application process id could not be parsed from the specified input.</value>
   </data>
-  <data name="Program_Main_The_Dynamo_certificate_could_not_be_found__Update_cancelled_" xml:space="preserve">
+  <data name="MissingDynamoCertificateMessage" xml:space="preserve">
     <value>The Dynamo certificate could not be found. Update cancelled.</value>
   </data>
-  <data name="Program_Main_There_was_a_problem_with_the_security_certificate__Update_cancelled_" xml:space="preserve">
+  <data name="SecurityCertificateErrorMessage" xml:space="preserve">
     <value>There was a problem with the security certificate. Update cancelled.</value>
   </data>
-  <data name="Program_Main_Could_not_verify_the_update_download" xml:space="preserve">
+  <data name="UpdateDownloadVerificationFailedMessage" xml:space="preserve">
     <value>Could not verify the update download</value>
   </data>
-  <data name="Program_Main_A_signature_file_could_not_be_found_to_verify_this_update_" xml:space="preserve">
+  <data name="MissingSignatureFileMessage" xml:space="preserve">
     <value>A signature file could not be found to verify this update.</value>
   </data>
-  <data name="Program_Main_The_update_could_not_be_verified_against_the_signature_file_" xml:space="preserve">
+  <data name="SignatureVerificationFailureMessage" xml:space="preserve">
     <value>The update could not be verified against the signature file.</value>
   </data>
-  <data name="Program_Main_Update_was_cancelled_" xml:space="preserve">
+  <data name="UpdateCancellationMessage" xml:space="preserve">
     <value>Update was cancelled.</value>
   </data>
-  <data name="Program_RequestManualReinstall_Please_reinstall_Dynamo_manually_" xml:space="preserve">
+  <data name="ManualReinstallMessage" xml:space="preserve">
     <value>Please reinstall Dynamo manually.</value>
   </data>
-  <data name="Program_RequestManualReinstall_Press_any_key_to_quit_" xml:space="preserve">
+  <data name="ProcessQuitMessage" xml:space="preserve">
     <value>Press any key to quit.</value>
   </data>
-  <data name="Program_CheckHostProcessEnded_Dynamo_Update" xml:space="preserve">
+  <data name="CheckHostProcessWindowTitle" xml:space="preserve">
     <value>Dynamo Update</value>
   </data>
   <data name="CloseContinuationMessage" xml:space="preserve">

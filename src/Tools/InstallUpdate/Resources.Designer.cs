@@ -61,6 +61,15 @@ namespace InstallUpdate {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo Update.
+        /// </summary>
+        internal static string CheckHostProcessWindowTitle {
+            get {
+                return ResourceManager.GetString("CheckHostProcessWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  must be closed before continuing installation. When the application is closed, select OK to continue updating, or Cancel to quit updating..
         /// </summary>
         internal static string CloseContinuationMessage {
@@ -70,112 +79,101 @@ namespace InstallUpdate {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Update.
-        /// </summary>
-        internal static string Program_CheckHostProcessEnded_Dynamo_Update {
-            get {
-                return ResourceManager.GetString("Program_CheckHostProcessEnded_Dynamo_Update", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A signature file could not be found to verify this update..
-        /// </summary>
-        internal static string Program_Main_A_signature_file_could_not_be_found_to_verify_this_update_ {
-            get {
-                return ResourceManager.GetString("Program_Main_A_signature_file_could_not_be_found_to_verify_this_update_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not verify the update download.
-        /// </summary>
-        internal static string Program_Main_Could_not_verify_the_update_download {
-            get {
-                return ResourceManager.GetString("Program_Main_Could_not_verify_the_update_download", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The Dynamo certificate could not be found. Update cancelled..
-        /// </summary>
-        internal static string Program_Main_The_Dynamo_certificate_could_not_be_found__Update_cancelled_ {
-            get {
-                return ResourceManager.GetString("Program_Main_The_Dynamo_certificate_could_not_be_found__Update_cancelled_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The host application process id could not be parsed from the specified input..
         /// </summary>
-        internal static string Program_Main_The_host_application_process_id_could_not_be_parsed_from_the_specified_input_ {
+        internal static string HostApplicationIdParseErrorMessage {
             get {
-                return ResourceManager.GetString("Program_Main_The_host_application_process_id_could_not_be_parsed_from_the_specifi" +
-                        "ed_input_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified file path does not exist..
-        /// </summary>
-        internal static string Program_Main_The_specified_file_path_does_not_exist_ {
-            get {
-                return ResourceManager.GetString("Program_Main_The_specified_file_path_does_not_exist_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The update could not be verified against the signature file..
-        /// </summary>
-        internal static string Program_Main_The_update_could_not_be_verified_against_the_signature_file_ {
-            get {
-                return ResourceManager.GetString("Program_Main_The_update_could_not_be_verified_against_the_signature_file_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There was a problem with the security certificate. Update cancelled..
-        /// </summary>
-        internal static string Program_Main_There_was_a_problem_with_the_security_certificate__Update_cancelled_ {
-            get {
-                return ResourceManager.GetString("Program_Main_There_was_a_problem_with_the_security_certificate__Update_cancelled_" +
-                        "", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update was cancelled..
-        /// </summary>
-        internal static string Program_Main_Update_was_cancelled_ {
-            get {
-                return ResourceManager.GetString("Program_Main_Update_was_cancelled_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must specify the path of the update..
-        /// </summary>
-        internal static string Program_Main_You_must_specify_the_path_of_the_update_ {
-            get {
-                return ResourceManager.GetString("Program_Main_You_must_specify_the_path_of_the_update_", resourceCulture);
+                return ResourceManager.GetString("HostApplicationIdParseErrorMessage", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Please reinstall Dynamo manually..
         /// </summary>
-        internal static string Program_RequestManualReinstall_Please_reinstall_Dynamo_manually_ {
+        internal static string ManualReinstallMessage {
             get {
-                return ResourceManager.GetString("Program_RequestManualReinstall_Please_reinstall_Dynamo_manually_", resourceCulture);
+                return ResourceManager.GetString("ManualReinstallMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Dynamo certificate could not be found. Update cancelled..
+        /// </summary>
+        internal static string MissingDynamoCertificateMessage {
+            get {
+                return ResourceManager.GetString("MissingDynamoCertificateMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A signature file could not be found to verify this update..
+        /// </summary>
+        internal static string MissingSignatureFileMessage {
+            get {
+                return ResourceManager.GetString("MissingSignatureFileMessage", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Press any key to quit..
         /// </summary>
-        internal static string Program_RequestManualReinstall_Press_any_key_to_quit_ {
+        internal static string ProcessQuitMessage {
             get {
-                return ResourceManager.GetString("Program_RequestManualReinstall_Press_any_key_to_quit_", resourceCulture);
+                return ResourceManager.GetString("ProcessQuitMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was a problem with the security certificate. Update cancelled..
+        /// </summary>
+        internal static string SecurityCertificateErrorMessage {
+            get {
+                return ResourceManager.GetString("SecurityCertificateErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The update could not be verified against the signature file..
+        /// </summary>
+        internal static string SignatureVerificationFailureMessage {
+            get {
+                return ResourceManager.GetString("SignatureVerificationFailureMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update was cancelled..
+        /// </summary>
+        internal static string UpdateCancellationMessage {
+            get {
+                return ResourceManager.GetString("UpdateCancellationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not verify the update download.
+        /// </summary>
+        internal static string UpdateDownloadVerificationFailedMessage {
+            get {
+                return ResourceManager.GetString("UpdateDownloadVerificationFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified file path does not exist..
+        /// </summary>
+        internal static string UpdaterPathNotFoundMessage {
+            get {
+                return ResourceManager.GetString("UpdaterPathNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must specify the path of the update..
+        /// </summary>
+        internal static string UpdaterPathRequiredMessage {
+            get {
+                return ResourceManager.GetString("UpdaterPathRequiredMessage", resourceCulture);
             }
         }
     }
