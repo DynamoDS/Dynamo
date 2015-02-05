@@ -210,11 +210,12 @@ namespace Dynamo.ViewModels
 
             Visible = false;
             searchText = "";
-            searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             var fontFamily = new FontFamily(SharedDictionaryManager.DynamoModernDictionaryUri, "../../Fonts/#Open Sans");
             RegularTypeface = new Typeface(fontFamily, FontStyles.Normal, FontWeights.Normal,
                 FontStretches.Normal);
+
+            searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             // When Library changes, sync up
             Model.EntryAdded += entry =>
