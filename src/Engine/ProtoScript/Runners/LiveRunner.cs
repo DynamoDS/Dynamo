@@ -364,7 +364,8 @@ namespace ProtoScript.Runners
                     }
 
                     core.BuildStatus.ClearWarningsForGraph(st.GUID);
-                    core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+
+                    core.RuntimeCoreBridge.RuntimeStatus.ClearWarningsForGraph(st.GUID);
                 }
             }
             return deltaAstList;
@@ -503,7 +504,7 @@ namespace ProtoScript.Runners
                     foreach (var ast in csData.RemovedBinaryNodesFromModification)
                     {
                         core.BuildStatus.ClearWarningsForAst(ast.ID);
-                        core.RuntimeStatus.ClearWarningsForAst(ast.ID);
+                        core.RuntimeCoreBridge.RuntimeStatus.ClearWarningsForAst(ast.ID);
                     }
                 }
 
@@ -1037,6 +1038,19 @@ namespace ProtoScript.Runners
             }
         }
 
+        private ProtoCore.RuntimeCore runtimeCore = null;
+        public ProtoCore.RuntimeCore RuntimeCore
+        {
+            get
+            {
+                return runtimeCore;
+            }
+            private set
+            {
+                runtimeCore = value;
+            }
+        }
+
         private Options coreOptions = null;
         private Configuration configuration = null;
         private int deltaSymbols = 0;
@@ -1116,7 +1130,6 @@ namespace ProtoScript.Runners
                 GenerateExprID = true,
                 IsDeltaExecution = true,
                 BuildOptErrorAsWarning = true,
-                WebRunner = false,
                 ExecutionMode = ExecutionMode.Serial
             };
 
@@ -1514,6 +1527,7 @@ namespace ProtoScript.Runners
             try
             {
                 runner.Execute(runnerCore, 0, compileContext, runtimeContext);
+                runtimeCore = runnerCore.RuntimeCoreBridge;
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
@@ -1794,7 +1808,7 @@ namespace ProtoScript.Runners
         {
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
-            var warnings = runnerCore.RuntimeStatus
+            var warnings = runtimeCore.RuntimeStatus
                                      .Warnings
                                      .Where(w => !w.GraphNodeGuid.Equals(Guid.Empty))
                                      .OrderBy(w => w.GraphNodeGuid)
