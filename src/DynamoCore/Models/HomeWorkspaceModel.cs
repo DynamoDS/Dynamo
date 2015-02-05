@@ -372,6 +372,14 @@ namespace Dynamo.Models
             }            
         }
 
+        internal void SetNodeExecutionState(bool showRunPreview)
+        {
+            foreach (var nodeModel in Nodes)
+            {
+                nodeModel.ShowExecutionPreview = showRunPreview;
+            }
+        }
+
         #endregion
     }
 }
