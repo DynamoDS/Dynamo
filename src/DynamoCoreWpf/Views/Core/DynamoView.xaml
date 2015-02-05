@@ -769,7 +769,6 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />
->>>>>>> 548ac9bc53b706ac3418e48fbae443b713346a50:src/DynamoCoreWpf/Views/DynamoView.xaml
                     </MenuItem>
                 </Menu>
 

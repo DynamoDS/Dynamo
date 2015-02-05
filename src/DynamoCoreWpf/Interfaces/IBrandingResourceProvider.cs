@@ -6,6 +6,7 @@ namespace Dynamo.Wpf.Interfaces
     {
         StartPageLogo,
         AboutBoxLogo,
+        AboutBoxTitle,
         UsageConsentFormImage
     }
 

@@ -34,7 +34,19 @@ namespace Dynamo.Wpf.UI
 
         public string GetString(ResourceName resourceName)
         {
-            throw new NotImplementedException();
+            string resource = string.Empty;
+            switch (resourceName)
+            {
+                case ResourceName.AboutBoxTitle:
+                    return Properties.Resources.AboutWindowTitle;
+                    break;
+            }
+            if (string.IsNullOrEmpty(resource))
+            {
+                throw new InvalidEnumArgumentException(
+                    String.Format("Resource name not handled: {0}", resourceName));
+            }
+            return resource;
         }
     }
 }
