@@ -184,6 +184,10 @@ http://opensource.org/licenses/lgpl-3.0.html
 https://github.com/AttackPattern/CSharpAnalytics  
 http://www.apache.org/licenses/LICENSE-2.0
 
+###GNU gettext (libintl)###
+https://www.gnu.org/software/gettext/
+https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
+
 ###Helix3D###
 https://helixtoolkit.codeplex.com/  
 https://helixtoolkit.codeplex.com/license  
