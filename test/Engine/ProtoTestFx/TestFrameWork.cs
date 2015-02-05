@@ -53,9 +53,6 @@ namespace ProtoTestFx.TD
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
-//            testCore.Options.kDynamicCycleThreshold = 5;
-            testCore.RuntimeCoreBridge = new ProtoCore.RuntimeCore(testCore.Options, testCore.DSExecutable, null, null);
-            testCore.RuntimeCoreBridge.RuntimeStatus = new ProtoCore.RuntimeStatus(testCore);
             testCore.RuntimeCoreBridge.RuntimeStatus.MessageHandler = testCore.BuildStatus.MessageHandler;
             
             //FFI registration and cleanup

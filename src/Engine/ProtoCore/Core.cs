@@ -669,9 +669,16 @@ namespace ProtoCore
             ForLoopBlockIndex = Constants.kInvalidIndex;
         }
 
+        private void ResetRuntimeCore()
+        {
+            RuntimeData = new ProtoCore.RuntimeData();
+            RuntimeCoreBridge = new RuntimeCore();
+            RuntimeCoreBridge.RuntimeStatus = new ProtoCore.RuntimeStatus(this);
+        }
+
         private void ResetAll(Options options)
         {
-            this.RuntimeData = new ProtoCore.RuntimeData();
+            ResetRuntimeCore();
 
             Validity.AssertExpiry();
             Options = options;
@@ -1139,6 +1146,10 @@ namespace ProtoCore
             }
         }
 
+        /// <summary>
+        /// Populate the runtime data
+        /// </summary>
+        /// <returns></returns>
         private RuntimeData GenerateRuntimeData()
         {
             Validity.Assert(RuntimeData != null);
@@ -1146,11 +1157,20 @@ namespace ProtoCore
             return RuntimeData;
         }
 
+        /// <summary>
+        /// Setup the runtime core and runtimedata
+        /// </summary>
+        private void SetupRuntimeCore()
+        {
+            RuntimeCoreBridge.SetProperties(Options, DSExecutable, DebuggerProperties);
+            DSExecutable.RuntimeData = GenerateRuntimeData();
+        }
+
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
 
-            DSExecutable.RuntimeData = GenerateRuntimeData();
+            SetupRuntimeCore();
 
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
