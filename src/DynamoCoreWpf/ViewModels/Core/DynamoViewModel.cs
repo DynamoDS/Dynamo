@@ -432,10 +432,10 @@ namespace Dynamo.ViewModels
 
         public bool ShowRunPreview
         {
-            get { return model.ShowRunPreview; }
+            get { return HomeSpace.ShowRunPreview; }
             set
             {
-                model.ShowRunPreview = value;
+                HomeSpace.ShowRunPreview = value;
                 RaisePropertyChanged("ShowRunPreview");
             }
         }
