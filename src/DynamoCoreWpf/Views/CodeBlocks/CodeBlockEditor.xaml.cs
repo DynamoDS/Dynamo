@@ -492,11 +492,7 @@ namespace Dynamo.UI.Controls
                 // and nothing should be popped off of the undo stack.
                 // 
                 if (recorder.CanUndo)
-                    recorder.PopFromUndoGroup(); // Pop off creation action.
-
-                // The empty code block node needs to be removed from workspace.
-                //Fix - MAGN - 6138 - Do not remove empty code block when clicked outside.               
-                //nodeViewModel.WorkspaceViewModel.Model.RemoveNode(nodeModel);
+                    recorder.PopFromUndoGroup(); // Pop off creation action.               
             }
             else
             {
