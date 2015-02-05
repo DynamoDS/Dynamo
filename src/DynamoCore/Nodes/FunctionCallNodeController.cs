@@ -22,27 +22,7 @@ namespace Dynamo.Nodes
         /// <summary>
         ///     A FunctionDescriptor describing the function that this controller will call.
         /// </summary>
-        public T Definition { get; set; 
-            //get { return definition; }
-            //protected set
-            //{
-            //    OnDefinitionChanging();
-            //    definition = value;
-            //    OnDefinitionChanged();
-            //}
-        }
-
-        //public event Action DefinitionChanged;
-        //protected virtual void OnDefinitionChanged()
-        //{
-        //    var handler = DefinitionChanged;
-        //    if (handler != null) handler();
-        //}
-
-        //protected virtual void OnDefinitionChanging()
-        //{
-            
-        //}
+        public T Definition { get; set; }
 
         /// <summary>
         ///     NickName for nodes using this controller, based on the underlying FunctionDescriptor.

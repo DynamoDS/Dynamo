@@ -131,6 +131,18 @@ namespace Dynamo
                 .Distinct();
         }
 
+        public static CustomNodeDefinition MakeProxy(Guid functionId, string displayName)
+        {
+            var def = new CustomNodeDefinition(functionId, displayName);
+            def.IsProxy = true;
+            return def;
+        }
+
+        /// <summary>
+        ///     Is this CustomNodeDefinition properly loaded?
+        /// </summary>
+        public bool IsProxy { get; private set; }
+
         /// <summary>
         ///     Function name.
         /// </summary>

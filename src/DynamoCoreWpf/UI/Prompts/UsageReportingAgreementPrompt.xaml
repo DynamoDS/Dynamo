@@ -24,26 +24,16 @@
         <Rectangle Width="544"
                    Height="100"
                    Stroke="Transparent"
-                   VerticalAlignment="Top">
-            <Rectangle.Fill>
-                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/consent_form_image.png" />
-            </Rectangle.Fill>
+                   VerticalAlignment="Top"
+                   Name="ConsentFormImageRectangle">
         </Rectangle>
         <StackPanel Grid.Row="1"
                     Margin="15,4,8,15"
                     Orientation="Vertical">
             <TextBlock TextWrapping="Wrap"
                        FontSize="13"
-                       Foreground="#FFC8C8C8">
-                <Run Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart1}"/>
-                <LineBreak /><Run /><LineBreak />
-            
-                <Run Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart2}"/>
-                <LineBreak /><Run /><LineBreak />
-            
-                <Run Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart3}"/>
-                <LineBreak /><Run /><LineBreak />
-                <Run Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart4}"/>
+                       Foreground="#FFC8C8C8"
+                       Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart1}">
             </TextBlock>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -74,11 +64,7 @@
                        FontSize="13"
                        Foreground="#FFC8C8C8">
                 <LineBreak />
-                <Run Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart5}"/>
-                <LineBreak /><LineBreak />
-                <Run Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart6}"/>
-                <LineBreak /><Run /><LineBreak />
-                <Run Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart7}"/>
+                <Run Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart2}"/>
             </TextBlock>
         </StackPanel>
 

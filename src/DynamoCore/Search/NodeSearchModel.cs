@@ -32,7 +32,7 @@ namespace Dynamo.Search
         {
             var document = XmlHelper.CreateDocument("LibraryTree");
 
-            var root = SearchCategory.CategorizeSearchEntries(
+            var root = SearchCategoryUtil.CategorizeSearchEntries(
                 SearchEntries,
                 entry => entry.Categories);
 

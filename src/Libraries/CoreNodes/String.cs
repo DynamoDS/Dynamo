@@ -25,7 +25,7 @@ namespace DSCore
         /// </summary>
         /// <param name="str">String to be converted.</param>
         /// <returns name="number">Integer or double-type number.</returns>
-        /// <search>2number,str2number,strtonumber,string2number,stringtonumber</search>
+        /// <search>2number,str2number,strtonumber,string2number,stringtonumber,int,double,cast</search>
         public static object ToNumber(string str)
         {
             int i;
@@ -43,7 +43,7 @@ namespace DSCore
         /// </summary>
         /// <param name="strings">List of strings to concatenate.</param>
         /// <returns name="str">String made from list of strings.</returns>
-        /// <search>concatenate</search>
+        /// <search>concatenate,join,combine strings</search>
         public static string Concat(params string[] strings)
         {
             return string.Concat(strings);
@@ -54,7 +54,7 @@ namespace DSCore
         /// </summary>
         /// <param name="str">String to find the length of.</param>
         /// <returns name="length">Number of characters in the string.</returns>
-        /// <search>count,size,characters</search>
+        /// <search>count,size,characters,chars,length,sizeof</search>
         public static int Length(string str)
         {
             return str.Length;
@@ -69,7 +69,7 @@ namespace DSCore
         ///     Strings that, if present, determine the end and start of a split.
         /// </param>
         /// <returns name="strings">List of strings made from the input string.</returns>
-        /// <search>divide,separaters</search>
+        /// <search>divide,separaters,delimiter,cut,csv,comma,</search>
         public static string[] Split(string str, params string[] separaters)
         {
             return separaters.Contains("")
@@ -86,7 +86,7 @@ namespace DSCore
         /// <returns name="str">
         ///     A string made from the list of strings including the separator character.
         /// </returns>
-        /// <search>join,separator</search>
+        /// <search>join,separator,build csv,concat,construct</search>
         public static string Join(string separator, params string[] strings)
         {
             return string.Join(separator, strings);
@@ -142,6 +142,7 @@ namespace DSCore
         /// </param>
         /// <param name="length">Number of characters in the substring.</param>
         /// <returns name="substring">Substring made from the original string.</returns>
+		///  <search>subset,get string,part,smaller string</search>
         public static string Substring(string str, int startIndex, int length)
         {
             if (startIndex < 0)
@@ -166,7 +167,7 @@ namespace DSCore
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
         /// <returns name="bool">Whether the string contains the substring.</returns>
-        /// <search>test</search>
+        /// <search>test,within,in,is in,part of</search>
         public static bool Contains(string str, string searchFor, bool ignoreCase = false)
         {
             return !ignoreCase ? str.Contains(searchFor) : str.ToLowerInvariant().Contains(searchFor.ToLowerInvariant());
@@ -179,7 +180,7 @@ namespace DSCore
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
         /// <returns name="count">Number of non-overlapping occurrences of the substring in the string.</returns>
-        /// <search>count,substring,count occurrences</search>
+        /// <search>count,substring,count occurrences,numberof,search,find,within</search>
         public static int CountOccurrences(string str, string searchFor, bool ignoreCase = false)
         {
             if (searchFor == string.Empty)
@@ -211,7 +212,7 @@ namespace DSCore
         /// <param name="searchFor">Text to be replaced.</param>
         /// <param name="replaceWith">Text to replace with.</param>
         /// <returns name="str">String with replacements made.</returns>
-        /// <search>replace</search>
+        /// <search>replace,overwrite,override,find and replace</search>
         public static string Replace(string str, string searchFor, string replaceWith)
         {
             return str.Replace(searchFor, replaceWith);
@@ -224,7 +225,7 @@ namespace DSCore
         /// <param name="searchFor">Substring to search the end for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
         /// <returns name="bool">Whether the string ends with the substring.</returns>
-        /// <search>test</search>
+        /// <search>test,does end,last,str end,terminated</search>
         public static bool EndsWith(string str, string searchFor, bool ignoreCase = false)
         {
             return str.EndsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
@@ -237,7 +238,7 @@ namespace DSCore
         /// <param name="searchFor">Substring to search the start for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
         /// <returns name="bool">Whether the string starts with the substring.</returns>
-        /// <search>test,beginswith</search>
+        /// <search>test,beginswith,start,string start,front</search>
         public static bool StartsWith(string str, string searchFor, bool ignoreCase = false)
         {
             return str.StartsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
@@ -248,7 +249,7 @@ namespace DSCore
         /// </summary>
         /// <param name="str">String to trim.</param>
         /// <returns name="str">String with beginning and ending whitespaces removed.</returns>
-        /// <search>trimstring,cleanstring,whitespace,blanks,spaces</search>
+        /// <search>trimstring,cleanstring,whitespace,blanks,spaces,string trim</search>
         public static string TrimWhitespace(string str)
         {
             return str.Trim();
@@ -259,7 +260,7 @@ namespace DSCore
         /// </summary>
         /// <param name="str">String to trim.</param>
         /// <returns name="str">String with leading white spaces removed.</returns>
-        /// <search>trim string,clean string,trim leading whitespaces</search>
+        /// <search>trim string,clean string,trim leading whitespaces,string trim</search>
         public static string TrimLeadingWhitespace(string str)
         {
             return str.TrimStart();
@@ -270,7 +271,7 @@ namespace DSCore
         /// </summary>
         /// <param name="str">String to trim.</param>
         /// <returns name="str">String with white spaces at end removed.</returns>
-        /// <search>trim string,clean string,trim trailing whitespaces</search>
+        /// <search>trim string,clean string,trim trailing whitespaces,string trim</search>
         public static string TrimTrailingWhitespace(string str)
         {
             return str.TrimEnd();
@@ -286,7 +287,7 @@ namespace DSCore
         /// <returns name="index">
         ///     Index of the first occurrence of the substring or -1 if not found.
         /// </returns>
-        /// <search>index of</search>
+        /// <search>index of,find susbstring,where,search</search>
         public static int IndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.IndexOf(
@@ -306,7 +307,7 @@ namespace DSCore
         /// <returns name="index">
         ///     Index of the last occurrence of the substring or -1 if not found.
         /// </returns>
-        /// <search>last index of</search>
+		/// <search>last index of,find susbstring,where,search</search>
         public static int LastIndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.LastIndexOf(
@@ -326,7 +327,7 @@ namespace DSCore
         /// <returns name="str">
         ///     Strings right-aligned by padding with leading whitespaces for a specified total length.
         /// </returns>
-        /// <search>pad left,right align,right-align</search>
+        /// <search>pad left,right align,right-align,pad,string space,whitespace</search>
         public static string PadLeft(string str, int newWidth, string padChars = " ")
         {
             return new string(padChars.Cycle().Take(newWidth - str.Length).Concat(str).ToArray());
@@ -342,7 +343,7 @@ namespace DSCore
         /// <returns name="str">
         ///     Strings left-aligned by padding with trailing whitespaces for a specified total length.
         /// </returns>
-        /// <search>pad right,left align,left-align</search>
+        /// <search>pad right,left align,left-align,pad string space,whitespace</search>
         public static string PadRight(string str, int newWidth, string padChars = " ")
         {
             return new string(
@@ -360,7 +361,7 @@ namespace DSCore
         ///     Strings center-aligned by padding them with leading and trailing
         ///     whitespaces for a specified total length.
         /// </returns>
-        /// <search>center align,center-align,centered</search>
+        /// <search>center align,center-align,centered,whitespace,expand string,surround</search>
         public static string Center(string str, int newWidth, string padChars = " ")
         {
             var padHalf = (newWidth - str.Length)/2;
@@ -410,6 +411,7 @@ namespace DSCore
         ///     the given startIndex to the end of the string.
         /// </param>
         /// <returns name="str">String with characters removed.</returns>
+		/// <search>delete,rem,shorten</search>
         public static string Remove(string str, int startIndex, int? count = null)
         {
             if (startIndex < 0)

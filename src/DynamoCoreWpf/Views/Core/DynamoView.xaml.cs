@@ -23,7 +23,7 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
-
+using Dynamo.Wpf.Controls;
 using DynamoUtilities;
 
 using String = System.String;
@@ -175,6 +175,15 @@ namespace Dynamo.Controls
             Debug.WriteLine("Resizing window to {0}:{1}", e.NewSize.Width, e.NewSize.Height);
         }
 
+        void InitializeLogin()
+        {
+            if ( dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
+            {
+                var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
+                loginGrid.Children.Add(login);
+            }
+        }
+
         void InitializeShortcutBar()
         {
             ShortcutToolbar shortcutBar = new ShortcutToolbar();
@@ -310,7 +319,7 @@ namespace Dynamo.Controls
         {
 
             // If first run, Collect Info Prompt will appear
-            UsageReportingManager.Instance.CheckIsFirstRun(this);
+            UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
 
             WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
@@ -321,6 +330,7 @@ namespace Dynamo.Controls
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed));
+            InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage();
 
@@ -615,7 +625,7 @@ namespace Dynamo.Controls
             do
             {
                 var categorized = 
-                    SearchCategory.CategorizeSearchEntries(
+                    SearchCategoryUtil.CategorizeSearchEntries(
                         dynamoViewModel.Model.SearchModel.SearchEntries,
                         entry => entry.Categories);
 

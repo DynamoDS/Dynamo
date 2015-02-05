@@ -48,5 +48,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public DelegateCommand ImportLibraryCommand
+        {
+            get { return dynamoViewModel.ImportLibraryCommand; }
+        }
+
+
+        public DelegateCommand ShowPackageManagerSearchCommand
+        {
+            get { return dynamoViewModel.ShowPackageManagerCommand; }
+        }
     }
 }

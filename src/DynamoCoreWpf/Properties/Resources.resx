@@ -449,6 +449,16 @@
     <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&amp;#x0a;It does not contain your graph or any personal data</value>
     <comment>Setting menu | Tooltip for enable summary reporting during usage menu item</comment>
   </data>
+  <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
+    <value>Show Run Preview</value>
+    <comment>Setting menu | Show Run Preview</comment>
+  </data>
+  <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
+    <value>Execution preview is not available when running automatically</value>
+  </data>
+  <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
+    <value>Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph</value>
+  </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
     <value>Fractional Foot</value>
     <comment>Setting menu | Fractional foot</comment>
@@ -1011,25 +1021,20 @@ You will get a chance to save your work.</value>
     <value>The features and commands you use in Dynamo</value>
   </data>
   <data name="UsageReportPromptDialogMessagePart1" xml:space="preserve">
-    <value>We would like to collect some information about how Dynamo is used.</value>
+    <value>We would like to collect some information about how Dynamo is used.
+
+Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.
+
+The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).
+
+The information being collected is:</value>
   </data>
   <data name="UsageReportPromptDialogMessagePart2" xml:space="preserve">
-    <value>Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart3" xml:space="preserve">
-    <value>The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart4" xml:space="preserve">
-    <value>The information being collected is:</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart5" xml:space="preserve">
-    <value>It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting 'Enable usability data reporting' in the settings menu of the UI.</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart6" xml:space="preserve">
-    <value>ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK.</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart7" xml:space="preserve">
-    <value>Many thanks!</value>
+    <value>It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting 'Enable usability data reporting' in the settings menu of the UI.
+
+ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK.
+
+Many thanks!</value>
   </data>
   <data name="UsageReportPromptDialogNodeUsage" xml:space="preserve">
     <value>The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime).</value>
@@ -1517,5 +1522,14 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="TooltipCurrentIndex" xml:space="preserve">
     <value>{0} of {1}</value>
+  </data>
+  <data name="AutodeskSignIn" xml:space="preserve">
+    <value>Autodesk Sign In</value>
+  </data>
+  <data name="BrowserWindowLoading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="InvalidLoginUrl" xml:space="preserve">
+    <value>Invalid URL for login page!</value>
   </data>
 </root>
