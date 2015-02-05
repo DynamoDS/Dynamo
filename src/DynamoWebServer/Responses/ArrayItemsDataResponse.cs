@@ -35,7 +35,7 @@ namespace DynamoWebServer.Responses
 
             if (node.CachedValue == null)
             {
-                IndexFrom = 0;
+                IndexFrom = -1;
                 Items = new string[0];
                 return;
             }
