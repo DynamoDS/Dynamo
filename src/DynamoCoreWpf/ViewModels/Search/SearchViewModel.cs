@@ -4,10 +4,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using System.Windows;
 using System.Windows.Media;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 
@@ -199,13 +200,17 @@ namespace Dynamo.ViewModels
             Visible = false;
             searchText = "";
 
+            var fontFamily = new FontFamily(SharedDictionaryManager.DynamoModernDictionaryUri, "../../Fonts/#Open Sans");
+            RegularTypeface = new Typeface(fontFamily, FontStyles.Normal, FontWeights.Normal,
+                FontStretches.Normal);
+
             // When Library changes, sync up
             Model.EntryAdded += entry =>
             {
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
             };
             Model.EntryRemoved += RemoveEntry;
-            
+
             libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
         }
@@ -218,7 +223,7 @@ namespace Dynamo.ViewModels
 
         private static IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
         {
-            var tempRoot = 
+            var tempRoot =
                 entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
                     element => element.Categories,
                     (name, subs, es) =>
@@ -411,14 +416,14 @@ namespace Dynamo.ViewModels
         {
             var catName = fullCategoryName.Replace(".", " > ");
 
-            if (catName.Length <= 50) 
+            if (catName.Length <= 50)
                 return catName;
 
             // if the category name is too long, we strip off the interior categories
             var s = catName.Split('>').Select(x => x.Trim()).ToList();
-            if (s.Count() <= 4) 
+            if (s.Count() <= 4)
                 return catName;
-            
+
             s = new List<string>
             {
                 s[0],
@@ -496,7 +501,7 @@ namespace Dynamo.ViewModels
 
                 if (matches[matches.Count - 1].Index + 1 != text.Length)
                     return text.Substring(0, matches[matches.Count - 1].Index + 2);
-                
+
                 // if period is in last position, remove that period and recurse
                 text = text.Substring(0, text.Length - 1);
             }
