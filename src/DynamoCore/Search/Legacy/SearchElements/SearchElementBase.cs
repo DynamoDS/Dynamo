@@ -137,50 +137,34 @@ namespace Dynamo.Search.SearchElements
         public IEnumerable<PortInfo> ReturnKeys { get; private set; }
 
 
-        public LibraryItem(SearchElementBase node, DynamoModel dynamoModel)
+        public LibraryItem(NodeSearchElement node, DynamoModel dynamoModel)
         {
             Category = node.FullCategoryName;
-            Type = node.Type;
             DisplayName = Name = node.Name;
             CreationName = node.CreationName;
             Description = node.Description;
-            Searchable = node.Searchable;
             Weight = node.Weight;
-            Keywords = dynamoModel.SearchModel.SearchDictionary.GetTags(node);
+            Keywords = dynamoModel.SearchModel.GetTags(node);
 
             PopulateKeysAndParameters(dynamoModel);
         }
 
         private void PopulateKeysAndParameters(DynamoModel dynamoModel)
         {
-            var controller = dynamoModel.EngineController;
-            var functionItem = (controller.GetFunctionDescriptor(CreationName));
+            var services = dynamoModel.LibraryServices;
+            var functionItem = services.GetFunctionDescriptor(CreationName);
             NodeModel newElement = null;
             if (functionItem != null)
             {
                 DisplayName = functionItem.DisplayName;
-                if (functionItem.IsVarArg)
-                    newElement = new DSVarArgFunction(dynamoModel.CurrentWorkspace, functionItem);
-                else
-                    newElement = new DSFunction(dynamoModel.CurrentWorkspace, functionItem);
+                newElement = (functionItem.IsVarArg)
+                    ? new DSVarArgFunction(functionItem) as NodeModel
+                    : new DSFunction(functionItem);
             }
+            // If that didn't work, let's try using the NodeFactory
             else
             {
-                TypeLoadData tld = null;
-
-                if (dynamoModel.BuiltInTypesByName.ContainsKey(CreationName))
-                {
-                    tld = dynamoModel.BuiltInTypesByName[CreationName];
-                }
-                else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(CreationName))
-                {
-                    tld = dynamoModel.BuiltInTypesByNickname[CreationName];
-                }
-
-                if (tld != null)
-                {
-                    newElement = (NodeModel)Activator.CreateInstance(tld.Type, dynamoModel.CurrentWorkspace);
-                }
+                dynamoModel.NodeFactory.CreateNodeFromTypeName(CreationName, out newElement);
             }
 
             if (newElement == null)
