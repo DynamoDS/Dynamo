@@ -79,7 +79,8 @@ namespace Dynamo.Wpf.ViewModels
     {
         private string path;
 
-        public CustomNodeSearchElementViewModel(CustomNodeSearchElement element) : base(element)
+        public CustomNodeSearchElementViewModel(CustomNodeSearchElement element)
+            : base(element)
         {
             Model.PropertyChanged += ModelOnPropertyChanged;
             Path = Model.Path;

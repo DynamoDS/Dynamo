@@ -101,7 +101,22 @@ namespace DSCoreNodesUI.Input
         internal static int ConvertStringToInt(string value)
         {
             int result = 0;
-            System.Int32.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
+            if (System.Int32.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
+                return result;
+            //check if the value exceeds the 32 bit maximum / minimum value
+            if (value.Length > 1)
+            {
+                var start = value[0] == '-' ? 1 : 0;
+                for (var i = start; i < value.Length; i++)
+                {
+                    if (!char.IsDigit(value[i]))
+                    {
+                        return 0;
+                    }
+                    
+                }
+                result = start == 0 ? int.MaxValue : int.MinValue;
+            }
             return result;
         }
     }

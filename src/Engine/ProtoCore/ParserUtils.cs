@@ -269,6 +269,30 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
+        /// Return a parser for the DS code.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="core"></param>
+        /// <param name="hasBuiltInLoaded"></param>
+        /// <returns></returns>
+        public static DesignScriptParser.Parser CreateParser(string code, ProtoCore.Core core)
+        {
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(code);
+            byte[] utf8Buffer = new byte[buffer.Length + 3];
+
+            // Add UTF-8 BOM - Coco/R requires UTF-8 stream should contain BOM
+            utf8Buffer[0] = (byte)0xEF;
+            utf8Buffer[1] = (byte)0xBB;
+            utf8Buffer[2] = (byte)0xBF;
+            Array.Copy(buffer, 0, utf8Buffer, 3, buffer.Length);
+
+            System.IO.MemoryStream memstream = new System.IO.MemoryStream(utf8Buffer);
+            DesignScriptParser.Scanner scanner = new DesignScriptParser.Scanner(memstream);
+            DesignScriptParser.Parser parser = new DesignScriptParser.Parser(scanner, core, core.builtInsLoaded);
+            return parser;
+        }
+
+        /// <summary>
         /// Parses desginscript code with specified core and returns a 
         /// ProtoAST CodeBlockNode
         /// </summary>
@@ -277,11 +301,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static ProtoCore.AST.Node ParseWithCore(string code, ProtoCore.Core core)
         {
-            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(code));
-            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
-            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
-
-            Validity.Assert(null != p);
+            var p = CreateParser(code, core);
             p.Parse();
 
             return p.root;

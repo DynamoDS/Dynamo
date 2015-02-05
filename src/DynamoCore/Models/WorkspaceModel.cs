@@ -75,6 +75,7 @@ namespace Dynamo.Models
         ///     Event that is fired when a workspace requests that a Node or Note model is
         ///     centered.
         /// </summary>
+
         public event NodeEventHandler RequestNodeCentered;
         
         /// <summary>
@@ -456,6 +457,8 @@ namespace Dynamo.Models
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
+            WorkspaceSaved += OnWorkspaceSaved;       
+
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
 
@@ -486,6 +489,7 @@ namespace Dynamo.Models
             Disposed = null;
         }
 
+     
         #endregion
 
         #region public methods
@@ -596,12 +600,18 @@ namespace Dynamo.Models
         {
             node.NodeModified += OnNodesModified;
             node.ConnectorAdded += OnConnectorAdded;
+            SetShowExecutionPreview(node);
         }
 
         /// <summary>
         ///     Indicates that this workspace's DesignScript AST has been updated.
         /// </summary>
         public virtual void OnNodesModified()
+        {
+            
+        }
+
+        public virtual void SetShowExecutionPreview(NodeModel node)
         {
             
         }
