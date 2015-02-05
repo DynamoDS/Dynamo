@@ -290,7 +290,7 @@ namespace DynamoUtilities
             }
         }
 
-        private static bool FindSideBySideAsm(string version,
+        private static bool FindAlternativeAsm(string version,
             DynamoPathManager pathManager, out string hostLocation)
         {
             hostLocation = string.Empty;
@@ -383,7 +383,7 @@ namespace DynamoUtilities
             Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
 
             string hostLocation;
-            if (!FindSideBySideAsm(version, pathManager, out hostLocation))
+            if (!FindAlternativeAsm(version, pathManager, out hostLocation))
             {
                 if (!FindAsm(version, out hostLocation))
                 {
