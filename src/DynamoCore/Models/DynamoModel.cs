@@ -1,5 +1,4 @@
-﻿using DSCoreNodesUI;
-
+using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
@@ -16,6 +15,7 @@ using DynamoServices;
 
 using DynamoUnits;
 using DynamoUtilities;
+using Greg; // Dynamo package manager
 using ProtoCore;
 using System;
 using System.Collections.Generic;
@@ -28,7 +28,6 @@ using System.Reflection;
 using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
-using ProtoCore.AST;
 using ProtoCore.Exceptions;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
@@ -43,6 +42,8 @@ namespace Dynamo.Models
 
     public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager // : ModelBase
     {
+        public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
+
         #region private members
         private WorkspaceModel currentWorkspace;
         #endregion
@@ -95,8 +96,13 @@ namespace Dynamo.Models
                 ShutdownCompleted(this);
         }
 
+        internal void OnGetExecutingNodes()
+        {
+          ((HomeWorkspaceModel)CurrentWorkspace).GetExecutingNodes();
+        }
+
         #endregion
-        
+
         #region static properties
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
@@ -187,7 +193,7 @@ namespace Dynamo.Models
         ///     threads.
         /// </summary>
         public DynamoScheduler Scheduler { get; private set; }
-        
+
         /// <summary>
         ///     The maximum amount of tesselation divisions used for geometry visualization.
         /// </summary>
@@ -291,14 +297,22 @@ namespace Dynamo.Models
         /// </summary>
         private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
 
-        /// <summary>
-        ///     The collection of visible workspaces in Dynamo
-        /// </summary>
         public IEnumerable<WorkspaceModel> Workspaces 
         {
             get { return _workspaces; } 
         }
-        
+
+        public static bool showRunPreview = true;
+
+        public bool ShowRunPreview
+        {
+            get { return showRunPreview; }
+            set
+            {
+                showRunPreview = value;      
+                OnGetExecutingNodes();
+            }
+        }   
         #endregion
 
         #region initialization and disposal
@@ -341,7 +355,7 @@ namespace Dynamo.Models
             PreferenceSettings.Save();
 
             OnCleanup();
-            
+
             DynamoSelection.DestroyInstance();
 
             InstrumentationLogger.End();
@@ -369,6 +383,8 @@ namespace Dynamo.Models
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
+            public IAuthProvider AuthProvider { get; set; }
+            public string PackageManagerAddress { get; set; }
         }
 
         /// <summary>
@@ -402,15 +418,15 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        protected DynamoModel(StartConfiguration configuration)
+        protected DynamoModel(StartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
-            MaxTesselationDivisions = 128;
+            MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
-            string context = configuration.Context;
-            IPreferences preferences = configuration.Preferences;
-            string corePath = configuration.DynamoCorePath;
-            bool testMode = configuration.StartInTestMode;
+            string context = config.Context;
+            IPreferences preferences = config.Preferences;
+            string corePath = config.DynamoCorePath;
+            bool testMode = config.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
 
@@ -423,7 +439,7 @@ namespace Dynamo.Models
             MigrationManager.MessageLogged += LogMessage;
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            var thread = configuration.SchedulerThread ?? new DynamoSchedulerThread();
+            var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
             Scheduler = new DynamoScheduler(thread, IsTestMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
@@ -438,7 +454,7 @@ namespace Dynamo.Models
             InitializeInstrumentationLogger();
 
             SearchModel = new NodeSearchModel();
-            SearchModel.ItemProduced += 
+            SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
 
             NodeFactory = new NodeFactory();
@@ -470,15 +486,19 @@ namespace Dynamo.Models
             ResetEngineInternal();
 
             AddHomeWorkspace();
-
+            
             UpdateManager.UpdateManager.CheckForProductUpdate();
 
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
-            PackageManagerClient = new PackageManagerClient(
-                PackageLoader.RootPackagesDirectory,
-                CustomNodeManager);
+            var url = config.PackageManagerAddress ??
+                      AssemblyConfiguration.Instance.GetAppSetting("packageManagerAddress");
+
+            PackageManagerClient = InitializePackageManager(config.AuthProvider, url,
+                PackageLoader.RootPackagesDirectory, CustomNodeManager);
+
+            Logger.Log("Dynamo will use the package manager server at : " + url);
 
             InitializeNodeLibrary(preferences);
         }
@@ -549,6 +569,28 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     Validate the package manager url and initialize the PackageManagerClient object
+        /// </summary>
+        /// <param name="provider">A possibly null IAuthProvider</param>
+        /// <param name="url">The end point for the package manager server</param>
+        /// <param name="rootDirectory">The root directory for the package manager</param>
+        /// <param name="customNodeManager">A valid CustomNodeManager object</param>
+        /// <returns>Newly created object</returns>
+        private static PackageManagerClient InitializePackageManager(IAuthProvider provider, string url, string rootDirectory,
+            CustomNodeManager customNodeManager)
+        {
+            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            {
+                throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
+            }
+
+            return new PackageManagerClient(
+                new GregClient(provider, url),
+                rootDirectory,
+                customNodeManager);
+        }
+
         private void InitializeCustomNodeManager()
         {
             CustomNodeManager.MessageLogged += LogMessage;
@@ -595,7 +637,7 @@ namespace Dynamo.Models
             NodeFactory.AddAlsoKnownAs(dsFuncData.Type, dsFuncData.AlsoKnownAs);
             NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader);
             NodeFactory.AddAlsoKnownAs(dsVarArgFuncData.Type, dsVarArgFuncData.AlsoKnownAs);
-            
+
             var cbnLoader = new CodeBlockNodeLoader(LibraryServices);
             NodeFactory.AddLoader(cbnData.Type, cbnLoader);
             NodeFactory.AddFactory(cbnData.Type, cbnLoader);
@@ -782,7 +824,7 @@ namespace Dynamo.Models
             Logger.Log("Beginning engine reset");
             ResetEngine(true);
             Logger.Log("Reset complete");
-            
+
             ((HomeWorkspaceModel)CurrentWorkspace).Run();
         }
 
@@ -850,7 +892,7 @@ namespace Dynamo.Models
                 DebugSettings.VerboseLogging, IsTestMode, nodeGraph.ElementResolver, workspaceInfo.FileName);
 
             RegisterHomeWorkspace(newWorkspace);
-            
+
             workspace = newWorkspace;
             return true;
         }
@@ -979,14 +1021,14 @@ namespace Dynamo.Models
         public void AddNodeToCurrentWorkspace(NodeModel node, bool centered)
         {
             CurrentWorkspace.AddNode(node, centered);
-            
+
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection -- MAGN-5707
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(node);
 
             //TODO(Steve): Make sure we're not missing something with TransformCoordinates. -- MAGN-5708
         }
-        
+
         /// <summary>
         /// Copy selected ISelectable objects to the clipboard.
         /// </summary>
@@ -1135,7 +1177,7 @@ namespace Dynamo.Models
                     nodeLookup.TryGetValue(c.End.Owner.GUID, out end)
                         ? end
                         : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
-                
+
                 // Don't make a connector if either end is null.
                 where startNode != null && endNode != null
                 select
@@ -1154,7 +1196,7 @@ namespace Dynamo.Models
         public void AddToSelection(object parameters)
         {
             var node = parameters as NodeModel;
-            
+
             //don't add if the object is null
             if (node == null)
                 return;
@@ -1182,7 +1224,7 @@ namespace Dynamo.Models
 
             OnWorkspaceCleared(this, EventArgs.Empty);
         }
-        
+
         #endregion
 
         #region private methods

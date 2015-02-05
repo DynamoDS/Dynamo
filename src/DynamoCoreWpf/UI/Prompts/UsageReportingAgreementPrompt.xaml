@@ -24,10 +24,8 @@
         <Rectangle Width="544"
                    Height="100"
                    Stroke="Transparent"
-                   VerticalAlignment="Top">
-            <Rectangle.Fill>
-                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/consent_form_image.png" />
-            </Rectangle.Fill>
+                   VerticalAlignment="Top"
+                   Name="ConsentFormImageRectangle">
         </Rectangle>
         <StackPanel Grid.Row="1"
                     Margin="15,4,8,15"

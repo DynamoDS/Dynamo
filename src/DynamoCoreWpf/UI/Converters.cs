@@ -239,24 +239,16 @@ namespace Dynamo.Controls
     //      SearchViewModel.SearchAddonsVisibility (bool)
     //      SearchViewModel.SearchText (string)
     //
+    // Rewrite converter when Addons treeview will be visible.
+    // Task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6226.
     public class SearchResultsToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            const string message = "Wrong properties bound to SearchResultsToVisibilityConverter";
-
-            if (values.Length != 3)
-                throw new ArgumentException(message);
-
-            if (!(values[0] is int) || !(values[1] is bool) || !(values[2] is string))
-                return Visibility.Collapsed;
-
-            var count = (int)values[0];
-            var addOnVisible = (bool)values[1];
-            var text = (string)values[2];
-
-            if (count == 0 && (addOnVisible == false) && !string.IsNullOrEmpty(text))
+            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[2] as string))
+            {
                 return Visibility.Visible;
+            }
 
             return Visibility.Collapsed;
         }
@@ -348,6 +340,34 @@ namespace Dynamo.Controls
          CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class RunPreviewConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var dynamicRunEnabled = (bool)value;
+            return !dynamicRunEnabled;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class RunPreviewToolTipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var dynamicRunEnabled = (bool)value;
+            return dynamicRunEnabled ? Resources.ShowRunPreviewDisableToolTip : Resources.ShowRunPreviewEnableToolTip;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
         }
     }
 
@@ -490,6 +510,86 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToBrushConverter : IValueConverter
+    {
+        public SolidColorBrush ExecutionPreviewBrush { get; set; }
+        public SolidColorBrush NoneBrush { get; set; }
+        public SolidColorBrush SelectionBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return ExecutionPreviewBrush;
+                case PreviewState.None:
+                    return NoneBrush;
+                case PreviewState.Selection:
+                    return SelectionBrush;
+                default:
+                    return NoneBrush;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToColorConverter : IValueConverter
+    {
+        public Color ExecutionPreview { get; set; }
+        public Color None { get; set; }
+        public Color Selection { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return ExecutionPreview;
+                case PreviewState.None:
+                    return None;
+                case PreviewState.Selection:
+                    return Selection;
+                default:
+                    return None;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return Visibility.Visible;
+                case PreviewState.None:
+                    return Visibility.Collapsed;
+                case PreviewState.Selection:
+                    return Visibility.Visible;
+                default:
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
@@ -1392,7 +1492,22 @@ namespace Dynamo.Controls
         {
             //target -> source
             int val = 0;
-            int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val);
+            if (int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val))
+                return val;
+            //check if the value exceeds the 32 bit maximum / minimum value
+            string integerValue = value.ToString();
+            if (integerValue.Length > 1)
+            {
+                var start = integerValue[0] == '-' ? 1 : 0;
+                for (var i = start; i < integerValue.Length; i++)
+                {
+                    if (!char.IsDigit(integerValue[i]))
+                    {
+                        return 0;
+                    }
+                }
+                val = start == 0 ? int.MaxValue : int.MinValue;
+            }
             return val;
         }
     }
