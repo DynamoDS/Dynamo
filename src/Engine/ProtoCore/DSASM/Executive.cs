@@ -1404,7 +1404,7 @@ namespace ProtoCore.DSASM
 
                         // Set the current graphnode being executed
                         Properties.executingGraphNode = graphNode;
-                        core.RuntimeExpressionUID= graphNode.exprUID;
+                        runtimeCore.RuntimeExpressionUID = graphNode.exprUID;
 
                         if (runtimeCore.RuntimeOptions.dynamicCycleCheck)
                         {
@@ -1478,14 +1478,14 @@ namespace ProtoCore.DSASM
                         pc = graphNode.updateBlock.startpc;
                         graphNode.isDirty = false;
                         Properties.executingGraphNode = graphNode;
-                        core.RuntimeExpressionUID = graphNode.exprUID;
+                        runtimeCore.RuntimeExpressionUID = graphNode.exprUID;
                         break;
                     }
                 }
                 else if (graphNode.updateBlock.startpc == entrypoint)
                 {
                     Properties.executingGraphNode = graphNode;
-                    core.RuntimeExpressionUID = graphNode.exprUID;
+                    runtimeCore.RuntimeExpressionUID = graphNode.exprUID;
                     if (graphNode.isDirty)
                     {
                         graphNode.isDirty = false;

@@ -51,6 +51,7 @@ namespace ProtoCore
     public class RuntimeStatus
     {
         private ProtoCore.Core core;
+        private ProtoCore.RuntimeCore runtimeCore;
         private bool warningAsError;
         private System.IO.TextWriter output = System.Console.Out;
         private List<Runtime.WarningEntry> warnings;
@@ -107,6 +108,8 @@ namespace ProtoCore
                              bool warningAsError = false,
                              System.IO.TextWriter writer = null)
         {
+            runtimeCore = core.RuntimeCoreBridge;
+
             warnings = new List<Runtime.WarningEntry>();
             this.warningAsError = warningAsError;
             this.core = core;
@@ -169,7 +172,7 @@ namespace ProtoCore
                 Message = message,
                 Column = col,
                 Line = line,
-                ExpressionID = core.RuntimeExpressionUID,
+                ExpressionID = runtimeCore.RuntimeExpressionUID,
                 GraphNodeGuid = executingGraphNode == null ? Guid.Empty : executingGraphNode.guid,
                 AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
                 Filename = filename

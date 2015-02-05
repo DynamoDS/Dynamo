@@ -800,11 +800,6 @@ namespace ProtoCore
         /// </summary>
         public int ExpressionUID { get; set; }
 
-        /// <summary>
-        /// RuntimeExpressionUID is used by the associative engine at runtime to determine the current expression ID being executed
-        /// </summary>
-        public int RuntimeExpressionUID = 0;
-
         public int ModifierBlockUID { get; set; }
         public int ModifierStateSubscript { get; set; }
 
