@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ProtoCore.DSASM;
+using ProtoCore.Properties;
 
 namespace ProtoCore
 {
@@ -539,7 +540,7 @@ namespace ProtoCore
         /// <param name="duplicateSymbolNames"></param>
         public void LogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
         {
-            string message = string.Format(StringConstants.kMultipleSymbolFoundFromName, symbolName, "");
+            string message = string.Format(Resources.kMultipleSymbolFoundFromName, symbolName, "");
             message += String.Join(", ", collidingSymbolNames);
             LogWarning(BuildData.WarningID.kMultipleSymbolFoundFromName, message);
         }

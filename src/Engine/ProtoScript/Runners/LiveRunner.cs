@@ -292,9 +292,12 @@ namespace ProtoScript.Runners
 
             // Get the VM graphnodes associated with the astList
             List<GraphNode> deltaGraphNodeList = ProtoCore.AssociativeEngine.Utils.GetGraphNodesFromAST(core.DSExecutable, astList);
-
+            
             // Get the reachable VM graphnodes  given the modified graphnode list
             List<GraphNode> reachableNodes = EstimateReachableGraphNodes(core, deltaGraphNodeList);
+
+            // Append the modified nodes(deltaGraphNodeList) into the reachable list as they are also going to be executed when run
+            reachableNodes.AddRange(deltaGraphNodeList);
 
             // Get the list of guid's of the ASTs
             foreach (GraphNode graphnode in reachableNodes)
@@ -948,7 +951,7 @@ namespace ProtoScript.Runners
         void ResetVMAndResyncGraph(IEnumerable<string> libraries);
         List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
-        IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings();
+        IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
         
         // Event handlers for the notification from asynchronous call
@@ -1107,16 +1110,18 @@ namespace ProtoScript.Runners
 
         private void InitCore()
         {
-            coreOptions = new Options();
-            coreOptions.GenerateExprID = true;
-            coreOptions.IsDeltaExecution = true;
-            coreOptions.BuildOptErrorAsWarning = true;
-            coreOptions.WebRunner = false;
-            coreOptions.ExecutionMode = ExecutionMode.Serial;
+            coreOptions = new Options
+            {
+                GenerateExprID = true,
+                IsDeltaExecution = true,
+                BuildOptErrorAsWarning = true,
+                WebRunner = false,
+                ExecutionMode = ExecutionMode.Serial
+            };
 
             runnerCore = new ProtoCore.Core(coreOptions);
-            runnerCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(runnerCore));
-            runnerCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(runnerCore));
+            runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
+            runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
             runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
 
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
@@ -1504,10 +1509,11 @@ namespace ProtoScript.Runners
 
             // Initialize the runtime context and pass it the execution delta list from the graph compiler
             ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
+            ProtoCore.CompileTime.Context compileContext = new ProtoCore.CompileTime.Context();
 
             try
             {
-                runner.Execute(runnerCore, runtimeContext);
+                runner.Execute(runnerCore, 0, compileContext, runtimeContext);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
@@ -1568,8 +1574,9 @@ namespace ProtoScript.Runners
         /// </summary>
         private void SuppressResovledUnboundVariableWarnings()
         {
-            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.UpdatedSymbols);
-            runnerCore.UpdatedSymbols.Clear();
+            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.DSExecutable.RuntimeData.UpdatedSymbols);
+
+            runnerCore.DSExecutable.RuntimeData.UpdatedSymbols.Clear();
         }
 
         private void ApplyUpdate()
@@ -1655,10 +1662,6 @@ namespace ProtoScript.Runners
             changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
-
-#if DEBUG // Debug preproc the function here as we dont want it to perform additional calls on release
-            runnerCore.Heap.Verify();
-#endif
         }
 
         private void SynchronizeInternal(string code)
@@ -1786,7 +1789,7 @@ namespace ProtoScript.Runners
         /// Returns runtime warnings.
         /// </summary>
         /// <returns></returns>
-        public IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
+        public IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
         {
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
@@ -1796,11 +1799,11 @@ namespace ProtoScript.Runners
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);
 
-            var ret = new Dictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>>();
+            var ret = new Dictionary<Guid, List<ProtoCore.Runtime.WarningEntry>>();
             foreach (var w in warnings)
             {
                 Guid guid = w.FirstOrDefault().GraphNodeGuid;
-                ret[guid] = new List<ProtoCore.RuntimeData.WarningEntry>(w);
+                ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(w);
             }
 
             return ret;

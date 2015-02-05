@@ -35,6 +35,13 @@ namespace Dynamo.DSEngine
                 return false;
 
             functions.Add(function);
+
+            if (functions.Count > 1)
+            {
+                functions[0].IsOverloaded = true;
+                functions[functions.Count - 1].IsOverloaded = true;
+            }
+
             return true;
         }
 

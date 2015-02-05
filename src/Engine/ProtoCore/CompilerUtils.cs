@@ -1,5 +1,6 @@
 ﻿using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -183,7 +184,7 @@ namespace ProtoCore.Utils
         #endregion
     }
 
-    public class CompilerUtils
+    public static class CompilerUtils
     {
         /// <summary>
         /// Does the first pass of compilation and returns a list of wanrnings in compilation
@@ -194,8 +195,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static ProtoCore.BuildStatus PreCompile(string code, Core core, CodeBlockNode codeBlock, out int blockId)
         {
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
-
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             try
             {
@@ -211,7 +210,7 @@ namespace ProtoCore.Utils
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 ProtoCore.Language id = globalBlock.language;
 
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, codeBlockNode: codeBlock);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context, codeBlockNode: codeBlock);
 
                 core.BuildStatus.ReportBuildResult();
 
@@ -378,11 +377,11 @@ namespace ProtoCore.Utils
                 // Handle non Binary expression nodes separately
                 if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
                 {
-                    core.BuildStatus.LogSemanticError(StringConstants.modifierBlockNotSupported);
+                    core.BuildStatus.LogSemanticError(Resources.modifierBlockNotSupported);
                 }
                 else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
                 {
-                    core.BuildStatus.LogSemanticError(StringConstants.importStatementNotSupported);
+                    core.BuildStatus.LogSemanticError(Resources.importStatementNotSupported);
                 }
                 else if (isFunctionOrClassDef)
                 {
@@ -398,7 +397,7 @@ namespace ProtoCore.Utils
                         ModifierStackNode mNode = ben.RightNode as ModifierStackNode;
                         if (mNode != null)
                         {
-                            core.BuildStatus.LogSemanticError(StringConstants.modifierBlockNotSupported);
+                            core.BuildStatus.LogSemanticError(Resources.modifierBlockNotSupported);
                         }
                         IdentifierNode lNode = ben.LeftNode as IdentifierNode;
                         if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)

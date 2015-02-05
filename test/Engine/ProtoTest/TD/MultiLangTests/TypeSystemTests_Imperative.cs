@@ -68,7 +68,7 @@ a;b;
                 y = foo (1);}";
             thisTest.RunScriptSource(code);
             thisTest.Verify("y", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -2606,4 +2606,3 @@ t2 = a.x;";
         }
     }
 }
-

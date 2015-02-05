@@ -54,7 +54,7 @@ namespace Dynamo.Tests
             webServer.ExecuteMessageFromSocket(createCustomNodeCommand, "", false);
 
             var guid = Guid.Parse(NodeGuids.CustomNodeWorkspace);
-            Assert.IsTrue(Model.CustomNodeManager.LoadedCustomNodes.Contains(guid),
+            Assert.IsTrue(Model.CustomNodeManager.Contains(guid),
                 "Workspace of custom" + WebServerErrorMessages.NodeWasNotCreated);
         }
 
@@ -217,7 +217,7 @@ namespace Dynamo.Tests
 
             CheckExecutingUploadMessage(fileToUploadContent, 2);
 
-            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.CustomNodeInstance),
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.CustomNodeInstance),
                 "Proxy custom" + WebServerErrorMessages.NodeWasNotCreated);
         }
 
@@ -227,8 +227,8 @@ namespace Dynamo.Tests
             CanUploadFileWithCustomNodeFromWeb();
             proxyResponseExpected = true;
             CanUploadCustomNodeFileFromWeb();
-            Model.Home(null);
-            var customNodeInstance = Model.Nodes.First(node => node.GUID.ToString() == NodeGuids.CustomNodeInstance);
+            Model.CurrentWorkspace = Model.Workspaces.First(w => w is HomeWorkspaceModel);
+            var customNodeInstance = Model.CurrentWorkspace.Nodes.First(node => node.GUID.ToString() == NodeGuids.CustomNodeInstance);
             Assert.NotNull(customNodeInstance.CachedValue, WebServerErrorMessages.ProxyNodeWasNotUpdated);
             Assert.NotNull(customNodeInstance.CachedValue.Data, WebServerErrorMessages.ProxyNodeWasNotUpdated);
         }
@@ -266,16 +266,16 @@ namespace Dynamo.Tests
 
         void CheckHomeContent()
         {
-            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.CodeBlock),
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.CodeBlock),
                 "Code block" + WebServerErrorMessages.NodeWasNotCreated);
 
-            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Boolean),
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Boolean),
                 "Boolean" + WebServerErrorMessages.NodeWasNotCreated);
 
-            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.If),
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.If),
                 "If" + WebServerErrorMessages.NodeWasNotCreated);
 
-            Assert.IsTrue(Model.Nodes.First(node => node.GUID.ToString() == NodeGuids.CodeBlock).OutPorts.Count == 1,
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.First(node => node.GUID.ToString() == NodeGuids.CodeBlock).OutPorts.Count == 1,
                 WebServerErrorMessages.WrongCBNOutputPorts);
         }
 
@@ -283,13 +283,13 @@ namespace Dynamo.Tests
         {
             Assert.IsInstanceOf<CustomNodeWorkspaceModel>(Model.CurrentWorkspace);
 
-            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Point),
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Point),
                 "Point" + WebServerErrorMessages.NodeWasNotCreated);
 
-            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Circle),
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Circle),
                 "Circle" + WebServerErrorMessages.NodeWasNotCreated);
 
-            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Surface),
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Surface),
                 "Surface" + WebServerErrorMessages.NodeWasNotCreated);
         }
 

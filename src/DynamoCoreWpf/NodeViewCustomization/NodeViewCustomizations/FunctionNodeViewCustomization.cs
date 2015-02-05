@@ -1,26 +1,32 @@
+using System;
 using System.Windows.Controls;
-
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using Dynamo.Wpf.Properties;
+
 
 namespace Dynamo.Wpf
 {
-    public class FunctionNodeViewCustomization : INodeViewCustomization<Dynamo.Nodes.Function>
+    public class FunctionNodeViewCustomization : INodeViewCustomization<Function>
     {
-        private Dynamo.Nodes.Function functionNodeModel;
+        private Function functionNodeModel;
+        private DynamoViewModel dynamoViewModel;
 
-        public void CustomizeView(Dynamo.Nodes.Function function, NodeView nodeView)
+        public void CustomizeView(Function function, NodeView nodeView)
         {
-            this.functionNodeModel = function;
+            functionNodeModel = function;
+            dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
             nodeView.MainContextMenu.Items.Add(new Separator());
 
             // edit contents
             var editItem = new MenuItem
             {
-                Header = "Edit Custom Node...",
+                Header = Resources.ContextMenuEditCustomNode,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(editItem);
@@ -29,7 +35,7 @@ namespace Dynamo.Wpf
             // edit properties
             var editPropertiesItem = new MenuItem
             {
-                Header = "Edit Custom Node Properties...",
+                Header = Resources.ContextMenuEditCustomNodeProperty,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(editPropertiesItem);
@@ -38,7 +44,7 @@ namespace Dynamo.Wpf
             // publish
             var publishCustomNodeItem = new MenuItem
             {
-                Header = "Publish This Custom Node...",
+                Header = Resources.ContextMenuPublishCustomNode,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(publishCustomNodeItem);
@@ -57,12 +63,19 @@ namespace Dynamo.Wpf
 
         private void EditCustomNodeProperties()
         {
-            var workspace = functionNodeModel.Definition.WorkspaceModel;
+            CustomNodeInfo info;
+            var model = dynamoViewModel.Model;
 
+            if (!model.CustomNodeManager.TryGetNodeInfo(functionNodeModel.Definition.FunctionId,
+                    out info))
+            {
+                return;
+            }
+            
             // copy these strings
-            var newName = workspace.Name.Substring(0);
-            var newCategory = workspace.Category.Substring(0);
-            var newDescription = workspace.Description.Substring(0);
+            var newName = info.Name.Substring(0);
+            var newCategory = info.Category.Substring(0);
+            var newDescription = info.Description.Substring(0);
 
             var args = new FunctionNamePromptEventArgs
             {
@@ -72,22 +85,19 @@ namespace Dynamo.Wpf
                 CanEditName = false
             };
 
-            functionNodeModel.Workspace.DynamoModel.OnRequestsFunctionNamePrompt(this.functionNodeModel, args);
+            model.OnRequestsFunctionNamePrompt(functionNodeModel, args);
 
             if (args.Success)
             {
-                if (workspace is CustomNodeWorkspaceModel)
-                {
-                    var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
-                    functionNodeModel.Workspace.DynamoModel.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
-                }
-
-                if (args.CanEditName) workspace.Name = args.Name;
-                workspace.Description = args.Description;
-                workspace.Category = args.Category;
-
-                if (workspace.FileName != null)
-                    workspace.Save();
+                CustomNodeWorkspaceModel ws;
+                model.CustomNodeManager.TryGetFunctionWorkspace(
+                    functionNodeModel.Definition.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out ws);
+                ws.SetInfo(args.Name, args.Category, args.Description);
+                
+                if (!string.IsNullOrEmpty(ws.FileName))
+                    ws.Save(model.EngineController.LiveRunnerCore);
             }
         }
 
@@ -103,6 +113,7 @@ namespace Dynamo.Wpf
 
         public void Dispose()
         {
+           
         }
     }
 }

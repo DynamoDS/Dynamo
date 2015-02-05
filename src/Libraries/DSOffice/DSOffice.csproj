@@ -70,13 +70,8 @@
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoMSOffice\DynamoMSOffice.csproj">
-      <Project>{798656e4-733f-4abc-8af4-604412fc0bc0}</Project>
-      <Name>DynamoMSOffice</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DSOffice_DynamoCustomization.xml" />
     <Content Include="DSOffice.Migrations.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

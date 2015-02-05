@@ -72,7 +72,7 @@ namespace Dynamo.Tests
 
             webServer.ExecuteMessageFromSocket(createCommand, "", false);
 
-            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Number));
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Number));
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace Dynamo.Tests
 
             webServer.ExecuteMessageFromSocket(updateCommand, "", false);
 
-            var doubleInput = Model.Nodes.First(
+            var doubleInput = Model.CurrentWorkspace.Nodes.First(
                     node => node.GUID.ToString() == NodeGuids.Number) as DoubleInput;
 
             Assert.NotNull(doubleInput);
@@ -102,7 +102,7 @@ namespace Dynamo.Tests
             string deleteCommand = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(deleteCommand, "", false);
-            Assert.IsFalse(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Number));
+            Assert.IsFalse(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.Number));
         }
 
         [Test]
@@ -110,14 +110,14 @@ namespace Dynamo.Tests
         {
             CanExecuteCreateCommand();
 
-            Assert.IsTrue(Model.Nodes.Any());
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any());
 
             string commandPath = GetCommandPathByFileName("clearWorkspaceMessage");
             string clearWorkspace = File.ReadAllText(commandPath);
 
             webServer.ExecuteMessageFromSocket(clearWorkspace, "", false);
 
-            Assert.IsFalse(Model.Nodes.Any());
+            Assert.IsFalse(Model.CurrentWorkspace.Nodes.Any());
         }
 
         [Test]
@@ -128,7 +128,7 @@ namespace Dynamo.Tests
 
             webServer.ExecuteMessageFromSocket(createCommand, "", true);
 
-            Assert.IsFalse(Model.Nodes.Any());
+            Assert.IsFalse(Model.CurrentWorkspace.Nodes.Any());
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace Dynamo.Tests
 
             webServer.ExecuteMessageFromSocket(createCommand, "", false);
 
-            Assert.IsTrue(Model.Nodes.Any(node => node.GUID.ToString() == NodeGuids.CodeBlock));
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(node => node.GUID.ToString() == NodeGuids.CodeBlock));
         }
 
         [Test]

@@ -54,7 +54,10 @@ namespace DynamoWebServer.Messages
             {
                 // Get each node in workspace to update their visuals.
                 foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
-                    node.RequestVisualUpdateAsync(dynamoModel.MaxTesselationDivisions);
+                    node.RequestVisualUpdateAsync(
+                        dynamoModel.Scheduler,
+                        dynamoModel.EngineController,
+                        dynamoModel.MaxTesselationDivisions);
 
                 var task = new DelegateBasedAsyncTask(dynamoModel.Scheduler);
                 task.Initialize(() => nextRunAllowed.Set());
@@ -251,7 +254,7 @@ namespace DynamoWebServer.Messages
                 // if path was specified it means NWK is used and we need just to save file
                 if (!string.IsNullOrEmpty(filePath))
                 {
-                    if (!workspaceToSave.SaveAs(filePath))
+                    if (!workspaceToSave.SaveAs(filePath, dynamoModel.EngineController.LiveRunnerCore))
                         throw new Exception(string.Format("Failed to save file: {0}", filePath));
                 }
                 else
@@ -271,7 +274,7 @@ namespace DynamoWebServer.Messages
 
                     // Temporarily save workspace into a drive 
                     // using existing functionality for saving
-                    if (!workspaceToSave.SaveAs(filePath))
+                    if (!workspaceToSave.SaveAs(filePath, dynamoModel.EngineController.LiveRunnerCore))
                         throw new Exception(string.Format("Failed to save file: {0}", filePath));
 
                     // Get the file as byte array and after that delete it
@@ -517,13 +520,16 @@ namespace DynamoWebServer.Messages
         private void RetrieveGeometry(string nodeId, string sessionId)
         {
             Guid guid;
-            var nodeMap = dynamoModel.NodeMap;
-            if (Guid.TryParse(nodeId, out guid) && nodeMap.ContainsKey(guid))
+            var nodes = dynamoModel.CurrentWorkspace.Nodes;
+            if (Guid.TryParse(nodeId, out guid))
             {
-                NodeModel model = nodeMap[guid];
+                NodeModel model = nodes.FirstOrDefault(n => n.GUID == guid);
 
-                OnResultReady(this, new ResultReadyEventArgs(
-                    new GeometryDataResponse(new GeometryData(nodeId, model.RenderPackages)), sessionId));
+                if (model != null)
+                {
+                    OnResultReady(this, new ResultReadyEventArgs(
+                        new GeometryDataResponse(new GeometryData(nodeId, model.RenderPackages)), sessionId));
+                }
             }
         }
 

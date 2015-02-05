@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.UI.Controls
 {
@@ -120,19 +121,19 @@ namespace Dynamo.UI.Controls
 
             #region File Operations
 
-            fileOperations.Add(new StartPageListItem("New", "icon-new.png")
+            fileOperations.Add(new StartPageListItem(Resources.StartPageNewFile, "icon-new.png")
             {
                 ContextData = ButtonNames.NewWorkspace,
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
 
-            fileOperations.Add(new StartPageListItem("Custom Node", "icon-customnode.png")
+            fileOperations.Add(new StartPageListItem(Resources.StartPageNewCustomNode, "icon-customnode.png")
             {
                 ContextData = ButtonNames.NewCustomNodeWorkspace,
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
 
-            fileOperations.Add(new StartPageListItem("Open", "icon-open.png")
+            fileOperations.Add(new StartPageListItem(Resources.StartPageOpenFile, "icon-open.png")
             {
                 ContextData = ButtonNames.OpenWorkspace,
                 ClickAction = StartPageListItem.Action.RegularCommand
@@ -142,13 +143,13 @@ namespace Dynamo.UI.Controls
 
             #region Community Links
 
-            communityLinks.Add(new StartPageListItem("Discussion forum", "icon-discussion.png")
+            communityLinks.Add(new StartPageListItem(Resources.StartPageDiscussionForum, "icon-discussion.png")
             {
                 ContextData = Configurations.DynamoBimForum,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            communityLinks.Add(new StartPageListItem("Visit www.dynamobim.org", "icon-dynamobim.png")
+            communityLinks.Add(new StartPageListItem(Resources.StartPageVisitDynamoBim, "icon-dynamobim.png")
             {
                 ContextData = Configurations.DynamoSiteLink,
                 ClickAction = StartPageListItem.Action.ExternalUrl
@@ -158,19 +159,19 @@ namespace Dynamo.UI.Controls
 
             #region Reference List
 
-            references.Add(new StartPageListItem("Written Tutorials", "icon-reference.png")
+            references.Add(new StartPageListItem(Resources.StartPageAdvancedTutorials, "icon-reference.png")
             {
-                ContextData = Configurations.DynamoWrittenTutorials,
+                ContextData = Configurations.DynamoAdvancedTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            references.Add(new StartPageListItem("Video Tutorials", "icon-video.png")
+            references.Add(new StartPageListItem(Resources.StartPageVideoTutorials, "icon-video.png")
             {
                 ContextData = Configurations.DynamoVideoTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            references.Add(new StartPageListItem("More Samples", "icons-more-samples.png")
+            references.Add(new StartPageListItem(Resources.StartPageMoreSamples, "icons-more-samples.png")
             {
                 ContextData = Configurations.DynamoMoreSamples,
                 ClickAction = StartPageListItem.Action.ExternalUrl
@@ -180,13 +181,13 @@ namespace Dynamo.UI.Controls
 
             #region Contribution Links
 
-            contributeLinks.Add(new StartPageListItem("Github repository", "icon-github.png")
+            contributeLinks.Add(new StartPageListItem(Resources.StartPageGithubRepository, "icon-github.png")
             {
                 ContextData = Configurations.GitHubDynamoLink,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            contributeLinks.Add(new StartPageListItem("Send issues", "icon-issues.png")
+            contributeLinks.Add(new StartPageListItem(Resources.StartPageSendIssues, "icon-issues.png")
             {
                 ContextData = Configurations.GitHubBugReportingLink,
                 ClickAction = StartPageListItem.Action.ExternalUrl
@@ -365,7 +366,7 @@ namespace Dynamo.UI.Controls
             var path = item.ContextData;
             if (string.IsNullOrEmpty(path) || (File.Exists(path) == false))
             {
-                MessageBox.Show(string.Format("File not found: {0}", path));
+                MessageBox.Show(string.Format(Resources.MessageFileNotFound, path));
                 return;
             }
 
@@ -469,7 +470,7 @@ namespace Dynamo.UI.Controls
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 // Note that you can have more than one file.
-                var homespace = dynamoViewModel.Model.HomeSpace;
+                var homespace = dynamoViewModel.HomeSpace;
                 if (homespace.HasUnsavedChanges && 
                     !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(homespace))
                 {

@@ -28,6 +28,10 @@ namespace Dynamo.Tests
             foreach (var item in branch)
             {
                 string nodeLabel = string.Format("{0}", content[count]);
+
+                // DesignScript bool string reps are lower case, C# are upper case
+                if (content[count] is bool) nodeLabel = nodeLabel.ToLower();
+
                 Assert.AreEqual(nodeLabel, item.NodeLabel);
                 ++count;
             }
@@ -82,33 +86,50 @@ namespace Dynamo.Tests
                 ++count;
             }
         }
-        
+
+        /// <summary>
+        /// Construct a WatchViewModel from a Watch node
+        /// </summary>
+        private WatchViewModel GetWatchViewModel(Watch watch)
+        {
+            var inputVar = watch.IsPartiallyApplied
+                ? watch.AstIdentifierForPreview.Name
+                : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
+
+            var core = ViewModel.Model.EngineController.LiveRunnerCore;
+            var watchHandler = ViewModel.WatchHandler;
+
+            return watchHandler.GenerateWatchViewModelForData(
+                watch.CachedValue,
+                core,
+                inputVar,
+                false );
+        }
         
         [Test]
-        [Category("Failure")]
         public void WatchLiterals()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\WatchLiterals.dyn");
+            var openPath = Path.Combine(GetTestDirectory(), @"core\watch\WatchLiterals.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             ViewModel.Model.PreferenceSettings.NumberFormat = "f0";
 
             // get count node
-            Watch watchNumber = model.CurrentWorkspace.NodeFromWorkspace("eed0b6aa-0d82-44c5-aab6-2bf131044940") as Watch;
-            Watch watchBoolean = model.CurrentWorkspace.NodeFromWorkspace("8c5a87db-2d6a-4d3c-8c01-5ff326aef321") as Watch;
-            Watch watchPoint = model.CurrentWorkspace.NodeFromWorkspace("f1581148-9318-40fa-9402-61557255162a") as Watch;
+            var watchNumber = model.CurrentWorkspace.NodeFromWorkspace("eed0b6aa-0d82-44c5-aab6-2bf131044940") as Watch;
+            var watchBoolean = model.CurrentWorkspace.NodeFromWorkspace("8c5a87db-2d6a-4d3c-8c01-5ff326aef321") as Watch;
+            var watchPoint = model.CurrentWorkspace.NodeFromWorkspace("f1581148-9318-40fa-9402-61557255162a") as Watch;
 
-            WatchViewModel node = watchNumber.GetWatchNode();
+            var node = GetWatchViewModel(watchNumber);
             Assert.AreEqual("5", node.NodeLabel);
 
-            node = watchBoolean.GetWatchNode();
-            Assert.AreEqual("False", node.NodeLabel);
+            node = GetWatchViewModel(watchBoolean);
+            Assert.AreEqual("false", node.NodeLabel);
 
-            node = watchPoint.GetWatchNode();
+            node = GetWatchViewModel(watchPoint);
             var pointNode = model.CurrentWorkspace.NodeFromWorkspace("64f10a92-3297-448b-be7a-03dbe1e8a90a");
             
             //Validate using the point node connected to watch node.
@@ -116,34 +137,33 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void Watch1DCollections()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\Watch1DCollections.dyn");
+            var openPath = Path.Combine(GetTestDirectory(), @"core\watch\Watch1DCollections.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             ViewModel.Model.PreferenceSettings.NumberFormat = "f0";
 
             // get count node
-            Watch watchNumbers = model.CurrentWorkspace.NodeFromWorkspace("f79b65d9-8cda-449c-a8fa-8a44166eec12") as Watch;
-            Watch watchBooleans = model.CurrentWorkspace.NodeFromWorkspace("4ea56d78-68a9-400f-88b8-c6875365fa54") as Watch;
-            Watch watchVectors = model.CurrentWorkspace.NodeFromWorkspace("73b35c1f-2dfb-4ce0-8609-c0bac9f3033c") as Watch;
+            var watchNumbers = model.CurrentWorkspace.NodeFromWorkspace("f79b65d9-8cda-449c-a8fa-8a44166eec12") as Watch;
+            var watchBooleans = model.CurrentWorkspace.NodeFromWorkspace("4ea56d78-68a9-400f-88b8-c6875365fa54") as Watch;
+            var watchVectors = model.CurrentWorkspace.NodeFromWorkspace("73b35c1f-2dfb-4ce0-8609-c0bac9f3033c") as Watch;
 
-            WatchViewModel node = watchNumbers.GetWatchNode();
+            var node = GetWatchViewModel(watchNumbers);
             Assert.AreEqual("List", node.NodeLabel);
             Assert.AreEqual(10, node.Children.Count);
             AssertWatchTreeBranchContent(node.Children, new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
-            node = watchBooleans.GetWatchNode();
+            node = GetWatchViewModel(watchBooleans);
             Assert.AreEqual("List", node.NodeLabel);
             Assert.AreEqual(6, node.Children.Count);
             AssertWatchTreeBranchContent(node.Children, new object[] { true, false, true, false, true, false });
 
-            node = watchVectors.GetWatchNode();
+            node = GetWatchViewModel(watchVectors);
             Assert.AreEqual("List", node.NodeLabel);
             Assert.AreEqual(10, node.Children.Count);
             var vectorNode = model.CurrentWorkspace.NodeFromWorkspace("9aedc16c-da20-4584-a53f-7dd4f01dc5ee");
@@ -157,7 +177,7 @@ namespace Dynamo.Tests
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
@@ -173,7 +193,7 @@ namespace Dynamo.Tests
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchFunctionPointer.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var watchNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>();
             foreach (var watchNode in watchNodes)
@@ -193,7 +213,7 @@ namespace Dynamo.Tests
             
             string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject_2.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
