@@ -32,7 +32,8 @@ namespace DynamoWebServer.Responses
         public ArrayItemsDataResponse(NodeModel node, int indexFrom, int length)
         {
             NodeId = node.GUID.ToString();
-            if (node.CachedValue.IsCollection)
+
+            if (node.CachedValue != null && node.CachedValue.IsCollection)
             {
                 var allItems = node.CachedValue.GetElements();
                 if (allItems.Count < indexFrom)
@@ -54,6 +55,8 @@ namespace DynamoWebServer.Responses
 
         private string GetValueFromMirrorData(MirrorData cachedValue)
         {
+            if (cachedValue == null) return "null";
+
             if (cachedValue.IsCollection)
             {
                 Func<MirrorData, string> wrappedValue = (el) => "\"" + GetValueFromMirrorData(el) + "\"";
