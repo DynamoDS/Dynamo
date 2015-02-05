@@ -2,28 +2,39 @@
 
 namespace Dynamo.Wpf.Interfaces
 {
-    public enum ResourceName
+    public struct ResourceNames
     {
-        StartPageLogo,
-        AboutBoxLogo,
-        UsageConsentFormImage,
-        
-    }
+        public enum AboutBox
+        {
+            Title,   
+            Image       
+        }
 
-    public enum UsageConsentFormStringResource
-    {
-        UsageConsentFormTitle,
-        UsageConsentFormMessage1,
-        UsageConsentFormFeatureUsage,
-        UsageConsentFormNodeUsage,
-        UsageConsentFormMessage2,
-        UsageConsentFormConsent
+        public enum ConsentForm
+        {
+            Image,        
+            Title, 
+            AgreementOne,  
+            AgreementTwo,
+            FeatureUsage,
+            NodeUsage,
+            Consent,
+        }
+
+        public enum StartPage
+        {
+            Image,       
+            Title, 
+        }
     }
 
     public interface IBrandingResourceProvider
     {
-        ImageSource GetImageSource(ResourceName resourceName);
-        string GetString(ResourceName resourceName);
-        string GetUsageConsentDialogString(UsageConsentFormStringResource resourceName);
+        ImageSource GetImageSource(ResourceNames.AboutBox resourceName);
+        ImageSource GetImageSource(ResourceNames.ConsentForm resourceName);
+        ImageSource GetImageSource(ResourceNames.StartPage resourceName);
+
+        string GetString(ResourceNames.AboutBox resourceName);
+        string GetString(ResourceNames.ConsentForm resourceName);
     }
 }

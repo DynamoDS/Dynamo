@@ -15,16 +15,16 @@ namespace Dynamo.UI.Prompts
         public UsageReportingAgreementPrompt(IBrandingResourceProvider resourceProvider)
         {
             InitializeComponent();
-            Title = resourceProvider.GetUsageConsentDialogString(UsageConsentFormStringResource.UsageConsentFormTitle);
+            Title = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.Title);
 
             ConsentFormImageRectangle.Fill = new ImageBrush(
-                resourceProvider.GetImageSource(ResourceName.UsageConsentFormImage));
+                resourceProvider.GetImageSource(Wpf.Interfaces.ResourceNames.ConsentForm.Image));
 
-            Message1TextBlock.Text = resourceProvider.GetUsageConsentDialogString(UsageConsentFormStringResource.UsageConsentFormMessage1);
-            FeatureTextBlock.Text = resourceProvider.GetUsageConsentDialogString(UsageConsentFormStringResource.UsageConsentFormFeatureUsage);
-            NodeTextBlock.Text = resourceProvider.GetUsageConsentDialogString(UsageConsentFormStringResource.UsageConsentFormNodeUsage);
-            Message2TextBlock.Text = resourceProvider.GetUsageConsentDialogString(UsageConsentFormStringResource.UsageConsentFormMessage2);
-            ConsentTextBlock.Text = resourceProvider.GetUsageConsentDialogString(UsageConsentFormStringResource.UsageConsentFormConsent);
+            Message1TextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.AgreementOne);
+            FeatureTextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.FeatureUsage);
+            NodeTextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.NodeUsage);
+            Message2TextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.AgreementTwo);
+            ConsentTextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.Consent);
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)

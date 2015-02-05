@@ -8,17 +8,32 @@ namespace Dynamo.Wpf.UI
 {
     internal class DefaultBrandingResourceProvider : IBrandingResourceProvider
     {
-        public ImageSource GetImageSource(ResourceName resourceName)
+        public ImageSource GetImageSource(ResourceNames.AboutBox resourceName)
         {
             ImageSource image = null;
             switch (resourceName)
             {
-                case ResourceName.AboutBoxLogo:
+                case ResourceNames.AboutBox.Image:
                     image = new BitmapImage(
                         new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png",
                             UriKind.Absolute));
                     break;
-                case ResourceName.UsageConsentFormImage:
+
+            }
+            if (image == null)
+            {
+                throw new InvalidEnumArgumentException(
+                    String.Format("Resource name not handled: {0}", resourceName));
+            }
+            return image;
+        }
+
+        public ImageSource GetImageSource(ResourceNames.ConsentForm resourceName)
+        {
+            ImageSource image = null;
+            switch (resourceName)
+            {
+                case ResourceNames.ConsentForm.Image:
                     image = new BitmapImage(
                         new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/consent_form_image.png",
                             UriKind.Absolute));
@@ -32,32 +47,63 @@ namespace Dynamo.Wpf.UI
             return image;
         }
 
-        public string GetString(ResourceName resourceName)
+        public ImageSource GetImageSource(ResourceNames.StartPage resourceName)
         {
-            throw new NotImplementedException();
+            ImageSource image = null;
+            switch (resourceName)
+            {
+                case ResourceNames.StartPage.Image:
+                    image = new BitmapImage(
+                        new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/StartPage/dynamo-logo.png",
+                            UriKind.Absolute));
+                    break;
+            }
+            if (image == null)
+            {
+                throw new InvalidEnumArgumentException(
+                    String.Format("Resource name not handled: {0}", resourceName));
+            }
+            return image;
         }
 
-        public string GetUsageConsentDialogString(UsageConsentFormStringResource resourceName)
+        public string GetString(ResourceNames.AboutBox resourceName)
         {
             string resource = string.Empty;
             switch (resourceName)
             {
-                case UsageConsentFormStringResource.UsageConsentFormTitle:
+                case ResourceNames.AboutBox.Title:
+                    resource = Properties.Resources.AboutWindowTitle;
+                    break;
+            }
+            if (string.IsNullOrEmpty(resource))
+            {
+                throw new InvalidEnumArgumentException(
+                    String.Format("Resource name not handled: {0}", resourceName));
+            }
+            return resource;
+        }
+
+        public string GetString(ResourceNames.ConsentForm resourceName)
+        {
+            string resource = string.Empty;
+            switch (resourceName)
+            {
+                case ResourceNames.ConsentForm.Title:
                     resource = Properties.Resources.UsageReportPromptDialogTitle;
                     break;
-                case UsageConsentFormStringResource.UsageConsentFormMessage1:
+                case ResourceNames.ConsentForm.AgreementOne:
                     resource = Properties.Resources.UsageReportPromptDialogMessagePart1;
                     break;
-                case UsageConsentFormStringResource.UsageConsentFormMessage2:
+                case ResourceNames.ConsentForm.AgreementTwo:
                     resource = Properties.Resources.UsageReportPromptDialogMessagePart2;
                     break;
-                case UsageConsentFormStringResource.UsageConsentFormNodeUsage:
+                case ResourceNames.ConsentForm.NodeUsage:
                     resource = Properties.Resources.UsageReportPromptDialogNodeUsage;
                     break;
-                case UsageConsentFormStringResource.UsageConsentFormFeatureUsage:
+                case ResourceNames.ConsentForm.FeatureUsage:
                     resource = Properties.Resources.UsageReportPromptDialogFeatureUsage;
                     break;
-                case UsageConsentFormStringResource.UsageConsentFormConsent:
+                case ResourceNames.ConsentForm.Consent:
                     resource = Properties.Resources.UsageReportPromptDialogConsent;
                     break;
 
