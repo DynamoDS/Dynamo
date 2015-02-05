@@ -232,13 +232,11 @@ namespace Dynamo.Controls
         }
     }
 
-    // Rewrite converter when Addons treeview will be visible.
-    // Task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6226.
     public class SearchResultsToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[2] as string))
+            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
             {
                 return Visibility.Visible;
             }
@@ -1501,14 +1499,14 @@ namespace Dynamo.Controls
         public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
-            int val = 0;
+            int val = 0;          
             if (int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val))
                 return val;
             //check if the value exceeds the 32 bit maximum / minimum value
             string integerValue = value.ToString();
             if (integerValue.Length > 1)
             {
-                var start = integerValue[0] == '-' ? 1 : 0;
+                var start =  integerValue[0] == '-' ? 1 : 0;
                 for (var i = start; i < integerValue.Length; i++)
                 {
                     if (!char.IsDigit(integerValue[i]))
