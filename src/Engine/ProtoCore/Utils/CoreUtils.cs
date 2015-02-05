@@ -682,24 +682,6 @@ namespace ProtoCore.Utils
             return node1.Equals(node2);
         }
 
-        public static bool Compare(string s1, string s2, Core core)
-        {
-            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(s1));
-            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
-            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
-            p.Parse();
-            ProtoCore.AST.Node s1Root = p.root;
-
-            memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(s2));
-            s = new ProtoCore.DesignScriptParser.Scanner(s2);
-            p = new ProtoCore.DesignScriptParser.Parser(s, core);
-            p.Parse();
-            ProtoCore.AST.Node s2Root = p.root;
-
-            bool areEqual = s1Root.Equals(s2Root);
-            return areEqual;
-        }
-
         public static void CopyDebugData(ProtoCore.AST.Node nodeTo, ProtoCore.AST.Node nodeFrom)
         {
             if (null != nodeTo && null != nodeFrom)

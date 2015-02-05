@@ -364,8 +364,7 @@ namespace ProtoScript.Runners
                     }
 
                     core.BuildStatus.ClearWarningsForGraph(st.GUID);
-
-                    core.RuntimeCoreBridge.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+                    core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
                 }
             }
             return deltaAstList;
@@ -374,6 +373,7 @@ namespace ProtoScript.Runners
         private IEnumerable<AssociativeNode> GetDeltaAstListAdded(IEnumerable<Subtree> addedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
+            currentSubTreeList = new Dictionary<Guid, Subtree>();
             if (addedSubTrees != null)
             {
                 foreach (var st in addedSubTrees)
@@ -503,7 +503,7 @@ namespace ProtoScript.Runners
                     foreach (var ast in csData.RemovedBinaryNodesFromModification)
                     {
                         core.BuildStatus.ClearWarningsForAst(ast.ID);
-                        core.RuntimeCoreBridge.RuntimeStatus.ClearWarningsForAst(ast.ID);
+                        core.RuntimeStatus.ClearWarningsForAst(ast.ID);
                     }
                 }
 
@@ -933,7 +933,7 @@ namespace ProtoScript.Runners
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
-        void PreviewGraph(GraphSyncData syncData);
+        List<Guid> PreviewGraph(GraphSyncData syncData);
         void UpdateCmdLineInterpreter(string code);
         ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeId);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
@@ -1037,19 +1037,6 @@ namespace ProtoScript.Runners
             }
         }
 
-        private ProtoCore.RuntimeCore runtimeCore = null;
-        public ProtoCore.RuntimeCore RuntimeCore
-        {
-            get
-            {
-                return runtimeCore;
-            }
-            private set
-            {
-                runtimeCore = value;
-            }
-        }
-
         private Options coreOptions = null;
         private Configuration configuration = null;
         private int deltaSymbols = 0;
@@ -1129,6 +1116,7 @@ namespace ProtoScript.Runners
                 GenerateExprID = true,
                 IsDeltaExecution = true,
                 BuildOptErrorAsWarning = true,
+                WebRunner = false,
                 ExecutionMode = ExecutionMode.Serial
             };
 
@@ -1322,7 +1310,7 @@ namespace ProtoScript.Runners
         /// This API needs to be called for every delta AST preview
         /// </summary>
         /// <param name="syncData"></param>
-        public void PreviewGraph(GraphSyncData syncData)
+        public List<Guid> PreviewGraph(GraphSyncData syncData)
         {
             while (true)
             {
@@ -1330,8 +1318,7 @@ namespace ProtoScript.Runners
                 {
                     if (taskQueue.Count == 0)
                     {
-                        PreviewInternal(syncData);
-                        return;
+                        return PreviewInternal(syncData);                       
                     }
                 }
                 Thread.Sleep(1);
@@ -1527,7 +1514,6 @@ namespace ProtoScript.Runners
             try
             {
                 runner.Execute(runnerCore, 0, compileContext, runtimeContext);
-                runtimeCore = runnerCore.RuntimeCoreBridge;
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
@@ -1650,13 +1636,14 @@ namespace ProtoScript.Runners
             PostExecution();
         }
 
-        private void PreviewInternal(GraphSyncData syncData)
+        private List<Guid> PreviewInternal(GraphSyncData syncData)
         {
             // Get the list of ASTs that will be affected by syncData
             var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
             List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
+            return cbnGuidList;
         }
 
         private void SynchronizeInternal(GraphSyncData syncData)
@@ -1807,7 +1794,7 @@ namespace ProtoScript.Runners
         {
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
-            var warnings = runtimeCore.RuntimeStatus
+            var warnings = runnerCore.RuntimeStatus
                                      .Warnings
                                      .Where(w => !w.GraphNodeGuid.Equals(Guid.Empty))
                                      .OrderBy(w => w.GraphNodeGuid)

@@ -13,4 +13,5 @@ namespace Dynamo.ViewModels
 
     public delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
 
+    public delegate void RequestBitmapSourceHandler(IconRequestEventArgs e);
 }

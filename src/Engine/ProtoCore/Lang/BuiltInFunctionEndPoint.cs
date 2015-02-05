@@ -778,16 +778,10 @@ namespace ProtoCore.Lang
         internal static string ConvertToString(StackValue st, ProtoCore.DSASM.Interpreter runtime)
         {
             string result = "";
-            if (!st.IsString) { return result; }
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            if (!st.IsString) 
+                return result;
 
-            var values = ArrayUtils.GetValues(st, runtime.runtime.Core); 
-            foreach (StackValue element in values)
-            {
-                char ch = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(element.opdata);
-                sb.Append(ch);
-            }
-            result = sb.ToString();
+            result = runtime.runtime.Core.Heap.GetString(st);
             result.Replace("\\\\", "\\");
             return result;
         }

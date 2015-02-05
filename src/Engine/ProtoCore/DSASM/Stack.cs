@@ -352,10 +352,15 @@ namespace ProtoCore.DSASM
                 case AddressType.Boolean:
                     return (sv1.opdata > 0 && sv2.opdata > 0) || (sv1.opdata == 0 && sv2.opdata == 0);
                 case AddressType.ArrayPointer:
-                case AddressType.String:
                     if (Object.ReferenceEquals(c1,c2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
                     return CompareStackValuesFromHeap(sv1, sv2, c1, c2, context);
+                case AddressType.String:
+                    if (Object.ReferenceEquals(c1,c2) && sv1.opdata == sv2.opdata) 
+                        return true;
+                    string s1 = c1.Heap.GetString(sv1);
+                    string s2 = c2.Heap.GetString(sv2);
+                    return s1.Equals(s2);
                 case AddressType.Pointer:
                     if (sv1.metaData.type != sv2.metaData.type) //if the type of class is different, then stack values can never be equal
                         return false;

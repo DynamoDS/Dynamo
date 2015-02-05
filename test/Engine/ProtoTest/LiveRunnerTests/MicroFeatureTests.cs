@@ -15,7 +15,7 @@ using System.Collections;
 
 namespace ProtoTest.LiveRunner
 {
-    class MicroFeatureTests : ProtoTestBase
+    public class MicroFeatureTests : ProtoTestBase
     {
         private ProtoScript.Runners.LiveRunner astLiveRunner = null;
         private Random randomGen = new Random();
