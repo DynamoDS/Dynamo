@@ -33,7 +33,14 @@ namespace DynamoWebServer.Responses
         {
             NodeId = node.GUID.ToString();
 
-            if (node.CachedValue != null && node.CachedValue.IsCollection)
+            if (node.CachedValue == null)
+            {
+                IndexFrom = 0;
+                Items = new string[0];
+                return;
+            }
+
+            if (node.CachedValue.IsCollection)
             {
                 var allItems = node.CachedValue.GetElements();
                 if (allItems.Count < indexFrom)
@@ -46,10 +53,6 @@ namespace DynamoWebServer.Responses
                     Items = allItems.Skip(indexFrom).Select(e => GetValueFromMirrorData(e)).Take(length);
                     IndexFrom = indexFrom;
                 }
-            }
-            else
-            {
-                indexFrom = -1;
             }
         }
 
@@ -65,7 +68,8 @@ namespace DynamoWebServer.Responses
 
                 return "[" + string.Join(", ", elements) + "]";
             }
-            else if (cachedValue.Data != null)
+            
+            if (cachedValue.Data != null)
             {
                 return cachedValue.Data.ToString();
             }
