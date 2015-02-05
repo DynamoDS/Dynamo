@@ -21,6 +21,12 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        public void Save_NothingInList()
+        {
+            Assert.AreEqual("-1", DSDropDownBase.SaveSelectedIndex(5, new List<DynamoDropDownItem>()));
+        }
+
+        [Test]
         public void Save_SelectedIndex()
         {
             Assert.AreEqual(

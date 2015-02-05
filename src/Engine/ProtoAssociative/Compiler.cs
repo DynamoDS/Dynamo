@@ -63,9 +63,7 @@ namespace ProtoAssociative
                         //if not null, Compile has been called from DfsTraverse. No parsing is needed. 
                         if (codeBlockNode == null)
                         {
-                            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(langBlock.body));
-                            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
-                            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core, core.builtInsLoaded);
+                            var p = ParserUtils.CreateParser(langBlock.body, core);
                             p.Parse();
 
                             // TODO Jun: Set this flag inside a persistent object

@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
-
 using ProtoCore.AST.AssociativeAST;
-
 using VMDataBridge;
+
 
 namespace Dynamo.Nodes
 {
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("WatchNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("print", "output", "display")]
+    [NodeSearchTags("WatchNodeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Watch : NodeModel
     {

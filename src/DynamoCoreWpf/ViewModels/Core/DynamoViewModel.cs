@@ -108,6 +108,10 @@ namespace Dynamo.ViewModels
             set
             {
                 HomeSpace.DynamicRunEnabled = value;
+                //Uncheck the Show Run Preview in settings
+                if (value)
+                    ShowRunPreview = false;
+
                 RaisePropertyChanged("DynamicRunEnabled");
             }
         }
@@ -419,6 +423,23 @@ namespace Dynamo.ViewModels
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
+        /// <summary>
+        ///     Whether sign in should be shown in Dynamo.  In instances where Dynamo obtains
+        ///     authentication capabilities from a host, Dynamo's sign in should generally be 
+        ///     hidden to avoid inconsistencies in state.
+        /// </summary>
+        public bool ShowLogin { get; private set; }
+
+        public bool ShowRunPreview
+        {
+            get { return model.ShowRunPreview; }
+            set
+            {
+                model.ShowRunPreview = value;
+                RaisePropertyChanged("ShowRunPreview");
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration
@@ -427,6 +448,7 @@ namespace Dynamo.ViewModels
             public IVisualizationManager VisualizationManager { get; set; }
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
+            public bool ShowLogin { get; set; }
 
             /// <summary>
             /// This property is initialized if there is an external host application
@@ -448,12 +470,16 @@ namespace Dynamo.ViewModels
                 model.PreferenceSettings);
             var resourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
-            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider);
+            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider, 
+                startConfiguration.ShowLogin);
         }
 
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
-            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider)
+            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider, 
+            bool showLogin = false)
         {
+            this.ShowLogin = showLogin;
+
             // initialize core data structures
             this.model = dynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;
