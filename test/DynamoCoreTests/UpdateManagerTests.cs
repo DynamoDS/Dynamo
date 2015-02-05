@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         /// </summary>
         class ConfigInjection : IDisposable
         {
-            private readonly DynUpdateManager updateManager; //updatemanager instance.
+            private readonly IUpdateManager updateManager; //updatemanager instance.
             private readonly object configuration; //old configuration value.
             private readonly FieldInfo fieldInfo; //internal configuration field.
 
@@ -34,7 +34,7 @@ namespace Dynamo.Tests
             /// </summary>
             /// <param name="updateManager">UpdateManager instance to which configuration is to be injected.</param>
             /// <param name="configuration">The configuration for injection.</param>
-            public ConfigInjection(DynUpdateManager updateManager, UpdateManagerConfiguration configuration)
+            public ConfigInjection(IUpdateManager updateManager, UpdateManagerConfiguration configuration)
             {
                 this.updateManager = updateManager;
                 fieldInfo = updateManager.GetType()
@@ -55,6 +55,17 @@ namespace Dynamo.Tests
         private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
         private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
 
+        static UpdateManagerConfiguration NewConfiguration(bool checkNewerDailyBuild =false, bool forceUpdate =false)
+        {
+            return new UpdateManagerConfiguration()
+            {
+                DownloadSourcePath = DOWNLOAD_SOURCE_PATH_S,
+                SignatureSourcePath = SIGNATURE_SOURCE_PATH_S,
+                CheckNewerDailyBuild = checkNewerDailyBuild,
+                ForceUpdate = forceUpdate,
+            };
+        }
+
         [Test]
         [Category("UnitTests")]
         public void UpdateCheckReturnsInfoWhenNewerVersionAvaialable()
@@ -62,10 +73,12 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
 
-            UpdateManager.UpdateManager.Instance.CheckNewerDailyBuilds = false;
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
-
-            Assert.NotNull(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            var updateManager = UpdateManager.UpdateManager.Instance;
+            using (new ConfigInjection(updateManager, NewConfiguration()))
+            {
+                updateManager.UpdateDataAvailable(updateRequest.Object);
+                Assert.NotNull(updateManager.UpdateInfo);
+            }
         }
 
         [Test]
@@ -75,10 +88,12 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.dailyBuildAvailableData);
 
-            UpdateManager.UpdateManager.Instance.CheckNewerDailyBuilds = true;
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
-            
-            Assert.NotNull(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            var updateManager = UpdateManager.UpdateManager.Instance;
+            using (new ConfigInjection(updateManager, NewConfiguration(checkNewerDailyBuild:true)))
+            {
+                updateManager.UpdateDataAvailable(updateRequest.Object);
+                Assert.NotNull(updateManager.UpdateInfo);
+            }
         }
 
         [Test]
