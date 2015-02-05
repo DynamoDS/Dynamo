@@ -1471,6 +1471,7 @@ namespace Dynamo.ViewModels
 
                 // Update the ViewModel property to reflect change in WorkspaceModel
                 RaisePropertyChanged("DynamicRunEnabled");
+                RaisePropertyChanged("ShowRunPreview");
                 return true;
             }
 
