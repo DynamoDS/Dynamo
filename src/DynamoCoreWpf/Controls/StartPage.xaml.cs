@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Dynamo.Wpf.Interfaces;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Wpf.Properties;
 
@@ -401,6 +402,7 @@ namespace Dynamo.UI.Controls
             this.Loaded += OnStartPageLoaded;
         }
 
+
         #region Private Class Event Handlers
 
         private void OnStartPageLoaded(object sender, RoutedEventArgs e)
@@ -414,6 +416,8 @@ namespace Dynamo.UI.Controls
             this.codeListBox.ItemsSource = startPageViewModel.ContributeLinks;
             this.recentListBox.ItemsSource = startPageViewModel.RecentFiles;
             this.sampleFileTreeView.ItemsSource = startPageViewModel.SampleFiles;
+
+            StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(ResourceName.StartPageLogo);
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
