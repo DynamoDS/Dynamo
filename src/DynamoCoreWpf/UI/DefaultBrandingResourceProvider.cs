@@ -6,7 +6,7 @@ using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.Wpf.UI
 {
-    class DefaultBrandingResourceProvider : IBrandingResourceProvider
+    internal class DefaultBrandingResourceProvider : IBrandingResourceProvider
     {
         public ImageSource GetImageSource(ResourceName resourceName)
         {
@@ -15,13 +15,13 @@ namespace Dynamo.Wpf.UI
             {
                 case ResourceName.AboutBoxLogo:
                     image = new BitmapImage(
-                    new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png",
-                        UriKind.Absolute));
+                        new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png",
+                            UriKind.Absolute));
                     break;
                 case ResourceName.UsageConsentFormImage:
                     image = new BitmapImage(
-                    new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/consent_form_image.png",
-                        UriKind.Absolute));
+                        new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/consent_form_image.png",
+                            UriKind.Absolute));
                     break;
             }
             if (image == null)

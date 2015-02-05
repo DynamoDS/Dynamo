@@ -41,35 +41,24 @@ namespace Dynamo.Wpf.Nodes
 
         private void NodeModelOnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName != "IsUpdated") return;
+            if (args.PropertyName != "IsUpdated") 
+                return;
+
+            var data = nodeModel.CachedValue;
+            if (data == null)
+                return;
+
+            var bitmap = data.Data as Bitmap;
             
-            using (var im = GetImageFromMirror())
-            {
-                // The setter is invoked on the UI thread synchronously as it needs to wait for the
-                // setter to finish executing before it leaves the using scope and the Bitmap is deleted
-                nodeView.Dispatcher.Invoke(new Action<Bitmap>(SetImageSource), new object[] { im });
-            }
+            nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { bitmap });
         }
 
         private void SetImageSource(Bitmap bmp)
         {
-            image.Source = ResourceUtilities.ConvertToImageSource(bmp);
-        }
-
-        private Bitmap GetImageFromMirror()
-        {
-            if (this.nodeModel.InPorts[0].Connectors.Count == 0) return null;
-
-            var mirror = nodeView.ViewModel.DynamoViewModel.EngineController.GetMirror(this.nodeModel.AstIdentifierForPreview.Name);
-
-            if (null == mirror)
-                return null;
-
-            var data = mirror.GetData();
-
-            if (data == null || data.IsNull) return null;
-            if (data.Data is Bitmap) return data.Data as System.Drawing.Bitmap;
-            return null;
+            using (bmp)
+            {
+                image.Source = ResourceUtilities.ConvertToImageSource(bmp);
+            }
         }
 
         public void Dispose()
