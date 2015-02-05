@@ -1,6 +1,8 @@
-﻿using Dynamo.Services;
+﻿using System.Windows.Media;
+using Dynamo.Services;
 
 using System.Windows;
+using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.UI.Prompts
 {
@@ -9,9 +11,11 @@ namespace Dynamo.UI.Prompts
     /// </summary>
     public partial class UsageReportingAgreementPrompt : Window
     {
-        public UsageReportingAgreementPrompt()
+        public UsageReportingAgreementPrompt(IBrandingResourceProvider resourceProvider)
         {
             InitializeComponent();
+            ConsentFormImageRectangle.Fill = new ImageBrush(
+                resourceProvider.GetImageSource(ResourceName.UsageConsentFormImage));
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
