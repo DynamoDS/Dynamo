@@ -456,7 +456,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Update the cached subtree given the modified ASTs
+        /// Update the cached ASTs in the subtree given the modified ASTs
         /// </summary>
         /// <param name="st"></param>
         /// <param name="modifiedASTList"></param>
@@ -539,21 +539,10 @@ namespace ProtoScript.Runners
                     }
                 }
             }
-
-            foreach (AssociativeNode node in modifiedASTList)
-            {
-                var bnode = node as BinaryExpressionNode;
-                if (bnode != null)
-                {
-                    bnode.guid = st.GUID;
-                }
-
-                SetNestedLanguageBlockASTGuids(st.GUID, new List<ProtoCore.AST.Node>() { bnode });
-            }
         }
 
 
-        private IEnumerable<AssociativeNode> GetDeltaAstListModified(IEnumerable<Subtree> modifiedSubTrees)
+        private IEnumerable<AssociativeNode> GetDeltaAstListModified(IEnumerable<Subtree> modifiedSubTrees, bool preview)
         {
             var deltaAstList = new List<AssociativeNode>();
             csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
@@ -577,19 +566,33 @@ namespace ProtoScript.Runners
                 // Get modified statements
                 var modifiedASTList = GetModifiedNodes(subtree);
                 deltaAstList.AddRange(modifiedASTList);
-                UpdateCachedASTList(subtree, modifiedASTList);
+                if (!preview)
+                {
+                    UpdateCachedASTList(subtree, modifiedASTList);
+                }
+
+                foreach (AssociativeNode node in modifiedASTList)
+                {
+                    var bnode = node as BinaryExpressionNode;
+                    if (bnode != null)
+                    {
+                        bnode.guid = subtree.GUID;
+                    }
+
+                    SetNestedLanguageBlockASTGuids(subtree.GUID, new List<ProtoCore.AST.Node>() { bnode });
+                }
             }
             return deltaAstList;
         }
 
 
-        public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
+        public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData, bool preview = false)
         {
             csData = new ChangeSetData();
             List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
             finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListAdded(syncData.AddedSubtrees));
-            finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees));
+            finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees, preview));
             csData.ContainsDeltaAST = finalDeltaAstList.Count > 0;
             return finalDeltaAstList;
         }
@@ -1644,7 +1647,7 @@ namespace ProtoScript.Runners
         private List<Guid> PreviewInternal(GraphSyncData syncData)
         {
             // Get the list of ASTs that will be affected by syncData
-            var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
+            var previewAstList = changeSetComputer.GetDeltaASTList(syncData, true);
 
             // Get the list of guid's affected by the astlist
             List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);

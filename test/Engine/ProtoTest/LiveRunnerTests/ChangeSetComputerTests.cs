@@ -46,7 +46,7 @@ namespace ProtoTest.LiveRunner
          
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
 
             // Get expected ASTList
             // The list must be in the order that it is expected
@@ -82,7 +82,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
 
             // Get expected ASTList
             // The list must be in the order that it is expected
@@ -119,7 +119,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
 
             // Get expected ASTList
             // The list must be in the order that it is expected
@@ -156,7 +156,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
 
             // Get expected ASTList
             // The list must be in the order that it is expected
@@ -194,7 +194,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
 
             // Modify contents
             List<Subtree> modified = new List<Subtree>();
@@ -202,7 +202,7 @@ namespace ProtoTest.LiveRunner
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            astList = changeSetState.GetDeltaASTList(syncData);
+            astList = changeSetState.GetDeltaASTList(syncData, true);
 
             // Get expected ASTList
             // The list must be in the order that it is expected
@@ -239,7 +239,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
 
             // Modify contents to c = 1
             List<Subtree> modified = new List<Subtree>();
@@ -247,7 +247,7 @@ namespace ProtoTest.LiveRunner
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            astList = changeSetState.GetDeltaASTList(syncData);
+            astList = changeSetState.GetDeltaASTList(syncData, true);
 
             // Get expected ASTList
             // The list must be in the order that it is expected
