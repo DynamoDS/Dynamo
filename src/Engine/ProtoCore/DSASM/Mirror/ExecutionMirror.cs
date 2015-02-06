@@ -940,9 +940,14 @@ namespace ProtoCore.DSASM.Mirror
 
                         // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                         // Register TX is used for this.
-                        stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kImplicit); 
+                        stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kImplicit);
 
-                        core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, new ProtoCore.DebugServices.ConsoleEventSink());
+                        core.CurrentExecutive.CurrentDSASMExec.Bounce(
+                            codeblock.codeBlockId, 
+                            codeblock.instrStream.entrypoint, 
+                            context, 
+                            stackFrame,
+                            locals);
                     }
                 }
                 catch
@@ -1454,7 +1459,6 @@ namespace ProtoCore.DSASM.Mirror
                 int size = sv.Length;
 
                 StackValue ptr = heap.AllocateArray(sv);
-                heap.IncRefCount(ptr);
                 return ptr;
             }
 

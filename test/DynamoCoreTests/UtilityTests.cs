@@ -6,6 +6,8 @@ using NUnit.Framework;
 using DynNodes = Dynamo.Nodes;
 using System.Xml;
 using System.IO;
+using ProtoCore.AST.AssociativeAST;
+using DynamoUtilities;
 
 namespace Dynamo.Tests
 {
@@ -113,7 +115,8 @@ namespace Dynamo.Tests
             Assert.Throws<ArgumentNullException>(() =>
             {
                 string fqn = null;
-                DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
+                Type type;
+                ViewModel.Model.NodeFactory.ResolveType(fqn, out type);
             });
         }
 
@@ -121,12 +124,9 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void ResolveType01()
         {
-            // Empty fullyQualifiedName throws an exception.
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                string fqn = string.Empty;
-                DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            });
+            string fqn = string.Empty;
+            Type type;
+            Assert.IsFalse(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
         }
 
         [Test]
@@ -135,20 +135,22 @@ namespace Dynamo.Tests
         {
             // Unknown type returns a 'null'.
             string fqn = "Dynamo.Connectors.ConnectorModel";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
+            Type type;
+            Assert.IsFalse(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
             Assert.AreEqual(null, type);
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void ResolveType03()
-        {
-            // Known internal type.
-            string fqn = "Dynamo.Nodes.Addition";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            Assert.AreNotEqual(null, type);
-            Assert.AreEqual("Dynamo.Nodes.Addition", type.FullName);
-        }
+        //[Test]
+        //[Category("UnitTests")]
+        //public void ResolveType03()
+        //{
+        //    // Known internal type.
+        //    string fqn = "Dynamo.Nodes.Addition";
+        //    Type type;
+        //    Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+        //    Assert.IsNotNull(type);
+        //    Assert.AreEqual("Dynamo.Nodes.Addition", type.FullName);
+        //}
 
         [Test]
         [Category("UnitTests")]
@@ -156,21 +158,23 @@ namespace Dynamo.Tests
         {
             // System type names should be discoverable.
             string fqn = "System.Environment";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            Assert.AreNotEqual(null, type);
+            Type type;
+            Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+            Assert.IsNotNull(type);
             Assert.AreEqual("System.Environment", type.FullName);
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void ResolveType05()
-        {
-            // 'NumberRange' class makes use of this attribute.
-            string fqn = "Dynamo.Nodes.dynBuildSeq";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            Assert.AreNotEqual(null, type);
-            Assert.AreEqual("Dynamo.Nodes.NumberRange", type.FullName);
-        }
+        //[Test]
+        //[Category("UnitTests")]
+        //public void ResolveType05()
+        //{
+        //    // 'NumberRange' class makes use of this attribute.
+        //    string fqn = "Dynamo.Nodes.dynBuildSeq";
+        //    Type type;
+        //    Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+        //    Assert.IsNotNull(type);
+        //    Assert.AreEqual("Dynamo.Nodes.NumberRange", type.FullName);
+        //}
 
         [Test]
         [Category("UnitTests")]
@@ -581,6 +585,102 @@ namespace Dynamo.Tests
             });
 
             Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void InsertSpacesToStringTest()
+        {
+            string testingSTR = string.Empty;
+            //1. When original is empty string
+            //2. When original is null
+            //3. When original is whitespaces (\n, \t or space)
+            //4. When original is AaaBbbbCDE
+
+            // case 1
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("");
+            Assert.AreEqual("", testingSTR);
+
+            // case 2
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString(null);
+            Assert.AreEqual("", testingSTR);
+
+            // case 3
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("    ");
+            Assert.AreEqual("", testingSTR);
+
+            //case 4
+            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("AaaBbbbCDE");
+            Assert.AreEqual("Aaa Bbbb CDE", testingSTR);
+        }
+
+        [Test]
+        public void NormalizeAsResourceNameTest()
+        {
+            string testingSTR = string.Empty;
+            //1. When resource is empty string
+            //2. When resource is null
+            //3. When resource is whitespaces (\n, \t or space)
+            //4. When resource is %Aaa2Bb**CDE
+            //5. When resource is Ab/b.double-int
+
+            // case 1
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("");
+            Assert.AreEqual("", testingSTR);
+
+            // case 2
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName(null);
+            Assert.AreEqual("", testingSTR);
+
+            // case 3
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("   ");
+            Assert.AreEqual("", testingSTR);
+
+            //case 4
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("%Aaa2Bb**CDE");
+            Assert.AreEqual("Aaa2BbCDE", testingSTR);
+
+            // case 5
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("Ab/b.double-int");
+            Assert.AreEqual("Abb.double-int", testingSTR);
+        }
+		
+        [Category("UnitTests")]
+        public void TestTypeSwitch()
+        {
+            object v = null;
+            object node = null;
+
+            DoubleNode doubleNode = new DoubleNode(1.2);
+            node = doubleNode;
+            TypeSwitch.Do(
+                node,
+                TypeSwitch.Case<IntNode>(n => v = n.Value),
+                TypeSwitch.Case<DoubleNode>(n => v = n.Value),
+                TypeSwitch.Case<BooleanNode>(n => v = n.Value),
+                TypeSwitch.Case<StringNode>(n => v = n.value),
+                TypeSwitch.Default(() => v = null));
+            Assert.AreEqual(v, 1.2);
+
+            IntNode intNode = new IntNode(42);
+            node = intNode;
+            TypeSwitch.Do(
+                node,
+                TypeSwitch.Case<IntNode>(n => v = n.Value),
+                TypeSwitch.Case<DoubleNode>(n => v = n.Value),
+                TypeSwitch.Case<BooleanNode>(n => v = n.Value),
+                TypeSwitch.Case<StringNode>(n => v = n.value),
+                TypeSwitch.Default(() => v = null));
+            Assert.AreEqual(v, 42);
+
+            StringNode sNode = new StringNode(); 
+            node = sNode;
+            TypeSwitch.Do(
+                node,
+                TypeSwitch.Case<IntNode>(n => v = n.Value),
+                TypeSwitch.Case<DoubleNode>(n => v = n.Value),
+                TypeSwitch.Case<BooleanNode>(n => v = n.Value),
+                TypeSwitch.Default(() => v = 24));
+            Assert.AreEqual(v, 24);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoCore.DSASM
 {
@@ -452,8 +453,7 @@ namespace ProtoCore.DSASM
             int index = ix < 0 ? ix + hs.VisibleSize : ix;
             if (index >= hs.VisibleSize || index < 0)
             {
-                //throw new IndexOutOfRangeException();
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                core.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 

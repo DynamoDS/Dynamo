@@ -15,6 +15,7 @@ using System.Xml;
 using System.Xml.Linq;
 using ProtoCore.DSASM.Mirror;
 using Autodesk.DesignScript.Interfaces;
+using System.Globalization;
 
 namespace ProtoTestFx
 {
@@ -54,7 +55,7 @@ namespace ProtoTestFx
             if (null != obj)
             {
                 double rst;
-                if (Double.TryParse(obj.ToString(), out rst))
+                if (Double.TryParse(obj.ToString(), NumberStyles.Number, CultureInfo.InvariantCulture, out rst))
                     return rst;
             }
             return Tol1;
@@ -101,8 +102,8 @@ namespace ProtoTestFx
             core.BuildStatus.MessageHandler = fs;
             core.RuntimeStatus.MessageHandler = fs;
 
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;

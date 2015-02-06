@@ -142,9 +142,9 @@
       <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
       <Name>ProtoScript</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\NodeServices\NodeServices.csproj">
+    <ProjectReference Include="..\..\..\src\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>NodeServices</Name>
+      <Name>DynamoServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>

@@ -9,7 +9,6 @@ namespace ProtoCore.DSASM
 
         public Interpreter(Core core, bool isFEP = false)
         {
-            //runtime = new Executive(core, isFEP);
             runtime = core.ExecutiveProvider.CreateExecutive(core, isFEP);
         }
         
@@ -33,17 +32,10 @@ namespace ProtoCore.DSASM
             runtime.rmem.Push(val);
         }
 
-        public StackValue Run(List<Instruction> breakpoints, int codeblock = Constants.kInvalidIndex, int entry = Constants.kInvalidIndex, Language lang = Language.kInvalid)
+        public StackValue Run(int codeblock = Constants.kInvalidIndex, int entry = Constants.kInvalidIndex, Language lang = Language.kInvalid, List<Instruction> breakpoints = null)
         {
             runtime.RX = StackValue.Null;
             runtime.Execute(codeblock, entry, breakpoints, lang);
-            return runtime.RX;
-        }
-
-        public StackValue Run(int codeblock = Constants.kInvalidIndex, int entry = Constants.kInvalidIndex, Language lang = Language.kInvalid)
-        {
-            runtime.RX = StackValue.Null;
-            runtime.Execute(codeblock, entry, lang);
             return runtime.RX;
         }
     }

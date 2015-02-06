@@ -64,7 +64,7 @@ namespace ProtoTest.TD.MultiLangTests
                 y = foo (1);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("y", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -6562,4 +6562,3 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         }
     }
 }
-

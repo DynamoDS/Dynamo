@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Linq;
+using ProtoCore.AssociativeGraph;
+using ProtoCore.AssociativeEngine;
+using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Exceptions;
-using System.Timers;
+using ProtoCore.BuildData;
+using ProtoCore.CodeModel;
+using ProtoCore.DebugServices;
 using ProtoCore.DSASM;
+using ProtoCore.Lang;
+using ProtoCore.Lang.Replication;
+using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoFFI;
-using Autodesk.DesignScript.Interfaces;
-using ProtoCore.AssociativeGraph;
-using System.Linq;
-using System.Xml;
+
+using StackFrame = ProtoCore.DSASM.StackFrame;
 
 namespace ProtoCore
 {
@@ -33,9 +39,9 @@ namespace ProtoCore
             public int delme;
             public ConsoleEventSink()
             {
-                BeginDocument += p => Console.WriteLine(p);
-                EndDocument += p => Console.WriteLine(p);
-                PrintMessage += p => Console.WriteLine(p);
+                BeginDocument += Console.WriteLine;
+                EndDocument += Console.WriteLine;
+                PrintMessage += Console.WriteLine;
             }
         }
 
@@ -100,8 +106,8 @@ namespace ProtoCore
     {
         public ReplicationGuide(int guide, bool longest)
         {
-            this.guideNumber = guide;
-            this.isLongest = longest;
+            guideNumber = guide;
+            isLongest = longest;
         }
 
         public int guideNumber { get; private set; }
@@ -110,13 +116,13 @@ namespace ProtoCore
 
     public class InterpreterProperties
     {
-        public AssociativeGraph.GraphNode executingGraphNode { get; set; }
-        public List<ProtoCore.AssociativeGraph.GraphNode> nodeIterations { get; set; }
+        public GraphNode executingGraphNode { get; set; }
+        public List<GraphNode> nodeIterations { get; set; }
 
         public List<StackValue> functionCallArguments { get; set; }
         public List<StackValue> functionCallDotCallDimensions { get; set; }
 
-        public AssociativeEngine.UpdateStatus updateStatus { get; set; }
+        public UpdateStatus updateStatus { get; set; }
 
         public InterpreterProperties()
         {
@@ -135,10 +141,10 @@ namespace ProtoCore
         public void Reset()
         {
             executingGraphNode = null;
-            nodeIterations = new List<AssociativeGraph.GraphNode>();
+            nodeIterations = new List<GraphNode>();
             functionCallArguments = new List<StackValue>();
             functionCallDotCallDimensions = new List<StackValue>();
-            updateStatus = AssociativeEngine.UpdateStatus.kNormalUpdate;
+            updateStatus = UpdateStatus.kNormalUpdate;
         }
     }
 
@@ -161,7 +167,7 @@ namespace ProtoCore
             SuppressBuildOutput = false;
             BuildOptWarningAsError = false;
             BuildOptErrorAsWarning = false;
-            ExecutionMode = ProtoCore.ExecutionMode.Serial;
+            ExecutionMode = ExecutionMode.Serial;
             IDEDebugMode = false;
             WatchTestMode = false;
             IncludeDirectories = new List<string>();
@@ -247,8 +253,8 @@ namespace ProtoCore
         
         public double Tolerance
         {
-            get { return ProtoCore.Utils.MathUtils.Tolerance; }
-            set { ProtoCore.Utils.MathUtils.Tolerance = value; }
+            get { return MathUtils.Tolerance; }
+            set { MathUtils.Tolerance = value; }
         }
 
         public List<string> IncludeDirectories { get; set; }
@@ -270,18 +276,18 @@ namespace ProtoCore
                 else
                 {
                     var fileName = value;
-                    if (System.IO.File.Exists(fileName))
+                    if (File.Exists(fileName))
                     {
                         rootCustomPropertyFilterPathName = fileName;
 
-                        System.IO.StreamReader stream = null;
+                        StreamReader stream = null;
                         try
                         {
-                            stream = new System.IO.StreamReader(fileName);
+                            stream = new StreamReader(fileName);
                         }
-                        catch (System.Exception ex)
+                        catch (Exception ex)
                         {
-                            throw new System.IO.FileLoadException(string.Format("Custom property filter file {0} can't be read. Error Message:{1}", fileName, ex.Message));
+                            throw new FileLoadException(string.Format("Custom property filter file {0} can't be read. Error Message:{1}", fileName, ex.Message));
                         }
                         finally
                         {
@@ -344,7 +350,7 @@ namespace ProtoCore
 
         // TODO: FepRun may no longer be needed as this may also be obtained from the language stack frame - pratapa
         public int FepRun { get; set; }
-        public AssociativeGraph.GraphNode ExecutingGraphNode { get; set; }
+        public GraphNode ExecutingGraphNode { get; set; }
         public List<StackValue> DotCallDimensions { get; set; }
         public List<StackValue> Arguments { get; set; }
         public StackValue? ThisPtr { get; set; }
@@ -375,7 +381,7 @@ namespace ProtoCore
             ActiveBreakPoints = new List<Instruction>();
             AllbreakPoints = null;
             FRStack = new Stack<bool>();
-            FirstStackFrame = new ProtoCore.DSASM.StackFrame(1);
+            FirstStackFrame = new StackFrame(1);
             
             DebugEntryPC = Constants.kInvalidIndex;
             CurrentBlockId = Constants.kInvalidIndex;
@@ -426,7 +432,7 @@ namespace ProtoCore
             set { breakpointOptions = value; }
         }
 
-        public ProtoCore.DSASM.StackFrame FirstStackFrame { get; set; }
+        public StackFrame FirstStackFrame { get; set; }
 
         // Used in Watch test framework
         public string CurrentSymbolName { get; set; }
@@ -441,15 +447,15 @@ namespace ProtoCore
             ActiveBreakPoints = new List<Instruction>()
         };
 
-        public CodeModel.CodeRange highlightRange = new CodeModel.CodeRange
+        public CodeRange highlightRange = new CodeRange
             {
-                StartInclusive = new CodeModel.CodePoint
+                StartInclusive = new CodePoint
                 {
                     LineNo = Constants.kInvalidIndex,
                     CharNo = Constants.kInvalidIndex
                 },
 
-                EndExclusive = new CodeModel.CodePoint
+                EndExclusive = new CodePoint
                 {
                     LineNo = Constants.kInvalidIndex,
                     CharNo = Constants.kInvalidIndex
@@ -471,8 +477,8 @@ namespace ProtoCore
         public bool isResume { get; set; }
         public int StepOutReturnPC { get; set; }
         public Stack<bool> FRStack { get; set; }
-        public AssociativeGraph.GraphNode executingGraphNode { get; set; }
-        public List<AssociativeGraph.GraphNode> deferedGraphnodes { get; set; }
+        public GraphNode executingGraphNode { get; set; }
+        public List<GraphNode> deferedGraphnodes { get; set; }
         public List<Instruction> ActiveBreakPoints { get; set; }
 
         public List<Instruction> AllbreakPoints { get; set; }
@@ -517,11 +523,11 @@ namespace ProtoCore
             return false;
         }
 
-        private int FindEndPCForAssocGraphNode(int tempPC, InstructionStream istream, ProcedureNode fNode, AssociativeGraph.GraphNode graphNode, bool handleSSATemps)
+        private int FindEndPCForAssocGraphNode(int tempPC, InstructionStream istream, ProcedureNode fNode, GraphNode graphNode, bool handleSSATemps)
         {
             int limit = Constants.kInvalidIndex;
             //AssociativeGraph.GraphNode currentGraphNode = executingGraphNode;
-            AssociativeGraph.GraphNode currentGraphNode = graphNode;
+            GraphNode currentGraphNode = graphNode;
             //Validity.Assert(currentGraphNode != null);
 
             if (currentGraphNode != null)
@@ -533,8 +539,8 @@ namespace ProtoCore
                 }
 
                 int i = currentGraphNode.dependencyGraphListID;
-                AssociativeGraph.GraphNode nextGraphNode = currentGraphNode;
-                while (currentGraphNode.exprUID != ProtoCore.DSASM.Constants.kInvalidIndex 
+                GraphNode nextGraphNode = currentGraphNode;
+                while (currentGraphNode.exprUID != Constants.kInvalidIndex 
                         && currentGraphNode.exprUID == nextGraphNode.exprUID)
 
                 {
@@ -617,8 +623,8 @@ namespace ProtoCore
             }
         }
 
-        public void SetUpCallrForDebug(ProtoCore.Core core, ProtoCore.DSASM.Executive exec, ProcedureNode fNode, int pc, bool isBaseCall = false,
-            ProtoCore.CallSite callsite = null, List<StackValue> arguments = null, List<List<ProtoCore.ReplicationGuide>> replicationGuides = null, ProtoCore.DSASM.StackFrame stackFrame = null,
+        public void SetUpCallrForDebug(Core core, DSASM.Executive exec, ProcedureNode fNode, int pc, bool isBaseCall = false,
+            CallSite callsite = null, List<StackValue> arguments = null, List<List<ReplicationGuide>> replicationGuides = null, StackFrame stackFrame = null,
             List<StackValue> dotCallDimensions = null, bool hasDebugInfo = false, bool isMember = false, StackValue? thisPtr = null)
         {
             //ProtoCore.DSASM.Executive exec = core.CurrentExecutive.CurrentDSASMExec;
@@ -657,7 +663,7 @@ namespace ProtoCore
             }
 
             // Comment Jun: A dot call does not replicate and  must be handled immediately
-            if (fNode.name == ProtoCore.DSASM.Constants.kDotMethodName)
+            if (fNode.name == Constants.kDotMethodName)
             {
                 isReplicating = false;
                 isExternalFunction = false;
@@ -670,8 +676,8 @@ namespace ProtoCore
                 return;
             }
 
-            List<List<Lang.Replication.ReplicationInstruction>> replicationTrials;
-            bool willReplicate = callsite.WillCallReplicate(new ProtoCore.Runtime.Context(), arguments, replicationGuides, stackFrame, core, out replicationTrials);
+            List<List<ReplicationInstruction>> replicationTrials;
+            bool willReplicate = callsite.WillCallReplicate(new Context(), arguments, replicationGuides, stackFrame, core, out replicationTrials);
             
             // the inline conditional built-in is handled separately as 'WillCallReplicate' is always true in this case
             if(fNode.name.Equals(Constants.kInlineConditionalMethodName))
@@ -725,10 +731,10 @@ namespace ProtoCore
             // Prevent breaking inside a function that is external except for dot calls
             // by clearing all breakpoints from outermost external function call
             // This check takes precedence over the replication check
-            else if (fNode.isExternal && fNode.name != ProtoCore.DSASM.Constants.kDotMethodName)
+            else if (fNode.isExternal && fNode.name != Constants.kDotMethodName)
             {
                 // Clear all breakpoints 
-                if (!DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction) && fNode.name != ProtoCore.DSASM.Constants.kFunctionRangeExpression)
+                if (!DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction) && fNode.name != Constants.kFunctionRangeExpression)
                 {
                     ActiveBreakPoints.AddRange(core.Breakpoints);
                     core.Breakpoints.Clear();
@@ -771,7 +777,7 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="fNode"></param>
         /// <param name="isReplicating"></param>
-        public void RestoreCallrForNoBreak(ProtoCore.Core core, ProcedureNode fNode, bool isReplicating = false)
+        public void RestoreCallrForNoBreak(Core core, ProcedureNode fNode, bool isReplicating = false)
         {
             Validity.Assert(DebugStackFrame.Count > 0);
             
@@ -785,7 +791,7 @@ namespace ProtoCore
             if (!DebugStackFrameContains(StackFrameFlagOptions.IsReplicating) &&
                 !DebugStackFrameContains(StackFrameFlagOptions.IsExternalFunction))
             {
-                if (ActiveBreakPoints.Count > 0 && fNode.name != ProtoCore.DSASM.Constants.kFunctionRangeExpression)
+                if (ActiveBreakPoints.Count > 0 && fNode.name != Constants.kFunctionRangeExpression)
                 {
                     core.Breakpoints.AddRange(ActiveBreakPoints);
                     //if (SetUpStepOverFunctionCalls(core, fNode, ActiveBreakPoints))
@@ -824,7 +830,7 @@ namespace ProtoCore
             }
         }
                 
-        public void SetUpStepOverFunctionCalls(ProtoCore.Core core, ProcedureNode fNode, AssociativeGraph.GraphNode graphNode, bool hasDebugInfo)
+        public void SetUpStepOverFunctionCalls(Core core, ProcedureNode fNode, GraphNode graphNode, bool hasDebugInfo)
         {
             int tempPC = DebugEntryPC;
             int limit = 0;  // end pc of current expression
@@ -924,38 +930,36 @@ namespace ProtoCore
 
     public class Core
     {
-        #region RUNTIME_PROPERTIES
 
         /// <summary>
-        ///  These are the list of symbols updated by the VM after an execution cycle
+        /// Properties in under COMPILER_GENERATED_TO_RUNTIME_DATA, are generated at compile time, and passed to RuntimeData/Exe
+        /// Only Core can initialize these
         /// </summary>
-        public HashSet<SymbolNode> UpdatedSymbols { get; private set; }
+#region COMPILER_GENERATED_TO_RUNTIME_DATA
+
+        public LangVerify Langverify { get; private set; }
+        public FunctionTable FunctionTable { get; private set; }
+
+        public RuntimeData RuntimeData { get; set; }
 
         #endregion
 
-        public const int FIRST_CORE_ID = 0;
-
-        public int ID { get; private set; }
-        //recurtion
-        public List<FunctionCounter> recursivePoint { get; set; }
-        public List<FunctionCounter> funcCounterTable { get; set; }
-        public bool calledInFunction;
-        
         // This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries in Graph UI
         public bool IsParsingPreloadedAssembly { get; set; }
         
         // THe ImportModuleHandler owned by the temporary core used in Graph UI precompilation
         // needed to detect if the same assembly is not being imported more than once
-        public ProtoFFI.ImportModuleHandler ImportHandler { get; set; }
+        public ImportModuleHandler ImportHandler { get; set; }
         
         // This is set to true when the temporary core is used for precompilation of CBN's in GraphUI
         public bool IsParsingCodeBlockNode { get; set; }
 
         // This is the AST node list of default imported libraries needed for Graph Compiler
-        public ProtoCore.AST.AssociativeAST.CodeBlockNode ImportNodes { get; set; }
+        public CodeBlockNode ImportNodes { get; set; }
 
         // The root AST node obtained from parsing an expression in a Graph node in GraphUI
-        public List<ProtoCore.AST.Node> AstNodeList { get; set; }
+        public List<Node> AstNodeList { get; set; }
+
 
         public enum ErrorType
         {
@@ -970,7 +974,7 @@ namespace ProtoCore
             public string FileName;
             public string Message;
             public BuildData.WarningID BuildId;
-            public RuntimeData.WarningID RuntimeId;
+            public Runtime.WarningID RuntimeId;
             public int Line;
             public int Col;
         }
@@ -991,20 +995,19 @@ namespace ProtoCore
             return ts;
         }
 
-        public Lang.FunctionTable FunctionTable { get; set; }
+        public Dictionary<Language, Compiler> Compilers { get; private set; }
+        public Executive ExecutionInstance { get; private set; }
 
-        public Script Script { get; set; }
-        public LangVerify Langverify = new LangVerify();
-        public Dictionary<Language, Executive> Executives { get; private set; }
-
+        // This will be moved to RuntimeCore
         public Executive CurrentExecutive { get; private set; }
+
         public int GlobOffset { get; set; }
         public int GlobHeapOffset { get; set; }
         public int BaseOffset { get; set; }
         public int GraphNodeUID { get; set; }
 
         public Heap Heap { get; set; }
-        public ProtoCore.Runtime.RuntimeMemory Rmem { get; set; }
+        public RuntimeMemory Rmem { get; set; }
 
         public int ClassIndex { get; set; }     // Holds the current class scope
         public int RunningBlock { get; set; }
@@ -1070,7 +1073,7 @@ namespace ProtoCore
 
         // Cached replication guides for the current call. 
         // TODO Jun: Store this in the dynamic table node
-        public List<List<ProtoCore.ReplicationGuide>> replicationGuides;
+        public List<List<ReplicationGuide>> replicationGuides;
 
         // if CompileToLib is true, this is used to output the asm instruction to the dsASM file
         // if CompilerToLib is false, this will be set to Console.Out
@@ -1087,7 +1090,7 @@ namespace ProtoCore
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
 
         // Continuation properties used for Serial mode execution and Debugging of Replicated calls
-        public Lang.ContinuationStructure ContinuationStruct { get; set; }
+        public ContinuationStructure ContinuationStruct { get; set; }
 
         /// <summary>
         /// Gets the reason why the execution was last suspended
@@ -1105,30 +1108,9 @@ namespace ProtoCore
         public List<string> LoadedDLLs = new List<string>();
         public int deltaCompileStartPC { get; set; }
 
-        public IDictionary<string, CallSite> CallsiteCache { get; set; }
-
-        /// <summary>
-        /// This is a mapping of the current guid and number of callsites that appear within that guid.
-        /// Language only execution contains only 1 guid for the entire program.
-        /// Execution within a visual programming host means 1 guid per node, where 1 node contains a set of DS code.
-        /// Each of the callsite instances are mapped to a guid and an instance count.
-        /// </summary>
-        public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
-        public List<ProtoCore.AST.AssociativeAST.AssociativeNode> CachedSSANodes { get; set; }
-
-
-        /// <summary>
-        /// Map from a callsite's guid to a graph UI node. 
-        /// </summary>
-        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
-
-        /// <summary>
-        /// Map from a AST node's ID to a callsite.
-        /// </summary>
-        public Dictionary<int, CallSite> ASTToCallSiteMap { get; private set; }
 
         // A list of graphnodes that contain a function call
-        public List<AssociativeGraph.GraphNode> GraphNodeCallList { get; set; }
+        public List<GraphNode> GraphNodeCallList { get; set; }
 
         public int newEntryPoint { get; private set; }
 
@@ -1141,7 +1123,7 @@ namespace ProtoCore
         /// Sets the function to an inactive state where it can no longer be used by the front-end and backend
         /// </summary>
         /// <param name="functionDef"></param>
-        public void SetFunctionInactive(ProtoCore.AST.AssociativeAST.FunctionDefinitionNode functionDef)
+        public void SetFunctionInactive(FunctionDefinitionNode functionDef)
         {
             // DS language only supports function definition on the global and first language block scope 
             // TODO Jun: Determine if it is still required to combine function tables in the codeblocks and callsite
@@ -1193,7 +1175,7 @@ namespace ProtoCore
 
 
             // Update the function definition in global function tables
-            foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in FunctionTable.GlobalFuncTable)
+            foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in DSExecutable.RuntimeData.FunctionTable.GlobalFuncTable)
             {
                 foreach (KeyValuePair<string, FunctionGroup> functionGroup in functionGroupList.Value)
                 {
@@ -1320,8 +1302,8 @@ namespace ProtoCore
             RuntimeTableIndex = 0;
             
             //Initialize the dynamic string table and dynamic function table
-            DynamicVariableTable = new DSASM.DynamicVariableTable();
-            DynamicFunctionTable = new DSASM.DynamicFunctionTable();
+            DynamicVariableTable = new DynamicVariableTable();
+            DynamicFunctionTable = new DynamicFunctionTable();
 
             if (Options.SuppressBuildOutput)
             {
@@ -1340,39 +1322,32 @@ namespace ProtoCore
                 AstNodeList.Clear();
 
             ExpressionUID = 0;
-            ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-        }
-
-
-        private void ResetAllRuntimeProperties()
-        {
-            UpdatedSymbols = new HashSet<SymbolNode>();
+            ForLoopBlockIndex = Constants.kInvalidIndex;
         }
 
         private void ResetAll(Options options)
         {
-            ProtoCore.Utils.Validity.AssertExpiry();
+            this.RuntimeData = new ProtoCore.RuntimeData();
+
+            Validity.AssertExpiry();
             Options = options;
-            Executives = new Dictionary<ProtoCore.Language, ProtoCore.Executive>();
-            FunctionTable = new Lang.FunctionTable();
-            ClassIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
+            ExecutionInstance = CurrentExecutive = new Executive(this);
+            Compilers = new Dictionary<Language, Compiler>();
+            ClassIndex = Constants.kInvalidIndex;
 
-            Heap = new DSASM.Heap();
-            Rmem = new ProtoCore.Runtime.RuntimeMemory(Heap);
+            FunctionTable = new FunctionTable(); 
+            Langverify = new LangVerify();
 
-            watchClassScope = ProtoCore.DSASM.Constants.kInvalidIndex;
-            watchFunctionScope = ProtoCore.DSASM.Constants.kInvalidIndex;
+            Heap = new Heap();
+            Rmem = new RuntimeMemory(Heap);
+
+            watchClassScope = Constants.kInvalidIndex;
+            watchFunctionScope = Constants.kInvalidIndex;
             watchBaseOffset = 0;
             watchStack = new List<StackValue>();
             watchSymbolList = new List<SymbolNode>();
-            watchFramePointer = ProtoCore.DSASM.Constants.kInvalidIndex;
+            watchFramePointer = Constants.kInvalidIndex;
 
-            ID = FIRST_CORE_ID;
-
-            //recurtion
-            recursivePoint = new List<FunctionCounter>();
-            funcCounterTable = new List<FunctionCounter>();
-            calledInFunction = false;
 
             GlobOffset = 0;
             GlobHeapOffset = 0;
@@ -1381,31 +1356,31 @@ namespace ProtoCore
             RunningBlock = 0;
             CodeBlockIndex = 0;
             RuntimeTableIndex = 0;
-            CodeBlockList = new List<DSASM.CodeBlock>();
-            CompleteCodeBlockList = new List<DSASM.CodeBlock>();
-            DSExecutable = new ProtoCore.DSASM.Executable();
+            CodeBlockList = new List<CodeBlock>();
+            CompleteCodeBlockList = new List<CodeBlock>();
+            DSExecutable = new Executable();
 
             AssocNode = null;
 
             // TODO Jun/Luke type system refactoring
             // Initialize the globalClass table and type system
-            ClassTable = new DSASM.ClassTable();
+            ClassTable = new ClassTable();
             TypeSystem = new TypeSystem();
             TypeSystem.SetClassTable(ClassTable);
             ProcNode = null;
-            ProcTable = new DSASM.ProcedureTable(ProtoCore.DSASM.Constants.kGlobalScope);
+            ProcTable = new ProcedureTable(Constants.kGlobalScope);
 
             //Initialize the function pointer table
-            FunctionPointerTable = new DSASM.FunctionPointerTable();
+            FunctionPointerTable = new FunctionPointerTable();
 
             //Initialize the dynamic string table and dynamic function table
-            DynamicVariableTable = new DSASM.DynamicVariableTable();
-            DynamicFunctionTable = new DSASM.DynamicFunctionTable();
-            replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
+            DynamicVariableTable = new DynamicVariableTable();
+            DynamicFunctionTable = new DynamicFunctionTable();
+            replicationGuides = new List<List<ReplicationGuide>>();
 
-            startPC = ProtoCore.DSASM.Constants.kInvalidIndex;
+            startPC = Constants.kInvalidIndex;
 
-            deltaCompileStartPC = ProtoCore.DSASM.Constants.kInvalidIndex;
+            deltaCompileStartPC = Constants.kInvalidIndex;
 
             if (options.SuppressBuildOutput)
             {
@@ -1422,19 +1397,19 @@ namespace ProtoCore
             RuntimeStatus = new RuntimeStatus(this);
 
             SSASubscript = 0;
-            SSASubscript_GUID = System.Guid.NewGuid();
+            SSASubscript_GUID = Guid.NewGuid();
             ExpressionUID = 0;
             ModifierBlockUID = 0;
             ModifierStateSubscript = 0;
 
             ExprInterpreterExe = null;
-            ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
+            ExecMode = InterpreterMode.kNormal;
 
             assocCodegen = null;
             FunctionCallDepth = 0;
 
             // Default execution log is Console.Out.
-            this.ExecutionLog = Console.Out;
+            ExecutionLog = Console.Out;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
 
             DebugProps = new DebugProperties();
@@ -1444,8 +1419,8 @@ namespace ProtoCore
 
             Configurations = new Dictionary<string, object>();
 
-            ContinuationStruct = new Lang.ContinuationStructure();
-            ParsingMode = ProtoCore.ParseMode.Normal;
+            ContinuationStruct = new ContinuationStructure();
+            ParsingMode = ParseMode.Normal;
             
             IsParsingPreloadedAssembly = false;
             IsParsingCodeBlockNode = false;
@@ -1456,229 +1431,13 @@ namespace ProtoCore
             FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
 
 
-            CallsiteCache = new Dictionary<string, CallSite>();
-            CachedSSANodes = new List<AssociativeNode>();
-            CallSiteToNodeMap = new Dictionary<Guid, Guid>();
-            ASTToCallSiteMap = new Dictionary<int, CallSite>();
-            CallsiteGuidMap = new Dictionary<Guid, int>();
-
-            ForLoopBlockIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
+            ForLoopBlockIndex = Constants.kInvalidIndex;
 
             GraphNodeCallList = new List<GraphNode>();
 
-            newEntryPoint = ProtoCore.DSASM.Constants.kInvalidIndex;
+            newEntryPoint = Constants.kInvalidIndex;
             cancellationPending = false;
         }
-
-        #region Trace Data Serialization Methods/Members
-
-        private Dictionary<Guid, List<string>> uiNodeToSerializedDataMap = null;
-
-        /// <summary>
-        /// Call this method to obtain serialized trace data for a list of nodes.
-        /// </summary>
-        /// <param name="nodeGuids">A list of System.Guid of nodes whose 
-        /// serialized trace data is to be retrieved. This parameter cannot be 
-        /// null.</param>
-        /// <returns>Returns a dictionary that maps each node Guid to its 
-        /// corresponding list of serialized callsite trace data.</returns>
-        /// 
-        public IEnumerable<KeyValuePair<Guid, List<string>>>
-            GetTraceDataForNodes(IEnumerable<Guid> nodeGuids)
-        {
-            if (nodeGuids == null)
-                throw new ArgumentNullException("nodeGuids");
-
-            var nodeDataPairs = new Dictionary<Guid, List<string>>();
-
-            if (nodeGuids.Count() <= 0) // Nothing to persist now.
-                return nodeDataPairs;
-
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (this.DSExecutable != null)
-                {
-                    var stream = this.DSExecutable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeDataPairs;
-            }
-
-            foreach (Guid nodeGuid in nodeGuids)
-            {
-                // Get a list of GraphNode objects that correspond to this node.
-                var graphNodeIds = graphNodes.
-                    Where(gn => gn.guid == nodeGuid).
-                    Select(gn => gn.CallsiteIdentifier);
-
-                if (graphNodeIds.Count() <= 0)
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in graphNodeIds
-                                         where cs.Key == gn
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                var serializedCallsites = new List<string>();
-                foreach (CallSite callSite in matchingCallSites)
-                {
-                    String traceDataToSave = callSite.GetTraceDataToSave();
-                    if (!String.IsNullOrEmpty(traceDataToSave))
-                        serializedCallsites.Add(traceDataToSave);
-                }
-                // No point adding serialized callsite data if it's empty.
-                if (serializedCallsites.Count > 0)
-                    nodeDataPairs.Add(nodeGuid, serializedCallsites);
-            }
-
-            return nodeDataPairs;
-        }
-
-        public Dictionary<Guid, List<CallSite>>
-        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids)
-        {
-            if (nodeGuids == null)
-                throw new ArgumentNullException("nodeGuids");
-
-            var nodeMap = new Dictionary<Guid, List<CallSite>>();
-
-            if (!nodeGuids.Any()) // Nothing to persist now.
-                return nodeMap;
-
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (this.DSExecutable != null)
-                {
-                    var stream = this.DSExecutable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeMap;
-            }
-
-            foreach (Guid nodeGuid in nodeGuids)
-            {
-                // Get a list of GraphNode objects that correspond to this node.
-                var matchingGraphNodes = graphNodes.
-                    Where(gn => gn.guid == nodeGuid);
-
-                if (!matchingGraphNodes.Any())
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in matchingGraphNodes
-                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                nodeMap[nodeGuid] = matchingCallSites.ToList();
-            }
-
-            return nodeMap;
-        }
-
-        /// <summary>
-        /// Call this method to set the list of serialized trace data, 
-        /// possibly loaded from an external storage.
-        /// </summary>
-        /// <param name="nodeDataPairs">A Dictionary that matches a node Guid 
-        /// to its corresponding list of serialized callsite trace data.</param>
-        /// 
-        public void SetTraceDataForNodes(
-            IEnumerable<KeyValuePair<Guid, List<string>>> nodeDataPairs)
-        {
-            if (nodeDataPairs == null || (nodeDataPairs.Count() <= 0))
-                return; // There is no preloaded trace data.
-
-            if (uiNodeToSerializedDataMap == null)
-                uiNodeToSerializedDataMap = new Dictionary<Guid, List<string>>();
-
-            foreach (var nodeData in nodeDataPairs)
-                uiNodeToSerializedDataMap.Add(nodeData.Key, nodeData.Value);
-        }
-
-        /// <summary>
-        /// Call this method to remove the trace data list for a given UI node. 
-        /// This is required for the scenario where a code block node content is 
-        /// modified before its corresponding callsite objects are reconstructed
-        /// (i.e. before any execution takes place, and after a file-load). 
-        /// Modifications on UI nodes will always result in trace data being 
-        /// reconstructed again.
-        /// </summary>
-        /// <param name="nodeGuid">The System.Guid of the node for which trace 
-        /// data is to be destroyed.</param>
-        /// 
-        public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
-        {
-            // There is preloaded trace data from external file.
-            if (uiNodeToSerializedDataMap != null)
-            {
-                if (uiNodeToSerializedDataMap.Count > 0)
-                    uiNodeToSerializedDataMap.Remove(nodeGuid);
-            }
-        }
-
-        /// <summary>
-        /// Call this method to pop the top-most serialized callsite trace data.
-        /// Note that this call only pops off a signle callsite trace data 
-        /// belonging to a given UI node denoted by the given node guid.
-        /// </summary>
-        /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
-        /// callsite trace data is to be retrieved and removed.</param>
-        /// <returns>Returns the serialized callsite trace data in Base64 encoded
-        /// string for the given UI node.</returns>
-        /// 
-        private string GetAndRemoveTraceDataForNode(System.Guid nodeGuid)
-        {
-            if (uiNodeToSerializedDataMap == null)
-                return null; // There is no preloaded trace data.
-            if (uiNodeToSerializedDataMap.Count <= 0)
-                return null; // There is no preloaded trace data.
-
-            // Get the node element for the given node.
-            List<string> callsiteDataList = null;
-            if (!uiNodeToSerializedDataMap.TryGetValue(nodeGuid, out callsiteDataList))
-                return null;
-
-            // There exists a node element matching the UI node's GUID, get its 
-            // first child callsite element, remove it from the child node list,
-            // and return it to the caller.
-            // 
-            string callsiteTraceData = null;
-            if (callsiteDataList != null && (callsiteDataList.Count > 0))
-            {
-                callsiteTraceData = callsiteDataList[0];
-                callsiteDataList.RemoveAt(0);
-            }
-
-            // On removal of the last callsite trace data, the node entry
-            // itself will be removed from the uiNodeToSerializedDataMap.
-            if (callsiteDataList != null && (callsiteDataList.Count <= 0))
-                uiNodeToSerializedDataMap.Remove(nodeGuid);
-
-            return callsiteTraceData;
-        }
-
-        #endregion // Trace Data Serialization Methods/Members
 
         // The unique subscript for SSA temporaries
         // TODO Jun: Organize these variables in core into proper enums/classes/struct
@@ -1712,7 +1471,7 @@ namespace ProtoCore
         }
 
         // TODO Jun: Cleansify me - i dont need to be here
-        public AST.AssociativeAST.AssociativeNode AssocNode { get; set; }
+        public AssociativeNode AssocNode { get; set; }
         public int startPC { get; set; }
 
 
@@ -1721,7 +1480,7 @@ namespace ProtoCore
         //           It must be moved to its own core, whre each core is an instance of a compiler+interpreter
         //
         public Executable ExprInterpreterExe { get; set; }
-        public ProtoCore.DSASM.InterpreterMode ExecMode { get; set; }
+        public InterpreterMode ExecMode { get; set; }
         public List<SymbolNode> watchSymbolList { get; set; }
         public int watchClassScope { get; set; }
         public int watchFunctionScope { get; set; }
@@ -1729,7 +1488,7 @@ namespace ProtoCore
         public List<StackValue> watchStack { get; set; }
         public int watchFramePointer { get; set; }
 
-        public ProtoCore.CodeGen assocCodegen { get; set; }
+        public CodeGen assocCodegen { get; set; }
 
         // this one is to address the issue that when the execution control is in a language block
         // which is further inside a function, the compiler feprun is false, 
@@ -1737,7 +1496,7 @@ namespace ProtoCore
         // name look up will fail beacuse all the local variables inside 
         // that language block and fucntion has non-zero function index 
         public int FunctionCallDepth { get; set; }
-        public System.IO.TextWriter ExecutionLog { get; set; }
+        public TextWriter ExecutionLog { get; set; }
 
         protected void OnDispose()
         {
@@ -1750,29 +1509,12 @@ namespace ProtoCore
         public void Cleanup()
         {
             OnDispose();
-            ProtoFFI.CLRModuleType.ClearTypes();
-        }
-
-        public void InitializeContextGlobals(Dictionary<string, object> context)
-        {
-            int globalBlock = 0;
-            foreach (KeyValuePair<string, object> global in context)
-            {
-                int stackIndex = CodeBlockList[globalBlock].symbolTable.IndexOf(global.Key);
-
-                if (global.Value.GetType() != typeof(Double) && global.Value.GetType() != typeof(Int32))
-                    throw new NotImplementedException("Context that's aren't double are not yet supported @TODO: Jun,Sharad,Luke ASAP");
-
-                double dValue = Convert.ToDouble(global.Value);
-                StackValue svData = StackValue.BuildDouble(dValue);
-                Rmem.SetGlobalStackData(stackIndex, svData);
-            }
+            CLRModuleType.ClearTypes();
         }
 
         public Core(Options options)
         {
             ResetAll(options);
-            ResetAllRuntimeProperties();
         }
 
         public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)
@@ -1842,29 +1584,29 @@ namespace ProtoCore
                 return null;
             }
 
-            int symbolIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool stillInsideFunction = function != ProtoCore.DSASM.Constants.kInvalidIndex;
-            DSASM.CodeBlock searchBlock = codeblock;
+            int symbolIndex = Constants.kInvalidIndex;
+            bool stillInsideFunction = function != Constants.kInvalidIndex;
+            CodeBlock searchBlock = codeblock;
             // TODO(Jiong): Code Duplication, Consider moving this if else block inside the while loop 
             if (stillInsideFunction)
             {
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, function);
 
-                if (function != ProtoCore.DSASM.Constants.kInvalidIndex &&
+                if (function != Constants.kInvalidIndex &&
                     searchBlock.procedureTable != null &&
                     searchBlock.procedureTable.procList.Count > function &&   // Note: This check assumes we can not define functions inside a fucntion 
-                    symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
-                    symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, ProtoCore.DSASM.Constants.kInvalidIndex);
+                    symbolIndex == Constants.kInvalidIndex)
+                    symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
             }
             else
             {
-                symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, ProtoCore.DSASM.Constants.kInvalidIndex);
+                symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
             }
-            while (ProtoCore.DSASM.Constants.kInvalidIndex == symbolIndex)
+            while (Constants.kInvalidIndex == symbolIndex)
             {
                 // if the search block is of type function, it means our search has gone out of the function itself
                 // so, we should ignore the given function index and only search its parent block's global variable
-                if (searchBlock.blockType == DSASM.CodeBlockType.kFunction)
+                if (searchBlock.blockType == CodeBlockType.kFunction)
                     stillInsideFunction = false;
 
                 searchBlock = searchBlock.parent;
@@ -1884,17 +1626,17 @@ namespace ProtoCore
                     // for example if we have a for loop inside an imperative block which is further inside a function
                     // when we are searching inside the for loop or language block, there is no need to search twice
                     // we need to search twice only when we are searching directly inside the function, 
-                    if (function != ProtoCore.DSASM.Constants.kInvalidIndex &&
+                    if (function != Constants.kInvalidIndex &&
                         searchBlock.procedureTable != null &&
                         searchBlock.procedureTable.procList.Count > function && // Note: This check assumes we can not define functions inside a fucntion 
-                        symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
+                        symbolIndex == Constants.kInvalidIndex)
 
-                        symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, ProtoCore.DSASM.Constants.kInvalidIndex);
+                        symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
 
                 }
                 else
                 {
-                    symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, ProtoCore.DSASM.Constants.kInvalidIndex);
+                    symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
                 }
             }
             return searchBlock.symbolTable.symbolList[symbolIndex];
@@ -1907,11 +1649,11 @@ namespace ProtoCore
             Validity.Assert(null != cblock);
             while (null != cblock)
             {
-                if (ProtoCore.DSASM.CodeBlockType.kFunction == cblock.blockType)
+                if (CodeBlockType.kFunction == cblock.blockType)
                 {
                     return true;
                 }
-                else if (ProtoCore.DSASM.CodeBlockType.kLanguage == cblock.blockType)
+                else if (CodeBlockType.kLanguage == cblock.blockType)
                 {
                     return false;
                 }
@@ -1928,7 +1670,7 @@ namespace ProtoCore
                 return null;
             }
 
-            DSASM.CodeBlock searchBlock = codeblock;
+            CodeBlock searchBlock = codeblock;
             while (null != searchBlock)
             {
                 if (null == searchBlock.procedureTable)
@@ -1939,7 +1681,7 @@ namespace ProtoCore
 
                 // The class table is passed just to check for coercion values
                 int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
-                if (ProtoCore.DSASM.Constants.kInvalidIndex != procIndex)
+                if (Constants.kInvalidIndex != procIndex)
                 {
                     return searchBlock.procedureTable.procList[procIndex];
                 }
@@ -1948,13 +1690,13 @@ namespace ProtoCore
             return null;
         }
 
-        public DSASM.CodeBlock GetCodeBlock(List<DSASM.CodeBlock> blockList, int blockId)
+        public CodeBlock GetCodeBlock(List<CodeBlock> blockList, int blockId)
         {
-            DSASM.CodeBlock codeblock = null;
+            CodeBlock codeblock = null;
             codeblock = blockList.Find(x => x.codeBlockId == blockId);
             if (codeblock == null)
             {
-                foreach (DSASM.CodeBlock block in blockList)
+                foreach (CodeBlock block in blockList)
                 {
                     codeblock = GetCodeBlock(block.children, blockId);
                     if (codeblock != null)
@@ -1966,74 +1708,17 @@ namespace ProtoCore
             return codeblock;
         }
 
-        public StackValue Bounce(int exeblock, int entry, ProtoCore.Runtime.Context context, ProtoCore.DSASM.StackFrame stackFrame, int locals = 0, DebugServices.EventSink sink = null)
-        {
-            if (stackFrame != null)
-            {
-                StackValue svThisPtr = stackFrame.ThisPtr;
-                int ci = stackFrame.ClassScope;
-                int fi = stackFrame.FunctionScope;
-                int returnAddr = stackFrame.ReturnPC;
-                int blockDecl = stackFrame.FunctionBlock;
-                int blockCaller = stackFrame.FunctionCallerBlock;
-                StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
-                StackFrameType frameType = stackFrame.StackFrameType;
-                Validity.Assert(frameType == StackFrameType.kTypeLanguage);
-
-                int depth = stackFrame.Depth;
-                int framePointer = stackFrame.FramePointer;
-                List<StackValue> registers = stackFrame.GetRegisters();
-
-                Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
-            }
-
-            ProtoCore.Language id = DSExecutable.instrStreamList[exeblock].language;
-            CurrentExecutive = Executives[id];
-            StackValue sv = Executives[id].Execute(exeblock, entry, context, sink);
-            return sv;
-        }
-
-        public StackValue Bounce(int exeblock, int entry, ProtoCore.Runtime.Context context, List<Instruction> breakpoints, ProtoCore.DSASM.StackFrame stackFrame, int locals = 0, 
-            DSASM.Executive exec = null, DebugServices.EventSink sink = null, bool fepRun = false)
-        {
-            if (stackFrame != null)
-            {
-                StackValue svThisPtr = stackFrame.ThisPtr;
-                int ci = stackFrame.ClassScope;
-                int fi = stackFrame.FunctionScope;
-                int returnAddr = stackFrame.ReturnPC;
-                int blockDecl = stackFrame.FunctionBlock;
-                int blockCaller = stackFrame.FunctionCallerBlock;
-                StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
-                StackFrameType frameType = stackFrame.StackFrameType;
-                Validity.Assert(frameType == StackFrameType.kTypeLanguage);
-                int depth = stackFrame.Depth;
-                int framePointer = stackFrame.FramePointer;
-                List<StackValue> registers = stackFrame.GetRegisters();
-
-                DebugProps.SetUpBounce(exec, blockCaller, returnAddr);
-
-                Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
-            }
-
-            ProtoCore.Language id = DSExecutable.instrStreamList[exeblock].language;
-            CurrentExecutive = Executives[id];
-
-            StackValue sv = Executives[id].Execute(exeblock, entry, context, breakpoints, sink, fepRun);
-            return sv;
-        }
-
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)
         {
-            if (DSASM.CodeBlockType.kLanguage == codeBlock.blockType
-                || DSASM.CodeBlockType.kFunction == codeBlock.blockType
-                || DSASM.CodeBlockType.kConstruct == codeBlock.blockType)
+            if (CodeBlockType.kLanguage == codeBlock.blockType
+                || CodeBlockType.kFunction == codeBlock.blockType
+                || CodeBlockType.kConstruct == codeBlock.blockType)
             {
                 Validity.Assert(codeBlock.symbolTable.RuntimeIndex < RuntimeTableIndex);
                 runtimeSymbols[codeBlock.symbolTable.RuntimeIndex] = codeBlock.symbolTable;
             }
 
-            foreach (DSASM.CodeBlock child in codeBlock.children)
+            foreach (CodeBlock child in codeBlock.children)
             {
                 BfsBuildSequenceTable(child, runtimeSymbols);
             }
@@ -2041,13 +1726,13 @@ namespace ProtoCore
 
         private void BfsBuildProcedureTable(CodeBlock codeBlock, ProcedureTable[] procTable)
         {
-            if (DSASM.CodeBlockType.kLanguage == codeBlock.blockType || DSASM.CodeBlockType.kFunction == codeBlock.blockType)
+            if (CodeBlockType.kLanguage == codeBlock.blockType || CodeBlockType.kFunction == codeBlock.blockType)
             {
                 Validity.Assert(codeBlock.procedureTable.runtimeIndex < RuntimeTableIndex);
                 procTable[codeBlock.procedureTable.runtimeIndex] = codeBlock.procedureTable;
             }
 
-            foreach (DSASM.CodeBlock child in codeBlock.children)
+            foreach (CodeBlock child in codeBlock.children)
             {
                 BfsBuildProcedureTable(child, procTable);
             }
@@ -2057,13 +1742,13 @@ namespace ProtoCore
         {
             if (null != codeBlock)
             {
-                if (DSASM.CodeBlockType.kLanguage == codeBlock.blockType || DSASM.CodeBlockType.kFunction == codeBlock.blockType)
+                if (CodeBlockType.kLanguage == codeBlock.blockType || CodeBlockType.kFunction == codeBlock.blockType)
                 {
                     Validity.Assert(codeBlock.codeBlockId < RuntimeTableIndex);
                     istreamList[codeBlock.codeBlockId] = codeBlock.instrStream;
                 }
 
-                foreach (DSASM.CodeBlock child in codeBlock.children)
+                foreach (CodeBlock child in codeBlock.children)
                 {
                     BfsBuildInstructionStreams(child, istreamList);
                 }
@@ -2075,8 +1760,9 @@ namespace ProtoCore
         {
             // TODO Jun: Determine if we really need another executable for the expression interpreter
             Validity.Assert(null == ExprInterpreterExe);
-            ExprInterpreterExe = new DSASM.Executable();
+            ExprInterpreterExe = new Executable();
 
+            ExprInterpreterExe.RuntimeData = GenerateRuntimeData();
             // Copy all tables
             ExprInterpreterExe.classTable = DSExecutable.classTable;
             ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
@@ -2110,9 +1796,19 @@ namespace ProtoCore
             }
         }
 
+        private RuntimeData GenerateRuntimeData()
+        {
+            Validity.Assert(RuntimeData != null);
+            RuntimeData.FunctionTable = FunctionTable;
+
+            return RuntimeData;
+        }
+
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
+
+            DSExecutable.RuntimeData = GenerateRuntimeData();
 
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
@@ -2120,21 +1816,21 @@ namespace ProtoCore
             RuntimeTableIndex = CompleteCodeBlockList.Count;
 
             // Build the runtime symbols
-            DSExecutable.runtimeSymbols = new DSASM.SymbolTable[RuntimeTableIndex];
+            DSExecutable.runtimeSymbols = new SymbolTable[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
             {
                 BfsBuildSequenceTable(CodeBlockList[n], DSExecutable.runtimeSymbols);
             }
 
             // Build the runtime procedure table
-            DSExecutable.procedureTable = new DSASM.ProcedureTable[RuntimeTableIndex];
+            DSExecutable.procedureTable = new ProcedureTable[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
             {
                 BfsBuildProcedureTable(CodeBlockList[n], DSExecutable.procedureTable);
             }
 
             // Build the executable instruction streams
-            DSExecutable.instrStreamList = new DSASM.InstructionStream[RuntimeTableIndex];
+            DSExecutable.instrStreamList = new InstructionStream[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
             {
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
@@ -2145,7 +1841,7 @@ namespace ProtoCore
             // block parameter needs to be incremented or not in order to get the correct global variable
             if (DSExecutable.isSingleAssocBlock)
             {
-                DSExecutable.isSingleAssocBlock = (DSASM.OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
+                DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
             }
             GenerateExprExe();
         }
@@ -2155,20 +1851,20 @@ namespace ProtoCore
         public string GenerateTempVar()
         {
             tempVarId++;
-            return ProtoCore.DSASM.Constants.kTempVar + tempVarId.ToString();
+            return Constants.kTempVar + tempVarId.ToString();
         }
 
 
         public string GenerateTempPropertyVar()
         {
             tempVarId++;
-            return ProtoCore.DSASM.Constants.kTempPropertyVar + tempVarId.ToString();
+            return Constants.kTempPropertyVar + tempVarId.ToString();
         }
 
         public string GenerateTempLangageVar()
         {
             tempLanguageId++;
-            return ProtoCore.DSASM.Constants.kTempLangBlock + tempLanguageId.ToString();
+            return Constants.kTempLangBlock + tempLanguageId.ToString();
         }
 
         public bool IsTempVar(String varName)
@@ -2184,18 +1880,18 @@ namespace ProtoCore
         {
             // The naming convention for auto-generated modifier block states begins with a '%'
             // followed by "<Constants.kTempModifierStateNamePrefix>_<modifier_block_name>_<index>
-            string modStateTemp = DSASM.Constants.kTempModifierStateNamePrefix + modifierName + ModifierStateSubscript.ToString();
+            string modStateTemp = Constants.kTempModifierStateNamePrefix + modifierName + ModifierStateSubscript.ToString();
             ++ModifierStateSubscript;
             return modStateTemp;
         }
 
         public List<int> GetAncestorBlockIdsOfBlock(int blockId)
         {
-            if (blockId >= this.CompleteCodeBlockList.Count || blockId < 0)
+            if (blockId >= CompleteCodeBlockList.Count || blockId < 0)
             {
                 return new List<int>();
             }
-            CodeBlock thisBlock = this.CompleteCodeBlockList[blockId];
+            CodeBlock thisBlock = CompleteCodeBlockList[blockId];
 
             var ancestors = new List<int>();
             CodeBlock codeBlock = thisBlock.parent;
@@ -2209,7 +1905,7 @@ namespace ProtoCore
 
         public int GetCurrentBlockId()
         {
-            int constructBlockId = this.Rmem.CurrentConstructBlockId;
+            int constructBlockId = Rmem.CurrentConstructBlockId;
             if (constructBlockId == Constants.kInvalidIndex)
                 return DebugProps.CurrentBlockId;
 
@@ -2225,19 +1921,19 @@ namespace ProtoCore
             if (constructBlockId != DebugProps.CurrentBlockId)
                 return DebugProps.CurrentBlockId;
             else
-                return this.Rmem.CurrentConstructBlockId;
+                return Rmem.CurrentConstructBlockId;
         }
 
-        public AssociativeGraph.GraphNode GetExecutingGraphNode()
+        public GraphNode GetExecutingGraphNode()
         {
-            return this.ExecutingGraphnode;
+            return ExecutingGraphnode;
         }
 
         public bool IsEvalutingPropertyChanged()
         {
-            foreach (var prop in this.InterpreterProps)
+            foreach (var prop in InterpreterProps)
             {
-                if (prop.updateStatus == AssociativeEngine.UpdateStatus.kPropertyChangedUpdate)
+                if (prop.updateStatus == UpdateStatus.kPropertyChangedUpdate)
                 {
                     return true;
                 }
@@ -2248,65 +1944,6 @@ namespace ProtoCore
 
         public GraphNode ExecutingGraphnode { get; set; }
 
-        /// <summary>
-        /// Retrieves an existing instance of a callsite associated with a UID
-        /// It creates a new callsite if non was found
-        /// </summary>
-        /// <param name="core"></param>
-        /// <param name="uid"></param>
-        /// <returns></returns>
-        public CallSite GetCallSite(GraphNode graphNode, 
-                                    int classScope, 
-                                    string methodName)
-        {
-            Validity.Assert(null != FunctionTable);
-            CallSite csInstance = null;
-
-            // TODO Jun: Currently generates a new callsite for imperative and 
-            // internally generated functions.
-            // Fix the issues that cause the cache to go out of sync when 
-            // attempting to cache internal functions. This may require a 
-            // secondary callsite cache for internal functions so they dont 
-            // clash with the graphNode UID key
-            var language = DSExecutable.instrStreamList[RunningBlock].language;
-            bool isImperative =  language == Language.kImperative;
-            bool isInternalFunction = CoreUtils.IsInternalFunction(methodName);
-
-            if (isInternalFunction || isImperative)
-            {
-                csInstance = new CallSite(classScope, 
-                                          methodName, 
-                                          FunctionTable, 
-                                          Options.ExecutionMode);
-            }
-            else if (!CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
-            {
-                // Attempt to retrieve a preloaded callsite data (optional).
-                var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
-
-                csInstance = new CallSite(classScope,
-                                          methodName,
-                                          FunctionTable,
-                                          Options.ExecutionMode,
-                                          traceData);
-
-                CallsiteCache[graphNode.CallsiteIdentifier] = csInstance;
-                CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
-                ASTToCallSiteMap[graphNode.AstID] = csInstance;
-
-           }
-
-            if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
-            {
-                csInstance.UpdateCallSite(classScope, methodName);
-                if (Options.IsDeltaExecution)
-                {
-                    this.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
-                }
-            }
-                
-            return csInstance;
-        }
 
         public void ResetSSASubscript(Guid guid, int subscript)
         {
@@ -2316,13 +1953,13 @@ namespace ProtoCore
 
         public void RequestCancellation()
         {
-            if (this.cancellationPending)
+            if (cancellationPending)
             {
                 var message = "Cancellation cannot be requested twice";
                 throw new InvalidOperationException(message);
             }
 
-            this.cancellationPending = true;
+            cancellationPending = true;
         }
     }
 }

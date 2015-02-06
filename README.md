@@ -19,6 +19,26 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+###0.7.5 ###
+
+#### New Features
+- SAT files read from disk can be automatically updated in Dynamo graph using Geometry.ImportFromSAT
+- Floor creation for structural types is now supported
+
+#### Fixes
+- Element.Geometry and Element.Face no longer crashes when used in Revit 2015 when executed on large groups of Revit geometry.
+- Upgraded Excel.Write nodes no longer show as “Unresolved”.
+- View.ExportAsImage will now export views other than default {3d}
+- Dynamo does not conflict with other addins.  Previously, Dynamo would fail to launch in Revit when Unifi, Maxwell, Enum, or Kiwi Bonus Tools or a few other add-in were installed on Revit 2015.
+- Users can now run Dynamo as an external program for debugging libraries in Visual Studio 
+- Better error messaging in Code Block Nodes
+- modelcurve.bycurve no longer creates duplicate elements when adding to an array
+- Copy/Paste of nodes now maintains lacing setting
+- Many more bug fixes
+
+#### Known Issues
+- Current list of [known issues](https://github.com/DynamoDS/Dynamo/wiki/Known-Issues)
+
 ###0.7.4 ###
 
 #### New features
@@ -217,3 +237,7 @@ http://superwebsocket.codeplex.com/license
 ###Revit Test Framework###
 https://github.com/DynamoDS/RevitTestFramework  
 http://opensource.org/licenses/MIT
+
+###Lucene.Net###
+http://lucenenet.apache.org/
+http://www.apache.org/licenses/LICENSE-2.0

@@ -27,7 +27,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
             //run the expression and assert that it does not
             //throw an error
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
         }
 
