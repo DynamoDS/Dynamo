@@ -76,12 +76,6 @@ namespace Dynamo.Search.SearchElements
         public string Category { get; private set; }
 
         /// <summary>
-        /// A string describing the type of object
-        /// </summary>
-        [DataMember]
-        public string Type { get; private set; }
-
-        /// <summary>
         /// Model name in the list of all node models
         /// </summary>
         [DataMember]
@@ -104,12 +98,6 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         [DataMember]
         public string Description { get; private set; }
-
-        /// <summary>
-        /// A bool indicating if the object will appear in searches
-        /// </summary>
-        [DataMember]
-        public bool Searchable { get; private set; }
 
         /// <summary>
         /// Number defining the relative importance of the element in search. 
