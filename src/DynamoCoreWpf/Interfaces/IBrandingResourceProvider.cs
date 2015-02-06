@@ -26,6 +26,12 @@ namespace Dynamo.Wpf.Interfaces
             Image,       
             Title, 
         }
+
+        public enum MainWindow
+        {
+            Image,
+            Title,
+        }
     }
 
     public interface IBrandingResourceProvider
@@ -34,6 +40,7 @@ namespace Dynamo.Wpf.Interfaces
         ImageSource GetImageSource(ResourceNames.ConsentForm resourceName);
         ImageSource GetImageSource(ResourceNames.StartPage resourceName);
 
+        string GetString(ResourceNames.MainWindow resourceName);
         string GetString(ResourceNames.AboutBox resourceName);
         string GetString(ResourceNames.ConsentForm resourceName);
     }
