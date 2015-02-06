@@ -81,7 +81,7 @@ namespace ProtoScript.Runners
 
                 ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
                 runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, context, core.DebuggerProperties);
-                core.RuntimeCoreBridge = runtimeCore;
+                core.__TempCoreHostForRefactoring = runtimeCore;
 
                 FirstExec();
                 diList = BuildReverseIndex();

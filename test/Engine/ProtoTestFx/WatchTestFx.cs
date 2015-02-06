@@ -142,8 +142,8 @@ namespace ProtoTestFx
 
                 if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    Core.RuntimeCoreBridge.DebugProps.IsPopmCall = false;
-                    Core.RuntimeCoreBridge.DebugProps.CurrentSymbolName = symbolName;
+                    Core.__TempCoreHostForRefactoring.DebugProps.IsPopmCall = false;
+                    Core.__TempCoreHostForRefactoring.DebugProps.CurrentSymbolName = symbolName;
                 }
 
                 // Add stackvalue against lineNo and variable name
@@ -176,10 +176,10 @@ namespace ProtoTestFx
 
                 if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    if (!Core.RuntimeCoreBridge.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
+                    if (!Core.__TempCoreHostForRefactoring.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
                     {
-                        Core.RuntimeCoreBridge.DebugProps.CurrentSymbolName = symbolName;
-                        Core.RuntimeCoreBridge.DebugProps.IsPopmCall = true;
+                        Core.__TempCoreHostForRefactoring.DebugProps.CurrentSymbolName = symbolName;
+                        Core.__TempCoreHostForRefactoring.DebugProps.IsPopmCall = true;
                     }
                 }
 
@@ -215,7 +215,7 @@ namespace ProtoTestFx
             {
                 if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    Core.RuntimeCoreBridge.DebugProps.IsPopmCall = false;
+                    Core.__TempCoreHostForRefactoring.DebugProps.IsPopmCall = false;
                 }
 
                 callrLineNo = instruction.debug.Location.StartInclusive.LineNo;

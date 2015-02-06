@@ -37,7 +37,7 @@ namespace ProtoCore.Lang
 
         public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
         {
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, true);
             ProtoCore.DSASM.Executive oldDSASMExec = null;
             if (core.CurrentExecutive != null)

@@ -66,7 +66,7 @@ namespace ProtoScript.Runners
             bool ssastate = Core.Options.GenerateSSA;
             bool ssastateExec = Core.Options.ExecuteSSA;
 
-            ProtoCore.RuntimeCore runtimeCore = Core.RuntimeCoreBridge;
+            ProtoCore.RuntimeCore runtimeCore = Core.__TempCoreHostForRefactoring;
 
             runtimeCore.RuntimeOptions.GenerateSSA = false;
             runtimeCore.RuntimeOptions.ExecuteSSA = false;

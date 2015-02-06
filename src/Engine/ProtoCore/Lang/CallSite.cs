@@ -1678,7 +1678,7 @@ namespace ProtoCore
                                           List<StackValue> formalParameters, StackFrame stackFrame, Core core,
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if(core.CancellationPending)
             {
                 throw new ExecutionCancelledException();               

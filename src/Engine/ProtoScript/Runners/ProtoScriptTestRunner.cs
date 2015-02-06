@@ -133,7 +133,7 @@ namespace ProtoScript.Runners
             core.RunningBlock = runningBlock;
 
             ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, runtimeContext, core.DebuggerProperties);
-            core.RuntimeCoreBridge = runtimeCore;
+            core.__TempCoreHostForRefactoring = runtimeCore;
 
             try
             {
