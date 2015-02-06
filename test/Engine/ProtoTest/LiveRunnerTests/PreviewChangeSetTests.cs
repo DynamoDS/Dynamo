@@ -63,7 +63,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
@@ -118,7 +118,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
@@ -182,7 +182,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
@@ -252,7 +252,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
@@ -305,7 +305,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);
@@ -365,7 +365,7 @@ namespace ProtoTest.LiveRunner
 
             // Get astlist from ChangeSetComputer
             ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
-            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData, true);
+            List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
             List<Guid> reachableGuidList = changeSetState.EstimateNodesAffectedByASTList(astList);

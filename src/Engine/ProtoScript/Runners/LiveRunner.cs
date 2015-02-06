@@ -457,7 +457,7 @@ namespace ProtoScript.Runners
             }
         }
 
-        private void UpdateCachedASTFromSubtrees(List<Subtree> modifiedSubTrees)
+        public void UpdateCachedASTFromSubtrees(List<Subtree> modifiedSubTrees)
         {
             if (modifiedSubTrees != null)
             {
@@ -603,17 +603,13 @@ namespace ProtoScript.Runners
         }
 
 
-        public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData, bool preview = false)
+        public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
         {
             csData = new ChangeSetData();
             List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
             finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListAdded(syncData.AddedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees));
-            if (!preview)
-            {
-                UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
-            }
             csData.ContainsDeltaAST = finalDeltaAstList.Count > 0;
             return finalDeltaAstList;
         }
@@ -1669,7 +1665,7 @@ namespace ProtoScript.Runners
         private void PreviewInternal(GraphSyncData syncData)
         {
             // Get the list of ASTs that will be affected by syncData
-            var previewAstList = changeSetComputer.GetDeltaASTList(syncData, true);
+            var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
             List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
@@ -1687,6 +1683,7 @@ namespace ProtoScript.Runners
 
             // Get AST list that need to be executed
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
+            changeSetComputer.UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
             changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
