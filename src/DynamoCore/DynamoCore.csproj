@@ -312,9 +312,6 @@ limitations under the License.
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -324,8 +321,11 @@ copy "$(SolutionDir)..\tools\install\extra\InstallASMForDynamo.exe" "$(OutputPat
 IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
     <PostBuildEvent>mkdir "$(OutputPath)\dll"
-copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"</PostBuildEvent>
+copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
+</PostBuildEvent>
     <PostBuildEvent>xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.xml" "$(OutputPath)\$(UICulture)"
 xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)\$(UICulture)"
@@ -339,8 +339,8 @@ xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples" "$(OutputPath)samples\$(UICul
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>  
-  <Target Name="AfterBuild">    
+  </Target>
+  <Target Name="AfterBuild">
   </Target>
   -->
 </Project>
