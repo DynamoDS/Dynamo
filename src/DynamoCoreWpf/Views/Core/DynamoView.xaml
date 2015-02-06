@@ -23,7 +23,6 @@
         Closed="WindowClosed"
         MinHeight="600"
         MinWidth="800"
-        Title="Dynamo"
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
