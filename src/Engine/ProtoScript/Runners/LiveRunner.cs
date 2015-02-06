@@ -31,6 +31,7 @@ namespace ProtoScript.Runners
     {
         public Guid GUID;
         public List<AssociativeNode> AstNodes;
+        public List<AssociativeNode> ModifiedAstNodes;
         public bool ForceExecution;
 
         public Subtree(List<AssociativeNode> astNodes, System.Guid guid)
@@ -38,6 +39,7 @@ namespace ProtoScript.Runners
             GUID = guid;
             AstNodes = astNodes;
             ForceExecution = false;
+            ModifiedAstNodes = new List<AssociativeNode>();
         }
 
         public override string ToString()
@@ -455,6 +457,23 @@ namespace ProtoScript.Runners
             }
         }
 
+        private void UpdateCachedASTFromSubtrees(List<Subtree> modifiedSubTrees)
+        {
+            if (modifiedSubTrees != null)
+            {
+                for (int n = 0; n < modifiedSubTrees.Count(); ++n)
+                {
+                    Subtree subtree = modifiedSubTrees[n];
+                    if (subtree.AstNodes == null)
+                    {
+                        continue;
+                    }
+
+                    UpdateCachedASTList(subtree, subtree.ModifiedAstNodes);
+                }
+            }
+        }
+
         /// <summary>
         /// Update the cached ASTs in the subtree given the modified ASTs
         /// </summary>
@@ -542,7 +561,7 @@ namespace ProtoScript.Runners
         }
 
 
-        private IEnumerable<AssociativeNode> GetDeltaAstListModified(IEnumerable<Subtree> modifiedSubTrees, bool preview)
+        private IEnumerable<AssociativeNode> GetDeltaAstListModified(List<Subtree> modifiedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
             csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
@@ -556,30 +575,28 @@ namespace ProtoScript.Runners
                 return deltaAstList;
             }
 
-            foreach (var subtree in modifiedSubTrees)
+            for (int n = 0; n < modifiedSubTrees.Count(); ++n)
             {
-                if (subtree.AstNodes == null)
+                if (modifiedSubTrees[n].AstNodes == null)
                 {
                     continue;
                 }
 
                 // Get modified statements
-                var modifiedASTList = GetModifiedNodes(subtree);
+                var modifiedASTList = GetModifiedNodes(modifiedSubTrees[n]);
+                modifiedSubTrees[n].ModifiedAstNodes.Clear();
+                modifiedSubTrees[n].ModifiedAstNodes.AddRange(modifiedASTList);
                 deltaAstList.AddRange(modifiedASTList);
-                if (!preview)
-                {
-                    UpdateCachedASTList(subtree, modifiedASTList);
-                }
 
                 foreach (AssociativeNode node in modifiedASTList)
                 {
                     var bnode = node as BinaryExpressionNode;
                     if (bnode != null)
                     {
-                        bnode.guid = subtree.GUID;
+                        bnode.guid = modifiedSubTrees[n].GUID;
                     }
 
-                    SetNestedLanguageBlockASTGuids(subtree.GUID, new List<ProtoCore.AST.Node>() { bnode });
+                    SetNestedLanguageBlockASTGuids(modifiedSubTrees[n].GUID, new List<ProtoCore.AST.Node>() { bnode });
                 }
             }
             return deltaAstList;
@@ -592,7 +609,11 @@ namespace ProtoScript.Runners
             List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
             finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
             finalDeltaAstList.AddRange(GetDeltaAstListAdded(syncData.AddedSubtrees));
-            finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees, preview));
+            finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees));
+            if (!preview)
+            {
+                UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
+            }
             csData.ContainsDeltaAST = finalDeltaAstList.Count > 0;
             return finalDeltaAstList;
         }
