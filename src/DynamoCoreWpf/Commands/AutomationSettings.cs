@@ -9,6 +9,7 @@ using System.Xml;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.UI;
 
 namespace Dynamo.ViewModels
 {
@@ -233,18 +234,23 @@ namespace Dynamo.ViewModels
             XmlElement commandRoot = document.CreateElement("Commands");
             document.AppendChild(commandRoot);
 
+            const string format = "Commands-{0:yyyyMMdd-hhmmss}.xml";
+            string xmlFileName = string.Format(format, DateTime.Now);
+            string xmlFilePath = Path.Combine(Path.GetTempPath(), xmlFileName);
+            
             // Create attributes that applied to the entire recording.
             var helper = new XmlElementHelper(commandRoot);
             helper.SetAttribute(EXIT_ATTRIB_NAME, ExitAfterPlayback);
             helper.SetAttribute(PAUSE_ATTRIB_NAME, PauseAfterPlayback);
             helper.SetAttribute(INTERVAL_ATTRIB_NAME, CommandInterval);
+            // Serialization in SaveContext.File may need file path. Add it
+            // temporarily and remove it after searilization.
+            helper.SetAttribute(Configurations.FilePathAttribName, xmlFilePath);
 
             foreach (DynamoModel.RecordableCommand command in recordedCommands)
                 commandRoot.AppendChild(command.Serialize(document));
 
-            const string format = "Commands-{0:yyyyMMdd-hhmmss}.xml";
-            string xmlFileName = string.Format(format, DateTime.Now);
-            string xmlFilePath = Path.Combine(Path.GetTempPath(), xmlFileName);
+            commandRoot.RemoveAttribute(Configurations.FilePathAttribName);
 
             // Save recorded commands into XML file and open it in viewer.
             document.Save(xmlFilePath);
