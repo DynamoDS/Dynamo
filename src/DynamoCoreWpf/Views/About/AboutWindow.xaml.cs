@@ -24,6 +24,9 @@ namespace Dynamo.UI.Views
             InstallNewUpdate = false;
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = dynamoViewModel;
+
+            var id = Wpf.Interfaces.ResourceNames.AboutBox.Title;
+            Title = dynamoViewModel.BrandingResourceProvider.GetString(id);
         }
 
         public bool InstallNewUpdate { get; private set; }

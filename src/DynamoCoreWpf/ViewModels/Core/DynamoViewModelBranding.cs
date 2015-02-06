@@ -15,7 +15,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return BrandingResourceProvider.GetImageSource(ResourceName.AboutBoxLogo);
+                return BrandingResourceProvider.GetImageSource(ResourceNames.AboutBox.Image);
             }
         }
     }
