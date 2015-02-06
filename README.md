@@ -200,6 +200,16 @@ http://opensource.org/licenses/apache2.0.php
 http://www.microsoft.com/en-us/kinectforwindows/  
 http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx 
 
+###libiconv###
+https://www.gnu.org/software/libiconv/
+https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
+
+###libgcc, libstdc++, libgomp###
+https://gcc.gnu.org/onlinedocs/libgomp/
+https://gcc.gnu.org/onlinedocs/gccint/Libgcc.html
+https://gcc.gnu.org/libstdc++/
+http://www.gnu.org/licenses/gcc-exception.html
+
 ###Microsoft 2012 C Runtime DLLS, msvcp110.dll and msvcr110.dll###
 http://msdn.microsoft.com/en-us/vstudio/dn501987
 
@@ -241,3 +251,7 @@ http://opensource.org/licenses/MIT
 ###Lucene.Net###
 http://lucenenet.apache.org/
 http://www.apache.org/licenses/LICENSE-2.0
+
+###Winpthreads###
+http://mingw-w64.sourceforge.net/
+http://www.mingw.org/license

@@ -986,8 +986,16 @@ namespace Dynamo.ViewModels
             // that can't be handled reliably
             try
             {
-                string xmlFilePath = parameters as string;
+                var xmlFilePath = parameters as string;
                 ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath));
+
+                if (UIDispatcher != null)
+                {
+                    // Dispatch a fit view command after all non-idle operations
+                    // are completed. This is to ensure the view's ready for it.
+                    UIDispatcher.BeginInvoke(DispatcherPriority.Background,
+                        (Action)(() => { if (CanFitView(null)) FitView(null); }));
+                }
             }
             catch (Exception e)
             {
