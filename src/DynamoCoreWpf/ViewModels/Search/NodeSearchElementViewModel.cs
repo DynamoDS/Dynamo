@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.ViewModels;
@@ -120,12 +120,12 @@ namespace Dynamo.Wpf.ViewModels
         ///<summary>
         /// Small icon for class and method buttons.
         ///</summary>
-        public BitmapSource SmallIcon
+        public ImageSource SmallIcon
         {
             get
             {
                 var name = GetResourceName(ResourceType.SmallIcon);
-                BitmapSource icon = GetIcon(name + Configurations.SmallIconPostfix);
+                ImageSource icon = GetIcon(name + Configurations.SmallIconPostfix);
 
                 // If there is no icon, use default.
                 if (icon == null)
@@ -138,12 +138,12 @@ namespace Dynamo.Wpf.ViewModels
         ///<summary>
         /// Large icon for tooltips.
         ///</summary>
-        public BitmapSource LargeIcon
+        public ImageSource LargeIcon
         {
             get
             {
                 var name = GetResourceName(ResourceType.LargeIcon);
-                BitmapSource icon = GetIcon(name + Configurations.LargeIconPostfix);
+                ImageSource icon = GetIcon(name + Configurations.LargeIconPostfix);
 
                 // If there is no icon, use default.
                 if (icon == null)
@@ -167,7 +167,7 @@ namespace Dynamo.Wpf.ViewModels
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        protected BitmapSource GetIcon(string fullNameOfIcon)
+        protected ImageSource GetIcon(string fullNameOfIcon)
         {
             if (string.IsNullOrEmpty(Model.Assembly))
                 return null;
@@ -178,7 +178,7 @@ namespace Dynamo.Wpf.ViewModels
             return iconRequest.Icon;
         }
 
-        protected virtual BitmapSource LoadDefaultIcon(ResourceType resourceType)
+        protected virtual ImageSource LoadDefaultIcon(ResourceType resourceType)
         {
             if (resourceType == ResourceType.LargeIcon)
                 return null;
@@ -225,7 +225,7 @@ namespace Dynamo.Wpf.ViewModels
             set { base.Model = value; }
         }
 
-        protected override BitmapSource LoadDefaultIcon(ResourceType resourceType)
+        protected override ImageSource LoadDefaultIcon(ResourceType resourceType)
         {
             string postfix = resourceType == ResourceType.SmallIcon ?
                 Configurations.SmallIconPostfix : Configurations.LargeIconPostfix;

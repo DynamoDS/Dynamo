@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -586,7 +585,7 @@ namespace Dynamo.ViewModels
         private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
         {
             var warehouse = iconServices.GetForAssembly(e.IconAssembly);
-            BitmapSource icon = null;
+            ImageSource icon = null;
             if (warehouse != null)
                 icon = warehouse.LoadIconInternal(e.IconFullPath);
 

@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using Dynamo.Search;
 using Dynamo.UI;
 using Dynamo.ViewModels;
@@ -238,11 +238,11 @@ namespace Dynamo.Wpf.ViewModels
         ///<summary>
         /// Small icon for class and method buttons.
         ///</summary>
-        public BitmapSource SmallIcon
+        public ImageSource SmallIcon
         {
             get
             {
-                BitmapSource icon = GetIcon(Name + Configurations.SmallIconPostfix);
+                ImageSource icon = GetIcon(Name + Configurations.SmallIconPostfix);
 
                 // If there is no icon, use default.
                 if (icon == null)
@@ -465,7 +465,7 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        private BitmapSource GetIcon(string fullNameOfIcon)
+        private ImageSource GetIcon(string fullNameOfIcon)
         {
             var iconRequest = new IconRequestEventArgs(Assembly, fullNameOfIcon);
             OnRequestBitmapSource(iconRequest);
@@ -473,7 +473,7 @@ namespace Dynamo.Wpf.ViewModels
             return iconRequest.Icon;
         }
 
-        private BitmapSource LoadDefaultIcon()
+        private ImageSource LoadDefaultIcon()
         {
             var iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly,
                 Configurations.DefaultIcon);
