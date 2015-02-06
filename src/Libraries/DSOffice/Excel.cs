@@ -4,8 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Autodesk.DesignScript.Runtime;
 using Microsoft.Office.Interop.Excel;
+
+using Autodesk.DesignScript.Runtime;
 
 namespace DSOffice
 {
@@ -142,7 +143,7 @@ namespace DSOffice
 
         internal static void OnProcessExit(object sender, EventArgs eventArgs)
         {
-            if (eventArgs != null)
+            if(eventArgs != null)
             {
                 var args = eventArgs as ExcelCloseEventArgs;
                 if (args != null)
@@ -219,7 +220,7 @@ namespace DSOffice
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static WorkSheet WriteDataToExcelWorksheet(
-            WorkSheet worksheet, int startRow = 0, int startColumn = 0, object[][] data = null)
+            WorkSheet worksheet, int startRow=0, int startColumn=0, object[][] data=null)
         {
             if (data == null)
                 return worksheet;
@@ -303,7 +304,7 @@ namespace DSOffice
         public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data)
         {
             WorkBook wb = new WorkBook(filePath);
-            WorkSheet ws = new WorkSheet(wb, sheetName);
+            WorkSheet ws = new WorkSheet (wb, sheetName);
             ws = ws.WriteData(startRow, startCol, data);
             return ws.Data;
         }
@@ -370,7 +371,7 @@ namespace DSOffice
                             output[i, j] = item.ToString();
                         }
                     }
-
+                        
                 }
             }
 
@@ -381,8 +382,8 @@ namespace DSOffice
         /// <summary>
         /// return data from given worksheet (GetDataFromExcelWorksheet node)
         /// </summary>
-        internal object[][] Data
-        {
+        internal object[][] Data 
+        { 
             get
             {
                 var vals = ws.UsedRange.get_Value();
@@ -397,9 +398,9 @@ namespace DSOffice
 
                 return ConvertToJaggedArray((object[,])vals);
             }
-        }
+        }  
 
-        private WorkBook wb = null;
+        private WorkBook wb = null;        
         private Worksheet ws = null;
 
         /// <summary>
@@ -407,7 +408,7 @@ namespace DSOffice
         /// </summary>
         /// <param name="wbook"></param>
         /// <param name="sheetName"></param>
-        internal WorkSheet(WorkBook wbook, string sheetName)
+        internal WorkSheet (WorkBook wbook, string sheetName)
         {
             wb = wbook;
 
@@ -433,7 +434,7 @@ namespace DSOffice
             this.ws = ws;
             this.wb = wb;
         }
-
+          
         /// <summary>
         /// instance method, write data to existing worksheet, (WriteDataToExcelWorksheet node)
         /// </summary>
@@ -471,14 +472,14 @@ namespace DSOffice
         /// <summary>
         /// (GetWorksheetsFromExcelWorkbook node)
         /// </summary>
-        internal WorkSheet[] WorkSheets
+        internal WorkSheet[] WorkSheets 
         {
             get
             {
                 return wb.Worksheets.Cast<Worksheet>().Select(n => new WorkSheet(n, this)).ToArray();
             }
-        }
-
+        }    
+   
         private Workbook wb = null;
 
         internal object Add()
@@ -488,15 +489,15 @@ namespace DSOffice
 
         internal void Save()
         {
-            if (!String.IsNullOrEmpty(wb.Path))
+            if(!String.IsNullOrEmpty(wb.Path))
                 wb.Save();
         }
-
+ 
         /// <summary>
         /// Creates a new Workbook with filepath and sheet name as input
         /// </summary>
         internal WorkBook(string filePath)
-        {
+        {            
             Name = filePath;
 
             if (!String.IsNullOrEmpty(filePath))
@@ -552,20 +553,20 @@ namespace DSOffice
                     workbook.Close(false);
                 }
                 catch (Exception)
-                {
+                {   
                 }
-
+                
                 wb.SaveAs(filename);
             }
 
         }
-
+        
         private WorkBook(Workbook wb, string filePath)
         {
             this.wb = wb;
             Name = filePath;
         }
-
+                
         /// <summary>
         /// (ReadExcelFile node)
         /// </summary>
@@ -598,7 +599,7 @@ namespace DSOffice
                 throw new ArgumentException("No worksheet matches the given string.", "sheetName");
 
             return new WorkSheet(ws, this);
-        }
+        }             
 
     }
 }

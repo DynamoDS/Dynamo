@@ -227,6 +227,8 @@ namespace Dynamo.UI.Views
 
             var routedEvent = Keyboard.KeyDownEvent; // Event to send
 
+
+
             HighlightedItem.RaiseEvent(new KeyEventArgs(
                 Keyboard.PrimaryDevice, target, 0, key)
                 {
