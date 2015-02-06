@@ -23,7 +23,7 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
-
+using Dynamo.Wpf.Controls;
 using DynamoUtilities;
 
 using String = System.String;
@@ -32,6 +32,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 
 namespace Dynamo.Controls
 {
@@ -61,6 +62,7 @@ namespace Dynamo.Controls
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
+            Title = dynamoViewModel.BrandingResourceProvider.GetString(ResourceNames.MainWindow.Title);
 
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
 
@@ -173,6 +175,15 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
 
             Debug.WriteLine("Resizing window to {0}:{1}", e.NewSize.Width, e.NewSize.Height);
+        }
+
+        void InitializeLogin()
+        {
+            if ( dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
+            {
+                var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
+                loginGrid.Children.Add(login);
+            }
         }
 
         void InitializeShortcutBar()
@@ -310,7 +321,7 @@ namespace Dynamo.Controls
         {
 
             // If first run, Collect Info Prompt will appear
-            UsageReportingManager.Instance.CheckIsFirstRun(this);
+            UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
 
             WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
@@ -321,6 +332,7 @@ namespace Dynamo.Controls
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed));
+            InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage();
 

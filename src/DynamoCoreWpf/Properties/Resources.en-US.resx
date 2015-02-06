@@ -1027,7 +1027,8 @@ ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO 
 Many thanks!</value>
   </data>
   <data name="UsageReportPromptDialogNodeUsage" xml:space="preserve">
-    <value>The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime).</value>
+    <value>The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime).
+</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
     <value>Agreement to collect usability data on your use of Dynamo</value>
@@ -1512,5 +1513,14 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="TooltipCurrentIndex" xml:space="preserve">
     <value>{0} of {1}</value>
+  </data>
+  <data name="AutodeskSignIn" xml:space="preserve">
+    <value>Autodesk Sign In</value>
+  </data>
+  <data name="BrowserWindowLoading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="InvalidLoginUrl" xml:space="preserve">
+    <value>Invalid URL for login page!</value>
   </data>
 </root>

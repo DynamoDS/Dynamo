@@ -31,7 +31,8 @@ namespace ProtoCore
             kOverIndexing,
             kTypeConvertionCauseInfoLoss,
             kTypeMismatch,
-            kReplicationWarning
+            kReplicationWarning,
+            kInvalidIndexing
         }
 
         public struct WarningEntry

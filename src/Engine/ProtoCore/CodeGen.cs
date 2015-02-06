@@ -2271,16 +2271,24 @@ namespace ProtoCore
                 inferedType.UID = (int)PrimitiveType.kTypeString;
             }
 
-            Byte[] utf8bytes = EncodingUtils.UTF8StringToUTF8Bytes((String)sNode.value);
-            String value = Encoding.UTF8.GetString(utf8bytes);
-
-            foreach (char ch in value)
+            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
             {
-                String strValue = "'" + ch + "'";
-                EmitInstrConsole(kw.push, strValue);
+                EmitInstrConsole(ProtoCore.DSASM.kw.push, 0 + "[guide]");
+                StackValue opNumGuides = StackValue.BuildReplicationGuide(0);
+                EmitPush(opNumGuides);
+            }
 
-                StackValue op = StackValue.BuildChar(ch);
-                EmitPush(op, node.line, node.col);
+            string value = (string)sNode.value;
+            StackValue svString = core.Heap.AllocateFixedString(value);
+            if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
+            {
+                EmitInstrConsole(kw.pushg, "\"" + value + "\"");
+                EmitPushG(svString, node.line, node.col);
+            }
+            else
+            {
+                EmitInstrConsole(kw.push, "\"" + value + "\"");
+                EmitPush(svString, node.line, node.col);
             }
 
             if (IsAssociativeArrayIndexing && graphNode != null && graphNode.isIndexingLHS)
@@ -2294,9 +2302,6 @@ namespace ProtoCore
 
                 graphNode.dimensionNodeList.Add(dimNode);
             }
-
-            EmitInstrConsole(kw.alloca, value.Length.ToString());
-            EmitPopString(value.Length);
         }
         
         protected void EmitDoubleNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
