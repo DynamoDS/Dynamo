@@ -224,6 +224,23 @@ namespace Dynamo.Search
             return pattern.IsMatch(key);
         }
 
+        private static bool MatchWithQueryStringAlt(string key, string[] subPatterns)
+        {
+            int index = 0;
+            int currPattern = 0;
+            while (index < key.Length && currPattern < subPatterns.Length)
+            {
+                index = key.IndexOf(subPatterns[currPattern], index);
+                if (index == -1)
+                    return false;
+
+                index += subPatterns[currPattern].Length;
+                currPattern++;
+            }
+
+            return currPattern == subPatterns.Length;
+        }
+
         private static string SanitizeQuery(string query)
         {
             return query.Trim()
@@ -252,7 +269,7 @@ namespace Dynamo.Search
                 || element.Contains("\\");
         }
         #endregion
-        
+
         /// <summary>
         /// Search for elements in the dictionary based on the query
         /// </summary>
@@ -289,9 +306,9 @@ namespace Dynamo.Search
             // if you don't have enough results and the query contains special characters, do fuzzy search
             if (searchDict.Count <= minResultsForTolerantSearch && ContainsSpecialCharacters(query))
             {
-                var regexPattern = MakePattern(SplitOnWhiteSpace(SanitizeQuery(query)));
+                var subPatterns = SplitOnWhiteSpace(query);
 
-                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key, regexPattern)))
+                foreach (var pair in _tagDictionary.Where(x => MatchWithQueryStringAlt(x.Key, subPatterns)))
                 {
                     ComputeWeightAndAddToDictionary(query, pair, searchDict);
                 }
@@ -311,7 +328,7 @@ namespace Dynamo.Search
             foreach (var eleAndWeight in pair)
             {
                 var ele = eleAndWeight.Item1;
-                double weight = matchCloseness*eleAndWeight.Item2;
+                double weight = matchCloseness * eleAndWeight.Item2;
 
                 // we may have seen V before
                 if (searchDict.ContainsKey(ele))
