@@ -12,6 +12,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {
@@ -216,7 +217,7 @@ namespace Dynamo.ViewModels
                 SearchAndUpdateResults();
         }
 
-        private static IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
+        private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
         {
             var tempRoot = 
                 entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
@@ -399,12 +400,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private static NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
+        private NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
         {
             var element = entry as CustomNodeSearchElement;
             return element != null
-                ? new CustomNodeSearchElementViewModel(element)
-                : new NodeSearchElementViewModel(entry);
+                ? new CustomNodeSearchElementViewModel(element, this)
+                : new NodeSearchElementViewModel(entry, this);
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
@@ -534,9 +535,14 @@ namespace Dynamo.ViewModels
             if (visibleSearchResults.Count <= SelectedIndex)
                 return;
 
-            visibleSearchResults[SelectedIndex].Model.ProduceNode();
+            var nodeModel = visibleSearchResults[SelectedIndex].Model.CreateNode();
+            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(nodeModel, 0, 0, true, true));
         }
 
+        public void OnSearchElementClicked(NodeModel nodeModel)
+        {
+            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(nodeModel, 0, 0, true, true));
+        }
         #endregion
 
         #region Commands

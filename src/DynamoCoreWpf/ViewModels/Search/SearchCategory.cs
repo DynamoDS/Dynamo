@@ -70,7 +70,7 @@ namespace Dynamo.Search
 
         public bool ContainsClassOrMember(NodeSearchElement member)
         {
-            var memberViewModel = new NodeSearchElementViewModel(member);
+            var memberViewModel = new NodeSearchElementViewModel(member, null);
 
             // TODO(Vladimir): classes functionality.
             //if (Classes.Any(cl => cl.Equals(member))) return true;

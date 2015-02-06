@@ -231,6 +231,11 @@ namespace Dynamo.Search.SearchElements
             OnItemProduced(ConstructNewNodeModel());
         }
 
+        public NodeModel CreateNode()
+        {
+            return ConstructNewNodeModel();
+        }
+
         ICollection<string> ISearchEntry.SearchTags
         {
             get
