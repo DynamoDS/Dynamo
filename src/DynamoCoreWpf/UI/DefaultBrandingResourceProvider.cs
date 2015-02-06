@@ -53,6 +53,18 @@ namespace Dynamo.Wpf.UI
             return EnsureImageLoaded(image, resourceName.ToString());
         }
 
+        public string GetString(ResourceNames.MainWindow resourceName)
+        {
+            string resource = string.Empty;
+            switch (resourceName)
+            {
+                case ResourceNames.MainWindow.Title:
+                    resource = "Dynamo";
+                    break;
+            }
+            return EnsureStringLoaded(resource, resourceName.ToString());
+        }
+
         public string GetString(ResourceNames.AboutBox resourceName)
         {
             string resource = string.Empty;

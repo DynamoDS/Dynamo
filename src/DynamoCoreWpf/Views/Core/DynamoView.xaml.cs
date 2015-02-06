@@ -32,6 +32,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 
 namespace Dynamo.Controls
 {
@@ -61,6 +62,7 @@ namespace Dynamo.Controls
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
+            Title = dynamoViewModel.BrandingResourceProvider.GetString(ResourceNames.MainWindow.Title);
 
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
 
