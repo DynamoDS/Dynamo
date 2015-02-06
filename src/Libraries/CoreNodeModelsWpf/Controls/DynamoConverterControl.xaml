@@ -3,16 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"            
+             xmlns:converters="clr-namespace:Dynamo.Wpf.Converters"         
              mc:Ignorable="d" 
              d:DesignHeight="30" Width="247.2">
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <converters:ConversionDirectionToVisibilityConverter x:Key="ConversionDirectionToVisibilityConverter" />
+        <converters:ConversionDirectionToColumnConverter x:Key="ConversionDirectionToColumnConverter" />
+        <converters:ConversionTypeToBaseUnitNameConverter x:Key="ConversionTypeToBaseUnitNameConverter" />
     </UserControl.Resources>
 
     <Grid Height="26" Width="Auto" Margin="0,2,0.2,2.4">

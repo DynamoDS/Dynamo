@@ -61,6 +61,7 @@
     <Compile Include="Controls\DynamoSlider.xaml.cs">
       <DependentUpon>DynamoSlider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\DynamoConversionConverter.cs" />
     <Compile Include="NodeViewCustomizations\ConverterNodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomizations\DoubleInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

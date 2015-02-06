@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Dynamo.Controls;
 
 namespace Dynamo.Wpf.Controls
 {
@@ -19,7 +20,7 @@ namespace Dynamo.Wpf.Controls
     /// </summary>
     public partial class DynamoConverterControl : UserControl
     {
-        public DynamoConverterControl()
+        public DynamoConverterControl(Convert Model, NodeView nodeView)
         {
             InitializeComponent();
         }
