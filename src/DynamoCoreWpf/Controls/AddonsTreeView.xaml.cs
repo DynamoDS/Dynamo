@@ -15,6 +15,11 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
         }
 
+        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            libraryToolTipPopup.SetDataContext(null);
+        }
+
         private void OnMemberMouseEnter(object sender, MouseEventArgs e)
         {
             FrameworkElement fromSender = sender as FrameworkElement;
@@ -23,11 +28,6 @@ namespace Dynamo.UI.Controls
                 libraryToolTipPopup.PlacementTarget = fromSender;
                 libraryToolTipPopup.SetDataContext(fromSender.DataContext);
             }
-        }
-
-        private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            libraryToolTipPopup.SetDataContext(null);
         }
     }
 }

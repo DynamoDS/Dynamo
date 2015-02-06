@@ -508,7 +508,7 @@ namespace Dynamo.Nodes
             newText.Append(original[0]);
             for (int i = 1; i < original.Length; i++)
             {
-                // We also have to check was previous character capital letter, e.g. Import From CSV
+                // We also have to check was previous character capital letter, e.g. Import From CSV                
                 var curr = original[i];
                 var prev = original[i - 1];
                 if ((Char.IsUpper(curr) || curr.Equals('(')) &&
