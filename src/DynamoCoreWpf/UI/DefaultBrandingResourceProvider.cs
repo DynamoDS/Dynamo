@@ -8,6 +8,8 @@ namespace Dynamo.Wpf.UI
 {
     internal class DefaultBrandingResourceProvider : IBrandingResourceProvider
     {
+        #region interface members
+
         public ImageSource GetImageSource(ResourceNames.AboutBox resourceName)
         {
             ImageSource image = null;
@@ -20,12 +22,7 @@ namespace Dynamo.Wpf.UI
                     break;
 
             }
-            if (image == null)
-            {
-                throw new InvalidEnumArgumentException(
-                    String.Format("Resource name not handled: {0}", resourceName));
-            }
-            return image;
+            return EnsureImageLoaded(image, resourceName.ToString());
         }
 
         public ImageSource GetImageSource(ResourceNames.ConsentForm resourceName)
@@ -39,12 +36,7 @@ namespace Dynamo.Wpf.UI
                             UriKind.Absolute));
                     break;
             }
-            if (image == null)
-            {
-                throw new InvalidEnumArgumentException(
-                    String.Format("Resource name not handled: {0}", resourceName));
-            }
-            return image;
+            return EnsureImageLoaded(image, resourceName.ToString());
         }
 
         public ImageSource GetImageSource(ResourceNames.StartPage resourceName)
@@ -58,12 +50,7 @@ namespace Dynamo.Wpf.UI
                             UriKind.Absolute));
                     break;
             }
-            if (image == null)
-            {
-                throw new InvalidEnumArgumentException(
-                    String.Format("Resource name not handled: {0}", resourceName));
-            }
-            return image;
+            return EnsureImageLoaded(image, resourceName.ToString());
         }
 
         public string GetString(ResourceNames.AboutBox resourceName)
@@ -75,12 +62,7 @@ namespace Dynamo.Wpf.UI
                     resource = Properties.Resources.AboutWindowTitle;
                     break;
             }
-            if (string.IsNullOrEmpty(resource))
-            {
-                throw new InvalidEnumArgumentException(
-                    String.Format("Resource name not handled: {0}", resourceName));
-            }
-            return resource;
+            return EnsureStringLoaded(resource, resourceName.ToString());
         }
 
         public string GetString(ResourceNames.ConsentForm resourceName)
@@ -108,12 +90,32 @@ namespace Dynamo.Wpf.UI
                     break;
 
             }
-            if (string.IsNullOrEmpty(resource))
+            return EnsureStringLoaded(resource, resourceName.ToString());
+        }
+
+        #endregion
+
+        #region private members
+
+        private static ImageSource EnsureImageLoaded(ImageSource image, string name)
+        {
+            if (image != null)
+                return image;
+
+            throw new InvalidEnumArgumentException(
+                String.Format("Resource name not handled: {0}", name));
+        }
+
+        private static string EnsureStringLoaded(string str, string name)
+        {
+            if (string.IsNullOrEmpty(str))
             {
                 throw new InvalidEnumArgumentException(
-                    String.Format("Resource name not handled: {0}", resourceName));
+                    String.Format("Resource name not handled: {0}", name));
             }
-            return resource;
+            return str;
         }
+
+        #endregion
     }
 }

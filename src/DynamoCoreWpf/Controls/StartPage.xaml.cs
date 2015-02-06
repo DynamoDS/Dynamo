@@ -415,7 +415,8 @@ namespace Dynamo.UI.Controls
             this.recentListBox.ItemsSource = startPageViewModel.RecentFiles;
             this.sampleFileTreeView.ItemsSource = startPageViewModel.SampleFiles;
 
-            StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(Wpf.Interfaces.ResourceNames.StartPage.Image);
+            var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
+            StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
