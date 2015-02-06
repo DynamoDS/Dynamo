@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-        Title="{x:Static p:Resources.UsageReportPromptDialogTitle}"
         SizeToContent="WidthAndHeight"
         WindowStyle="SingleBorderWindow" ResizeMode="NoResize"
         ShowInTaskbar="False"
@@ -33,7 +32,7 @@
             <TextBlock TextWrapping="Wrap"
                        FontSize="13"
                        Foreground="#FFC8C8C8"
-                       Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart1}">
+                       Name="Message1TextBlock">
             </TextBlock>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -54,17 +53,18 @@
                             Orientation="Vertical">
                     <TextBlock TextWrapping="Wrap"
                                FontSize="13"
-                               Foreground="#FFC8C8C8" Text="{x:Static p:Resources.UsageReportPromptDialogFeatureUsage}"/>
+                               Foreground="#FFC8C8C8" 
+                               Name="FeatureTextBlock"/>
                     <TextBlock TextWrapping="Wrap"
                                FontSize="13"
-                               Foreground="#FFC8C8C8" Text="{x:Static p:Resources.UsageReportPromptDialogNodeUsage}" />
+                               Foreground="#FFC8C8C8" 
+                               Name="NodeTextBlock"/>
                 </StackPanel>
             </Grid>
             <TextBlock TextWrapping="Wrap"
                        FontSize="13"
-                       Foreground="#FFC8C8C8">
-                <LineBreak />
-                <Run Text="{x:Static p:Resources.UsageReportPromptDialogMessagePart2}"/>
+                       Foreground="#FFC8C8C8"
+                       Name="Message2TextBlock">
             </TextBlock>
         </StackPanel>
 
@@ -76,7 +76,8 @@
                   Foreground="#FFC8C8C8"
                   FontSize="13.333"
                   Background="White">
-            <TextBlock FontWeight="SemiBold" Text="{x:Static p:Resources.UsageReportPromptDialogConsent}"/>
+            <TextBlock FontWeight="SemiBold"
+                       Name="ConsentTextBlock" />
         </CheckBox>
         <!-- Accept or Cancel -->
         <Button Grid.Row="3"
