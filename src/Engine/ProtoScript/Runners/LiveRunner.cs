@@ -373,8 +373,7 @@ namespace ProtoScript.Runners
 
         private IEnumerable<AssociativeNode> GetDeltaAstListAdded(IEnumerable<Subtree> addedSubTrees)
         {
-            var deltaAstList = new List<AssociativeNode>();
-            currentSubTreeList = new Dictionary<Guid, Subtree>();
+            var deltaAstList = new List<AssociativeNode>();            
             if (addedSubTrees != null)
             {
                 foreach (var st in addedSubTrees)
