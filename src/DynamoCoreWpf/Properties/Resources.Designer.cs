@@ -1287,15 +1287,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Run Preview.
-        /// </summary>
-        public static string DynamoViewSettingShowRunPreview {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingShowRunPreview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Export Workspace As Image.
         /// </summary>
         public static string DynamoViewToolbarExportButtonTooltip {
@@ -3256,24 +3247,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ShowClassicNodeLibrary {
             get {
                 return ResourceManager.GetString("ShowClassicNodeLibrary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph.
-        /// </summary>
-        public static string ShowRunPreviewDisableToolTip {
-            get {
-                return ResourceManager.GetString("ShowRunPreviewDisableToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Execution preview is not available when running automatically.
-        /// </summary>
-        public static string ShowRunPreviewEnableToolTip {
-            get {
-                return ResourceManager.GetString("ShowRunPreviewEnableToolTip", resourceCulture);
             }
         }
         

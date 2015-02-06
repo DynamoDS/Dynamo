@@ -334,34 +334,6 @@ namespace Dynamo.Controls
         }
     }
 
-    public class RunPreviewConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            var dynamicRunEnabled = (bool)value;
-            return !dynamicRunEnabled;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class RunPreviewToolTipConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            var dynamicRunEnabled = (bool)value;
-            return dynamicRunEnabled ? Resources.ShowRunPreviewDisableToolTip : Resources.ShowRunPreviewEnableToolTip;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
     public class MarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -501,86 +473,6 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class ConnectionStateToBrushConverter : IValueConverter
-    {
-        public SolidColorBrush ExecutionPreviewBrush { get; set; }
-        public SolidColorBrush NoneBrush { get; set; }
-        public SolidColorBrush SelectionBrush { get; set; }
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var state = (PreviewState)value;
-            switch (state)
-            {
-                case PreviewState.ExecutionPreview:
-                    return ExecutionPreviewBrush;
-                case PreviewState.None:
-                    return NoneBrush;
-                case PreviewState.Selection:
-                    return SelectionBrush;
-                default:
-                    return NoneBrush;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class ConnectionStateToColorConverter : IValueConverter
-    {
-        public Color ExecutionPreview { get; set; }
-        public Color None { get; set; }
-        public Color Selection { get; set; }
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var state = (PreviewState)value;
-            switch (state)
-            {
-                case PreviewState.ExecutionPreview:
-                    return ExecutionPreview;
-                case PreviewState.None:
-                    return None;
-                case PreviewState.Selection:
-                    return Selection;
-                default:
-                    return None;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class ConnectionStateToVisibilityCollapsedConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var state = (PreviewState)value;
-            switch (state)
-            {
-                case PreviewState.ExecutionPreview:
-                    return Visibility.Visible;
-                case PreviewState.None:
-                    return Visibility.Collapsed;
-                case PreviewState.Selection:
-                    return Visibility.Visible;
-                default:
-                    return Visibility.Collapsed;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
