@@ -46,7 +46,7 @@ namespace Dynamo.Search
             var group = memberGroups.FirstOrDefault(mg => mg.FullyQualifiedName == shortenedCategory);
             if (group == null)
             {
-                group = new SearchMemberGroup(shortenedCategory);
+                group = new SearchMemberGroup(shortenedCategory, memberNode.Category);
                 memberGroups.Add(group);
             }
 
