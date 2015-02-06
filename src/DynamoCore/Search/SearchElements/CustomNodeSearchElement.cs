@@ -33,6 +33,8 @@ namespace Dynamo.Search.SearchElements
         public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
             this.customNodeManager = customNodeManager;
+            inputParameters = new List<Tuple<string, string>>();
+            outputParameters = new List<string>();
             SyncWithCustomNodeInfo(info);
         }
 
@@ -56,11 +58,8 @@ namespace Dynamo.Search.SearchElements
 
         private void TryLoadDocumentation()
         {
-            if (inputParameters != null || (outputParameters != null))
+            if (inputParameters.Any() || outputParameters.Any())
                 return;
-
-            inputParameters = new List<Tuple<string, string>>();
-            outputParameters = new List<string>();
 
             try
             {
