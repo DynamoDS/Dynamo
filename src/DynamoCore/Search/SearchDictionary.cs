@@ -297,22 +297,15 @@ namespace Dynamo.Search
 
             query = query.ToLower();
 
-            // do containment check
-            foreach (var pair in _tagDictionary.Where(x => x.Key.Contains(query)))
+            //DateTime timePoint = DateTime.Now;
+
+            var subPatterns = SplitOnWhiteSpace(query);
+            foreach (var pair in _tagDictionary.Where(x => MatchWithQueryStringAlt(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }
 
-            // if you don't have enough results and the query contains special characters, do fuzzy search
-            if (searchDict.Count <= minResultsForTolerantSearch && ContainsSpecialCharacters(query))
-            {
-                var subPatterns = SplitOnWhiteSpace(query);
-
-                foreach (var pair in _tagDictionary.Where(x => MatchWithQueryStringAlt(x.Key, subPatterns)))
-                {
-                    ComputeWeightAndAddToDictionary(query, pair, searchDict);
-                }
-            }
+            //Debug.WriteLine(DateTime.Now - timePoint);
 
             return searchDict
                 .OrderByDescending(x => x.Value)
