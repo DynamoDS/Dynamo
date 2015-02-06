@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace DynamoWebServer.Messages
 {
@@ -22,12 +20,11 @@ namespace DynamoWebServer.Messages
             MessageAvailable, Shutdown
         }
 
-        private Queue<Action> messageQueue;
-        private Thread worker;
+        private readonly Queue<Action> messageQueue = new Queue<Action>();
+        private readonly Thread worker;
 
         public SocketMessageQueue()
         {
-            messageQueue = new Queue<Action>();
             worker = new Thread(Consume);
             worker.Start();
         }
@@ -63,7 +60,7 @@ namespace DynamoWebServer.Messages
                 }
                 if (message != null)
                 {
-                    ProcessMessage(message);
+                    message();
                     continue;
                 }
                 // No more messages, go into wait.
@@ -73,16 +70,6 @@ namespace DynamoWebServer.Messages
 
                 // Otherwise, pick up the next message.
             }
-        }
-
-        private void ProcessMessage(Action message)
-        {
-            Dispatcher dispatcher;
-            if (Application.Current != null)
-                dispatcher = Application.Current.Dispatcher;
-            else
-                dispatcher = Dispatcher.CurrentDispatcher;
-            dispatcher.Invoke(message);
         }
     }
 }
