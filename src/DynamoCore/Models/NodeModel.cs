@@ -47,6 +47,7 @@ namespace Dynamo.Models
         private bool isUpdated;
         private MirrorData cachedMirrorData;
         private readonly object cachedMirrorDataMutex = new object();
+
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
@@ -353,7 +354,20 @@ namespace Dynamo.Models
             }
         }
 
-        public MirrorData GetCachedValueFromEngine(EngineController engine)
+        /// <summary>
+        /// WARNING: This method is meant for unit test only. It directly accesses
+        /// the EngineController for the mirror data without waiting for any 
+        /// possible execution to complete (which, in single-threaded nature of 
+        /// unit test, is an okay thing to do). The right way to get the cached 
+        /// value for a NodeModel is by going through its RequestValueUpdateAsync
+        /// method).
+        /// </summary>
+        /// <param name="engine">Instance of EngineController from which the node
+        /// value is to be retrieved.</param>
+        /// <returns>Returns the MirrorData if the node's value is computed, or 
+        /// null otherwise.</returns>
+        /// 
+        internal MirrorData GetCachedValueFromEngine(EngineController engine)
         {
             if (cachedMirrorData != null)
                 return cachedMirrorData;
@@ -554,7 +568,7 @@ namespace Dynamo.Models
 
             IsSelected = false;
             State = ElementState.Dead;
-            ArgumentLacing = LacingStrategy.Disabled;
+            ArgumentLacing = LacingStrategy.Disabled;         
             //IsReportingModifications = true;
         }
 
@@ -584,6 +598,7 @@ namespace Dynamo.Models
             var elNameAttrib = GetType().GetCustomAttributes<NodeNameAttribute>(false).FirstOrDefault();
             if (elNameAttrib != null)
                 NickName = elNameAttrib.Name;
+
         }
 
         #region Modification Reporting
@@ -597,8 +612,7 @@ namespace Dynamo.Models
             MarkNodeAsModified(forceExecute);
             var handler = NodeModified;
             if (handler != null) handler();
-        }
-
+        }       
         #endregion
 
         #region ProtoAST Compilation
@@ -1420,6 +1434,11 @@ namespace Dynamo.Models
         #endregion
 
         #region Dirty Management
+        //TODO: Refactor Property into Automatic with private(?) setter
+        //TODO: Add RequestRecalc() method to replace setter --steve
+
+        private bool showExecutionPreview = true;
+        private bool isNodeNewlyAdded  = true;
 
         /// <summary>
         /// Execution scenarios for a Node to be re-executed
@@ -1460,6 +1479,32 @@ namespace Dynamo.Models
         protected virtual ExecutionHints GetExecutionHintsCore()
         {
             return executionHint;
+        }
+
+
+        public virtual bool ShowExecutionPreview
+        {
+            get
+            {
+                return showExecutionPreview;
+            }
+            set
+            {
+                showExecutionPreview = value;
+                RaisePropertyChanged("ShowExecutionPreview");
+            }
+        }
+
+        public virtual bool IsNodeAddedRecently
+        {
+            get
+            {
+                return isNodeNewlyAdded;
+            }
+            set
+            {
+                isNodeNewlyAdded = value;
+            }
         }
 
         #endregion

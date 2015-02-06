@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 using Dynamo.DSEngine;
@@ -17,6 +19,7 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using DynamoUnits;
 
@@ -24,6 +27,7 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
+using ResourceName = Dynamo.Wpf.Interfaces.ResourceName;
 
 namespace Dynamo.ViewModels
 {
@@ -104,6 +108,10 @@ namespace Dynamo.ViewModels
             set
             {
                 HomeSpace.DynamicRunEnabled = value;
+                //Uncheck the Show Run Preview in settings
+                if (value)
+                    ShowRunPreview = false;
+
                 RaisePropertyChanged("DynamicRunEnabled");
             }
         }
@@ -243,7 +251,7 @@ namespace Dynamo.ViewModels
                 if (!FullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
 
-                if(value)
+                if (value)
                     this.model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
@@ -340,7 +348,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return string.Format(Resources.DynamoViewViewMenuAlternateContextGeometry, 
+                return string.Format(Resources.DynamoViewViewMenuAlternateContextGeometry,
                                      this.VisualizationManager.AlternateContextName);
             }
         }
@@ -383,7 +391,7 @@ namespace Dynamo.ViewModels
             get { return VisualizationManager.MaxTesselationDivisions; }
             set
             {
-               VisualizationManager.MaxTesselationDivisions = value;
+                VisualizationManager.MaxTesselationDivisions = value;
                 this.model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
@@ -415,6 +423,23 @@ namespace Dynamo.ViewModels
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
+        /// <summary>
+        ///     Whether sign in should be shown in Dynamo.  In instances where Dynamo obtains
+        ///     authentication capabilities from a host, Dynamo's sign in should generally be 
+        ///     hidden to avoid inconsistencies in state.
+        /// </summary>
+        public bool ShowLogin { get; private set; }
+
+        public bool ShowRunPreview
+        {
+            get { return model.ShowRunPreview; }
+            set
+            {
+                model.ShowRunPreview = value;
+                RaisePropertyChanged("ShowRunPreview");
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration
@@ -423,6 +448,13 @@ namespace Dynamo.ViewModels
             public IVisualizationManager VisualizationManager { get; set; }
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
+            public bool ShowLogin { get; set; }
+
+            /// <summary>
+            /// This property is initialized if there is an external host application
+            /// at startup in order to be used to pass in host specific resources to DynamoModel
+            /// </summary>
+            public IBrandingResourceProvider BrandingResourceProvider { get; set; }
         }
 
         public static DynamoViewModel Start()
@@ -434,15 +466,20 @@ namespace Dynamo.ViewModels
         {
             var model = startConfiguration.DynamoModel ?? DynamoModel.Start();
             var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
-            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager, 
+            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager,
                 model.PreferenceSettings);
-            
-            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath);
+            var resourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
+
+            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider, 
+                startConfiguration.ShowLogin);
         }
 
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
-            IVisualizationManager vizManager, string commandFilePath)
+            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider, 
+            bool showLogin = false)
         {
+            this.ShowLogin = showLogin;
+
             // initialize core data structures
             this.model = dynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;
@@ -457,6 +494,8 @@ namespace Dynamo.ViewModels
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
+            this.BrandingResourceProvider = resourceProvider;
+
             //add the initial workspace and register for future 
             //updates to the workspaces collection
             var homespace = new WorkspaceViewModel(model.CurrentWorkspace, this);
@@ -464,12 +503,12 @@ namespace Dynamo.ViewModels
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
-            
+
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
             SubscribeUpdateManagerHandlers();
-            
+
             InitializeAutomationSettings(commandFilePath);
 
             InitializeDelegateCommands();
@@ -804,7 +843,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     RaisePropertyChanged("RunEnabled");
-                    break; 
+                    break;
                 case "RunEnabled":
                     RaisePropertyChanged("RunEnabled");
                     break;
@@ -870,7 +909,7 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
-        
+
         private void WorkspaceAdded(WorkspaceModel item)
         {
             var newVm = new WorkspaceViewModel(item, this);
@@ -963,7 +1002,7 @@ namespace Dynamo.ViewModels
                 model.Logger.Log(Resources.MessageFailedToOpenFile + e.Message);
                 model.Logger.Log(e);
                 return;
-            }            
+            }
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
@@ -987,7 +1026,7 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = Resources.FileDialogDynamoDefinitions + "|" + 
+                Filter = Resources.FileDialogDynamoDefinitions + "|" +
                          Resources.FileDialogAllFiles,
                 Title = Resources.OpenDynamoDefinitionDialogTitle
             };
@@ -1170,7 +1209,7 @@ namespace Dynamo.ViewModels
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
-                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));   
+                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));
             }
         }
 
@@ -1821,7 +1860,7 @@ namespace Dynamo.ViewModels
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
-           
+
             // Since panning and orbiting modes are exclusive from one another,
             // turning one on may turn the other off. This is the reason we must
             // raise property change for both at the same time to update visual.
@@ -2006,7 +2045,8 @@ namespace Dynamo.ViewModels
             public ShutdownParams(
                 bool shutdownHost,
                 bool allowCancellation,
-                bool closeDynamoView) : this()
+                bool closeDynamoView)
+                : this()
             {
                 ShutdownHost = shutdownHost;
                 AllowCancellation = allowCancellation;
@@ -2151,8 +2191,5 @@ namespace Dynamo.ViewModels
         public DynamoViewModel ViewModel { get { return this; } }
 
         #endregion
-
-
-
     }
 }

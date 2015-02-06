@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Windows.Forms;
+
 using DynamoCrypto;
 
 namespace InstallUpdate
@@ -20,15 +23,25 @@ namespace InstallUpdate
         {
             if (args.Length < 1)
             {
-                Console.WriteLine("You must specify the path of the update to install.");
+                Console.WriteLine(Resources.UpdaterPathRequiredMessage);
                 return;
             }
 
             var installerPath = args[0];
             if (!File.Exists(installerPath))
             {
-                Console.WriteLine("The specified file path does not exist.");
+                Console.WriteLine(Resources.UpdaterPathNotFoundMessage);
                 return;
+            }
+
+            int processId = -1;
+            if (args.Length > 1)
+            {
+                if (!Int32.TryParse(args[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out processId))
+                {
+                    Console.WriteLine(Resources.HostApplicationIdParseErrorMessage);
+                    return;
+                }
             }
 
             // Attempt to find the Dynamo certificate.
@@ -41,7 +54,7 @@ namespace InstallUpdate
                 var certPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Dynamo.cer");
                 if (!File.Exists(certPath))
                 {
-                    Console.WriteLine("The Dynamo certificate could not be found. Update cancelled.");
+                    Console.WriteLine(Resources.MissingDynamoCertificateMessage);
                     return;
                 }
 
@@ -50,7 +63,7 @@ namespace InstallUpdate
 
             if (cert == null)
             {
-                Console.WriteLine("There was a problem with the security certificate. Update cancelled.");
+                Console.WriteLine(Resources.SecurityCertificateErrorMessage);
                 return;
             }
 
@@ -58,7 +71,7 @@ namespace InstallUpdate
             var pubKey = DynamoCrypto.Utils.GetPublicKeyFromCertificate(cert);
             if (pubKey == null)
             {
-                Console.WriteLine("Could not verify the update download");
+                Console.WriteLine(Resources.UpdateDownloadVerificationFailedMessage);
                 RequestManualReinstall();
                 return;
             }
@@ -67,7 +80,7 @@ namespace InstallUpdate
             var sigDir = Path.GetDirectoryName(installerPath);
             if (string.IsNullOrEmpty(sigDir) || !Directory.Exists(sigDir))
             {
-                Console.WriteLine("A signature file could not be found to verify this update.");
+                Console.WriteLine(Resources.MissingSignatureFileMessage);
                 RequestManualReinstall();
                 return;
             }
@@ -77,26 +90,79 @@ namespace InstallUpdate
 
             if (!File.Exists(sigPath))
             {
-                Console.WriteLine("A signature file could not be found to verify this update.");
+                Console.WriteLine(Resources.MissingSignatureFileMessage);
                 RequestManualReinstall();
                 return;
             }
 
             if (!Utils.VerifyFile(installerPath, sigPath, pubKey))
             {
-                Console.WriteLine("The update could not be verified against the signature file.");
+                Console.WriteLine(Resources.SignatureVerificationFailureMessage);
                 RequestManualReinstall();
                 return;
+            }
+
+            if (processId != -1)
+            {
+                bool cancel = false;
+                int tryCount = 0;
+                while (CheckHostProcessEnded(processId, out cancel) == false)
+                {
+                    if (cancel || tryCount == 5)
+                    {
+                        Console.WriteLine(Resources.UpdateCancellationMessage);
+                        return;
+                    }
+
+                    // Allow the user 5 chances to get this right
+                    // then cancel.
+                    tryCount++;
+                }
             }
 
             // Run the installer
             Process.Start(installerPath, "/UPDATE");
         }
 
+        private static bool CheckHostProcessEnded(int processId, out bool requestCancel)
+        {
+            requestCancel = false;
+
+            Process hostProcess = null;
+            try
+            {
+                hostProcess = Process.GetProcessById(processId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            // If the host process is still running...
+            if (hostProcess != null)
+            {
+                var message = hostProcess.ProcessName + Resources.CloseContinuationMessage;
+
+                if (MessageBox.Show(
+                    new Form { TopMost = true },
+                    message,
+                    Resources.CheckHostProcessWindowTitle,
+                    MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                {
+                    requestCancel = true;
+                    return true;
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
         private static void RequestManualReinstall()
         {
-            Console.WriteLine("Please reinstall Dynamo manually.");
-            Console.WriteLine("Press any key to quit.");
+            Console.WriteLine(Resources.ManualReinstallMessage);
+            Console.WriteLine(Resources.ProcessQuitMessage);
             Console.ReadKey();
         }
     }

@@ -335,17 +335,17 @@ namespace ProtoCore.Lang
                         // Comment Jun: the caller type is the current type in the stackframe
                         StackFrameType callerType = stackFrame.StackFrameType;
 
-                        if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
+                        //if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
                         {
                             blockCaller = core.DebugProps.CurrentBlockId;
                             StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(blockId, 0, context, core.Breakpoints, bounceStackFrame, 0, core.CurrentExecutive.CurrentDSASMExec);
+                            ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, core.CurrentExecutive.CurrentDSASMExec, core.Breakpoints);
                         }
-                        else
-                        {
-                            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(blockId, 0, context, bounceStackFrame);
-                        }
+                        //else
+                        //{
+                        //    StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
+                        //    ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame);
+                        //}
 
                         core.RunningBlock = oldRunningBlockId;
                         break;
@@ -781,16 +781,10 @@ namespace ProtoCore.Lang
         internal static string ConvertToString(StackValue st, ProtoCore.DSASM.Interpreter runtime)
         {
             string result = "";
-            if (!st.IsString) { return result; }
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            if (!st.IsString) 
+                return result;
 
-            var values = ArrayUtils.GetValues(st, runtime.runtime.Core); 
-            foreach (StackValue element in values)
-            {
-                char ch = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(element.opdata);
-                sb.Append(ch);
-            }
-            result = sb.ToString();
+            result = runtime.runtime.Core.Heap.GetString(st);
             result.Replace("\\\\", "\\");
             return result;
         }

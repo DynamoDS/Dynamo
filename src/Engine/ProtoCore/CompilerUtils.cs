@@ -195,8 +195,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static ProtoCore.BuildStatus PreCompile(string code, Core core, CodeBlockNode codeBlock, out int blockId)
         {
-            core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
-
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             try
             {
@@ -212,7 +210,7 @@ namespace ProtoCore.Utils
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
                 ProtoCore.Language id = globalBlock.language;
 
-                core.Executives[id].Compile(out blockId, null, globalBlock, context, codeBlockNode: codeBlock);
+                core.Compilers[id].Compile(out blockId, null, globalBlock, context, codeBlockNode: codeBlock);
 
                 core.BuildStatus.ReportBuildResult();
 
