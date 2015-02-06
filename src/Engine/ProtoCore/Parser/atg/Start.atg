@@ -468,7 +468,7 @@ COMPILER DesignScriptParser
         if (File.Exists(filePath))
             return filePath;
 
-        SemErr(@"Cannot import file: '" + fileName + @"': No such file or directory");
+        SemErr(String.Format(Resources.noSuchFileOrDirectoryToImport,fileName));
         return null;
     }
 
