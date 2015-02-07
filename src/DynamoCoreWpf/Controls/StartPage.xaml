@@ -75,11 +75,11 @@
 
         <!-- Begin Dynamo logo -->
 
-        <Image Grid.Row="1"
+        <Image Name="StartPageLogo"
+               Grid.Row="1"
                Width="250"
                Margin="0,32,0,32"
-               HorizontalAlignment="Center"
-               Source="/DynamoCoreWpf;component/UI/Images/StartPage/dynamo-logo.png" />
+               HorizontalAlignment="Center"/>
 
         <!-- Begin inner grid control for all other list boxes -->
 

@@ -18,6 +18,10 @@ namespace Dynamo.Tests
         [Test]
         public void SearchResultsToVisibilityConverterTest()
         {
+            // Currently converter ignores visibility of Addons TreeView. Rewrite test when
+            // addon is come back to UI.
+            // Task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6226.
+
             SearchResultsToVisibilityConverter converter = new SearchResultsToVisibilityConverter();
             int numberOfFoundSearchCategories = 0;
             bool addonsVisibility = false;
@@ -57,7 +61,7 @@ namespace Dynamo.Tests
             searchText = "search text";
             array[2] = searchText;
             result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(Visibility.Collapsed, result);
+            Assert.AreEqual(Visibility.Visible, result);
 
             // 5 case
             numberOfFoundSearchCategories = 5;

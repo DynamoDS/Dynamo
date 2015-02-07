@@ -27,7 +27,6 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
-using ResourceName = Dynamo.Wpf.Interfaces.ResourceName;
 
 namespace Dynamo.ViewModels
 {
@@ -108,10 +107,6 @@ namespace Dynamo.ViewModels
             set
             {
                 HomeSpace.DynamicRunEnabled = value;
-                //Uncheck the Show Run Preview in settings
-                if (value)
-                    ShowRunPreview = false;
-
                 RaisePropertyChanged("DynamicRunEnabled");
             }
         }
@@ -292,6 +287,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public int LibraryWidth
+        {
+            get
+            {
+                return model.PreferenceSettings.LibraryWidth;
+            }
+            set
+            {
+                model.PreferenceSettings.LibraryWidth = value;
+                RaisePropertyChanged("LibraryWidth");
+            }
+        }
+
         public bool IsShowingConnectors
         {
             get
@@ -429,16 +437,6 @@ namespace Dynamo.ViewModels
         ///     hidden to avoid inconsistencies in state.
         /// </summary>
         public bool ShowLogin { get; private set; }
-
-        public bool ShowRunPreview
-        {
-            get { return model.ShowRunPreview; }
-            set
-            {
-                model.ShowRunPreview = value;
-                RaisePropertyChanged("ShowRunPreview");
-            }
-        }
 
         #endregion
 
@@ -1174,12 +1172,12 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowPackageManagerSearch(object parameters)
+        internal void ShowPackageManagerSearch(object parameters)
         {
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
-        private bool CanShowPackageManagerSearch(object parameters)
+        internal bool CanShowPackageManagerSearch(object parameters)
         {
             return true;
         }

@@ -10,7 +10,6 @@ using DynamoUnits;
 
 using DynamoUtilities;
 
-
 namespace Dynamo
 {
     /// <summary>
@@ -37,6 +36,7 @@ namespace Dynamo
         public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 
+        public int LibraryWidth { get; set; }
         public int ConsoleHeight { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
@@ -114,6 +114,7 @@ namespace Dynamo
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;
+            LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
@@ -136,7 +137,7 @@ namespace Dynamo
         {
             try
             {
-                var serializer = new XmlSerializer(typeof (PreferenceSettings));
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
                 using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
                     serializer.Serialize(fs, this);
@@ -149,7 +150,7 @@ namespace Dynamo
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }
-            
+
             return false;
         }
 
@@ -188,10 +189,10 @@ namespace Dynamo
                 }
             }
             catch (Exception) { }
-            
+
             return settings;
         }
-        
+
         /// <summary>
         /// Return PreferenceSettings from Default XML path
         /// </summary>

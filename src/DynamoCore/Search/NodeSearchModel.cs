@@ -2,6 +2,7 @@
 using Dynamo.Models;
 using Dynamo.Search.Interfaces;
 using Dynamo.Search.SearchElements;
+using Dynamo.UI;
 using DynamoUtilities;
 
 namespace Dynamo.Search
@@ -11,6 +12,16 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
+        public override void Add(NodeSearchElement entry)
+        {
+            SearchElementGroup group = SearchElementGroup.None;
+
+            entry.FullCategoryName = ProcessNodeCategory(entry.FullCategoryName, ref group);
+            entry.Group = group;
+
+            base.Add(entry);
+        }
+
         /// <summary>
         ///     Dumps the contents of search into an Xml file.
         /// </summary>
@@ -64,6 +75,45 @@ namespace Dynamo.Search
 
             foreach (var entry in category.Entries)
                 AddEntryToXml(element, entry);
+        }
+
+        /// <summary>
+        /// Call this method to assign a default grouping information if a given category 
+        /// does not have any. A node category's group can either be "Create", "Query" or
+        /// "Actions". If none of the group names above is assigned to the category, it 
+        /// will be assigned a default one that is "Actions".
+        /// 
+        /// For examples:
+        /// 
+        ///     "Core.Evaluate" will be renamed as "Core.Evaluate.Actions"
+        ///     "Core.List.Create" will remain as "Core.List.Create"
+        /// 
+        /// </summary>
+        internal string ProcessNodeCategory(string category, ref SearchElementGroup group)
+        {
+            if (string.IsNullOrEmpty(category))
+                return category;
+
+            int index = category.LastIndexOf(Configurations.CategoryDelimiter);
+
+            // If "index" is "-1", then the whole "category" will be used as-is.            
+            switch (category.Substring(index + 1))
+            {
+                case Configurations.CategoryGroupAction:
+                    group = SearchElementGroup.Action;
+                    break;
+                case Configurations.CategoryGroupCreate:
+                    group = SearchElementGroup.Create;
+                    break;
+                case Configurations.CategoryGroupQuery:
+                    group = SearchElementGroup.Query;
+                    break;
+                default:
+                    group = SearchElementGroup.Action;
+                    return category;
+            }
+
+            return category.Substring(0, index);
         }
     }
 }
