@@ -721,7 +721,7 @@ namespace Dynamo.ViewModels
         private NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
         {
             var element = entry as CustomNodeSearchElement;
-            var elementVM != null
+            var elementVM = element != null
                 ? new CustomNodeSearchElementViewModel(element, this)
                 : new NodeSearchElementViewModel(entry, this);
 

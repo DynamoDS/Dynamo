@@ -9,6 +9,7 @@ using System.Xml;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
+using NodeUtils = Dynamo.Nodes.Utilities;
 using Dynamo.UI;
 
 namespace Dynamo.ViewModels
@@ -245,12 +246,12 @@ namespace Dynamo.ViewModels
             helper.SetAttribute(INTERVAL_ATTRIB_NAME, CommandInterval);
             // Serialization in SaveContext.File may need file path. Add it
             // temporarily and remove it after searilization.
-            helper.SetAttribute(Configurations.FilePathAttribName, xmlFilePath);
+            NodeUtils.SetDocumentXmlPath(document, xmlFilePath);
 
             foreach (DynamoModel.RecordableCommand command in recordedCommands)
                 commandRoot.AppendChild(command.Serialize(document));
 
-            commandRoot.RemoveAttribute(Configurations.FilePathAttribName);
+            NodeUtils.SetDocumentXmlPath(document, null);
 
             // Save recorded commands into XML file and open it in viewer.
             document.Save(xmlFilePath);
