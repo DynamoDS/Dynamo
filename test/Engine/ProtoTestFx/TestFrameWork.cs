@@ -47,8 +47,8 @@ namespace ProtoTestFx.TD
             testCore = new ProtoCore.Core(new ProtoCore.Options());
             testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
             testCore.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
-            testCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(testCore));
-            testCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(testCore));
 
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
@@ -91,8 +91,8 @@ namespace ProtoTestFx.TD
         public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
@@ -455,32 +455,17 @@ namespace ProtoTestFx.TD
             }
             else if (expectedObject is String)
             {
-                char[] chars = (expectedObject as String).ToCharArray();
-                object[] objs = new object[chars.Length];
-                Array.Copy(chars, objs, chars.Length);
-
-                ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
-                if (dsArray == null)
+                string stringValue = dsObject.Payload as string;
+                if (stringValue == null)
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be a string, but its actual value is not a string\n{2}", dsVariable, 
                         BuildIndicesString(indices), mErrorMessage));
                 }
-                else if (chars.Count() != dsArray.members.Count())
+                else if (!expectedObject.Equals(stringValue))
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string of length {2}, but its actual length is {3}.\n{4}", dsVariable, 
-                        BuildIndicesString(indices), objs.Count(), dsArray.members.Count(), mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string \"{2}\", but its actual value is \"{3}\".\n{4}", dsVariable, 
+                        BuildIndicesString(indices), expectedObject, stringValue, mErrorMessage));
                 }
-                else
-                {
-                    for (int i = 0; i < objs.Count(); ++i)
-                    {
-                        indices.Add(i);
-                        TestFrameWork.VerifyInternal(objs[i], dsArray.members[i], dsVariable, indices);
-                        indices.RemoveAt(indices.Count - 1);
-                    }
-                }
-
-                // VerifyInternal(objs, dsObject, dsVariable, indices);
             }
             else if (typeof(IEnumerable).IsAssignableFrom(expectedType))
             {

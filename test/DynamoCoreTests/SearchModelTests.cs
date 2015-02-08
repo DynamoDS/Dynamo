@@ -96,7 +96,7 @@ namespace Dynamo.Tests
             var results1 = search.Search(nodeName).ToList();
 
             // description is updated
-            Assert.AreEqual(1,results1.Count());
+            Assert.AreEqual(1, results1.Count());
             var res2 = results1[0];
             Assert.IsInstanceOf<CustomNodeSearchElement>(res2);
             Assert.AreEqual(guid1, ((CustomNodeSearchElement)res2).ID);
@@ -169,7 +169,7 @@ namespace Dynamo.Tests
             var results = search.Search(nodeName).ToList();
             Assert.AreEqual(nodeName, results[0].Name);
         }
-        
+
         [Test]
         [Category("UnitTests")]
         public void CanDuplicateAddedNodesInBrowser()
@@ -184,21 +184,21 @@ namespace Dynamo.Tests
                         new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", "")));
             }
 
-            var categorized = SearchCategory.CategorizeSearchEntries(search.SearchEntries, x => x.Categories);
+            var categorized = SearchCategoryUtil.CategorizeSearchEntries(search.SearchEntries, x => x.Categories);
             Assert.AreEqual(1, categorized.SubCategories.Count());
-            
+
             categorized = categorized.SubCategories.First();
             Assert.AreEqual("Category", categorized.Name);
             Assert.AreEqual(1, categorized.SubCategories.Count());
-            
+
             categorized = categorized.SubCategories.First();
             Assert.AreEqual("Child", categorized.Name);
             Assert.AreEqual(1, categorized.SubCategories.Count());
-            
+
             categorized = categorized.SubCategories.First();
             Assert.AreEqual("Thing", categorized.Name);
             Assert.AreEqual(1, categorized.SubCategories.Count());
-            
+
             categorized = categorized.SubCategories.First();
             Assert.AreEqual("That", categorized.Name);
             Assert.AreEqual(0, categorized.SubCategories.Count());
@@ -289,11 +289,11 @@ namespace Dynamo.Tests
         {
             var split = NodeSearchElement.SplitCategoryName("this is a root category").ToList();
             Assert.AreEqual(1, split.Count);
-            Assert.AreEqual("this is a root category", split[0] );
+            Assert.AreEqual("this is a root category", split[0]);
 
             split = NodeSearchElement.SplitCategoryName("this is a root category.and").ToList();
             Assert.AreEqual(2, split.Count);
-            Assert.AreEqual("this is a root category", split[0] );
+            Assert.AreEqual("this is a root category", split[0]);
             Assert.AreEqual("and", split[1]);
 
             split = NodeSearchElement.SplitCategoryName("this is a root category.and.this is a sub").ToList();
@@ -310,8 +310,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(" with noodles", split[3]);
 
             split = NodeSearchElement.SplitCategoryName("this is a root category.").ToList();
-            Assert.AreEqual(1,split.Count);
-            Assert.AreEqual("this is a root category", split[0] );
+            Assert.AreEqual(1, split.Count);
+            Assert.AreEqual("this is a root category", split[0]);
         }
 
         [Test]
@@ -356,7 +356,7 @@ namespace Dynamo.Tests
             res = searchModel.Search(nodeName).ToList();
             Assert.AreEqual(0, res.Count());
         }
-        
+
         [Test]
         [Category("UnitTests")]
         public void CanRemoveNodeAndCategoryByFunctionId()
@@ -429,7 +429,37 @@ namespace Dynamo.Tests
             AssertAddAndRemoveCustomNode(search, nodeName, catName);
         }
         #endregion
-        
+
+        [Test]
+        [Category("UnitTests")]
+        public void ProcessNodeCategoryTests()
+        {
+            SearchElementGroup group = SearchElementGroup.None;
+            string category = null;
+            Assert.AreEqual(null, search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.None, group);
+
+            group = SearchElementGroup.None;
+            category = "";
+            Assert.AreEqual("", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.None, group);
+
+            group = SearchElementGroup.None;
+            category = "Builtin Functions";
+            Assert.AreEqual("Builtin Functions", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.Action, group);
+
+            group = SearchElementGroup.None;
+            category = "Core.Evaluate";
+            Assert.AreEqual("Core.Evaluate", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.Action, group);
+
+            group = SearchElementGroup.None;
+            category = "Core.List.Create";
+            Assert.AreEqual("Core.List", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.Create, group);
+        }
+
         #region Remove Nodes
 
         [Test]

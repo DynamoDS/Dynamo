@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyCompany("Autodesk, Inc")]
 [assembly: AssemblyProduct("Dynamo")]
-[assembly: AssemblyCopyright("Copyright © Autodesk, Inc 2014")]
+[assembly: AssemblyCopyright("Copyright © Autodesk, Inc 2015")]
 [assembly: AssemblyTrademark("")]
 
 // Make it easy to distinguish Debug and Release (i.e. Retail) builds;

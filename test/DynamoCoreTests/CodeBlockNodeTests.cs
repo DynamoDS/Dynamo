@@ -823,11 +823,8 @@ b = c[w][x][y][z];";
             options.RootModulePathName = string.Empty;
 
             libraryServicesCore = new ProtoCore.Core(options);
-
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
-                new ProtoAssociative.Executive(libraryServicesCore));
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
-                new ProtoImperative.Executive(libraryServicesCore));
+            libraryServicesCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryServicesCore));
+            libraryServicesCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryServicesCore));
 
             CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
         }

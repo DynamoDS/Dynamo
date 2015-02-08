@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 namespace DSCoreNodesUI
 {
@@ -26,8 +24,7 @@ namespace DSCoreNodesUI
             LegacyNodeName = "DSCoreNodesUI.DummyNode";
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
-            Description = GetDescription(); 
-            
+            Description = GetDescription();
             ShouldDisplayPreviewCore = false;
         }
 
@@ -36,6 +33,7 @@ namespace DSCoreNodesUI
             InputCount = inputCount;
             OutputCount = outputCount;
             LegacyNodeName = legacyName;
+            NickName = legacyName;
             OriginalNodeContent = originalElement;
             LegacyAssembly = legacyAssembly;
             NodeNature = nodeNature;
@@ -44,6 +42,12 @@ namespace DSCoreNodesUI
             ShouldDisplayPreviewCore = false;
 
             UpdatePorts();
+
+            // Take the position from the old node (because a dummy node
+            // should always be created at the location of the old node).
+            var helper = new XmlElementHelper(originalElement);
+            X = helper.ReadDouble("x", 0.0);
+            Y = helper.ReadDouble("y", 0.0);
         }
 
         private void LoadNode(XmlNode nodeElement)

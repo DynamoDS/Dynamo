@@ -19,7 +19,7 @@ namespace Dynamo.Search
         ///     Adds an entry to search.
         /// </summary>
         /// <param name="entry"></param>
-        public void Add(TEntry entry)
+        public virtual void Add(TEntry entry)
         {
             Add(entry, entry.Name);
             Add(entry, entry.SearchTags, .5);
@@ -62,7 +62,7 @@ namespace Dynamo.Search
     /// <summary>
     ///     Utility methods for categorizing search elements.
     /// </summary>
-    public static class SearchCategory
+    public static class SearchCategoryUtil
     {
         private sealed class SearchCategoryImpl<TEntry> : ISearchCategory<TEntry>
         {

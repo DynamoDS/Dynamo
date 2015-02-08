@@ -103,6 +103,7 @@
     <Compile Include="CodeFile.cs" />
     <Compile Include="CodeGenDS.cs" />
     <Compile Include="CodePoint.cs" />
+    <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
     <Compile Include="CompilerUtils.cs" />
     <Compile Include="Core.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Reflection\MirrorData.cs" />
     <Compile Include="Reflection\Reflection.cs" />
     <Compile Include="RuntimeContext.cs" />
+    <Compile Include="RuntimeCore.cs" />
     <Compile Include="RuntimeData.cs" />
     <Compile Include="RuntimeMemory.cs" />
     <Compile Include="RuntimeStatus.cs" />
@@ -157,7 +159,6 @@
     <Compile Include="FFI\CLRFFIFunctionPointer.cs" />
     <Compile Include="FFI\CLRObjectMarshler.cs" />
     <Compile Include="FFI\ImportModuleHandler.cs" />
-    <Compile Include="Lang\CSFFIFunctionEndPoint.cs" />
     <Compile Include="Parser\AssociativeAST.cs" />
     <Compile Include="Parser\AST.cs" />
     <Compile Include="Parser\DependencyTracker.cs" />

@@ -54,7 +54,7 @@ Imperative_languageblock<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                             }
                                             else {
                                                 langblock.codeblock.language = ProtoCore.Language.kInvalid; 
-                                                errors.SemErr(t.line, t.col, String.Format("\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?", t.val));
+                                                errors.SemErr(t.line, t.col, String.Format(Resources.invalidLanguageBlockIdentifier, t.val));
                                             }
                                         .)
     {
@@ -147,7 +147,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             kw_break 
             (.
                 if (la.kind != _endline)
-                SynErr("';' is expected.");
+                    SynErr(Resources.semiColonExpected);
             .)
             endline
         )     (. node = new ProtoCore.AST.ImperativeAST.BreakNode(); NodeUtils.SetNodeLocation(node, t); .)
@@ -156,7 +156,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             kw_continue 
             (.
                 if (la.kind != _endline)
-                    SynErr("';' is expected.");
+                   SynErr(Resources.semiColonExpected);
             .)
             endline
         )  (. node = new ProtoCore.AST.ImperativeAST.ContinueNode(); NodeUtils.SetNodeLocation(node, t); .)
@@ -169,7 +169,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             Imperative_expr<out node> 
             (.
                 if (la.kind != _endline)
-                    SynErr("';' is expected.");
+                   SynErr(Resources.semiColonExpected);
             .)
             endline
         )
@@ -177,7 +177,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         (
             (.
                 if (la.kind != _endline)
-                    SynErr("';' is expected.");
+                   SynErr(Resources.semiColonExpected);
             .)
             endline 
         )
@@ -193,7 +193,7 @@ Imperative_ThrowStatement<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                 (. throwNode.expression = expression; .)
                                 (.
                                     if (la.kind != _endline)
-                                        SynErr("';' is expected.");
+                                       SynErr(Resources.semiColonExpected);
                                 .)
     endline
                                 (. node = throwNode; .)
@@ -216,7 +216,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                 ident               (. 
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
                                         var typedVar = new ProtoCore.AST.ImperativeAST.TypedIdentifierNode();
                                         typedVar.Name = typedVar.Value = t.val;
@@ -271,7 +271,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                 ident       (.  
                                     if (IsKeyWord(t.val, true))
                                     {
-                                        errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                        errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                     }
                                     var identNode = new ProtoCore.AST.ImperativeAST.IdentifierNode();
                                     identNode.Name = identNode.Value = t.val;
@@ -289,7 +289,7 @@ Imperative_decoratedIdentifier<out ProtoCore.AST.ImperativeAST.ImperativeNode no
                 ident               (. 
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
                                         var typedVar = new ProtoCore.AST.ImperativeAST.TypedIdentifierNode();
                                         typedVar.Name = typedVar.Value = t.val;
@@ -380,7 +380,7 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                             Imperative_expr<out rhsNode>        
                             (.
                                 if (la.kind != _endline)
-                                    SynErr("';' is expected.");
+                                   SynErr(Resources.semiColonExpected);
                             .)
                             endline
                         )
@@ -782,7 +782,7 @@ Imperative_Char<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 =
     char            (. 
                         if (t.val.Length <= 2) {
-                            errors.SemErr(t.line, t.col, "Empty character literal.");
+                            errors.SemErr(t.line, t.col, Resources.emptyCharacterLiteral);
                         }
 
                         node = new ProtoCore.AST.ImperativeAST.CharNode() 
@@ -887,12 +887,12 @@ Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
     ident       (. 
                     if (!disableKwCheck && IsKeyWord(t.val, false, false))
                     {
-                        errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                        errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                     }
                     int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
                     if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
                     {
-                        SynErr("Return statement is invalid. Do you mean: return = " + la.val + " ?"); 
+                        SynErr(String.Format(Resources.invalidReturnStatement, la.val)); 
                     }        
                     var = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
                     NodeUtils.SetNodeLocation(var, t);
@@ -1072,7 +1072,7 @@ Imperative_ArgDecl<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         ident                       (. 
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
                                         tNode = BuildImperativeIdentifier(t.val);
                                         NodeUtils.SetNodeLocation(tNode, t);
@@ -1152,7 +1152,7 @@ Imperative_functiondecl<.out ProtoCore.AST.ImperativeAST.ImperativeNode node, Li
     ident                                   (. funcDecl.Name = t.val; NodeUtils.SetNodeEndLocation(funcDecl, t); .)
                                             (. if (IsKeyWord(t.val, true))
                                                 {
-                                                    errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                                    errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                                 }
                                             .)
     [                                       
@@ -1244,7 +1244,7 @@ Imperative_functionalMethodBodySingleStatement<.out List<ProtoCore.AST.Imperativ
 
                                         (.
                                             if (la.kind != _endline)
-                                                SynErr("';' is expected.");
+                                               SynErr(Resources.semiColonExpected);
                                         .)
     endline
 .
@@ -1344,7 +1344,7 @@ Imperative_CatchFilter<out ProtoCore.AST.ImperativeAST.CatchFilterNode catchFilt
                                     (. 
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
 
                                         catchFilterNode.var =  BuildImperativeIdentifier(t.val);

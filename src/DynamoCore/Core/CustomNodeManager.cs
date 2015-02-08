@@ -127,7 +127,11 @@ namespace Dynamo.Core
                     Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
                 info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
-                def = null;
+            }
+
+            if (def == null)
+            {
+                def = CustomNodeDefinition.MakeProxy(id, info.Name);
             }
 
             var node = new Function(def, info.Name, info.Description, info.Category);
