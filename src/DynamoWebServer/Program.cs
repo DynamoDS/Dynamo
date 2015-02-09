@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Configuration;
 using System.Reflection;
-using System.Windows;
 
 using Dynamo.Models;
 using Dynamo;
@@ -32,9 +32,9 @@ namespace DynamoWebServer
 
             webSocketServer.Start();
 
-            var app = new Application();
-            app.Exit += webSocketServer.ProcessExit;
-            app.Run();
+            Process.GetCurrentProcess().Exited += webSocketServer.ProcessExited;
+
+            while (true) {}
         }
     }
 }

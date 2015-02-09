@@ -127,6 +127,10 @@ namespace DynamoWebServer.Messages
             {
                 RetrieveGeometry(((GetNodeGeometryMessage)message).NodeId, sessionId);
             }
+            else if (message is GetNodeArrayItemsMessage)
+            {
+                RetrieveArrayItems(message as GetNodeArrayItemsMessage, sessionId);
+            }
             else if (message is ClearWorkspaceMessage)
             {
                 ClearWorkspace((message as ClearWorkspaceMessage).ClearOnlyHome);
@@ -511,8 +515,7 @@ namespace DynamoWebServer.Messages
             }
 
             stringBuilder.Append(node.GetInOutPortsData(isVarInputNode));
-            stringBuilder.Append(", \"Data\": \"" + GetValue(node));
-            stringBuilder.Append("\"}");
+            stringBuilder.Append("}");
 
             return stringBuilder.ToString();
         }
@@ -520,7 +523,7 @@ namespace DynamoWebServer.Messages
         private void RetrieveGeometry(string nodeId, string sessionId)
         {
             Guid guid;
-            var nodes = dynamoModel.CurrentWorkspace.Nodes;
+            var nodes = GetWorkspaceByGuid(null).Nodes;
             if (Guid.TryParse(nodeId, out guid))
             {
                 NodeModel model = nodes.FirstOrDefault(n => n.GUID == guid);
@@ -529,6 +532,22 @@ namespace DynamoWebServer.Messages
                 {
                     OnResultReady(this, new ResultReadyEventArgs(
                         new GeometryDataResponse(new GeometryData(nodeId, model.RenderPackages)), sessionId));
+                }
+            }
+        }
+
+        private void RetrieveArrayItems(GetNodeArrayItemsMessage message, string sessionId)
+        {
+            Guid guid;
+            var nodes = GetWorkspaceByGuid(null).Nodes;
+            if (Guid.TryParse(message.NodeId, out guid))
+            {
+                NodeModel model = nodes.FirstOrDefault(n => n.GUID == guid);
+
+                if (model != null)
+                {
+                    OnResultReady(this, new ResultReadyEventArgs(
+                    new ArrayItemsDataResponse(model, message.IndexFrom, message.Length), sessionId));
                 }
             }
         }

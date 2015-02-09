@@ -107,7 +107,7 @@ namespace DynamoWebServer
             ExecuteMessageFromSocket(msg, sessionId, enqueue);
         }
 
-        public void ProcessExit(object sender, EventArgs e)
+        public void Shutdown()
         {
             messageQueue.Shutdown();
         }
@@ -205,5 +205,10 @@ namespace DynamoWebServer
         }
 
         #endregion
+
+        internal void ProcessExited(object sender, EventArgs e)
+        {
+            this.Shutdown();
+        }
     }
 }
