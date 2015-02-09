@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:Dynamo.Views"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
@@ -23,7 +23,6 @@
         Closed="WindowClosed"
         MinHeight="600"
         MinWidth="800"
-        Title="Dynamo"
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
@@ -174,11 +173,18 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"
-                              MaxWidth="500" />
+            <ColumnDefinition MaxWidth="500"
+                              MinWidth="204"
+                              Name="LibraryViewColumn">
+                <ColumnDefinition.Width>
+                    <Binding Path="LibraryWidth"
+                             Mode="TwoWay"
+                             Converter="{StaticResource ConsoleHeightConverter}" />
+                </ColumnDefinition.Width>
+            </ColumnDefinition>
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5*" />
         </Grid.ColumnDefinitions>
 
         <!--Titlebar-->
@@ -227,7 +233,9 @@
                                   InputGestureText="Ctrl + O"
                                   Focusable="False">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCoreWpf;component/UI/Images/openHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/openHS.png"
+                                       Width="14"
+                                       Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
@@ -237,7 +245,9 @@
                                   InputGestureText="Ctrl + S"
                                   Focusable="False">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCoreWpf;component/UI/Images/saveHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/saveHS.png"
+                                       Width="14"
+                                       Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Focusable="False"
@@ -246,7 +256,9 @@
                                   Name="saveButton"
                                   InputGestureText="Ctrl + Shift + S">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCoreWpf;component/UI/Images/saveHS.png" Width="14" Height="14" />
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/saveHS.png"
+                                       Width="14"
+                                       Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
@@ -260,7 +272,9 @@
                                   Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
                                   Name="saveImage">
                             <MenuItem.Icon>
-                                <Image Source="/DynamoCoreWpf;component/UI/Images/screenshot_normal.png" Width="14" Height="14"/>
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/screenshot_normal.png"
+                                       Width="14"
+                                       Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Focusable="False"
@@ -496,7 +510,7 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"
                               Focusable="False"
-                              IsEnabled="True">                   
+                              IsEnabled="True">
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
                                   Name="ToggleIsUsageReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
@@ -511,14 +525,16 @@
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
                                   Focusable="False"/>
-                        <MenuItem Focusable="False" 
+                        
+                        <!--<MenuItem Focusable="False" 
                                   Name="ShowNodeExecution" 
                                   IsCheckable="True" 
                                   IsChecked="{Binding ShowRunPreview}" 
                                   Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
                                   ToolTipService.ShowOnDisabled="True" 
                                   ToolTip="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
-                                  IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>                       
+                                  IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>-->
+                        
                         <!--<MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuLengthUnits}"
                                   Name="LengthUnitsMenu">
@@ -570,7 +586,7 @@
                                       IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}"
                                       Command="{Binding SetLengthUnitCommand}"
                                       CommandParameter="Meter"
-                                       Header="{x:Static p:Resources.DynamoViewSettingMenuMeter}" />
+                                      Header="{x:Static p:Resources.DynamoViewSettingMenuMeter}" />
                         </MenuItem>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuAreaUnits}"
@@ -650,6 +666,7 @@
                                       CommandParameter="SquareMeter"
                                       Header="{x:Static p:Resources.DynamoViewSettingMenuCubicMeter}" />
                         </MenuItem>-->
+                        
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}"
                                   Name="NumberFormat">
@@ -769,7 +786,6 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />
->>>>>>> 548ac9bc53b706ac3418e48fbae443b713346a50:src/DynamoCoreWpf/Views/DynamoView.xaml
                     </MenuItem>
                 </Menu>
 
@@ -782,16 +798,30 @@
         </Border>
 
         <!--Shortcuts Toolbar-->
-        <Border Name="shortcutBarBorder"
-                Grid.Row="1"
+        <Grid Grid.Row="1"
                 Grid.Column="0"
-                Grid.ColumnSpan="3"
+                Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <Grid Name="loginGrid" 
+                  Grid.Row="0" 
+                  Grid.Column="1">
+            </Grid>
+            
+            <Border Name="shortcutBarBorder"
+                Grid.Row="0"
+                Grid.Column="0"
                 Height="32"
                 BorderBrush="#FF3F4040"
                 BorderThickness="0,0,0,1">
-            <Grid Name="shortcutBarGrid">
-            </Grid>
-        </Border>
+                <Grid Name="shortcutBarGrid">
+                </Grid>
+            </Border>
+
+        </Grid>
 
         <Grid HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
@@ -1438,7 +1468,7 @@
                     Visibility="Hidden">
             <Grid Background="#222222"
                   Cursor="Hand">
-                <Button Click="Button_Click"
+                <Button Click="OnCollapsedSidebarClick"
                         Template="{DynamicResource BackgroundButton}">
                     <Button.Resources>
                         <ControlTemplate x:Key="BackgroundButton"
@@ -1657,7 +1687,7 @@
                       Background="#999"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_vertical.cur" />
 
-            <GridSplitter ResizeDirection="Auto"
+        <GridSplitter ResizeDirection="Auto"
                       Grid.Column="1"
                       Grid.Row="2"
                       Grid.RowSpan="2"
@@ -1670,7 +1700,7 @@
                       Background="Transparent"
                       Cursor="/DynamoCoreWpf;component/UI/Images/resize_horizontal.cur" />
 
-            <ItemsControl Name="startPageItemsControl"
+        <ItemsControl Name="startPageItemsControl"
                       Grid.Row="2"
                       Grid.RowSpan="4"
                       Grid.Column="0"

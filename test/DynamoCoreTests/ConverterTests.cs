@@ -18,6 +18,10 @@ namespace Dynamo.Tests
         [Test]
         public void SearchResultsToVisibilityConverterTest()
         {
+            // Currently converter ignores visibility of Addons TreeView. Rewrite test when
+            // addon is come back to UI.
+            // Task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6226.
+
             SearchResultsToVisibilityConverter converter = new SearchResultsToVisibilityConverter();
             int numberOfFoundSearchCategories = 0;
             bool addonsVisibility = false;
@@ -57,7 +61,7 @@ namespace Dynamo.Tests
             searchText = "search text";
             array[2] = searchText;
             result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(Visibility.Collapsed, result);
+            Assert.AreEqual(Visibility.Visible, result);
 
             // 5 case
             numberOfFoundSearchCategories = 5;
@@ -249,7 +253,7 @@ namespace Dynamo.Tests
         {
             ElementTypeToBoolConverter converter = new ElementTypeToBoolConverter();
             var NseVM = new NodeSearchElementViewModel(
-                new NodeModelSearchElement(new TypeLoadData(typeof(Dynamo.Nodes.Symbol))));
+                new NodeModelSearchElement(new TypeLoadData(typeof(Dynamo.Nodes.Symbol))), null);
             var NcVM = new NodeCategoryViewModel("");
             var RncVM = new RootNodeCategoryViewModel("");
             var CncVM = new ClassesNodeCategoryViewModel(RncVM);
@@ -304,7 +308,7 @@ namespace Dynamo.Tests
 
             // 2 case
             var CneVM = new CustomNodeSearchElementViewModel(
-                new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "", "", "", "")));
+                new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "", "", "", "")), null);
 
             result = converter.Convert(CneVM, null, null, null);
             Assert.AreEqual(trueBrush, result);

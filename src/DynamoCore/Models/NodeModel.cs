@@ -568,7 +568,7 @@ namespace Dynamo.Models
 
             IsSelected = false;
             State = ElementState.Dead;
-            ArgumentLacing = LacingStrategy.Disabled;         
+            ArgumentLacing = LacingStrategy.Disabled;
             //IsReportingModifications = true;
         }
 
@@ -598,7 +598,6 @@ namespace Dynamo.Models
             var elNameAttrib = GetType().GetCustomAttributes<NodeNameAttribute>(false).FirstOrDefault();
             if (elNameAttrib != null)
                 NickName = elNameAttrib.Name;
-
         }
 
         #region Modification Reporting
@@ -612,7 +611,8 @@ namespace Dynamo.Models
             MarkNodeAsModified(forceExecute);
             var handler = NodeModified;
             if (handler != null) handler();
-        }       
+        }
+
         #endregion
 
         #region ProtoAST Compilation
@@ -1434,11 +1434,6 @@ namespace Dynamo.Models
         #endregion
 
         #region Dirty Management
-        //TODO: Refactor Property into Automatic with private(?) setter
-        //TODO: Add RequestRecalc() method to replace setter --steve
-
-        private bool showExecutionPreview = true;
-        private bool isNodeNewlyAdded  = true;
 
         /// <summary>
         /// Execution scenarios for a Node to be re-executed
@@ -1479,32 +1474,6 @@ namespace Dynamo.Models
         protected virtual ExecutionHints GetExecutionHintsCore()
         {
             return executionHint;
-        }
-
-
-        public virtual bool ShowExecutionPreview
-        {
-            get
-            {
-                return showExecutionPreview;
-            }
-            set
-            {
-                showExecutionPreview = value;
-                RaisePropertyChanged("ShowExecutionPreview");
-            }
-        }
-
-        public virtual bool IsNodeAddedRecently
-        {
-            get
-            {
-                return isNodeNewlyAdded;
-            }
-            set
-            {
-                isNodeNewlyAdded = value;
-            }
         }
 
         #endregion

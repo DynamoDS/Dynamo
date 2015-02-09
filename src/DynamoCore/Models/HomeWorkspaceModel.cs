@@ -4,9 +4,6 @@ using System.Linq;
 
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
-using ProtoCore.AST;
-using Dynamo.Core;
-using DynamoUtilities;
 using ProtoCore.Namespace;
 
 namespace Dynamo.Models
@@ -16,8 +13,6 @@ namespace Dynamo.Models
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
 
-        private bool graphExecuted;
-        
         public bool DynamicRunEnabled;
 
         public readonly bool VerboseLogging;
@@ -42,13 +37,16 @@ namespace Dynamo.Models
             : base("Home", e, n, x, y, factory, elementResolver, fileName)
         {
             RunEnabled = true;
+#if DEBUG
+            DynamicRunEnabled = true;
+#else
+            DynamicRunEnabled = false;
+#endif
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
             VerboseLogging = verboseLogging;
-
-            ResetEngine(engine);
-
             IsTestMode = isTestMode;
+            EngineController = engine;
         }
 
         public override void Dispose()
@@ -112,12 +110,7 @@ namespace Dynamo.Models
 
         protected override void ResetWorkspaceCore()
         {
-            // Reset Run Automatic option to false on resetting the workspace
-#if DEBUG
-            DynamicRunEnabled = true;
-#else
-            DynamicRunEnabled = false;
-#endif
+            base.ResetWorkspaceCore();
         }
 
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
@@ -142,9 +135,6 @@ namespace Dynamo.Models
             {
                 DynamoModel.OnRequestDispatcherBeginInvoke(Run);
             }
-
-            //Find the next executing nodes
-            GetExecutingNodes();
         }
 
         /// <summary>
@@ -155,12 +145,6 @@ namespace Dynamo.Models
             base.Clear();
             PreloadedTraceData = null;
             RunEnabled = true;
-        }
-
-        public override void SetShowExecutionPreview(NodeModel node)
-        {
-            node.ShowExecutionPreview = DynamoModel.showRunPreview;
-            node.IsNodeAddedRecently = true;
         }
 
         #region evaluation
@@ -241,14 +225,7 @@ namespace Dynamo.Models
 
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
-            {
                 modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
-                if (modifiedNode.State != ElementState.Error && modifiedNode.State != ElementState.Warning)
-                {
-                    modifiedNode.ShowExecutionPreview = false;
-                    modifiedNode.IsNodeAddedRecently = false;
-                }
-            }
 
             foreach (var node in Nodes)
             {
@@ -284,7 +261,6 @@ namespace Dynamo.Models
         /// </summary>
         public void Run()
         {
-            graphExecuted = true;
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
@@ -319,52 +295,6 @@ namespace Dynamo.Models
         {
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
-        }
-
-        internal void GetExecutingNodes()
-        {
-            var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
-            bool showRunPreview = DynamoModel.showRunPreview;           
-            //The Graph is executed and Show node execution is checked on the Debug menu
-            if (graphExecuted && showRunPreview)
-            {
-                if (task.Initialize(EngineController, this) != null)
-                {
-                    task.Completed += OnPreviewGraphCompleted;
-                    scheduler.ScheduleForExecution(task);
-                }
-            }
-            //Show node exection is checked but the graph has not RUN
-            else
-            {
-                foreach (var nodeModel in Nodes)
-                {
-                    nodeModel.ShowExecutionPreview = showRunPreview;
-                }
-            }
-        }
-
-        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
-        {
-            var updateTask = asyncTask as PreviewGraphAsyncTask;
-            if (updateTask != null)
-            {
-                var nodeGuids = updateTask.previewGraphData;
-                foreach (var nodeModel in Nodes)
-                {
-                    foreach (Guid t in nodeGuids)
-                    {
-                        if (nodeModel.GUID == t)
-                        {
-                            nodeModel.ShowExecutionPreview = true;
-                            nodeModel.IsNodeAddedRecently = false;
-                        }                       
-                    }
-                    /* Color the recently added nodes */
-                    if (nodeModel.IsNodeAddedRecently && !nodeModel.ShowExecutionPreview)
-                        nodeModel.ShowExecutionPreview = true;
-                }
-            }            
         }
 
         #endregion

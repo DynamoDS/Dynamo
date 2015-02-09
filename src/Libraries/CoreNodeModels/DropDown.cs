@@ -133,19 +133,15 @@ namespace DSCoreNodesUI
 
         public static string SaveSelectedIndex(int index, IList<DynamoDropDownItem> items )
         {
-            var result = "-1";
-
-            if (index == -1)
+            // If nothing is selected or there are no
+            // items in the collection, than return -1
+            if (index == -1 || items.Count == 0)
             {
-                result = index.ToString();
+                return "-1";
             }
-            else
-            {
-                var item = items[index];
-                result = string.Format("{0}:{1}", index, XmlEscape(item.Name));
-            }
-
-            return result;
+            
+            var item = items[index];
+            return string.Format("{0}:{1}", index, XmlEscape(item.Name));
         }
 
         private static string XmlEscape(string unescaped)

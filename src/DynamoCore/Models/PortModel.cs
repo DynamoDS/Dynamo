@@ -38,7 +38,6 @@ namespace Dynamo.Models
         private bool usingDefaultValue;
         private bool defaultValueEnabled;
         private Thickness marginThickness;
-        
         #endregion
 
         #region public members
@@ -92,17 +91,7 @@ namespace Dynamo.Models
             }
         }
 
-        public string ToolTipContent
-        {
-            get
-            {
-                return Owner != null
-                    ? (PortType == PortType.Input
-                        ? Owner.InPortData[Index].ToolTipString
-                        : Owner.OutPortData[Index].ToolTipString)
-                    : "";
-            }
-        }
+        public string ToolTipContent { get; private set; }
 
         public string DefaultValueTip
         {
@@ -198,6 +187,7 @@ namespace Dynamo.Models
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
+            ToolTipContent = data.ToolTipString;
 
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }

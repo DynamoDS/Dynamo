@@ -901,5 +901,19 @@ namespace Dynamo.Tests
             AssertPreviewValue("257aaba5-5e11-4646-a25f-6cd17eb8d200", 42);
         }
         #endregion
+
+        #region Test localized string
+        [Test]
+        public void TestLocalizedString()
+        {
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestLocalizedString.dyn");
+            RunModel(testFilePath);
+
+            AssertPreviewValue("29eff272-d6db-4bdf-a47f-0641b78709b8", "中文");
+            AssertPreviewValue("70f3cb75-aac9-4bd9-8609-00958cddcd97", true);
+            AssertPreviewValue("9c1ee001-352d-480f-a8f5-757804d0f107", "中文");
+        }
+        #endregion
     }
 }

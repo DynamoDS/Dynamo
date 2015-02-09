@@ -27,7 +27,6 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
-using ResourceName = Dynamo.Wpf.Interfaces.ResourceName;
 
 namespace Dynamo.ViewModels
 {
@@ -108,10 +107,6 @@ namespace Dynamo.ViewModels
             set
             {
                 HomeSpace.DynamicRunEnabled = value;
-                //Uncheck the Show Run Preview in settings
-                if (value)
-                    ShowRunPreview = false;
-
                 RaisePropertyChanged("DynamicRunEnabled");
             }
         }
@@ -292,6 +287,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public int LibraryWidth
+        {
+            get
+            {
+                return model.PreferenceSettings.LibraryWidth;
+            }
+            set
+            {
+                model.PreferenceSettings.LibraryWidth = value;
+                RaisePropertyChanged("LibraryWidth");
+            }
+        }
+
         public bool IsShowingConnectors
         {
             get
@@ -423,15 +431,12 @@ namespace Dynamo.ViewModels
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
-        public bool ShowRunPreview
-        {
-            get { return model.ShowRunPreview; }
-            set
-            {
-                model.ShowRunPreview = value;
-                RaisePropertyChanged("ShowRunPreview");
-            }
-        }
+        /// <summary>
+        ///     Whether sign in should be shown in Dynamo.  In instances where Dynamo obtains
+        ///     authentication capabilities from a host, Dynamo's sign in should generally be 
+        ///     hidden to avoid inconsistencies in state.
+        /// </summary>
+        public bool ShowLogin { get; private set; }
 
         #endregion
 
@@ -441,6 +446,7 @@ namespace Dynamo.ViewModels
             public IVisualizationManager VisualizationManager { get; set; }
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
+            public bool ShowLogin { get; set; }
 
             /// <summary>
             /// This property is initialized if there is an external host application
@@ -462,12 +468,16 @@ namespace Dynamo.ViewModels
                 model.PreferenceSettings);
             var resourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
-            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider);
+            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider, 
+                startConfiguration.ShowLogin);
         }
 
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
-            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider)
+            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider, 
+            bool showLogin = false)
         {
+            this.ShowLogin = showLogin;
+
             // initialize core data structures
             this.model = dynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;
@@ -906,6 +916,7 @@ namespace Dynamo.ViewModels
                 Model.RemoveWorkspace(HomeSpace);
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
+                RaisePropertyChanged("DynamicRunEnabled");
             }
             else
                 workspaces.Add(newVm);
@@ -974,8 +985,16 @@ namespace Dynamo.ViewModels
             // that can't be handled reliably
             try
             {
-                string xmlFilePath = parameters as string;
+                var xmlFilePath = parameters as string;
                 ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath));
+
+                if (UIDispatcher != null)
+                {
+                    // Dispatch a fit view command after all non-idle operations
+                    // are completed. This is to ensure the view's ready for it.
+                    UIDispatcher.BeginInvoke(DispatcherPriority.Background,
+                        (Action)(() => { if (CanFitView(null)) FitView(null); }));
+                }
             }
             catch (Exception e)
             {
@@ -1154,12 +1173,12 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowPackageManagerSearch(object parameters)
+        internal void ShowPackageManagerSearch(object parameters)
         {
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
-        private bool CanShowPackageManagerSearch(object parameters)
+        internal bool CanShowPackageManagerSearch(object parameters)
         {
             return true;
         }

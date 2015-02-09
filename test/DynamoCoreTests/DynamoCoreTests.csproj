@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="ConverterTests.cs" />
+    <Compile Include="NodeConstructionTests.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="SearchViewModelTests.cs" />
     <Compile Include="Setup.cs" />
+    <Compile Include="UnicodeTest.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
