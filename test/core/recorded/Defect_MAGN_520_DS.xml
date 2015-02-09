@@ -1,4 +1,4 @@
-<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="1000">
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <CreateNodeCommand NodeId="03107ea4-75db-4826-a12d-9ebf4f23f65c" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <CreateNodeCommand NodeId="70c28589-855c-45cf-9ec3-bbf25d478a0d" NodeName="-@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <CreateNodeCommand NodeId="bdb376ca-a02d-4c6e-94fd-67142a0361e0" NodeName="*@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
