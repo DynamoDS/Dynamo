@@ -8,8 +8,9 @@
              MinWidth="10"
              MinHeight="10"
              Height="Auto" Width="Auto" Visibility="Visible"             
-             MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"
-             PreviewMouseDown="AnnotationView_OnPreviewMouseDown"
+             MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                      
+             MouseLeftButtonUp="AnnotationView_OnMouseLeftButtonUp" 
+             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"
              Canvas.Left="{Binding Left}" 
              Canvas.Top="{Binding Top}">
     <UserControl.Resources>
@@ -103,10 +104,10 @@
     <Grid Name="AnnotationGrid">
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem  Header="Delete Annotation"
+                <MenuItem  Header="Delete Grouping"
                                Name="DeleteAnnotation"
                            Click="OnDeleteAnnotation"/>               
-                <MenuItem  Header="Choose Background"
+                <MenuItem  Header="Select Background"
                                Name="ChooseColor"/>
                 <ListBox Style="{StaticResource ColorSelectorListBox}"
                          ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
@@ -132,13 +133,7 @@
                 </ListBox>
             </ContextMenu>
         </Grid.ContextMenu>
-        <Canvas Background="{x:Null}">
-            <Canvas.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Testing" Name="testing"></MenuItem>
-                </ContextMenu>
-               
-            </Canvas.ContextMenu>
+        <Canvas Background="{x:Null}">           
         </Canvas>
         <Rectangle  Name="AnnotationRectangle"
                     Margin="10" 
@@ -152,11 +147,13 @@
                 <SolidColorBrush Color="{Binding BackGroundColor}"></SolidColorBrush>
             </Rectangle.Fill>
         </Rectangle>
-        <TextBlock             
+        <TextBlock 
+            Grid.Row="0"
+            Background="Transparent"
             Text ="{Binding AnnotationText, Mode=TwoWay}"             
-            Padding="12,8,0,0"
+            Padding="12,8,0,0"            
             MouseDown="UIElement_OnMouseLeftButtonDown"
-            MaxWidth="{Binding Width}"
+            MaxWidth="{Binding Width}"            
             TextWrapping="Wrap">
         </TextBlock>
         <!--<TextBox 

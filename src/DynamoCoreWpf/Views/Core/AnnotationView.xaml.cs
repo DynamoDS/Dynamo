@@ -11,6 +11,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.UI.Prompts;
+using Dynamo.Selection;
 
 namespace Dynamo.Nodes
 {
@@ -20,6 +21,7 @@ namespace Dynamo.Nodes
     public partial class AnnotationView : IViewModelView<AnnotationViewModel>
     {
         public AnnotationViewModel ViewModel { get; private set; }
+        private bool moveTheGrouping;
 
         public AnnotationView()
         {
@@ -40,15 +42,30 @@ namespace Dynamo.Nodes
             //annotationViewModel.MakeTextBoxVisible = Visibility.Visible;   
             var view = sender as AnnotationView;
             if (view != null) Panel.SetZIndex(view, 9999);
+
+            System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+               new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            if (e.ClickCount == 1)
+            {
+                moveTheGrouping = true;
+                this.CaptureMouse();
+            }
+            if (e.ClickCount >= 2)
+            {
+                OnEditItemClick(this, null);
+            }
+            e.Handled = true;
         }
 
         private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount >= 2)
-            {
-                OnEditItemClick(this, null);
-                e.Handled = true;
-            }           
+            //if (e.ClickCount >= 2)
+            //{
+            //    OnEditItemClick(this, null);
+            //    e.Handled = true;
+            //}           
         }
 
         private void OnEditItemClick(object sender, RoutedEventArgs e)
@@ -83,7 +100,6 @@ namespace Dynamo.Nodes
 
         private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
         {
-
             if (ViewModel != null)
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
         }
@@ -93,6 +109,54 @@ namespace Dynamo.Nodes
             System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
-        }      
+            if (e.ClickCount == 1)
+            {
+                moveTheGrouping = true;
+                this.CaptureMouse();               
+            }
+            if (e.ClickCount >= 2)
+            {
+                OnEditItemClick(this, null);               
+            }
+            e.Handled = true;
+        }
+
+        private void AnnotationView_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {            
+            if (moveTheGrouping)
+            {
+                var position = e.GetPosition(this);
+                var dataContext = this.DataContext as AnnotationViewModel;
+                if (dataContext != null)
+                {
+                    dataContext.IsInDrag = true;
+                    if (!dataContext.RectRegion.Contains(position.X, position.Y))
+                    {                       
+                        dataContext.Left = position.X - 30;
+                        dataContext.Top = position.Y - 30;
+
+                        foreach (var nodes in dataContext.SelectedNodes)
+                        {                                                      
+                            nodes.X = nodes.X + dataContext.Left;
+                            nodes.Y = nodes.Y + dataContext.Top;                           
+                            nodes.ReportPosition();
+                        }
+
+                    }
+                    dataContext.IsInDrag = false;
+                }                 
+                this.ReleaseMouseCapture();
+                moveTheGrouping = false;
+                
+            }
+            e.Handled = true;
+        }
+
+        private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+               new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+        }
     }
 }

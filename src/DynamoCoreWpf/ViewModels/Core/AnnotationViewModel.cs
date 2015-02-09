@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Utilities;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
@@ -42,11 +43,13 @@ namespace Dynamo.ViewModels
         public Double Top
         {
             get { return _annotationModel.Top; }
+            set { _annotationModel.Top = value; }
         }
-
+       
         public Double Left
         {
             get { return _annotationModel.Left; }
+            set { _annotationModel.Left = value; }
         }
 
         public double ZIndex
@@ -114,6 +117,22 @@ namespace Dynamo.ViewModels
                 _annotationModel.BackGroundColor = value.ToString();
                 RaisePropertyChanged("BackGroundColor");
             }
+        }
+
+        public Rect2D RectRegion
+        {
+            get { return _annotationModel.RectRegion; }
+        }
+
+        public IEnumerable<NodeModel> SelectedNodes
+        {
+            get { return _annotationModel.SelectedNodes; }
+        }
+
+        public bool IsInDrag
+        {
+            get { return _annotationModel.IsInDrag; }
+            set { _annotationModel.IsInDrag = value; }
         }
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)

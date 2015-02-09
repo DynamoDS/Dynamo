@@ -92,7 +92,7 @@ namespace Dynamo.Models
         private string _backGroundColor;
         public string BackGroundColor
         {
-            get { return _backGroundColor ?? "#00655682"; }
+            get { return _backGroundColor ?? "#ff7bac"; }
             set
             {
                 _backGroundColor = value;
@@ -101,7 +101,7 @@ namespace Dynamo.Models
         }
 
         private IEnumerable<NodeModel> selectedNodes;
-        private IEnumerable<NodeModel> SelectedNodes
+        public IEnumerable<NodeModel> SelectedNodes
         {
             get { return selectedNodes; }
             set
@@ -115,28 +115,47 @@ namespace Dynamo.Models
                         node.PropertyChanged += OnNodePropertyChanged;
                     }
                     var selectedRegion = SelectRegionFromNodes(selectedNodes);
-                    this.Left = selectedRegion.X - 30;
+                    this.Left = selectedRegion.X -30;
                     this.Top = selectedRegion.Y - 30;
                     this.Width = selectedRegion.Width;
-                    this.Height = selectedRegion.Height;
+                    this.Height = selectedRegion.Height;                  
+                    this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
                 }
             }
+        }
+
+        private Rect2D rectRegion;
+        public Rect2D RectRegion
+        {
+            get { return rectRegion; }
+            set { rectRegion = value; }
+        }
+
+        private bool isInDrag;
+        public bool IsInDrag
+        {
+            get { return isInDrag; }
+            set { isInDrag = value; }
         }
 
         public AnnotationModel(INodeRepository nodeRepository, IEnumerable<NodeModel> selectedNodeModels)
         {
             this.nodeRepository = nodeRepository;
             this.SelectedNodes = selectedNodeModels;
-            this.AnnotationText = "testing";
+            this.AnnotationText = "<<Double click to edit the grouping>>";
         }
 
         private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var selectedRegion = SelectRegionFromNodes(SelectedNodes);
-            this.Left = selectedRegion.X - 30;
-            this.Top = selectedRegion.Y - 30;
-            this.Width = selectedRegion.Width;
-            this.Height = selectedRegion.Height;
+            if (!IsInDrag)
+            {
+                var selectedRegion = SelectRegionFromNodes(SelectedNodes);
+                this.Left = selectedRegion.X - 30;
+                this.Top = selectedRegion.Y - 30;
+                this.Width = selectedRegion.Width;
+                this.Height = selectedRegion.Height;
+                this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
+            }
         }
 
         internal static Rect2D SelectRegionFromNodes(IEnumerable<NodeModel> nodes)
@@ -145,6 +164,8 @@ namespace Dynamo.Models
             if (nodes == null || !nodeModels.Any())
                 throw new ArgumentException("nodes");
 
+            nodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
+      
             var region = new Rect2D
             {
                 X = nodeModels.ElementAt(0).X,
@@ -182,7 +203,7 @@ namespace Dynamo.Models
                     region.Height = region.Bottom > 0 ? region.Bottom : -(region.Bottom) + region.Height;
                 }
             }
-
+           
             return region;
         }
 

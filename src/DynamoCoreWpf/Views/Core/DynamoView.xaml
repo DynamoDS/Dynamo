@@ -321,10 +321,10 @@
                                   Name="noteMenuItem"
                                   InputGestureText="Ctrl + W" />
                         <MenuItem Focusable="False"
-                                  Header="_Create Annotation"
+                                  Header="_Create Grouping"
                                   Command="{Binding AddAnnotationCommand}"
                                   Name="noteMenuAnnotation"
-                                  InputGestureText="Ctrl + N" />
+                                  InputGestureText="Ctrl + G" />
                         <MenuItem Focusable="False"
                                   Header="_Create Node From Selection"
                                   Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
