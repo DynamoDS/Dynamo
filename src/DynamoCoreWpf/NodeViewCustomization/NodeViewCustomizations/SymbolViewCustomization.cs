@@ -5,6 +5,7 @@ using System.Windows.Media;
 
 using Dynamo.Controls;
 using Dynamo.Nodes;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.Wpf
 {
@@ -12,25 +13,18 @@ namespace Dynamo.Wpf
     {
         public void CustomizeView(Dynamo.Nodes.Symbol symbol, NodeView nodeView)
         {
-            //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(symbol.InputSymbol)
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
-            };
+            var input = new ParameterEditor(nodeView.ViewModel);
 
-            nodeView.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
+            nodeView.inputGrid.Children.Add(input);
+            Grid.SetColumn(input, 0);
+            Grid.SetRow(input, 0);
 
-            tb.DataContext = symbol;
-            tb.BindToProperty(
+            input.DataContext = this;
+            input.SetBinding(ParameterEditor.ParameterProperty,
                 new Binding("InputSymbol")
                 {
-                    Mode = BindingMode.TwoWay,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                    Mode = BindingMode.OneWay,
+                    Source = symbol
                 });
         }
 

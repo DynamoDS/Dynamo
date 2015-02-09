@@ -111,6 +111,7 @@
     <Compile Include="Associative\ReplicatorTest.cs" />
     <Compile Include="Associative\SSATransformTest.cs" />
     <Compile Include="Associative\TypeSystemTests.cs" />
+    <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
     <Compile Include="DebugTests\BasicTests.cs" />
     <Compile Include="DebugTests\NamespaceConflictTest.cs" />
     <Compile Include="DebugTests\RunEqualityTests.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="MultiLangTests\GCTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MultiLangTests\UnicodeTest.cs" />
     <Compile Include="NameSpaceTests.cs" />
     <Compile Include="ProtoAST\ASTCompilerUtilsTests.cs" />
     <Compile Include="ProtoAST\AstFactoryTest.cs" />

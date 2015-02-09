@@ -5,11 +5,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
-using Greg.Requests;
+using Greg.AuthProviders;
+
+using Dynamo.Wpf.Properties;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -17,7 +22,7 @@ namespace Dynamo.ViewModels
     ///     A thin wrapper on the Greg rest client for performing IO with
     ///     the Package Manager
     /// </summary>
-    public class PackageManagerClientViewModel
+    public class PackageManagerClientViewModel : NotificationObject
     {
 
         #region Properties/Fields
@@ -41,13 +46,46 @@ namespace Dynamo.ViewModels
         public readonly DynamoViewModel DynamoViewModel;
         public PackageManagerClient Model { get; private set; }
 
+        public LoginState LoginState
+        {
+            get { return Model.LoginState; }
+        }
+
+        public bool HasAuthProvider
+        {
+            get { return Model.HasAuthProvider; }
+        }
+
         #endregion
+
+        public ICommand ToggleLoginStateCommand { get; private set; }
 
         public PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
         {
             this.DynamoViewModel = dynamoViewModel;
             Model = model;
             CachedPackageList = new List<PackageManagerSearchElement>();
+
+            this.ToggleLoginStateCommand = new DelegateCommand(ToggleLoginState, CanToggleLoginState);
+
+            model.LoginStateChanged += b => RaisePropertyChanged("LoginState");
+        }
+
+        private void ToggleLoginState()
+        {
+            if (this.LoginState == LoginState.LoggedIn)
+            {
+                this.Model.Logout();
+            }
+            else
+            {
+                this.Model.Login();
+            }
+        }
+
+        private bool CanToggleLoginState()
+        {
+            return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
         }
 
         public void PublishCurrentWorkspace(object m)
@@ -70,17 +108,14 @@ namespace Dynamo.ViewModels
                 }
             }
             
-            MessageBox.Show(
-                "The selected symbol was not found in the workspace",
-                "Selection Error",
-                MessageBoxButton.OK,
-                MessageBoxImage.Question);
+            MessageBox.Show(Resources.MessageSelectSymbolNotFound, 
+                    Resources.SelectionErrorMessageBoxTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Question);
         }
 
         public bool CanPublishCurrentWorkspace(object m)
         {
-            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel
-                && Model.HasAuthenticator;
+            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel;
         }
 
         public void PublishNewPackage(object m)
@@ -90,7 +125,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishNewPackage(object m)
         {
-            return Model.HasAuthenticator;
+            return HasAuthProvider;
         }
 
         public void PublishSelectedNodes(object m)
@@ -103,7 +138,9 @@ namespace Dynamo.ViewModels
 
             if (!nodeList.Any())
             {
-                MessageBox.Show("You must select at least one custom node.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
+                MessageBox.Show(Resources.MessageSelectAtLeastOneNode,
+                   Resources.SelectionErrorMessageBoxTitle,
+                   MessageBoxButton.OK, MessageBoxImage.Question);
                 return;
             }
 
@@ -122,11 +159,9 @@ namespace Dynamo.ViewModels
                         continue;
                     }
                 }
-                MessageBox.Show(
-                    "There was a problem getting the node with id \"" + node + "\" from the workspace.",
-                    "Selection Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Question);
+                MessageBox.Show(Resources.MessageGettingNodeError, 
+                    Resources.SelectionErrorMessageBoxTitle, 
+                    MessageBoxButton.OK, MessageBoxImage.Question);
             }
 
             ShowNodePublishInfo(defs);
@@ -135,8 +170,7 @@ namespace Dynamo.ViewModels
         public bool CanPublishSelectedNodes(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                DynamoSelection.Instance.Selection.All(x => x is Function) &&
-                Model.HasAuthenticator;
+                   DynamoSelection.Instance.Selection.All(x => x is Function);
         }
 
         private void ShowNodePublishInfo()
@@ -153,13 +187,9 @@ namespace Dynamo.ViewModels
 
                 if (DynamoViewModel.Model.PackageLoader.GetOwnerPackage(f.Item1) != null)
                 {
-                    var m =
-                        MessageBox.Show(
-                            "The node is part of the dynamo package called \"" + pkg.Name
-                                + "\" - do you want to submit a new version of this package?  \n\nIf not, this node will be moved to the new package you are creating.",
-                            "Package Warning",
-                            MessageBoxButton.YesNo,
-                            MessageBoxImage.Question);
+                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, pkg.Name),
+                            Resources.PackageWarningMessageBoxTitle, 
+                            MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (m == MessageBoxResult.Yes)
                     {
@@ -186,13 +216,6 @@ namespace Dynamo.ViewModels
             return CachedPackageList;
         }
 
-        public List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
-        {
-            return Model.Search(search, maxNumSearchResults)
-                               .Select((header) => new PackageManagerSearchElement(Model, header))
-                               .ToList();
-        }
-
         /// <summary>
         /// This method downloads the package represented by the PackageDownloadHandle,
         /// uninstalls its current installation if necessary, and installs the package.
@@ -202,9 +225,6 @@ namespace Dynamo.ViewModels
         /// <param name="packageDownloadHandle"></param>
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
-            
-
-            var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
             Downloads.Add(packageDownloadHandle);
 
             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloading;
@@ -213,8 +233,8 @@ namespace Dynamo.ViewModels
             {
                 try
                 {
-                    var response = Model.Client.Execute(pkgDownload);
-                    var pathDl = PackageDownload.GetFileFromResponse(response);
+                    var pathDl = Model.DownloadPackage(packageDownloadHandle.Header._id,
+                        packageDownloadHandle.VersionName);
 
                     DynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
                     {
@@ -234,8 +254,9 @@ namespace Dynamo.ViewModels
                                 }
                                 catch
                                 {
-                                    MessageBox.Show("Dynamo failed to uninstall the package: " + packageDownloadHandle.Name +
-                                        "  The package may need to be reinstalled manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, packageDownloadHandle.Name),
+                                        Resources.UninstallFailureMessageBoxTitle, 
+                                        MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
                             }
 
@@ -281,7 +302,11 @@ namespace Dynamo.ViewModels
 
         internal void GoToWebsite()
         {
-            Process.Start(Model.Client.BaseUrl);
+            if (Uri.IsWellFormedUriString(Model.BaseUrl, UriKind.Absolute))
+            {
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(Model.BaseUrl).AbsoluteUri);
+                Process.Start(sInfo);
+            }
         }
 
     }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.XPath;
-
+using Dynamo.UI;
 using DynamoUtilities;
 
 namespace Dynamo.DSEngine
@@ -21,9 +22,25 @@ namespace Dynamo.DSEngine
             }
 
             var customizationPath = "";
+            var resourceAssemblyPath = "";
+
+            XDocument xDocument = null;
+            Assembly resAssembly = null;
+
             if (ResolveForAssembly(assemblyPath, ref customizationPath))
             {
-                var c = new LibraryCustomization(XDocument.Load(customizationPath));
+                xDocument = XDocument.Load(customizationPath);
+            }
+
+            if (ResolveResourceAssembly(assemblyPath, out resourceAssemblyPath))
+            {
+                resAssembly = Assembly.LoadFrom(resourceAssemblyPath);
+            }
+
+            // We need 'LibraryCustomization' if either one is not 'null'
+            if (xDocument != null || (resAssembly != null))
+            {
+                var c = new LibraryCustomization(resAssembly, xDocument);
                 triedPaths.Add(assemblyPath, true);
                 cache.Add(assemblyPath, c);
                 return c;
@@ -31,53 +48,76 @@ namespace Dynamo.DSEngine
 
             triedPaths.Add(assemblyPath, false);
             return null;
-            
+
         }
 
         public static bool ResolveForAssembly(string assemblyLocation, ref string customizationPath)
         {
-            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation))
+            try
             {
+                if (!DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation))
+                {
+                    return false;
+                }
+
+                var qualifiedPath = Path.GetFullPath(assemblyLocation);
+                var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
+                var dir = Path.GetDirectoryName(qualifiedPath);
+
+                fn = fn + "_DynamoCustomization.xml";
+
+                customizationPath = Path.Combine(dir, fn);
+
+                return File.Exists(customizationPath);
+            }
+            catch
+            {
+                // Just to be sure, that nothing will be crashed.
+                customizationPath = "";
                 return false;
             }
+        }
 
-            var qualifiedPath = Path.GetFullPath(assemblyLocation);
-            var fn = Path.GetFileNameWithoutExtension(qualifiedPath);
-            var dir = Path.GetDirectoryName(qualifiedPath);
+        public static bool ResolveResourceAssembly(
+            string assemblyLocation,
+            out string resourceAssemblyPath)
+        {
+            try
+            {
+                var fn = Path.GetFileNameWithoutExtension(assemblyLocation);
+                resourceAssemblyPath = fn + Configurations.ResourcesDLL;
 
-            fn = fn + "_DynamoCustomization.xml";
-
-            customizationPath = Path.Combine(dir, fn);
-
-            return File.Exists(customizationPath);
+                return DynamoPathManager.Instance.ResolveLibraryPath(ref resourceAssemblyPath);
+            }
+            catch
+            {
+                // Just to be sure, that nothing will be crashed.
+                resourceAssemblyPath = "";
+                return false;
+            }
         }
     }
 
     public class LibraryCustomization
     {
-        private XDocument XmlDocument;
+        private readonly Assembly resourceAssembly;
+        private readonly XDocument xmlDocument;
 
-        internal LibraryCustomization(XDocument document)
+        public Assembly Assembly { get { return resourceAssembly; } }
+
+        internal LibraryCustomization(Assembly resAssembly, XDocument document)
         {
-            this.XmlDocument = document;
+            this.xmlDocument = document;
+            this.resourceAssembly = resAssembly;
         }
 
         public string GetNamespaceCategory(string namespaceName)
         {
-            return XmlDocument.XPathEvaluate(
-                String.Format("string(/doc/namespaces/namespace[@name='{0}']/category)", namespaceName)
-                ).ToString().Trim();
-
-            //var nodes = (IEnumerable<Object>)XmlDocument.XPathEvaluate(
-            //    String.Format("/doc/namespaces/namespace", namespaceName)
-            //    );
-
-            //foreach (var node in nodes)
-            //{
-            //}
-
-            //return nodes.ToString().Trim();
-
+            var format = "string(/doc/namespaces/namespace[@name='{0}']/category)";
+            object obj = String.Empty;
+            if (xmlDocument != null)
+                obj = xmlDocument.XPathEvaluate(String.Format(format, namespaceName));
+            return obj.ToString().Trim();
         }
     }
 }

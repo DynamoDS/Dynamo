@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,18 +9,10 @@ using System.Runtime.InteropServices;
 using System.Windows;
 
 [assembly: AssemblyTitle("DynamoCoreWpf")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Autodesk, Inc.")]
-[assembly: AssemblyProduct("DynamoCoreWpf")]
-[assembly: AssemblyCopyright("Copyright © Autodesk, Inc. 2014")]
-[assembly: AssemblyTrademark("")]
+
 [assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("92beb3ad-6772-4d4b-9a00-49e727fc12f5")]
@@ -33,7 +26,9 @@ using System.Windows;
     // app, or any theme specific resource dictionaries)
 )]
 
+[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
-[assembly: InternalsVisibleTo("DSCoreNodesUI")]
+[assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
+[assembly: InternalsVisibleTo("DynamoSandbox")]

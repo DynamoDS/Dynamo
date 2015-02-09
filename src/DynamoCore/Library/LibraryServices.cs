@@ -16,6 +16,7 @@ using ProtoCore.Utils;
 using ProtoFFI;
 
 using Operator = ProtoCore.DSASM.Operator;
+using ProtoCore;
 
 namespace Dynamo.DSEngine
 {
@@ -253,21 +254,21 @@ namespace Dynamo.DSEngine
             if (!library.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase)
                 && !library.EndsWith(".ds", StringComparison.InvariantCultureIgnoreCase))
             {
-                const string errorMessage = "Invalid library format.";
+                string errorMessage = Properties.Resources.InvalidLibraryFormat;
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return false;
             }
 
             if (importedFunctionGroups.ContainsKey(library))
             {
-                string errorMessage = string.Format("Library {0} has been loaded.", library);
+                string errorMessage = string.Format(Properties.Resources.LibraryHasBeenLoaded, library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return false;
             }
 
             if (!DynamoPathManager.Instance.ResolveLibraryPath(ref library))
             {
-                string errorMessage = string.Format("Cannot find library path: {0}.", library);
+                string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return false;
             }
@@ -288,7 +289,7 @@ namespace Dynamo.DSEngine
 
                 if (LibraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
-                    string errorMessage = string.Format("Build error for library: {0}", library);
+                    string errorMessage = string.Format(Properties.Resources.LibraryBuildError, library);
                     Log(errorMessage, WarningLevel.Moderate);
                     foreach (ErrorEntry error in LibraryManagementCore.BuildStatus.Errors)
                     {
@@ -438,7 +439,7 @@ namespace Dynamo.DSEngine
                                                                 (arg, argType) =>
                                                                     new TypedParameter(
                                                                     arg.Name,
-                                                                    argType.ToString()))
+                                                                    argType))
                                                         let visibleInLibrary =
                                                             (method.MethodAttribute == null
                                                                 || !method.MethodAttribute.HiddenInLibrary)
@@ -448,7 +449,7 @@ namespace Dynamo.DSEngine
                                                                 null,
                                                                 method.name,
                                                                 arguments,
-                                                                method.returntype.ToString(),
+                                                                method.returntype,
                                                                 FunctionType.GenericFunction,
                                                                 visibleInLibrary);
 
@@ -457,13 +458,13 @@ namespace Dynamo.DSEngine
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            yield return new TypedParameter(null, "x", string.Empty);
-            yield return new TypedParameter(null, "y", string.Empty);
+            yield return new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
+            yield return new TypedParameter(null, "y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
         {
-            return new List<TypedParameter> { new TypedParameter(null, "x", string.Empty), };
+            return new List<TypedParameter> { new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)), };
         }
 
         /// <summary>
@@ -597,7 +598,7 @@ namespace Dynamo.DSEngine
                         }
                     }
 
-                    return new TypedParameter(arg.Name, argType.ToString(), defaultValue);
+                    return new TypedParameter(arg.Name, argType, defaultValue);
                 });
 
             IEnumerable<string> returnKeys = null;
@@ -614,8 +615,8 @@ namespace Dynamo.DSEngine
                 className,
                 procName,
                 arguments,
-                proc.returntype.ToString(),
-                type,                
+                proc.returntype,
+                type,
                 isVisible,
                 returnKeys,
                 proc.isVarArg,

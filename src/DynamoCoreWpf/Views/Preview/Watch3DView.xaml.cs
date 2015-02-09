@@ -202,7 +202,7 @@ namespace Dynamo.Controls
         public Watch3DView(Guid id, IWatchViewModel dataContext)
         {
             this.DataContext = dataContext;
-
+            
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
@@ -229,6 +229,7 @@ namespace Dynamo.Controls
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
+            
             MouseLeftButtonDown += view_MouseButtonIgnore;
             MouseLeftButtonUp += view_MouseButtonIgnore;
             MouseRightButtonUp += view_MouseRightButtonUp;
@@ -241,6 +242,18 @@ namespace Dynamo.Controls
             {
                 vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
                 vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+
+                var renderingTier = (RenderCapability.Tier >> 16);
+                var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
+                var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
+                var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
+                var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
+
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
             }
 
             DrawGrid();

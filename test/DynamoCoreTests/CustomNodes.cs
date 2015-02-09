@@ -22,7 +22,6 @@ namespace Dynamo.Tests
     internal class CustomNodes : DSEvaluationViewModelUnitTest
     {
         [Test]
-        [Category("Failure")]
         public void CanCollapseNodesAndGetSameResult()
         {
             var model = ViewModel.Model;
@@ -623,6 +622,43 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CollapsedNodeWOrkspaceIsAddedToDynamoWithUnsavedChanges()
+        {
+            var model = ViewModel.Model;
+
+            NodeModel node;
+            if (!ViewModel.Model.NodeFactory.CreateNodeFromTypeName("Dynamo.Nodes.DoubleInput", out node))
+            {
+                throw new Exception("Failed to create node!");
+            }
+
+            var selectionSet = new[] { node };
+
+            DynamoModel.FunctionNamePromptRequestHandler del = (sender, args) =>
+            {
+                args.Category = "Testing";
+                args.Description = "";
+                args.Name = "__CollapseTest__";
+                args.Success = true;
+            };
+
+            ViewModel.Model.RequestsFunctionNamePrompt += del;
+
+            ViewModel.CurrentSpaceViewModel.CollapseNodes(selectionSet);
+
+            ViewModel.Model.RequestsFunctionNamePrompt += del;
+
+            Assert.IsNotNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.Workspaces.Count());
+
+            var customWorkspace = model.Workspaces.ElementAt(1);
+            Assert.AreEqual("__CollapseTest__", customWorkspace.Name);
+            Assert.IsTrue(customWorkspace.HasUnsavedChanges);
+        }
+
+        [Test]
         public void CollapsedNodeShouldHaveNewIdentfifer()
         {
             var model = ViewModel.Model;
@@ -681,6 +717,112 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("1b8b309b-ee2e-44fe-ac98-2123b2711bea", 1);
             AssertPreviewValue("08db7d60-845c-439c-b7ca-c2a06664a948", 2);
+        }
+
+        [Test]
+        public void TestCustomNodeInputType()
+        {
+            // Custom node's signature is add(x:int, y:int)
+            // Test type conversion happens.
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestTypeConversion.dyn");
+
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            ViewModel.HomeSpace.Run();
+            
+            // add(1.49, 3.49) => 4
+            AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", 4);
+        }
+
+        [Test]
+        public void TestCustomNodeLacing()
+        {
+            // Test lacing works ofr custom node. 
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestLacing.dyn");
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            
+            var instance = model.CurrentWorkspace.Nodes.OfType<Function>().First();
+            instance.ArgumentLacing = LacingStrategy.CrossProduct;
+            ViewModel.HomeSpace.Run();
+
+            // {1,2} + {3,4}
+            AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { new object [] {4, 5}, new object [] {5, 6}});
+
+            instance.ArgumentLacing = LacingStrategy.Longest;
+            ViewModel.HomeSpace.Run();
+            AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { 4, 6});
+
+        }
+
+        [Test]
+        public void TestCustomNodeDefaultValue()
+        {
+            // Test custom node default value works
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestDefaultValue.dyn");
+
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            ViewModel.HomeSpace.Run();
+
+            AssertPreviewValue("405d0c03-6b22-466e-a2b9-b9bf602e1762", 142);
+        }
+
+        [Test]
+        public void TestCustomNodeInvalidType()
+        {
+            // Custom node has invalid type, which should be captured by Input node
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\invalidType.dyf");
+
+            ViewModel.OpenCommand.Execute(dynFilePath);
+
+            var node = model.CurrentWorkspace.Nodes.OfType<Symbol>().First();
+            Assert.IsTrue(node.State == ElementState.Warning);
+        }
+
+        [Test]
+        public void TestCustomNodeInvalidInput()
+        {
+            // Custom node has invalid input like "x = f(x)", but the evalution should continue
+            // so that old custom node won't be broken
+            var model = ViewModel.Model;
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestInvalidInput.dyn");
+            ViewModel.OpenCommand.Execute(dynFilePath);
+            ViewModel.HomeSpace.Run();
+
+            AssertPreviewValue("7134638a-26f4-4a13-affb-857ed519db5f", 84);
+        }
+
+
+        [Test]
+        public void TestCustomNodeFromCollapsedNodeHasTypes()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "simpleGeometry.dyn"));
+
+            // Convert a DSFunction node Line.ByStartPointEndPoint to custom node.
+            var workspace = model.CurrentWorkspace;
+            var node = workspace.Nodes.OfType<DSFunction>().First();
+
+            List<NodeModel> selectionSet = new List<NodeModel>() { node };
+            var customWorkspace = model.CustomNodeManager.Collapse(
+                selectionSet,
+                model.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            // Get custom node instance
+            var instance = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+            // All its input types are Point
+            Assert.IsTrue(instance.Controller.Definition.Parameters.All(t => t.Name.Contains("Point")));
         }
     }
 }

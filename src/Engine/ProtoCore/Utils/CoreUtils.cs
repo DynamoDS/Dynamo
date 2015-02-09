@@ -65,7 +65,7 @@ namespace ProtoCore.Utils
     private static void InsertBinaryOperationMethod(Core core, ProtoCore.AST.Node root, Operator op, PrimitiveType r, PrimitiveType op1, PrimitiveType op2, int retRank = 0, int op1rank = 0, int op2rank = 0)
     {
         ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-        funcDefNode.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+        funcDefNode.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
         funcDefNode.IsAssocOperator = true;
         funcDefNode.IsBuiltIn = true;
         funcDefNode.Name = Op.GetOpFunction(op);
@@ -74,14 +74,14 @@ namespace ProtoCore.Utils
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
+            access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, ProtoCore.DSASM.Constants.kLHS),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)op1), UID = (int)op1, rank = op1rank}
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
+            access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, ProtoCore.DSASM.Constants.kRHS),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)op2), UID = (int)op2, rank = op2rank}
         });
@@ -102,7 +102,7 @@ namespace ProtoCore.Utils
 	private static void InsertUnaryOperationMethod(Core core, ProtoCore.AST.Node root, UnaryOperator op, PrimitiveType r, PrimitiveType operand)
     {
         ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-        funcDefNode.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+        funcDefNode.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
         funcDefNode.IsAssocOperator = true;
         funcDefNode.IsBuiltIn = true;
         funcDefNode.Name = Op.GetUnaryOpFunction(op);
@@ -111,7 +111,7 @@ namespace ProtoCore.Utils
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
+            access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%param"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)operand), UID = (int)operand }
         });
@@ -128,28 +128,28 @@ namespace ProtoCore.Utils
 	private static void InsertInlineConditionOperationMethod(Core core, ProtoCore.AST.Node root, PrimitiveType condition, PrimitiveType r)
     {
         ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-        funcDefNode.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+        funcDefNode.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
         funcDefNode.Name = ProtoCore.DSASM.Constants.kInlineCondition; 
         funcDefNode.ReturnType = new ProtoCore.Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r };
         ProtoCore.AST.AssociativeAST.ArgumentSignatureNode args = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
+            access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%condition"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)condition), UID = (int)condition }
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
+            access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%trueExp"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
         });
         args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
         {
             memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.Compiler.AccessSpecifier.kPublic,
+            access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
             NameNode = BuildAssocIdentifier(core, "%falseExp"),
             ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
         });
@@ -262,7 +262,7 @@ namespace ProtoCore.Utils
             return languageString;
         }
 
-        public static void LogWarning(this Interpreter dsi, ProtoCore.RuntimeData.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
+        public static void LogWarning(this Interpreter dsi, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
         {
             ProtoCore.Core core = dsi.runtime.Core;
             core.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
@@ -274,7 +274,7 @@ namespace ProtoCore.Utils
             core.BuildStatus.LogSemanticError(msg, fileName, line, col);
         }
 
-        public static void LogWarning(this Core core, ProtoCore.RuntimeData.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
+        public static void LogWarning(this Core core, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
         {
             core.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
         }
@@ -680,24 +680,6 @@ namespace ProtoCore.Utils
         public static bool Compare(ProtoCore.AST.Node node1, ProtoCore.AST.Node node2)
         {
             return node1.Equals(node2);
-        }
-
-        public static bool Compare(string s1, string s2, Core core)
-        {
-            System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(s1));
-            ProtoCore.DesignScriptParser.Scanner s = new ProtoCore.DesignScriptParser.Scanner(memstream);
-            ProtoCore.DesignScriptParser.Parser p = new ProtoCore.DesignScriptParser.Parser(s, core);
-            p.Parse();
-            ProtoCore.AST.Node s1Root = p.root;
-
-            memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(s2));
-            s = new ProtoCore.DesignScriptParser.Scanner(s2);
-            p = new ProtoCore.DesignScriptParser.Parser(s, core);
-            p.Parse();
-            ProtoCore.AST.Node s2Root = p.root;
-
-            bool areEqual = s1Root.Equals(s2Root);
-            return areEqual;
         }
 
         public static void CopyDebugData(ProtoCore.AST.Node nodeTo, ProtoCore.AST.Node nodeFrom)

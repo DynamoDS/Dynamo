@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -651,7 +651,7 @@ r = a;
             String code =
                 @"                s = ""abc"";                r = s[0];                ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 'a');
+            thisTest.Verify("r", "a");
         }
 
         [Test]
@@ -669,7 +669,7 @@ r = a;
             String code =
                 @"                s = ""abcdef"";                r = s[-1];                ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 'f');
+            thisTest.Verify("r", "f");
         }
 
         [Test]
@@ -688,7 +688,15 @@ r = a;
                 @"                s = """";                r = s[0];                ";
             thisTest.RunScriptSource(code);
             // Will get an index out of range runtime warning
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
+        }
+
+        [Test]
+        public void TestLocalizedStringInCode()
+        {
+            string code = @"x = ""中文字符"";";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", "中文字符");
         }
     }
 }

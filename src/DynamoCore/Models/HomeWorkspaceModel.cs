@@ -5,6 +5,7 @@ using System.Linq;
 
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
@@ -12,17 +13,6 @@ namespace Dynamo.Models
     {
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
-
-        public bool RunEnabled
-        {
-            get { return runEnabled; }
-            set
-            {
-                if (Equals(value, runEnabled)) return;
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
-            }
-        }
 
         public bool DynamicRunEnabled;
 
@@ -38,22 +28,26 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 0,
-                0, verboseLogging, isTestMode, fileName) { }
+                0, verboseLogging, isTestMode, new ElementResolver(), fileName) { }
 
         public HomeWorkspaceModel(
             EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
             double x, double y, bool verboseLogging,
-            bool isTestMode, string fileName="") : base("Home", e, n, x, y, factory, fileName)
+            bool isTestMode, ElementResolver elementResolver, string fileName = "")
+            : base("Home", e, n, x, y, factory, elementResolver, fileName)
         {
             RunEnabled = true;
+#if DEBUG
+            DynamicRunEnabled = true;
+#else
+            DynamicRunEnabled = false;
+#endif
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
             VerboseLogging = verboseLogging;
-
-            ResetEngine(engine);
-
             IsTestMode = isTestMode;
+            EngineController = engine;
         }
 
         public override void Dispose()
@@ -101,8 +95,6 @@ namespace Dynamo.Models
         }
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
-        private bool runEnabled;
-
         internal bool IsEvaluationPending
         {
             get
@@ -132,6 +124,11 @@ namespace Dynamo.Models
             RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
 
             EngineController.NodeDeleted(node);
+        }
+
+        protected override void ResetWorkspaceCore()
+        {
+            base.ResetWorkspaceCore();
         }
 
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
@@ -175,6 +172,7 @@ namespace Dynamo.Models
         {
             base.Clear();
             PreloadedTraceData = null;
+            RunEnabled = true;
         }
 
         #region evaluation

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
@@ -20,10 +21,12 @@ namespace Dynamo.Nodes
         {
             model.InPortData.Clear();
 
-            if (Definition.DisplayParameters == null) return;
+            if (Definition.DisplayParameters == null || Definition.Parameters == null)
+                return;
 
-            foreach (string arg in Definition.DisplayParameters)
-                model.InPortData.Add(new PortData(arg, "parameter"));
+            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.DisplayTypeName, p.DefaultValue));
+            foreach (var p in inputs)
+                model.InPortData.Add(new PortData(p.Item1, p.Item2, p.Item3));
         }
 
         protected override void InitializeOutputs(NodeModel model)
@@ -32,16 +35,19 @@ namespace Dynamo.Nodes
             if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
                 foreach (string key in Definition.ReturnKeys)
-                    model.OutPortData.Add(new PortData(key, "return value"));
+                    model.OutPortData.Add(new PortData(key, Properties.Resources.ToolTipReturnValue));
             }
             else
-                model.OutPortData.Add(new PortData("", "return value"));
+                model.OutPortData.Add(new PortData("", Properties.Resources.ToolTipReturnValue));
         }
 
         protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
         {
             if (!model.IsPartiallyApplied)
+            {
+                model.AppendReplicationGuides(inputAstNodes);
                 return AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
+            }
 
             var count = Definition.DisplayParameters.Count();
             return AstFactory.BuildFunctionObject(
@@ -126,14 +132,30 @@ namespace Dynamo.Nodes
         /// </summary>
         public bool IsInSyncWithNode(NodeModel model)
         {
-            return Definition == null || (Definition.DisplayParameters == null
-                || (Definition.DisplayParameters.Count() == model.InPortData.Count()
-                    && Definition.DisplayParameters.SequenceEqual(
-                        model.InPortData.Select(p => p.NickName))))
-                && (Definition.ReturnKeys == null
-                    || Definition.ReturnKeys.Count() == model.OutPortData.Count()
-                        && Definition.ReturnKeys.SequenceEqual(
-                            model.OutPortData.Select(p => p.NickName)));
+            if (Definition == null)
+                return true;
+
+            if (Definition.Parameters != null)
+            {
+                var defParamNames = Definition.Parameters.Select(p => p.Name);
+                var paramNames = model.InPortData.Select(p => p.NickName);
+                if (!defParamNames.SequenceEqual(paramNames))
+                    return false;
+
+                var defParamTypes = Definition.Parameters.Select(p => p.Type.ToShortString());
+                var paramTypes = model.InPortData.Select(p => p.ToolTipString);
+                if (!defParamTypes.SequenceEqual(paramTypes))
+                    return false;
+            }
+
+            if (Definition.ReturnKeys != null)
+            {
+                var returnKeys = model.OutPortData.Select(p => p.NickName);
+                if (!Definition.ReturnKeys.SequenceEqual(returnKeys))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

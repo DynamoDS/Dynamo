@@ -4,6 +4,8 @@ using System.ComponentModel;
 using Dynamo.Annotations;
 using Dynamo.Core;
 
+using DynamoServices;
+
 namespace Dynamo.Models
 {
     partial class DynamoModel
@@ -67,6 +69,8 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceAdded;
             if (handler != null) handler(obj);
+
+            WorkspaceEvents.OnWorkspaceAdded(obj.Guid, obj.Name);
         }
 
         public event Action<WorkspaceModel> WorkspaceRemoved;
@@ -74,6 +78,8 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceRemoved;
             if (handler != null) handler(obj);
+
+            WorkspaceEvents.OnWorkspaceRemoved(obj.Guid, obj.Name);
         }
 
         public event EventHandler DeletionStarted;

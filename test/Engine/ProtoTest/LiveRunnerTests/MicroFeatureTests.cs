@@ -1845,7 +1845,6 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failure")]
         public void TestFunctionOverloadRedefinitionOnUnmodifiedNode02()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4229
@@ -3406,7 +3405,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             astLiveRunner.UpdateGraph(syncData);
 
             // Graph UI node -> ASTs
-            var astNodes = astLiveRunner.Core.CachedSSANodes;
+            var astNodes = astLiveRunner.Core.DSExecutable.RuntimeData.CachedSSANodes;
             bool foundCallsite = false;
             Guid callsiteId = Guid.Empty;
 
@@ -3414,7 +3413,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             foreach (var ast in astNodes)
             {
                 ProtoCore.CallSite callsite;
-                if (astLiveRunner.Core.ASTToCallSiteMap.TryGetValue(ast.ID, out callsite))
+                if (astLiveRunner.Core.DSExecutable.RuntimeData.ASTToCallSiteMap.TryGetValue(ast.ID, out callsite))
                 {
                     callsiteId = callsite.CallSiteID;
                     foundCallsite = true;
@@ -3425,7 +3424,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // CallSite -> Graph UI node
             Assert.IsTrue(foundCallsite);
-            Assert.AreEqual(guid2, astLiveRunner.Core.CallSiteToNodeMap[callsiteId]);
+            Assert.AreEqual(guid2, astLiveRunner.Core.DSExecutable.RuntimeData.CallSiteToNodeMap[callsiteId]);
         }
 
         [Test]

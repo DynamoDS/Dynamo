@@ -790,11 +790,8 @@ b = c[w][x][y][z];";
             options.RootModulePathName = string.Empty;
 
             libraryServicesCore = new ProtoCore.Core(options);
-
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
-                new ProtoAssociative.Executive(libraryServicesCore));
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
-                new ProtoImperative.Executive(libraryServicesCore));
+            libraryServicesCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryServicesCore));
+            libraryServicesCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryServicesCore));
 
             CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
         }
@@ -1345,6 +1342,22 @@ a;b;c;d;e1;f;g;
             caretPos += 40;
             Assert.IsFalse(CodeCompletionParser.IsInsideCommentOrString(code, caretPos));
         }
-    }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionForPrimitiveTypes()
+        {
+            // Unit test for CodeCommpletionServices.SearchTypes() which should
+            // include primitive types as well.
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string code = "boo";
+            var completions = codeCompletionServices.SearchTypes(code);
+            Assert.AreEqual(1, completions.Count());
+
+            string[] expected = { "bool" };
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+            Assert.AreEqual(expected, actual);
+        }
+    }
 }

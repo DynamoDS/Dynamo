@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Xml;
 
 using Dynamo.UI;
@@ -12,8 +11,6 @@ namespace Dynamo.Models
     /// <summary>
     /// Interaction logic for dynPort.xaml
     /// </summary>
-    public delegate void PortConnectedHandler(object sender, EventArgs e);
-    public delegate void PortDisconnectedHandler(object sender, EventArgs e);
     public enum PortType { Input, Output };
 
     public class PortModel : ModelBase
@@ -23,12 +20,12 @@ namespace Dynamo.Models
         /// <summary>
         /// Event triggered when a port is connected.
         /// </summary>
-        public event Action<ConnectorModel> PortConnected;
+        public event Action<PortModel, ConnectorModel> PortConnected;
 
         /// <summary>
         /// Event triggered when a port is disconnected.
         /// </summary>
-        public event PortConnectedHandler PortDisconnected;
+        public event Action<PortModel> PortDisconnected;
 
         #endregion
 
@@ -41,7 +38,6 @@ namespace Dynamo.Models
         private bool usingDefaultValue;
         private bool defaultValueEnabled;
         private Thickness marginThickness;
-        
         #endregion
 
         #region public members
@@ -95,17 +91,7 @@ namespace Dynamo.Models
             }
         }
 
-        public string ToolTipContent
-        {
-            get
-            {
-                return Owner != null
-                    ? (PortType == PortType.Input
-                        ? Owner.InPortData[Index].ToolTipString
-                        : Owner.OutPortData[Index].ToolTipString)
-                    : "";
-            }
-        }
+        public string ToolTipContent { get; private set; }
 
         public string DefaultValueTip
         {
@@ -201,6 +187,7 @@ namespace Dynamo.Models
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
+            ToolTipContent = data.ToolTipString;
 
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }
@@ -236,7 +223,7 @@ namespace Dynamo.Models
                 return;
             
             //throw the event for a connection
-            OnPortDisconnected(EventArgs.Empty);
+            OnPortDisconnected();
 
             connectors.Remove(connector);
             
@@ -257,17 +244,17 @@ namespace Dynamo.Models
         protected virtual void OnPortConnected(ConnectorModel connector)
         {
             if (PortConnected != null)
-                PortConnected(connector);
+                PortConnected(this, connector);
         }
 
         /// <summary>
         /// Called when a port is disconnected.
         /// </summary>
         /// <param name="e"></param>
-        protected virtual void OnPortDisconnected(EventArgs e)
+        protected virtual void OnPortDisconnected()
         {
             if (PortDisconnected != null)
-                PortDisconnected(this, e);
+                PortDisconnected(this);
         }
 
         #region Serialization/Deserialization Methods

@@ -26,6 +26,7 @@ using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
 using Color = System.Windows.Media.Color;
+using DynamoWatch3D.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -47,6 +48,12 @@ namespace Dynamo.Nodes
 
             View.View.Camera.Position = model.CameraPosition;
             View.View.Camera.LookDirection = model.LookDirection;
+
+            // When user sizes a watch node, only view gets resized. The actual 
+            // NodeModel does not get updated. This is where the view updates the 
+            // model whenever its size is updated.
+            View.SizeChanged += (sender, args) => 
+                model.SetSize(args.NewSize.Width, args.NewSize.Height);
 
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
 
@@ -126,7 +133,8 @@ namespace Dynamo.Nodes
 
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("Shows a dynamic preview of geometry.")]
+    [NodeDescription("Watch3DDescription",typeof(DynamoWatch3D.Properties.Resources))]
+    [NodeSearchTags("Watch3DSearchTags", typeof(DynamoWatch3D.Properties.Resources))]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel, IWatchViewModel
@@ -193,8 +201,8 @@ namespace Dynamo.Nodes
 
         public Watch3D()
         {
-            InPortData.Add(new PortData("", "Incoming geometry objects."));
-            OutPortData.Add(new PortData("", "Watch contents, passed through"));
+            InPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
+            OutPortData.Add(new PortData("", Resources.Watch3DPortDataOutputToolTip));
 
             RegisterAllPorts();
 
@@ -248,9 +256,6 @@ namespace Dynamo.Nodes
 
             var resultAst = new[]
             {
-                //AstFactory.BuildAssignment(
-                //    GetAstIdentifierForOutputIndex(0),
-                //    DataBridge.GenerateBridgeDataAst(GUID.ToString(), inputAstNodes[0])),
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
             };
 
@@ -267,8 +272,10 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(viewElement);
             var viewHelper = new XmlElementHelper(viewElement);
 
-            viewHelper.SetAttribute("width", Width);
-            viewHelper.SetAttribute("height", Height);
+            WatchWidth = Width;
+            WatchHeight = Height;
+            viewHelper.SetAttribute("width", WatchWidth);
+            viewHelper.SetAttribute("height", WatchHeight);
 
             // the view stores the latest position
             OnRequestUpdateLatestCameraPosition();

@@ -8,10 +8,10 @@ namespace GraphLayout
 {
     public class Graph
     {
-        public int MaxLayerHeight = 20;
-        public double HorizontalNodeDistance = 100;
-        public double VerticalNodeDistance = 30;
-        public double Infinite = 1000000;
+        public const int MAX_LAYER_HEIGHT = 20;
+        public const double HORIZONTAL_NODE_DISTANCE = 100;
+        public const double VERTICAL_NODE_DISTANCE = 30;
+        public const double INFINITE = 1000000;
 
         public HashSet<Node> Nodes = new HashSet<Node>();
         public HashSet<Edge> Edges = new HashSet<Edge>();
@@ -247,7 +247,7 @@ namespace GraphLayout
                 }
 
                 // Add a new layer when needed
-                if ((Layers.Count > 0 && Layers[currentLayer].Count >= MaxLayerHeight) ||
+                if ((Layers.Count > 0 && Layers[currentLayer].Count >= MAX_LAYER_HEIGHT) ||
                     !n.RightEdges.All(e => e.EndNode.Layer < currentLayer) ||
                     (currentLayer > 0 && n.LeftEdges.Count == 0 && !isFinalLayer))
                 {
@@ -282,7 +282,7 @@ namespace GraphLayout
             foreach (List<Node> layer in Layers)
             {
                 foreach (Node node in layer)
-                    node.Y = Infinite;
+                    node.Y = INFINITE;
             }
             double y = 0;
             foreach (Node node in Layers.First())
@@ -303,7 +303,7 @@ namespace GraphLayout
                     if (layer.First().Layer > 0)
                     {
                         List<Edge> neighborEdges = n.RightEdges
-                            .Where(x => x.EndNode.Y < Infinite).OrderBy(x => x.EndY).ToList();
+                            .Where(x => x.EndNode.Y < INFINITE).OrderBy(x => x.EndY).ToList();
 
                         if (neighborEdges.Count > 1 && neighborEdges.Count % 2 == 0)
                         {
@@ -340,14 +340,14 @@ namespace GraphLayout
         public void AssignCoordinates(List<Node> layer)
         {
             // Assign vertical coordinates to the main nodes
-            List<Node> nodes = layer.Where(x => x.Y < Infinite).OrderBy(x => x.Y).ToList();
+            List<Node> nodes = layer.Where(x => x.Y < INFINITE).OrderBy(x => x.Y).ToList();
 
-            double minDistance = Infinite;
+            double minDistance = INFINITE;
             int minNodeIndex = -1;
             for (int i = 1; i < nodes.Count; i++)
             {
                 double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].Height;
-                if (distance < VerticalNodeDistance)
+                if (distance < VERTICAL_NODE_DISTANCE)
                 {
                     if (distance < minDistance)
                     {
@@ -362,12 +362,12 @@ namespace GraphLayout
                 nodes[minNodeIndex].Y += 1;
                 nodes[minNodeIndex - 1].Y -= 1;
 
-                minDistance = Infinite;
+                minDistance = INFINITE;
                 minNodeIndex = -1;
                 for (int i = 1; i < nodes.Count; i++)
                 {
                     double distance = nodes[i].Y - nodes[i - 1].Y - nodes[i - 1].Height;
-                    if (distance < VerticalNodeDistance)
+                    if (distance < VERTICAL_NODE_DISTANCE)
                     {
                         if (distance < minDistance)
                         {
@@ -380,14 +380,14 @@ namespace GraphLayout
 
             // Assign vertical coordinates to the rest of the nodes
             double lastY = (nodes.Count == 0) ? 0 :
-                nodes.Last().Y + nodes.Last().Height + VerticalNodeDistance;
+                nodes.Last().Y + nodes.Last().Height + VERTICAL_NODE_DISTANCE;
 
-            nodes = layer.Where(x => x.Y >= Infinite).ToList();
+            nodes = layer.Where(x => x.Y >= INFINITE).ToList();
 
             foreach (Node n in nodes)
             {
                 n.Y = lastY;
-                lastY += n.Height + VerticalNodeDistance;
+                lastY += n.Height + VERTICAL_NODE_DISTANCE;
             }
 
             foreach (Node n in layer)
@@ -422,20 +422,20 @@ namespace GraphLayout
                 foreach (Node x in layer)
                     x.X = previousLayerX;
 
-                previousLayerX = layer.First().X + layerWidth + HorizontalNodeDistance;
+                previousLayerX = layer.First().X + layerWidth + HORIZONTAL_NODE_DISTANCE;
 
-                double maxY = (layer.Min(x => x.Y) >= Infinite) ?
+                double maxY = (layer.Min(x => x.Y) >= INFINITE) ?
                     0 : layer.Min(x => x.Y);
 
                 foreach (Node n in layer.OrderBy(x => x.Y))
                 {
                     n.Y += offsetY;
 
-                    if (n.Y >= Infinite + offsetY)
+                    if (n.Y >= INFINITE + offsetY)
                         n.Y = maxY;
                     
                     if (n.Y + n.Height > maxY)
-                        maxY = n.Y + n.Height + VerticalNodeDistance;
+                        maxY = n.Y + n.Height + VERTICAL_NODE_DISTANCE;
                 }
             }
         }

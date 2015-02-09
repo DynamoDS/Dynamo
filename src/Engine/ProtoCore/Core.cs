@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-
+using System.Linq;
+using ProtoCore.AssociativeGraph;
 using ProtoCore.AssociativeEngine;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
@@ -16,9 +17,6 @@ using ProtoCore.Lang.Replication;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoFFI;
-
-using ProtoCore.AssociativeGraph;
-using System.Linq;
 
 using StackFrame = ProtoCore.DSASM.StackFrame;
 
@@ -932,23 +930,20 @@ namespace ProtoCore
 
     public class Core
     {
-        #region RUNTIME_PROPERTIES
 
         /// <summary>
-        ///  These are the list of symbols updated by the VM after an execution cycle
+        /// Properties in under COMPILER_GENERATED_TO_RUNTIME_DATA, are generated at compile time, and passed to RuntimeData/Exe
+        /// Only Core can initialize these
         /// </summary>
-        public HashSet<SymbolNode> UpdatedSymbols { get; private set; }
+#region COMPILER_GENERATED_TO_RUNTIME_DATA
+
+        public LangVerify Langverify { get; private set; }
+        public FunctionTable FunctionTable { get; private set; }
+
+        public RuntimeData RuntimeData { get; set; }
 
         #endregion
 
-        public const int FIRST_CORE_ID = 0;
-
-        public int ID { get; private set; }
-        //recurtion
-        public List<FunctionCounter> recursivePoint { get; set; }
-        public List<FunctionCounter> funcCounterTable { get; set; }
-        public bool calledInFunction;
-        
         // This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries in Graph UI
         public bool IsParsingPreloadedAssembly { get; set; }
         
@@ -965,6 +960,7 @@ namespace ProtoCore
         // The root AST node obtained from parsing an expression in a Graph node in GraphUI
         public List<Node> AstNodeList { get; set; }
 
+
         public enum ErrorType
         {
             OK,
@@ -977,8 +973,8 @@ namespace ProtoCore
             public ErrorType Type;
             public string FileName;
             public string Message;
-            public WarningID BuildId;
-            public RuntimeData.WarningID RuntimeId;
+            public BuildData.WarningID BuildId;
+            public Runtime.WarningID RuntimeId;
             public int Line;
             public int Col;
         }
@@ -999,13 +995,12 @@ namespace ProtoCore
             return ts;
         }
 
-        public FunctionTable FunctionTable { get; set; }
+        public Dictionary<Language, Compiler> Compilers { get; private set; }
+        public Executive ExecutionInstance { get; private set; }
 
-        public Script Script { get; set; }
-        public LangVerify Langverify = new LangVerify();
-        public Dictionary<Language, Executive> Executives { get; private set; }
-
+        // This will be moved to RuntimeCore
         public Executive CurrentExecutive { get; private set; }
+
         public int GlobOffset { get; set; }
         public int GlobHeapOffset { get; set; }
         public int BaseOffset { get; set; }
@@ -1113,27 +1108,6 @@ namespace ProtoCore
         public List<string> LoadedDLLs = new List<string>();
         public int deltaCompileStartPC { get; set; }
 
-        public IDictionary<string, CallSite> CallsiteCache { get; set; }
-
-        /// <summary>
-        /// This is a mapping of the current guid and number of callsites that appear within that guid.
-        /// Language only execution contains only 1 guid for the entire program.
-        /// Execution within a visual programming host means 1 guid per node, where 1 node contains a set of DS code.
-        /// Each of the callsite instances are mapped to a guid and an instance count.
-        /// </summary>
-        public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
-        public List<AssociativeNode> CachedSSANodes { get; set; }
-
-
-        /// <summary>
-        /// Map from a callsite's guid to a graph UI node. 
-        /// </summary>
-        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
-
-        /// <summary>
-        /// Map from a AST node's ID to a callsite.
-        /// </summary>
-        public Dictionary<int, CallSite> ASTToCallSiteMap { get; private set; }
 
         // A list of graphnodes that contain a function call
         public List<GraphNode> GraphNodeCallList { get; set; }
@@ -1201,7 +1175,7 @@ namespace ProtoCore
 
 
             // Update the function definition in global function tables
-            foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in FunctionTable.GlobalFuncTable)
+            foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in DSExecutable.RuntimeData.FunctionTable.GlobalFuncTable)
             {
                 foreach (KeyValuePair<string, FunctionGroup> functionGroup in functionGroupList.Value)
                 {
@@ -1351,19 +1325,18 @@ namespace ProtoCore
             ForLoopBlockIndex = Constants.kInvalidIndex;
         }
 
-
-        private void ResetAllRuntimeProperties()
-        {
-            UpdatedSymbols = new HashSet<SymbolNode>();
-        }
-
         private void ResetAll(Options options)
         {
+            this.RuntimeData = new ProtoCore.RuntimeData();
+
             Validity.AssertExpiry();
             Options = options;
-            Executives = new Dictionary<Language, Executive>();
-            FunctionTable = new FunctionTable();
+            ExecutionInstance = CurrentExecutive = new Executive(this);
+            Compilers = new Dictionary<Language, Compiler>();
             ClassIndex = Constants.kInvalidIndex;
+
+            FunctionTable = new FunctionTable(); 
+            Langverify = new LangVerify();
 
             Heap = new Heap();
             Rmem = new RuntimeMemory(Heap);
@@ -1375,12 +1348,6 @@ namespace ProtoCore
             watchSymbolList = new List<SymbolNode>();
             watchFramePointer = Constants.kInvalidIndex;
 
-            ID = FIRST_CORE_ID;
-
-            //recurtion
-            recursivePoint = new List<FunctionCounter>();
-            funcCounterTable = new List<FunctionCounter>();
-            calledInFunction = false;
 
             GlobOffset = 0;
             GlobHeapOffset = 0;
@@ -1464,12 +1431,6 @@ namespace ProtoCore
             FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
 
 
-            CallsiteCache = new Dictionary<string, CallSite>();
-            CachedSSANodes = new List<AssociativeNode>();
-            CallSiteToNodeMap = new Dictionary<Guid, Guid>();
-            ASTToCallSiteMap = new Dictionary<int, CallSite>();
-            CallsiteGuidMap = new Dictionary<Guid, int>();
-
             ForLoopBlockIndex = Constants.kInvalidIndex;
 
             GraphNodeCallList = new List<GraphNode>();
@@ -1477,214 +1438,6 @@ namespace ProtoCore
             newEntryPoint = Constants.kInvalidIndex;
             cancellationPending = false;
         }
-
-        #region Trace Data Serialization Methods/Members
-
-        private Dictionary<Guid, List<string>> uiNodeToSerializedDataMap = null;
-
-        /// <summary>
-        /// Call this method to obtain serialized trace data for a list of nodes.
-        /// </summary>
-        /// <param name="nodeGuids">A list of System.Guid of nodes whose 
-        /// serialized trace data is to be retrieved. This parameter cannot be 
-        /// null.</param>
-        /// <returns>Returns a dictionary that maps each node Guid to its 
-        /// corresponding list of serialized callsite trace data.</returns>
-        /// 
-        public IDictionary<Guid, List<string>>
-            GetTraceDataForNodes(IEnumerable<Guid> nodeGuids)
-        {
-            if (nodeGuids == null)
-                throw new ArgumentNullException("nodeGuids");
-
-            var nodeDataPairs = new Dictionary<Guid, List<string>>();
-
-            if (!nodeGuids.Any()) // Nothing to persist now.
-                return nodeDataPairs;
-
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (DSExecutable != null)
-                {
-                    var stream = DSExecutable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeDataPairs;
-            }
-
-            foreach (Guid nodeGuid in nodeGuids)
-            {
-                // Get a list of GraphNode objects that correspond to this node.
-                var graphNodeIds = graphNodes.
-                    Where(gn => gn.guid == nodeGuid).
-                    Select(gn => gn.CallsiteIdentifier);
-
-                if (!graphNodeIds.Any())
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in graphNodeIds
-                                         where cs.Key == gn
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                var serializedCallsites =
-                    matchingCallSites.Select(callSite => callSite.GetTraceDataToSave())
-                        .Where(traceDataToSave => !String.IsNullOrEmpty(traceDataToSave))
-                        .ToList();
-
-                // No point adding serialized callsite data if it's empty.
-                if (serializedCallsites.Count > 0)
-                    nodeDataPairs.Add(nodeGuid, serializedCallsites);
-            }
-
-            return nodeDataPairs;
-        }
-
-        public Dictionary<Guid, List<CallSite>>
-        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids)
-        {
-            if (nodeGuids == null)
-                throw new ArgumentNullException("nodeGuids");
-
-            var nodeMap = new Dictionary<Guid, List<CallSite>>();
-
-            if (!nodeGuids.Any()) // Nothing to persist now.
-                return nodeMap;
-
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (DSExecutable != null)
-                {
-                    var stream = DSExecutable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeMap;
-            }
-
-            foreach (Guid nodeGuid in nodeGuids)
-            {
-                // Get a list of GraphNode objects that correspond to this node.
-                var matchingGraphNodes = graphNodes.
-                    Where(gn => gn.guid == nodeGuid);
-
-                if (!matchingGraphNodes.Any())
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in matchingGraphNodes
-                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                nodeMap[nodeGuid] = matchingCallSites.ToList();
-            }
-
-            return nodeMap;
-        }
-
-        /// <summary>
-        /// Call this method to set the list of serialized trace data, 
-        /// possibly loaded from an external storage.
-        /// </summary>
-        /// <param name="nodeDataPairs">A Dictionary that matches a node Guid 
-        /// to its corresponding list of serialized callsite trace data.</param>
-        /// 
-        public void SetTraceDataForNodes(
-            IEnumerable<KeyValuePair<Guid, List<string>>> nodeDataPairs)
-        {
-            if (nodeDataPairs == null || (nodeDataPairs.Count() <= 0))
-                return; // There is no preloaded trace data.
-
-            if (uiNodeToSerializedDataMap == null)
-                uiNodeToSerializedDataMap = new Dictionary<Guid, List<string>>();
-
-            foreach (var nodeData in nodeDataPairs)
-                uiNodeToSerializedDataMap.Add(nodeData.Key, nodeData.Value);
-        }
-
-        /// <summary>
-        /// Call this method to remove the trace data list for a given UI node. 
-        /// This is required for the scenario where a code block node content is 
-        /// modified before its corresponding callsite objects are reconstructed
-        /// (i.e. before any execution takes place, and after a file-load). 
-        /// Modifications on UI nodes will always result in trace data being 
-        /// reconstructed again.
-        /// </summary>
-        /// <param name="nodeGuid">The System.Guid of the node for which trace 
-        /// data is to be destroyed.</param>
-        /// 
-        public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
-        {
-            // There is preloaded trace data from external file.
-            if (uiNodeToSerializedDataMap != null)
-            {
-                if (uiNodeToSerializedDataMap.Count > 0)
-                    uiNodeToSerializedDataMap.Remove(nodeGuid);
-            }
-        }
-
-        /// <summary>
-        /// Call this method to pop the top-most serialized callsite trace data.
-        /// Note that this call only pops off a signle callsite trace data 
-        /// belonging to a given UI node denoted by the given node guid.
-        /// </summary>
-        /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
-        /// callsite trace data is to be retrieved and removed.</param>
-        /// <returns>Returns the serialized callsite trace data in Base64 encoded
-        /// string for the given UI node.</returns>
-        /// 
-        private string GetAndRemoveTraceDataForNode(Guid nodeGuid)
-        {
-            if (uiNodeToSerializedDataMap == null)
-                return null; // There is no preloaded trace data.
-            if (uiNodeToSerializedDataMap.Count <= 0)
-                return null; // There is no preloaded trace data.
-
-            // Get the node element for the given node.
-            List<string> callsiteDataList = null;
-            if (!uiNodeToSerializedDataMap.TryGetValue(nodeGuid, out callsiteDataList))
-                return null;
-
-            // There exists a node element matching the UI node's GUID, get its 
-            // first child callsite element, remove it from the child node list,
-            // and return it to the caller.
-            // 
-            string callsiteTraceData = null;
-            if (callsiteDataList != null && (callsiteDataList.Count > 0))
-            {
-                callsiteTraceData = callsiteDataList[0];
-                callsiteDataList.RemoveAt(0);
-            }
-
-            // On removal of the last callsite trace data, the node entry
-            // itself will be removed from the uiNodeToSerializedDataMap.
-            if (callsiteDataList != null && (callsiteDataList.Count <= 0))
-                uiNodeToSerializedDataMap.Remove(nodeGuid);
-
-            return callsiteTraceData;
-        }
-
-        #endregion // Trace Data Serialization Methods/Members
 
         // The unique subscript for SSA temporaries
         // TODO Jun: Organize these variables in core into proper enums/classes/struct
@@ -1759,26 +1512,9 @@ namespace ProtoCore
             CLRModuleType.ClearTypes();
         }
 
-        public void InitializeContextGlobals(Dictionary<string, object> context)
-        {
-            int globalBlock = 0;
-            foreach (KeyValuePair<string, object> global in context)
-            {
-                int stackIndex = CodeBlockList[globalBlock].symbolTable.IndexOf(global.Key);
-
-                if (global.Value.GetType() != typeof(Double) && global.Value.GetType() != typeof(Int32))
-                    throw new NotImplementedException("Context that's aren't double are not yet supported @TODO: Jun,Sharad,Luke ASAP");
-
-                double dValue = Convert.ToDouble(global.Value);
-                StackValue svData = StackValue.BuildDouble(dValue);
-                Rmem.SetGlobalStackData(stackIndex, svData);
-            }
-        }
-
         public Core(Options options)
         {
             ResetAll(options);
-            ResetAllRuntimeProperties();
         }
 
         public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)
@@ -1972,63 +1708,6 @@ namespace ProtoCore
             return codeblock;
         }
 
-        public StackValue Bounce(int exeblock, int entry, Context context, StackFrame stackFrame, int locals = 0, EventSink sink = null)
-        {
-            if (stackFrame != null)
-            {
-                StackValue svThisPtr = stackFrame.ThisPtr;
-                int ci = stackFrame.ClassScope;
-                int fi = stackFrame.FunctionScope;
-                int returnAddr = stackFrame.ReturnPC;
-                int blockDecl = stackFrame.FunctionBlock;
-                int blockCaller = stackFrame.FunctionCallerBlock;
-                StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
-                StackFrameType frameType = stackFrame.StackFrameType;
-                Validity.Assert(frameType == StackFrameType.kTypeLanguage);
-
-                int depth = stackFrame.Depth;
-                int framePointer = stackFrame.FramePointer;
-                List<StackValue> registers = stackFrame.GetRegisters();
-
-                Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
-            }
-
-            Language id = DSExecutable.instrStreamList[exeblock].language;
-            CurrentExecutive = Executives[id];
-            StackValue sv = Executives[id].Execute(exeblock, entry, context, sink);
-            return sv;
-        }
-
-        public StackValue Bounce(int exeblock, int entry, Context context, List<Instruction> breakpoints, StackFrame stackFrame, int locals = 0, 
-            DSASM.Executive exec = null, EventSink sink = null, bool fepRun = false)
-        {
-            if (stackFrame != null)
-            {
-                StackValue svThisPtr = stackFrame.ThisPtr;
-                int ci = stackFrame.ClassScope;
-                int fi = stackFrame.FunctionScope;
-                int returnAddr = stackFrame.ReturnPC;
-                int blockDecl = stackFrame.FunctionBlock;
-                int blockCaller = stackFrame.FunctionCallerBlock;
-                StackFrameType callerFrameType = stackFrame.CallerStackFrameType;
-                StackFrameType frameType = stackFrame.StackFrameType;
-                Validity.Assert(frameType == StackFrameType.kTypeLanguage);
-                int depth = stackFrame.Depth;
-                int framePointer = stackFrame.FramePointer;
-                List<StackValue> registers = stackFrame.GetRegisters();
-
-                DebugProps.SetUpBounce(exec, blockCaller, returnAddr);
-
-                Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerFrameType, frameType, depth + 1, framePointer, registers, locals, 0);
-            }
-
-            Language id = DSExecutable.instrStreamList[exeblock].language;
-            CurrentExecutive = Executives[id];
-
-            StackValue sv = Executives[id].Execute(exeblock, entry, context, breakpoints, sink, fepRun);
-            return sv;
-        }
-
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)
         {
             if (CodeBlockType.kLanguage == codeBlock.blockType
@@ -2083,6 +1762,7 @@ namespace ProtoCore
             Validity.Assert(null == ExprInterpreterExe);
             ExprInterpreterExe = new Executable();
 
+            ExprInterpreterExe.RuntimeData = GenerateRuntimeData();
             // Copy all tables
             ExprInterpreterExe.classTable = DSExecutable.classTable;
             ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
@@ -2116,9 +1796,19 @@ namespace ProtoCore
             }
         }
 
+        private RuntimeData GenerateRuntimeData()
+        {
+            Validity.Assert(RuntimeData != null);
+            RuntimeData.FunctionTable = FunctionTable;
+
+            return RuntimeData;
+        }
+
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
+
+            DSExecutable.RuntimeData = GenerateRuntimeData();
 
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
@@ -2254,65 +1944,6 @@ namespace ProtoCore
 
         public GraphNode ExecutingGraphnode { get; set; }
 
-        /// <summary>
-        /// Retrieves an existing instance of a callsite associated with a UID
-        /// It creates a new callsite if non was found
-        /// </summary>
-        /// <param name="core"></param>
-        /// <param name="uid"></param>
-        /// <returns></returns>
-        public CallSite GetCallSite(GraphNode graphNode, 
-                                    int classScope, 
-                                    string methodName)
-        {
-            Validity.Assert(null != FunctionTable);
-            CallSite csInstance = null;
-
-            // TODO Jun: Currently generates a new callsite for imperative and 
-            // internally generated functions.
-            // Fix the issues that cause the cache to go out of sync when 
-            // attempting to cache internal functions. This may require a 
-            // secondary callsite cache for internal functions so they dont 
-            // clash with the graphNode UID key
-            var language = DSExecutable.instrStreamList[RunningBlock].language;
-            bool isImperative =  language == Language.kImperative;
-            bool isInternalFunction = CoreUtils.IsInternalFunction(methodName);
-
-            if (isInternalFunction || isImperative)
-            {
-                csInstance = new CallSite(classScope, 
-                                          methodName, 
-                                          FunctionTable, 
-                                          Options.ExecutionMode);
-            }
-            else if (!CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
-            {
-                // Attempt to retrieve a preloaded callsite data (optional).
-                var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
-
-                csInstance = new CallSite(classScope,
-                                          methodName,
-                                          FunctionTable,
-                                          Options.ExecutionMode,
-                                          traceData);
-
-                CallsiteCache[graphNode.CallsiteIdentifier] = csInstance;
-                CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
-                ASTToCallSiteMap[graphNode.AstID] = csInstance;
-
-           }
-
-            if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
-            {
-                csInstance.UpdateCallSite(classScope, methodName);
-                if (Options.IsDeltaExecution)
-                {
-                    RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
-                }
-            }
-                
-            return csInstance;
-        }
 
         public void ResetSSASubscript(Guid guid, int subscript)
         {

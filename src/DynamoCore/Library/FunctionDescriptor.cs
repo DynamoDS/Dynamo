@@ -8,6 +8,7 @@ using Dynamo.Library;
 
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using ProtoCore;
 
 namespace Dynamo.DSEngine
 {
@@ -48,12 +49,12 @@ namespace Dynamo.DSEngine
         private string summary;
 
         public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
-            : this(null, null, name, parameters, null, type)
+            : this(null, null, name, parameters, TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar), type)
         { }
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, IEnumerable<TypedParameter> parameters,
-            string returnType, FunctionType type, bool isVisibleInLibrary = true,
+            ProtoCore.Type returnType, FunctionType type, bool isVisibleInLibrary = true,
             IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
             : this(
                 assembly,
@@ -70,7 +71,7 @@ namespace Dynamo.DSEngine
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, string summary,
-            IEnumerable<TypedParameter> parameters, string returnType, FunctionType type,
+            IEnumerable<TypedParameter> parameters, ProtoCore.Type returnType, FunctionType type,
             bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
         {
             this.summary = summary;
@@ -90,7 +91,21 @@ namespace Dynamo.DSEngine
                     });
             }
 
-            ReturnType = returnType == null ? "var[]..[]" : returnType.Split('.').Last();
+            if (Parameters.Any())
+            {
+                InputParameters = Parameters.Select(
+                    par =>
+                    {
+                        return Tuple.Create<string, string>(par.Name, par.DisplayTypeName);
+                    }
+                    );
+            }
+            else
+            {
+                InputParameters = new List<Tuple<string, string>>();
+            }
+
+            ReturnType = returnType.ToShortString();
             Type = type;
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;
@@ -158,6 +173,14 @@ namespace Dynamo.DSEngine
             get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
         }
 
+        /// <summary>
+        ///     Inputs for Node
+        /// </summary>
+        public IEnumerable<Tuple<string, string>> InputParameters
+        {
+            get;
+            private set;
+        }
         /// <summary>
         ///     The category of this function.
         /// </summary>

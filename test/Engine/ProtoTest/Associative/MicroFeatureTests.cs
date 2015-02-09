@@ -684,7 +684,7 @@ x = d.foo(c);
         {
             string code = @"[Imperative]{    arr1 = {true, false};    arr2 = {1, 2, 3};    arr3 = {false, true};    t = arr2[1][0];}";
             thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
         }
 
         [Test]
@@ -2270,7 +2270,6 @@ ns = s;
 ns[0] = 1;
 r9 = s != ""ab"";
 ss = ""abc"";
-ss[0] = 'x';
 m = ss;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -2283,7 +2282,7 @@ m = ss;
             thisTest.Verify("r6", true);
             thisTest.Verify("r7", true);
             thisTest.Verify("r9", false);
-            thisTest.Verify("ss", "xbc");
+            thisTest.Verify("ss", "abc");
         }
 
         [Test]
