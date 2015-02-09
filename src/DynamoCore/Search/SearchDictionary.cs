@@ -297,7 +297,7 @@ namespace Dynamo.Search
 
             query = query.ToLower();
 
-            //DateTime timePoint = DateTime.Now;
+            DateTime timePoint = DateTime.Now;
 
             var subPatterns = SplitOnWhiteSpace(query);
             foreach (var pair in _tagDictionary.Where(x => MatchWithQueryStringAlt(x.Key, subPatterns)))
@@ -305,7 +305,7 @@ namespace Dynamo.Search
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }
 
-            //Debug.WriteLine(DateTime.Now - timePoint);
+            Debug.WriteLine(DateTime.Now - timePoint);
 
             return searchDict
                 .OrderByDescending(x => x.Value)
