@@ -207,10 +207,11 @@ namespace Dynamo.Search
             return entryDictionary.Keys.Any(x => Equals(x, a));
         }
 
-        #region Regex Searching
+        #region Manual Searching
+
         /// <summary>
         /// Check if key matches with query string. The query string could
-        /// contains multiple sub query strings which are seperated with 
+        /// contains multiple sub query strings which are separated with 
         /// space character. The function returns true if the key sequentially
         /// matches with each sub query strings. E.g., 
         /// "Autodesk.Geometry.Point.ByCoordinate" matches with query string
@@ -219,12 +220,7 @@ namespace Dynamo.Search
         /// <param name="key"></param>
         /// <param name="pattern"></param>
         /// <returns></returns>
-        private static bool MatchWithQuerystring(string key, Regex pattern)
-        {
-            return pattern.IsMatch(key);
-        }
-
-        private static bool MatchWithQueryStringAlt(string key, string[] subPatterns)
+        private static bool MatchWithQueryString(string key, string[] subPatterns)
         {
             int index = 0;
             int currPattern = 0;
@@ -241,26 +237,9 @@ namespace Dynamo.Search
             return currPattern == subPatterns.Length;
         }
 
-        private static string SanitizeQuery(string query)
-        {
-            return query.Trim()
-                .Replace("\\", "\\\\")
-                .Replace(".", "\\.")
-                .Replace("*", "\\*")
-                .Replace("(", "\\(")
-                .Replace(")", "\\)")
-                .Replace("[", "\\[");
-        }
-
         private static string[] SplitOnWhiteSpace(string s)
         {
             return s.Split(null);
-        }
-
-        private static Regex MakePattern(string[] subPatterns)
-        {
-            var pattern = "(.*)" + string.Join("(.*)", subPatterns) + "(.*)";
-            return new Regex(pattern);
         }
 
         private static bool ContainsSpecialCharacters(string element)
@@ -279,7 +258,7 @@ namespace Dynamo.Search
         {
             var searchDict = new Dictionary<V, double>();
 
-            var _tagDictionary = entryDictionary
+            var tagDictionary = entryDictionary
                 .SelectMany(
                     entryAndTags =>
                         entryAndTags.Value.Select(
@@ -297,15 +276,11 @@ namespace Dynamo.Search
 
             query = query.ToLower();
 
-            DateTime timePoint = DateTime.Now;
-
             var subPatterns = SplitOnWhiteSpace(query);
-            foreach (var pair in _tagDictionary.Where(x => MatchWithQueryStringAlt(x.Key, subPatterns)))
+            foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }
-
-            Debug.WriteLine(DateTime.Now - timePoint);
 
             return searchDict
                 .OrderByDescending(x => x.Value)
