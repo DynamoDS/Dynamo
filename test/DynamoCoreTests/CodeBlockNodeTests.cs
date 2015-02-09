@@ -763,20 +763,27 @@ b = c[w][x][y][z];";
 
         #region Codeblock Namespace Resolution Tests
 
-        //[Test]
-        //public void SerializeResolutionMap_SaveFile()
-        //{
-        //    string code = "a : int;";
+        [Test]
+        public void Resolve_NamespaceConflict_LoadLibrary()
+        {
+            string code = "Point.ByCoordinates(10,0,0);";
 
-        //    var cbn = new CodeBlockNodeTester(ViewModel.Model.LibraryServices);
-            
-        //    UpdateCodeBlockNodeContent(cbn, code);
+            var cbn = CreateCodeBlockNode();
 
-        //    XmlDocument xmlDoc = new XmlDocument();
-        //    var element = cbn.Serialize(xmlDoc, SaveContext.File);
+            UpdateCodeBlockNodeContent(cbn, code);
+            Assert.AreEqual(1, cbn.OutPortData.Count);
 
-        //    cbn.Deserialize(element, SaveContext.File);
-        //}
+            // FFITarget introduces conflicts with Point class in
+            // FFITarget.Dummy.Point, FFITarget.Dynamo.Point
+            const string libraryPath = "FFITarget.dll";
+
+            CompilerUtils.TryLoadAssemblyIntoCore(
+                ViewModel.Model.LibraryServices.LibraryManagementCore, libraryPath);
+
+            code = "Point.ByCoordinates(0,0,0);";
+            UpdateCodeBlockNodeContent(cbn, code);
+            Assert.AreEqual(0, ViewModel.Model.LibraryServices.LibraryManagementCore.BuildStatus.Warnings.Count());
+        }
 
         #endregion
 
@@ -799,16 +806,6 @@ b = c[w][x][y][z];";
         }
     }
 
-    //internal class CodeBlockNodeTester : CodeBlockNodeModel
-    //{
-    //    internal CodeBlockNodeTester(LibraryServices ls) : base(ls)
-    //    {
-    //        elementResolver = new ElementResolver();
-    //        elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
-    //        elementResolver.AddToResolutionMap("Rhino.Point", "Rhino.Geometry.Point", "Rhynamo.dll");
-            
-    //    }
-    //}
 
     public class CodeBlockCompletionTests 
     {

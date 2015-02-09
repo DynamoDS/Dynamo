@@ -55,6 +55,7 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
+            this.ElementResolver = new ElementResolver();
         }
 
         public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
@@ -67,6 +68,7 @@ namespace Dynamo.Nodes
             Y = yPos;
             this.libraryServices = libraryServices;
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
+            this.ElementResolver = new ElementResolver();
             code = userCode;
             GUID = guid;
             ShouldFocus = false;
@@ -360,7 +362,6 @@ namespace Dynamo.Nodes
 
             var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
 
-            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
             if (nodes.Count > 0)
             {
                 foreach (XmlNode child in nodes[0].ChildNodes)
@@ -370,12 +371,10 @@ namespace Dynamo.Nodes
                         XmlAttribute pName = child.Attributes["partialName"];
                         XmlAttribute rName = child.Attributes["resolvedName"];
                         XmlAttribute aName = child.Attributes["assemblyName"];
-                        var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
-                        resolutionMap.Add(pName.Value, kvp);
+                        ElementResolver.AddToResolutionMap(pName.Value, rName.Value, aName.Value);
                     }
                 }
             }
-            ElementResolver = new ElementResolver(resolutionMap);
         }
 
         internal void ProcessCodeDirect()
