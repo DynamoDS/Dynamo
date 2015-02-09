@@ -18,9 +18,10 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class LibrarySearchView : UserControl
     {
-        private ListBoxItem HighlightedItem;
-
         public UIElement SearchTextBox;
+        private ListBoxItem HighlightedItem;
+        private SearchViewModel viewModel;
+
 
         public LibrarySearchView()
         {
@@ -31,8 +32,19 @@ namespace Dynamo.UI.Views
 
         private void OnLibrarySearchViewLoaded(object sender, RoutedEventArgs e)
         {
-            (DataContext as SearchViewModel).SearchTextChanged +=
-                (s, eInner) => topResultPanel.BringIntoView();
+            viewModel = DataContext as SearchViewModel;
+            viewModel.SearchTextChanged += OnSearchTextBoxKeyDown;
+        }
+
+        private void OnSearchTextBoxKeyDown(object sender, EventArgs e)
+        {
+            topResultPanel.BringIntoView();
+
+            if (string.IsNullOrEmpty(viewModel.SearchText))
+            {
+                UpdateHighlightedItem(null);
+                libraryToolTipPopup.SetDataContext(null, true);
+            }
         }
 
         #region MethodButton
@@ -108,10 +120,8 @@ namespace Dynamo.UI.Views
 
         private void OnNoMatchFoundButtonClick(object sender, RoutedEventArgs e)
         {
-            var searchViewModel = this.DataContext as SearchViewModel;
-
             // Clear SearchText in ViewModel, as result search textbox clears as well.
-            searchViewModel.SearchText = "";
+            viewModel.SearchText = "";
         }
 
         private void OnMemberGroupNameMouseDown(object sender, MouseButtonEventArgs e)
@@ -616,8 +626,7 @@ namespace Dynamo.UI.Views
         private void OnTopResultTargetUpdated(object sender, DataTransferEventArgs e)
         {
             // If we turn to regular view, we have to hide tooltip immediately.
-            if ((DataContext as SearchViewModel).CurrentMode !=
-                SearchViewModel.ViewMode.LibrarySearchView)
+            if (viewModel.CurrentMode != SearchViewModel.ViewMode.LibrarySearchView)
             {
                 libraryToolTipPopup.SetDataContext(null, true);
                 UpdateHighlightedItem(null);
