@@ -40,6 +40,11 @@ namespace Dynamo.Search
             }
         }
 
+        /// <summary>
+        /// Category to which all memebers are belong to.
+        /// </summary>
+        public NodeCategoryViewModel Category { get; private set; }
+
         public IEnumerable<NodeSearchElementViewModel> Members
         {
             get
@@ -49,45 +54,42 @@ namespace Dynamo.Search
 
                 if (members.Count == 0) return members;
 
-                //var firstMember = members[0] as NodeSearchElement;
+                var firstMember = members[0] as NodeSearchElementViewModel;
 
-                //// Parent items can contain 3 type of groups all together: create, action and query.
-                //// We have to show only those elements, that are in the same group.
-                //var siblings = firstMember.Parent.Items.OfType<BrowserInternalElement>().
-                //        Where(parentNode => (parentNode as NodeSearchElement).Group == firstMember.Group);
-
-                return members;
+                // Parent items can contain 3 type of groups all together: create, action and query.
+                // We have to show only those elements, that are in the same group.
+                var siblings = Category.Entries.Where(e => e.Model.Group == firstMember.Model.Group);
+                return siblings;
             }
         }
 
         private bool showAllMembers = false;
         private string delimiter = string.Format(" {0} ", Configurations.ShortenedCategoryDelimiter);
 
-        internal SearchMemberGroup(string fullyQualifiedName)
+        internal SearchMemberGroup(string fullyQualifiedName, NodeCategoryViewModel category = null)
         {
             FullyQualifiedName = fullyQualifiedName;
+            Category = category;
             members = new List<NodeSearchElementViewModel>();
         }
-
-        //some UI properties which control style of one MemberGroup
 
         internal void AddMember(NodeSearchElementViewModel node)
         {
             members.Add(node);
         }
 
-        public bool ContainsMember(NodeSearchElementViewModel member)
+        internal bool ContainsMember(NodeSearchElementViewModel member)
         {
             return Members.Any(m => m.Model.FullName == member.Model.FullName);
         }
 
-        public void ExpandAllMembers()
+        internal void ExpandAllMembers()
         {
             showAllMembers = true;
             RaisePropertyChanged("Members");
         }
 
-        public void Sort()
+        internal void Sort()
         {
             members = members.OrderBy(x => x.Name).ToList();
         }

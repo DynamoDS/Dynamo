@@ -3117,7 +3117,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("RegressionTests"), Category("Failure")]
+        [Category("RegressionTests")]
         public void RunAutomatically_On_5068()
         {
             // If Run Automatically On, third file onwards it executes to null

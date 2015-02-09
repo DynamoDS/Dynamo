@@ -64,7 +64,7 @@ namespace Dynamo.Controls
             DataContext = dynamoViewModel;
             Title = dynamoViewModel.BrandingResourceProvider.GetString(ResourceNames.MainWindow.Title);
 
-            tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
+            tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -456,7 +456,7 @@ namespace Dynamo.Controls
 
                 if (_searchPkgsView.IsLoaded && IsLoaded) _searchPkgsView.Owner = this;
             }
-            
+
             _searchPkgsView.Focus();
             _pkgSearchVM.RefreshAndSearchAsync();
         }
@@ -489,7 +489,7 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
-            var dialogText = ""; 
+            var dialogText = "";
             if (e.Workspace is CustomNodeWorkspaceModel)
             {
                 dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
@@ -507,8 +507,8 @@ namespace Dynamo.Controls
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = System.Windows.MessageBox.Show(dialogText, 
-                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle, 
+            var result = System.Windows.MessageBox.Show(dialogText,
+                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
                 buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
@@ -531,7 +531,7 @@ namespace Dynamo.Controls
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
         }
-        
+
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             var prompt = new CrashPrompt(args);
@@ -626,7 +626,7 @@ namespace Dynamo.Controls
 
             do
             {
-                var categorized = 
+                var categorized =
                     SearchCategoryUtil.CategorizeSearchEntries(
                         dynamoViewModel.Model.SearchModel.SearchEntries,
                         entry => entry.Categories);
@@ -664,8 +664,8 @@ namespace Dynamo.Controls
 
                 if (String.IsNullOrEmpty(dialog.Text))
                 {
-                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName, 
-                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName,
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
@@ -678,8 +678,8 @@ namespace Dynamo.Controls
 
                 else if (dialog.Category.Equals(""))
                 {
-                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory, 
-                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle, 
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory,
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
@@ -869,9 +869,9 @@ namespace Dynamo.Controls
                     SamplesMenu.Items.Add(showInFolder);
                 }
 
-                if (sampleFiles.Any()&&startPage != null)
+                if (sampleFiles.Any() && startPage != null)
                 {
-                    var firstFilePath=Path.GetDirectoryName(sampleFiles.ToArray()[0]);
+                    var firstFilePath = Path.GetDirectoryName(sampleFiles.ToArray()[0]);
                     var rootPath = Path.GetDirectoryName(firstFilePath);
                     var root = new DirectoryInfo(rootPath);
                     var rootProperty = new SampleFileEntry("Samples", "Path");
@@ -918,13 +918,13 @@ namespace Dynamo.Controls
         {
             Point popupLocation = new Point(targetSize.Width - popupSize.Width, targetSize.Height);
 
-            CustomPopupPlacement placement1 = 
+            CustomPopupPlacement placement1 =
                 new CustomPopupPlacement(popupLocation, PopupPrimaryAxis.Vertical);
 
             CustomPopupPlacement placement2 =
                 new CustomPopupPlacement(popupLocation, PopupPrimaryAxis.Horizontal);
 
-            CustomPopupPlacement[] ttplaces = 
+            CustomPopupPlacement[] ttplaces =
                 new CustomPopupPlacement[] { placement1, placement2 };
             return ttplaces;
         }
@@ -971,7 +971,7 @@ namespace Dynamo.Controls
         }
 
         private void SlideWindowToIncludeTab(int tabSelected)
-        {            
+        {
             int newSlidingWindowSize = GetSlidingWindowSize();
 
             if (newSlidingWindowSize == 0)
@@ -1083,7 +1083,7 @@ namespace Dynamo.Controls
 
         }
 
-		private void Button_MouseEnter(object sender, MouseEventArgs e)
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             TextBlock tb = (TextBlock)(g.Children[1]);
@@ -1098,8 +1098,10 @@ namespace Dynamo.Controls
             collapseIcon.Source = hover;
         }
 
-        private void Button_Click(object sender, EventArgs e)
+        private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
+            LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
+
             UserControl view = (UserControl)sidebarGrid.Children[0];
             if (view.Visibility == Visibility.Collapsed)
             {
@@ -1136,6 +1138,7 @@ namespace Dynamo.Controls
         private void LibraryClicked(object sender, EventArgs e)
         {
             restoreWidth = sidebarGrid.ActualWidth;
+            LibraryViewColumn.MinWidth = 0;
 
             mainGrid.ColumnDefinitions[0].Width = new GridLength(0.0);
             verticalSplitter.Visibility = Visibility.Collapsed;
@@ -1178,12 +1181,12 @@ namespace Dynamo.Controls
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             dynamoViewModel.IsMouseDown = true;
-		}
+        }
 
         private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             dynamoViewModel.IsMouseDown = false;
-		}
+        }
 
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
@@ -1194,7 +1197,7 @@ namespace Dynamo.Controls
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
         }
-       
+
         private void RunButton_OnClick(object sender, RoutedEventArgs e)
         {
             dynamoViewModel.ReturnFocusToSearch();
@@ -1217,7 +1220,7 @@ namespace Dynamo.Controls
                 {
                     dynamoViewModel.OpenCommand.Execute(files[0]);
                 }
-                
+
             }
 
             e.Handled = true;

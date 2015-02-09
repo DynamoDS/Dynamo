@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using Dynamo.Models;
 
 namespace Dynamo.ViewModels
@@ -109,7 +109,7 @@ namespace Dynamo.ViewModels
 
         public string IconFullPath { get; private set; }
 
-        public BitmapSource Icon { get; private set; }
+        public ImageSource Icon { get; private set; }
 
         public IconRequestEventArgs(string assembly, string fullPath)
         {
@@ -117,7 +117,7 @@ namespace Dynamo.ViewModels
             IconFullPath = fullPath;
         }
 
-        public void SetIcon(BitmapSource icon)
+        public void SetIcon(ImageSource icon)
         {
             Icon = icon;
         }

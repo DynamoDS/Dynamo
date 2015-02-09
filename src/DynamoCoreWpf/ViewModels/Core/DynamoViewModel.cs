@@ -287,6 +287,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public int LibraryWidth
+        {
+            get
+            {
+                return model.PreferenceSettings.LibraryWidth;
+            }
+            set
+            {
+                model.PreferenceSettings.LibraryWidth = value;
+                RaisePropertyChanged("LibraryWidth");
+            }
+        }
+
         public bool IsShowingConnectors
         {
             get
@@ -903,6 +916,7 @@ namespace Dynamo.ViewModels
                 Model.RemoveWorkspace(HomeSpace);
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
+                RaisePropertyChanged("DynamicRunEnabled");
             }
             else
                 workspaces.Add(newVm);
@@ -1159,12 +1173,12 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowPackageManagerSearch(object parameters)
+        internal void ShowPackageManagerSearch(object parameters)
         {
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
-        private bool CanShowPackageManagerSearch(object parameters)
+        internal bool CanShowPackageManagerSearch(object parameters)
         {
             return true;
         }

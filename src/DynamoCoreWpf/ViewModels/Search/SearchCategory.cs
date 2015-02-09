@@ -8,6 +8,7 @@ namespace Dynamo.Search
 {
     public class SearchCategory
     {
+
         // TODO: classes functionality.
         //private readonly ObservableCollection<NodeCategoryViewModel> classes;
         private readonly List<SearchMemberGroup> memberGroups;
@@ -45,7 +46,7 @@ namespace Dynamo.Search
             var group = memberGroups.FirstOrDefault(mg => mg.FullyQualifiedName == shortenedCategory);
             if (group == null)
             {
-                group = new SearchMemberGroup(shortenedCategory);
+                group = new SearchMemberGroup(shortenedCategory, memberNode.Category);
                 memberGroups.Add(group);
             }
 
@@ -70,7 +71,7 @@ namespace Dynamo.Search
 
         public bool ContainsClassOrMember(NodeSearchElement member)
         {
-            var memberViewModel = new NodeSearchElementViewModel(member);
+            var memberViewModel = new NodeSearchElementViewModel(member, null);
 
             // TODO(Vladimir): classes functionality.
             //if (Classes.Any(cl => cl.Equals(member))) return true;

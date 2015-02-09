@@ -56,7 +56,7 @@ namespace Dynamo.ViewModels
 
         public DelegateCommand ShowPackageManagerSearchCommand
         {
-            get { return dynamoViewModel.ShowPackageManagerCommand; }
+            get { return dynamoViewModel.ShowPackageManagerSearchCommand; }
         }
     }
 }
