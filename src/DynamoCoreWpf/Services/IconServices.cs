@@ -21,7 +21,9 @@ namespace Dynamo.Wpf.Services
             if (libraryCustomization == null)
                 return null;
 
-            var assembly = libraryCustomization.Assembly;
+            var assembly = libraryCustomization.ResAssembly;
+            if (assembly == null)
+                return null;
 
             if (!warehouses.ContainsKey(assembly))
                 warehouses[assembly] = new IconWarehouse(assembly);
