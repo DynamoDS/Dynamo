@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Xml;
 using DSCoreNodesUI;
 using Dynamo.Interfaces;
+using Dynamo.Models.NodeLoaders;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
@@ -107,6 +109,35 @@ namespace Dynamo.Models
         public bool AddTypeFactoryAndLoader<T>() where T : NodeModel
         {
             return AddTypeFactoryAndLoader(typeof(T));
+        }
+
+        /// A proxy custom node is a custom node without its definition loaded 
+        /// in Dynamo. The creation of a proxy custom node relies on information 
+        /// provided by the caller since the definition is not readily available 
+        /// for reading. The actual definition may become available at a later 
+        /// time by means of user uploading the definition.
+        /// </summary>
+        /// <param name="id">Identifier of the custom node instance.</param>
+        /// <param name="name">The name represents the GUID of the custom node 
+        /// definition that is used for creating the custom node instance.</param>
+        /// <param name="nickName">The display name of the custom node.</param>
+        /// <param name="inputs">Number of input ports.</param>
+        /// <param name="outputs">Number of output ports.</param>
+        /// <returns>Returns the custom node instance if creation was successful, 
+        /// or null otherwise.</returns>
+        internal NodeModel CreateProxyNodeInstance(Guid id, string name, string nickName, int inputs, int outputs)
+        {
+            Guid guid;
+            INodeLoader<NodeModel> data;
+            if (!Guid.TryParse(name, out guid) || !GetNodeSourceFromType(typeof(Function), out data))
+            {
+                return null;
+            }
+
+
+            // create an instance of Function node 
+            var result = (data as CustomNodeLoader).CreateProxyNode(guid, nickName, id, inputs, outputs);
+            return result;
         }
 
         /// <summary>
