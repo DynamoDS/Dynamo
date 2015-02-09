@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamoConversions">
+      <HintPath>..\..\..\bin\AnyCPU\Debug\DynamoConversions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -61,7 +64,6 @@
     <Compile Include="Controls\DynamoSlider.xaml.cs">
       <DependentUpon>DynamoSlider.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\DynamoConversionConverter.cs" />
     <Compile Include="NodeViewCustomizations\ConverterNodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomizations\DoubleInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

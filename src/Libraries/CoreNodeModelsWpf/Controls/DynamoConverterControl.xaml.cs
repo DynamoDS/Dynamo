@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Dynamo.Controls;
+using DSCoreNodesUI;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.Wpf.Controls
 {
@@ -20,9 +11,20 @@ namespace Dynamo.Wpf.Controls
     /// </summary>
     public partial class DynamoConverterControl : UserControl
     {
-        public DynamoConverterControl(Convert Model, NodeView nodeView)
+        public DynamoConverterControl(DynamoConvert Model, NodeView nodeView)
         {
             InitializeComponent();
+        }
+
+        private void OnDirectionButtonClick(object sender, RoutedEventArgs e)
+        {
+            var dataContext = this.DataContext as DynamoConvert;
+            if (dataContext != null)
+            {
+                var temp = dataContext.SelectedFromConversion;
+                dataContext.SelectedFromConversion = dataContext.SelectedToConversion;
+                dataContext.SelectedToConversion = temp;
+            }
         }
     }
 }

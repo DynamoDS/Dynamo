@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Autodesk.DesignScript.Runtime;
 
-namespace DynamoConversionsUI
+namespace DynamoConversions
 {
     public enum ConversionDirection { To, From }
     public enum ConversionUnit { Feet, Inches, Millimeters, Centimeters, Meters, Degrees, Radians, Kilograms, Pounds }
@@ -24,12 +24,8 @@ namespace DynamoConversionsUI
 
         public static double ConvertToSI(double value, double conversion, double conversionto)
         {
-            return value * conversion * conversionto;
-        }
-
-        public static double ConverFromSI(double value, double conversion)
-        {
-            return value * conversion;
+            var convertValue =  value / conversionto;
+            return convertValue * conversion;
         }
     }
 }

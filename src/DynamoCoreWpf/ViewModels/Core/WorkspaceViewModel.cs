@@ -178,6 +178,7 @@ namespace Dynamo.ViewModels
         public bool HasUnsavedChanges
         {
             get { return Model.HasUnsavedChanges; }
+            set { Model.HasUnsavedChanges = true; }
         }
 
         public ObservableCollection<Watch3DFullscreenViewModel> Watch3DViewModels
