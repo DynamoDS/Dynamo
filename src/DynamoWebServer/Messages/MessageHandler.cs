@@ -180,12 +180,9 @@ namespace DynamoWebServer.Messages
         {
             Guid guidValue;
             if (!Guid.TryParse(guidStr, out guidValue) || guidValue.Equals(Guid.Empty))
-                return dynamoModel.HomeSpace;
+                return dynamoModel.Workspaces.First(w => w is HomeWorkspaceModel);
 
-            var defs = dynamoModel.CustomNodeManager.GetLoadedDefinitions();
-            var definition = defs.FirstOrDefault(d => d.FunctionId == guidValue);
-
-            return definition != null ? definition.WorkspaceModel : null;
+            return dynamoModel.CustomNodeManager.GetWorkspaceById(guidValue);
         }
 
         private string GetCurrentWorkspaceGuid()
@@ -343,26 +340,11 @@ namespace DynamoWebServer.Messages
 
         private void SelectTabByGuid(Guid guid)
         {
-            // If guid is Empty - switch to HomeWorkspace
-            if (guid.Equals(Guid.Empty) && dynamoModel.CurrentWorkspace != dynamoModel.HomeSpace)
+            var workspaceToSwitch = GetWorkspaceByGuid(guid.ToString());
+            if (workspaceToSwitch != null && dynamoModel.CurrentWorkspace != workspaceToSwitch)
             {
-                dynamoModel.Home(null);
-            }
-
-            if (!guid.Equals(Guid.Empty))
-            {
-                if (dynamoModel.CustomNodeManager.LoadedCustomNodes.Contains(guid))
-                {
-                    var node = (CustomNodeDefinition)dynamoModel.CustomNodeManager.LoadedCustomNodes[guid];
-                    var name = node.WorkspaceModel.Name;
-                    var workspace = dynamoModel.Workspaces.FirstOrDefault(elem => elem.Name == name);
-                    if (workspace != null)
-                    {
-                        var index = dynamoModel.Workspaces.IndexOf(workspace);
-
-                        dynamoModel.ExecuteCommand(new DynamoModel.SwitchTabCommand(index));
-                    }
-                }
+                var index = dynamoModel.Workspaces.IndexOf(workspaceToSwitch);
+                dynamoModel.ExecuteCommand(new DynamoModel.SwitchTabCommand(index));
             }
         }
 
@@ -559,33 +541,20 @@ namespace DynamoWebServer.Messages
         /// custom nodes won't be removed</param>
         private void ClearWorkspace(bool clearOnlyHome)
         {
-            dynamoModel.Home(null);
+            // switch to home workspace
+            SelectTabByGuid(Guid.Empty);
 
             if (!clearOnlyHome)
             {
-                var customNodeManager = dynamoModel.CustomNodeManager;
-                var searchModel = dynamoModel.SearchModel;
-                var nodeInfos = customNodeManager.NodeInfos;
-
-                foreach (var guid in nodeInfos.Keys)
+                var allCustomNodeGuids = dynamoModel.CustomNodeManager.NodeInfos.Keys.ToList();
+                foreach (var guid in allCustomNodeGuids)
                 {
-                    searchModel.RemoveNodeAndEmptyParentCategory(guid);
-
-                    var name = nodeInfos[guid].Name;
-                    dynamoModel.Workspaces.RemoveAll(elem =>
-                    {
-                        // To avoid deleting home workspace 
-                        // because of coincidence in the names
-                        return elem != dynamoModel.HomeSpace && elem.Name == name;
-                    });
-
-                    customNodeManager.LoadedCustomNodes.Remove(guid);
+                    dynamoModel.CustomNodeManager.Remove(guid);
                 }
-
-                nodeInfos.Clear();
             }
 
-            dynamoModel.Clear(null);
+            dynamoModel.ClearCurrentWorkspace();
+            (dynamoModel.CurrentWorkspace as HomeWorkspaceModel).DynamicRunEnabled = false;
         }
 
         private Type GetTypeFromString(string type)
