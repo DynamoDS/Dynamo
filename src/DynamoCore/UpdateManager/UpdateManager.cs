@@ -46,13 +46,12 @@ namespace Dynamo.UpdateManager
         void QuitAndInstallUpdate();
         void HostApplicationBeginQuit();
         void UpdateDataAvailable(IAsynchronousRequest request);
-        bool IsVersionCheckInProgress();
         bool CheckNewerDailyBuilds { get; set; }
         bool ForceUpdate { get; set; }
-        string UpdateFileLocation { get; }
         IUpdateManagerConfiguration Configuration { get; }
         event LogEventHandler Log;
         void OnLog(LogEventArgs args);
+        void RegisterExternalApplicationProcessId(int id);
     }
 
     public interface IUpdateManagerConfiguration
@@ -334,14 +333,16 @@ namespace Dynamo.UpdateManager
         private bool versionCheckInProgress;
         private BinaryVersion productVersion;
         private IAppVersionInfo updateInfo;
-        private const string InstallNameBase = "DynamoInstall";
-        private const string OldDailyInstallNameBase = "DynamoDailyInstall";
+        private const string INSTALL_NAME_BASE = "DynamoInstall";
+        private const string OLD_DAILY_INSTALL_NAME_BASE = "DynamoDailyInstall";
+        private const string INSTALLUPDATE_EXE = "InstallUpdate.exe";
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
         private IAppVersionInfo downloadedUpdateInfo;
         private static IUpdateManager instance;
         private static readonly object lockingObject = new object();
         private UpdateManagerConfiguration configuration = null;
+        private int hostApplicationProcessId = -1;
 
         #endregion
 
@@ -580,14 +581,14 @@ namespace Dynamo.UpdateManager
             var latestBuildTime = new DateTime();
 
             bool useStable = false;
-            if (IsStableBuild(InstallNameBase, latestBuildFilePath))
+            if (IsStableBuild(INSTALL_NAME_BASE, latestBuildFilePath))
             {
                 useStable = true;
-                latestBuildVersion = GetBinaryVersionFromFilePath(InstallNameBase, latestBuildFilePath);
+                latestBuildVersion = GetBinaryVersionFromFilePath(INSTALL_NAME_BASE, latestBuildFilePath);
             }
-            else if (IsDailyBuild(InstallNameBase, latestBuildFilePath) || IsDailyBuild(OldDailyInstallNameBase, latestBuildFilePath))
+            else if (IsDailyBuild(INSTALL_NAME_BASE, latestBuildFilePath) || IsDailyBuild(OLD_DAILY_INSTALL_NAME_BASE, latestBuildFilePath))
             {
-                latestBuildTime = GetBuildTimeFromFilePath(InstallNameBase, latestBuildFilePath);
+                latestBuildTime = GetBuildTimeFromFilePath(INSTALL_NAME_BASE, latestBuildFilePath);
                 latestBuildVersion = GetCurrentBinaryVersion();
             }
             else
@@ -654,20 +655,47 @@ namespace Dynamo.UpdateManager
 
         public void HostApplicationBeginQuit()
         {
-            if (!string.IsNullOrEmpty(UpdateFileLocation))
+            // Double check that the updater path is not null and that there
+            // exists a file at that location on disk.
+            // Although this updater is stored in a temp directory,
+            // and the user wouldn't have come across it, there's the
+            // outside chance that it was deleted. Update cannot
+            // continue without this file.
+
+            if (string.IsNullOrEmpty(UpdateFileLocation) || !File.Exists(UpdateFileLocation))
+                return;
+
+            var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var updater = Path.Combine(currDir, INSTALLUPDATE_EXE);
+            
+            // Double check that that the updater program exists.
+            // This program lives in the users's base Dynamo directory. If 
+            // it doesn't exist, we can't run the update.
+
+            if (!File.Exists(updater)) 
+                return;
+
+            var p = new Process
             {
-                var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var updater = Path.Combine(currDir, "InstallUpdate.exe");
-                if (File.Exists(updater))
+                StartInfo =
                 {
-                    Process.Start(updater, UpdateFileLocation);
+                    FileName = updater,
+                    Arguments = UpdateFileLocation,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
                 }
+            };
+
+            if (hostApplicationProcessId != -1)
+            {
+                p.StartInfo.Arguments += " " + hostApplicationProcessId;
             }
+            p.Start();
         }
 
-        public bool IsVersionCheckInProgress()
+        public void RegisterExternalApplicationProcessId(int id)
         {
-            return versionCheckInProgress;
+            hostApplicationProcessId = id;
         }
 
         #endregion
@@ -749,7 +777,7 @@ namespace Dynamo.UpdateManager
 
             var builds = bucketresult.Descendants(ns + "LastModified").
                 OrderByDescending(x => DateTime.Parse(x.Value)).
-                Where(x => x.Parent.Value.Contains(InstallNameBase) || x.Parent.Value.Contains(OldDailyInstallNameBase)).
+                Where(x => x.Parent.Value.Contains(INSTALL_NAME_BASE) || x.Parent.Value.Contains(OLD_DAILY_INSTALL_NAME_BASE)).
                 Select(x => x.Parent);
 
 
@@ -763,8 +791,8 @@ namespace Dynamo.UpdateManager
 
             string latestBuild = string.Empty;
             latestBuild = checkDailyBuilds ?
-                fileNames.FirstOrDefault(x => IsDailyBuild(InstallNameBase, x) || IsDailyBuild(OldDailyInstallNameBase, x)) :
-                fileNames.FirstOrDefault(x => IsStableBuild(InstallNameBase, x));
+                fileNames.FirstOrDefault(x => IsDailyBuild(INSTALL_NAME_BASE, x) || IsDailyBuild(OLD_DAILY_INSTALL_NAME_BASE, x)) :
+                fileNames.FirstOrDefault(x => IsStableBuild(INSTALL_NAME_BASE, x));
 
             return latestBuild;
         }

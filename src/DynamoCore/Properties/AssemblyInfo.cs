@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
 
+[assembly: InternalsVisibleTo("DynamoSandbox")]
 [assembly: InternalsVisibleTo("DynamoCoreWpf")]
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreUITests")]

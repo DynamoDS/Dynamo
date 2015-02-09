@@ -54,11 +54,5 @@ namespace Dynamo.Utilities
                 ? version
                 : new Version(version.Major, version.Minor, version.Build, 0);
         }
-
-        public static Assembly LoadLibG()
-        {
-            var libG = Assembly.LoadFrom(DynamoPathManager.Instance.LibG);
-            return libG;
-        }
     }
 }

@@ -27,7 +27,6 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
-using ResourceName = Dynamo.Wpf.Interfaces.ResourceName;
 
 namespace Dynamo.ViewModels
 {
@@ -247,7 +246,7 @@ namespace Dynamo.ViewModels
                 if (!FullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
 
-                if(value)
+                if (value)
                     this.model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
@@ -285,6 +284,19 @@ namespace Dynamo.ViewModels
                 model.PreferenceSettings.ConsoleHeight = value;
 
                 RaisePropertyChanged("ConsoleHeight");
+            }
+        }
+
+        public int LibraryWidth
+        {
+            get
+            {
+                return model.PreferenceSettings.LibraryWidth;
+            }
+            set
+            {
+                model.PreferenceSettings.LibraryWidth = value;
+                RaisePropertyChanged("LibraryWidth");
             }
         }
 
@@ -344,7 +356,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return string.Format(Resources.DynamoViewViewMenuAlternateContextGeometry, 
+                return string.Format(Resources.DynamoViewViewMenuAlternateContextGeometry,
                                      this.VisualizationManager.AlternateContextName);
             }
         }
@@ -387,7 +399,7 @@ namespace Dynamo.ViewModels
             get { return VisualizationManager.MaxTesselationDivisions; }
             set
             {
-               VisualizationManager.MaxTesselationDivisions = value;
+                VisualizationManager.MaxTesselationDivisions = value;
                 this.model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
@@ -419,6 +431,13 @@ namespace Dynamo.ViewModels
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
+        /// <summary>
+        ///     Whether sign in should be shown in Dynamo.  In instances where Dynamo obtains
+        ///     authentication capabilities from a host, Dynamo's sign in should generally be 
+        ///     hidden to avoid inconsistencies in state.
+        /// </summary>
+        public bool ShowLogin { get; private set; }
+
         #endregion
 
         public struct StartConfiguration
@@ -427,6 +446,7 @@ namespace Dynamo.ViewModels
             public IVisualizationManager VisualizationManager { get; set; }
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
+            public bool ShowLogin { get; set; }
 
             /// <summary>
             /// This property is initialized if there is an external host application
@@ -444,16 +464,20 @@ namespace Dynamo.ViewModels
         {
             var model = startConfiguration.DynamoModel ?? DynamoModel.Start();
             var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
-            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager, 
+            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager,
                 model.PreferenceSettings);
             var resourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
-            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider);
+            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider, 
+                startConfiguration.ShowLogin);
         }
 
         protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
-            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider)
+            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider, 
+            bool showLogin = false)
         {
+            this.ShowLogin = showLogin;
+
             // initialize core data structures
             this.model = dynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;
@@ -477,12 +501,12 @@ namespace Dynamo.ViewModels
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
-            
+
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
             SubscribeUpdateManagerHandlers();
-            
+
             InitializeAutomationSettings(commandFilePath);
 
             InitializeDelegateCommands();
@@ -817,7 +841,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     RaisePropertyChanged("RunEnabled");
-                    break; 
+                    break;
                 case "RunEnabled":
                     RaisePropertyChanged("RunEnabled");
                     break;
@@ -883,7 +907,7 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
-        
+
         private void WorkspaceAdded(WorkspaceModel item)
         {
             var newVm = new WorkspaceViewModel(item, this);
@@ -963,15 +987,23 @@ namespace Dynamo.ViewModels
             // that can't be handled reliably
             try
             {
-                string xmlFilePath = parameters as string;
+                var xmlFilePath = parameters as string;
                 ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath));
+
+                if (UIDispatcher != null)
+                {
+                    // Dispatch a fit view command after all non-idle operations
+                    // are completed. This is to ensure the view's ready for it.
+                    UIDispatcher.BeginInvoke(DispatcherPriority.Background,
+                        (Action)(() => { if (CanFitView(null)) FitView(null); }));
+                }
             }
             catch (Exception e)
             {
                 model.Logger.Log(Resources.MessageFailedToOpenFile + e.Message);
                 model.Logger.Log(e);
                 return;
-            }            
+            }
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
@@ -995,7 +1027,7 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = Resources.FileDialogDynamoDefinitions + "|" + 
+                Filter = Resources.FileDialogDynamoDefinitions + "|" +
                          Resources.FileDialogAllFiles,
                 Title = Resources.OpenDynamoDefinitionDialogTitle
             };
@@ -1143,12 +1175,12 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowPackageManagerSearch(object parameters)
+        internal void ShowPackageManagerSearch(object parameters)
         {
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
-        private bool CanShowPackageManagerSearch(object parameters)
+        internal bool CanShowPackageManagerSearch(object parameters)
         {
             return true;
         }
@@ -1178,7 +1210,7 @@ namespace Dynamo.ViewModels
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
-                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));   
+                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));
             }
         }
 
@@ -1829,7 +1861,7 @@ namespace Dynamo.ViewModels
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
-           
+
             // Since panning and orbiting modes are exclusive from one another,
             // turning one on may turn the other off. This is the reason we must
             // raise property change for both at the same time to update visual.
@@ -2014,7 +2046,8 @@ namespace Dynamo.ViewModels
             public ShutdownParams(
                 bool shutdownHost,
                 bool allowCancellation,
-                bool closeDynamoView) : this()
+                bool closeDynamoView)
+                : this()
             {
                 ShutdownHost = shutdownHost;
                 AllowCancellation = allowCancellation;
