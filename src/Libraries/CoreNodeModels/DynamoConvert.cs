@@ -61,7 +61,7 @@ namespace DSCoreNodesUI
                 AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[SelectedFromConversion]);
             AssociativeNode node = null;
 
-            node = AstFactory.BuildFunctionCall(new Func<double, double, double, double>(Conversions.ConvertToSI), new List<AssociativeNode> { inputAstNodes[0], conversionFromNode, conversionToNode });
+            node = AstFactory.BuildFunctionCall(new Func<double, double, double, double>(Conversions.ConvertUnitTypes), new List<AssociativeNode> { inputAstNodes[0], conversionFromNode, conversionToNode });
 
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
