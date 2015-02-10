@@ -4,22 +4,23 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using DSCoreNodesUI.Properties;
 
 namespace DSCore
 {
     [NodeName("List.Map")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription(
-        "Applies a function over all elements of a list, generating a new list from the results.")]
+    [NodeDescription("ListMapDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListMapSearchTags",typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Map : NodeModel
     {
         public Map()
         {
-            InPortData.Add(new PortData("list", "The list to map over."));
-            InPortData.Add(new PortData("f(x)", "The procedure used to map elements"));
+            InPortData.Add(new PortData("list", Resources.MapPortDataListToolTip));
+            InPortData.Add(new PortData("f(x)", Resources.MapPortDataFxToolTip));
 
-            OutPortData.Add(new PortData("mapped", "Mapped list"));
+            OutPortData.Add(new PortData("mapped", Resources.MapPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -47,11 +48,11 @@ namespace DSCore
 
         protected CombinatorNode() : this(3)
         {
-            InPortData.Add(new PortData("comb", "Combinator"));
-            InPortData.Add(new PortData("list1", "List #1"));
-            InPortData.Add(new PortData("list2", "List #2"));
+            InPortData.Add(new PortData("comb", Resources.CombinatorPortDataCombToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
+            InPortData.Add(new PortData("list2", Resources.PortDataList2ToolTip));
 
-            OutPortData.Add(new PortData("combined", "Combined lists"));
+            OutPortData.Add(new PortData("combined", Resources.CombinatorPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -80,7 +81,8 @@ namespace DSCore
 
     [NodeName("List.Combine")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Applies a combinator to each element in two sequences")]
+    [NodeDescription("ListCombineDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListCombineSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Combine : CombinatorNode
     {
@@ -104,7 +106,8 @@ namespace DSCore
     [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.ForEach")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
+    [NodeDescription("ListForEachDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListForEachSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ForEach : CombinatorNode
     {
@@ -130,7 +133,8 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceShortest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.")]
+    [NodeDescription("ListLaceShortestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListLaceShortestSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LaceShortest : CombinatorNode
     {
@@ -154,7 +158,8 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.LaceLongest")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
+    [NodeDescription("ListLaceLongestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListLaceLongestSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LaceLongest : CombinatorNode
     {
@@ -179,7 +184,8 @@ namespace DSCore
     //MAGN-3382 [IsVisibleInDynamoLibrary(false)]
     [NodeName("List.CartesianProduct")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
+    [NodeDescription("ListCartesianProductDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListCartesianProductSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class CartesianProduct : CombinatorNode
     {
@@ -264,7 +270,8 @@ namespace DSCore
 
     [NodeName("List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result.")]
+    [NodeDescription("ListReduceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListReduceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Reduce : VariableInputNode
     {
@@ -272,15 +279,11 @@ namespace DSCore
 
         public Reduce()
         {
-            reductorPort = new PortData(
-                "reductor",
-                "Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.");
+            InPortData.Add(new PortData("reductor", Resources.ReducePortDataReductorToolTip));
+            InPortData.Add(new PortData("seed", Resources.ReducePortDataSeedToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
 
-            InPortData.Add(reductorPort);
-            InPortData.Add(new PortData("seed", "Starting accumulated value, to be passed into the first call to the Reductor function."));
-            InPortData.Add(new PortData("list1", "List #1"));
-
-            OutPortData.Add(new PortData("reduced", "Reduced lists"));
+            OutPortData.Add(new PortData("reduced", Resources.ReducePortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -355,7 +358,8 @@ namespace DSCore
 
     [NodeName("List.Scan")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result, produces a list of successive reduced values.")]
+    [NodeDescription("ListScanDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListScanSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class ScanList : VariableInputNode
     {
@@ -363,15 +367,11 @@ namespace DSCore
 
         public ScanList()
         {
-            reductorPort = new PortData(
-                "reductor",
-                "Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.");
+            InPortData.Add(new PortData("reductor", Resources.ScanPortDataReductorToolTip));
+            InPortData.Add(new PortData("seed", Resources.ScanPortDataSeedToolTip));
+            InPortData.Add(new PortData("list1", Resources.PortDataList1ToolTip));
 
-            InPortData.Add(reductorPort);
-            InPortData.Add(new PortData("seed", "Starting accumulated value, to be passed into the first call to the Reductor function."));
-            InPortData.Add(new PortData("list1", "List #1"));
-
-            OutPortData.Add(new PortData("scanned", "Scanned lists"));
+            OutPortData.Add(new PortData("scanned", Resources.ScanPortDataResultToolTip));
 
             RegisterAllPorts();
         }
@@ -446,19 +446,18 @@ namespace DSCore
 
     [NodeName("List.Filter")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Filters a sequence by a given condition such that for an arbitrary element \"x,\" condition(x) = True or False.")]
+    [NodeDescription("ListFilterDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListFilterSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Filter : NodeModel
     {
         public Filter()
         {
-            InPortData.Add(new PortData("list", "List to filter"));
-            InPortData.Add(new PortData("condition", "Predicate used to determine if an element is filtered in or out."));
+            InPortData.Add(new PortData("list", Resources.FilterPortDataListToolTip));
+            InPortData.Add(new PortData("condition", Resources.FilterPortDataConditionToolTip));
 
-            OutPortData.Add(
-                new PortData("in", "List containing all elements \"x\" where condition(x) = True"));
-            OutPortData.Add(
-                new PortData("out", "List containing all elements \"x\" where condition(x) = False"));
+            OutPortData.Add(new PortData("in", Resources.FilterPortDataResultInToolTip));
+            OutPortData.Add(new PortData("out", Resources.FilterPortDataResultOutToolTip));
 
             RegisterAllPorts();
         }
@@ -490,17 +489,18 @@ namespace DSCore
 
     [NodeName("ReplaceByCondition")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
-    [NodeDescription("Replaces an object with a given substitute if the original object satisfies a given condition.")]
+    [NodeDescription("ReplaceByConditionDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ReplaceByConditionSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Replace : NodeModel
     {
         public Replace()
         {
-            InPortData.Add(new PortData("item", "Item to potentially be replaced"));
-            InPortData.Add(new PortData("replaceWith", "Object to replace with"));
-            InPortData.Add(new PortData("condition", "Predicate used to determine if it should be replaced."));
+            InPortData.Add(new PortData("item", Resources.ReplacePortDataItemToolTip));
+            InPortData.Add(new PortData("replaceWith", Resources.ReplacePortDataReplaceWithToolTip));
+            InPortData.Add(new PortData("condition", Resources.ReplacePortDataConditionToolTip));
 
-            OutPortData.Add(new PortData("var", "If condition(item) = True, then \"replaceWith\" is returned. Otherwise \"item\" is returned unaltered."));
+            OutPortData.Add(new PortData("var", Resources.ReplacePortDataResultToolTip));
 
             RegisterAllPorts();
         }

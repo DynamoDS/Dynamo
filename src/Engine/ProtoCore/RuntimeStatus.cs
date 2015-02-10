@@ -7,6 +7,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System.Linq;
 using ProtoCore.Runtime;
+using ProtoCore.Properties;
 
 namespace ProtoCore
 {
@@ -30,7 +31,8 @@ namespace ProtoCore
             kOverIndexing,
             kTypeConvertionCauseInfoLoss,
             kTypeMismatch,
-            kReplicationWarning
+            kReplicationWarning,
+            kInvalidIndexing
         }
 
         public struct WarningEntry
@@ -130,7 +132,7 @@ namespace ProtoCore
                 CodeGen.AuditCodeLocation(core, ref filename, ref line, ref col);
             }
 
-            var warningMsg = string.Format(StringConstants.kConsoleWarningMessage, 
+            var warningMsg = string.Format(Resources.kConsoleWarningMessage, 
                                            message, filename, line, col);
 
             if (core.Options.Verbose)
@@ -194,7 +196,7 @@ namespace ProtoCore
         public void LogFunctionGroupNotFoundWarning(
             string methodName)
         {
-            String message = string.Format(StringConstants.FUNCTION_GROUP_RESOLUTION_FAILURE, methodName);
+            String message = string.Format(Resources.FUNCTION_GROUP_RESOLUTION_FAILURE, methodName);
             LogWarning(WarningID.kMethodResolutionFailure, message);
         }
 
@@ -212,17 +214,17 @@ namespace ProtoCore
                 if (classScope != Constants.kGlobalScope)
                 {
                     string classname = core.ClassTable.ClassNodes[classScope].name;
-                    message = string.Format(StringConstants.kPropertyOfClassNotFound, classname, propertyName);
+                    message = string.Format(Resources.kPropertyOfClassNotFound, classname, propertyName);
                 }
                 else
                 {
-                    message = string.Format(StringConstants.kPropertyNotFound, propertyName);
+                    message = string.Format(Resources.kPropertyNotFound, propertyName);
                 }
             }
             else if (CoreUtils.TryGetOperator(methodName, out op))
             {
                 string strOp = Op.GetOpSymbol(op);
-                message = String.Format(StringConstants.kMethodResolutionFailureForOperator,
+                message = String.Format(Resources.kMethodResolutionFailureForOperator,
                                         strOp,
                                         core.TypeSystem.GetType(arguments[0].metaData.type),
                                         core.TypeSystem.GetType(arguments[1].metaData.type));
@@ -241,7 +243,7 @@ namespace ProtoCore
                 typesList = typesList + ")";
 
 
-                message = string.Format(StringConstants.kMethodResolutionFailureWithTypes, methodName, typesList);
+                message = string.Format(Resources.kMethodResolutionFailureWithTypes, methodName, typesList);
             }
 
             LogWarning(WarningID.kMethodResolutionFailure, message);
@@ -254,11 +256,11 @@ namespace ProtoCore
 
             if (CoreUtils.TryGetPropertyName(methodName, out propertyName))
             {
-                message = String.Format(StringConstants.kPropertyInaccessible, propertyName);
+                message = String.Format(Resources.kPropertyInaccessible, propertyName);
             }
             else
             {
-                message = String.Format(StringConstants.kMethodResolutionFailure, methodName);
+                message = String.Format(Resources.kMethodResolutionFailure, methodName);
             }
             LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure, message);
         }

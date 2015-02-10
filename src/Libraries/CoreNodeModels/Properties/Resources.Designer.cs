@@ -529,11 +529,29 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to cross product;crossreference;cross ref;.
+        /// </summary>
+        internal static string ListCartesianProductSearchTags {
+            get {
+                return ResourceManager.GetString("ListCartesianProductSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Applies a combinator to each element in two sequences.
         /// </summary>
         internal static string ListCombineDescription {
             get {
                 return ResourceManager.GetString("ListCombineDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to map multiple;apply over lists;multiple inputs.
+        /// </summary>
+        internal static string ListCombineSearchTags {
+            get {
+                return ResourceManager.GetString("ListCombineSearchTags", resourceCulture);
             }
         }
         
@@ -556,11 +574,29 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to screen;dispatch;.
+        /// </summary>
+        internal static string ListFilterSearchTags {
+            get {
+                return ResourceManager.GetString("ListFilterSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Performs a computation on each element of a list. Does not accumulate results..
         /// </summary>
         internal static string ListForEachDescription {
             get {
                 return ResourceManager.GetString("ListForEachDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to apply function;void;.
+        /// </summary>
+        internal static string ListForEachSearchTags {
+            get {
+                return ResourceManager.GetString("ListForEachSearchTags", resourceCulture);
             }
         }
         
@@ -574,11 +610,29 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to repeat last;.
+        /// </summary>
+        internal static string ListLaceLongestSearchTags {
+            get {
+                return ResourceManager.GetString("ListLaceLongestSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input..
         /// </summary>
         internal static string ListLaceShortestDescription {
             get {
                 return ResourceManager.GetString("ListLaceShortestDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to mix;trim end.
+        /// </summary>
+        internal static string ListLaceShortestSearchTags {
+            get {
+                return ResourceManager.GetString("ListLaceShortestSearchTags", resourceCulture);
             }
         }
         
@@ -592,6 +646,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to function;applied;over list;do to each.
+        /// </summary>
+        internal static string ListMapSearchTags {
+            get {
+                return ResourceManager.GetString("ListMapSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reduces a list into a new value by combining each element with an accumulated result..
         /// </summary>
         internal static string ListReduceDescription {
@@ -601,11 +664,29 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to accumulate;aggregate;fold.
+        /// </summary>
+        internal static string ListReduceSearchTags {
+            get {
+                return ResourceManager.GetString("ListReduceSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reduces a list into a new value by combining each element with an accumulated result, produces a list of successive reduced values..
         /// </summary>
         internal static string ListScanDescription {
             get {
                 return ResourceManager.GetString("ListScanDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to intermediate;maps;folds.
+        /// </summary>
+        internal static string ListScanSearchTags {
+            get {
+                return ResourceManager.GetString("ListScanSearchTags", resourceCulture);
             }
         }
         
@@ -781,6 +862,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to predicate;override;replace if,.
+        /// </summary>
+        internal static string ReplaceByConditionSearchTags {
+            get {
+                return ResourceManager.GetString("ReplaceByConditionSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Predicate used to determine if it should be replaced..
         /// </summary>
         internal static string ReplacePortDataConditionToolTip {
@@ -932,7 +1022,7 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to image.
+        ///   Looks up a localized string similar to image;inspect image;pixels;display;panel;.
         /// </summary>
         internal static string WatchImageSearchTags {
             get {
@@ -946,6 +1036,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string WatchNodeDescription {
             get {
                 return ResourceManager.GetString("WatchNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to print;output;disply;panel;inspect;debug.
+        /// </summary>
+        internal static string WatchNodeSearchTags {
+            get {
+                return ResourceManager.GetString("WatchNodeSearchTags", resourceCulture);
             }
         }
         

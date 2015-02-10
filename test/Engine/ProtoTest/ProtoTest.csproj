@@ -143,6 +143,7 @@
     <Compile Include="MultiLangTests\GCTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MultiLangTests\UnicodeTest.cs" />
     <Compile Include="NameSpaceTests.cs" />
     <Compile Include="ProtoAST\ASTCompilerUtilsTests.cs" />
     <Compile Include="ProtoAST\AstFactoryTest.cs" />

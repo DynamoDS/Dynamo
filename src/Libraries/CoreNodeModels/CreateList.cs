@@ -1,22 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
 using Dynamo.Models;
 using Dynamo.Nodes;
+using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
     [NodeName("List.Create")]
-    [NodeDescription("Makes a new list out of the given inputs")]
+    [NodeDescription("ListCreateDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
     public class CreateList : VariableInputNode
     {
         public CreateList()
         {
-            InPortData.Add(new PortData("index0", "Item Index #0"));
-            OutPortData.Add(new PortData("list", "A list"));
+            InPortData.Add(new PortData("index0", Resources.CreateListPortDataIndex0ToolTip));
+            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
 
             RegisterAllPorts();
 

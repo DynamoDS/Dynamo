@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Allows for DesignScript code to be authored directly")]
+    [NodeDescription("CodeBlockDescription",typeof(Dynamo.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class CodeBlockNodeModel : NodeModel
     {

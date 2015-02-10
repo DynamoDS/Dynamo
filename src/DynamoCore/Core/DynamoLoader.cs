@@ -200,17 +200,17 @@ namespace Dynamo.Utilities
             }
             catch (ReflectionTypeLoadException e)
             {
-                Log("Could not load types.");
+                Log(Properties.Resources.CouldNotLoadTypes);
                 Log(e);
                 foreach (var ex in e.LoaderExceptions)
                 {
-                    Log("Dll Load Exception:");
+                    Log(Properties.Resources.DllLoadException);
                     Log(ex.ToString());
                 }
             }
             catch (Exception e)
             {
-                Log("Could not load types.");
+                Log(Properties.Resources.CouldNotLoadTypes);
                 Log(e);
             }
 
@@ -240,8 +240,7 @@ namespace Dynamo.Utilities
                 }
                 catch (Exception e)
                 {
-                    Log("Failed to load type from " + assembly.FullName);
-                    Log("The type was " + t.FullName);
+                    Log(String.Format(Properties.Resources.FailedToLoadType, assembly.FullName, t.FullName));                  
                     Log(e);
                 }
             }

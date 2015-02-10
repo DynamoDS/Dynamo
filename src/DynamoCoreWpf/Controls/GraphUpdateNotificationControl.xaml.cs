@@ -20,8 +20,8 @@ namespace DynamoCore.UI.Controls
         {
             if (!(DataContext is UpdateManager)) return;
 
-            var result = MessageBox.Show(Dynamo.Wpf.Resource1.UpdateNotificationString, 
-                Dynamo.Wpf.Resource1.UpdateNotificationTitle, 
+            var result = MessageBox.Show(Dynamo.Wpf.Properties.Resources.UpdateMessage, 
+                Dynamo.Wpf.Properties.Resources.InstallMessageCaption, 
                 MessageBoxButton.OKCancel);
 
             if (result == MessageBoxResult.OK)
