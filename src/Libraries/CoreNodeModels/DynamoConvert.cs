@@ -53,7 +53,7 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
-        {
+        {          
             var conversionToNode =
                 AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[SelectedToConversion]);
 
@@ -61,9 +61,10 @@ namespace DSCoreNodesUI
                 AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[SelectedFromConversion]);
             AssociativeNode node = null;
 
-            node = AstFactory.BuildFunctionCall(new Func<double, double, double, double>(Conversions.ConvertUnitTypes), new List<AssociativeNode> { inputAstNodes[0], conversionFromNode, conversionToNode });
-
-
+            node = AstFactory.BuildFunctionCall(
+                        new Func<double, double, double, double>(Conversions.ConvertUnitTypes),
+                        new List<AssociativeNode> {inputAstNodes[0], conversionFromNode, conversionToNode});
+            
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 

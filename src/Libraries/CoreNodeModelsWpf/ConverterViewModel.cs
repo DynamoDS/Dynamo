@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DSCoreNodesUI;
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Core;
 using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
 using DynamoConversions;
 
 namespace Dynamo.Wpf
@@ -14,6 +16,8 @@ namespace Dynamo.Wpf
     {
         private DynamoConvert dynamoConvertModel;
         public DelegateCommand ToggleButtonClick { get; set; }
+        private NodeViewModel nodeViewModel;
+        private NodeModel nodeModel;
 
         public ConversionUnit SelectedFromConversion
         {
@@ -35,10 +39,28 @@ namespace Dynamo.Wpf
             }
         }
 
-        public ConverterViewModel(DynamoConvert model)
+        public ConverterViewModel(DynamoConvert model,NodeView nodeView)
         {
-            dynamoConvertModel = model;
+            dynamoConvertModel = model;           
+            nodeViewModel = nodeView.ViewModel;
+            nodeModel = nodeView.ViewModel.NodeModel;
+            model.PropertyChanged +=model_PropertyChanged;
             ToggleButtonClick = new DelegateCommand(OnToggleButtonClick, CanToggleButton);
+        }
+
+        private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "SelectedFromConversion":
+                    RaisePropertyChanged("SelectedFromConversion");
+                    break;
+
+                case "SelectedToConversion":                    
+                    RaisePropertyChanged("SelectedToConversion");
+                    break;
+
+            }
         }
 
 
@@ -50,9 +72,12 @@ namespace Dynamo.Wpf
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void OnToggleButtonClick(object obj)
         {
+            var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
+            WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);   
             var temp = this.SelectedFromConversion;
             this.SelectedFromConversion = this.SelectedToConversion;
             this.SelectedToConversion = temp;
+            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true; 
             
         }
 
