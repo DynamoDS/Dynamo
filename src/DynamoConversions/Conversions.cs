@@ -22,7 +22,7 @@ namespace DynamoConversions
             {ConversionUnit.Kilograms, 1}
         };
 
-        public static double ConvertToSI(double value, double conversion, double conversionto)
+        public static double ConvertUnitTypes(double value, double conversion, double conversionto)
         {
             var convertValue =  value / conversionto;
             return convertValue * conversion;
