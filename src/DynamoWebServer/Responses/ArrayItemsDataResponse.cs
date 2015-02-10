@@ -4,6 +4,10 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Dynamo.Models;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 using ProtoCore.Mirror;
 
 namespace DynamoWebServer.Responses
@@ -11,7 +15,7 @@ namespace DynamoWebServer.Responses
     class ArrayItemsDataResponse: Response
     {
         /// <summary>
-        /// Guid of the specified code block node
+        /// Guid of the specified node
         /// </summary>
         [DataMember]
         public string NodeId { get; private set; }
@@ -21,7 +25,7 @@ namespace DynamoWebServer.Responses
         /// output ports, text of specified code block node
         /// </summary>
         [DataMember]
-        public IEnumerable<string> Items { get; private set; }
+        public string Items { get; private set; }
 
         /// <summary>
         /// Index from which Dynamo responds array items
@@ -31,12 +35,18 @@ namespace DynamoWebServer.Responses
 
         public ArrayItemsDataResponse(NodeModel node, int indexFrom, int length)
         {
+            var jsonSettings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Objects,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
             NodeId = node.GUID.ToString();
 
             if (node.CachedValue == null)
             {
                 IndexFrom = -1;
-                Items = new string[0];
+                Items = "";
                 return;
             }
 
@@ -45,28 +55,24 @@ namespace DynamoWebServer.Responses
                 var allItems = node.CachedValue.GetElements();
                 if (allItems.Count < indexFrom)
                 {
-                    Items = new string[0];
+                    Items = "";
                     IndexFrom = allItems.Count;
                 }
                 else
                 {
-                    Items = allItems.Skip(indexFrom).Select(e => GetValueFromMirrorData(e)).Take(length);
+                    Items = JsonConvert.SerializeObject(allItems.Skip(indexFrom).Select(GetValueFromMirrorData).Take(length).ToArray(), jsonSettings);
                     IndexFrom = indexFrom;
                 }
             }
         }
 
-        private string GetValueFromMirrorData(MirrorData cachedValue)
+        private object GetValueFromMirrorData(MirrorData cachedValue)
         {
             if (cachedValue == null) return "null";
 
             if (cachedValue.IsCollection)
             {
-                Func<MirrorData, string> wrappedValue = (el) => "\"" + GetValueFromMirrorData(el) + "\"";
-
-                var elements = cachedValue.GetElements().ConvertAll(e => wrappedValue(e));
-
-                return "[" + string.Join(", ", elements) + "]";
+                return cachedValue.GetElements().Select(GetValueFromMirrorData).ToArray();
             }
             
             if (cachedValue.Data != null)

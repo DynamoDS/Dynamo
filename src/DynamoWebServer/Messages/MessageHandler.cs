@@ -14,7 +14,6 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Threading;
 using Dynamo.Core.Threading;
-using ProtoCore.Mirror;
 
 namespace DynamoWebServer.Messages
 {
@@ -492,10 +491,10 @@ namespace DynamoWebServer.Messages
                 stringBuilder.Append((node as CodeBlockNodeModel).GetExtraData());
             } 
             else if (node is VariableInputNode)
-                {
+            {
                 stringBuilder.Append((node as VariableInputNode).GetExtraData());
                 isVarInputNode = true;
-                }
+            }
 
             stringBuilder.Append(node.GetInOutPortsData(isVarInputNode));
             stringBuilder.Append("}");
@@ -532,19 +531,6 @@ namespace DynamoWebServer.Messages
                     OnResultReady(this, new ResultReadyEventArgs(
                     new ArrayItemsDataResponse(model, message.IndexFrom, message.Length), sessionId));
                 }
-            }
-        }
-
-        private void RetrieveArrayItems(GetNodeArrayItemsMessage message, string sessionId)
-        {
-            Guid guid;
-            var nodeMap = dynamoModel.NodeMap;
-            if (Guid.TryParse(message.NodeId, out guid) && nodeMap.ContainsKey(guid))
-            {
-                NodeModel model = nodeMap[guid];
-
-                OnResultReady(this, new ResultReadyEventArgs(
-                    new ArrayItemsDataResponse(model, message.IndexFrom, message.Length), sessionId));
             }
         }
 
