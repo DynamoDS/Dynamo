@@ -41,13 +41,14 @@ namespace ProtoTestFx.TD
         {
             return testCore;
         }
+
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
             testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
             testCore.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
-            testCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(testCore));
-            testCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(testCore));
 
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
@@ -90,8 +91,8 @@ namespace ProtoTestFx.TD
         public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
@@ -521,18 +522,6 @@ namespace ProtoTestFx.TD
                 else
                 {
                     ProtoCore.DSASM.HeapElement he = testMirror.MirrorTarget.rmem.Heap.GetHeapElement(sv);
-
-                    if (he.Refcount != referencCount)
-                    {
-                        Assert.Fail(String.Format("\t{0}'s reference count is {1}, which is not equal to expected {2}", dsVariable, he.Refcount, referencCount));
-                    }
-                    else if (referencCount > 0)
-                    {
-                        if (!he.Active)
-                        {
-                            Assert.Fail(String.Format("\t{0}'s reference count == {1}, but somehow it is makred as inactive.", dsVariable, referencCount));
-                        }
-                    }
                 }
             }
             catch (NotImplementedException)
@@ -617,12 +606,12 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.Runtime.WarningID id)
         {
             VerifyRuntimeWarning(testCore, id);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.RuntimeData.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.Runtime.WarningID id)
         {
             Assert.IsTrue(core.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }

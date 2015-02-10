@@ -19,15 +19,6 @@ namespace Dynamo.Interfaces
     /// </summary>
     public interface IWatchHandler
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="core"></param>
-        /// <param name="tag"></param>
-        /// <param name="showRawData"></param>
-        /// <param name="callback"></param>
-        /// <returns></returns>
         WatchViewModel Process(dynamic value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback);
     }
 
@@ -41,9 +32,6 @@ namespace Dynamo.Interfaces
         }
     }
 
-    /// <summary>
-    ///     The default watch handler.
-    /// </summary>
     public class DefaultWatchHandler : IWatchHandler
     {
         public const string NULL_STRING = "null";
@@ -109,6 +97,11 @@ namespace Dynamo.Interfaces
         private WatchViewModel ProcessThing(double value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return new WatchViewModel(visualizationManager, value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
+        }
+
+        private WatchViewModel ProcessThing(int value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)
+        {
+            return new WatchViewModel(visualizationManager, value.ToString(CultureInfo.InvariantCulture), tag);
         }
 
         private WatchViewModel ProcessThing(string value, ProtoCore.Core core, string tag, bool showRawData, WatchHandlerCallback callback)

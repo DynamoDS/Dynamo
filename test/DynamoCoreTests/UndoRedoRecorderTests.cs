@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using System.IO;
+
 using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using DSCoreNodesUI;
 using NUnit.Framework;
-using System.Reflection;
+using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 
 namespace Dynamo.Tests
 {
@@ -55,9 +55,9 @@ namespace Dynamo.Tests
             helper.SetAttribute(DummyModel.IdName, this.Identifier);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            XmlElementHelper helper = new XmlElementHelper(element);
+            XmlElementHelper helper = new XmlElementHelper(nodeElement);
             this.Radius = helper.ReadInteger(DummyModel.RadiusName);
             this.Identifier = helper.ReadInteger(DummyModel.IdName);
         }
@@ -592,11 +592,8 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestBasicAttributes()
         {
-            var model = ViewModel.Model;
-            model.CurrentWorkspace.AddNode(400, 100, "+");
-
-            var sumNode = model.Nodes[0] as DSFunction;
-
+            var sumNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+")) {X = 400, Y = 100};
+            
             //Assert inital values
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
@@ -604,7 +601,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(LacingStrategy.Shortest, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
-            Assert.AreEqual(true, sumNode.InteractionEnabled);
             Assert.AreEqual(ElementState.Dead, sumNode.State);
 
             //Serialize node and then change values
@@ -616,7 +612,6 @@ namespace Dynamo.Tests
             sumNode.ArgumentLacing = LacingStrategy.CrossProduct;
             sumNode.IsVisible = false;
             sumNode.IsUpstreamVisible = false;
-            sumNode.InteractionEnabled = false;
             sumNode.State = ElementState.Active;
 
             //Assert New Changes
@@ -626,7 +621,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(LacingStrategy.CrossProduct, sumNode.ArgumentLacing);
             Assert.AreEqual(false, sumNode.IsVisible);
             Assert.AreEqual(false, sumNode.IsUpstreamVisible);
-            Assert.AreEqual(false, sumNode.InteractionEnabled);
             Assert.AreEqual(ElementState.Active, sumNode.State);
 
             //Deserialize and Assert Old values
@@ -637,7 +631,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(LacingStrategy.Shortest, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
-            Assert.AreEqual(true, sumNode.InteractionEnabled);
             Assert.AreEqual(ElementState.Dead, sumNode.State);
         }
 
@@ -645,13 +638,8 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestDoubleInput()
         {
-
-            var model = ViewModel.Model;
-            model.CurrentWorkspace.AddNode(400, 0, "Number");
-
-            var numNode = ViewModel.Model.Nodes[0] as DoubleInput;
-            numNode.Value = "0.0";
-            numNode.X = 400; //To check if base Serialization method is being called
+            var numNode = new DoubleInput { Value = "0.0", X = 400 };
+            //To check if base Serialization method is being called
 
             //Assert initial values
             Assert.AreEqual(400, numNode.X);
@@ -677,14 +665,10 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestDoubleSliderInput()
         {
-            var model = ViewModel.Model;
-            model.CurrentWorkspace.AddNode(400, 0, "Double Slider");
+            var numNode = new DoubleSlider { X = 400, Value = 50.0, Max = 100.0, Min = 0.0 };
 
-            var numNode = ViewModel.Model.Nodes[0] as DoubleSlider;
-            numNode.X = 400; //To check if NodeModel base Serialization method is being called
-            numNode.Value = 50.0; //To check if Double class's Serialization methods work
-            numNode.Max = 100.0;
-            numNode.Min = 0.0;
+            //To check if NodeModel base Serialization method is being called
+            //To check if Double class's Serialization methods work
 
             //Assert initial values
             Assert.AreEqual(400, numNode.X);
@@ -718,12 +702,9 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestBool()
         {
-            var model = ViewModel.Model;
-            model.CurrentWorkspace.AddNode(0, 0, "Boolean");
+            var boolNode = new BoolSelector { Value = false, X = 400 };
 
-            var boolNode = ViewModel.Model.Nodes[0] as DSCoreNodesUI.BoolSelector;
-            boolNode.Value = false;
-            boolNode.X = 400; //To check if base Serialization method is being called
+            //To check if base Serialization method is being called
 
             //Assert initial values
             Assert.AreEqual(400, boolNode.X);
@@ -739,7 +720,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(250, boolNode.X);
             Assert.AreEqual(true, boolNode.Value);
 
-            //Deserialize and aasert old values
+            //Deserialize and assert old values
             boolNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, boolNode.X);
             Assert.AreEqual(false, boolNode.Value);
@@ -749,9 +730,8 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestStringInput()
         {
-            var strNode = new StringInput(ViewModel.Model.CurrentWorkspace);
-            strNode.Value = "Enter";
-            strNode.X = 400; //To check if base Serialization method is being called
+            var strNode = new StringInput { Value = "Enter", X = 400 };
+            //To check if base Serialization method is being called
 
             //Assert initial values
             Assert.AreEqual(400, strNode.X);
@@ -843,46 +823,14 @@ namespace Dynamo.Tests
              
         }
              
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestSublists()
-        {
-            var strNode = new Sublists(ViewModel.Model.CurrentWorkspace);
-            strNode.Value = "Enter";
-            strNode.X = 400; //To check if base Serialization method is being called
-
-            //Assert initial values
-            Assert.AreEqual(400, strNode.X);
-            Assert.AreEqual("Enter", strNode.Value);
-
-            //Serialize node and then change values
-            XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = strNode.Serialize(xmlDoc, SaveContext.Undo);
-            strNode.X = 250;
-            strNode.Value = "Exit";
-
-            //Assert new changes
-            Assert.AreEqual(250, strNode.X);
-            Assert.AreEqual("Exit", strNode.Value);
-
-            //Deserialize and aasert old values
-            strNode.Deserialize(serializedEl, SaveContext.Undo);
-            Assert.AreEqual(400, strNode.X);
-            Assert.AreEqual("Enter", strNode.Value);
-        }
-
+        
         [Test]
         [Category("UnitTests")]
         public void TestFormula()
         {
+            var formulaNode = new Formula { FormulaString = "x+y", X = 400 };
 
-            var model = ViewModel.Model;
-            model.CurrentWorkspace.AddNode(0, 0, "Formula");
-
-            var formulaNode = ViewModel.Model.Nodes[0] as Formula;
-            formulaNode.FormulaString = "x+y";
-            formulaNode.X = 400; //To check if base Serialization method is being called
+            //To check if base Serialization method is being called
 
             //Assert initial values
             Assert.AreEqual(400, formulaNode.X);
@@ -913,12 +861,9 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_serialization\");
             string openPath = Path.Combine(examplePath, "graph function.dyn");
-            string openPath2 = Path.Combine(examplePath, "GraphFunction.dyf");
-            Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(openPath2)!= null);
             ViewModel.OpenCommand.Execute(openPath);
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             System.Threading.Thread.Sleep(500);
 
             // check if the node is loaded
@@ -932,7 +877,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Definition.FunctionId.ToString());
             Assert.AreEqual("GraphFunction", graphNode.NickName);
             Assert.AreEqual(4, graphNode.InPortData.Count);
-            Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
+            Assert.AreEqual("y", graphNode.InPortData[3].NickName);
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
@@ -951,14 +896,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(534.75, graphNode.X);
             Assert.AreEqual(4, graphNode.InPortData.Count);
             Assert.AreEqual("GraphFunction", graphNode.NickName);
-            Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
+            Assert.AreEqual("y", graphNode.InPortData[3].NickName);
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDummyNodeInternals00()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -979,10 +923,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDummyNodeInternals01()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -1003,6 +946,23 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(3, dummyNode.InPorts.Count);
             Assert.AreEqual(2, dummyNode.OutPorts.Count);
+        }
+
+        [Test]
+        public void TestDummyNodeSerialization()
+        {
+            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
+            ViewModel.OpenCommand.Execute(Path.Combine(folder, "dummyNode.dyn"));
+
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var dummyNode = workspace.Nodes.OfType<DSCoreNodesUI.DummyNode>().FirstOrDefault();
+
+            Assert.IsNotNull(dummyNode);
+            var xmlDocument = new XmlDocument();
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
+
+            // Dummy node should be serialized to its original node
+            Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
         }
     }
 }

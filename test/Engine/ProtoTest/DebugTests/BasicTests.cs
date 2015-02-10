@@ -9608,7 +9608,7 @@ b = 2;";
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             //TestFrameWork.Verify(mirror, "b", null, 0);
-            TestFrameWork.VerifyRuntimeWarning(core, ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(core, ProtoCore.Runtime.WarningID.kCyclicDependency);
 
         }
         [Test]
@@ -9646,7 +9646,7 @@ b = 2;";
             fsr.PreStart(src, runnerConfig);
             DebugRunner.VMState vms = fsr.Step();
             fsr.Run();
-            TestFrameWork.VerifyRuntimeWarning(core, ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(core, ProtoCore.Runtime.WarningID.kCyclicDependency);
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
@@ -13943,10 +13943,6 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                Assert.IsTrue((Int64)objExecVal.Payload == -1);
-            }
 
             fsr.StepOver();
             vms = fsr.StepOver();   // a = A.A();
@@ -13968,10 +13964,6 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                Assert.IsTrue((Int64)objExecVal.Payload == -2);
-            }
 
             fsr.StepOver();
             fsr.StepOver();
@@ -14030,10 +14022,6 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                Assert.IsTrue((Int64)objExecVal.Payload == -1);
-            }
 
             vms = fsr.StepOver();   // c = 2;
             vms = fsr.StepOver();   // end of script
@@ -14095,10 +14083,6 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                Assert.IsTrue((Int64)objExecVal.Payload == -1);
-            }
 
             vms = fsr.StepOver();   // c = 2;
             vms = fsr.StepOver();   // end of script
@@ -14213,10 +14197,6 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                Assert.IsTrue((Int64)objExecVal.Payload == -1);
-            }
 
             vms = fsr.StepOver();   // end of script
             watchRunner = new ExpressionInterpreterRunner(core);
@@ -14272,10 +14252,6 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
-            if (core.Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                Assert.IsTrue((Int64)objExecVal.Payload == -1);
-            }
 
             vms = fsr.StepOver();   // end of script
             watchRunner = new ExpressionInterpreterRunner(core);
@@ -15360,8 +15336,8 @@ x = add(y);
             options.SuppressBuildOutput = false;
 
             core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;

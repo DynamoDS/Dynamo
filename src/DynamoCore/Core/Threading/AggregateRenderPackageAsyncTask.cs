@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-#if ENABLE_DYNAMO_SCHEDULER
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.DSEngine;
@@ -51,7 +50,7 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal AggregateRenderPackageAsyncTask(DynamoScheduler scheduler)
+        internal AggregateRenderPackageAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
             normalRenderPackages = new List<IRenderPackage>();
@@ -178,4 +177,3 @@ namespace Dynamo.Core.Threading
     }
 }
 
-#endif

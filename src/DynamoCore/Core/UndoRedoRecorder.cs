@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
+
 using Dynamo.Models;
 
 namespace Dynamo.Core
@@ -36,7 +38,7 @@ namespace Dynamo.Core
         /// UndoRedoRecorder calls this method to request a model to be created.
         /// </summary>
         /// <param name="modelData">The xml data from which the corresponding 
-        /// model can be re-created from.</param>
+        ///     model can be re-created from.</param>
         void CreateModel(XmlElement modelData);
 
         /// <summary>
@@ -66,11 +68,11 @@ namespace Dynamo.Core
         private const string UserActionAttrib = "UserAction";
         private const string ActionGroup = "ActionGroup";
 
-        private IUndoRedoRecorderClient undoClient = null;
-        private XmlDocument document = new XmlDocument();
-        private XmlElement currentActionGroup = null;
-        private Stack<XmlElement> undoStack = null;
-        private Stack<XmlElement> redoStack = null;
+        private readonly IUndoRedoRecorderClient undoClient;
+        private readonly XmlDocument document = new XmlDocument();
+        private XmlElement currentActionGroup;
+        private readonly Stack<XmlElement> undoStack;
+        private readonly Stack<XmlElement> redoStack;
 
         #endregion
 
@@ -110,20 +112,6 @@ namespace Dynamo.Core
             return new ActionGroupDisposable(this);
         }
 
-        private sealed class ActionGroupDisposable : IDisposable
-        {
-            private readonly UndoRedoRecorder recorder;
-            public ActionGroupDisposable(UndoRedoRecorder recorder)
-            {
-                this.recorder = recorder;
-            }
-            
-            public void Dispose()
-            {
-                recorder.EndActionGroup();
-            }
-        }
-
         /// <summary>
         /// Call this method to close the currently opened action group, wrapping 
         /// all recorded actions as part of the group. Actions in an action group
@@ -147,7 +135,7 @@ namespace Dynamo.Core
         {
             EnsureValidRecorderStates();
 
-            if (this.CanUndo == false)
+            if (CanUndo == false)
                 return; // Nothing to be undone.
 
             // Before undo operation, ensure the top-most item on the undo
@@ -162,7 +150,7 @@ namespace Dynamo.Core
         {
             EnsureValidRecorderStates();
 
-            if (this.CanRedo == false)
+            if (CanRedo == false)
                 return; // Nothing to be redone.
 
             // Top-most group gets moved from redo stack to undo stack.
@@ -179,8 +167,8 @@ namespace Dynamo.Core
         public void Clear()
         {
             EnsureValidRecorderStates();
-            this.undoStack.Clear();
-            this.redoStack.Clear();
+            undoStack.Clear();
+            redoStack.Clear();
         }
 
         #endregion
@@ -195,10 +183,10 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordCreationForUndo(ModelBase model)
         {
-            RecordActionInternal(this.currentActionGroup,
+            RecordActionInternal(currentActionGroup,
                 model, UserAction.Creation);
 
-            this.redoStack.Clear(); // Wipe out the redo-stack.
+            redoStack.Clear(); // Wipe out the redo-stack.
         }
 
         /// <summary>
@@ -210,10 +198,10 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordDeletionForUndo(ModelBase model)
         {
-            RecordActionInternal(this.currentActionGroup,
+            RecordActionInternal(currentActionGroup,
                 model, UserAction.Deletion);
 
-            this.redoStack.Clear(); // Wipe out the redo-stack.
+            redoStack.Clear(); // Wipe out the redo-stack.
         }
 
         /// <summary>
@@ -225,10 +213,10 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordModificationForUndo(ModelBase model)
         {
-            RecordActionInternal(this.currentActionGroup,
+            RecordActionInternal(currentActionGroup,
                 model, UserAction.Modification);
 
-            this.redoStack.Clear(); // Wipe out the redo-stack.
+            redoStack.Clear(); // Wipe out the redo-stack.
         }
 
         /// <summary>
@@ -240,15 +228,17 @@ namespace Dynamo.Core
         /// recent item that was pushed onto the undo stack (and that it does 
         /// not accidentally pop an action that is irrelevant).
         /// </summary>
-        public void PopFromUndoGroup()
+        /// <returns>Returns the XmlElement representing the action group that 
+        /// is on top of the stack at the time pop is requested.</returns>
+        public XmlElement PopFromUndoGroup()
         {
-            if (this.redoStack.Count > 0)
+            if (redoStack.Count > 0)
             {
                 throw new InvalidOperationException(
                     "UndoStack cannot be popped with non-empty RedoStack");
             }
 
-            PopActionGroupFromUndoStack();
+            return PopActionGroupFromUndoStack();
         }
 
         #endregion
@@ -270,9 +260,9 @@ namespace Dynamo.Core
         /// </summary>
         private void EnsureValidRecorderStates()
         {
-            if (null != this.currentActionGroup)
+            if (null != currentActionGroup)
             {
-                string message = "An existing open undo group detected";
+                const string message = "An existing open undo group detected";
                 throw new InvalidOperationException(message);
             }
         }
@@ -296,7 +286,7 @@ namespace Dynamo.Core
             if (null == model)
                 throw new ArgumentNullException("model");
 
-            System.Guid guid = model.GUID;
+            Guid guid = model.GUID;
             foreach (XmlNode childNode in group.ChildNodes)
             {
                 // See if the model supports Guid identification, in unit test cases 
@@ -320,7 +310,7 @@ namespace Dynamo.Core
 
         private XmlElement PopActionGroupFromUndoStack()
         {
-            if (this.CanUndo == false)
+            if (CanUndo == false)
             {
                 throw new InvalidOperationException("Invalid call to " +
                     "'PopActionGroupFromUndoStack' when the undo stack is empty");
@@ -331,7 +321,7 @@ namespace Dynamo.Core
 
         private XmlElement PopActionGroupFromRedoStack()
         {
-            if (this.CanRedo == false)
+            if (CanRedo == false)
             {
                 throw new InvalidOperationException("Invalid call to " +
                     "'PopActionGroupFromRedoStack' when the undo stack is empty");
@@ -347,7 +337,7 @@ namespace Dynamo.Core
 
             // Serialize the affected model into xml representation
             // and store it under the current action group.
-            XmlNode childNode = model.Serialize(this.document, SaveContext.Undo);
+            XmlNode childNode = model.Serialize(document, SaveContext.Undo);
             SetNodeAction(childNode, action.ToString());
             group.AppendChild(childNode);
         }
@@ -365,19 +355,16 @@ namespace Dynamo.Core
             // cannot iterate over correctly. So here we make a duplicated copy
             // instead.
             // 
-            List<XmlNode> actions = new List<XmlNode>();
-            foreach (XmlNode element in actionGroup.ChildNodes)
-                actions.Add(element);
+            var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
             // In undo scenario, user actions are undone in the reversed order 
             // that they were done (due to inter-dependencies among components).
             // 
             for (int index = actions.Count - 1; index >= 0; index--)
             {
-                XmlElement element = actions[index] as XmlElement;
+                var element = actions[index] as XmlElement;
                 XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
-                UserAction modelActionType;
-                modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+                var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
                 switch (modelActionType)
                 {
                     // Before undo takes place (to delete the model), the most 
@@ -402,7 +389,7 @@ namespace Dynamo.Core
                 }
             }
 
-            this.redoStack.Push(newGroup); // Place the states on the redo-stack.
+            redoStack.Push(newGroup); // Place the states on the redo-stack.
         }
 
         private void RedoActionGroup(XmlElement actionGroup)
@@ -411,17 +398,14 @@ namespace Dynamo.Core
             XmlElement newGroup = document.CreateElement(ActionGroup);
 
             // See "UndoActionGroup" above for details why this duplicate.
-            List<XmlNode> actions = new List<XmlNode>();
-            foreach (XmlNode element in actionGroup.ChildNodes)
-                actions.Add(element);
+            var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
             // Redo operation is the reversed of undo operation, naturally.
             for (int index = actions.Count - 1; index >= 0; index--)
             {
-                XmlElement element = actions[index] as XmlElement;
+                var element = actions[index] as XmlElement;
                 XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
-                UserAction modelActionType;
-                modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+                var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
                 switch (modelActionType)
                 {
                     case UserAction.Creation:
@@ -443,7 +427,151 @@ namespace Dynamo.Core
                 }
             }
 
-            this.undoStack.Push(newGroup);
+            undoStack.Push(newGroup);
+        }
+
+        #endregion
+
+        #region Nested Undo Helper Classes
+
+        private sealed class ActionGroupDisposable : IDisposable
+        {
+            private readonly UndoRedoRecorder recorder;
+            public ActionGroupDisposable(UndoRedoRecorder recorder)
+            {
+                this.recorder = recorder;
+            }
+
+            public void Dispose()
+            {
+                recorder.EndActionGroup();
+            }
+        }
+
+        internal class ModelModificationUndoHelper : IDisposable
+        {
+            private readonly List<ModelBase> models;
+            private readonly UndoRedoRecorder recorder;
+            private readonly Dictionary<Guid, XmlElement> existingConnectors;
+            private readonly Dictionary<Guid, ConnectorModel> remainingConnectors;
+
+            public ModelModificationUndoHelper(UndoRedoRecorder recorder, ModelBase model)
+                : this(recorder, new [] { model })
+            {
+            }
+
+            public ModelModificationUndoHelper(UndoRedoRecorder recorder, IEnumerable<ModelBase> models)
+            {
+                this.recorder = recorder;
+
+                this.models = new List<ModelBase>(models);
+                existingConnectors = new Dictionary<Guid, XmlElement>();
+                remainingConnectors = new Dictionary<Guid, ConnectorModel>();
+
+                var allConnectors = new List<ConnectorModel>();
+                using (this.recorder.BeginActionGroup())
+                {
+                    // Assuming no connectors will be modified as part of this, we 
+                    // record the node prior to it being modified. If for some 
+                    // reason connectors are dropped/created along the way, then 
+                    // this particular action group will be pop off the undo stack.
+                    // 
+                    foreach (var model in this.models)
+                    {
+                        var nodeModel = model as NodeModel;
+                        if (nodeModel != null)
+                            allConnectors.AddRange(nodeModel.AllConnectors);
+
+                        this.recorder.RecordModificationForUndo(model);
+                    }
+                }
+
+                // Record the existing connectors...
+                foreach (var connectorModel in allConnectors)
+                {
+                    var element = connectorModel.Serialize(
+                        recorder.document, SaveContext.Undo);
+
+                    existingConnectors.Add(connectorModel.GUID, element);
+                }
+            }
+
+            public void Dispose()
+            {
+                foreach (var modelBase in models)
+                {
+                    if (!(modelBase is NodeModel)) // Only nodes have connectors.
+                        continue;
+
+                    var nodeModel = modelBase as NodeModel;
+                    foreach (var connectorModel in nodeModel.AllConnectors)
+                    {
+                        // Connectors after node is modified.
+                        remainingConnectors.Add(connectorModel.GUID, connectorModel);
+                    }
+                }
+
+                var removed = new List<XmlElement>();
+                var added = new List<ConnectorModel>();
+                if (!ComputeDifference(removed, added))
+                    return; // No difference in connectors.
+
+                // If there are differences in connector count, some connectors must 
+                // have been dropped or created. In this case the originally recorded
+                // entry on the undo stack must be discarded, and recreated in the 
+                // same action group as these connectors.
+                // 
+                var previousGroup = recorder.PopFromUndoGroup();
+
+                // Create a new action group to record changes 
+                // affecting the node and its connectors.
+                using (recorder.BeginActionGroup())
+                {
+                    // For each of the deleted connectors, record its respective
+                    // XmlElement that was serialized before they were deleted.
+                    var deletionString = UserAction.Deletion.ToString();
+                    foreach (var connector in removed)
+                    {
+                        recorder.SetNodeAction(connector, deletionString);
+                        recorder.currentActionGroup.AppendChild(connector);
+                    }
+
+                    foreach (XmlNode childNode in previousGroup.ChildNodes)
+                    {
+                        // Record the model modification itself.
+                        recorder.currentActionGroup.AppendChild(childNode);
+                    }
+
+                    foreach (var connector in added)
+                    {
+                        recorder.RecordCreationForUndo(connector);
+                    }
+
+                    // When a new action group is recorded for undo,
+                    // the redo stack should always be cleared.
+                    if (recorder.redoStack.Count > 0)
+                    {
+                        throw new InvalidOperationException(
+                            "Redo stack should be empty after recording!");
+                    }
+                }
+            }
+
+            private bool ComputeDifference(List<XmlElement> removed, List<ConnectorModel> added)
+            {
+                // Whatever that was in the existing set but no longer exist...
+                var deletedKeys = existingConnectors.Keys.Except(remainingConnectors.Keys);
+                removed.AddRange(deletedKeys.Select(key => existingConnectors[key]));
+
+                // Whatever that did not originally exist but got created...
+                var addedConnectors = remainingConnectors.Keys.Except(
+                    existingConnectors.Keys);
+
+                added.AddRange(addedConnectors.Select(
+                    connectorKey => remainingConnectors[connectorKey]));
+
+                return removed.Any() || added.Any();
+            }
         }
 
         #endregion

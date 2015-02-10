@@ -157,7 +157,7 @@ namespace Dynamo.DSEngine
         {
             char prefixCode;
 
-            string memberName = member.ClassName + "." + member.Name;
+            string memberName = member.ClassName + "." + member.FunctionName;
 
             switch (member.Type)
             {
@@ -172,7 +172,7 @@ namespace Dynamo.DSEngine
                     // parameters are listed according to their type, not their name
                     string paramTypesList = String.Join(
                         ",",
-                        member.Parameters.Select(x => x.Type).Select(PrimitiveMap).ToArray()
+                        member.Parameters.Select(x => x.Type.ToShortString()).Select(PrimitiveMap).ToArray()
                         );
                     
                     if (!String.IsNullOrEmpty(paramTypesList)) memberName += "(" + paramTypesList + ")";
