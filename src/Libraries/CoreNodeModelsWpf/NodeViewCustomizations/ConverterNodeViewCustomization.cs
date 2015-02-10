@@ -1,5 +1,6 @@
 ﻿using DSCoreNodesUI.Input;
 using Dynamo.Controls;
+using Dynamo.Search.Interfaces;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
 using DSCoreNodesUI;
@@ -15,6 +16,7 @@ namespace Dynamo.Wpf.NodeViewCustomizations
         private DynamoConverterControl converterControl;
         private NodeViewModel nodeViewModel;
         private DynamoConvert convertModel;
+        private bool IsExecuted { get; set; }
 
         public void CustomizeView(DynamoConvert model, NodeView nodeView)
         {
@@ -53,15 +55,29 @@ namespace Dynamo.Wpf.NodeViewCustomizations
         }
 
         private void OnSelectConversionToChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {            
-            nodeModel.OnNodeModified(true);
-                      
+        {
+            if (!IsExecuted)
+            {
+                nodeModel.OnNodeModified(true);
+                IsExecuted = true;
+            }
+            else
+            {
+                IsExecuted = false;
+            }
         }
 
         void OnSelectConversionFromChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            nodeModel.OnNodeModified(true);
-                          
+            if (!IsExecuted)
+            {
+                nodeModel.OnNodeModified(true);
+                IsExecuted = true;
+            }
+            else
+            {
+                IsExecuted = true;
+            }
         }
 
         public void Dispose()
