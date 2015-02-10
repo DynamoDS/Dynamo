@@ -18,7 +18,7 @@
             <Button Name="DirectionButton"
                 Content="="          
                 Margin="1,0,0,0"
-                Width="40" Click="OnDirectionButtonClick"/>
+                Width="40" Command="{Binding ToggleButtonClick}"/>
 
             <ComboBox x:Name="SelectConversionTo"        	
         	ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"

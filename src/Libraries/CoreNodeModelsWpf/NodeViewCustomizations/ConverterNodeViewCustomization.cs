@@ -22,7 +22,7 @@ namespace Dynamo.Wpf.NodeViewCustomizations
             convertModel = model;
             converterControl = new DynamoConverterControl(model, nodeView)
             {
-                DataContext = convertModel
+                DataContext = new ConverterViewModel(model)
             };
 
             nodeView.inputGrid.Children.Add(converterControl);
