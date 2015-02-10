@@ -636,7 +636,6 @@ namespace Dynamo.ViewModels
 
             var foundNodes = Search(query);
 
-            UpdateTopResult();
             RaisePropertyChanged("SearchRootCategories");
 
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
@@ -686,6 +685,12 @@ namespace Dynamo.ViewModels
 
                 category.AddMemberToGroup(elementVM);
             }
+
+            // Update top result before we do not sort categories.
+            if (searchRootCategories.Any())
+                UpdateTopResult(searchRootCategories.FirstOrDefault().MemberGroups.FirstOrDefault());
+            else
+                UpdateTopResult(null);
 
             // Order found categories by name.
             searchRootCategories = new ObservableCollection<SearchCategory>(searchRootCategories.OrderBy(x => x.Name));
@@ -797,20 +802,16 @@ namespace Dynamo.ViewModels
 
         }
 
-        private void UpdateTopResult()
+        private void UpdateTopResult(SearchMemberGroup memberGroup)
         {
-            if (!SearchRootCategories.Any())
+            if (memberGroup == null)
             {
                 TopResult = null;
-
                 return;
             }
 
-            // If SearchRootCategories has at least 1 element, it has at least 1 member. 
-            var firstMemberGroup = SearchRootCategories.First().MemberGroups.First();
-
-            var topMemberGroup = new SearchMemberGroup(firstMemberGroup.FullyQualifiedName);
-            topMemberGroup.AddMember(firstMemberGroup.Members.First());
+            var topMemberGroup = new SearchMemberGroup(memberGroup.FullyQualifiedName);
+            topMemberGroup.AddMember(memberGroup.Members.First());
 
             TopResult = topMemberGroup;
         }
