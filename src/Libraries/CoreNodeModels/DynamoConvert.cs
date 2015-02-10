@@ -40,8 +40,8 @@ namespace DSCoreNodesUI
 
         public DynamoConvert()
         {
-            //SelectedFromConversion = ConversionUnit.Meters;
-            //SelectedToConversion = ConversionUnit.Meters;
+            SelectedFromConversion = ConversionUnit.Meters;
+            SelectedToConversion = ConversionUnit.Meters;
 
             InPortData.Add(new PortData("", "A numeric value for conversion."));
             OutPortData.Add(new PortData("", "A converted numeric value."));

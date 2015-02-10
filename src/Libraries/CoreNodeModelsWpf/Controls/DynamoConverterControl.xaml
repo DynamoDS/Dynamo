@@ -25,6 +25,7 @@
                 ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"
                 Width="100"
                 Margin="0" 
+                SelectedIndex="-1"
                 SelectedItem="{Binding SelectedFromConversion}"/>
 
         <ComboBox x:Name="SelectConversionTo"
@@ -32,6 +33,7 @@
         	ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"
         	Width="100"
         	Margin="0.4,0,-97.2,1" 
+            SelectedIndex="-1"
         	SelectedItem="{Binding SelectedToConversion}"/>
 
     </Grid>

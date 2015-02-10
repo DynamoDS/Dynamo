@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="DynamoConversions">
       <HintPath>..\..\..\bin\AnyCPU\Debug\DynamoConversions.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
