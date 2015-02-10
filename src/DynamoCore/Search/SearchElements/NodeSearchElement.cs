@@ -199,7 +199,7 @@ namespace Dynamo.Search.SearchElements
         {
             get
             {
-                if (!inputParameters.Any())
+                if (!outputParameters.Any())
                     GenerateOutputParameters();
 
                 return outputParameters;
@@ -229,6 +229,11 @@ namespace Dynamo.Search.SearchElements
         public void ProduceNode()
         {
             OnItemProduced(ConstructNewNodeModel());
+        }
+
+        public NodeModel CreateNode()
+        {
+            return ConstructNewNodeModel();
         }
 
         ICollection<string> ISearchEntry.SearchTags

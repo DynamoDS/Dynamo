@@ -150,7 +150,6 @@ namespace InstallUpdate
                     MessageBoxButtons.OKCancel) == DialogResult.Cancel)
                 {
                     requestCancel = true;
-                    return true;
                 }
 
                 return false;
