@@ -7,34 +7,27 @@
              mc:Ignorable="d" 
              d:DesignHeight="30" Width="247.2">
    
-    <Grid Height="26" Width="Auto" Margin="0,2,0.2,2.4">
-
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-
-        <Button Name="DirectionButton"
-                Content="="
-                Grid.Column="1"
-                Width="40" Click="OnDirectionButtonClick"/>
-
-        <ComboBox Name="SelectConversionFrom"
-                Grid.Column="0"
+    <Grid Height="26" Width="Auto" >        
+        <StackPanel Orientation="Horizontal">           
+            <ComboBox Name="SelectConversionFrom"                
                 ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"
-                Width="100"
-                Margin="0" 
-                SelectedIndex="-1"
+                Width="100"   
+                Margin="1,0,0,0"
                 SelectedItem="{Binding SelectedFromConversion}"/>
 
-        <ComboBox x:Name="SelectConversionTo"
-        	Grid.Column="2"
+            <Button Name="DirectionButton"
+                Content="="          
+                Margin="1,0,0,0"
+                Width="40" Click="OnDirectionButtonClick"/>
+
+            <ComboBox x:Name="SelectConversionTo"        	
         	ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"
-        	Width="100"
-        	Margin="0.4,0,-97.2,1" 
-            SelectedIndex="-1"
+        	Width="100"  
+            Margin="1,0,0,0"
         	SelectedItem="{Binding SelectedToConversion}"/>
 
+        </StackPanel>
+
+      
     </Grid>
 </UserControl>
