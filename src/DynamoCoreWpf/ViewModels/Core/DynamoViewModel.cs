@@ -463,6 +463,17 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool ShowLogin { get; private set; }
 
+        private int periodicEvaluationTime = 300;
+        public int PeriodicEvaluationTime
+        {
+            get { return periodicEvaluationTime; }
+            set
+            {
+                periodicEvaluationTime = value;
+                RaisePropertyChanged("PeriodicEvaluationTime");
+            }
+        }
+        
         #endregion
 
         public struct StartConfiguration
@@ -523,6 +534,7 @@ namespace Dynamo.ViewModels
             //updates to the workspaces collection
             var homespace = new WorkspaceViewModel(model.CurrentWorkspace, this);
             workspaces.Add(homespace);
+            homespace.Model.PropertyChanged += workSpace_propertyChanged;
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -736,7 +748,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                model.StartPeriodicEvaluation(300);
+                model.StartPeriodicEvaluation(periodicEvaluationTime);
             }
 
             RaisePropertyChanged("PeriodicEvaluationText");
@@ -975,6 +987,7 @@ namespace Dynamo.ViewModels
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
                 RaisePropertyChanged("DynamicRunEnabled");
+                item.PropertyChanged += workSpace_propertyChanged;
             }
             else
                 workspaces.Add(newVm);
@@ -982,10 +995,24 @@ namespace Dynamo.ViewModels
 
         private void WorkspaceRemoved(WorkspaceModel item)
         {
+            if (item is HomeWorkspaceModel)
+            {
+                item.PropertyChanged -= workSpace_propertyChanged;
+            }
             workspaces.Remove(workspaces.First(x => x.Model == item));
 
             // Update the ViewModel property to reflect change in WorkspaceModel
             RaisePropertyChanged("DynamicRunEnabled");
+        }
+
+        private void workSpace_propertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "HasNodeThatPeriodicallyUpdates":
+                    RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
+                    break;
+            }
         }
 
         internal void AddToRecentFiles(string path)
