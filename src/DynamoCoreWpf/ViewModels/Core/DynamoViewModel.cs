@@ -160,7 +160,13 @@ namespace Dynamo.ViewModels
                 var viewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
                 var index = workspaces.IndexOf(viewModel);
                 if (index != value)
-                    this.ExecuteCommand(new DynamoModel.SwitchTabCommand(value));
+                {
+                    // Note that the position of workspace view model and workspace model in their 
+                    // collection are not exactly same. 
+                    var newViewModel = workspaces.ElementAt(value);
+                    int modelIndex = model.Workspaces.IndexOf(newViewModel.Model);
+                    this.ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
+                }
             }
         }
 

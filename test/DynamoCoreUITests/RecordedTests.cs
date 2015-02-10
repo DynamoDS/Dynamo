@@ -527,7 +527,7 @@ namespace DynamoCoreUITests
         {
             var cmdOne = new DynamoModel.SwitchTabCommand(randomizer.Next());
             var cmdTwo = DuplicateAndCompare(cmdOne);
-            Assert.AreEqual(cmdOne.TabIndex, cmdTwo.TabIndex);
+            Assert.AreEqual(cmdOne.WorkspaceModelIndex, cmdTwo.WorkspaceModelIndex);
         }
 
         #endregion

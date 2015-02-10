@@ -306,10 +306,10 @@ namespace Dynamo.Models
             CurrentWorkspace = workspace;
         }
 
-        void SwitchTabImpl(SwitchTabCommand command)
+        void SwitchWorkspaceImpl(SwitchTabCommand command)
         {
             // We don't attempt to null-check here, we need it to fail fast.
-            CurrentWorkspace = Workspaces.ElementAt(command.TabIndex);
+            CurrentWorkspace = Workspaces.ElementAt(command.WorkspaceModelIndex);
         }
     }
 }
