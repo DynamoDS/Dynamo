@@ -95,10 +95,12 @@ namespace DSCoreNodesUI
                     switch (attr.Name)
                     {
                         case "conversionFrom":
-                            SelectedFromConversion = (ConversionUnit) Enum.Parse(typeof (ConversionUnit), attr.Value);
+                            SelectedFromConversion = Enum.Parse(typeof(ConversionUnit), attr.Value) is ConversionUnit ? 
+                                (ConversionUnit)Enum.Parse(typeof(ConversionUnit), attr.Value) : ConversionUnit.Feet;                               
                             break;
                         case "conversionTo":
-                            SelectedToConversion = (ConversionUnit)Enum.Parse(typeof(ConversionUnit), attr.Value);
+                            SelectedToConversion = Enum.Parse(typeof(ConversionUnit), attr.Value) is ConversionUnit ? 
+                                (ConversionUnit)Enum.Parse(typeof(ConversionUnit), attr.Value) : ConversionUnit.Feet;
                             break;                       
                         default:
                             Log(string.Format("{0} attribute could not be deserialized for {1}", attr.Name, GetType()));
