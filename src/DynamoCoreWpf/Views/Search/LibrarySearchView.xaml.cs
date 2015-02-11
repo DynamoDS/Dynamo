@@ -36,6 +36,9 @@ namespace Dynamo.UI.Views
             viewModel.SearchTextChanged += OnSearchTextBoxKeyDown;
         }
 
+        // Changing text content of the search box should always bring up the 
+        // "top result" (since there is no search term). Also, any possible tool-tip
+        // that is displayed and highlighted item should be dismissed right away.
         private void OnSearchTextBoxKeyDown(object sender, EventArgs e)
         {
             topResultPanel.BringIntoView();
