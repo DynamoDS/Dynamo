@@ -20,7 +20,7 @@ namespace Dynamo.Models
 {
     public class AnnotationModel : ModelBase
     {
-        private readonly INodeRepository nodeRepository;
+       // private readonly INodeRepository nodeRepository;
 
         private string _text;
         public string Text
@@ -100,6 +100,15 @@ namespace Dynamo.Models
             }
         }
 
+        private INodeRepository _workspaceModel;
+        public INodeRepository WorkspaceModel
+        {
+            get { return _workspaceModel; }
+            set { _workspaceModel = value; }
+        }
+
+        private string nodeGuids { get; set; }
+      
         private IEnumerable<NodeModel> selectedNodes;
         public IEnumerable<NodeModel> SelectedNodes
         {
@@ -114,12 +123,15 @@ namespace Dynamo.Models
                     {
                         node.PropertyChanged += OnNodePropertyChanged;
                     }
-                    var selectedRegion = SelectRegionFromNodes(selectedNodes);
-                    this.Left = selectedRegion.X -30;
-                    this.Top = selectedRegion.Y - 50;
-                    this.Width = selectedRegion.Width;
-                    this.Height = selectedRegion.Height;                  
-                    this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
+                    //if (!isInDrag)
+                    //{
+                        var selectedRegion = SelectRegionFromNodes(selectedNodes);
+                        this.Left = selectedRegion.X;
+                        this.Top = selectedRegion.Y;
+                        this.Width = selectedRegion.Width;
+                        this.Height = selectedRegion.Height;
+                        this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
+                    //}
                 }
             }
         }
@@ -138,9 +150,8 @@ namespace Dynamo.Models
             set { isInDrag = value; }
         }
 
-        public AnnotationModel(INodeRepository nodeRepository, IEnumerable<NodeModel> selectedNodeModels)
+        public AnnotationModel(IEnumerable<NodeModel> selectedNodeModels )
         {
-            this.nodeRepository = nodeRepository;
             this.SelectedNodes = selectedNodeModels;
             this.AnnotationText = "<<Double click to edit the grouping>>";
         }
@@ -151,8 +162,8 @@ namespace Dynamo.Models
             {
                 var node = sender as NodeModel;
                 var selectedRegion = SelectRegionFromNodes(SelectedNodes);
-                this.Left = selectedRegion.X - 30;
-                this.Top = selectedRegion.Y - 50;
+                this.Left = selectedRegion.X;
+                this.Top = selectedRegion.Y;
                 this.Width = selectedRegion.Width;
                 this.Height = selectedRegion.Height;
                 this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);                
@@ -166,46 +177,73 @@ namespace Dynamo.Models
                 throw new ArgumentException("nodes");
 
             nodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
-      
+
+            var xNodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
+            var yNodeModels = nodeModels.ToList().OrderBy(x => x.Y).ToList();
+
+            var regionX = xNodeModels.First().X - 30;
+            var regionY = yNodeModels.First().Y - 50;
+
+            var xDistance = xNodeModels.Last().X - regionX;
+            var yDistance = yNodeModels.Last().Y - regionY;
+
             var region = new Rect2D
             {
-                X = nodeModels.ElementAt(0).X,
-                Y = nodeModels.ElementAt(0).Y,
-                Width = nodeModels.ElementAt(0).Width,
-                Height = nodeModels.ElementAt(0).Height
+                X = regionX,
+                Y = regionY,                
+                Width = xDistance + 2*nodeModels.ElementAt(0).Width,
+                Height = yDistance + 2* nodeModels.ElementAt(0).Height
             };
 
-            foreach (var node in nodeModels)
-            {
-                // Extend lower bounds if needed.
-                if (node.X < region.X)
-                    region.X = node.X;
-                if (node.Y < region.Y)
-                    region.Y = node.Y;
+            //var region = new Rect2D
+            //{
+            //    X = nodeModels.ElementAt(0).X,
+            //    Y = nodeModels.ElementAt(0).Y,
+            //    Width = nodeModels.ElementAt(0).Width,
+            //    Height = nodeModels.ElementAt(0).Height
+            //};
 
-                // Extend upper bound if needed.
-                //if ((node.X + node.Width) > region.Right)
-                //    region.Width = node.X + node.Width;
-                //if ((node.Y + node.Height) > region.Bottom)
-                //    region.Height = node.Y - node.Height > 0 ? 
-                //                        node.Y - node.Height : 
-                //                        node.Y + node.Height;
+            //foreach (var node in nodeModels)
+            //{
+            //    // Extend lower bounds if needed.
+            //    if (node.X < region.X)
+            //        region.X = node.X;
+            //    if (node.Y < region.Y)
+            //        region.Y = node.Y;
 
-                if ((node.X + node.Width) > region.Right)
-                    region.Width = (node.X + (2 * node.Width)) - (region.X / 2);
-                else
-                {
-                    region.Width = region.Right > 0 ? region.Right : -(region.Right) + region.Width;
-                }
-                if ((node.Y + node.Height) > region.Bottom)
-                    region.Height = (node.Y + (2 * node.Height)) - region.Y;
-                else
-                {
-                    region.Height = region.Bottom > 0 ? region.Bottom : -(region.Bottom) + region.Height;
-                }
-            }
-           
+            //    if ((node.X + node.Width) > region.Right)
+            //        region.Width = (node.X + (2 * node.Width)) - (region.X / 2);
+            //    else
+            //    {
+            //        region.Width = region.Right > 0 ? region.Right : -(region.Right) + region.Width;
+            //    }
+            //    if ((node.Y + node.Height) > region.Bottom)
+            //        region.Height = (node.Y + (2 * node.Height)) - region.Y;
+            //    else
+            //    {
+            //        region.Height = region.Bottom > 0 ? region.Bottom : -(region.Bottom) + region.Height;
+            //    }
+            //}
+
             return region;
+        }
+
+        public void DeserializeNodeModels()
+        {
+            var listOfNodes = new List<NodeModel>();
+            this.isInDrag = false;
+            foreach (var objGuid in nodeGuids.Split(','))
+            {
+                Guid result;
+                if (Guid.TryParse(objGuid, out result))
+                    if (WorkspaceModel != null)
+                    {
+                        var model = WorkspaceModel.GetNodeModel(result);
+                        listOfNodes.Add(model);
+                    }
+            }
+            this.SelectedNodes = listOfNodes;
+            this.isInDrag = true;
         }
 
         #region Command Framework Supporting Methods
@@ -227,10 +265,10 @@ namespace Dynamo.Models
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
+        {            
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("guid", this.GUID);
-            helper.SetAttribute("text", this.Text);
+            helper.SetAttribute("text", this.AnnotationText);
             helper.SetAttribute("left", this.Left);
             helper.SetAttribute("top", this.Top);
             helper.SetAttribute("width", this.Width);
@@ -240,7 +278,7 @@ namespace Dynamo.Models
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
+        {            
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);
             this.Text = helper.ReadString("text", "New Annotation");
@@ -249,19 +287,8 @@ namespace Dynamo.Models
             this.Width = helper.ReadDouble("width", 0.0);
             this.Height = helper.ReadDouble("height", 0.0);
             this.BackGroundColor = helper.ReadString("annotationColor", "");
-            var objNodes = helper.ReadString("NodeModelGUIDs", "");
-            var listOfNodes = new List<NodeModel>();
-            foreach (var objGuid in objNodes.Split(','))
-            {
-                Guid result;
-                if (Guid.TryParse(objGuid, out result))
-                    if (nodeRepository != null)
-                    {
-                        var model = nodeRepository.GetNodeModel(result);
-                        listOfNodes.Add(model);
-                    }
-            }
-            this.SelectedNodes = listOfNodes;
+            nodeGuids = helper.ReadString("NodeModelGUIDs", "");
+            this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
         }
 
         #endregion

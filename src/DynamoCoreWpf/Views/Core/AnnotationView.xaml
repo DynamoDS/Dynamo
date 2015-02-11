@@ -150,8 +150,7 @@
             Grid.Row="0"
             Background="Transparent"
             Text ="{Binding AnnotationText, Mode=TwoWay}"             
-            Padding="12,8,0,0"            
-            MouseDown="UIElement_OnMouseLeftButtonDown"
+            Padding="12,8,0,0"                        
             MaxWidth="{Binding Width}"            
             TextWrapping="Wrap">
         </TextBlock>

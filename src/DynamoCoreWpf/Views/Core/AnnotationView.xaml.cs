@@ -14,6 +14,7 @@ using GraphLayout;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.UI.Prompts;
 using Dynamo.Selection;
+using Dynamo.Models;
 
 namespace Dynamo.Nodes
 {
@@ -23,12 +24,12 @@ namespace Dynamo.Nodes
     public partial class AnnotationView : IViewModelView<AnnotationViewModel>
     {
         public AnnotationViewModel ViewModel { get; private set; }
-        private bool moveTheGrouping;
-        double x_shape, x_canvas, y_shape, y_canvas;
+        private bool CanMoveGroup;
+        double xAnnotationViewPos, xCanvasPos, yAnnotationViewPos, yCanvasPos;
         private bool canRepositionNode;
         
         public AnnotationView()
-        {
+        {           
             InitializeComponent();
             Loaded += AnnotationView_Loaded;
             BindingErrorTraceListener.SetTrace();
@@ -37,11 +38,6 @@ namespace Dynamo.Nodes
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as AnnotationViewModel;          
-        }
-
-      
-        private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {       
         }
 
         private void OnEditItemClick(object sender, RoutedEventArgs e)
@@ -61,7 +57,6 @@ namespace Dynamo.Nodes
        
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
             if (e.AddedItems == null || (e.AddedItems.Count <= 0))
                 return;
 
@@ -82,33 +77,39 @@ namespace Dynamo.Nodes
      
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //annotationViewModel.MakeTextBoxVisible = Visibility.Visible; 
+            DynamoSelection.Instance.ClearSelection();
             var dataContext = this.DataContext as AnnotationViewModel;
             var view = sender as AnnotationView;
             if (view != null) Panel.SetZIndex(view, 9999);
             Mouse.Capture(view);
-            dataContext.IsInDrag = true;
+            if (dataContext != null)
+            {
+                dataContext.IsInDrag = true;
             
-            if (e.ClickCount == 1)
-            {                
-                moveTheGrouping = true;
-                this.CaptureMouse();
-                x_shape = Canvas.GetLeft(view);
-                var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");
-                x_canvas = e.GetPosition(parentCanvas).X;
-                y_shape = Canvas.GetTop(view);
-                y_canvas = e.GetPosition(parentCanvas).Y;
-
-                foreach (var nodes in dataContext.SelectedNodes)
+                if (e.ClickCount == 1)
                 {
-                    ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                          new DynCmd.SelectModelCommand(nodes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
-                }
+                    var undoRecorder = ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+                    WorkspaceModel.RecordModelForModification(ViewModel.AnnotationModel, undoRecorder);
 
-                var point = e.GetPosition(parentCanvas);
-                var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
-                var command = new DynCmd.DragSelectionCommand(point.AsDynamoType(), operation);
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+                    CanMoveGroup = true;
+                    this.CaptureMouse();
+                    xAnnotationViewPos = Canvas.GetLeft(view);
+                    var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");
+                    xCanvasPos = e.GetPosition(parentCanvas).X;
+                    yAnnotationViewPos = Canvas.GetTop(view);
+                    yCanvasPos = e.GetPosition(parentCanvas).Y;
+
+                    foreach (var nodes in dataContext.SelectedNodes)
+                    {
+                        ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                            new DynCmd.SelectModelCommand(nodes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
+                    }
+
+                    var point = e.GetPosition(parentCanvas);
+                    var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
+                    var command = new DynCmd.DragSelectionCommand(point.AsDynamoType(), operation);
+                    ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+                }
             }
             if (e.ClickCount >= 2)
             {
@@ -116,9 +117,54 @@ namespace Dynamo.Nodes
             }
             e.Handled = true;
         }
+     
+        private void AnnotationView_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var dataContext = this.DataContext as AnnotationViewModel;
+          
+            var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");
+          
+            var point = e.GetPosition(parentCanvas);
+            var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
+            var command = new DynCmd.DragSelectionCommand(point.AsDynamoType(), operation);
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+          
+            Mouse.Capture(null);           
+            CanMoveGroup = false;         
+            DynamoSelection.Instance.ClearSelection();
+            if (dataContext != null) dataContext.IsInDrag = false;
+            e.Handled = true;
+        }
+
+        private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DynamoSelection.Instance.ClearSelection();
+            System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+               new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+        }
+
+        private void AnnotationView_OnMouseMove(object sender, MouseEventArgs e)
+        {          
+            if (CanMoveGroup)
+            {
+                var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");
+
+                double x = e.GetPosition(parentCanvas).X;
+                double y = e.GetPosition(parentCanvas).Y;
+                xAnnotationViewPos += x - xCanvasPos;
+                Canvas.SetLeft(this, xAnnotationViewPos);
+                xCanvasPos = x;
+                yAnnotationViewPos += y - yCanvasPos;
+                Canvas.SetTop(this, yAnnotationViewPos);
+                yCanvasPos = y;                
+            }
+
+            e.Handled = true;
+        }
 
         public static T FindChild<T>(DependencyObject parent, string childName)
-   where T : DependencyObject
+                                  where T : DependencyObject
         {
             // Confirm parent and childName are valid. 
             if (parent == null) return null;
@@ -159,51 +205,6 @@ namespace Dynamo.Nodes
             }
 
             return foundChild;
-        }
-
-        private void AnnotationView_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            var dataContext = this.DataContext as AnnotationViewModel;
-          
-            var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");
-          
-            var point = e.GetPosition(parentCanvas);
-            var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
-            var command = new DynCmd.DragSelectionCommand(point.AsDynamoType(), operation);
-            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-          
-            Mouse.Capture(null);           
-            moveTheGrouping = false;         
-            DynamoSelection.Instance.ClearSelection();
-            dataContext.IsInDrag = false;
-            e.Handled = true;
-        }
-
-        private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
-            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-               new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
-        }
-
-        private void AnnotationView_OnMouseMove(object sender, MouseEventArgs e)
-        {
-          
-            if (moveTheGrouping)
-            {
-                var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");
-
-                double x = e.GetPosition(parentCanvas).X;
-                double y = e.GetPosition(parentCanvas).Y;
-                x_shape += x - x_canvas;
-                Canvas.SetLeft(this, x_shape);
-                x_canvas = x;
-                y_shape += y - y_canvas;
-                Canvas.SetTop(this, y_shape);
-                y_canvas = y;                
-            }
-
-            e.Handled = true;
         }
     }
 }

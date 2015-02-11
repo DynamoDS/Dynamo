@@ -626,12 +626,13 @@ namespace Dynamo.Models
             var selectedNodes = DynamoSelection.Instance.Selection.Where(n => n is NodeModel)
                 .Select(n => (n as NodeModel));
 
-            var annotationModel = new AnnotationModel(this, selectedNodes) {GUID = id};
+            var annotationModel = new AnnotationModel(selectedNodes) {GUID = id};
 
             var args = new ModelEventArgs(annotationModel, true);
             OnRequestNodeCentered(this, args);
 
             Annotations.Add(annotationModel);
+            HasUnsavedChanges = true;
             return annotationModel;
         }
 
@@ -779,6 +780,24 @@ namespace Dynamo.Models
                     note.SetAttribute("text", n.Text);
                     note.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
                     note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
+                }
+
+                //save the annotation
+                var annotationList = xmlDoc.CreateElement("Annotations");
+                root.AppendChild(annotationList);
+                foreach (var n in annotations)
+                {
+                    var annotation = xmlDoc.CreateElement(n.GetType().ToString());
+                    annotationList.AppendChild(annotation);
+                    annotation.SetAttribute("text", n.AnnotationText);
+                    annotation.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("left", n.Left.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("top", n.Top.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("width", this.Width.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("height", this.Height.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("annotationColor", (n.BackGroundColor == null ? "" : n.BackGroundColor.ToString()));
+                    annotation.SetAttribute("NodeModelGUIDs", string.Join(",", n.SelectedNodes.Select(z => z.GUID)));
                 }
 
                 return true;

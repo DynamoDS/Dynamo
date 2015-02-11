@@ -141,6 +141,9 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel = workspaceViewModel;
             this.MakeTextBlockVisible = Visibility.Visible;
             this.MakeTextBoxVisible = Visibility.Collapsed;
+            model.WorkspaceModel = workspaceViewModel.Model;  
+            if(model.SelectedNodes == null)
+                model.DeserializeNodeModels();
             model.PropertyChanged += model_PropertyChanged;
         }
 
