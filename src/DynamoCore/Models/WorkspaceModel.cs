@@ -520,6 +520,7 @@ namespace Dynamo.Models
 
             Nodes.Clear();
             Notes.Clear();
+            Annotations.Clear();
 
             ClearUndoRecorder();
             ResetWorkspace();
@@ -828,6 +829,7 @@ namespace Dynamo.Models
                 {
                     var annotation = xmlDoc.CreateElement(n.GetType().ToString());
                     annotationList.AppendChild(annotation);
+                    annotation.SetAttribute("guid", n.GUID.ToString());
                     annotation.SetAttribute("text", n.AnnotationText);
                     annotation.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
                     annotation.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));

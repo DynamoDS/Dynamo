@@ -67,8 +67,7 @@ namespace Dynamo.ViewModels
             get { return _annotationModel.AnnotationText; }
             set
             {
-                _annotationModel.AnnotationText = value;
-                RaisePropertyChanged("AnnotationText");
+                _annotationModel.AnnotationText = value;                
             }
         }
 
@@ -114,8 +113,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                _annotationModel.BackGroundColor = value.ToString();
-                RaisePropertyChanged("BackGroundColor");
+                _annotationModel.BackGroundColor = value.ToString();                
             }
         }
 
@@ -137,7 +135,7 @@ namespace Dynamo.ViewModels
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {            
-            _annotationModel = model;
+            _annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;
             this.MakeTextBlockVisible = Visibility.Visible;
             this.MakeTextBoxVisible = Visibility.Collapsed;
@@ -146,6 +144,7 @@ namespace Dynamo.ViewModels
                 model.DeserializeNodeModels();
             model.PropertyChanged += model_PropertyChanged;
         }
+       
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -162,6 +161,12 @@ namespace Dynamo.ViewModels
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
+                    break;
+                case "AnnotationText":
+                    RaisePropertyChanged("AnnotationText");
+                    break;
+                case "BackGroundColor":
+                    RaisePropertyChanged("BackGroundColor");
                     break;
             }
         }

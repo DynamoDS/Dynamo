@@ -253,10 +253,10 @@ namespace Dynamo.Models
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (name != "Text")
+            if (name != "AnnotationText")
                 return base.UpdateValueCore(updateValueParams);
 
-            Text = value;
+            AnnotationText = value;
             return true;
         }
 
@@ -281,7 +281,7 @@ namespace Dynamo.Models
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);
-            this.Text = helper.ReadString("text", "New Annotation");
+            this.AnnotationText = helper.ReadString("text", "<<Double click to edit the grouping>>");
             this.Left = helper.ReadDouble("left", 0.0);
             this.Top = helper.ReadDouble("top", 0.0);
             this.Width = helper.ReadDouble("width", 0.0);
