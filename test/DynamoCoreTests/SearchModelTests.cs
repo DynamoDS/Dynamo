@@ -430,6 +430,36 @@ namespace Dynamo.Tests
         }
         #endregion
 
+        [Test]
+        [Category("UnitTests")]
+        public void ProcessNodeCategoryTests()
+        {
+            SearchElementGroup group = SearchElementGroup.None;
+            string category = null;
+            Assert.AreEqual(null, search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.None, group);
+
+            group = SearchElementGroup.None;
+            category = "";
+            Assert.AreEqual("", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.None, group);
+
+            group = SearchElementGroup.None;
+            category = "Builtin Functions";
+            Assert.AreEqual("Builtin Functions", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.Action, group);
+
+            group = SearchElementGroup.None;
+            category = "Core.Evaluate";
+            Assert.AreEqual("Core.Evaluate", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.Action, group);
+
+            group = SearchElementGroup.None;
+            category = "Core.List.Create";
+            Assert.AreEqual("Core.List", search.ProcessNodeCategory(category, ref group));
+            Assert.AreEqual(SearchElementGroup.Create, group);
+        }
+
         #region Remove Nodes
 
         [Test]

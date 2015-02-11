@@ -82,7 +82,7 @@
     </Compile>
     <Compile Include="Controls\StandardPanel.xaml.cs">
       <DependentUpon>StandardPanel.xaml</DependentUpon>
-    </Compile>
+	</Compile>   
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
@@ -91,6 +91,7 @@
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
+    <Compile Include="Services\IconServices.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="UI\HeaderTemplateSelector.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

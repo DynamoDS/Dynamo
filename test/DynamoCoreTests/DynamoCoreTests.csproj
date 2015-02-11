@@ -96,6 +96,7 @@
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="SearchViewModelTests.cs" />
     <Compile Include="Setup.cs" />
+    <Compile Include="UnicodeTest.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
