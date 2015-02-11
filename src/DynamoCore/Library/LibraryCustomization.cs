@@ -106,7 +106,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Resources assembly. Assembly where icons are saved.
         /// </summary>
-        public Assembly ResAssembly { get { return resourceAssembly; } }
+        public Assembly ResourceAssembly { get { return resourceAssembly; } }
 
         internal LibraryCustomization(Assembly resAssembly, XDocument document)
         {

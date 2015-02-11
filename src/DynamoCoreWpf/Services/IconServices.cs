@@ -21,7 +21,7 @@ namespace Dynamo.Wpf.Services
             if (libraryCustomization == null)
                 return null;
 
-            var assembly = libraryCustomization.ResAssembly;
+            var assembly = libraryCustomization.ResourceAssembly;
             if (assembly == null)
                 return null;
 
