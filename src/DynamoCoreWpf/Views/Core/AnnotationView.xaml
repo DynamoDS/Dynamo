@@ -11,8 +11,9 @@
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                      
              MouseLeftButtonUp="AnnotationView_OnMouseLeftButtonUp" 
              MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"
-             Canvas.Left="{Binding Left}" 
-             Canvas.Top="{Binding Top}">
+             MouseMove="AnnotationView_OnMouseMove"             
+             Canvas.Left="{Binding Left, Mode=TwoWay}" 
+             Canvas.Top="{Binding Top, Mode=TwoWay}">
     <UserControl.Resources>
         <Style x:Key="ColorSelectorListBox"
            TargetType="ListBox">
@@ -132,9 +133,7 @@
                     </ListBox.Items>
                 </ListBox>
             </ContextMenu>
-        </Grid.ContextMenu>
-        <Canvas Background="{x:Null}">           
-        </Canvas>
+        </Grid.ContextMenu>       
         <Rectangle  Name="AnnotationRectangle"
                     Margin="10" 
                     Width="{Binding Width}" 

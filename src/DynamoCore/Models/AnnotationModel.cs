@@ -116,7 +116,7 @@ namespace Dynamo.Models
                     }
                     var selectedRegion = SelectRegionFromNodes(selectedNodes);
                     this.Left = selectedRegion.X -30;
-                    this.Top = selectedRegion.Y - 30;
+                    this.Top = selectedRegion.Y - 50;
                     this.Width = selectedRegion.Width;
                     this.Height = selectedRegion.Height;                  
                     this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
@@ -149,12 +149,13 @@ namespace Dynamo.Models
         {
             if (!IsInDrag)
             {
+                var node = sender as NodeModel;
                 var selectedRegion = SelectRegionFromNodes(SelectedNodes);
                 this.Left = selectedRegion.X - 30;
-                this.Top = selectedRegion.Y - 30;
+                this.Top = selectedRegion.Y - 50;
                 this.Width = selectedRegion.Width;
                 this.Height = selectedRegion.Height;
-                this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
+                this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);                
             }
         }
 
@@ -191,7 +192,7 @@ namespace Dynamo.Models
                 //                        node.Y + node.Height;
 
                 if ((node.X + node.Width) > region.Right)
-                    region.Width = (node.X + (2 * node.Width)) - region.X;
+                    region.Width = (node.X + (2 * node.Width)) - (region.X / 2);
                 else
                 {
                     region.Width = region.Right > 0 ? region.Right : -(region.Right) + region.Width;
