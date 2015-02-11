@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using System.Xml;
-using Dynamo.Controls;
 
 namespace Dynamo.Utilities
 {
@@ -54,14 +51,14 @@ namespace Dynamo.Utilities
         public static IEnumerable<DependencyObject> Children(this DependencyObject parent)
         {
             var childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (var i = 0; i < childrenCount; i++) 
+            for (var i = 0; i < childrenCount; i++)
                 yield return VisualTreeHelper.GetChild(parent, i);
-        } 
+        }
 
         public static IEnumerable<T> ChildrenOfType<T>(this DependencyObject parent)
           where T : DependencyObject
         {
-            foreach(var child in parent.Children())
+            foreach (var child in parent.Children())
             {
                 var childType = child as T;
                 if (childType == null)
@@ -74,7 +71,5 @@ namespace Dynamo.Utilities
                 }
             }
         }
-
-
     }
 }

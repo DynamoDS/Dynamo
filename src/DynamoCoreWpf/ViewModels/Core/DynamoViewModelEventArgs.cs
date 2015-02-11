@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-
+using System.Windows.Media;
 using Dynamo.Models;
 
 namespace Dynamo.ViewModels
@@ -103,4 +103,23 @@ namespace Dynamo.ViewModels
         }
     }
 
+    public class IconRequestEventArgs : EventArgs
+    {
+        public string IconAssembly { get; private set; }
+
+        public string IconFullPath { get; private set; }
+
+        public ImageSource Icon { get; private set; }
+
+        public IconRequestEventArgs(string assembly, string fullPath)
+        {
+            IconAssembly = assembly;
+            IconFullPath = fullPath;
+        }
+
+        public void SetIcon(ImageSource icon)
+        {
+            Icon = icon;
+        }
+    }
 }

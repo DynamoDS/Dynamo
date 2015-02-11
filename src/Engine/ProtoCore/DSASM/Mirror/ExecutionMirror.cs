@@ -179,9 +179,9 @@ namespace ProtoCore.DSASM.Mirror
                     return (val.opdata == 0) ? "false" : "true";
                 case AddressType.String:
                     if (forPrint)
-                        return GetStringTrace(val, heap);
+                        return heap.GetString(val);
                     else
-                        return "\"" + GetStringTrace(val, heap) + "\"";                    
+                        return "\"" + heap.GetString(val)+ "\"";                    
                 case AddressType.Char:
                     Char character = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(val.opdata);
                     if (forPrint)
@@ -940,9 +940,14 @@ namespace ProtoCore.DSASM.Mirror
 
                         // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                         // Register TX is used for this.
-                        stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kImplicit); 
+                        stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kImplicit);
 
-                        core.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, context, stackFrame, locals, new ProtoCore.DebugServices.ConsoleEventSink());
+                        core.CurrentExecutive.CurrentDSASMExec.Bounce(
+                            codeblock.codeBlockId, 
+                            codeblock.instrStream.entrypoint, 
+                            context, 
+                            stackFrame,
+                            locals);
                     }
                 }
                 catch
@@ -1134,7 +1139,6 @@ namespace ProtoCore.DSASM.Mirror
             switch (val.optype)
             {
                 case AddressType.ArrayPointer:
-                case AddressType.String:
                     {
                         DsasmArray ret = new DsasmArray();
 
@@ -1162,6 +1166,16 @@ namespace ProtoCore.DSASM.Mirror
                         };
 
                         return retO;
+                    }
+                case AddressType.String:
+                    {
+                        string str = heap.GetString(val);
+                        Obj o = new Obj(val)
+                        {
+                            Payload = str,
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)
+                        };
+                        return o;
                     }
                 case AddressType.Int:
                     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
@@ -14,7 +15,7 @@ namespace DSCoreNodesUI.Input
 {
     [NodeName("Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces integer values.")]
+    [NodeDescription("IntegerSliderNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class IntegerSlider : SliderBase<int>
@@ -28,6 +29,22 @@ namespace DSCoreNodesUI.Input
             Step = 1;
             Value = 0;
             ShouldDisplayPreviewCore = false;
+        }
+
+        //If the value field in the slider has a number greater than
+        //In32.Maxvalue (or MinValue), the value will be changed to Int32.MaxValue (or MinValue)
+        //The value will be changed, but to update the UI, this property is overridden here. 
+        public override int Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                base.Value = value;              
+                RaisePropertyChanged("Value");
+            }
         }
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
@@ -47,7 +64,7 @@ namespace DSCoreNodesUI.Input
                     return true; // UpdateValueCore handled.
                 case "Value":
                 case "ValueText":
-                    Value = ConvertStringToInt(value);
+                    Value = ConvertStringToInt(value);                   
                     return true; // UpdateValueCore handled.
                 case "Step":
                 case "StepText":

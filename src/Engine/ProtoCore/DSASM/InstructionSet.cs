@@ -753,8 +753,8 @@ namespace ProtoCore.DSASM
                     return StackValue.BuildBoolean(true);
 
                 case AddressType.String:
-                    int size = ArrayUtils.GetElementSize(this, core);
-                    return (size == 0) ? StackValue.False : StackValue.True;
+                    string str = core.Heap.GetString(this);
+                    return string.IsNullOrEmpty(str) ? StackValue.False : StackValue.True;
 
                 case AddressType.Char:
                     char c = EncodingUtils.ConvertInt64ToCharacter(opdata);

@@ -16,6 +16,7 @@ using Greg.Responses;
 
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.PackageManager
 {
@@ -424,10 +425,9 @@ namespace Dynamo.PackageManager
 
         private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version)
         {
-            string message = "Are you sure you want to install " + element.Name + " " + version.version + "?";
-
-            var result = MessageBox.Show(message, "Package Download Confirmation",
-                            MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            var result = MessageBox.Show(String.Format(Resources.MessageConfirmToInstallPackage, element.Name, version.version), 
+                Resources.PackageDownloadConfirmMessageBoxTitle,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.OK)
             {
@@ -438,7 +438,8 @@ namespace Dynamo.PackageManager
                     var res = this.PackageManagerClientViewModel.DynamoViewModel.Model.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
 
                     if (!res.Success)
-                        MessageBox.Show("Failed to download package with id: " + id + ".  Please try again and report the package if you continue to have problems.", "Package Download Error",
+                        MessageBox.Show(String.Format(Resources.MessageFailedToDownloadPackage, id),
+                            Resources.PackageDownloadErrorMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Error);
 
                     return pkgHeader;
@@ -464,8 +465,8 @@ namespace Dynamo.PackageManager
                 // if any do, notify user and allow cancellation
                 if (containsBinaries || containsPythonScripts)
                 {
-                    var res = MessageBox.Show("The package or one of its dependencies contains Python scripts or binaries. " +
-                        "Do you want to continue?", "Package Download",
+                    var res = MessageBox.Show(Resources.MessagePackageContainPythonScript,
+                        Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
                     if (res == MessageBoxResult.Cancel) return;
@@ -482,23 +483,14 @@ namespace Dynamo.PackageManager
                 if (futureDeps.Any())
                 {
                     var sb = new StringBuilder();
-
-                    sb.AppendLine(
-                        "The following packages use a newer version of Dynamo than you are currently using: ");
-                    sb.AppendLine();
-
                     foreach (var elem in futureDeps)
                     {
                         sb.AppendLine(elem.Item1.name + " " + elem.Item2);
                     }
 
-                    sb.AppendLine();
-                    sb.AppendLine("Do you want to continue?");
-
                     // If the user
-                    if (MessageBox.Show(
-                        sb.ToString(),
-                        "Package Uses Newer Version of Dynamo!",
+                    if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo, sb.ToString()),
+                        Resources.PackageUseNewerDynamoMessageBoxTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                     {
@@ -537,10 +529,9 @@ namespace Dynamo.PackageManager
 
                 if (uninstallRequiringUserModifications.Any())
                 {
-                    msg = "Dynamo needs to uninstall " + JoinPackageNames(uninstallRequiringUserModifications) +
-                        " to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.";
-                    MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
-                                    MessageBoxImage.Error);
+                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue, JoinPackageNames(uninstallRequiringUserModifications)),
+                        Resources.CannotDownloadPackageMessageBoxTitle, 
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -552,20 +543,18 @@ namespace Dynamo.PackageManager
                             x.MarkForUninstall(
                                 this.PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings));
 
-                    msg = "Dynamo needs to uninstall " + JoinPackageNames(uninstallsRequiringRestart) +
-                        " to continue but it contains binaries already loaded into Dynamo.  It's now marked " +
-                        "for removal, but you'll need to first restart Dynamo.";
-                    MessageBox.Show(msg, "Cannot Download Package", MessageBoxButton.OK,
-                                    MessageBoxImage.Error);
+                    MessageBox.Show(String.Format(Resources.MessageUnintallToContinue2, JoinPackageNames(uninstallsRequiringRestart)), 
+                        Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 if (immediateUninstalls.Any())
                 {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    msg = "Dynamo has already installed " + JoinPackageNames(immediateUninstalls) +
-                        ".  \n\nDynamo will attempt to uninstall this package before installing.  ";
-                    if (MessageBox.Show(msg, "Download Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo, JoinPackageNames(immediateUninstalls)),
+                        Resources.DownloadWarningMessageBoxTitle, 
+                        MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                         return;
                 }
 
@@ -700,36 +689,6 @@ namespace Dynamo.PackageManager
 
         }
 
-        /// <summary>
-        ///     Performs a search using the given string as query, but does not update
-        ///     the SearchResults object.
-        /// </summary>
-        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
-        /// <param name="search"> The search query </param>
-        internal List<PackageManagerSearchElementViewModel> SearchOnline(string search)
-        {
-            bool emptySearch = false;
-            if (search == "")
-            {
-                search = "dyn*";
-                emptySearch = true;
-            }
-            else
-            {
-                search = String.Join("* ", search.Split(' ')) + "*"; // append wild card to each search
-            }
-
-            var results =
-                PackageManagerClientViewModel.Search(search, MaxNumSearchResults)
-                    .Select(x => new PackageManagerSearchElementViewModel(x)).ToList();
-
-            if (emptySearch)
-            {
-                Sort(results, this.SortingKey);
-            }
-
-            return results;
-        }
 
         /// <summary>
         /// Sort a list of search results by the given key

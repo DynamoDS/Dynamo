@@ -23,7 +23,7 @@ using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
-
+using Dynamo.Wpf.Controls;
 using DynamoUtilities;
 
 using String = System.String;
@@ -32,6 +32,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 
 namespace Dynamo.Controls
 {
@@ -60,8 +61,9 @@ namespace Dynamo.Controls
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
+            Title = dynamoViewModel.BrandingResourceProvider.GetString(ResourceNames.MainWindow.Title);
 
-            tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
+            tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -174,13 +176,22 @@ namespace Dynamo.Controls
             Debug.WriteLine("Resizing window to {0}:{1}", e.NewSize.Width, e.NewSize.Height);
         }
 
+        void InitializeLogin()
+        {
+            if ( dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
+            {
+                var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
+                loginGrid.Children.Add(login);
+            }
+        }
+
         void InitializeShortcutBar()
         {
             ShortcutToolbar shortcutBar = new ShortcutToolbar();
             shortcutBar.Name = "ShortcutToolbar";
 
             ShortcutBarItem newScriptButton = new ShortcutBarItem();
-            newScriptButton.ShortcutToolTip = "New [Ctrl + N]";
+            newScriptButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarNewButtonTooltip;
             newScriptButton.ShortcutCommand = dynamoViewModel.NewHomeWorkspaceCommand;
             newScriptButton.ShortcutCommandParameter = null;
             newScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png";
@@ -188,7 +199,7 @@ namespace Dynamo.Controls
             newScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_hover.png";
 
             ShortcutBarItem openScriptButton = new ShortcutBarItem();
-            openScriptButton.ShortcutToolTip = "Open [Ctrl + O]";
+            openScriptButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarOpenButtonTooltip;
             openScriptButton.ShortcutCommand = dynamoViewModel.ShowOpenDialogAndOpenResultCommand;
             openScriptButton.ShortcutCommandParameter = null;
             openScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png";
@@ -196,7 +207,7 @@ namespace Dynamo.Controls
             openScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_hover.png";
 
             ShortcutBarItem saveButton = new ShortcutBarItem();
-            saveButton.ShortcutToolTip = "Save [Ctrl + S]";
+            saveButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarSaveButtonTooltip;
             saveButton.ShortcutCommand = dynamoViewModel.ShowSaveDialogIfNeededAndSaveResultCommand;
             saveButton.ShortcutCommandParameter = null;
             saveButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png";
@@ -204,7 +215,7 @@ namespace Dynamo.Controls
             saveButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_hover.png";
 
             ShortcutBarItem screenShotButton = new ShortcutBarItem();
-            screenShotButton.ShortcutToolTip = "Export Workspace As Image";
+            screenShotButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarExportButtonTooltip;
             screenShotButton.ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand;
             screenShotButton.ShortcutCommandParameter = null;
             screenShotButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png";
@@ -212,7 +223,7 @@ namespace Dynamo.Controls
             screenShotButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png";
 
             ShortcutBarItem undoButton = new ShortcutBarItem();
-            undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
+            undoButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarUndoButtonTooltip;
             undoButton.ShortcutCommand = dynamoViewModel.UndoCommand;
             undoButton.ShortcutCommandParameter = null;
             undoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png";
@@ -220,7 +231,7 @@ namespace Dynamo.Controls
             undoButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_hover.png";
 
             ShortcutBarItem redoButton = new ShortcutBarItem();
-            redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
+            redoButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarRedoButtonTooltip;
             redoButton.ShortcutCommand = dynamoViewModel.RedoCommand;
             redoButton.ShortcutCommandParameter = null;
             redoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png";
@@ -309,7 +320,7 @@ namespace Dynamo.Controls
         {
 
             // If first run, Collect Info Prompt will appear
-            UsageReportingManager.Instance.CheckIsFirstRun(this);
+            UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
 
             WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
@@ -318,8 +329,9 @@ namespace Dynamo.Controls
             dynamoViewModel.PostUiActivationCommand.Execute(null);
 
             _timer.Stop();
-            dynamoViewModel.Model.Logger.Log(String.Format("{0} elapsed for loading Dynamo main window.",
+            dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed));
+            InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage();
 
@@ -443,7 +455,7 @@ namespace Dynamo.Controls
 
                 if (_searchPkgsView.IsLoaded && IsLoaded) _searchPkgsView.Owner = this;
             }
-            
+
             _searchPkgsView.Focus();
             _pkgSearchVM.RefreshAndSearchAsync();
         }
@@ -479,25 +491,24 @@ namespace Dynamo.Controls
             var dialogText = "";
             if (e.Workspace is CustomNodeWorkspaceModel)
             {
-                dialogText = "You have unsaved changes to custom node workspace: \"" + e.Workspace.Name +
-                             "\"\n\n Would you like to save your changes?";
+                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
             }
             else // homeworkspace
             {
                 if (string.IsNullOrEmpty(e.Workspace.FileName))
                 {
-                    dialogText = "You have unsaved changes to the Home workspace." +
-                                 "\n\n Would you like to save your changes?";
+                    dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
                 }
                 else
                 {
-                    dialogText = "You have unsaved changes to " + Path.GetFileName(e.Workspace.FileName) +
-                    "\n\n Would you like to save your changes?";
+                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
                 }
             }
 
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
-            var result = MessageBox.Show(dialogText, "Confirmation", buttons, MessageBoxImage.Question);
+            var result = System.Windows.MessageBox.Show(dialogText,
+                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
+                buttons, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
@@ -519,7 +530,7 @@ namespace Dynamo.Controls
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
         }
-        
+
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             var prompt = new CrashPrompt(args);
@@ -576,7 +587,7 @@ namespace Dynamo.Controls
                 }
                 catch
                 {
-                    dynamoViewModel.Model.Logger.Log("Failed to save the Workspace an image.");
+                    dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToSaveAsImage);
                 }
             }
         }
@@ -614,8 +625,8 @@ namespace Dynamo.Controls
 
             do
             {
-                var categorized = 
-                    SearchCategory.CategorizeSearchEntries(
+                var categorized =
+                    SearchCategoryUtil.CategorizeSearchEntries(
                         dynamoViewModel.Model.SearchModel.SearchEntries,
                         entry => entry.Categories);
 
@@ -652,21 +663,23 @@ namespace Dynamo.Controls
 
                 if (String.IsNullOrEmpty(dialog.Text))
                 {
-                    error = "You must supply a name.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName,
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+
                 //else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
                 //{
                 //    error = "A built-in node with the given name already exists.";
                 //    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                 //                                   MessageBoxImage.Error);
                 //}
+
                 else if (dialog.Category.Equals(""))
                 {
-                    error = "You must enter a new category or choose one from the existing categories.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory,
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
@@ -847,7 +860,7 @@ namespace Dynamo.Controls
                 {
                     var showInFolder = new MenuItem
                     {
-                        Header = "Show In Folder",
+                        Header = Wpf.Properties.Resources.DynamoViewHelpMenuShowInFolder,
                         Tag = dirPaths[0]
                     };
                     showInFolder.Click += OnShowInFolder;
@@ -855,9 +868,9 @@ namespace Dynamo.Controls
                     SamplesMenu.Items.Add(showInFolder);
                 }
 
-                if (sampleFiles.Any()&&startPage != null)
+                if (sampleFiles.Any() && startPage != null)
                 {
-                    var firstFilePath=Path.GetDirectoryName(sampleFiles.ToArray()[0]);
+                    var firstFilePath = Path.GetDirectoryName(sampleFiles.ToArray()[0]);
                     var rootPath = Path.GetDirectoryName(firstFilePath);
                     var root = new DirectoryInfo(rootPath);
                     var rootProperty = new SampleFileEntry("Samples", "Path");
@@ -904,13 +917,13 @@ namespace Dynamo.Controls
         {
             Point popupLocation = new Point(targetSize.Width - popupSize.Width, targetSize.Height);
 
-            CustomPopupPlacement placement1 = 
+            CustomPopupPlacement placement1 =
                 new CustomPopupPlacement(popupLocation, PopupPrimaryAxis.Vertical);
 
             CustomPopupPlacement placement2 =
                 new CustomPopupPlacement(popupLocation, PopupPrimaryAxis.Horizontal);
 
-            CustomPopupPlacement[] ttplaces = 
+            CustomPopupPlacement[] ttplaces =
                 new CustomPopupPlacement[] { placement1, placement2 };
             return ttplaces;
         }
@@ -957,7 +970,7 @@ namespace Dynamo.Controls
         }
 
         private void SlideWindowToIncludeTab(int tabSelected)
-        {            
+        {
             int newSlidingWindowSize = GetSlidingWindowSize();
 
             if (newSlidingWindowSize == 0)
@@ -1069,7 +1082,7 @@ namespace Dynamo.Controls
 
         }
 
-		private void Button_MouseEnter(object sender, MouseEventArgs e)
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             TextBlock tb = (TextBlock)(g.Children[1]);
@@ -1084,8 +1097,10 @@ namespace Dynamo.Controls
             collapseIcon.Source = hover;
         }
 
-        private void Button_Click(object sender, EventArgs e)
+        private void OnCollapsedSidebarClick(object sender, EventArgs e)
         {
+            LibraryViewColumn.MinWidth = Configurations.MinWidthLibraryView;
+
             UserControl view = (UserControl)sidebarGrid.Children[0];
             if (view.Visibility == Visibility.Collapsed)
             {
@@ -1122,6 +1137,7 @@ namespace Dynamo.Controls
         private void LibraryClicked(object sender, EventArgs e)
         {
             restoreWidth = sidebarGrid.ActualWidth;
+            LibraryViewColumn.MinWidth = 0;
 
             mainGrid.ColumnDefinitions[0].Width = new GridLength(0.0);
             verticalSplitter.Visibility = Visibility.Collapsed;
@@ -1164,12 +1180,12 @@ namespace Dynamo.Controls
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             dynamoViewModel.IsMouseDown = true;
-		}
+        }
 
         private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             dynamoViewModel.IsMouseDown = false;
-		}
+        }
 
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
@@ -1180,7 +1196,7 @@ namespace Dynamo.Controls
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
         }
-       
+
         private void RunButton_OnClick(object sender, RoutedEventArgs e)
         {
             dynamoViewModel.ReturnFocusToSearch();
@@ -1203,7 +1219,7 @@ namespace Dynamo.Controls
                 {
                     dynamoViewModel.OpenCommand.Execute(files[0]);
                 }
-                
+
             }
 
             e.Handled = true;

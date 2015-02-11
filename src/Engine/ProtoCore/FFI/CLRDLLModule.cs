@@ -658,7 +658,7 @@ namespace ProtoFFI
             func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
             func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
             func.FunctionBody = null;
-            func.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+            func.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
             func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
@@ -711,7 +711,7 @@ namespace ProtoFFI
             }
             func.ReturnType = retype;
             func.FunctionBody = null;
-            func.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+            func.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
             func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
@@ -793,7 +793,7 @@ namespace ProtoFFI
             constr.Signature = ParseArgumentSignature(method);
             constr.ReturnType = returnType;
             constr.FunctionBody = null;
-            constr.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+            constr.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
             constr.IsExternLib = true;
             constr.ExternLibName = Module.Name;
 
@@ -838,7 +838,7 @@ namespace ProtoFFI
         {
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
             varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
-            varDeclNode.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+            varDeclNode.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
 
             ProtoCore.AST.AssociativeAST.IdentifierNode identifierNode = 
                 new ProtoCore.AST.AssociativeAST.IdentifierNode

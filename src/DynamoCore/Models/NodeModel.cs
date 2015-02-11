@@ -20,6 +20,7 @@ using ProtoCore.Namespace;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
+using System.Reflection;
 
 namespace Dynamo.Models
 {
@@ -46,6 +47,7 @@ namespace Dynamo.Models
         private bool isUpdated;
         private MirrorData cachedMirrorData;
         private readonly object cachedMirrorDataMutex = new object();
+
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
@@ -352,7 +354,20 @@ namespace Dynamo.Models
             }
         }
 
-        public MirrorData GetCachedValueFromEngine(EngineController engine)
+        /// <summary>
+        /// WARNING: This method is meant for unit test only. It directly accesses
+        /// the EngineController for the mirror data without waiting for any 
+        /// possible execution to complete (which, in single-threaded nature of 
+        /// unit test, is an okay thing to do). The right way to get the cached 
+        /// value for a NodeModel is by going through its RequestValueUpdateAsync
+        /// method).
+        /// </summary>
+        /// <param name="engine">Instance of EngineController from which the node
+        /// value is to be retrieved.</param>
+        /// <returns>Returns the MirrorData if the node's value is computed, or 
+        /// null otherwise.</returns>
+        /// 
+        internal MirrorData GetCachedValueFromEngine(EngineController engine)
         {
             if (cachedMirrorData != null)
                 return cachedMirrorData;
@@ -640,7 +655,7 @@ namespace Dynamo.Models
                 // 
                 // The return value of function %nodeAstFailed() is always 
                 // null.
-                const string errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
+                var errorMsg = Properties.Resources.NodeProblemEncountered;
                 var fullMsg = String.Format(errorMsg, e.Message);
                 this.NotifyAstBuildBroken(fullMsg);
 
@@ -1746,6 +1761,22 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All)]
     public class NodeSearchTagsAttribute : Attribute
     {
+        public NodeSearchTagsAttribute(string tagsID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                var tagString = (string)prop.GetValue(null, null);
+                Tags = tagString.Split(';').ToList();
+            }
+            else
+            {
+                Tags = new List<String> { tagsID };
+            }
+        }
         public NodeSearchTagsAttribute(params string[] tags)
         {
             Tags = tags.ToList();
@@ -1780,6 +1811,22 @@ namespace Dynamo.Models
         public NodeDescriptionAttribute(string description)
         {
             ElementDescription = description;
+        }
+
+        public NodeDescriptionAttribute(string descriptionResourceID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                ElementDescription = (string)prop.GetValue(null, null);
+            }
+            else
+            {
+                ElementDescription = descriptionResourceID;
+            }
         }
 
         public string ElementDescription { get; set; }

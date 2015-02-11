@@ -207,10 +207,11 @@ namespace Dynamo.Search
             return entryDictionary.Keys.Any(x => Equals(x, a));
         }
 
-        #region Regex Searching
+        #region Manual Searching
+
         /// <summary>
         /// Check if key matches with query string. The query string could
-        /// contains multiple sub query strings which are seperated with 
+        /// contains multiple sub query strings which are separated with 
         /// space character. The function returns true if the key sequentially
         /// matches with each sub query strings. E.g., 
         /// "Autodesk.Geometry.Point.ByCoordinate" matches with query string
@@ -219,31 +220,26 @@ namespace Dynamo.Search
         /// <param name="key"></param>
         /// <param name="pattern"></param>
         /// <returns></returns>
-        private static bool MatchWithQuerystring(string key, Regex pattern)
+        private static bool MatchWithQueryString(string key, string[] subPatterns)
         {
-            return pattern.IsMatch(key);
-        }
+            int index = 0;
+            int currPattern = 0;
+            while (index < key.Length && currPattern < subPatterns.Length)
+            {
+                index = key.IndexOf(subPatterns[currPattern], index);
+                if (index == -1)
+                    return false;
 
-        private static string SanitizeQuery(string query)
-        {
-            return query.Trim()
-                .Replace("\\", "\\\\")
-                .Replace(".", "\\.")
-                .Replace("*", "\\*")
-                .Replace("(", "\\(")
-                .Replace(")", "\\)")
-                .Replace("[", "\\[");
+                index += subPatterns[currPattern].Length;
+                currPattern++;
+            }
+
+            return currPattern == subPatterns.Length;
         }
 
         private static string[] SplitOnWhiteSpace(string s)
         {
             return s.Split(null);
-        }
-
-        private static Regex MakePattern(string[] subPatterns)
-        {
-            var pattern = "(.*)" + string.Join("(.*)", subPatterns) + "(.*)";
-            return new Regex(pattern);
         }
 
         private static bool ContainsSpecialCharacters(string element)
@@ -252,7 +248,7 @@ namespace Dynamo.Search
                 || element.Contains("\\");
         }
         #endregion
-        
+
         /// <summary>
         /// Search for elements in the dictionary based on the query
         /// </summary>
@@ -262,7 +258,7 @@ namespace Dynamo.Search
         {
             var searchDict = new Dictionary<V, double>();
 
-            var _tagDictionary = entryDictionary
+            var tagDictionary = entryDictionary
                 .SelectMany(
                     entryAndTags =>
                         entryAndTags.Value.Select(
@@ -280,21 +276,10 @@ namespace Dynamo.Search
 
             query = query.ToLower();
 
-            // do containment check
-            foreach (var pair in _tagDictionary.Where(x => x.Key.Contains(query)))
+            var subPatterns = SplitOnWhiteSpace(query);
+            foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
-            }
-
-            // if you don't have enough results and the query contains special characters, do fuzzy search
-            if (searchDict.Count <= minResultsForTolerantSearch && ContainsSpecialCharacters(query))
-            {
-                var regexPattern = MakePattern(SplitOnWhiteSpace(SanitizeQuery(query)));
-
-                foreach (var pair in _tagDictionary.Where(x => MatchWithQuerystring(x.Key, regexPattern)))
-                {
-                    ComputeWeightAndAddToDictionary(query, pair, searchDict);
-                }
             }
 
             return searchDict
@@ -311,7 +296,7 @@ namespace Dynamo.Search
             foreach (var eleAndWeight in pair)
             {
                 var ele = eleAndWeight.Item1;
-                double weight = matchCloseness*eleAndWeight.Item2;
+                double weight = matchCloseness * eleAndWeight.Item2;
 
                 // we may have seen V before
                 if (searchDict.ContainsKey(ele))

@@ -4,13 +4,17 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using System.Windows;
+using System.Windows.Media;
+using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
-
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {
@@ -32,9 +36,18 @@ namespace Dynamo.ViewModels
                 RequestReturnFocusToSearch(this, e);
         }
 
+        public event EventHandler SearchTextChanged;
+        public void OnSearchTextChanged(object sender, EventArgs e)
+        {
+            if (SearchTextChanged != null)
+                SearchTextChanged(this, e);
+        }
+
         #endregion
 
         #region Properties/Fields
+
+        private IconServices iconServices = new IconServices();
 
         /// <summary>
         ///     Maximum number of items to show in search.
@@ -64,32 +77,38 @@ namespace Dynamo.ViewModels
             set
             {
                 searchText = value;
+                OnSearchTextChanged(this, EventArgs.Empty);
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("BrowserRootCategories");
+                RaisePropertyChanged("CurrentMode");
+            }
+        }
+
+        private SearchMemberGroup topResult;
+        public SearchMemberGroup TopResult
+        {
+            get { return topResult; }
+            set
+            {
+                topResult = value;
+                RaisePropertyChanged("TopResult");
             }
         }
 
         /// <summary>
-        ///     SelectedIndex property
+        ///     SearchIconAlignment property
         /// </summary>
         /// <value>
-        ///     This is the currently selected element in the UI.
+        ///     This is used for aligment search icon and text.
         /// </value>
-        private int selectedIndex;
-        public int SelectedIndex
+        private HorizontalAlignment searchIconAlignment;
+        public HorizontalAlignment SearchIconAlignment
         {
-            get { return selectedIndex; }
+            get { return searchIconAlignment; }
             set
             {
-                if (selectedIndex != value)
-                {
-                    if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].IsSelected = false;
-                    selectedIndex = value;
-                    if (visibleSearchResults.Count > selectedIndex)
-                        visibleSearchResults[selectedIndex].IsSelected = true;
-                    RaisePropertyChanged("SelectedIndex");
-                }
+                searchIconAlignment = value;
+                RaisePropertyChanged("SearchIconAlignment");
             }
         }
 
@@ -110,6 +129,29 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool SearchAddonsVisibility
+        {
+            get
+            {
+                // TODO(Vladimir): uncomment when Addons are shown.
+                return false;//AddonRootCategories.Any(cat => cat.Visibility);
+            }
+        }
+
+        public enum ViewMode { LibraryView, LibrarySearchView };
+
+        /// <summary>
+        /// The property specifies which View is active now.
+        /// </summary>
+        public ViewMode CurrentMode
+        {
+            get
+            {
+                return string.IsNullOrEmpty(SearchText) ? ViewMode.LibraryView :
+                    ViewMode.LibrarySearchView;
+            }
+        }
+
         /// <summary>
         ///     SearchResults property
         /// </summary>
@@ -118,18 +160,6 @@ namespace Dynamo.ViewModels
         /// </value>
         public ObservableCollection<NodeSearchElementViewModel> SearchResults { get; private set; }
 
-        /// <summary>
-        /// A category representing the "Top Result"
-        /// </summary>
-        //private RootNodeCategoryViewModel topResult;
-
-        /// <summary>
-        ///     An ordered list representing all of the visible items in the browser.
-        ///     This is used to manage up-down navigation through the menu.
-        /// </summary>
-        private readonly List<NodeSearchElementViewModel> visibleSearchResults =
-            new List<NodeSearchElementViewModel>();
-
         private bool searchScrollBarVisibility = true;
         public bool SearchScrollBarVisibility
         {
@@ -137,7 +167,13 @@ namespace Dynamo.ViewModels
             set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
         }
 
-        public ObservableCollection<NodeCategoryViewModel> SearchRootCategories { get; private set; }
+        public Typeface RegularTypeface { get; private set; }
+
+        private ObservableCollection<SearchCategory> searchRootCategories;
+        public ObservableCollection<SearchCategory> SearchRootCategories
+        {
+            get { return searchRootCategories; }
+        }
 
         public ObservableCollection<NodeCategoryViewModel> LibraryRootCategories
         {
@@ -148,7 +184,7 @@ namespace Dynamo.ViewModels
 
         public ObservableCollection<NodeCategoryViewModel> BrowserRootCategories
         {
-            get { return string.IsNullOrWhiteSpace(SearchText) ? LibraryRootCategories : SearchRootCategories; }
+            get { return LibraryRootCategories; }
         }
 
         public NodeSearchModel Model { get; private set; }
@@ -169,11 +205,17 @@ namespace Dynamo.ViewModels
 
         private void InitializeCore()
         {
-            SelectedIndex = 0;
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>();
-            SearchRootCategories = new ObservableCollection<NodeCategoryViewModel>();
+            searchRootCategories = new ObservableCollection<SearchCategory>();
+
             Visible = false;
             searchText = "";
+
+            var fontFamily = new FontFamily(SharedDictionaryManager.DynamoModernDictionaryUri, "../../Fonts/#Open Sans");
+            RegularTypeface = new Typeface(fontFamily, FontStyles.Normal, FontWeights.Normal,
+                FontStretches.Normal);
+
+            searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             // When Library changes, sync up
             Model.EntryAdded += entry =>
@@ -181,9 +223,14 @@ namespace Dynamo.ViewModels
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
             };
             Model.EntryRemoved += RemoveEntry;
-            
+
             libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
+
+            DefineFullCategoryNames(LibraryRootCategories, "");
+            InsertClassesIntoTree(LibraryRootCategories);
+
+            ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
 
         private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -192,17 +239,19 @@ namespace Dynamo.ViewModels
                 SearchAndUpdateResults();
         }
 
-        private static IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
+        private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
         {
-            var tempRoot = 
+            var tempRoot =
                 entries.GroupByRecursive<NodeSearchElement, string, NodeCategoryViewModel>(
                     element => element.Categories,
                     (name, subs, es) =>
-                        new NodeCategoryViewModel(name, es.Select(MakeNodeSearchElementVM), subs)
-                        {
-                            IsExpanded = expanded
-                        },
-                    "");
+                    {
+                        var category =
+                            new NodeCategoryViewModel(name, es.OrderBy(en => en.Name).Select(MakeNodeSearchElementVM), subs);
+                        category.IsExpanded = expanded;
+                        category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                        return category;
+                    }, "");
             var result =
                 tempRoot.SubCategories.Select(
                     cat =>
@@ -211,26 +260,49 @@ namespace Dynamo.ViewModels
                             IsExpanded = expanded
                         });
             tempRoot.Dispose();
-            return result;
+            return result.OrderBy(cat => cat.Name);
         }
 
-        private void RemoveEntry(NodeSearchElement entry)
+        private static void InsertClassesIntoTree(ObservableCollection<NodeCategoryViewModel> tree)
         {
-            var treeStack = new Stack<NodeCategoryViewModel>();
-            var nameStack = new Stack<string>(entry.Categories.Reverse());
-            var target = libraryRoot;
-            while (nameStack.Any())
+            foreach (var item in tree)
             {
-                var next = nameStack.Pop();
-                var categories = target.SubCategories;
-                var newTarget = categories.FirstOrDefault(c => c.Name == next);
-                if (newTarget == default(NodeCategoryViewModel))
-                {
-                    return;
-                }
-                treeStack.Push(target);
-                target = newTarget;
+                var classes = item.SubCategories.Where(cat => cat.SubCategories.Count == 0).ToList();
+                foreach (var item2 in classes)
+                    item.SubCategories.Remove(item2);
+
+                InsertClassesIntoTree(item.SubCategories);
+
+                if (classes.Count == 0)
+                    continue;
+
+                var container = new ClassesNodeCategoryViewModel(item);
+                container.SubCategories.AddRange(classes);
+
+                item.SubCategories.Insert(0, container);
             }
+        }
+
+        private static void DefineFullCategoryNames(ObservableCollection<NodeCategoryViewModel> tree, string path)
+        {
+            foreach (var item in tree)
+            {
+                item.FullCategoryName = MakeFullyQualifiedName(path, item.Name);
+                if (!item.SubCategories.Any())
+                    item.Assembly = (item.Items[0] as NodeSearchElementViewModel).Assembly;
+
+                DefineFullCategoryNames(item.SubCategories, item.FullCategoryName);
+            }
+        }
+
+        internal void RemoveEntry(NodeSearchElement entry)
+        {
+            var branch = GetTreeBranchToNode(libraryRoot, entry);
+            if (!branch.Any())
+                return;
+            var treeStack = new Stack<NodeCategoryViewModel>(branch.Reverse());
+
+            var target = treeStack.Pop();
             var location = target.Entries.Select((e, i) => new { e.Model, i })
                 .FirstOrDefault(x => entry == x.Model);
             if (location == null)
@@ -241,47 +313,299 @@ namespace Dynamo.ViewModels
             {
                 var parent = treeStack.Pop();
                 parent.SubCategories.Remove(target);
+
+                // Check to see if all items under "parent" are removed, leaving behind only one 
+                // entry that is "ClassInformationViewModel" (a class used to show StandardPanel).
+                // If that is the case, remove the "ClassInformationViewModel" at the same time.
+                if (parent.Items.Count == 1 && parent.Items[0] is ClassInformationViewModel)
+                    parent.Items.RemoveAt(0);
                 target = parent;
+            }
+
+            // After removal of category "target" can become the class.
+            // In this case we need to add target to existing classes contaiiner 
+            // (ClassesNodeCategoryViewModel) or create new one.
+            // For example we have a structure.
+            //
+            //                         Top
+            //                          │
+            //                       Sub1_1  
+            //             ┌────────────┤       
+            //          Sub2_1       Classes 
+            //    ┌────────┤            │     
+            // Classes     Member2   Sub2_2   
+            //    │                     │     
+            // Sub3_1                   Member3
+            //    │                            
+            //    Member1   
+            // 
+            // Let's remove "Member1". Before next code we have removed entry "Member1" and
+            // categories "Sub3_1", "Classes". "Sub2_1" is "target" as soon as it has one item in
+            // Items collection. Next code will deattach from "Sub1_1" and attach target to another
+            // "Classes" category.
+            // Structure should become.
+            //
+            //                         Top
+            //                          │
+            //                       Sub1_1  
+            //                          │  
+            //                       Classes 
+            //               ┌──────────┤ 
+            //            Sub2_1     Sub2_2   
+            //               │          │     
+            //               Member2    Member3    
+            //
+            if (treeStack.Any() && !target.SubCategories.Any())
+            {
+                var parent = treeStack.Pop();
+                // Do not continue if parent is already in classes container.
+                if (parent is ClassesNodeCategoryViewModel && parent.SubCategories.Contains(target))
+                    return;
+
+                // Do not continue as soon as our target is not class.
+                if (target.SubCategories.Any())
+                    return;
+
+                if (!(parent.SubCategories[0] is ClassesNodeCategoryViewModel))
+                    parent.SubCategories.Insert(0, new ClassesNodeCategoryViewModel(parent));
+
+                if (!parent.SubCategories[0].SubCategories.Contains(target))
+                {
+                    // Reattach target from parent to classes container.
+                    parent.SubCategories.Remove(target);
+                    parent.SubCategories[0].SubCategories.Add(target);
+                }
             }
         }
 
-        private void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
+        private static IEnumerable<NodeCategoryViewModel> GetTreeBranchToNode(
+            NodeCategoryViewModel rootNode, NodeSearchElement leafNode)
         {
-            var nameStack = new Stack<string>(categoryNames.Reverse());
-            var target = libraryRoot;
-            bool isRoot = true;
+            var nodesOnBranch = new Stack<NodeCategoryViewModel>();
+            var nameStack = new Stack<string>(leafNode.Categories.Reverse());
+            var target = rootNode;
+            bool isCheckedForClassesCategory = false;
             while (nameStack.Any())
             {
                 var next = nameStack.Pop();
                 var categories = target.SubCategories;
                 var newTarget = categories.FirstOrDefault(c => c.Name == next);
-                if (newTarget == default(NodeCategoryViewModel))
+                if (newTarget == null)
                 {
-                    newTarget = isRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
-                    target.SubCategories.Add(newTarget);
-                    PlaceInNewCategory(entry, newTarget, nameStack);
-                    return;
+                    // The last entry in categories list can be a class name. When the desired class 
+                    // cannot be located with "MyAssembly.MyNamespace.ClassCandidate" pattern, try 
+                    // searching with "MyAssembly.MyNamespace.Classes.ClassCandidate" instead. This 
+                    // is because a class always resides under a "ClassesNodeCategoryViewModel" node.
+                    //
+                    if (!isCheckedForClassesCategory && nameStack.Count == 0)
+                    {
+                        nameStack.Push(next);
+                        nameStack.Push(Configurations.ClassesDefaultName);
+
+                        isCheckedForClassesCategory = true;
+                        continue;
+                    }
+
+                    return Enumerable.Empty<NodeCategoryViewModel>();
                 }
+                nodesOnBranch.Push(target);
                 target = newTarget;
-                isRoot = false;
             }
-            target.Entries.Add(entry);
+
+            nodesOnBranch.Push(target);
+            return nodesOnBranch;
         }
 
-        private static void PlaceInNewCategory(
-            NodeSearchElementViewModel entry, NodeCategoryViewModel target,
+        /// <summary>
+        /// Insert a new search element under the category.
+        /// </summary>
+        /// <param name="entry">This could represent a function of a given 
+        /// class. For example, 'MyAssembly.MyNamespace.MyClass.Foo'.</param>
+        /// <param name="categoryNames">A list of entries that make up the fully qualified
+        /// class name that contains function 'Foo', e.g. 'MyAssembly.MyNamespace.MyClass'.
+        /// </param>
+        internal void InsertEntry(NodeSearchElementViewModel entry, IEnumerable<string> categoryNames)
+        {
+            var nameStack = new Stack<string>(categoryNames.Reverse());
+            var target = libraryRoot;
+            string fullyQualifiedCategoryName = "";
+            ClassesNodeCategoryViewModel targetClass = null;
+            while (nameStack.Any())
+            {
+                var next = nameStack.Pop();
+                fullyQualifiedCategoryName = MakeFullyQualifiedName(fullyQualifiedCategoryName, next);
+
+                var categories = target.SubCategories;
+                NodeCategoryViewModel targetClassSuccessor = null;
+                var newTarget = categories.FirstOrDefault(c =>
+                {
+                    // Each path has one class. We should find and save it.                    
+                    if (c is ClassesNodeCategoryViewModel)
+                    {
+                        targetClass = c as ClassesNodeCategoryViewModel;
+                        // As soon as ClassesNodeCategoryViewModel is found we should search 
+                        // through all it classes and save result.
+                        targetClassSuccessor = c.SubCategories.FirstOrDefault(c2 => c2.Name == next);
+                        return targetClassSuccessor != null;
+                    }
+
+                    return c.Name == next;
+                });
+                if (newTarget == null)
+                {
+                    // For the first iteration, this would be 'MyAssembly', and the second iteration 'MyNamespace'.
+                    var targetIsRoot = target == libraryRoot;
+                    newTarget = targetIsRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
+                    newTarget.FullCategoryName = fullyQualifiedCategoryName;
+                    // Situation when we to add only one new category and item as it child.
+                    // New category should be added to existing ClassesNodeCategoryViewModel.
+                    // Make notice: ClassesNodeCategoryViewModel is always first item in 
+                    // all subcategories.
+                    if (nameStack.Count == 0 && target.SubCategories.Count > 0 &&
+                        target.SubCategories[0] is ClassesNodeCategoryViewModel)
+                    {
+                        target.SubCategories[0].SubCategories.Add(newTarget);
+                        AddEntryToExistingCategory(newTarget, entry);
+                        return;
+                    }
+
+                    // We are here when target is the class. New category should be added
+                    // as child of it. So class will turn into usual category.
+                    // Here we are take class, remove it from ClassesNodeCategoryViewModel
+                    // and attach to it parrent.
+                    if (targetClass != null)
+                    {
+                        if (targetClass.SubCategories.Remove(target))
+                            targetClass.Parent.SubCategories.Add(target);
+                        // Delete empty classes container.
+                        if (targetClass.SubCategories.Count == 0)
+                            targetClass.Parent.SubCategories.RemoveAt(0);
+
+                        targetClass.Dispose();
+
+                        // Situation when we need to add only one new category and item.
+                        // Before adding of it we need create new ClassesNodeCategoryViewModel
+                        // as soon as new category will be a class.
+                        if (nameStack.Count == 0)
+                        {
+                            targetClass = new ClassesNodeCategoryViewModel(target);
+
+                            target.SubCategories.Add(targetClass);
+                            target = targetClass;
+                        }
+                    }
+
+                    target.SubCategories.Add(newTarget);
+
+                    // Proceed to insert the new entry under 'newTarget' category with the remaining 
+                    // name stack. In the first iteration this would have been 'MyNamespace.MyClass'.
+                    InsertEntryIntoNewCategory(newTarget, entry, nameStack);
+                    return;
+                }
+                // If we meet ClassesNodecategoryViewModel during the search of newTarget,
+                // next newTarget is specified in targetClassSuccessor.
+                if (targetClassSuccessor != null)
+                    target = targetClassSuccessor;
+                else
+                    target = newTarget;
+            }
+            AddEntryToExistingCategory(target, entry);
+        }
+
+        private void InsertEntryIntoNewCategory(
+            NodeCategoryViewModel category,
+            NodeSearchElementViewModel entry,
             IEnumerable<string> categoryNames)
         {
-            var newTargets =
-                categoryNames.Select(name => new NodeCategoryViewModel(name));
-
-            foreach (var newTarget in newTargets)
+            if (!categoryNames.Any())
             {
-                target.SubCategories.Add(newTarget);
-                target = newTarget;
+                AddEntryToExistingCategory(category, entry);
+                return;
             }
 
-            target.Entries.Add(entry);
+            // With the example of 'MyAssembly.MyNamespace.MyClass.Foo', 'path' would have been 
+            // set to 'MyAssembly' here. The Select statement below would store two entries into
+            // 'newTargets' variable:
+            // 
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
+            var path = category.FullCategoryName;
+            var newTargets = categoryNames.Select(name =>
+            {
+                path = MakeFullyQualifiedName(path, name);
+
+                var cat = new NodeCategoryViewModel(name);
+                cat.FullCategoryName = path;
+                return cat;
+            }).ToList();
+
+            // The last entry 'NodeCategoryViewModel' represents a class. For our example the 
+            // entries in 'newTargets' are:
+            // 
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
+            // Since all class entries are contained under a 'ClassesNodeCategoryViewModel', 
+            // we need to create a new 'ClassesNodeCategoryViewModel' instance, and insert it 
+            // right before the class entry itself to get the following list:
+            // 
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //      ClassesNodeCategoryViewModel("Classes")
+            //      NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
+            int indexToInsertClass = newTargets.Count - 1;
+            var classParent = indexToInsertClass > 0 ? newTargets[indexToInsertClass - 1] : category;
+            var newClass = new ClassesNodeCategoryViewModel(classParent);
+            newTargets.Insert(indexToInsertClass, newClass);
+
+            // Here, all the entries in 'newTargets' are added under 'MyAssembly' recursively,
+            // resulting in the following hierarchical structure:
+            // 
+            //      NodeCategoryViewModel("MyAssembly")
+            //          NodeCategoryViewModel("MyAssembly.MyNamespace")
+            //              ClassesNodeCategoryViewModel("Classes")
+            //                  NodeCategoryViewModel("MyAssembly.MyNamespace.MyClass")
+            // 
+            foreach (var newTarget in newTargets)
+            {
+                category.SubCategories.Add(newTarget);
+                category = newTarget;
+            }
+
+            AddEntryToExistingCategory(category, entry);
+        }
+
+        private void AddEntryToExistingCategory(NodeCategoryViewModel category,
+            NodeSearchElementViewModel entry)
+        {
+            category.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+            category.Entries.Add(entry);
+        }
+
+        private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
+        {
+            var warehouse = iconServices.GetForAssembly(e.IconAssembly);
+            ImageSource icon = null;
+            if (warehouse != null)
+                icon = warehouse.LoadIconInternal(e.IconFullPath);
+
+            e.SetIcon(icon);
+        }
+
+        // Form a fully qualified name based on nested level of a "NodeCategoryViewModel" object.
+        // For example, "Core.File.Directory" is the fully qualified name for "Directory".
+        private static string MakeFullyQualifiedName(string path, string addition)
+        {
+            return string.IsNullOrEmpty(path) ? addition :
+                path + Configurations.CategoryDelimiter + addition;
+        }
+
+        internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)
+        {
+            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
+            if (category != null && category.IsExpanded != isExpanded)
+                category.IsExpanded = isExpanded;
         }
 
         #endregion
@@ -289,8 +613,7 @@ namespace Dynamo.ViewModels
         #region Search
 
         /// <summary>
-        ///     Performs a search using the internal SearcText as the query and
-        ///     updates the observable SearchResults property.
+        ///     Performs a search using the internal SearcText as the query.
         /// </summary>
         internal void SearchAndUpdateResults()
         {
@@ -306,58 +629,78 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
-            // deselect the last selected item
-            if (visibleSearchResults.Count > SelectedIndex)
-                visibleSearchResults[SelectedIndex].IsSelected = false;
 
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
                 return;
 
-            // clear visible results list
-            visibleSearchResults.Clear();
+            var foundNodes = Search(query);
 
-            foreach (var category in SearchRootCategories)
-                category.DisposeTree();
+            UpdateTopResult();
+            RaisePropertyChanged("SearchRootCategories");
 
-            SearchRootCategories.Clear();
+            SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
+        }
 
-            if (string.IsNullOrEmpty(query))
-                return;
 
-            var result =
-                Model.Search(query).Where(r => r.IsVisibleInSearch).Take(MaxNumSearchResults).ToList();
-
-            // Add top result
-            var firstRes = result.FirstOrDefault();
-            if (firstRes == null)
-                return; //No results
-
-            var topResultCategory = new RootNodeCategoryViewModel("Top Result");
-            SearchRootCategories.Add(topResultCategory);
-
-            var copy = MakeNodeSearchElementVM(firstRes);
-            var catName = MakeShortCategoryString(firstRes.FullCategoryName);
-
-            var breadCrumb = new NodeCategoryViewModel(catName) { IsExpanded = true };
-            breadCrumb.Entries.Add(copy);
-            topResultCategory.SubCategories.Add(breadCrumb);
-            topResultCategory.Visibility = true;
-            topResultCategory.IsExpanded = true;
-
-            SearchRootCategories.AddRange(CategorizeEntries(result, true));
-
-            visibleSearchResults.AddRange(SearchRootCategories.SelectMany(GetVisibleSearchResults));
-
-            if (visibleSearchResults.Any())
+        /// <summary>
+        ///     Performs a search using the given string as query.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
+        internal IEnumerable<NodeSearchElementViewModel> Search(string search)
+        {
+            if (string.IsNullOrEmpty(search))
             {
-                SelectedIndex = 0;
-                visibleSearchResults[0].IsSelected = true;
+                return SearchResults;
             }
 
-            SearchResults.Clear();
-            foreach (var x in visibleSearchResults)
-                SearchResults.Add(x);
+            return Search(search, MaxNumSearchResults);
+        }
+
+        private IEnumerable<NodeSearchElementViewModel> Search(string search, int maxNumSearchResults)
+        {
+            var foundNodes = Model.Search(search).Take(maxNumSearchResults);
+
+            ClearSearchCategories();
+            PopulateSearchCategories(foundNodes);
+
+            return foundNodes.Select(MakeNodeSearchElementVM);
+        }
+
+        private void PopulateSearchCategories(IEnumerable<NodeSearchElement> nodes)
+        {
+            foreach (NodeSearchElement node in nodes)
+            {
+                var rootCategoryName = NodeSearchElement.SplitCategoryName(node.FullCategoryName).FirstOrDefault();
+
+                var category = searchRootCategories.FirstOrDefault(sc => sc.Name == rootCategoryName);
+                if (category == null)
+                {
+                    category = new SearchCategory(rootCategoryName);
+                    searchRootCategories.Add(category);
+                }
+
+                var elementVM = MakeNodeSearchElementVM(node);
+                elementVM.Category = GetCategoryViewModel(libraryRoot, node.Categories);
+
+                category.AddMemberToGroup(elementVM);
+            }
+
+            // Order found categories by name.
+            searchRootCategories = new ObservableCollection<SearchCategory>(searchRootCategories.OrderBy(x => x.Name));
+
+            SortSearchCategoriesChildren();
+        }
+
+        private void SortSearchCategoriesChildren()
+        {
+            searchRootCategories.ToList().ForEach(x => x.SortChildren());
+        }
+
+        private void ClearSearchCategories()
+        {
+            searchRootCategories.Clear();
         }
 
         private static IEnumerable<NodeSearchElementViewModel> GetVisibleSearchResults(NodeCategoryViewModel category)
@@ -375,26 +718,60 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private static NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
+        private NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
         {
             var element = entry as CustomNodeSearchElement;
-            return element != null
-                ? new CustomNodeSearchElementViewModel(element)
-                : new NodeSearchElementViewModel(entry);
+            var elementVM = element != null
+                ? new CustomNodeSearchElementViewModel(element, this)
+                : new NodeSearchElementViewModel(entry, this);
+
+            elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+            return elementVM;
+        }
+
+        private static NodeCategoryViewModel GetCategoryViewModel(NodeCategoryViewModel rootCategory,
+            IEnumerable<string> categories)
+        {
+            var nameStack = new Stack<string>(categories.Reverse());
+            NodeCategoryViewModel target = rootCategory;
+            NodeCategoryViewModel newTarget = null;
+            bool isCheckedForClassesCategory = false;
+            while (nameStack.Any())
+            {
+                var currentCategory = nameStack.Pop();
+                newTarget = target.SubCategories.FirstOrDefault(c => c.Name == currentCategory);
+                if (newTarget == null)
+                {
+                    if (!isCheckedForClassesCategory && target.SubCategories.Count > 0 &&
+                        target.SubCategories[0] is ClassesNodeCategoryViewModel)
+                    {
+                        isCheckedForClassesCategory = true;
+                        nameStack.Push(currentCategory);
+                        nameStack.Push(Configurations.ClassesDefaultName);
+                        continue;
+                    }
+
+                    return null;
+                }
+
+                target = newTarget;
+            }
+
+            return target;
         }
 
         private static string MakeShortCategoryString(string fullCategoryName)
         {
             var catName = fullCategoryName.Replace(".", " > ");
 
-            if (catName.Length <= 50) 
+            if (catName.Length <= 50)
                 return catName;
 
             // if the category name is too long, we strip off the interior categories
             var s = catName.Split('>').Select(x => x.Trim()).ToList();
-            if (s.Count() <= 4) 
+            if (s.Count() <= 4)
                 return catName;
-            
+
             s = new List<string>
             {
                 s[0],
@@ -417,22 +794,25 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void SelectNext()
         {
-            if (SelectedIndex == SearchResults.Count - 1
-                || SelectedIndex == -1)
-                return;
 
-            SelectedIndex = SelectedIndex + 1;
         }
 
-        /// <summary>
-        ///     Decrements the selected element by 1, unless it is the first element already
-        /// </summary>
-        public void SelectPrevious()
+        private void UpdateTopResult()
         {
-            if (SelectedIndex <= 0)
-                return;
+            if (!SearchRootCategories.Any())
+            {
+                TopResult = null;
 
-            SelectedIndex = SelectedIndex - 1;
+                return;
+            }
+
+            // If SearchRootCategories has at least 1 element, it has at least 1 member. 
+            var firstMemberGroup = SearchRootCategories.First().MemberGroups.First();
+
+            var topMemberGroup = new SearchMemberGroup(firstMemberGroup.FullyQualifiedName);
+            topMemberGroup.AddMember(firstMemberGroup.Members.First());
+
+            TopResult = topMemberGroup;
         }
 
         #endregion
@@ -472,7 +852,7 @@ namespace Dynamo.ViewModels
 
                 if (matches[matches.Count - 1].Index + 1 != text.Length)
                     return text.Substring(0, matches[matches.Count - 1].Index + 2);
-                
+
                 // if period is in last position, remove that period and recurse
                 text = text.Substring(0, text.Length - 1);
             }
@@ -484,35 +864,21 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void PopulateSearchTextWithSelectedResult()
         {
-            if (SearchResults.Count == 0) return;
+            // TODO (Vladimir): implement it for new navigation system
 
-            // none of the elems are selected, return 
-            if (SelectedIndex == -1)
-                return;
+            //if (SearchResults.Count == 0) return;
 
-            SearchText = SearchResults[SelectedIndex].Model.Name;
+            //// none of the elems are selected, return 
+            //if (SelectedIndex == -1)
+            //    return;
+
+            //SearchText = SearchResults[SelectedIndex].Model.Name;
         }
 
-        #endregion
-
-        #region Execution
-
-        /// <summary>
-        ///     Runs the Execute() method of the current selected SearchElementBase object
-        ///     amongst the SearchResults.
-        /// </summary>
-        public void Execute()
+        public void OnSearchElementClicked(NodeModel nodeModel)
         {
-            // none of the elems are selected, return 
-            if (SelectedIndex == -1)
-                return;
-
-            if (visibleSearchResults.Count <= SelectedIndex)
-                return;
-
-            visibleSearchResults[SelectedIndex].Model.ProduceNode();
+            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(nodeModel, 0, 0, true, true));
         }
-
         #endregion
 
         #region Commands

@@ -13,17 +13,6 @@ namespace Dynamo.Models
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
 
-        public bool RunEnabled
-        {
-            get { return runEnabled; }
-            set
-            {
-                if (Equals(value, runEnabled)) return;
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
-            }
-        }
-
         public bool DynamicRunEnabled;
 
         public readonly bool VerboseLogging;
@@ -50,13 +39,16 @@ namespace Dynamo.Models
             : base("Home", e, n,a, x, y, factory, elementResolver, fileName)
         {
             RunEnabled = true;
+#if DEBUG
+            DynamicRunEnabled = true;
+#else
+            DynamicRunEnabled = false;
+#endif
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
             VerboseLogging = verboseLogging;
-
-            ResetEngine(engine);
-
             IsTestMode = isTestMode;
+            EngineController = engine;
         }
 
         public override void Dispose()
@@ -104,8 +96,6 @@ namespace Dynamo.Models
         }
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
-        private bool runEnabled;
-
         internal bool IsEvaluationPending
         {
             get
@@ -122,12 +112,7 @@ namespace Dynamo.Models
 
         protected override void ResetWorkspaceCore()
         {
-            // Reset Run Automatic option to false on resetting the workspace
-#if DEBUG
-            DynamicRunEnabled = true;
-#else
-            DynamicRunEnabled = false;
-#endif
+            base.ResetWorkspaceCore();
         }
 
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
@@ -161,6 +146,7 @@ namespace Dynamo.Models
         {
             base.Clear();
             PreloadedTraceData = null;
+            RunEnabled = true;
         }
 
         #region evaluation

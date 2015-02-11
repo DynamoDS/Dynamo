@@ -328,13 +328,13 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("TestCustomNode.xml");
             var workspaces = this.ViewModel.Model.Workspaces;
             Assert.IsNotNull(workspaces);
-            Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+            Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
             // 1 custom node + 1 number node
             Assert.AreEqual(1, workspace.Connectors.Count());
             Assert.AreEqual(2, workspace.Nodes.Count);
 
-            var customWorkspace = workspaces[1];
+            var customWorkspace = workspaces.ElementAt(1);
             Assert.IsNotNull(customWorkspace);
 
             // 1 inputs + 1 output 
@@ -358,13 +358,13 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+                    Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(3, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
@@ -382,13 +382,13 @@ namespace DynamoCoreUITests
                 {
 
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+                    Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(3, workspace.Connectors.Count());
                     Assert.AreEqual(4, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
@@ -432,11 +432,11 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count);
+                    Assert.AreEqual(2, workspaces.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(1, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
@@ -450,12 +450,12 @@ namespace DynamoCoreUITests
                 {
 
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count);
+                    Assert.AreEqual(2, workspaces.Count());
 
 
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(1, workspace.Nodes.Count);
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
                     Assert.AreEqual(1, customWorkspace.Nodes.Count);
@@ -478,13 +478,13 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+                    Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(1, workspace.Connectors.Count());
                     Assert.AreEqual(2, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
@@ -500,13 +500,13 @@ namespace DynamoCoreUITests
                 {
 
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+                    Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(1, workspace.Connectors.Count());
                     Assert.AreEqual(2, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
@@ -602,13 +602,13 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("CreateAndUseCustomNode.xml");
             var workspaces = this.ViewModel.Model.Workspaces;
             Assert.IsNotNull(workspaces);
-            Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+            Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
             // 1 custom node + 3 number nodes + 1 watch node
             Assert.AreEqual(4, workspace.Connectors.Count());
             Assert.AreEqual(5, workspace.Nodes.Count);
 
-            var customWorkspace = workspaces[1];
+            var customWorkspace = workspaces.ElementAt(1);
             Assert.IsNotNull(customWorkspace);
 
             // 3 inputs + 1 output + 1 addition + 1 multiplication
@@ -3117,7 +3117,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("RegressionTests"), Category("Failure")]
+        [Category("RegressionTests")]
         public void RunAutomatically_On_5068()
         {
             // If Run Automatically On, third file onwards it executes to null

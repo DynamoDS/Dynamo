@@ -254,7 +254,7 @@ namespace Dynamo.Tests
             // Assert that once a library with classname conflicts is loaded the CBN
             // displays the warning
             Assert.IsTrue(codeBlockNodeOne.ToolTipText.Contains(string.Format(
-                ProtoCore.StringConstants.kMultipleSymbolFoundFromName, "Point", "")));
+                ProtoCore.Properties.Resources.kMultipleSymbolFoundFromName, "Point", "")));
         }
 
         [Test]
@@ -289,11 +289,18 @@ namespace Dynamo.Tests
                     if (function.IsObsolete || !function.IsVisibleInLibrary || function.FunctionName.Contains("GetType"))
                         continue;
 
+                    var category = function.Category;
+                    var group = SearchElementGroup.Action;
+                    category = ViewModel.SearchViewModel.Model.ProcessNodeCategory(category, ref group);
+
                     node = document.SelectSingleNode(string.Format(
-                        "//{0}[FullCategoryName='{1}' and Name='{2}']", 
-                        typeof(ZeroTouchSearchElement).FullName,
-                        function.Category, function.FunctionName));
+                        "//{0}[FullCategoryName='{1}' and Name='{2}']",
+                        typeof(ZeroTouchSearchElement).FullName, category, function.FunctionName));
                     Assert.IsNotNull(node);
+
+                    subNode = node.SelectSingleNode("Group");
+                    Assert.IsNotNull(subNode.FirstChild);
+                    Assert.AreEqual(group.ToString(), subNode.FirstChild.Value);
 
                     // 'FullCategoryName' is already checked.
                     // 'Name' is already checked.

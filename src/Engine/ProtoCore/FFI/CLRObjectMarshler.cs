@@ -11,6 +11,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Linq;
+using ProtoCore.Properties;
 
 namespace ProtoFFI
 {
@@ -124,7 +125,7 @@ namespace ProtoFFI
         {
             if (dsObject.opdata > MaxValue || dsObject.opdata < MinValue)
             {
-                string message = String.Format(ProtoCore.StringConstants.kFFIInvalidCast, dsObject.opdata, type.Name, MinValue, MaxValue);
+                string message = String.Format(Resources.kFFIInvalidCast, dsObject.opdata, type.Name, MinValue, MaxValue);
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
@@ -159,7 +160,7 @@ namespace ProtoFFI
         {
             if (dsObject.RawDoubleValue > MaxValue || dsObject.RawDoubleValue < MinValue)
             {
-                string message = String.Format(ProtoCore.StringConstants.kFFIInvalidCast, dsObject.RawDoubleValue, type.Name, MinValue, MaxValue);
+                string message = String.Format(Resources.kFFIInvalidCast, dsObject.RawDoubleValue, type.Name, MinValue, MaxValue);
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, message);
             }
 
@@ -493,24 +494,21 @@ namespace ProtoFFI
     /// <summary>
     /// Marshales string as array of chars
     /// </summary>
-    class StringMarshaler : CollectionMarshaler
+    class StringMarshaler : PrimitiveMarshler 
     {
         public static readonly ProtoCore.Type kType = CreateType(ProtoCore.PrimitiveType.kTypeString);
-        private static readonly CharMarshaler kCharMarshaler = new CharMarshaler();
 
-        public StringMarshaler() : base(kCharMarshaler, kType) { }
+        public StringMarshaler() : base(kType) { }
 
         public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
         {
             string str = (string)obj;
-            StackValue dsarray = base.Marshal(str.ToCharArray(), context, dsi, type);
-            return StackValue.BuildString(dsarray.opdata);
+            return dsi.runtime.Core.Heap.AllocateString(str);
         }
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            char[] array = UnMarshal<char>(dsObject, context, dsi);
-            return new string(array);
+            return dsi.runtime.Core.Heap.GetString(dsObject);
         }
     }
 

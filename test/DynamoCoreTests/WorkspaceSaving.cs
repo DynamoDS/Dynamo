@@ -522,7 +522,13 @@ namespace Dynamo.Tests
 
             Assert.AreNotEqual(Guid.Empty, initialId);
             Assert.AreNotEqual(Guid.Empty, newDef);
-            Assert.AreNotEqual(initialId, newDef);
+            Assert.AreEqual(initialId, newDef);
+
+            var newPath2 = GetNewFileNameOnTempPath("dyf");
+            workspace.SaveAs(newPath2, ViewModel.Model.EngineController.LiveRunnerCore);
+            var newDef2 = workspace.CustomNodeId;
+            Assert.AreNotEqual(Guid.Empty, newDef2);
+            Assert.AreNotEqual(initialId, newDef2);
         }
 
         [Test]
