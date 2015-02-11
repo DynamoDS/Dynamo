@@ -120,7 +120,9 @@
         <KeyBinding Key="D"
                     Modifiers="Ctrl+Alt"
                     Command="{Binding Path=DataContext.DumpLibraryToXmlCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
-
+        <KeyBinding Key="U"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.AddAnnotationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Left"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
@@ -336,10 +338,10 @@
                                   Name="noteMenuItem"
                                   InputGestureText="Ctrl + W" />
                         <MenuItem Focusable="False"
-                                  Header="_Create Grouping"
+                                  Header="{x:Static p:Resources.DynamoViewEditMenuCreateGroup}"
                                   Command="{Binding AddAnnotationCommand}"
                                   Name="noteMenuAnnotation"
-                                  InputGestureText="Ctrl + G" />
+                                  InputGestureText="Ctrl + U" />
                         <MenuItem Focusable="False"                                
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
                                   Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
