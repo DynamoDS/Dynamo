@@ -22,6 +22,8 @@ using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
+using Dynamo.Wpf.ViewModels;
+
 using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -99,19 +101,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool DynamicRunEnabled
-        {
-            get
-            {
-                return HomeSpace.DynamicRunEnabled; //selecting debug now toggles this on/off
-            }
-            set
-            {
-                HomeSpace.DynamicRunEnabled = value;
-                RaisePropertyChanged("DynamicRunEnabled");
-            }
-        }
-
         public bool ViewingHomespace
         {
             get { return model.CurrentWorkspace == HomeSpace; }
@@ -125,6 +114,11 @@ namespace Dynamo.ViewModels
             {
                 return model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             }
+        }
+
+        public WorkspaceViewModel HomeSpaceViewModel
+        {
+            get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
         }
 
         public EngineController EngineController { get { return Model.EngineController; } }
@@ -275,17 +269,6 @@ namespace Dynamo.ViewModels
             get { return model.Logger.LogText; }
         }
 
-        public string PeriodicEvaluationText
-        {
-            get
-            {
-                if (model.EvaluationPeriod == 0)
-                    return "Set Timer";
-
-                return string.Format("Timer: {0}ms", model.EvaluationPeriod);
-            }
-        }
-
         public int ConsoleHeight
         {
             get
@@ -324,18 +307,6 @@ namespace Dynamo.ViewModels
                 model.IsShowingConnectors = value;
 
                 RaisePropertyChanged("IsShowingConnectors");
-            }
-        }
-
-        public bool HasNodeThatPeriodicallyUpdates
-        {
-            get
-            {
-                var workspace = model.CurrentWorkspace as HomeWorkspaceModel;
-                if (workspace == null)
-                    return false;
-
-                return workspace.HasNodeThatPeriodicallyUpdates;
             }
         }
 
@@ -463,17 +434,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool ShowLogin { get; private set; }
 
-        private int periodicEvaluationTime = 300;
-        public int PeriodicEvaluationTime
-        {
-            get { return periodicEvaluationTime; }
-            set
-            {
-                periodicEvaluationTime = value;
-                RaisePropertyChanged("PeriodicEvaluationTime");
-            }
-        }
-        
         #endregion
 
         public struct StartConfiguration
@@ -737,23 +697,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void SetPeriodicTimer(object parameter)
-        {
-            if (model == null)
-                return;
-
-            if (model.EvaluationPeriod != 0)
-            {
-                model.StopPeriodicEvaluation();
-            }
-            else
-            {
-                model.StartPeriodicEvaluation(periodicEvaluationTime);
-            }
-
-            RaisePropertyChanged("PeriodicEvaluationText");
-        }
-        
         public void ReturnFocusToSearch()
         {
             this.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
@@ -1009,8 +952,8 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "HasNodeThatPeriodicallyUpdates":
-                    RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
+                case "RunSettings":
+                    RaisePropertyChanged("RunSettingsViewModel");
                     break;
             }
         }
@@ -1201,7 +1144,6 @@ namespace Dynamo.ViewModels
 
         public virtual bool RunInDebug
         {
-
             get { return debug; }
             set
             {
@@ -1211,11 +1153,10 @@ namespace Dynamo.ViewModels
                 CanRunDynamically = !debug;
 
                 if (debug)
-                    DynamicRunEnabled = false;
+                    HomeSpace.RunSettings.RunType = RunType.Manual;
 
                 RaisePropertyChanged("RunInDebug");
             }
-
         }
 
         /// <summary>
@@ -1299,7 +1240,7 @@ namespace Dynamo.ViewModels
 
         internal void ShowElement(NodeModel e)
         {
-            if (DynamicRunEnabled)
+            if (HomeSpace.RunSettings.RunType == RunType.Automatic)
                 return;
 
             if (!model.CurrentWorkspace.Nodes.Contains(e))
@@ -2270,6 +2211,26 @@ namespace Dynamo.ViewModels
         private void CheckForLatestRender(object obj)
         {
             this.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
+        }
+
+        private void SetPeriodicTimer(object parameter)
+        {
+            if (Model == null)
+                return;
+
+            if (HomeSpace.RunSettings.RunPeriod != 0)
+            {
+                model.StopPeriodicEvaluation();
+            }
+            else
+            {
+                model.StartPeriodicEvaluation(HomeSpace.RunSettings.RunPeriod);
+            }
+        }
+
+        private bool CanSetPeriodicTimer(object parameter)
+        {
+            return true;
         }
 
         public DynamoViewModel ViewModel { get { return this; } }

@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 
 using System.Windows.Input;
 using Dynamo.Core;
+using Dynamo.Wpf.ViewModels;
 
 using Function = Dynamo.Nodes.Function;
 
@@ -236,6 +237,8 @@ namespace Dynamo.ViewModels
 
         public Action FindNodesFromElements { get; set; }
 
+        public RunSettingsViewModel RunSettingsViewModel { get; private set; }
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -277,6 +280,18 @@ namespace Dynamo.ViewModels
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
+
+            if (Model is HomeWorkspaceModel)
+            {
+                RunSettingsViewModel = new RunSettingsViewModel(((HomeWorkspaceModel)model).RunSettings);
+                RunSettingsViewModel.PropertyChanged += RunSettingsViewModel_PropertyChanged;
+            }
+                
+        }
+
+        void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("RunSettingsViewModel");
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

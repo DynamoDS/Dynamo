@@ -195,12 +195,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool EnablePeriodicUpdate
-        {
-            get { return nodeLogic.EnablePeriodicUpdate; }
-            set { nodeLogic.EnablePeriodicUpdate = value; }
-        }
-
         public bool ShowsVisibilityToggles
         {
             get { return true; }

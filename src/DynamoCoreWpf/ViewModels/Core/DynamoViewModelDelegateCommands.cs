@@ -15,7 +15,6 @@ namespace Dynamo.ViewModels
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
-
             WriteToLogCmd = new DelegateCommand(o => model.Logger.Log(o.ToString()), CanWriteToLog);
             PostUiActivationCommand = new DelegateCommand(model.PostUIActivation);
             AddNoteCommand = new DelegateCommand(AddNote, CanAddNote);
@@ -41,7 +40,6 @@ namespace Dynamo.ViewModels
             PasteCommand = new DelegateCommand(_ => model.Paste(), CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             CancelRunCommand = new DelegateCommand(CancelRunCmd, CanCancelRunCmd);
-            SetPeriodicTimerCommand = new DelegateCommand(SetPeriodicTimer, CanCancelRunCmd);
             RunExpressionCommand = new DelegateCommand(RunExprCmd, CanRunExprCmd);
             ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, CanRunExprCmd);
             MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, CanRunExprCmd);
@@ -73,10 +71,10 @@ namespace Dynamo.ViewModels
             SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
-
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
+            SetPeriodicTimerCommand = new DelegateCommand(SetPeriodicTimer, CanSetPeriodicTimer);
         }
 
         public DelegateCommand OpenCommand { get; set; }
@@ -116,7 +114,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
-        public DelegateCommand SetPeriodicTimerCommand { get; set; }
         public DelegateCommand RunExpressionCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }
         public DelegateCommand MutateTestDelegateCommand { get; set; }
@@ -151,5 +148,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
         public DelegateCommand DumpLibraryToXmlCommand { get; set; }
+        public DelegateCommand SetPeriodicTimerCommand { get; set; }
     }
 }

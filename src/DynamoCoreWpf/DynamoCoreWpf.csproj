@@ -73,16 +73,19 @@
   <ItemGroup>
     <Compile Include="Controls\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
-	</Compile>
+    </Compile>
     <Compile Include="Controls\AddonsTreeView.xaml.cs">
       <DependentUpon>AddonsTreeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\HeaderStrip.xaml.cs">
       <DependentUpon>HeaderStrip.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RunSettingsControl.xaml.cs">
+      <DependentUpon>RunSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\StandardPanel.xaml.cs">
       <DependentUpon>StandardPanel.xaml</DependentUpon>
-	</Compile>   
+    </Compile>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
@@ -194,6 +197,7 @@
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="Utilities\ResourceUtilities.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
+    <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
@@ -323,10 +327,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\Login.xaml">
-	  <SubType>Designer</SubType>
-	  <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\HeaderStrip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RunSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

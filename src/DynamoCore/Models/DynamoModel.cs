@@ -932,7 +932,7 @@ namespace Dynamo.Models
             var currentHomeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             if (currentHomeWorkspace != null)
             {
-                newWorkspace.DynamicRunEnabled = currentHomeWorkspace.DynamicRunEnabled;
+                newWorkspace.RunSettings.RunType = currentHomeWorkspace.RunSettings.RunType;
             }
             workspace = newWorkspace;
 

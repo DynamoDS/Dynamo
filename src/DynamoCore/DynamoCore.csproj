@@ -111,6 +111,7 @@ limitations under the License.
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="Models\RunSettings.cs" />
     <Compile Include="PackageManager\PackageManagerResult.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />

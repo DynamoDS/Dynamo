@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="Dynamo.Wpf.Controls.RunSettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="300">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <ObjectDataProvider MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}"
+                        x:Key="RunTypes">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="models:RunType" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <ComboBox ItemsSource="{Binding Source={StaticResource RunTypes}}"
+                      SelectedItem="{Binding RunType}"
+                      Width ="150" 
+                      VerticalContentAlignment="Center"
+                      HorizontalContentAlignment="Left"
+                      Style="{DynamicResource ResourceKey=SComboBox}" 
+                      Foreground="#bbbbbb" Padding="2" FontSize="14px">
+            </ComboBox>
+            <TextBox Text="{Binding RunPeriod}"
+                     VerticalContentAlignment="Center"
+                     Visibility="{Binding RunPeriodInputVisibilty}"
+                     Width="80" FontSize="14px"
+                     Style="{DynamicResource ResourceKey=SDarkTextBox}" Foreground="#bbbbbb"/>
+            <Label Content="ms" Foreground="#bbbbbb" Visibility="{Binding RunPeriodInputVisibilty}" 
+                   VerticalAlignment="Center" FontSize="14px"/>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

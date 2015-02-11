@@ -14,7 +14,7 @@ namespace Dynamo.Models
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
 
-        public bool DynamicRunEnabled;
+        public RunSettings RunSettings { get; private set; }
 
         public readonly bool VerboseLogging;
 
@@ -38,10 +38,11 @@ namespace Dynamo.Models
             : base("Home", e, n, x, y, factory, elementResolver, fileName)
         {
             RunEnabled = true;
+            
 #if DEBUG
-            DynamicRunEnabled = true;
+            RunSettings = new RunSettings(RunType.Automatic, 100);
 #else
-            DynamicRunEnabled = false;
+            RunSettings = new RunSettings(RunType.Manual, 100);
 #endif
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
@@ -103,26 +104,14 @@ namespace Dynamo.Models
             }
         }
 
-        public bool HasNodeThatPeriodicallyUpdates
-        {
-            get
-            {
-                var nodes = Nodes;
-                return nodes.Any(n => n.EnablePeriodicUpdate);
-            }
-        }
-
         protected override void OnNodeAdded(NodeModel node)
         {
             base.OnNodeAdded(node);
-            RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
         }
 
         protected override void OnNodeRemoved(NodeModel node)
         {
             base.OnNodeRemoved(node);
-            RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
-
             EngineController.NodeDeleted(node);
         }
 
@@ -149,20 +138,10 @@ namespace Dynamo.Models
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check that shutdown has not been requested.
-            if (DynamicRunEnabled && EngineController != null)
+            if (RunSettings.RunType == RunType.Automatic && EngineController != null)
             {
                 DynamoModel.OnRequestDispatcherBeginInvoke(Run);
             }
-        }
-
-        protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "EnablePeriodicUpdate")
-            {
-                RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
-            }
-
-            base.OnNodePropertyChanged(sender, e);
         }
 
         /// <summary>
@@ -208,7 +187,7 @@ namespace Dynamo.Models
                 OnNodesModified();
             }
 
-            if (DynamicRunEnabled)
+            if (RunSettings.RunType == RunType.Automatic)
                 Run();
         }
 
