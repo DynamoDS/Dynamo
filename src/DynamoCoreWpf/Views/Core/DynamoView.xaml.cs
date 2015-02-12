@@ -396,22 +396,12 @@ namespace Dynamo.Controls
             UnsubscribeNodeViewCustomizationEvents();
         }
 
-        private Window _aboutWindow;
         void DynamoViewModelRequestAboutWindow(DynamoViewModel model)
         {
-            if (_aboutWindow == null)
-            {
-                _aboutWindow = model.BrandingResourceProvider.CreateAboutBox(model);
-                _aboutWindow.Owner = this;
-                _aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                
-                _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
-                _aboutWindow.Show();
-
-                if (_aboutWindow.IsLoaded && IsLoaded) _aboutWindow.Owner = this;
-            }
-
-            _aboutWindow.Focus();
+            var aboutWindow = model.BrandingResourceProvider.CreateAboutBox(model);
+            aboutWindow.Owner = this;
+            aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            aboutWindow.ShowDialog();
         }
 
         private PublishPackageView _pubPkgView;
