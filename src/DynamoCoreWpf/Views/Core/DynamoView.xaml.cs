@@ -401,7 +401,6 @@ namespace Dynamo.Controls
         {
             if (_aboutWindow == null)
             {
-                //_aboutWindow = new AboutWindow(model)
                 _aboutWindow = model.BrandingResourceProvider.CreateAboutBox(model);
                 _aboutWindow.Owner = this;
                 _aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
