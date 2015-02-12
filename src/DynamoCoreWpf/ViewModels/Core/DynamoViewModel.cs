@@ -166,6 +166,10 @@ namespace Dynamo.ViewModels
             }
             set
             {
+                // It happens when current workspace is home workspace, and we 
+                // open a new home workspace. At this moment, the old homework 
+                // space is removed, before new home workspace is added, Dynamo
+                // has no idea about what is selected tab index.
                 if (value < 0)
                     return;
 
