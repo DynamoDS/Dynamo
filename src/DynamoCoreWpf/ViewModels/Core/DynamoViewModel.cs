@@ -444,10 +444,11 @@ namespace Dynamo.ViewModels
 
         public bool ShowRunPreview
         {
-            get { return model.ShowRunPreview; }
+            get { return HomeSpace.ShowRunPreview; }
             set
             {
-                model.ShowRunPreview = value;
+                HomeSpace.ShowRunPreview = value;
+                HomeSpace.SetNodeExecutionState(value);
                 RaisePropertyChanged("ShowRunPreview");
             }
         }
@@ -1492,6 +1493,7 @@ namespace Dynamo.ViewModels
 
                 // Update the ViewModel property to reflect change in WorkspaceModel
                 RaisePropertyChanged("DynamicRunEnabled");
+                RaisePropertyChanged("ShowRunPreview");
                 return true;
             }
 

@@ -95,12 +95,7 @@ namespace Dynamo.Models
             if (ShutdownCompleted != null)
                 ShutdownCompleted(this);
         }
-
-        internal void OnGetExecutingNodes()
-        {
-          ((HomeWorkspaceModel)CurrentWorkspace).GetExecutingNodes();
-        }
-
+       
         #endregion
 
         #region static properties
@@ -302,17 +297,6 @@ namespace Dynamo.Models
             get { return _workspaces; } 
         }
 
-        public static bool showRunPreview = true;
-
-        public bool ShowRunPreview
-        {
-            get { return showRunPreview; }
-            set
-            {
-                showRunPreview = value;      
-                OnGetExecutingNodes();
-            }
-        }   
         #endregion
 
         #region initialization and disposal
