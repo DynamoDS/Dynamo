@@ -42,6 +42,9 @@
     <EmbeddedResource Include="ProtoGeometryImages.resx" />
     <EmbeddedResource Include="TessellationImages.resx" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
@@ -73,7 +76,7 @@
   <Target Name="AfterBuild">
     <ItemGroup>
       <DeleteFiles Include="$(TargetDir)$(ProjectName).*" />
-    </ItemGroup>    
-	<Delete Files="@(DeleteFiles)" />
+    </ItemGroup>
+    <Delete Files="@(DeleteFiles)" />
   </Target>
 </Project>
