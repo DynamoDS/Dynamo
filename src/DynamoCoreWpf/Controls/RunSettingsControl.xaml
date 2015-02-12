@@ -33,9 +33,9 @@
         <StackPanel Orientation="Horizontal">
             <ComboBox ItemsSource="{Binding Source={StaticResource RunTypes}}"
                       SelectedItem="{Binding RunType}"
-                      Width ="150" 
+                      Width ="100" 
                       VerticalContentAlignment="Center"
-                      HorizontalContentAlignment="Left"
+                      HorizontalContentAlignment="Center"
                       Style="{DynamicResource ResourceKey=SComboBox}" 
                       Foreground="#bbbbbb" Padding="2" FontSize="14px">
             </ComboBox>
