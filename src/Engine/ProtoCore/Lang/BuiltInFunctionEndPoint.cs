@@ -31,7 +31,7 @@ namespace ProtoCore.Lang
 
         public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
         {
-
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core);
             StackValue ret;
 
@@ -335,17 +335,11 @@ namespace ProtoCore.Lang
                         // Comment Jun: the caller type is the current type in the stackframe
                         StackFrameType callerType = stackFrame.StackFrameType;
 
-                        //if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
-                        {
-                            blockCaller = core.DebugProps.CurrentBlockId;
-                            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, core.CurrentExecutive.CurrentDSASMExec, core.Breakpoints);
-                        }
-                        //else
-                        //{
-                        //    StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                        //    ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame);
-                        //}
+                        
+                        blockCaller = runtimeCore.DebugProps.CurrentBlockId;
+                        StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
+
+                        ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, core.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
                         core.RunningBlock = oldRunningBlockId;
                         break;
@@ -499,6 +493,7 @@ namespace ProtoCore.Lang
         private StackValue DotMethod(StackValue lhs, StackFrame stackFrame, DSASM.Executive runtime, Context context)
         {
             var core = runtime.Core;
+            var runtimeCore = core.__TempCoreHostForRefactoring;
             var rmem = runtime.rmem;
             var runtimeData = runtime.exe.RuntimeData;
 
@@ -644,7 +639,8 @@ namespace ProtoCore.Lang
                 core.ExecMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
-                core.DebugProps.SetUpCallrForDebug(core,
+                runtimeCore.DebugProps.SetUpCallrForDebug(core,
+                                                   runtimeCore,
                                                    core.CurrentExecutive.CurrentDSASMExec,
                                                    procNode,
                                                    stackFrame.ReturnPC - 1,
@@ -665,7 +661,7 @@ namespace ProtoCore.Lang
                 core.ExecMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
-                core.DebugProps.RestoreCallrForNoBreak(core, procNode);
+                runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode);
             }
 
             return ret;
@@ -741,10 +737,11 @@ namespace ProtoCore.Lang
         internal static void Break(Interpreter interpreter, StackFrame stackFrame)
         {
             Core core = interpreter.runtime.Core;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (!core.Options.IDEDebugMode)
                 return;
 
-            if (core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
+            if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
                 return;
 
             // Search for next breakable instruction in list of instructions and add to RegisteredBreakPoints
@@ -759,8 +756,8 @@ namespace ProtoCore.Lang
             {
                 if (instructions[pc].debug != null)
                 {
-                    if(!core.Breakpoints.Contains(instructions[pc]))
-                        core.Breakpoints.Add(instructions[pc]);
+                    if(!runtimeCore.Breakpoints.Contains(instructions[pc]))
+                        runtimeCore.Breakpoints.Add(instructions[pc]);
                     break;
                 }
                 else if (instructions[pc].opCode == OpCode.BOUNCE)
@@ -901,10 +898,6 @@ namespace ProtoCore.Lang
             ProtoCore.Core core = runtime.runtime.Core;
             OutputMessage t_output = new OutputMessage(result);
             core.BuildStatus.MessageHandler.Write(t_output);
-            if (core.Options.WebRunner)
-            {
-                core.BuildStatus.WebMsgHandler.Write(t_output);
-            }
             return DSASM.StackValue.Null;
         }
     }

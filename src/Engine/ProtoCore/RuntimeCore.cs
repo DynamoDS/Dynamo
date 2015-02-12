@@ -30,17 +30,25 @@ namespace ProtoCore
     /// </summary>
     public class RuntimeCore
     {
-        public RuntimeCore(Options runtimeOptions, Executable executable, ProtoCore.Runtime.Context context)
+        public RuntimeCore(Options runtimeOptions, Executable executable, ProtoCore.Runtime.Context context, DebugProperties debugProps = null)
         {
             this.context = context;
-            this.executable = executable;
-            this.runtimeOptions = runtimeOptions;
+            this.DSExecutable = executable;
+            this.RuntimeOptions = runtimeOptions;
+            this.DebugProps = debugProps;
         }
 
+        public Executable DSExecutable { get; private set; }
+        public Options RuntimeOptions { get; private set; }
 
-        private Options runtimeOptions;
-        private Executable executable;
+        public RuntimeMemory RuntimeMemory { get; set; }
         private ProtoCore.Runtime.Context context;
         private Executive executiveRuntime;
+
+#region DEBUGGER_PROPERTIES
+        public DebugProperties DebugProps { get; set; }
+        public List<Instruction> Breakpoints { get; set; }
+#endregion 
+
     }
 }

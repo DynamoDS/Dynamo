@@ -54,6 +54,7 @@ namespace ProtoTestFx.TD
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
 //            testCore.Options.kDynamicCycleThreshold = 5;
+            testCore.__TempCoreHostForRefactoring = new ProtoCore.RuntimeCore(testCore.Options, testCore.DSExecutable, null, null);
             
             //FFI registration and cleanup
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());

@@ -1691,7 +1691,7 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildLabelIndex(L2);
 
             ++pc;
-            if (core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
+            if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
             {
                 instr.debug = null;
             }
@@ -1803,12 +1803,12 @@ namespace ProtoCore
             ++pc;
 
             bool outputBreakpoint = false;
-            DebugProperties.BreakpointOptions options = core.DebugProps.breakOptions;
+            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
             if (options.HasFlag(DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint))
                 outputBreakpoint = true;
 
             // Do not emit breakpoints for null or var type declarations
-            if (!core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
+            if (!core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
             {
                 // Don't need no pop for temp (unless caller demands it).
                 if (outputBreakpoint || !symbol.name.StartsWith("%"))
@@ -1952,7 +1952,7 @@ namespace ProtoCore
 
             ++pc;
 
-            DebugProperties.BreakpointOptions options = core.DebugProps.breakOptions;
+            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
             if (options.HasFlag(DebugProperties.BreakpointOptions.EmitIdentifierBreakpoint))
             {
                 instr.debug = GetDebugObject(identNode.line, identNode.col,

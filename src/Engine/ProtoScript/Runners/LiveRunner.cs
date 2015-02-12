@@ -1141,7 +1141,6 @@ namespace ProtoScript.Runners
                 GenerateExprID = true,
                 IsDeltaExecution = true,
                 BuildOptErrorAsWarning = true,
-                WebRunner = false,
                 ExecutionMode = ExecutionMode.Serial
             };
 
