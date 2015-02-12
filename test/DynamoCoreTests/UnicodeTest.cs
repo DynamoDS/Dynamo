@@ -24,5 +24,13 @@ namespace Dynamo.Tests
             AssertPreviewValue("dfcf8646-fa78-443f-b708-e06d713ca21e", 12);
             AssertPreviewValue("87c8b0a6-5e3b-4436-a8b4-d459d0937337", 27);
         }
+
+        [Test]
+        public void TestUnicodeInIronPython()
+        {
+            RunModel(@"core\unicode_test\unicodeInIronPython.dyn");
+            AssertPreviewValue("5b91e128-0f9e-411d-9b8f-76ed6f9aa85c", "中文字符123");
+            AssertPreviewValue("4192b7c7-c4f8-42ce-9144-2f058e68be6b", 7);
+        }
     }
 }
