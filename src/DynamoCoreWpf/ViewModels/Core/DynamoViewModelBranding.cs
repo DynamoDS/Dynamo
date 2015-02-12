@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Dynamo.Wpf.Interfaces;
+﻿using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.ViewModels
 {
