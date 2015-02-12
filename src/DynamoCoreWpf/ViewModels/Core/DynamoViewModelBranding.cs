@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.ViewModels
@@ -15,7 +16,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return BrandingResourceProvider.GetImageSource(ResourceNames.AboutBox.Image);
+                return new BitmapImage(
+                        new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png",
+                            UriKind.Absolute));
             }
         }
     }

@@ -5,7 +5,7 @@
     xmlns:ui="clr-namespace:Dynamo.UI"
     xmlns:views="clr-namespace:Dynamo.UI.Views"
     xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-    x:Name="Dynamo" 
+    x:Name="DynamoAboutWindow" 
     WindowStartupLocation="CenterOwner"
     WindowStyle="SingleBorderWindow"
     ResizeMode="NoResize"

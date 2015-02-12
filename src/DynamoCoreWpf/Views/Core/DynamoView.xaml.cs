@@ -396,16 +396,16 @@ namespace Dynamo.Controls
             UnsubscribeNodeViewCustomizationEvents();
         }
 
-        private AboutWindow _aboutWindow;
+        private Window _aboutWindow;
         void DynamoViewModelRequestAboutWindow(DynamoViewModel model)
         {
             if (_aboutWindow == null)
             {
-                _aboutWindow = new AboutWindow(model)
-                {
-                    Owner = this,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
+                //_aboutWindow = new AboutWindow(model)
+                _aboutWindow = model.BrandingResourceProvider.CreateAboutBox(model);
+                _aboutWindow.Owner = this;
+                _aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                
                 _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
                 _aboutWindow.Show();
 
