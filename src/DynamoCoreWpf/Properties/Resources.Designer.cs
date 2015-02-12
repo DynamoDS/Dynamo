@@ -639,7 +639,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Create Grouping.
+        ///   Looks up a localized string similar to _Create Group.
         /// </summary>
         public static string DynamoViewEditMenuCreateGroup {
             get {

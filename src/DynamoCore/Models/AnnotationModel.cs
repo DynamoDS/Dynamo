@@ -178,6 +178,9 @@ namespace Dynamo.Models
 
             nodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
 
+            var maxWidth = nodeModels.ToList().Select(x => x.Width).Max();
+            var maxHeight = nodeModels.ToList().Select(x => x.Height).Max();
+
             var xNodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
             var yNodeModels = nodeModels.ToList().OrderBy(x => x.Y).ToList();
 
@@ -190,9 +193,9 @@ namespace Dynamo.Models
             var region = new Rect2D
             {
                 X = regionX,
-                Y = regionY,                
-                Width = xDistance + 2*nodeModels.ElementAt(0).Width,
-                Height = yDistance + 2* nodeModels.ElementAt(0).Height
+                Y = regionY,
+                Width = xDistance + maxWidth,
+                Height = yDistance + maxHeight
             };
 
             //var region = new Rect2D

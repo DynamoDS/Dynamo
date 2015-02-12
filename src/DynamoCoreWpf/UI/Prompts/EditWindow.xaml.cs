@@ -21,9 +21,9 @@ namespace Dynamo.UI.Prompts
             InitializeComponent();
             this.dynamoViewModel = dynamoViewModel;
 
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;          
             this.editText.Focus();
-
+            
             // do not accept value if user closes 
             this.Closing += (sender, args) => this.DialogResult = false;
 
@@ -44,6 +44,7 @@ namespace Dynamo.UI.Prompts
                 editText.DataContext = dataContext;
 
             editText.SetBinding(TextBox.TextProperty, binding);
+            editText.SelectAll();
         }
 
         private void OkClick(object sender, RoutedEventArgs e)
@@ -58,7 +59,7 @@ namespace Dynamo.UI.Prompts
                     new DynCmd.UpdateModelValueCommand(
                         model.GUID, propName, editText.Text));
             }
-
+           
             this.DialogResult = true;
         }
 
