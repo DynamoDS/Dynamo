@@ -1419,7 +1419,7 @@ namespace ProtoCore
 
                 //Fix IDE-448
                 //Search current running block as well.
-                searchBlock = core.GetCodeBlock(core.CodeBlockList, core.RunningBlock);
+                searchBlock = core.GetCodeBlock(core.CodeBlockList, 0);
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
                 if (symbolIndex != Constants.kInvalidIndex)
                 {
@@ -1458,7 +1458,7 @@ namespace ProtoCore
             ProtoCore.DSASM.AddressType addressType;
             ProtoCore.DSASM.ClassNode classnode = core.ClassTable.ClassNodes[globalClassIndex];
 
-            int symbolIndex = classnode.GetSymbolIndex(name, globalClassIndex, globalProcIndex, core.RunningBlock, core, out hasThisSymbol, out addressType);
+            int symbolIndex = classnode.GetSymbolIndex(name, globalClassIndex, globalProcIndex, 0, core, out hasThisSymbol, out addressType);
             if (symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
                 return false;
