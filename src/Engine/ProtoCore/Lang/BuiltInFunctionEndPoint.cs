@@ -631,7 +631,13 @@ namespace ProtoCore.Lang
                                                null);
 
             ProtoCore.CallSite callsite = runtimeData.GetCallSite(
-                runtimeData.ExecutingGraphnode, thisObjectType, functionName, runtime.exe, core.RunningBlock, core.Options, runtimeCore.RuntimeStatus);
+                runtimeData.ExecutingGraphnode, 
+                thisObjectType, 
+                functionName, 
+                runtime.exe, 
+                core.RunningBlock, 
+                core.Options, 
+                runtimeCore.RuntimeStatus);
             Validity.Assert(null != callsite);
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
@@ -1269,7 +1275,9 @@ namespace ProtoCore.Lang
             if ((Rank(sv1, runtime) != 1) || (Rank(sv2, runtime) != 1))
             {
                 //LC urgent patch
-                runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kTypeMismatch, "Both arguments were expected to be one-dimensional array type!");
+                runtimeCore.RuntimeStatus.LogWarning(
+                    ProtoCore.Runtime.WarningID.kTypeMismatch, 
+                    "Both arguments were expected to be one-dimensional array type!");
                 return DSASM.StackValue.Null;
             }
             return RemoveDuplicates(Concat(sv1, sv2, runtime), runtime, context);

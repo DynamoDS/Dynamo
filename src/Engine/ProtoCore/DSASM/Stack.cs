@@ -459,7 +459,8 @@ namespace ProtoCore.DSASM
             int index = ix < 0 ? ix + hs.VisibleSize : ix;
             if (index >= hs.VisibleSize || index < 0)
             {
-                runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                runtimeCore.RuntimeStatus.LogWarning(
+                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
