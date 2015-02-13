@@ -558,7 +558,7 @@ namespace ProtoCore.Lang
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
             if (!CoreUtils.IsGetterSetter(functionName))
             {
-                replicationGuides = runtime.GetCachedReplicationGuides(core, functionArgs);
+                replicationGuides = runtime.GetCachedReplicationGuides(functionArgs);
                 if (removeFirstArgument)
                 {
                     replicationGuides.RemoveAt(0);

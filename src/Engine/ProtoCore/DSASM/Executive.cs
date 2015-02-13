@@ -737,7 +737,7 @@ namespace ProtoCore.DSASM
             {
                 // Comment Jun: If this is a non-dot call, cache the guides first and retrieve them on the actual function call
                 // TODO Jun: Ideally, cache the replication guides in the dynamic function node
-                replicationGuides = GetCachedReplicationGuides(core, arguments.Count);
+                replicationGuides = GetCachedReplicationGuides(arguments.Count);
             }
 
             // if is dynamic call, the final pointer has been resovled in the ProcessDynamicFunction function
@@ -1047,7 +1047,7 @@ namespace ProtoCore.DSASM
                                   ref arguments,
                                   ref repGuides);
             arguments.Reverse();
-            repGuides = GetCachedReplicationGuides(core, arguments.Count + 1);
+            repGuides = GetCachedReplicationGuides( arguments.Count + 1);
 
             StackValue lhs = rmem.Pop();
             StackValue thisObject = lhs;
@@ -4165,7 +4165,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public List<List<ReplicationGuide>> GetCachedReplicationGuides(Core core, int argumentCount)
+        public List<List<ReplicationGuide>> GetCachedReplicationGuides(int argumentCount)
         {
             int index = runtimeCore.ReplicationGuides.Count - argumentCount;
             if (index >= 0)
