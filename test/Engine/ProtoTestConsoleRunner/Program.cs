@@ -55,7 +55,6 @@ namespace ProtoTestConsoleRunner
             // Assuming current directory in test/debug mode is "...\Dynamo\bin\AnyCPU\Debug"
             ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core);
 
-         
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();
             Console.WriteLine(ms);
