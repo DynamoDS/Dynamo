@@ -840,6 +840,17 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        private void CreateGroup(object parameters)
+        {
+            DynamoViewModel.AddAnnotationCommand.Execute(null);
+        }
+
+        private bool CanCreateGroup(object parameters)
+        {
+            return true;
+        }
+
+
         #region Private Helper Methods
         private Point GetTopLeft()
         {
