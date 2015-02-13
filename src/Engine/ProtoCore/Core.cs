@@ -372,7 +372,6 @@ namespace ProtoCore
 
         public Options Options { get; private set; }
         public BuildStatus BuildStatus { get; private set; }
-        public RuntimeStatus RuntimeStatus { get; private set; }
 
         public TypeSystem TypeSystem { get; set; }
 
@@ -670,9 +669,16 @@ namespace ProtoCore
             ForLoopBlockIndex = Constants.kInvalidIndex;
         }
 
+        private void ResetRuntimeCore()
+        {
+            RuntimeData = new ProtoCore.RuntimeData();
+            __TempCoreHostForRefactoring = new RuntimeCore();
+            __TempCoreHostForRefactoring.RuntimeStatus = new ProtoCore.RuntimeStatus(this);
+        }
+
         private void ResetAll(Options options)
         {
-            this.RuntimeData = new ProtoCore.RuntimeData();
+            ResetRuntimeCore();
 
             Validity.AssertExpiry();
             Options = options;
@@ -739,7 +745,6 @@ namespace ProtoCore
             {
                 BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError, null, Options.BuildOptErrorAsWarning);
             }
-            RuntimeStatus = new RuntimeStatus(this);
 
             SSASubscript = 0;
             SSASubscript_GUID = Guid.NewGuid();
@@ -794,11 +799,6 @@ namespace ProtoCore
         /// It is incremented by 1 after mapping tis current value to an expression
         /// </summary>
         public int ExpressionUID { get; set; }
-
-        /// <summary>
-        /// RuntimeExpressionUID is used by the associative engine at runtime to determine the current expression ID being executed
-        /// </summary>
-        public int RuntimeExpressionUID = 0;
 
         public int ModifierBlockUID { get; set; }
         public int ModifierStateSubscript { get; set; }
@@ -1141,6 +1141,10 @@ namespace ProtoCore
             }
         }
 
+        /// <summary>
+        /// Populate the runtime data
+        /// </summary>
+        /// <returns></returns>
         private RuntimeData GenerateRuntimeData()
         {
             Validity.Assert(RuntimeData != null);
@@ -1148,11 +1152,20 @@ namespace ProtoCore
             return RuntimeData;
         }
 
+        /// <summary>
+        /// Setup the runtime core and runtimedata
+        /// </summary>
+        private void SetupRuntimeCore()
+        {
+            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
+            DSExecutable.RuntimeData = GenerateRuntimeData();
+        }
+
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
 
-            DSExecutable.RuntimeData = GenerateRuntimeData();
+            SetupRuntimeCore();
 
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;

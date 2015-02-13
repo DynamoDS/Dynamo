@@ -62,7 +62,11 @@ namespace ProtoScript.Runners
                 core = new ProtoCore.Core(new ProtoCore.Options { IDEDebugMode = true });
                 core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
                 core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+
+                runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             }
+
+            runtimeCore = core.__TempCoreHostForRefactoring;
 
             if (null != fileName)
             {
@@ -80,7 +84,7 @@ namespace ProtoScript.Runners
                 //core.runningBlock = blockId;
 
                 ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-                runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, context, core.DebuggerProperties);
+                runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context);
                 core.__TempCoreHostForRefactoring = runtimeCore;
 
                 FirstExec();
@@ -464,7 +468,6 @@ namespace ProtoScript.Runners
         /// </summary>
         private void FirstExec()
         {
-
             List<Instruction> bps = new List<Instruction>();
             runtimeCore.DebugProps.DebugEntryPC = core.DSExecutable.instrStreamList[0].entrypoint;
 

@@ -30,9 +30,13 @@ namespace ProtoCore
     /// </summary>
     public class RuntimeCore
     {
-        public RuntimeCore(Options runtimeOptions, Executable executable, ProtoCore.Runtime.Context context, DebugProperties debugProps = null)
+        public RuntimeCore()
         {
-            this.context = context;
+        }
+
+        public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
+        {
+            this.Context = context;
             this.DSExecutable = executable;
             this.RuntimeOptions = runtimeOptions;
             this.DebugProps = debugProps;
@@ -40,9 +44,16 @@ namespace ProtoCore
 
         public Executable DSExecutable { get; private set; }
         public Options RuntimeOptions { get; private set; }
+        public RuntimeStatus RuntimeStatus { get; set; }
 
         public RuntimeMemory RuntimeMemory { get; set; }
-        private ProtoCore.Runtime.Context context;
+        public ProtoCore.Runtime.Context Context { get; set; }
+
+        /// <summary>
+        /// RuntimeExpressionUID is used by the associative engine at runtime to determine the current expression ID being executed
+        /// </summary>
+        public int RuntimeExpressionUID = 0;
+
         private Executive executiveRuntime;
 
 #region DEBUGGER_PROPERTIES
