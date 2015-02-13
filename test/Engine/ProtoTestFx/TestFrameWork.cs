@@ -54,8 +54,9 @@ namespace ProtoTestFx.TD
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
 
-            testCore.RuntimeCoreBridge.SetProperties(testCore.Options, null);
-            testCore.RuntimeCoreBridge.RuntimeStatus.MessageHandler = testCore.BuildStatus.MessageHandler;
+            testCore.__TempCoreHostForRefactoring = new ProtoCore.RuntimeCore();
+            testCore.__TempCoreHostForRefactoring.SetProperties(testCore.Options, null);
+            testCore.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = testCore.BuildStatus.MessageHandler;
             
             //FFI registration and cleanup
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
@@ -600,12 +601,12 @@ namespace ProtoTestFx.TD
 
         public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.Runtime.WarningID id)
         {
-            Assert.IsTrue(core.RuntimeCoreBridge.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
+            Assert.IsTrue(core.__TempCoreHostForRefactoring.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyRuntimeWarningCount(int count)
         {
-            Assert.IsTrue(testCore.RuntimeCoreBridge.RuntimeStatus.WarningCount == count, mErrorMessage);
+            Assert.IsTrue(testCore.__TempCoreHostForRefactoring.RuntimeStatus.WarningCount == count, mErrorMessage);
         }
 
         public void VerifyProperty(string dsVariable, string propertyName, object expectedValue, int startBlock = 0)

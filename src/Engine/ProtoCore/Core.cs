@@ -269,9 +269,9 @@ namespace ProtoCore
         /// <summary>
         /// This is a temporary instance of RuntimeCore 
         /// The purpose of this is to move core properties to runtime core in segments and to start using them within the runtime without having to break the exisiting APIs where Core is used.
-        /// Eventually, instances of Core will be removed from the runtime. This means replacing all instances of RuntimeCoreBridge and Core with RuntimeCore.
+        /// Eventually, instances of Core will be removed from the runtime. This means replacing all instances of __TempCoreHostForRefactoring and Core with RuntimeCore.
         /// </summary>
-        public RuntimeCore RuntimeCoreBridge { get; set; }
+        public RuntimeCore __TempCoreHostForRefactoring { get; set; }
 
         /// <summary>
         /// Properties in under COMPILER_GENERATED_TO_RUNTIME_DATA, are generated at compile time, and passed to RuntimeData/Exe
@@ -672,8 +672,8 @@ namespace ProtoCore
         private void ResetRuntimeCore()
         {
             RuntimeData = new ProtoCore.RuntimeData();
-            RuntimeCoreBridge = new RuntimeCore();
-            RuntimeCoreBridge.RuntimeStatus = new ProtoCore.RuntimeStatus(this);
+            __TempCoreHostForRefactoring = new RuntimeCore();
+            __TempCoreHostForRefactoring.RuntimeStatus = new ProtoCore.RuntimeStatus(this);
         }
 
         private void ResetAll(Options options)
@@ -1157,7 +1157,7 @@ namespace ProtoCore
         /// </summary>
         private void SetupRuntimeCore()
         {
-            RuntimeCoreBridge.SetProperties(Options, DSExecutable, DebuggerProperties);
+            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
             DSExecutable.RuntimeData = GenerateRuntimeData();
         }
 
@@ -1264,7 +1264,7 @@ namespace ProtoCore
         {
             int constructBlockId = Rmem.CurrentConstructBlockId;
             if (constructBlockId == Constants.kInvalidIndex)
-                return RuntimeCoreBridge.DebugProps.CurrentBlockId;
+                return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
 
             CodeBlock constructBlock = GetCodeBlock(CodeBlockList, constructBlockId);
             while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
@@ -1275,8 +1275,8 @@ namespace ProtoCore
             if (null != constructBlock)
                 constructBlockId = constructBlock.codeBlockId;
 
-            if (constructBlockId != RuntimeCoreBridge.DebugProps.CurrentBlockId)
-                return RuntimeCoreBridge.DebugProps.CurrentBlockId;
+            if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
+                return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
             else
                 return Rmem.CurrentConstructBlockId;
         }

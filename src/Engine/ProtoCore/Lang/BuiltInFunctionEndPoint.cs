@@ -31,7 +31,7 @@ namespace ProtoCore.Lang
 
         public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
         {
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core);
             StackValue ret;
 
@@ -493,7 +493,7 @@ namespace ProtoCore.Lang
         private StackValue DotMethod(StackValue lhs, StackFrame stackFrame, DSASM.Executive runtime, Context context)
         {
             var core = runtime.Core;
-            var runtimeCore = core.RuntimeCoreBridge;
+            var runtimeCore = core.__TempCoreHostForRefactoring;
             var rmem = runtime.rmem;
             var runtimeData = runtime.exe.RuntimeData;
 
@@ -737,7 +737,7 @@ namespace ProtoCore.Lang
         internal static void Break(Interpreter interpreter, StackFrame stackFrame)
         {
             Core core = interpreter.runtime.Core;
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (!core.Options.IDEDebugMode)
                 return;
 
@@ -1015,7 +1015,7 @@ namespace ProtoCore.Lang
                                                    StackValue svHasAmountOp,
                                                    ProtoCore.Core core)
         {
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             if (!svStart.IsNumeric || !svEnd.IsNumeric)
             {

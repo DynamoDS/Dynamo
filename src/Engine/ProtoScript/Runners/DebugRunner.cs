@@ -66,7 +66,7 @@ namespace ProtoScript.Runners
                 runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             }
 
-            runtimeCore = core.RuntimeCoreBridge;
+            runtimeCore = core.__TempCoreHostForRefactoring;
 
             if (null != fileName)
             {
@@ -79,6 +79,14 @@ namespace ProtoScript.Runners
             {
                 inited = true;
                 core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+
+                //int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+                //core.runningBlock = blockId;
+
+                ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
+                runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context);
+                core.__TempCoreHostForRefactoring = runtimeCore;
+
                 FirstExec();
                 diList = BuildReverseIndex();
                 return true;

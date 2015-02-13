@@ -3848,7 +3848,7 @@ namespace ProtoAssociative
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             core.startPC = this.pc;
             compilePass = ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope;

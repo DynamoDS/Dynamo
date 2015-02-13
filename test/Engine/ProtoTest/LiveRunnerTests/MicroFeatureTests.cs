@@ -4815,7 +4815,9 @@ r = func_1(x);
         public void TestNestedLanguageBlockReExecution05()
         {
             string code = @"
-def foo()
+
+
+def foo()
 {
     x2 = 5;
     v1 = [Associative]
@@ -5216,7 +5218,7 @@ v = foo(t);
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeCoreBridge.RuntimeStatus.WarningCount);
+            Assert.AreEqual(0, astLiveRunner.Core.__TempCoreHostForRefactoring.RuntimeStatus.WarningCount);
 
             List<Subtree> modified = new List<Subtree>();
             modified.Add(CreateSubTreeFromCode(guid2, codes[3]));

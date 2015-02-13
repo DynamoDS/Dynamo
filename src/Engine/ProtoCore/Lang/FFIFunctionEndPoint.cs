@@ -56,7 +56,7 @@ namespace ProtoCore.Lang
             lock (FFIHandlers)
             {
                 Interpreter interpreter = new Interpreter(core, true);
-                RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+                RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
                 // Setup the stack frame data
                 StackValue svThisPtr = stackFrame.ThisPtr;

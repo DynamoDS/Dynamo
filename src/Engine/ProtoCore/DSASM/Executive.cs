@@ -98,7 +98,7 @@ namespace ProtoCore.DSASM
             IsExplicitCall = false;
             Validity.Assert(core != null);
             this.core = core;
-            this.runtimeCore = core.RuntimeCoreBridge;
+            this.runtimeCore = core.__TempCoreHostForRefactoring;
             enableLogging = runtimeCore.RuntimeOptions.Verbose;
 
             exe = core.DSExecutable;

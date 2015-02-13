@@ -455,7 +455,7 @@ namespace ProtoCore.DSASM
         // heaper method to support negative index into stack
         public static StackValue GetValue(this HeapElement hs, int ix, Core core)
         {
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             int index = ix < 0 ? ix + hs.VisibleSize : ix;
             if (index >= hs.VisibleSize || index < 0)
             {

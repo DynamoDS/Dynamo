@@ -679,7 +679,7 @@
                                     <ListBox Background="Transparent"
                                              BorderBrush="Transparent"
                                              BorderThickness="0"
-                                             ItemContainerStyle="{DynamicResource ListBoxMemberGroupsStyle}"
+                                             ItemContainerStyle="{StaticResource ListBoxMemberGroupsStyle}"
                                              ItemsSource="{Binding MemberGroups}"
                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                              KeyDown="MemberGroupsKeyDown"
@@ -710,7 +710,7 @@
                                                     </TextBlock>
                                                     <ListBox Background="Transparent"
                                                              BorderBrush="Transparent"
-                                                             ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
+                                                             ItemContainerStyle="{StaticResource ListBoxMembersStyle}"
                                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                                              ItemsSource="{Binding Members}"
                                                              Name="MembersListBox"

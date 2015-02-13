@@ -127,7 +127,7 @@ namespace ProtoScript.Runners
             public ProtoVMState(ProtoCore.Core core)
             {
                 this.core = core;
-                this.runtimeCore = this.core.RuntimeCoreBridge;
+                this.runtimeCore = this.core.__TempCoreHostForRefactoring;
             }
 
             public ProtoCore.Mirror.RuntimeMirror LookupName(string name, int blockID)

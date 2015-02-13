@@ -498,7 +498,7 @@ namespace ProtoCore.DSASM.Mirror
         private int GetSymbolIndex(string name, out int ci, ref int block, out SymbolNode symbol)
         {
             ProtoCore.DSASM.Executable exe = core.DSExecutable;
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             int functionIndex = Constants.kGlobalScope;
             ci = Constants.kInvalidIndex;

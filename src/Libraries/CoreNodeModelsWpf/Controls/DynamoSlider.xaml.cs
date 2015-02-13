@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
@@ -20,7 +23,7 @@ namespace Dynamo.Wpf.Controls
         public DynamoSlider(NodeModel model, IViewModelView<NodeViewModel> nodeUI)
         {
             InitializeComponent();
-
+            this.slider.IsMoveToPointEnabled = true;            
             nodeModel = model;
             ui = nodeUI;
 

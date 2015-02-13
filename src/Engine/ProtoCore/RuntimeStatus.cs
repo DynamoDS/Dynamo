@@ -108,7 +108,7 @@ namespace ProtoCore
                              bool warningAsError = false,
                              System.IO.TextWriter writer = null)
         {
-            runtimeCore = core.RuntimeCoreBridge;
+            runtimeCore = core.__TempCoreHostForRefactoring;
 
             warnings = new List<Runtime.WarningEntry>();
             this.warningAsError = warningAsError;

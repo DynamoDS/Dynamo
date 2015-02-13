@@ -377,7 +377,7 @@ namespace ProtoCore
         /// <returns></returns>
         private StackValue ReportFunctionGroupNotFound(Core core)
         {
-            core.RuntimeCoreBridge.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName);
+            core.__TempCoreHostForRefactoring.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName);
             return StackValue.Null;
         }
 
@@ -388,13 +388,13 @@ namespace ProtoCore
         /// <returns></returns>
         private StackValue ReportMethodNotFoundForArguments(Core core, List<StackValue> arguments)
         {
-            core.RuntimeCoreBridge.RuntimeStatus.LogMethodResolutionWarning(methodName, classScope, arguments);
+            core.__TempCoreHostForRefactoring.RuntimeStatus.LogMethodResolutionWarning(methodName, classScope, arguments);
             return StackValue.Null;
         }
 
         private StackValue ReportMethodNotAccessible(Core core)
         {
-            core.RuntimeCoreBridge.RuntimeStatus.LogMethodNotAccessibleWarning(methodName);
+            core.__TempCoreHostForRefactoring.RuntimeStatus.LogMethodNotAccessibleWarning(methodName);
             return StackValue.Null;
         }
 
@@ -916,7 +916,7 @@ namespace ProtoCore
 
                 possibleFuncs.AppendLine("Error code: {DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}");
 
-                core.RuntimeCoreBridge.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
+                core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
             }
 
             return feps[0];
@@ -1094,7 +1094,7 @@ namespace ProtoCore
 
                 if (candidateFunctions.Count == 0)
                 {
-                    core.RuntimeCoreBridge.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch,
+                    core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch,
                                                   Resources.kAmbigousMethodDispatch);
                     return null;
                 }
@@ -1678,7 +1678,7 @@ namespace ProtoCore
                                           List<StackValue> formalParameters, StackFrame stackFrame, Core core,
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if(core.CancellationPending)
             {
                 throw new ExecutionCancelledException();               
@@ -1689,7 +1689,7 @@ namespace ProtoCore
 
             if (functionEndPoint == null)
             {
-                core.RuntimeCoreBridge.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure,
+                core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure,
                                               "Function dispatch could not be completed {2EB39E1B-557C-4819-94D8-CF7C9F933E8A}");
                 return StackValue.Null;
             }
@@ -1892,7 +1892,7 @@ namespace ProtoCore
             {
                 //@TODO(Luke): log no-type coercion possible warning
 
-                core.RuntimeCoreBridge.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible,
+                core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible,
                                               Resources.kConvertNonConvertibleTypes);
 
                 return StackValue.Null;

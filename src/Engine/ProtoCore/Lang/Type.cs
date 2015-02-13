@@ -406,7 +406,7 @@ namespace ProtoCore
 
         public static StackValue Coerce(StackValue sv, Type targetType, Core core)
         {
-            RuntimeCore runtimeCore = core.RuntimeCoreBridge;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             //@TODO(Jun): FIX ME - abort coersion for default args
             if (sv.IsDefaultArgument)
                 return sv;
