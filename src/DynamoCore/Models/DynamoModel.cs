@@ -371,6 +371,7 @@ namespace Dynamo.Models
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
+            public IGeometryConfiguration GeometryConfiguration { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public string PackageManagerAddress { get; set; }
         }
