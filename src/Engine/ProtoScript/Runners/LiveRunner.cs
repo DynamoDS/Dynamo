@@ -489,21 +489,18 @@ namespace ProtoScript.Runners
             if (cachedTreeExists && oldSubTree.AstNodes != null)
             {
                 List<AssociativeNode> removedNodes = null;
-                foreach (var ast in csData.RemovedBinaryNodesFromModification)
+                if (!st.ForceExecution)
                 {
-                    if (!st.ForceExecution)
-                    {
-                        removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
-                        // We only need the removed binary ASTs
-                        // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
-                        csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
-                    }
+                    removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                    // We only need the removed binary ASTs
+                    // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
+                    csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
+                }
 
-                    foreach (var removedAST in csData.RemovedBinaryNodesFromModification)
-                    {
-                        core.BuildStatus.ClearWarningsForAst(removedAST.ID);
-                        core.__TempCoreHostForRefactoring.RuntimeStatus.ClearWarningsForAst(removedAST.ID);
-                    }
+                foreach (var removedAST in csData.RemovedBinaryNodesFromModification)
+                {
+                    core.BuildStatus.ClearWarningsForAst(removedAST.ID);
+                    core.__TempCoreHostForRefactoring.RuntimeStatus.ClearWarningsForAst(removedAST.ID);
                 }
             }
 
