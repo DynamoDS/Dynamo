@@ -66,10 +66,10 @@ namespace ProtoScript.Runners
             bool ssastateExec = Core.Options.ExecuteSSA;
 
             ProtoCore.RuntimeCore runtimeCore = Core.__TempCoreHostForRefactoring;
-            runtimeCore.RuntimeOptions.RunMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
+            runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
 
-            runtimeCore.RuntimeOptions.GenerateSSA = false;
-            runtimeCore.RuntimeOptions.ExecuteSSA = false;
+            runtimeCore.Options.GenerateSSA = false;
+            runtimeCore.Options.ExecuteSSA = false;
 
             code = string.Format("{0} = {1};", Constants.kWatchResultVar, code);
 
@@ -197,9 +197,9 @@ namespace ProtoScript.Runners
             // TODO: investigate why additional elements are added to the stack.
             Core.Rmem.RestoreStackForExprInterpreter();
 
-            runtimeCore.RuntimeOptions.GenerateSSA = ssastate;
-            runtimeCore.RuntimeOptions.ExecuteSSA = ssastateExec;
-            runtimeCore.RuntimeOptions.RunMode = ProtoCore.DSASM.InterpreterMode.kNormal;
+            runtimeCore.Options.GenerateSSA = ssastate;
+            runtimeCore.Options.ExecuteSSA = ssastateExec;
+            runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.kNormal;
 
             return new ExecutionMirror(Core.CurrentExecutive.CurrentDSASMExec, Core);
         }
