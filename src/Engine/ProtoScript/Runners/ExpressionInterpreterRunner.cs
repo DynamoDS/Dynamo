@@ -134,7 +134,7 @@ namespace ProtoScript.Runners
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing
                     // it needs to be popped off at the end for stack alignment - pratapa
-                    Core.InterpreterProps.Pop();
+                    runtimeCore.InterpreterProps.Pop();
                 }
                 catch
                 { }

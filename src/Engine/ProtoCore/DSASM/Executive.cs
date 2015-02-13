@@ -98,6 +98,7 @@ namespace ProtoCore.DSASM
             IsExplicitCall = false;
             Validity.Assert(core != null);
             this.core = core;
+
             this.runtimeCore = core.__TempCoreHostForRefactoring;
             enableLogging = runtimeCore.Options.Verbose;
 
@@ -346,12 +347,12 @@ namespace ProtoCore.DSASM
 
         private void PushInterpreterProps(InterpreterProperties properties)
         {
-            core.InterpreterProps.Push(new InterpreterProperties(properties));
+            runtimeCore.InterpreterProps.Push(new InterpreterProperties(properties));
         }
 
         private InterpreterProperties PopInterpreterProps()
         {
-            return core.InterpreterProps.Pop();
+            return runtimeCore.InterpreterProps.Pop();
         }
 
         private void SetupEntryPoint()

@@ -22,6 +22,40 @@ using StackFrame = ProtoCore.DSASM.StackFrame;
 
 namespace ProtoCore
 {
+    public class InterpreterProperties
+    {
+        public GraphNode executingGraphNode { get; set; }
+        public List<GraphNode> nodeIterations { get; set; }
+
+        public List<StackValue> functionCallArguments { get; set; }
+        public List<StackValue> functionCallDotCallDimensions { get; set; }
+
+        public UpdateStatus updateStatus { get; set; }
+
+        public InterpreterProperties()
+        {
+            Reset();
+        }
+
+        public InterpreterProperties(InterpreterProperties rhs)
+        {
+            executingGraphNode = rhs.executingGraphNode;
+            nodeIterations = rhs.nodeIterations;
+            functionCallArguments = rhs.functionCallArguments;
+            functionCallDotCallDimensions = rhs.functionCallDotCallDimensions;
+            updateStatus = rhs.updateStatus;
+        }
+
+        public void Reset()
+        {
+            executingGraphNode = null;
+            nodeIterations = new List<GraphNode>();
+            functionCallArguments = new List<StackValue>();
+            functionCallDotCallDimensions = new List<StackValue>();
+            updateStatus = UpdateStatus.kNormalUpdate;
+        }
+    }
+
     /// <summary>
     /// RuntimeCore is an object that is instantiated once across the lifecycle of the runtime
     /// This is the entry point of the runtime VM and its input is a DS Executable format. 
@@ -32,6 +66,7 @@ namespace ProtoCore
     {
         public RuntimeCore()
         {
+            InterpreterProps = new Stack<InterpreterProperties>();
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
@@ -42,9 +77,11 @@ namespace ProtoCore
             this.DebugProps = debugProps;
         }
 
+
         public Executable DSExecutable { get; private set; }
         public Options Options { get; private set; }
         public RuntimeStatus RuntimeStatus { get; set; }
+        public Stack<InterpreterProperties> InterpreterProps { get; set; }
 
         public RuntimeMemory RuntimeMemory { get; set; }
         public ProtoCore.Runtime.Context context { get; set; }
@@ -59,6 +96,20 @@ namespace ProtoCore
         public DebugProperties DebugProps { get; set; }
         public List<Instruction> Breakpoints { get; set; }
 #endregion 
+
+        
+        public bool IsEvalutingPropertyChanged()
+        {
+            foreach (var prop in InterpreterProps)
+            {
+                if (prop.updateStatus == UpdateStatus.kPropertyChangedUpdate)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
     }
 }

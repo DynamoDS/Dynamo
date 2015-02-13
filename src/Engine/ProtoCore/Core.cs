@@ -50,40 +50,6 @@ namespace ProtoCore
         public bool isLongest {get; private set;}
     }
 
-    public class InterpreterProperties
-    {
-        public GraphNode executingGraphNode { get; set; }
-        public List<GraphNode> nodeIterations { get; set; }
-
-        public List<StackValue> functionCallArguments { get; set; }
-        public List<StackValue> functionCallDotCallDimensions { get; set; }
-
-        public UpdateStatus updateStatus { get; set; }
-
-        public InterpreterProperties()
-        {
-            Reset();
-        }
-
-        public InterpreterProperties(InterpreterProperties rhs)
-        {
-            executingGraphNode = rhs.executingGraphNode;
-            nodeIterations = rhs.nodeIterations;
-            functionCallArguments = rhs.functionCallArguments;
-            functionCallDotCallDimensions = rhs.functionCallDotCallDimensions;
-            updateStatus = rhs.updateStatus;
-        }
-
-        public void Reset()
-        {
-            executingGraphNode = null;
-            nodeIterations = new List<GraphNode>();
-            functionCallArguments = new List<StackValue>();
-            functionCallDotCallDimensions = new List<StackValue>();
-            updateStatus = UpdateStatus.kNormalUpdate;
-        }
-    }
-
     public class Options
     {
         public Options()
@@ -431,8 +397,6 @@ namespace ProtoCore
         /// This is copied to the RuntimeCore after compilation
         /// </summary>
         public DebugProperties DebuggerProperties;
-        
-        public Stack<InterpreterProperties> InterpreterProps { get; set; }
 
         // Continuation properties used for Serial mode execution and Debugging of Replicated calls
         public ContinuationStructure ContinuationStruct { get; set; }
@@ -764,7 +728,6 @@ namespace ProtoCore
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
 
             DebuggerProperties = new DebugProperties();
-            InterpreterProps = new Stack<InterpreterProperties>();
 
             ExecutiveProvider = new ExecutiveProvider();
 
@@ -1286,18 +1249,6 @@ namespace ProtoCore
             return ExecutingGraphnode;
         }
 
-        public bool IsEvalutingPropertyChanged()
-        {
-            foreach (var prop in InterpreterProps)
-            {
-                if (prop.updateStatus == UpdateStatus.kPropertyChangedUpdate)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         public GraphNode ExecutingGraphnode { get; set; }
 
