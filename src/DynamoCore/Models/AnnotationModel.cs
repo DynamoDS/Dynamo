@@ -1,21 +1,13 @@
-﻿//AnnotationModel
+﻿
 using System;
-using System.Collections;
-using System.ComponentModel;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
-using System.Xml.Serialization;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
-using ProtoCore.AST;
-using System.Collections.ObjectModel;
-using Dynamo.Selection;
 using System.Collections.Generic;
-using ProtoCore.AST.AssociativeAST;
-
+using Dynamo.Nodes;
 namespace Dynamo.Models
 {
     public class AnnotationModel : ModelBase
@@ -119,20 +111,21 @@ namespace Dynamo.Models
                 if (selectedNodes != null)
                 {
                     selectedNodes = value.ToList();
-                    foreach (var node in selectedNodes)
+                    if (selectedNodes.Any())
                     {
-                        node.PropertyChanged += OnNodePropertyChanged;
-                    }
-                    //if (!isInDrag)
-                    //{
+                        foreach (var node in selectedNodes)
+                        {
+                            node.PropertyChanged += OnNodePropertyChanged;                           
+                        }
+
                         var selectedRegion = SelectRegionFromNodes(selectedNodes);
                         this.Left = selectedRegion.X;
                         this.Top = selectedRegion.Y;
                         this.Width = selectedRegion.Width;
                         this.Height = selectedRegion.Height;
                         this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
-                    //}
-                }
+                    }
+                }              
             }
         }
 
@@ -157,7 +150,7 @@ namespace Dynamo.Models
         }
 
         private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
+        {            
             if (!IsInDrag)
             {
                 var node = sender as NodeModel;
@@ -172,17 +165,21 @@ namespace Dynamo.Models
 
         internal static Rect2D SelectRegionFromNodes(IEnumerable<NodeModel> nodes)
         {
-            var nodeModels = nodes as IList<NodeModel> ?? nodes.ToList();
+            var enumerable = nodes as NodeModel[] ?? nodes.ToArray();
+            var nodeModels = nodes as IList<NodeModel> ?? enumerable.ToList();
             if (nodes == null || !nodeModels.Any())
                 throw new ArgumentException("nodes");
 
             nodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
 
-            var maxWidth = nodeModels.ToList().Select(x => x.Width).Max();
-            var maxHeight = nodeModels.ToList().Select(x => x.Height).Max();
+           // var maxWidth = nodeModels.ToList().Select(x => x.Width).Max();
+           // var maxHeight = nodeModels.ToList().Select(x => x.Height).Max();
 
             var xNodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
             var yNodeModels = nodeModels.ToList().OrderBy(x => x.Y).ToList();
+
+            var maxWidth = xNodeModels.Last().Width;
+            var maxHeight = yNodeModels.Last().Height;
 
             var regionX = xNodeModels.First().X - 30;
             var regionY = yNodeModels.First().Y - 50;
@@ -198,36 +195,19 @@ namespace Dynamo.Models
                 Height = yDistance + maxHeight
             };
 
-            //var region = new Rect2D
-            //{
-            //    X = nodeModels.ElementAt(0).X,
-            //    Y = nodeModels.ElementAt(0).Y,
-            //    Width = nodeModels.ElementAt(0).Width,
-            //    Height = nodeModels.ElementAt(0).Height
-            //};
-
-            //foreach (var node in nodeModels)
-            //{
-            //    // Extend lower bounds if needed.
-            //    if (node.X < region.X)
-            //        region.X = node.X;
-            //    if (node.Y < region.Y)
-            //        region.Y = node.Y;
-
-            //    if ((node.X + node.Width) > region.Right)
-            //        region.Width = (node.X + (2 * node.Width)) - (region.X / 2);
-            //    else
-            //    {
-            //        region.Width = region.Right > 0 ? region.Right : -(region.Right) + region.Width;
-            //    }
-            //    if ((node.Y + node.Height) > region.Bottom)
-            //        region.Height = (node.Y + (2 * node.Height)) - region.Y;
-            //    else
-            //    {
-            //        region.Height = region.Bottom > 0 ? region.Bottom : -(region.Bottom) + region.Height;
-            //    }
-            //}
-
+            //special case for grouping just one node
+            if (enumerable.Count() == 1)
+            {
+                var node = nodeModels.ElementAt(0);
+                if (region.IntersectsWith(node.Rect))
+                {
+                    var result = region;
+                    result.Intersect(node.Rect);
+                    region.Width = region.Width + 10;
+                    region.Height = region.Height + 70;
+                }
+            }
+         
             return region;
         }
 
@@ -246,7 +226,7 @@ namespace Dynamo.Models
                     }
             }
             this.SelectedNodes = listOfNodes;
-            this.isInDrag = true;
+           // this.isInDrag = true;
         }
 
         #region Command Framework Supporting Methods
@@ -291,9 +271,20 @@ namespace Dynamo.Models
             this.Height = helper.ReadDouble("height", 0.0);
             this.BackGroundColor = helper.ReadString("annotationColor", "");
             nodeGuids = helper.ReadString("NodeModelGUIDs", "");
-            this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
+            this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);           
         }
 
         #endregion
+
+        public virtual void Dispose()
+        {
+            if (this.SelectedNodes.Any())
+            {
+                foreach (var node in this.SelectedNodes)
+                {
+                    node.PropertyChanged -= OnNodePropertyChanged;
+                }
+            }
+        }
     }
 }

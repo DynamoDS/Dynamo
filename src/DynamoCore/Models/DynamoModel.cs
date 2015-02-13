@@ -926,6 +926,9 @@ namespace Dynamo.Models
                 var node = model as NodeModel;
                 if (node != null)
                     node.Dispose();
+                var annotation = model as AnnotationModel;
+                if (annotation != null)
+                    annotation.Dispose();
             }
 
             OnDeletionComplete(this, EventArgs.Empty);

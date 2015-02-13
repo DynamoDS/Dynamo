@@ -139,6 +139,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel = workspaceViewModel;
             this.MakeTextBlockVisible = Visibility.Visible;
             this.MakeTextBoxVisible = Visibility.Collapsed;
+            this.IsInDrag = false;
             model.WorkspaceModel = workspaceViewModel.Model;  
             if(model.SelectedNodes == null)
                 model.DeserializeNodeModels();
@@ -167,6 +168,12 @@ namespace Dynamo.ViewModels
                     break;
                 case "BackGroundColor":
                     RaisePropertyChanged("BackGroundColor");
+                    break;
+                case "SelectedNodes":
+                    RaisePropertyChanged("SelectedNodes");
+                    break; 
+                case "RectRegion":
+                    RaisePropertyChanged("RectRegion");
                     break;
             }
         }

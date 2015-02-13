@@ -141,7 +141,8 @@
                     Stroke="Black"
                     StrokeThickness="1"
                     IsHitTestVisible="True"
-                    Opacity="0.5">
+                    Opacity="0.5"
+                    >
             <Rectangle.Fill>
                 <SolidColorBrush Color="{Binding BackGroundColor}"></SolidColorBrush>
             </Rectangle.Fill>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -72,7 +73,9 @@ namespace Dynamo.Nodes
         private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
-                ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+            {
+                ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);               
+            }
         }
      
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -90,7 +93,7 @@ namespace Dynamo.Nodes
                 {
                     var undoRecorder = ViewModel.WorkspaceViewModel.Model.UndoRecorder;
                     WorkspaceModel.RecordModelForModification(ViewModel.AnnotationModel, undoRecorder);
-
+                    this.AnnotationRectangle.StrokeDashArray = new DoubleCollection() {2};
                     CanMoveGroup = true;
                     this.CaptureMouse();
                     xAnnotationViewPos = Canvas.GetLeft(view);
@@ -121,9 +124,8 @@ namespace Dynamo.Nodes
         private void AnnotationView_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var dataContext = this.DataContext as AnnotationViewModel;
-          
-            var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");
-          
+            this.AnnotationRectangle.StrokeDashArray = new DoubleCollection() {};
+            var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");          
             var point = e.GetPosition(parentCanvas);
             var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
             var command = new DynCmd.DragSelectionCommand(point.AsDynamoType(), operation);
