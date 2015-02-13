@@ -379,7 +379,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="version">The version as ex. "219"</param>
         /// <param name="pathManager"></param>
-        public static bool PreloadAsmVersion(string version, DynamoPathManager pathManager)
+        private static bool PreloadAsmVersion(string version, DynamoPathManager pathManager)
         {
             Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
 
