@@ -67,6 +67,7 @@ namespace ProtoCore
         public RuntimeCore()
         {
             InterpreterProps = new Stack<InterpreterProperties>();
+            ReplicationGuides = new List<List<ReplicationGuide>>();
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
@@ -91,6 +92,10 @@ namespace ProtoCore
         /// RuntimeExpressionUID is used by the associative engine at runtime to determine the current expression ID being executed
         /// </summary>
         public int RuntimeExpressionUID = 0;
+
+        // Cached replication guides for the current call. 
+        // TODO Jun: Store this in the dynamic table node
+        public List<List<ReplicationGuide>> ReplicationGuides;
 
 #region DEBUGGER_PROPERTIES
         public DebugProperties DebugProps { get; set; }

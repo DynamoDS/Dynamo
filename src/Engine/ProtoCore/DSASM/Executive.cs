@@ -4167,11 +4167,11 @@ namespace ProtoCore.DSASM
 
         public List<List<ReplicationGuide>> GetCachedReplicationGuides(Core core, int argumentCount)
         {
-            int index = core.replicationGuides.Count - argumentCount;
+            int index = runtimeCore.ReplicationGuides.Count - argumentCount;
             if (index >= 0)
             {
-                var replicationGuides = core.replicationGuides.GetRange(index, argumentCount);
-                core.replicationGuides.RemoveRange(index, argumentCount);
+                var replicationGuides = runtimeCore.ReplicationGuides.GetRange(index, argumentCount);
+                runtimeCore.ReplicationGuides.RemoveRange(index, argumentCount);
                 return replicationGuides;
             }
             return new List<List<ReplicationGuide>>();
@@ -4379,7 +4379,7 @@ namespace ProtoCore.DSASM
                 }
 
                 argGuides.Reverse();
-                core.replicationGuides.Add(argGuides);
+                runtimeCore.ReplicationGuides.Add(argGuides);
             }
 
             ++pc;
@@ -4437,7 +4437,7 @@ namespace ProtoCore.DSASM
                     }
 
                     argGuides.Reverse();
-                    core.replicationGuides.Add(argGuides);
+                    runtimeCore.ReplicationGuides.Add(argGuides);
 
                     StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
                     rmem.Push(opdata1);
@@ -4518,7 +4518,7 @@ namespace ProtoCore.DSASM
                     }
 
                     argGuides.Reverse();
-                    core.replicationGuides.Add(argGuides);
+                    runtimeCore.ReplicationGuides.Add(argGuides);
 
                     StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
                     rmem.Push(opdata1);
@@ -4900,7 +4900,7 @@ namespace ProtoCore.DSASM
             }
 
             argGuides.Reverse();
-            core.replicationGuides.Add(argGuides);
+            runtimeCore.ReplicationGuides.Add(argGuides);
 
             ++pc;
         }
@@ -5694,7 +5694,7 @@ namespace ProtoCore.DSASM
             if (instruction.op3.IsReplicationGuide)
             {
                 Validity.Assert(instruction.op3.RawIntValue == 0);
-                core.replicationGuides.Add(new List<ReplicationGuide> {});
+                runtimeCore.ReplicationGuides.Add(new List<ReplicationGuide> { });
             }
 
             ++pc;

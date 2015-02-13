@@ -377,10 +377,6 @@ namespace ProtoCore
             ContextDataManager.GetInstance(this).AddData(data);
         }
 
-        // Cached replication guides for the current call. 
-        // TODO Jun: Store this in the dynamic table node
-        public List<List<ReplicationGuide>> replicationGuides;
-
         // if CompileToLib is true, this is used to output the asm instruction to the dsASM file
         // if CompilerToLib is false, this will be set to Console.Out
         public TextWriter AsmOutput;
@@ -692,7 +688,6 @@ namespace ProtoCore
             //Initialize the dynamic string table and dynamic function table
             DynamicVariableTable = new DynamicVariableTable();
             DynamicFunctionTable = new DynamicFunctionTable();
-            replicationGuides = new List<List<ReplicationGuide>>();
 
             startPC = Constants.kInvalidIndex;
 
