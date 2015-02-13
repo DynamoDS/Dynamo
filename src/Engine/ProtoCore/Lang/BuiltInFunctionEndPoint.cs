@@ -636,7 +636,7 @@ namespace ProtoCore.Lang
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
             if (core.Options.IDEDebugMode &&
-                core.ExecMode != InterpreterMode.kExpressionInterpreter &&
+                runtimeCore.RuntimeOptions.RunMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
                 runtimeCore.DebugProps.SetUpCallrForDebug(core,
@@ -657,8 +657,8 @@ namespace ProtoCore.Lang
             StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, core);
 
             // Restore debug properties after returning from a CALL/CALLR
-            if (core.Options.IDEDebugMode && 
-                core.ExecMode != InterpreterMode.kExpressionInterpreter &&
+            if (core.Options.IDEDebugMode &&
+                runtimeCore.RuntimeOptions.RunMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
                 runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode);

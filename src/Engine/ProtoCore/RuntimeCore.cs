@@ -48,6 +48,7 @@ namespace ProtoCore
 
         public RuntimeMemory RuntimeMemory { get; set; }
         public ProtoCore.Runtime.Context context { get; set; }
+        public InterpreterMode ExecMode { get; set; }
 
         /// <summary>
         /// RuntimeExpressionUID is used by the associative engine at runtime to determine the current expression ID being executed

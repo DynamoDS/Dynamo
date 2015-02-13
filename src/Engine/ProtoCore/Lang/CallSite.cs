@@ -1694,7 +1694,7 @@ namespace ProtoCore
                 return StackValue.Null;
             }
 
-            if (core.Options.IDEDebugMode && core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.IDEDebugMode && runtimeCore.RuntimeOptions.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
                 debugFrame.FinalFepChosen = finalFep;

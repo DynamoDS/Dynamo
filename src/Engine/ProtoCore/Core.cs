@@ -173,6 +173,7 @@ namespace ProtoCore
         public bool GenerateExprID { get; set; }
         public bool IsDeltaExecution { get; set; }
         public bool ElementBasedArrayUpdate { get; set; }
+        public InterpreterMode RunMode { get; set; }
 
         /// <summary>
         /// TODO: Aparajit: This flag is true for Delta AST compilation
@@ -616,7 +617,7 @@ namespace ProtoCore
         {
             Options.ApplyUpdate = false;
 
-            ExecMode = InterpreterMode.kNormal;
+            Options.RunMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
 
@@ -753,7 +754,7 @@ namespace ProtoCore
             ModifierStateSubscript = 0;
 
             ExprInterpreterExe = null;
-            ExecMode = InterpreterMode.kNormal;
+            Options.RunMode = InterpreterMode.kNormal;
 
             assocCodegen = null;
             FunctionCallDepth = 0;
@@ -825,7 +826,6 @@ namespace ProtoCore
         //           It must be moved to its own core, whre each core is an instance of a compiler+interpreter
         //
         public Executable ExprInterpreterExe { get; set; }
-        public InterpreterMode ExecMode { get; set; }
         public List<SymbolNode> watchSymbolList { get; set; }
         public int watchClassScope { get; set; }
         public int watchFunctionScope { get; set; }
