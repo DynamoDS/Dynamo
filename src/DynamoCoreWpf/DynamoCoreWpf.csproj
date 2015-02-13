@@ -73,7 +73,7 @@
   <ItemGroup>
     <Compile Include="Controls\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
-    </Compile>
+	</Compile>
     <Compile Include="Controls\AddonsTreeView.xaml.cs">
       <DependentUpon>AddonsTreeView.xaml</DependentUpon>
     </Compile>
@@ -82,7 +82,7 @@
     </Compile>
     <Compile Include="Controls\StandardPanel.xaml.cs">
       <DependentUpon>StandardPanel.xaml</DependentUpon>
-    </Compile>
+	</Compile>   
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
@@ -323,8 +323,8 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\Login.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+	  <SubType>Designer</SubType>
+	  <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\HeaderStrip.xaml">
       <SubType>Designer</SubType>
