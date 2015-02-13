@@ -315,16 +315,8 @@ namespace ProtoCore
         private readonly bool warningAsError;
         private readonly bool errorAsWarning = false;
 
-        public IOutputStream MessageHandler 
-        { 
-            get; set; 
-        }
-
-        public WebOutputStream WebMsgHandler
-        {
-            get;
-            set;
-        }
+        public IOutputStream MessageHandler { get; set; }
+        public WebOutputStream WebMsgHandler { get; set; }
 
         private List<BuildData.WarningEntry> warnings;
         public IEnumerable<BuildData.WarningEntry> Warnings
@@ -383,11 +375,6 @@ namespace ProtoCore
             // Create a default console output stream, and this can 
             // be overwritten in IDE by assigning it a different value.
             this.MessageHandler = new ConsoleOutputStream();
-            if (core.Options.WebRunner)
-            {
-                this.WebMsgHandler = new WebOutputStream(core);
-            }
-
             displayBuildResult = logErrors = LogWarnings = core.Options.Verbose;
         }
 

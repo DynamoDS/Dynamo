@@ -42,11 +42,7 @@ namespace DSCoreNodesUI.Input
             }
             set
             {
-                base.Value = value;
-                if (base.Value > Int32.MaxValue)
-                    base.Value = Int32.MaxValue;
-                if (base.Value < Int32.MinValue)
-                    base.Value = Int32.MinValue;
+                base.Value = value;              
                 RaisePropertyChanged("Value");
             }
         }

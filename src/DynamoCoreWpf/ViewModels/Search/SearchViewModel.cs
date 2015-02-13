@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {
@@ -721,8 +722,8 @@ namespace Dynamo.ViewModels
         {
             var element = entry as CustomNodeSearchElement;
             var elementVM = element != null
-                ? new CustomNodeSearchElementViewModel(element)
-                : new NodeSearchElementViewModel(entry);
+                ? new CustomNodeSearchElementViewModel(element, this)
+                : new NodeSearchElementViewModel(entry, this);
 
             elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
             return elementVM;
@@ -874,6 +875,10 @@ namespace Dynamo.ViewModels
             //SearchText = SearchResults[SelectedIndex].Model.Name;
         }
 
+        public void OnSearchElementClicked(NodeModel nodeModel)
+        {
+            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(nodeModel, 0, 0, true, true));
+        }
         #endregion
 
         #region Commands

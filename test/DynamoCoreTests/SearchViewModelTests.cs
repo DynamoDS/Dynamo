@@ -418,12 +418,12 @@ namespace Dynamo.Tests
             string description = "", string path = "")
         {
             var element = CreateCustomNode(name, category, description, path);
-            return new NodeSearchElementViewModel(element);
+            return new NodeSearchElementViewModel(element, null);
         }
 
         private static NodeSearchElementViewModel CreateCustomNodeViewModel(NodeSearchElement element)
         {
-            return new NodeSearchElementViewModel(element);
+            return new NodeSearchElementViewModel(element, null);
         }
 
         /// <summary>

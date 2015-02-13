@@ -881,7 +881,13 @@ namespace Dynamo.Models
 
             RegisterHomeWorkspace(newWorkspace);
             
+            var currentHomeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            if (currentHomeWorkspace != null)
+            {
+                newWorkspace.DynamicRunEnabled = currentHomeWorkspace.DynamicRunEnabled;
+            }
             workspace = newWorkspace;
+
             return true;
         }
 

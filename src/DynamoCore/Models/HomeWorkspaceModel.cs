@@ -37,13 +37,16 @@ namespace Dynamo.Models
             : base("Home", e, n, x, y, factory, fileName)
         {
             RunEnabled = true;
+#if DEBUG
+            DynamicRunEnabled = true;
+#else
+            DynamicRunEnabled = false;
+#endif
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
             VerboseLogging = verboseLogging;
-
-            ResetEngine(engine);
-
             IsTestMode = isTestMode;
+            EngineController = engine;
         }
 
         public override void Dispose()
@@ -107,12 +110,7 @@ namespace Dynamo.Models
 
         protected override void ResetWorkspaceCore()
         {
-            // Reset Run Automatic option to false on resetting the workspace
-#if DEBUG
-            DynamicRunEnabled = true;
-#else
-            DynamicRunEnabled = false;
-#endif
+            base.ResetWorkspaceCore();
         }
 
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)

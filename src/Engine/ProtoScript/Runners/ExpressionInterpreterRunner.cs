@@ -65,8 +65,11 @@ namespace ProtoScript.Runners
             Core.ExecMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
             bool ssastate = Core.Options.GenerateSSA;
             bool ssastateExec = Core.Options.ExecuteSSA;
-            Core.Options.GenerateSSA = false;
-            Core.Options.ExecuteSSA = false;
+
+            ProtoCore.RuntimeCore runtimeCore = Core.__TempCoreHostForRefactoring;
+
+            runtimeCore.RuntimeOptions.GenerateSSA = false;
+            runtimeCore.RuntimeOptions.ExecuteSSA = false;
 
             code = string.Format("{0} = {1};", Constants.kWatchResultVar, code);
 
@@ -108,7 +111,7 @@ namespace ProtoScript.Runners
                 Core.RunningBlock = blockId;
 
                 //a4. Record the old debug entry PC and stack size of FileFepChosen
-                int oldDebugEntryPC = Core.DebugProps.DebugEntryPC;
+                int oldDebugEntryPC = runtimeCore.DebugProps.DebugEntryPC;
 
                 //a5. Record the frame pointer for referencing to thisPtr
                 Core.watchFramePointer = Core.Rmem.FramePointer;
@@ -140,7 +143,7 @@ namespace ProtoScript.Runners
                 Core.Rmem.FramePointer = Core.watchFramePointer; 
 
                 //r4. Restore the debug entry PC and stack size of FileFepChosen
-                Core.DebugProps.DebugEntryPC = oldDebugEntryPC;
+                runtimeCore.DebugProps.DebugEntryPC = oldDebugEntryPC;
 
                 //r3. Restore the running block 
                 Core.RunningBlock = restoreBlock;
@@ -194,8 +197,8 @@ namespace ProtoScript.Runners
             // TODO: investigate why additional elements are added to the stack.
             Core.Rmem.RestoreStackForExprInterpreter();
 
-            Core.Options.GenerateSSA = ssastate;
-            Core.Options.ExecuteSSA = ssastateExec;
+            runtimeCore.RuntimeOptions.GenerateSSA = ssastate;
+            runtimeCore.RuntimeOptions.ExecuteSSA = ssastateExec;
             Core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
 
             return new ExecutionMirror(Core.CurrentExecutive.CurrentDSASMExec, Core);

@@ -253,7 +253,7 @@ namespace Dynamo.Tests
         {
             ElementTypeToBoolConverter converter = new ElementTypeToBoolConverter();
             var NseVM = new NodeSearchElementViewModel(
-                new NodeModelSearchElement(new TypeLoadData(typeof(Dynamo.Nodes.Symbol))));
+                new NodeModelSearchElement(new TypeLoadData(typeof(Dynamo.Nodes.Symbol))), null);
             var NcVM = new NodeCategoryViewModel("");
             var RncVM = new RootNodeCategoryViewModel("");
             var CncVM = new ClassesNodeCategoryViewModel(RncVM);
@@ -308,7 +308,7 @@ namespace Dynamo.Tests
 
             // 2 case
             var CneVM = new CustomNodeSearchElementViewModel(
-                new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "", "", "", "")));
+                new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "", "", "", "")), null);
 
             result = converter.Convert(CneVM, null, null, null);
             Assert.AreEqual(trueBrush, result);

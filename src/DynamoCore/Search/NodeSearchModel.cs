@@ -61,6 +61,7 @@ namespace Dynamo.Search
             var element = XmlHelper.AddNode(parent, entry.GetType().ToString());
             XmlHelper.AddNode(element, "FullCategoryName", entry.FullCategoryName);
             XmlHelper.AddNode(element, "Name", entry.Name);
+            XmlHelper.AddNode(element, "Group", entry.Group.ToString());
             XmlHelper.AddNode(element, "Description", entry.Description);
         }
 

@@ -8,12 +8,16 @@ using Dynamo.UI;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
+using System;
+using Dynamo.Models;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.ViewModels
 {
     public class NodeSearchElementViewModel : NotificationObject, ISearchEntryViewModel
     {
         private bool isSelected;
+        private SearchViewModel searchViewModel;
 
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
@@ -24,15 +28,21 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public NodeSearchElementViewModel(NodeSearchElement element)
+        public NodeSearchElementViewModel(NodeSearchElement element, SearchViewModel svm)
         {
             Model = element;
+            searchViewModel = svm;
+
             Model.PropertyChanged += ModelOnPropertyChanged;
-            ClickedCommand = new DelegateCommand(Model.ProduceNode);
+            if (searchViewModel != null)
+                Clicked += searchViewModel.OnSearchElementClicked;
+            ClickedCommand = new DelegateCommand(OnClicked);
         }
 
         public void Dispose()
         {
+            if (searchViewModel != null)
+                Clicked -= searchViewModel.OnSearchElementClicked;
             Model.PropertyChanged -= ModelOnPropertyChanged;
         }
 
@@ -155,6 +165,16 @@ namespace Dynamo.Wpf.ViewModels
 
         public ICommand ClickedCommand { get; private set; }
 
+        public event Action<NodeModel> Clicked;
+        protected virtual void OnClicked()
+        {
+            if (Clicked != null)
+            {
+                var nodeModel = Model.CreateNode();
+                Clicked(nodeModel);
+            }
+        }
+
         private string GetResourceName(ResourceType resourceType)
         {
             switch (resourceType)
@@ -188,15 +208,15 @@ namespace Dynamo.Wpf.ViewModels
             OnRequestBitmapSource(iconRequest);
 
             return iconRequest.Icon;
-        }
+            }
     }
 
     public class CustomNodeSearchElementViewModel : NodeSearchElementViewModel
     {
         private string path;
 
-        public CustomNodeSearchElementViewModel(CustomNodeSearchElement element)
-            : base(element)
+        public CustomNodeSearchElementViewModel(CustomNodeSearchElement element, SearchViewModel svm)
+            : base(element, svm)
         {
             Model.PropertyChanged += ModelOnPropertyChanged;
             Path = Model.Path;
