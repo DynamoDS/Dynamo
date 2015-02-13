@@ -54,7 +54,6 @@ namespace ProtoTestFx.TD
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
 
-            testCore.__TempCoreHostForRefactoring = new ProtoCore.RuntimeCore();
             testCore.__TempCoreHostForRefactoring.SetProperties(testCore.Options, null);
             testCore.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = testCore.BuildStatus.MessageHandler;
             
