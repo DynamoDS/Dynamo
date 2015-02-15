@@ -22,5 +22,12 @@
         /// The full path of directory where ASM binaries reside.
         /// </summary>
         string ShapeManagerPath { get; }
+
+        /// <summary>
+        /// This property determines if ASM binaries are to be preloaded.
+        /// Certain host application preloads these ASM binaries before Dynamo,
+        /// in such cases there will not be a need to preload them again.
+        /// </summary>
+        bool PreloadShapeManager { get; }
     }
 }
