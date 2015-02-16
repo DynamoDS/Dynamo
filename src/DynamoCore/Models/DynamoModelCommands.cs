@@ -28,7 +28,7 @@ namespace Dynamo.Models
         
         private PortModel activeStartPort;
 
-        void OpenFileImpl(OpenFileCommand command)
+        protected virtual void OpenFileImpl(OpenFileCommand command)
         {
             string xmlFilePath = command.XmlFilePath;
             OpenFileFromPath(xmlFilePath);

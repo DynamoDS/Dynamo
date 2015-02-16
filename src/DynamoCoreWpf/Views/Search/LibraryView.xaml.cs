@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -82,7 +82,7 @@ namespace Dynamo.UI.Views
             var expanderContent = (sender as FrameworkElement);
             expanderContent.BringIntoView(new Rect(0.0, 0.0, 100.0, 20.0));
 
-            var buttons = WpfUtilities.ChildOfType<ListView>(expanderContent);
+            var buttons = expanderContent.ChildOfType<ListView>();
             if (buttons != null)
                 buttons.UnselectAll();
 
@@ -118,9 +118,8 @@ namespace Dynamo.UI.Views
             if (!(categoryButton.DataContext is RootNodeCategoryViewModel))
                 return;
 
-            var wrapPanels = new List<LibraryWrapPanel>();
-            WpfUtilities.FindChildren<LibraryWrapPanel>(categoryButton, string.Empty, wrapPanels);
-            if (wrapPanels.Count == 0)
+            var wrapPanels = categoryButton.ChildrenOfType<LibraryWrapPanel>();
+            if (!wrapPanels.Any())
                 return;
 
             var selectedElement = e.OriginalSource as FrameworkElement;
