@@ -265,7 +265,7 @@ namespace ProtoCore.Utils
         public static void LogWarning(this Interpreter dsi, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
         {
             ProtoCore.Core core = dsi.runtime.Core;
-            core.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
+            core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
         }
 
         public static void LogSemanticError(this Interpreter dsi, string msg, string fileName = null, int line = -1, int col = -1)
@@ -276,7 +276,7 @@ namespace ProtoCore.Utils
 
         public static void LogWarning(this Core core, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
         {
-            core.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
+            core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
         }
 
         public static void LogWarning(this Core core, ProtoCore.BuildData.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)

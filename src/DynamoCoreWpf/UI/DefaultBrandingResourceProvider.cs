@@ -1,7 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Dynamo.UI.Views;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.Wpf.UI
@@ -9,21 +12,6 @@ namespace Dynamo.Wpf.UI
     internal class DefaultBrandingResourceProvider : IBrandingResourceProvider
     {
         #region interface members
-
-        public ImageSource GetImageSource(ResourceNames.AboutBox resourceName)
-        {
-            ImageSource image = null;
-            switch (resourceName)
-            {
-                case ResourceNames.AboutBox.Image:
-                    image = new BitmapImage(
-                        new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png",
-                            UriKind.Absolute));
-                    break;
-
-            }
-            return EnsureImageLoaded(image, resourceName.ToString());
-        }
 
         public ImageSource GetImageSource(ResourceNames.ConsentForm resourceName)
         {
@@ -65,18 +53,6 @@ namespace Dynamo.Wpf.UI
             return EnsureStringLoaded(resource, resourceName.ToString());
         }
 
-        public string GetString(ResourceNames.AboutBox resourceName)
-        {
-            string resource = string.Empty;
-            switch (resourceName)
-            {
-                case ResourceNames.AboutBox.Title:
-                    resource = Properties.Resources.AboutWindowTitle;
-                    break;
-            }
-            return EnsureStringLoaded(resource, resourceName.ToString());
-        }
-
         public string GetString(ResourceNames.ConsentForm resourceName)
         {
             string resource = string.Empty;
@@ -103,6 +79,11 @@ namespace Dynamo.Wpf.UI
 
             }
             return EnsureStringLoaded(resource, resourceName.ToString());
+        }
+
+        public Window CreateAboutBox(DynamoViewModel model)
+        {
+            return new AboutWindow(model);
         }
 
         #endregion

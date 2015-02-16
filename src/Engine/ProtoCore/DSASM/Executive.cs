@@ -635,7 +635,7 @@ namespace ProtoCore.DSASM
                 if (depth > 0 && fNode.isConstructor)
                 {
                     string message = String.Format(Resources.KCallingConstructorOnInstance, fNode.name);
-                    core.RuntimeStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kCallingConstructorOnInstance, message);
                     return StackValue.Null;
                 }
             }
@@ -759,7 +759,7 @@ namespace ProtoCore.DSASM
                 if (!svThisPtr.IsPointer)
                 {
                     string message = String.Format(Resources.kInvokeMethodOnInvalidObject, fNode.name);
-                    core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, message);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, message);
                     return StackValue.Null;
                 }
             }
@@ -807,7 +807,14 @@ namespace ProtoCore.DSASM
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            CallSite callsite = exe.RuntimeData.GetCallSite(exe.RuntimeData.ExecutingGraphnode, classIndex, fNode.name, exe, core.RunningBlock, runtimeCore.RuntimeOptions, core.RuntimeStatus);
+            CallSite callsite = exe.RuntimeData.GetCallSite(
+                exe.RuntimeData.ExecutingGraphnode, 
+                classIndex, 
+                fNode.name, 
+                exe, 
+                core.RunningBlock, 
+                runtimeCore.RuntimeOptions, 
+                runtimeCore.RuntimeStatus);
             Validity.Assert(null != callsite);
 
             List<StackValue> registers = new List<StackValue>();
@@ -870,7 +877,7 @@ namespace ProtoCore.DSASM
                 {
                     FindRecursivePoints();
                     string message = String.Format(Resources.kMethodStackOverflow, exe.RuntimeData.recursivePoint[0].name);
-                    core.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
 
                     exe.RuntimeData.recursivePoint = new List<FunctionCounter>();
                     exe.RuntimeData.funcCounterTable = new List<FunctionCounter>();
@@ -1059,7 +1066,7 @@ namespace ProtoCore.DSASM
 
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
-                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
                                               Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
@@ -1083,7 +1090,7 @@ namespace ProtoCore.DSASM
             var callsite = exe.RuntimeData.GetCallSite(exe.RuntimeData.ExecutingGraphnode,
                                             classIndex,
                                             procNode.name,
-                                            exe, core.RunningBlock, runtimeCore.RuntimeOptions, core.RuntimeStatus);
+                                            exe, core.RunningBlock, runtimeCore.RuntimeOptions, runtimeCore.RuntimeStatus);
 
             Validity.Assert(null != callsite);
 
@@ -1399,12 +1406,12 @@ namespace ProtoCore.DSASM
                             (Properties.executingGraphNode == null ||
                              Properties.executingGraphNode.OriginalAstID != graphNode.OriginalAstID))
                         {
-                            core.RuntimeStatus.ClearWarningsForAst(graphNode.OriginalAstID);
+                            runtimeCore.RuntimeStatus.ClearWarningsForAst(graphNode.OriginalAstID);
                         }
 
                         // Set the current graphnode being executed
                         Properties.executingGraphNode = graphNode;
-                        core.RuntimeExpressionUID= graphNode.exprUID;
+                        runtimeCore.RuntimeExpressionUID = graphNode.exprUID;
 
                         if (runtimeCore.RuntimeOptions.dynamicCycleCheck)
                         {
@@ -1478,14 +1485,14 @@ namespace ProtoCore.DSASM
                         pc = graphNode.updateBlock.startpc;
                         graphNode.isDirty = false;
                         Properties.executingGraphNode = graphNode;
-                        core.RuntimeExpressionUID = graphNode.exprUID;
+                        runtimeCore.RuntimeExpressionUID = graphNode.exprUID;
                         break;
                     }
                 }
                 else if (graphNode.updateBlock.startpc == entrypoint)
                 {
                     Properties.executingGraphNode = graphNode;
-                    core.RuntimeExpressionUID = graphNode.exprUID;
+                    runtimeCore.RuntimeExpressionUID = graphNode.exprUID;
                     if (graphNode.isDirty)
                     {
                         graphNode.isDirty = false;
@@ -1498,7 +1505,7 @@ namespace ProtoCore.DSASM
 
             if (runtimeCore.RuntimeOptions.IsDeltaExecution)
             {
-                core.RuntimeStatus.ClearWarningsForAst(Properties.executingGraphNode.OriginalAstID);
+                runtimeCore.RuntimeStatus.ClearWarningsForAst(Properties.executingGraphNode.OriginalAstID);
             }
         }
 
@@ -1516,7 +1523,7 @@ namespace ProtoCore.DSASM
             }
 
             string message = String.Format(Resources.kCyclicDependency, CycleStartNodeAndEndNode[0].updateNodeRefList[0].nodeList[0].symbol.name, CycleStartNodeAndEndNode[1].updateNodeRefList[0].nodeList[0].symbol.name);
-            core.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, message);
+            runtimeCore.RuntimeStatus.LogWarning(WarningID.kCyclicDependency, message);
             //BreakDependency(NodeExecutedSameTimes);
             foreach (AssociativeGraph.GraphNode node in nodeIterations)
             {
@@ -3166,7 +3173,7 @@ namespace ProtoCore.DSASM
                         if (t.rank < 0)
                         {
                             string message = String.Format(Resources.kSymbolOverIndexed, symbolnode.name);
-                            core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                         }
                     }
 
@@ -3176,7 +3183,7 @@ namespace ProtoCore.DSASM
             }
             else if (value.IsString)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kInvalidIndexing, Resources.kStringIndexingCannotBeAssigned);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidIndexing, Resources.kStringIndexingCannotBeAssigned);
                 ret = StackValue.Null;
             }
             else
@@ -3484,7 +3491,7 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -3504,7 +3511,7 @@ namespace ProtoCore.DSASM
 
             if (!svPtr.IsArray)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -3517,14 +3524,14 @@ namespace ProtoCore.DSASM
                     StackValue array = rmem.Heap.GetHeapElement(svPtr).GetValue(dimList[n], core);
                     if (!array.IsArray)
                     {
-                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                         return StackValue.Null;
                     }
                     svPtr = array;
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
@@ -3535,12 +3542,12 @@ namespace ProtoCore.DSASM
             }
             catch (ArgumentOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 sv = StackValue.Null;
             }
             catch (IndexOutOfRangeException)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kIndexOutOfRange, Resources.kIndexOutOfRange);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kIndexOutOfRange, Resources.kIndexOutOfRange);
                 return StackValue.Null;
             }
             return sv;
@@ -3592,7 +3599,7 @@ namespace ProtoCore.DSASM
                 }
 
                 string message = String.Format(Resources.kSymbolOverIndexed, varname);
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
 
@@ -3604,7 +3611,7 @@ namespace ProtoCore.DSASM
             catch (ArgumentOutOfRangeException)
             {
                 string message = String.Format(Resources.kSymbolOverIndexed, varname);
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
 
@@ -3637,7 +3644,7 @@ namespace ProtoCore.DSASM
                 }
 
                 string message = String.Format(Resources.kSymbolOverIndexed, varname);
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
 
@@ -3656,7 +3663,7 @@ namespace ProtoCore.DSASM
             catch (ArgumentOutOfRangeException)
             {
                 string message = String.Format(Resources.kSymbolOverIndexed, varname);
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                 return StackValue.Null;
             }
 
@@ -3938,12 +3945,12 @@ namespace ProtoCore.DSASM
                         {
                             string classname = exe.classTable.ClassNodes[type].name;
                             string message = String.Format(Resources.kPropertyOfClassNotFound, classname, property);
-                            core.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
                         else
                         {
                             string message = String.Format(Resources.kMethodResolutionFailure, procName);
-                            core.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
                     }
                     else
@@ -5006,7 +5013,7 @@ namespace ProtoCore.DSASM
                                 if (targetType.rank < 0)
                                 {
                                     string message = String.Format(Resources.kSymbolOverIndexed, symbolnode.name);
-                                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
+                                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, message);
                                 }
                             }
 
@@ -6024,7 +6031,7 @@ namespace ProtoCore.DSASM
                 }
                 catch (ReplicationCaseNotCurrentlySupported e)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kReplicationWarning, e.Message);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kReplicationWarning, e.Message);
                     RX = StackValue.Null;
                 }
             }

@@ -170,7 +170,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         public string Description
         {
-            get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
+            get { return !String.IsNullOrEmpty(Summary) ? Summary : string.Empty; }
         }
 
         /// <summary>
