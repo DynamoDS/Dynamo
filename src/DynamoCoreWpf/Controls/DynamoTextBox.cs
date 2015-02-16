@@ -221,7 +221,8 @@ namespace Dynamo.Nodes
                         string propName = expr.ParentBinding.Path.Path;
                         nvm.DynamoViewModel.ExecuteCommand(
                             new DynamoModel.UpdateModelValueCommand(
-                                nvm.NodeModel.GUID, propName, Text));
+                                nvm.NodeModel.GUID, propName, Text,
+                                nodeViewModel.WorkspaceViewModel.Model));
                     }
                 }
 
