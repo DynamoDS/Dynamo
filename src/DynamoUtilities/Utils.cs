@@ -44,8 +44,10 @@ namespace DynamoUtilities
                 if (!directories.Any())
                     return -1;
 
+                int versionIndex = -1;
                 foreach (var version in versions)
                 {
+                    versionIndex++;
                     var assemblyName = string.Format("ASMAHL{0}A.DLL", version);
 
                     foreach (var directoryInfo in directories)
@@ -54,7 +56,7 @@ namespace DynamoUtilities
                             continue;
 
                         location = directoryInfo.FullName;
-                        return version;
+                        return versionIndex;
                     }
                 }
             }
