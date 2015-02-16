@@ -42,6 +42,11 @@ namespace ProtoTestFx.TD
             return testCore;
         }
 
+        public ProtoCore.RuntimeCore GetTestRuntimeCore()
+        {
+            return testCore.__TempCoreHostForRefactoring;
+        }
+
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());

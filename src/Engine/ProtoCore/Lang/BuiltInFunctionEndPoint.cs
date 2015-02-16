@@ -558,7 +558,7 @@ namespace ProtoCore.Lang
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
             if (!CoreUtils.IsGetterSetter(functionName))
             {
-                replicationGuides = runtime.GetCachedReplicationGuides(core, functionArgs);
+                replicationGuides = runtime.GetCachedReplicationGuides(functionArgs);
                 if (removeFirstArgument)
                 {
                     replicationGuides.RemoveAt(0);
@@ -642,7 +642,7 @@ namespace ProtoCore.Lang
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
             if (core.Options.IDEDebugMode &&
-                core.ExecMode != InterpreterMode.kExpressionInterpreter &&
+                runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
                 runtimeCore.DebugProps.SetUpCallrForDebug(core,
@@ -663,8 +663,8 @@ namespace ProtoCore.Lang
             StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, core);
 
             // Restore debug properties after returning from a CALL/CALLR
-            if (core.Options.IDEDebugMode && 
-                core.ExecMode != InterpreterMode.kExpressionInterpreter &&
+            if (core.Options.IDEDebugMode &&
+                runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
                 runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode);
