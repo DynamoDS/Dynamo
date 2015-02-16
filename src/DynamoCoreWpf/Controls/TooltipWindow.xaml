@@ -88,18 +88,20 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock FontSize="13">
-                            <Run Foreground="#cccccc"
-                                 Text="{Binding Item1, Mode=OneWay}" /> 
-                            <Run Foreground="#777777">
-                                <Run.Text>
+                        <WrapPanel Orientation="Horizontal">
+                            <TextBlock FontSize="13"
+                                       Foreground="#cccccc"
+                                       Text="{Binding Item1, Mode=OneWay}" />
+                            <TextBlock FontSize="13"
+                                       Foreground="#777777">
+                                <TextBlock.Text>
                                     <Binding Path="Item2"
                                              Mode="OneWay"
                                              Converter="{StaticResource InOutParamTypeConverter}"
                                              ConverterParameter="inputParam" />
-                                </Run.Text>
-                            </Run>
-                        </TextBlock>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </WrapPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

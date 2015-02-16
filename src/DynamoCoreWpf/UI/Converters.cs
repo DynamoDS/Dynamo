@@ -1754,7 +1754,7 @@ namespace Dynamo.Controls
                 return input;
 
             if (shouldPrefixColon)
-                return String.Concat(ColonString, SpaceString, input);
+                return String.Concat(SpaceString, ColonString, SpaceString, input);
             else
                 return input;
         }
