@@ -921,19 +921,31 @@ namespace Dynamo.Models
         public class UpdateModelValueCommand : RecordableCommand
         {
             private readonly List<Guid> modelGuids;
-            private WorkspaceModel workspaceModel;
 
             #region Public Class Methods
 
+            /// <summary>
+            /// </summary>
+            /// <param name="modelGuid"></param>
+            /// <param name="name"></param>
+            /// <param name="value"></param>
+            /// <param name="workspaceModel">If workspace model is null, this command will be sent to the current workspace</param>
             public UpdateModelValueCommand(Guid modelGuid, string name, string value, WorkspaceModel workspaceModel = null)
                 : this(new[] {modelGuid}, name, value, workspaceModel)
             {
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="modelGuids"></param>
+            /// <param name="name"></param>
+            /// <param name="value"></param>
+            /// <param name="workspaceModel">If workspace model is null, this command will be sent to the current workspace</param>
             public UpdateModelValueCommand(IEnumerable<Guid> modelGuids, string name, string value, WorkspaceModel workspaceModel = null)
             {
                 this.modelGuids = new List<Guid>(modelGuids);
-                this.workspaceModel = workspaceModel;
+                TargetWorkspace = workspaceModel;
                 Name = name;
                 Value = value;
             }
@@ -967,18 +979,12 @@ namespace Dynamo.Models
 
             #endregion
 
-            #region Public Properties
-            public WorkspaceModel TargetWorkspace
-            {
-                get { return workspaceModel; }
-            }
-            #endregion
-
             #region Public Command Properties
 
             internal IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
             internal string Name { get; private set; }
             internal string Value { get; private set; }
+            internal WorkspaceModel TargetWorkspace { get; private set; } 
 
             #endregion
 
