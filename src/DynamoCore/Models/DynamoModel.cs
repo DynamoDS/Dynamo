@@ -3,6 +3,7 @@ using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
+using Dynamo.Library;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
@@ -46,6 +47,7 @@ namespace Dynamo.Models
         public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
 
         #region private members
+        private readonly GeometryPreloader geometryPreloader;
         private WorkspaceModel currentWorkspace;
         #endregion
 
@@ -431,6 +433,9 @@ namespace Dynamo.Models
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
             Scheduler = new DynamoScheduler(thread, IsTestMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+
+            if (config.GeometryConfiguration != null)
+                geometryPreloader = new GeometryPreloader(config.GeometryConfiguration);
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
