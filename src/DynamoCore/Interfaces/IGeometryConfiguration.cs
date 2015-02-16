@@ -2,9 +2,10 @@
 {
     public enum LibraryVersion
     {
-        Version219,
-        Version220,
-        Version221,
+        None,
+        Version219 = 219,
+        Version220 = 220,
+        Version221 = 221,
     };
 
     /// <summary>
