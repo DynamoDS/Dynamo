@@ -71,17 +71,21 @@ namespace DynamoUtilities
         /// method does not have a return value, any failures in loading ASM binaries
         /// will result in an exception being thrown.
         /// </summary>
-        /// <param name="preloaderPath">Full path to LibG.AsmPreloader.Managed.dll
-        /// assembly. This argument must represent a valid path to the loader.</param>
+        /// <param name="preloaderLocation">Full path of the folder that contains  
+        /// LibG.AsmPreloader.Managed.dll assembly. This argument must represent 
+        /// a valid path to the loader.</param>
         /// <param name="asmLocation">Full path of the folder that contains ASM 
         /// binaries to load. This argument cannot be null or empty.</param>
         /// 
-        public static void PreloadAsmFromPath(string preloaderPath, string asmLocation)
+        public static void PreloadAsmFromPath(string preloaderLocation, string asmLocation)
         {
-            if (string.IsNullOrEmpty(preloaderPath) || !File.Exists(preloaderPath))
+            if (string.IsNullOrEmpty(preloaderLocation) || !Directory.Exists(preloaderLocation))
                 throw new ArgumentException("preloadedPath");
             if (string.IsNullOrEmpty(asmLocation) || !Directory.Exists(asmLocation))
                 throw new ArgumentException("asmLocation");
+
+            const string preloaderName = "LibG.AsmPreloader.Managed.dll";
+            var preloaderPath = Path.Combine(preloaderLocation, preloaderName);
 
             Debug.WriteLine("ASM Preloader: {0}", preloaderPath);
             Debug.WriteLine("ASM Location: {0}", asmLocation);
