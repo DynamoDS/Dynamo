@@ -451,7 +451,8 @@ namespace Dynamo.UI.Controls
             {
                 nodeViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(nodeModel.GUID,
-                        "Code", InnerTextEditor.Text));
+                        "Code", InnerTextEditor.Text,
+                        nodeViewModel.WorkspaceViewModel.Model));
             }
 
             if (createdForNewCodeBlock)

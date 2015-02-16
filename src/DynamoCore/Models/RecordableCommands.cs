@@ -921,17 +921,19 @@ namespace Dynamo.Models
         public class UpdateModelValueCommand : RecordableCommand
         {
             private readonly List<Guid> modelGuids;
+            private WorkspaceModel workspaceModel;
 
             #region Public Class Methods
 
-            public UpdateModelValueCommand(Guid modelGuid, string name, string value)
-                : this(new[] {modelGuid}, name, value)
+            public UpdateModelValueCommand(Guid modelGuid, string name, string value, WorkspaceModel workspaceModel = null)
+                : this(new[] {modelGuid}, name, value, workspaceModel)
             {
             }
 
-            public UpdateModelValueCommand(IEnumerable<Guid> modelGuids, string name, string value)
+            public UpdateModelValueCommand(IEnumerable<Guid> modelGuids, string name, string value, WorkspaceModel workspaceModel = null)
             {
                 this.modelGuids = new List<Guid>(modelGuids);
+                this.workspaceModel = workspaceModel;
                 Name = name;
                 Value = value;
             }
@@ -963,6 +965,13 @@ namespace Dynamo.Models
                 }
             }
 
+            #endregion
+
+            #region Public Properties
+            public WorkspaceModel TargetWorkspace
+            {
+                get { return workspaceModel; }
+            }
             #endregion
 
             #region Public Command Properties
