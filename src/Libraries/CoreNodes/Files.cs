@@ -97,7 +97,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        /// 
+        ///  Moves a specified file to a new location
         /// </summary>
         /// <param name="path"></param>
         /// <param name="newPath"></param>
@@ -110,7 +110,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        /// 
+        ///   Deletes the specified file.
         /// </summary>
         /// <param name="path"></param>
         public static void Delete(string path)
