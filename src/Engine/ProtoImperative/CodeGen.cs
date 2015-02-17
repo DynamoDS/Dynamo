@@ -951,7 +951,7 @@ namespace ProtoImperative
         public override int Emit(ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             core.startPC = this.pc;
-            if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 return EmitExpressionInterpreter(codeBlockNode);
             }

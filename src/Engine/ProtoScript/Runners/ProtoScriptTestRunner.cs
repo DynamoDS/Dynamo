@@ -132,9 +132,6 @@ namespace ProtoScript.Runners
             core.Rmem.PushFrameForGlobals(core.GlobOffset);
             core.RunningBlock = runningBlock;
 
-            ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Options, core.DSExecutable, runtimeContext, core.DebuggerProperties);
-            core.__TempCoreHostForRefactoring = runtimeCore;
-
             try
             {
                 core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);

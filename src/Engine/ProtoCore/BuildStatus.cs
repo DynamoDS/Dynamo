@@ -315,16 +315,8 @@ namespace ProtoCore
         private readonly bool warningAsError;
         private readonly bool errorAsWarning = false;
 
-        public IOutputStream MessageHandler 
-        { 
-            get; set; 
-        }
-
-        public WebOutputStream WebMsgHandler
-        {
-            get;
-            set;
-        }
+        public IOutputStream MessageHandler { get; set; }
+        public WebOutputStream WebMsgHandler { get; set; }
 
         private List<BuildData.WarningEntry> warnings;
         public IEnumerable<BuildData.WarningEntry> Warnings

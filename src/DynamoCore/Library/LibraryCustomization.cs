@@ -85,7 +85,7 @@ namespace Dynamo.DSEngine
             try
             {
                 var fn = Path.GetFileNameWithoutExtension(assemblyLocation);
-                resourceAssemblyPath = fn + Configurations.ResourcesDLL;
+                resourceAssemblyPath = fn + Configurations.IconResourcesDLL;
 
                 return DynamoPathManager.Instance.ResolveLibraryPath(ref resourceAssemblyPath);
             }
