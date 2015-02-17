@@ -981,6 +981,7 @@ namespace Dynamo.PackageManager
                 Package.License = License;
                 Package.SiteUrl = SiteUrl;
                 Package.RepositoryUrl = RepositoryUrl;
+                Package.Icon = Icon;
 
                 AppendPackageContents();
 
