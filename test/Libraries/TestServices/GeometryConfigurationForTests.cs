@@ -1,10 +1,13 @@
-﻿using Dynamo.Interfaces;
+﻿using System.Configuration;
+using System.IO;
+using Dynamo.Interfaces;
 using DynamoUtilities;
 
 namespace Dynamo
 {
     public class GeometryConfigurationForTests : IGeometryConfiguration
     {
+        private readonly string geometryFactoryPath;
         private readonly string shapeManagerPath;
         private readonly LibraryVersion libraryVersion = LibraryVersion.None;
 
@@ -39,6 +42,18 @@ namespace Dynamo
         public bool PreloadShapeManager
         {
             get { return true; }
+        }
+
+        public string GetPreloaderLocation(string rootDirectory)
+        {
+            var version = ((int)libraryVersion);
+            return Path.Combine(rootDirectory, string.Format("libg_{0}", version));
+        }
+
+        public string GetGeometryFactoryPath(string rootDirectory)
+        {
+            var version = ((int) libraryVersion);
+            return Utils.GetGeometryFactoryPath(rootDirectory, version);
         }
     }
 }
