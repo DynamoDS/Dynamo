@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
@@ -8,9 +9,7 @@ namespace Dynamo.Search
 {
     public class SearchCategory
     {
-
-        // TODO: classes functionality.
-        //private readonly ObservableCollection<NodeCategoryViewModel> classes;
+        private readonly ObservableCollection<NodeCategoryViewModel> classes;
         private readonly List<SearchMemberGroup> memberGroups;
 
         public string Name { get; private set; }
@@ -19,10 +18,10 @@ namespace Dynamo.Search
         //       All functionality marked as 'classes functionality'
         //       Should be implemented as classes are shown in search results.
         //       http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6198
-        //public ObservableCollection<NodeCategoryViewModel> Classes
-        //{
-        //    get { return classes; }
-        //}
+        public ObservableCollection<NodeCategoryViewModel> Classes
+        {
+            get { return classes; }
+        }
 
         public IEnumerable<SearchMemberGroup> MemberGroups
         {
@@ -32,8 +31,7 @@ namespace Dynamo.Search
         internal SearchCategory(string name)
         {
             Name = name;
-            // TODO: classes functionality.
-            //classes = new ObservableCollection<NodeCategoryViewModel>();
+            classes = new ObservableCollection<NodeCategoryViewModel>();
             memberGroups = new List<SearchMemberGroup>();
         }
 
