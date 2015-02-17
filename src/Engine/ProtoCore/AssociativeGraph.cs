@@ -1296,32 +1296,14 @@ namespace ProtoCore.AssociativeGraph
             {
                 foreach (GraphNode gnode in gnodeList)
                 {
-                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
-                    {
-                        return gnode;
-                    }
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the first dirty graphnode
-        /// </summary>
-        /// <param name="pc"></param>
-        /// <param name="classIndex"></param>
-        /// <param name="procIndex"></param>
-        /// <returns></returns>
-        public GraphNode GetFirstDirtyGraphNode(int classIndex, int procIndex)
-        {
-            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
-            if (gnodeList != null && gnodeList.Count > 0)
-            {
-                foreach (GraphNode gnode in gnodeList)
-                {
                     if (gnode.isActive && gnode.isDirty)
                     {
-                        return gnode;
+                        bool isFirstDirtyNode = pc == Constants.kInvalidIndex;
+                        bool isFirstDirtyNodeAfterPC = pc != Constants.kInvalidIndex && gnode.updateBlock.startpc >= pc;
+                        if (isFirstDirtyNode || isFirstDirtyNodeAfterPC)
+                        {
+                            return gnode;
+                        }
                     }
                 }
             }

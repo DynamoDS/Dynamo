@@ -6966,7 +6966,7 @@ namespace ProtoCore.DSASM
                 else
                 {
                     // Allow immediate update if we are in a local scope.
-                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(ci, fi);
+                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(Constants.kInvalidIndex, ci, fi);
                 }
             }
             else
