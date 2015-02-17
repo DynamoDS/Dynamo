@@ -615,7 +615,7 @@ namespace ProtoCore
                 istream = runtimeCore.DSExecutable.instrStreamList[core.RunningBlock];
                 if (istream.language == Language.kAssociative)
                 {
-                    limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, runtimeCore.RuntimeOptions.ExecuteSSA);
+                    limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, runtimeCore.Options.ExecuteSSA);
                     //Validity.Assert(limit != ProtoCore.DSASM.Constants.kInvalidIndex);
                 }
                 else if (istream.language == Language.kImperative)
