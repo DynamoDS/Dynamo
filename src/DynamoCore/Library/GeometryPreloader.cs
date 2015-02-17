@@ -7,6 +7,13 @@ using ProtoScript.Runners;
 
 namespace Dynamo.Library
 {
+    /// <summary>
+    /// Geometry preloader class that helps with preloading Autodesk Shape 
+    /// Manager (ASM) binaries through geometry library (LibG). This class being
+    /// part of Dynamo core module, relies on IGeometryConfiguration supplied by
+    /// the host application to determine the installed location of ASM binaries.
+    /// </summary>
+    /// 
     class GeometryPreloader
     {
         #region Class Data Members and Properties

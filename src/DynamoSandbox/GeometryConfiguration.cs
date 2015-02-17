@@ -3,6 +3,13 @@ using DynamoUtilities;
 
 namespace Dynamo.DynamoSandbox
 {
+    /// <summary>
+    /// Dynamo sandbox application requires a pre-installed version of 
+    /// Autodesk Shape Manager (ASM) on the user's machine (i.e. by having some
+    /// Autodesk products like Revit installed). This class selects the right
+    /// version of ASM binaries to use.
+    /// </summary>
+    /// 
     class GeometryConfiguration : IGeometryConfiguration
     {
         private bool initialized;

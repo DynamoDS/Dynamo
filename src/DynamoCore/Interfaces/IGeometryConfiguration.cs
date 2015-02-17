@@ -9,13 +9,17 @@
     };
 
     /// <summary>
-    /// Through this interface, Dynamo determines the right geometry 
-    /// library provider to use and its associated path configurations.
+    /// Autodesk Shape Manager (ASM) lives outside of Dynamo core as independent
+    /// entities. There might be multiple versions of ASM being installed on the 
+    /// machine. This interface is provided as a mean for Dynamo host applications
+    /// (e.g. DynamoSandbox.exe or Revit add-on) to specify the right ASM version 
+    /// to load.
     /// </summary>
+    /// 
     public interface IGeometryConfiguration
     {
         /// <summary>
-        /// Geometry library versions.
+        /// Version of ASM binaries to use.
         /// </summary>
         LibraryVersion Version { get; }
 
@@ -25,9 +29,9 @@
         string ShapeManagerPath { get; }
 
         /// <summary>
-        /// This property determines if ASM binaries are to be preloaded.
-        /// Certain host application preloads these ASM binaries before Dynamo,
-        /// in such cases there will not be a need to preload them again.
+        /// This property determines if ASM binaries are to be preloaded. Some 
+        /// host applications (e.g. Revit) preloads these ASM binaries before 
+        /// Dynamo, in such cases there will not be a need to preload them again.
         /// </summary>
         bool PreloadShapeManager { get; }
     }
