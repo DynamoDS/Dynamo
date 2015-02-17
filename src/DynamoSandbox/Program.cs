@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.DynamoSandbox;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.ViewModels;
@@ -22,12 +23,11 @@ namespace DynamoSandbox
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    Preferences = PreferenceSettings.Load()
+                    Preferences = PreferenceSettings.Load(),
+                    GeometryConfiguration = new GeometryConfiguration()
                 });
 
             viewModel = DynamoViewModel.Start(

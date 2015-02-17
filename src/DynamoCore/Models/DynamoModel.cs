@@ -435,7 +435,10 @@ namespace Dynamo.Models
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
             if (config.GeometryConfiguration != null)
+            {
                 geometryPreloader = new GeometryPreloader(config.GeometryConfiguration);
+                geometryPreloader.Preload();
+            }
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
