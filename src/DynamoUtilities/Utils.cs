@@ -9,6 +9,11 @@ namespace DynamoUtilities
 {
     public class Utils
     {
+        public static readonly string GeometryFactoryAssembly = "LibG.ProtoInterface.dll";
+        public static readonly string PreloaderAssembly = "LibG.AsmPreloader.Managed.dll";
+        public static readonly string PreloaderClassName = "Autodesk.LibG.AsmPreloader";
+        public static readonly string PreloaderMethodName = "PreloadAsmLibraries";
+
         /// <summary>
         /// Call this method to determine the version of ASM that is installed 
         /// on the user machine. The method scans through a list of known Autodesk 
@@ -74,8 +79,8 @@ namespace DynamoUtilities
         /// will result in an exception being thrown.
         /// </summary>
         /// <param name="preloaderLocation">Full path of the folder that contains  
-        /// LibG.AsmPreloader.Managed.dll assembly. This argument must represent 
-        /// a valid path to the loader.</param>
+        /// PreloaderAssembly assembly. This argument must represent a valid path 
+        /// to the loader.</param>
         /// <param name="asmLocation">Full path of the folder that contains ASM 
         /// binaries to load. This argument cannot be null or empty.</param>
         /// 
@@ -86,20 +91,22 @@ namespace DynamoUtilities
             if (string.IsNullOrEmpty(asmLocation) || !Directory.Exists(asmLocation))
                 throw new ArgumentException("asmLocation");
 
-            const string preloaderName = "LibG.AsmPreloader.Managed.dll";
-            var preloaderPath = Path.Combine(preloaderLocation, preloaderName);
+            var preloaderPath = Path.Combine(preloaderLocation, PreloaderAssembly);
 
             Debug.WriteLine("ASM Preloader: {0}", preloaderPath);
             Debug.WriteLine("ASM Location: {0}", asmLocation);
 
             var libG = Assembly.LoadFrom(preloaderPath);
-            var preloadType = libG.GetType("Autodesk.LibG.AsmPreloader");
+            var preloadType = libG.GetType(PreloaderClassName);
 
-            var preloadMethod = preloadType.GetMethod("PreloadAsmLibraries",
+            var preloadMethod = preloadType.GetMethod(PreloaderMethodName,
                 BindingFlags.Public | BindingFlags.Static);
 
             if (preloadMethod == null)
-                throw new MissingMethodException(@"Method ""PreloadAsmLibraries"" not found");
+            {
+                throw new MissingMethodException(
+                    string.Format("Method '{0}' not found", PreloaderMethodName));
+            }
 
             var methodParams = new object[] { asmLocation };
             preloadMethod.Invoke(null, methodParams);
