@@ -802,7 +802,10 @@ namespace Dynamo.Models
                 EngineController = null;
             }
 
-            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
+            var geomFactory = string.Empty;
+            if (geometryPreloader != null)
+                geomFactory = geometryPreloader.GeometryFactoryPath;
+
             EngineController = new EngineController(
                 LibraryServices,
                 geomFactory,
