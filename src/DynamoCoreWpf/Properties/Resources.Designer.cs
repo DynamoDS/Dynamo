@@ -113,6 +113,17 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("AddFileToPackageDialogTitle", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add Icon to Package....
+        /// </summary>
+        public static string AddIconToPackageDialogTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("AddIconToPackageDialogTitle", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Autodesk Sign In.
