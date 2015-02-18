@@ -384,4 +384,73 @@
   <data name="kStringIndexingCannotBeAssigned" xml:space="preserve">
     <value>String indexing cannot be assigned to, it is read only.</value>
   </data>
+  <data name="ChecksArrayWithUniformDepth" xml:space="preserve">
+    <value>Checks if the array has a uniform depth</value>
+  </data>
+  <data name="ChecksIfArrayContainsTheMember" xml:space="preserve">
+    <value>Checks if the array contains the member var</value>
+  </data>
+  <data name="ChecksIfTheArrayIsAllFalse" xml:space="preserve">
+    <value>Check if the array is all false</value>
+  </data>
+  <data name="ChecksIfTheArrayIsAllTrue" xml:space="preserve">
+    <value>Check if the array is all true</value>
+  </data>
+  <data name="DeterminesObjectsAreEqual" xml:space="preserve">
+    <value>Determines whether two object instances are equal</value>
+  </data>
+  <data name="gettypes" xml:space="preserve">
+    <value>Get the Type of the current instance</value>
+  </data>
+  <data name="InsertsAnElementIntoArray" xml:space="preserve">
+    <value>Inserts an element into array at the specified index</value>
+  </data>
+  <data name="MapsValueFromOneRangeToAnotherRange" xml:space="preserve">
+    <value>Maps a vlaue from one range to another range</value>
+  </data>
+  <data name="MapsValueIntoInputRange" xml:space="preserve">
+    <value>Maps a value into an input range</value>
+  </data>
+  <data name="ProducesTheSetIntersection" xml:space="preserve">
+    <value>Produces the set intersection of two sequences</value>
+  </data>
+  <data name="ProducesTheSetUnion" xml:space="preserve">
+    <value>Produces the set union of two sequences by using the default equality comparer.</value>
+  </data>
+  <data name="RemovesTheMembersofTheArray" xml:space="preserve">
+    <value>Removes the members of the array which are not members of the specified type</value>
+  </data>
+  <data name="ReordersArray" xml:space="preserve">
+    <value>Reorders the array using the specified indices</value>
+  </data>
+  <data name="ReturnsArrayWithUniformDepth" xml:space="preserve">
+    <value>Returns an array with uniform depth as specified by the input depth</value>
+  </data>
+  <data name="ReturnsConcatenatingArray" xml:space="preserve">
+    <value>Returns a string that is the result of concatenating two arrays values.</value>
+  </data>
+  <data name="ReturnsNumberOfItems" xml:space="preserve">
+    <value>Returns number of items in the specified list.</value>
+  </data>
+  <data name="ReturnsTheDeepestDepthOfTheArray" xml:space="preserve">
+    <value>Returns the deepest depth of the array</value>
+  </data>
+  <data name="ReturnsTheFlattened1DArray" xml:space="preserve">
+    <value>Returns the flattened 1D array of the multi-dimensional input array</value>
+  </data>
+  <data name="ReturnsTheIndex" xml:space="preserve">
+    <value>Returns the index of the member in the array</value>
+  </data>
+  <data name="ReturnsTheNumberOfFalseValueInArray" xml:space="preserve">
+    <value>Returns the number of  false values in array</value>
+  </data>
+  <data name="ReturnsTheNumberOfTrueValue" xml:space="preserve">
+    <value>Returns the number of true values in the array</value>
+  </data>
+  <data name="SortsArrayByValue" xml:space="preserve">
+    <value>Sorts an array by the values of its members in either ascending or descending order</value>
+  </data>
+  <data name="SortsArrayByValueInAscending" xml:space="preserve">
+    <value>Sorts array by values of its members in ascending order</value>
+  </data>
 </root>

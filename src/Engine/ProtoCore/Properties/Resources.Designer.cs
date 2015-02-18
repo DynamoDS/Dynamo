@@ -79,11 +79,56 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checks if the array has a uniform depth.
+        /// </summary>
+        public static string ChecksArrayWithUniformDepth {
+            get {
+                return ResourceManager.GetString("ChecksArrayWithUniformDepth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checks if the array contains the member var.
+        /// </summary>
+        public static string ChecksIfArrayContainsTheMember {
+            get {
+                return ResourceManager.GetString("ChecksIfArrayContainsTheMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check if the array is all false.
+        /// </summary>
+        public static string ChecksIfTheArrayIsAllFalse {
+            get {
+                return ResourceManager.GetString("ChecksIfTheArrayIsAllFalse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check if the array is all true.
+        /// </summary>
+        public static string ChecksIfTheArrayIsAllTrue {
+            get {
+                return ResourceManager.GetString("ChecksIfTheArrayIsAllTrue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;)&apos; expected - Imcomplete Closure.
         /// </summary>
         public static string closeBracketExpected {
             get {
                 return ResourceManager.GetString("closeBracketExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines whether two object instances are equal.
+        /// </summary>
+        public static string DeterminesObjectsAreEqual {
+            get {
+                return ResourceManager.GetString("DeterminesObjectsAreEqual", resourceCulture);
             }
         }
         
@@ -124,11 +169,29 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get the Type of the current instance.
+        /// </summary>
+        public static string gettypes {
+            get {
+                return ResourceManager.GetString("gettypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import statements are not supported in CodeBlock Nodes..
         /// </summary>
         public static string importStatementNotSupported {
             get {
                 return ResourceManager.GetString("importStatementNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inserts an element into array at the specified index.
+        /// </summary>
+        public static string InsertsAnElementIntoArray {
+            get {
+                return ResourceManager.GetString("InsertsAnElementIntoArray", resourceCulture);
             }
         }
         
@@ -781,6 +844,24 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Maps a vlaue from one range to another range.
+        /// </summary>
+        public static string MapsValueFromOneRangeToAnotherRange {
+            get {
+                return ResourceManager.GetString("MapsValueFromOneRangeToAnotherRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maps a value into an input range.
+        /// </summary>
+        public static string MapsValueIntoInputRange {
+            get {
+                return ResourceManager.GetString("MapsValueIntoInputRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modifier Blocks are not supported currently..
         /// </summary>
         public static string modifierBlockNotSupported {
@@ -808,6 +889,69 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Produces the set intersection of two sequences.
+        /// </summary>
+        public static string ProducesTheSetIntersection {
+            get {
+                return ResourceManager.GetString("ProducesTheSetIntersection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Produces the set union of two sequences by using the default equality comparer..
+        /// </summary>
+        public static string ProducesTheSetUnion {
+            get {
+                return ResourceManager.GetString("ProducesTheSetUnion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removes the members of the array which are not members of the specified type.
+        /// </summary>
+        public static string RemovesTheMembersofTheArray {
+            get {
+                return ResourceManager.GetString("RemovesTheMembersofTheArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reorders the array using the specified indices.
+        /// </summary>
+        public static string ReordersArray {
+            get {
+                return ResourceManager.GetString("ReordersArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns an array with uniform depth as specified by the input depth.
+        /// </summary>
+        public static string ReturnsArrayWithUniformDepth {
+            get {
+                return ResourceManager.GetString("ReturnsArrayWithUniformDepth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns a string that is the result of concatenating two arrays values..
+        /// </summary>
+        public static string ReturnsConcatenatingArray {
+            get {
+                return ResourceManager.GetString("ReturnsConcatenatingArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns number of items in the specified list..
+        /// </summary>
+        public static string ReturnsNumberOfItems {
+            get {
+                return ResourceManager.GetString("ReturnsNumberOfItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to return statement is not allowed in constructor.
         /// </summary>
         public static string returnStatementIsNotAllowedInConstructor {
@@ -817,11 +961,74 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Returns the deepest depth of the array.
+        /// </summary>
+        public static string ReturnsTheDeepestDepthOfTheArray {
+            get {
+                return ResourceManager.GetString("ReturnsTheDeepestDepthOfTheArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns the flattened 1D array of the multi-dimensional input array.
+        /// </summary>
+        public static string ReturnsTheFlattened1DArray {
+            get {
+                return ResourceManager.GetString("ReturnsTheFlattened1DArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns the index of the member in the array.
+        /// </summary>
+        public static string ReturnsTheIndex {
+            get {
+                return ResourceManager.GetString("ReturnsTheIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns the number of  false values in array.
+        /// </summary>
+        public static string ReturnsTheNumberOfFalseValueInArray {
+            get {
+                return ResourceManager.GetString("ReturnsTheNumberOfFalseValueInArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns the number of true values in the array.
+        /// </summary>
+        public static string ReturnsTheNumberOfTrueValue {
+            get {
+                return ResourceManager.GetString("ReturnsTheNumberOfTrueValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;;&apos; is expected..
         /// </summary>
         public static string semiColonExpected {
             get {
                 return ResourceManager.GetString("semiColonExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorts an array by the values of its members in either ascending or descending order.
+        /// </summary>
+        public static string SortsArrayByValue {
+            get {
+                return ResourceManager.GetString("SortsArrayByValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorts array by values of its members in ascending order.
+        /// </summary>
+        public static string SortsArrayByValueInAscending {
+            get {
+                return ResourceManager.GetString("SortsArrayByValueInAscending", resourceCulture);
             }
         }
         
