@@ -79,6 +79,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check if the elements in the specified array have the same type..
+        /// </summary>
+        public static string CheckIfTheElementsInArrayAreSameType {
+            get {
+                return ResourceManager.GetString("CheckIfTheElementsInArrayAreSameType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checks if the array has a uniform depth.
         /// </summary>
         public static string ChecksArrayWithUniformDepth {
@@ -93,6 +102,15 @@ namespace ProtoCore.Properties {
         public static string ChecksIfArrayContainsTheMember {
             get {
                 return ResourceManager.GetString("ChecksIfArrayContainsTheMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check if each row in multidimentional array has the same length.
+        /// </summary>
+        public static string ChecksIfLengthsAreSameInMultiDimentionalArray {
+            get {
+                return ResourceManager.GetString("ChecksIfLengthsAreSameInMultiDimentionalArray", resourceCulture);
             }
         }
         
@@ -120,6 +138,15 @@ namespace ProtoCore.Properties {
         public static string closeBracketExpected {
             get {
                 return ResourceManager.GetString("closeBracketExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checks if an array contains a specific key.
+        /// </summary>
+        public static string ContainsKeys {
+            get {
+                return ResourceManager.GetString("ContainsKeys", resourceCulture);
             }
         }
         
@@ -169,11 +196,47 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get all keys from an array.
+        /// </summary>
+        public static string getKeys {
+            get {
+                return ResourceManager.GetString("getKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get the Type of the current instance.
         /// </summary>
         public static string gettypes {
             get {
                 return ResourceManager.GetString("gettypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get all values that stored in the array, including in dictionary.
+        /// </summary>
+        public static string getValues {
+            get {
+                return ResourceManager.GetString("getValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import from CSV by providing file path.
+        /// </summary>
+        public static string ImportFileByGivenFilePath {
+            get {
+                return ResourceManager.GetString("ImportFileByGivenFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true).
+        /// </summary>
+        public static string ImportFileByGivenFilePathWithMode {
+            get {
+                return ResourceManager.GetString("ImportFileByGivenFilePathWithMode", resourceCulture);
             }
         }
         
@@ -889,6 +952,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Return objects that are included in Array1 but excluded in Array2.
+        /// </summary>
+        public static string ObjectsContainsInArray1NotInArray2 {
+            get {
+                return ResourceManager.GetString("ObjectsContainsInArray1NotInArray2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Produces the set intersection of two sequences.
         /// </summary>
         public static string ProducesTheSetIntersection {
@@ -907,6 +979,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Returns true if the specified key is removed from array, otherwise returns false..
+        /// </summary>
+        public static string removeKeys {
+            get {
+                return ResourceManager.GetString("removeKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Removes the members of the array which are not members of the specified type.
         /// </summary>
         public static string RemovesTheMembersofTheArray {
@@ -921,6 +1002,15 @@ namespace ProtoCore.Properties {
         public static string ReordersArray {
             get {
                 return ResourceManager.GetString("ReordersArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns multidimentional array according the rank given.
+        /// </summary>
+        public static string ReturnsArrayWithRankDepth {
+            get {
+                return ResourceManager.GetString("ReturnsArrayWithRankDepth", resourceCulture);
             }
         }
         

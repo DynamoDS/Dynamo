@@ -453,4 +453,34 @@
   <data name="SortsArrayByValueInAscending" xml:space="preserve">
     <value>Sorts array by values of its members in ascending order</value>
   </data>
+  <data name="CheckIfTheElementsInArrayAreSameType" xml:space="preserve">
+    <value>Check if the elements in the specified array have the same type.</value>
+  </data>
+  <data name="ChecksIfLengthsAreSameInMultiDimentionalArray" xml:space="preserve">
+    <value>Check if each row in multidimentional array has the same length</value>
+  </data>
+  <data name="ContainsKeys" xml:space="preserve">
+    <value>Checks if an array contains a specific key</value>
+  </data>
+  <data name="getKeys" xml:space="preserve">
+    <value>Get all keys from an array</value>
+  </data>
+  <data name="getValues" xml:space="preserve">
+    <value>Get all values that stored in the array, including in dictionary</value>
+  </data>
+  <data name="ImportFileByGivenFilePath" xml:space="preserve">
+    <value>Import from CSV by providing file path</value>
+  </data>
+  <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
+    <value>Import from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)</value>
+  </data>
+  <data name="ObjectsContainsInArray1NotInArray2" xml:space="preserve">
+    <value>Return objects that are included in Array1 but excluded in Array2</value>
+  </data>
+  <data name="removeKeys" xml:space="preserve">
+    <value>Returns true if the specified key is removed from array, otherwise returns false.</value>
+  </data>
+  <data name="ReturnsArrayWithRankDepth" xml:space="preserve">
+    <value>Returns multidimentional array according the rank given</value>
+  </data>
 </root>
