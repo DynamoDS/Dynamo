@@ -83,7 +83,13 @@ namespace Dynamo.ViewModels
 
         public bool RunEnabled
         {
-            get { return model.RunEnabled; }
+            get
+            {
+                var homeSpace = model.Workspaces.FirstOrDefault(ws => ws is HomeWorkspaceModel) as HomeWorkspaceModel;
+                return model.RunEnabled &&
+                    homeSpace.RunSettings.RunType != RunType.Automatic && 
+                    homeSpace.RunSettings.RunType != RunType.Periodic;
+            }
         }
 
         public virtual bool CanRunDynamically
@@ -494,7 +500,7 @@ namespace Dynamo.ViewModels
             //updates to the workspaces collection
             var homespace = new WorkspaceViewModel(model.CurrentWorkspace, this);
             workspaces.Add(homespace);
-            homespace.Model.PropertyChanged += workSpace_propertyChanged;
+            homespace.PropertyChanged += workSpace_propertyChanged;
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -952,8 +958,8 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "RunSettings":
-                    RaisePropertyChanged("RunSettingsViewModel");
+                case "RunSettingsViewModel":
+                    RaisePropertyChanged("RunEnabled");
                     break;
             }
         }
@@ -2213,22 +2219,28 @@ namespace Dynamo.ViewModels
             this.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
 
-        private void SetPeriodicTimer(object parameter)
+        private void StartPeriodicTimer(object parameter)
         {
             if (Model == null)
                 return;
 
-            if (HomeSpace.RunSettings.RunPeriod != 0)
-            {
-                model.StopPeriodicEvaluation();
-            }
-            else
-            {
-                model.StartPeriodicEvaluation(HomeSpace.RunSettings.RunPeriod);
-            }
+            model.StartPeriodicEvaluation(HomeSpace.RunSettings.RunPeriod);
         }
 
-        private bool CanSetPeriodicTimer(object parameter)
+        private bool CanStartPeriodicTimer(object parameter)
+        {
+            return true;
+        }
+
+        private void StopPeriodicTimer(object parameter)
+        {
+            if (Model == null)
+                return;
+
+            model.StopPeriodicEvaluation();
+        }
+
+        private bool CanStopPeriodicTimer(object parameter)
         {
             return true;
         }
