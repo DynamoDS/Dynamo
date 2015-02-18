@@ -138,7 +138,7 @@ namespace Dynamo.Models
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check that shutdown has not been requested.
-            if (RunSettings.RunType == RunType.Automatic && EngineController != null)
+            if (RunSettings.RunType != RunType.Manual && EngineController != null)
             {
                 DynamoModel.OnRequestDispatcherBeginInvoke(Run);
             }
