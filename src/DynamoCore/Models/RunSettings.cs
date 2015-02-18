@@ -1,10 +1,8 @@
-﻿using Dynamo.Core;
-
-namespace Dynamo.Models
+﻿namespace Dynamo.Models
 {
     public enum RunType { Manual, Automatic, Periodic }
 
-    public class RunSettings : NotificationObject
+    public class RunSettings
     {
         private int runPeriod;
         private RunType runType;
@@ -15,7 +13,6 @@ namespace Dynamo.Models
             set
             {
                 runPeriod = value;
-                RaisePropertyChanged("RunPeriod");
             }
         }
 
@@ -25,7 +22,6 @@ namespace Dynamo.Models
             set
             {
                 runType = value;
-                RaisePropertyChanged("RunType");
             }
         }
 
