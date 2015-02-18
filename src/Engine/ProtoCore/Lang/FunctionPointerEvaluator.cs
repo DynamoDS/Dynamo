@@ -94,7 +94,7 @@ namespace ProtoCore.Lang
 
             if (!isValidThisPointer || (!thisPtr.IsPointer && !thisPtr.IsArray))
             {
-                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
                                               Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
@@ -123,7 +123,7 @@ namespace ProtoCore.Lang
                                                null);
 
             bool isInDebugMode = core.Options.IDEDebugMode &&
-                                 core.ExecMode != InterpreterMode.kExpressionInterpreter;
+                                 runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter;
             if (isInDebugMode)
             {
                 runtimeCore.DebugProps.SetUpCallrForDebug(core, 

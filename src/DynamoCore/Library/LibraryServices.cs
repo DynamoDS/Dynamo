@@ -442,9 +442,17 @@ namespace Dynamo.DSEngine
                                                                     argType))
                                                         let visibleInLibrary =
                                                             (method.MethodAttribute == null
+<<<<<<< HEAD
                                                                 || !method.MethodAttribute.HiddenInLibrary)
                                                         let description = 
                                                             (method.MethodAttribute != null ? method.MethodAttribute.Description :String.Empty)
+=======
+                                                                || !method.MethodAttribute
+                                                                    .HiddenInLibrary)
+                                                        let description =
+                                                            (method.MethodAttribute != null
+                                                                ? method.MethodAttribute.Description : String.Empty)
+>>>>>>> 1959e1d85998ae033bdda92609fef4cdd7b9750c
                                                         select
                                                             new FunctionDescriptor(
                                                                 null,

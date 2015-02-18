@@ -62,14 +62,14 @@ namespace ProtoScript.Runners
 
         public ExecutionMirror Execute(string code)
         {
-            Core.ExecMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
             bool ssastate = Core.Options.GenerateSSA;
             bool ssastateExec = Core.Options.ExecuteSSA;
 
             ProtoCore.RuntimeCore runtimeCore = Core.__TempCoreHostForRefactoring;
+            runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
 
-            runtimeCore.RuntimeOptions.GenerateSSA = false;
-            runtimeCore.RuntimeOptions.ExecuteSSA = false;
+            runtimeCore.Options.GenerateSSA = false;
+            runtimeCore.Options.ExecuteSSA = false;
 
             code = string.Format("{0} = {1};", Constants.kWatchResultVar, code);
 
@@ -134,7 +134,7 @@ namespace ProtoScript.Runners
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing
                     // it needs to be popped off at the end for stack alignment - pratapa
-                    Core.InterpreterProps.Pop();
+                    runtimeCore.InterpreterProps.Pop();
                 }
                 catch
                 { }
@@ -197,9 +197,9 @@ namespace ProtoScript.Runners
             // TODO: investigate why additional elements are added to the stack.
             Core.Rmem.RestoreStackForExprInterpreter();
 
-            runtimeCore.RuntimeOptions.GenerateSSA = ssastate;
-            runtimeCore.RuntimeOptions.ExecuteSSA = ssastateExec;
-            Core.ExecMode = ProtoCore.DSASM.InterpreterMode.kNormal;
+            runtimeCore.Options.GenerateSSA = ssastate;
+            runtimeCore.Options.ExecuteSSA = ssastateExec;
+            runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.kNormal;
 
             return new ExecutionMirror(Core.CurrentExecutive.CurrentDSASMExec, Core);
         }

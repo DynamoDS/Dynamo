@@ -406,6 +406,7 @@ namespace ProtoCore
 
         public static StackValue Coerce(StackValue sv, Type targetType, Core core)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             //@TODO(Jun): FIX ME - abort coersion for default args
             if (sv.IsDefaultArgument)
                 return sv;
@@ -415,7 +416,7 @@ namespace ProtoCore
                 (core.ClassTable.ClassNodes[sv.metaData.type].ConvertibleTo(targetType.UID))
                 || sv.IsArray))
             {
-                core.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible, Resources.kConvertNonConvertibleTypes);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible, Resources.kConvertNonConvertibleTypes);
                 return StackValue.Null;
             }
 
@@ -425,7 +426,7 @@ namespace ProtoCore
                 //This is an array rank reduction
                 //this may only be performed in recursion and is illegal here
                 string errorMessage = String.Format(Resources.kConvertArrayToNonArray, core.TypeSystem.GetType(targetType.UID));
-                core.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible, errorMessage);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible, errorMessage);
                 return StackValue.Null;
             }
 
@@ -526,7 +527,7 @@ namespace ProtoCore
                 case (int)PrimitiveType.kTypeFunctionPointer:
                     if (sv.metaData.type != (int)PrimitiveType.kTypeFunctionPointer)
                     {
-                        core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToFunction);
+                        runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToFunction);
                         return StackValue.Null;
                     }
                     return sv;
@@ -553,7 +554,7 @@ namespace ProtoCore
                     {
                         if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
                         {
-                            core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToNull);
+                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToNull);
                             return StackValue.Null;
                         }
                         return sv;
@@ -563,7 +564,7 @@ namespace ProtoCore
                     {
                         if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
                         {
-                            core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToPointer);
+                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToPointer);
                             return StackValue.Null;
                         }
                         return sv;

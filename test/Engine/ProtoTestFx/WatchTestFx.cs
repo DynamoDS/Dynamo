@@ -140,7 +140,7 @@ namespace ProtoTestFx
             {
                 int lineNo = instruction.debug.Location.StartInclusive.LineNo;
 
-                if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (Core.Options.IDEDebugMode && Core.__TempCoreHostForRefactoring.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
                     Core.__TempCoreHostForRefactoring.DebugProps.IsPopmCall = false;
                     Core.__TempCoreHostForRefactoring.DebugProps.CurrentSymbolName = symbolName;
@@ -174,7 +174,7 @@ namespace ProtoTestFx
                 }
                 string symbolName = symbolNode.name;
 
-                if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (Core.Options.IDEDebugMode && Core.__TempCoreHostForRefactoring.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
                     if (!Core.__TempCoreHostForRefactoring.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
                     {
@@ -213,7 +213,7 @@ namespace ProtoTestFx
 
             if (instruction.debug != null)
             {
-                if (Core.Options.IDEDebugMode && Core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (Core.Options.IDEDebugMode && Core.__TempCoreHostForRefactoring.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
                     Core.__TempCoreHostForRefactoring.DebugProps.IsPopmCall = false;
                 }
@@ -372,7 +372,6 @@ namespace ProtoTestFx
             core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
-            core.RuntimeStatus.MessageHandler = fs;
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
